@@ -134,6 +134,20 @@ theorem card_le_primeCounting_floor {T : ℝ} (P : Finset Nat.Primes)
   rw [Finset.card_map,Nat.primesBelow_card_eq_primeCounting'] at h
   exact_mod_cast h
 
+/-- Chebyshev's bound `π(T) ≪ T / log T`: eventually every set of primes up to `T`
+has at most `κT` elements. -/
+theorem eventually_card_le_of_le_horizon {κ : ℝ} (hκ : 0 < κ) :
+    ∀ᶠ T : ℝ in atTop, ∀ P : Finset Nat.Primes, (∀ p ∈ P, ((p:ℕ):ℝ) ≤ T) → (P.card:ℝ) ≤ κ*T := by
+  have hlog : Tendsto (fun T : ℝ => (Real.log 4+1)/Real.log T) atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop Real.tendsto_log_atTop
+  filter_upwards [Chebyshev.eventually_primeCounting_le (by norm_num : (0:ℝ) < 1),
+    hlog.eventually_le_const hκ,eventually_gt_atTop (1:ℝ)] with T hπ hsmall hT1 P hP
+  have hT0 : 0 < T := zero_lt_one.trans hT1
+  calc (P.card:ℝ) ≤ (Nat.primeCounting ⌊T⌋₊:ℝ) := card_le_primeCounting_floor P hP
+    _ ≤ (Real.log 4+1)*T/Real.log T := hπ
+    _ = ((Real.log 4+1)/Real.log T)*T := by ring
+    _ ≤ κ*T := mul_le_mul_of_nonneg_right hsmall hT0.le
+
 /-- All subsets of the primes up to `T` at once: the variance change on
 `[ηT, ∞)` is exponentially small, uniformly over the subset. -/
 theorem criticalState_commonSieve_tail_below_horizon {W₀ : ℝ} (hW : 0 < W₀)
@@ -146,18 +160,8 @@ theorem criticalState_commonSieve_tail_below_horizon {W₀ : ℝ} (hW : 0 < W₀
         Real.exp (-(δ*T)) := by
   obtain ⟨κ,δ,hκ,hδ,h⟩ := criticalState_commonSieve_sublinear_tail hW ht hF hc he hC hb hη
   refine ⟨δ,hδ,?_⟩
-  have hlog : Tendsto (fun T : ℝ => (Real.log 4+1)/Real.log T) atTop (𝓝 0) :=
-    tendsto_const_nhds.div_atTop Real.tendsto_log_atTop
-  filter_upwards [h,Chebyshev.eventually_primeCounting_le (by norm_num : (0:ℝ) < 1),
-    hlog.eventually_le_const hκ,eventually_gt_atTop (1:ℝ)] with T hT hπ hsmall hT1
-  intro P hP
-  apply hT P
-  have hT0 : 0 < T := zero_lt_one.trans hT1
-  have hl : 0 < Real.log T := Real.log_pos hT1
-  calc (P.card:ℝ) ≤ (Nat.primeCounting ⌊T⌋₊:ℝ) := card_le_primeCounting_floor P hP
-    _ ≤ (Real.log 4+1)*T/Real.log T := hπ
-    _ = ((Real.log 4+1)/Real.log T)*T := by ring
-    _ ≤ κ*T := mul_le_mul_of_nonneg_right hsmall hT0.le
+  filter_upwards [h,eventually_card_le_of_le_horizon hκ] with T hT hcard P hP
+  exact hT P (hcard P hP)
 
 /-- The tilted `L²` cost `4^{|P|}` of a common sieve is `e^{o(T)}` over every sieve
 with at most `κT` primes. -/
@@ -189,6 +193,19 @@ theorem criticalState_commonSieve_sublinear_tilted_cost {W₀ : ℝ} (hW : 0 < W
                   rw [show ε/(2*L)*T*L = (ε/2)*T*(L/L) by ring,div_self hL0,mul_one])
   calc (4:ℝ)^P.card*B ≤ Real.exp ((ε/2)*T)*Real.exp ((ε/2)*T) := mul_le_mul h4 hBT hB (Real.exp_pos _).le
     _ = Real.exp (ε*T) := by rw [← Real.exp_add]; congr 1; ring
+
+/-- The tilted `L²` cost of sieving by any set of primes up to `T` is `e^{o(T)}`. -/
+theorem criticalState_commonSieve_tilted_cost_below_horizon {W₀ : ℝ} (hW : 0 < W₀)
+    (ht : (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a)=(W₀:EReal))
+    {F Φ : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) (hc : Continuous Φ) (he : F =ᵐ[volume] Φ)
+    {C : ℝ} (hC : 0 ≤ C) (hb : ∀ u, |Φ u| ≤ C*Real.exp (2*u))
+    {β : ℝ} (hβ : 0 ≤ β) (hβ' : β < 1/2) {ε : ℝ} (hε : 0 < ε) :
+    ∀ᶠ T : ℝ in atTop, ∀ P : Finset Nat.Primes, (∀ p ∈ P, ((p:ℕ):ℝ) ≤ T) →
+      let g := fun t : ℝ => Real.exp (β*t)*(ordinaryPrimePolarError Φ t-commonSievedPrimeError P Φ t)
+      MemLp g 2 ∧ lpNorm g 2 volume ≤ Real.exp (ε*T) := by
+  obtain ⟨κ,hκ,h⟩ := criticalState_commonSieve_sublinear_tilted_cost hW ht hF hc he hC hb hβ hβ' hε
+  filter_upwards [h,eventually_card_le_of_le_horizon hκ] with T hT hcard P hP
+  exact hT P (hcard P hP)
 
 private theorem primorial_rpow_neg_eq {s : ℝ} (P : Finset Nat.Primes) :
     ((sievePrimorial P:ℕ):ℝ)^(-s) = Real.exp (-(s*sieveLogSize P)) := by
@@ -422,5 +439,6 @@ theorem riemannHypothesis_or_sublinear_and_modular_sieves : RiemannHypothesis �
 #print axioms criticalState_commonSieve_sublinear_tail
 #print axioms criticalState_commonSieve_tail_of_sublinear_family
 #print axioms criticalState_commonSieve_sublinear_tilted_cost
+#print axioms criticalState_commonSieve_tilted_cost_below_horizon
 #print axioms criticalState_primorial_weighted_total_variance
 end GaloisForLFunctions.ExclusionOfTheCriticalState

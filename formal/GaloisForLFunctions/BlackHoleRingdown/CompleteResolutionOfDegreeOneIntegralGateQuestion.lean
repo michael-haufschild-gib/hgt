@@ -727,7 +727,7 @@ theorem quartet_finite_return_sum {σ γ : ℝ} (h0 : 1 / 2 < σ) (h1 : σ < 1) 
     refine hG_int.integral_prod_left.congr (Eventually.of_forall fun v => ?_)
     dsimp only [G]
     unfold pulseReflected
-    exact (integral_const_mul (quartetImpulseTail σ γ v) _).symm
+    exact integral_const_mul (quartetImpulseTail σ γ v) _
   have hval_refl : pulseReflected h t +
       (∫ v : ℝ, quartetImpulseTail σ γ v * pulseReflected h (t - v)) =
       quartetReflected σ γ h t := by
@@ -777,6 +777,7 @@ theorem quartet_finite_return_sum {σ γ : ℝ} (h0 : 1 / 2 < σ) (h1 : σ < 1) 
       rw [hph]; ring
     rw [pulseReflected, ← integral_add hint_mod hint_diff, quartetReflected, unitaryReflected]
     refine integral_congr_ae (Eventually.of_forall fun ξ => ?_)
+    dsimp only
     have hph : quartetScatteringPhase σ γ ((ξ : ℂ) * I) =
         quartetGate σ γ ((ξ : ℂ) * I) * scatteringPhase ((ξ : ℂ) * I) := by
       unfold quartetScatteringPhase quartetReducedScattering xiQuartet quartetGate scatteringPhase

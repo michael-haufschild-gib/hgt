@@ -70,7 +70,7 @@ theorem cubic_quadratic_span_unit_iff_eq_six {n : ℕ} (hn : 0 < n) (h6 : 6 ∣ 
       rw [this]; push_cast; ring
     rw [h3, h2] at hmod
     have hdvd6m : ((6 * m : ℕ) : ℤ) ∣ 1 - (a * (2 * (m : ℤ)) + b * (3 * (m : ℤ))) :=
-      Int.modEq_iff_dvd.mp hmod.symm
+      Int.modEq_iff_dvd.mp hmod
     have hdvdm1 : (m : ℤ) ∣ ((6 * m : ℕ) : ℤ) := ⟨6, by push_cast; ring⟩
     have hdvdm2 : (m : ℤ) ∣ a * (2 * (m : ℤ)) + b * (3 * (m : ℤ)) :=
       ⟨2 * a + 3 * b, by ring⟩
@@ -83,7 +83,6 @@ theorem cubic_quadratic_span_unit_iff_eq_six {n : ℕ} (hn : 0 < n) (h6 : 6 ∣ 
   · rintro rfl
     refine ⟨-1, 1, ?_⟩
     norm_num
-    rfl
 
 /-- Modulo `12`, no integer combination `4a + 6b` of the cubic (`4`) and quadratic (`6`) Gauss-sum
 indices equals `1` (parity obstruction on `ℤ[ζ₁₂]`). -/
@@ -162,7 +161,7 @@ theorem planted_conjugate_character_saturates_multilinear_sum {α β : Type*} [D
         hunit r (x r) hxr]
       norm_num
     rw [Finset.sum_congr rfl hprod_one, Finset.sum_const, Fintype.card_piFinset, nsmul_eq_mul,
-      mul_one, Nat.cast_prod, Complex.norm_natCast]
+      mul_one, Complex.norm_natCast, Nat.cast_prod]
   · have hterm_eq :
         ‖∑ x ∈ Fintype.piFinset S, ∏ r : Fin k, star (χ u₀ r (x r)) * χ u₀ r (x r)‖ =
           ∏ r : Fin k, ((S r).card : ℝ) := by
@@ -175,9 +174,11 @@ theorem planted_conjugate_character_saturates_multilinear_sum {α β : Type*} [D
           hunit r (x r) hxr]
         norm_num
       rw [Finset.sum_congr rfl hprod_one, Finset.sum_const, Fintype.card_piFinset, nsmul_eq_mul,
-        mul_one, Nat.cast_prod, Complex.norm_natCast]
+        mul_one, Complex.norm_natCast, Nat.cast_prod]
     rw [← hterm_eq]
-    exact Finset.single_le_sum (fun u _ => sq_nonneg _) hu₀
+    exact Finset.single_le_sum
+      (f := fun u => ‖∑ x ∈ Fintype.piFinset S, ∏ r : Fin k, star (χ u₀ r (x r)) * χ u r (x r)‖ ^ 2)
+      (fun u _ => sq_nonneg _) hu₀
 
 /-! ### Part 4: Twist-coupling Cauchy–Schwarz ceiling and low-side `lx`-shift penalty -/
 
@@ -185,12 +186,12 @@ theorem planted_conjugate_character_saturates_multilinear_sum {α β : Type*} [D
 theorem norm_sum_sq_le_card_mul_sum_norm_sq {ι : Type*} (V : Finset ι) (lam : ι → ℂ) :
     ‖∑ v ∈ V, lam v‖ ^ 2 ≤ (V.card : ℝ) * ∑ v ∈ V, ‖lam v‖ ^ 2 := by
   have htri : ‖∑ v ∈ V, lam v‖ ≤ ∑ v ∈ V, ‖lam v‖ := norm_sum_le V lam
-  have hsq : ‖∑ v ∈ V, lam v‖ ^ 2 ≤ (∑ v ∈ V, ‖lam v‖ * 1) ^ 2 := by
-    simp only [mul_one]
-    exact pow_le_pow_left₀ (norm_nonneg _) htri 2
+  have hsq : ‖∑ v ∈ V, lam v‖ ^ 2 ≤ (∑ v ∈ V, ‖lam v‖) ^ 2 :=
+    pow_le_pow_left₀ (norm_nonneg _) htri 2
   have hcs := Finset.sum_mul_sq_le_sq_mul_sq V (fun v => ‖lam v‖) (fun _ => (1 : ℝ))
   simp only [one_pow, sum_const, nsmul_eq_mul, mul_one] at hcs
-  linarith
+  rw [mul_comm]
+  exact hsq.trans hcs
 
 /-- Whenever `1 ≤ Z` and `0 ≤ ν ≤ U`, the coherent signal gain `Z^{ν/2}` never exceeds the ambient
 conductor root-scale `Z^{U/2}`. -/

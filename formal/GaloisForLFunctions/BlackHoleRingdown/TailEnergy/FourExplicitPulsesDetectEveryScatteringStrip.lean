@@ -49,7 +49,7 @@ private theorem weighted_hasDeriv (n : ℕ) (t : ℝ) :
   have h := ((((hasDerivAt_id t).pow n).mul
     (((hasDerivAt_const t (1:ℝ)).sub ((hasDerivAt_id t).pow 2)).pow 2)).mul hwin)
   apply h.congr_deriv
-  dsimp only [id_eq]
+  simp only [Pi.mul_apply, Pi.sub_apply, Pi.pow_apply, Pi.one_apply, id_eq]
   cases n with
   | zero =>
     norm_num only [Nat.cast_zero,zero_mul,zero_add,zero_pow,zero_ne_one,Nat.zero_sub,

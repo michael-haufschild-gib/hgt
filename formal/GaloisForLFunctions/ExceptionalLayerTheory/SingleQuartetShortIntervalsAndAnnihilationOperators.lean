@@ -4,6 +4,7 @@ import GaloisForLFunctions.ExceptionalLayerTheory.TwoAndThreeDilationRecurrences
 import Mathlib.Analysis.Calculus.MeanValue
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 
 /-!
 # Short-Interval Prime Laws, Half-Period Annihilation, and Unified Multiplicity Bifurcation
@@ -408,7 +409,6 @@ theorem iterate_halfPeriodAnnihilator_re_cpow_log_pow_eq_zero {ρ₀ : ℂ} (him
     set λ₀ := quartetHalfPeriodScale ρ₀
     have hλ_pos : 0 < λ₀ := quartetHalfPeriodScale_pos ρ₀
     rw [Function.iterate_succ_apply]
-    -- On `y > 0`, applying `halfPeriodAnnihilator ρ₀` once lowers `(log y)^k` to degree `< k`.
     let g : ℝ → ℝ := fun y =>
       ∑ j ∈ Finset.range k,
         ((-(λ₀ ^ ρ₀.re : ℂ) * c * (Nat.choose k j : ℂ) *
@@ -466,7 +466,6 @@ theorem outsideQuartetOnLine_halfPeriod_chebyshev_cancellation {ρ₀ : ℂ}
   set λ₀ := quartetHalfPeriodScale ρ₀
   have hλ1 : 1 < λ₀ := quartetHalfPeriodScale_gt_one him
   have hλ_pos : 0 < λ₀ := by linarith
-  -- Bound `√(λ₀ x) log²(λ₀ x) ≤ √λ₀ * (1 + log λ₀ / 2)² * √x log² x` for `x ≥ 16`.
   set M : ℝ := Real.sqrt λ₀ * (1 + Real.log λ₀) ^ 2 + λ₀ ^ ρ₀.re
   have hM0 : 0 ≤ M := by dsimp [M]; positivity
   refine ⟨(K + 2) * M, mul_nonneg (by linarith) hM0, fun x hx => ?_⟩
@@ -562,11 +561,11 @@ theorem norm_cpow_increment_sub_linear_le {ρ : ℂ} (hρ : ρ ≠ 0) (hre : ρ.
   by_cases hr1 : ρ = 1
   · subst hr1
     have hx_ne : (x : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hx.ne'
-    simp [Complex.cpow_zero, sub_self, norm_zero]
-    ring_nf
-    simp
+    simp only [sub_self, Complex.cpow_zero, Complex.cpow_one, div_one, norm_zero, zero_mul]
+    have h0 : ((x + h : ℝ) : ℂ) - (x : ℂ) - (h : ℂ) * 1 = 0 := by push_cast; ring
+    rw [h0, norm_zero]
   · let s : Set ℝ := Set.Icc x (x + h)
-    let g : ℝ → ℂ := fun y => (y : ℂ) ^ ρ / ρ - (y - x : ℂ) * (x : ℂ) ^ (ρ - 1)
+    let g : ℝ → ℂ := fun y => (y : ℂ) ^ ρ / ρ - ((y : ℂ) - (x : ℂ)) * (x : ℂ) ^ (ρ - 1)
     let g' : ℝ → ℂ := fun y => (y : ℂ) ^ (ρ - 1) - (x : ℂ) ^ (ρ - 1)
     have hs_conv : Convex ℝ s := convex_Icc x (x + h)
     have hxs : x ∈ s := ⟨le_rfl, by linarith⟩
@@ -583,7 +582,6 @@ theorem norm_cpow_increment_sub_linear_le {ρ : ℂ} (hρ : ρ ≠ 0) (hre : ρ.
           (Complex.ofRealCLM.hasDerivAt).sub_const (x : ℂ)
         simpa [one_mul] using hlin.mul_const ((x : ℂ) ^ (ρ - 1))
       exact (hd1.sub hd2).hasDerivWithinAt
-    -- Bound `‖g' t‖` on `[x, x + h]` by a second application of the mean-value inequality.
     have hg'_bound : ∀ t ∈ s, ‖g' t‖ ≤ ‖ρ - 1‖ * h * x ^ (ρ.re - 2) := by
       intro t ht
       let s_t : Set ℝ := Set.Icc x t
@@ -665,12 +663,11 @@ theorem finiteOffLine_short_interval_psi_and_theta
     intro h0; exact hne (by linarith)
   obtain ⟨K₀, hK₀, hvk⟩ := RHTower.exists_abs_chebyshevPsi_sub_add_offLineWave_le_of_finite hfin_re
   set S : Finset RHTower.XiZeroCopy := hfin_re.toFinset
-  let β_* : ℝ := S.sup' ⟨_, Finset.mem_insert_self _ _⟩
-      (fun _ => (1 / 2 : ℝ)) ⊔ (if hS : S.Nonempty then S.sup' hS (fun q => (q.1 : ℂ).re) else 1 / 2)
-  have hβ_ge : 1 / 2 ≤ β_* := le_sup_of_le_left (by simp)
+  let β_* : ℝ := (1 / 2 : ℝ) ⊔ (if hS : S.Nonempty then S.sup' hS (fun q => (q.1 : ℂ).re) else 1 / 2)
+  have hβ_ge : 1 / 2 ≤ β_* := le_sup_left
   have hβ_lt1 : β_* < 1 := by
     dsimp [β_*]
-    refine sup_lt_iff.mpr ⟨by simp; norm_num, ?_⟩
+    refine sup_lt_iff.mpr ⟨by norm_num, ?_⟩
     split_ifs with hS
     · exact (Finset.sup'_lt_iff hS).mpr fun q _ => RHTower.xiZeroCopy_re_lt_one q
     · norm_num
@@ -706,10 +703,9 @@ theorem finiteOffLine_short_interval_psi_and_theta
         ≤ (2 * Real.sqrt x) * (4 * Real.log x ^ 2) :=
           mul_le_mul hsqrt_le hlog_sq (sq_nonneg _) (by positivity)
       _ = 8 * (Real.sqrt x * Real.log x ^ 2) := by ring
-  -- Off-line wave increment across `[x, x + h]`.
   have hwave_inc : |(RHTower.offLineWave S (x + h)).re - (RHTower.offLineWave S x).re| ≤
       (S.card : ℝ) * h * x ^ (β_* - 1) := by
-    rw [ ← Complex.sub_re]
+    rw [← Complex.sub_re]
     refine (Complex.abs_re_le_norm _).trans ?_
     unfold RHTower.offLineWave
     rw [← Finset.sum_sub_distrib]
@@ -781,6 +777,19 @@ theorem finiteOffLine_short_interval_psi_and_theta
             (mul_le_mul_of_nonneg_right hK_ge2 (by positivity))
       _ = K * Real.sqrt x * Real.log x ^ 2 + K * h * x ^ (β_* - 1) := by ring
 
+private theorem log_sq_le_sixtyFour_rpow_quarter {x : ℝ} (hx : 1 ≤ x) :
+    Real.log x ^ 2 ≤ 64 * x ^ (1 / 4 : ℝ) := by
+  have hx0 : 0 < x := zero_lt_one.trans_le hx
+  have h1 : Real.log (x ^ (1 / 8 : ℝ)) ≤ x ^ (1 / 8 : ℝ) - 1 :=
+    Real.log_le_sub_one_of_pos (Real.rpow_pos_of_pos hx0 _)
+  rw [Real.log_rpow hx0] at h1
+  have hlog_le : Real.log x ≤ 8 * x ^ (1 / 8 : ℝ) := by linarith
+  calc Real.log x ^ 2 ≤ (8 * x ^ (1 / 8 : ℝ)) ^ 2 :=
+        pow_le_pow_left₀ (Real.log_nonneg hx) hlog_le 2
+    _ = 64 * (x ^ (1 / 8 : ℝ)) ^ 2 := by ring
+    _ = 64 * x ^ (1 / 4 : ℝ) := by
+        rw [← Real.rpow_natCast, ← Real.rpow_mul hx0.le]; norm_num
+
 /-- **Cramér-scale short-interval prime theorem under `BacklundConverse.FiniteOffLine`.**
 Even when `ζ` has finitely many off-line zeros producing global `Ω_±(x^Θ)` oscillations (`Θ > 1/2`),
 there exists `C > 0` such that for all sufficiently large `x`, `(x, x + C √x log² x]` contains a
@@ -794,36 +803,768 @@ theorem finiteOffLine_exists_prime_in_cramer_interval
   obtain ⟨K, β_*, hK0, _, hβ1, hwin⟩ := finiteOffLine_short_interval_psi_and_theta hfin
   set C : ℝ := 2 * (K + 1)
   have hC : 0 < C := by dsimp [C]; positivity
-  -- `x^{1 - β_*} → +∞` and `(log x)^2 / x^{1/2} → 0` at `atTop`.
   have hdecay1 : ∀ᶠ x : ℝ in atTop, K * x ^ (β_* - 1) ≤ 1 / 2 := by
-    have htend : Tendsto (fun x : ℝ => K * x ^ (β_* - 1)) atTop (𝓝 (K * 0)) :=
-      tendsto_const_nhds.mul (tendsto_rpow_neg_atTop (by linarith : 0 < 1 - β_*) |>.congr'
-        (by filter_upwards [eventually_gt_atTop (0 : ℝ)] with x _; rw [show -(1 - β_*) = β_* - 1 by ring]))
+    have htend : Tendsto (fun x : ℝ => K * x ^ (-(1 - β_*))) atTop (𝓝 (K * 0)) :=
+      tendsto_const_nhds.mul (tendsto_rpow_neg_atTop (by linarith : 0 < 1 - β_*))
     rw [mul_zero] at htend
+    filter_upwards [htend.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 2))] with x hx
+    rw [show β_* - 1 = -(1 - β_*) by ring]
+    exact hx.le
+  refine ⟨C, hC, ?_⟩
+  filter_upwards [hdecay1, eventually_ge_atTop (max 16 ((64 * C) ^ 4))] with x hKx hx_top
+  have hx16 : 16 ≤ x := (le_max_left _ _).trans hx_top
+  have hxC4 : (64 * C) ^ 4 ≤ x := (le_max_right _ _).trans hx_top
+  have hx0 : 0 < x := by linarith
+  set h : ℝ := C * Real.sqrt x * Real.log x ^ 2
+  have hh0 : 0 ≤ h := by dsimp [h]; positivity
+  have hh_le_x : h ≤ x := by
+    have h64_le : 64 * C ≤ x ^ (1 / 4 : ℝ) := by
+      have hr := Real.rpow_le_rpow (by positivity) hxC4 (by norm_num : (0 : ℝ) ≤ 1 / 4)
+      rwa [← Real.rpow_natCast, ← Real.rpow_mul (by positivity),
+        show (4 : ℝ) * (1 / 4 : ℝ) = 1 by norm_num, Real.rpow_one] at hr
+    have hlog_sq := log_sq_le_sixtyFour_rpow_quarter (by linarith : 1 ≤ x)
+    dsimp [h]
+    calc C * Real.sqrt x * Real.log x ^ 2
+        ≤ C * Real.sqrt x * (64 * x ^ (1 / 4 : ℝ)) :=
+          mul_le_mul_of_nonneg_left hlog_sq (by positivity)
+      _ = (64 * C) * (x ^ (1 / 2 : ℝ) * x ^ (1 / 4 : ℝ)) := by
+          rw [Real.sqrt_eq_rpow]; ring
+      _ ≤ x ^ (1 / 4 : ℝ) * (x ^ (1 / 2 : ℝ) * x ^ (1 / 4 : ℝ)) :=
+          mul_le_mul_of_nonneg_right h64_le (by positivity)
+      _ = x := by
+          rw [← Real.rpow_add hx0, ← Real.rpow_add hx0]
+          norm_num
+  have hθ := (hwin hx16 hh0 hh_le_x).2
+  have hlow := (abs_le.mp hθ).1
+  -- `θ(x + h) - θ(x) ≥ h - K √x log² x - K h x^{β_* - 1} ≥ (C/2 - K) √x log² x = √x log² x`.
+  have hKh : K * h * x ^ (β_* - 1) ≤ (1 / 2) * h := by
+    calc K * h * x ^ (β_* - 1) = (K * x ^ (β_* - 1)) * h := by ring
+      _ ≤ (1 / 2) * h := mul_le_mul_of_nonneg_right hKx hh0
+  have hmass_pos : 0 < Real.sqrt x * Real.log x ^ 2 := by
+    have hlog2 := RHTower.two_le_log_of_sixteen_le hx16
+    positivity
+  have hθ_ge : Real.sqrt x * Real.log x ^ 2 ≤ Chebyshev.theta (x + h) - Chebyshev.theta x := by
+    have hC_half : (1 / 2) * h - K * Real.sqrt x * Real.log x ^ 2 =
+        Real.sqrt x * Real.log x ^ 2 := by
+      dsimp [h, C]; ring
+    linarith
+  exact ⟨hθ_ge, exists_prime_Ioc_of_theta_sub_pos hx0.le (hmass_pos.trans_le hθ_ge)⟩
+
+/-- **Cramér-scale short-interval prime theorem under `HasSingleOffLineQuartet ρ₀`.**
+Every lone off-line quartet preserves the RH prime-gap law `p_{n+1} - p_n = O(√p_n log² p_n)`. -/
+theorem singleQuartet_exists_prime_in_cramer_interval {ρ₀ : ℂ}
+    (hq : HasSingleOffLineQuartet ρ₀) :
+    ∃ C : ℝ, 0 < C ∧ ∀ᶠ x : ℝ in atTop,
+      Real.sqrt x * Real.log x ^ 2 ≤
+        Chebyshev.theta (x + C * Real.sqrt x * Real.log x ^ 2) - Chebyshev.theta x ∧
+      ∃ p : ℕ, p.Prime ∧ x < (p : ℝ) ∧ (p : ℝ) ≤ x + C * Real.sqrt x * Real.log x ^ 2 :=
+  finiteOffLine_exists_prime_in_cramer_interval hq.finiteOffLine
+
+/-- **World-II contrapositive:** if Cramér-scale short intervals `(x, x + C √x log² x]` fail to
+contain primes for every `C > 0`, then `ζ` has **infinitely many** off-line zeros (and in particular
+`∀ ρ₀, ¬ HasSingleOffLineQuartet ρ₀`). -/
+theorem infinite_offLine_of_cramer_prime_gap_failure
+    (hfail : ∀ C : ℝ, 0 < C → ∃ᶠ x : ℝ in atTop,
+      ∀ p : ℕ, p.Prime → ¬ (x < (p : ℝ) ∧ (p : ℝ) ≤ x + C * Real.sqrt x * Real.log x ^ 2)) :
+    {q : RHTower.XiZeroCopy | (RHTower.xiSpectralPoint q).im ≠ 0}.Infinite ∧
+      ∀ ρ₀ : ℂ, ¬ HasSingleOffLineQuartet ρ₀ := by
+  have hnfin : ¬ RHTower.BacklundConverse.FiniteOffLine := by
+    intro hfin
+    obtain ⟨C, hC, hev⟩ := finiteOffLine_exists_prime_in_cramer_interval hfin
+    exact ((hfail C hC).and_eventually hev).exists.elim fun x ⟨hno, _, p, hp, hpx⟩ =>
+      hno p hp hpx
+  exact ⟨hnfin, fun _ hq => hnfin hq.finiteOffLine⟩
+
+/-! ## 4. Exact pointwise (`3/2 - Re ρ₀`) and `L²` (`2 - 2 Re ρ₀`) short-interval crossovers -/
+
+/-- Dominant single-quartet explicit-formula wave `W_{ρ₀}(x) = -2 m Re(x^{ρ₀} / ρ₀)`. -/
+def singleQuartetMainWave (ρ₀ : ℂ) (x : ℝ) : ℝ :=
+  -(2 * (quartetCopyMult ρ₀ : ℝ) * ((x : ℂ) ^ ρ₀ / ρ₀).re)
+
+private theorem cpow_sub_one_re {ρ₀ : ℂ} {x : ℝ} (hx : 0 < x) :
+    ((x : ℂ) ^ (ρ₀ - 1)).re = x ^ (ρ₀.re - 1) * Real.cos (ρ₀.im * Real.log x) := by
+  have hx_ne : (x : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hx.ne'
+  rw [Complex.cpow_def_of_ne_zero hx_ne, ← Complex.ofReal_log hx.le]
+  have hexp : ((Real.log x : ℝ) : ℂ) * (ρ₀ - 1) =
+      ((Real.log x * (ρ₀.re - 1) : ℝ) : ℂ) + ((ρ₀.im * Real.log x : ℝ) : ℂ) * I := by
+    apply Complex.ext <;> simp [mul_comm]
+  rw [hexp, Complex.exp_add, ← Complex.ofReal_exp, ← Real.rpow_def_of_pos hx,
+    Complex.exp_mul_I, Complex.ofReal_cos, Complex.ofReal_sin]
+  simp
+
+private theorem singleQuartetMainWave_increment_approx (ρ₀ : ℂ) {x h : ℝ}
+    (hx : 0 < x) (hh : 0 ≤ h) (hre : ρ₀.re ≤ 2) (hρ : ρ₀ ≠ 0) :
+    |(singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) -
+        (-(2 * (quartetCopyMult ρ₀ : ℝ) * h * x ^ (ρ₀.re - 1) * Real.cos (ρ₀.im * Real.log x)))| ≤
+      2 * (quartetCopyMult ρ₀ : ℝ) * ‖ρ₀ - 1‖ * h ^ 2 * x ^ (ρ₀.re - 2) := by
+  have hm_nn : 0 ≤ 2 * (quartetCopyMult ρ₀ : ℝ) := by positivity
+  have hlin_re : (((h : ℂ) * (x : ℂ) ^ (ρ₀ - 1))).re =
+      h * x ^ (ρ₀.re - 1) * Real.cos (ρ₀.im * Real.log x) := by
+    rw [Complex.re_ofReal_mul, cpow_sub_one_re hx, mul_assoc]
+  have hid : (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) -
+      (-(2 * (quartetCopyMult ρ₀ : ℝ) * h * x ^ (ρ₀.re - 1) * Real.cos (ρ₀.im * Real.log x))) =
+      -(2 * (quartetCopyMult ρ₀ : ℝ) *
+        (((x + h : ℝ) : ℂ) ^ ρ₀ / ρ₀ - (x : ℂ) ^ ρ₀ / ρ₀ - (h : ℂ) * (x : ℂ) ^ (ρ₀ - 1)).re) := by
+    unfold singleQuartetMainWave
+    rw [Complex.sub_re, Complex.sub_re, hlin_re]
+    ring
+  rw [hid, abs_neg, abs_mul, abs_of_nonneg hm_nn]
+  have hre_le := (Complex.abs_re_le_norm _).trans (norm_cpow_increment_sub_linear_le hρ hre hx hh)
+  calc 2 * (quartetCopyMult ρ₀ : ℝ) *
+          |(((x + h : ℝ) : ℂ) ^ ρ₀ / ρ₀ - (x : ℂ) ^ ρ₀ / ρ₀ - (h : ℂ) * (x : ℂ) ^ (ρ₀ - 1)).re|
+      ≤ 2 * (quartetCopyMult ρ₀ : ℝ) * (‖ρ₀ - 1‖ * h ^ 2 * x ^ (ρ₀.re - 2)) :=
+        mul_le_mul_of_nonneg_left hre_le hm_nn
+    _ = 2 * (quartetCopyMult ρ₀ : ℝ) * ‖ρ₀ - 1‖ * h ^ 2 * x ^ (ρ₀.re - 2) := by ring
+
+/-- **Subcritical pointwise RH bound (`0 < α ≤ 3/2 - Re ρ₀`).**
+Under `HasSingleOffLineQuartet ρ₀`, for every short-interval exponent `0 < α ≤ 3/2 - Re ρ₀`, both
+`ψ(x + x^α) - ψ(x) - x^α` and `θ(x + x^α) - θ(x) - x^α` satisfy the RH bound `O(√x log² x)`. -/
+theorem singleQuartet_short_interval_subcritical_rh_bound {ρ₀ : ℂ}
+    (hq : HasSingleOffLineQuartet ρ₀) {α : ℝ} (_hα0 : 0 < α) (hα : α ≤ 3 / 2 - ρ₀.re) :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ x : ℝ, 16 ≤ x →
+      |Chebyshev.psi (x + x ^ α) - Chebyshev.psi x - x ^ α| ≤
+        C * Real.sqrt x * Real.log x ^ 2 ∧
+      |Chebyshev.theta (x + x ^ α) - Chebyshev.theta x - x ^ α| ≤
+        C * Real.sqrt x * Real.log x ^ 2 := by
+  have hα_lt1 : α < 1 := by linarith [hq.1]
+  obtain ⟨K, hK0, hwave⟩ := outsideQuartetOnLine_chebyshevPsi_and_theta_wave hq.1 hq.re_lt_one
+    ((hasSingleOffLineQuartet_iff_outsideQuartetOnLine ρ₀).mp hq).2.2
+  have hρ_ne : ρ₀ ≠ 0 := fun h0 => hq.im_ne_zero (by rw [h0]; simp)
+  set C : ℝ := 9 * (K + 2) + 2 * (quartetCopyMult ρ₀ : ℝ)
+  refine ⟨C, by dsimp [C]; positivity, fun x hx => ?_⟩
+  have hx0 : 0 < x := by linarith
+  have hx1 : 1 ≤ x := by linarith
+  have hh0 : 0 ≤ x ^ α := Real.rpow_nonneg hx0.le α
+  have hh_le_x : x ^ α ≤ x := by
+    calc x ^ α ≤ x ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hx1 hα_lt1.le
+      _ = x := Real.rpow_one x
+  have hxh16 : 16 ≤ x + x ^ α := by linarith
+  have hscale_xh : Real.sqrt (x + x ^ α) * Real.log (x + x ^ α) ^ 2 ≤
+      8 * (Real.sqrt x * Real.log x ^ 2) := by
+    have hsqrt : Real.sqrt (x + x ^ α) ≤ 2 * Real.sqrt x := by
+      calc Real.sqrt (x + x ^ α) ≤ Real.sqrt (2 * x) := Real.sqrt_le_sqrt (by linarith)
+        _ = Real.sqrt 2 * Real.sqrt x := Real.sqrt_mul (by norm_num) x
+        _ ≤ 2 * Real.sqrt x := mul_le_mul_of_nonneg_right
+            (by rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 2)]; exact Real.sqrt_le_sqrt (by norm_num))
+            (Real.sqrt_nonneg x)
+    have hlog_sq : Real.log (x + x ^ α) ^ 2 ≤ 4 * Real.log x ^ 2 := by
+      have hlog2_le : Real.log 2 ≤ Real.log x := Real.log_le_log (by norm_num) (by linarith)
+      have hlog_xh : Real.log (x + x ^ α) ≤ 2 * Real.log x := by
+        calc Real.log (x + x ^ α) ≤ Real.log (2 * x) := Real.log_le_log (by positivity) (by linarith)
+          _ = Real.log 2 + Real.log x := Real.log_mul two_ne_zero hx0.ne'
+          _ ≤ 2 * Real.log x := by linarith
+      have hnn : 0 ≤ Real.log (x + x ^ α) := Real.log_nonneg (by linarith)
+      nlinarith
+    calc Real.sqrt (x + x ^ α) * Real.log (x + x ^ α) ^ 2
+        ≤ (2 * Real.sqrt x) * (4 * Real.log x ^ 2) :=
+          mul_le_mul hsqrt hlog_sq (sq_nonneg _) (by positivity)
+      _ = 8 * (Real.sqrt x * Real.log x ^ 2) := by ring
+  have hW_inc : |singleQuartetMainWave ρ₀ (x + x ^ α) - singleQuartetMainWave ρ₀ x| ≤
+      2 * (quartetCopyMult ρ₀ : ℝ) * (Real.sqrt x * Real.log x ^ 2) := by
+    have hsub : singleQuartetMainWave ρ₀ (x + x ^ α) - singleQuartetMainWave ρ₀ x =
+        -(2 * (quartetCopyMult ρ₀ : ℝ) *
+          (((x + x ^ α : ℝ) : ℂ) ^ ρ₀ / ρ₀ - (x : ℂ) ^ ρ₀ / ρ₀).re) := by
+      unfold singleQuartetMainWave; rw [Complex.sub_re]; ring
+    rw [hsub, abs_neg, abs_mul, abs_of_nonneg (by positivity)]
+    have hinc := (Complex.abs_re_le_norm _).trans
+      (norm_cpow_increment_le hρ_ne hq.re_lt_one.le hx0 hh0)
+    have hrpow_le : x ^ α * x ^ (ρ₀.re - 1) ≤ Real.sqrt x * Real.log x ^ 2 := by
+      rw [← Real.rpow_add hx0, Real.sqrt_eq_rpow]
+      have h1 : x ^ (α + (ρ₀.re - 1)) ≤ x ^ (1 / 2 : ℝ) :=
+        Real.rpow_le_rpow_of_exponent_le hx1 (by linarith)
+      have hlog1 : 1 ≤ Real.log x ^ 2 := by
+        have := RHTower.two_le_log_of_sixteen_le hx; nlinarith
+      calc x ^ (α + (ρ₀.re - 1)) ≤ x ^ (1 / 2 : ℝ) * 1 := by linarith
+        _ ≤ x ^ (1 / 2 : ℝ) * Real.log x ^ 2 := mul_le_mul_of_nonneg_left hlog1 (by positivity)
+    exact mul_le_mul_of_nonneg_left (hinc.trans hrpow_le) (by positivity)
+  have hbound_gen : ∀ {F : ℝ → ℝ},
+      (∀ y : ℝ, 16 ≤ y → |F y - y - singleQuartetMainWave ρ₀ y| ≤ (K + 2) * Real.sqrt y * Real.log y ^ 2) →
+      |F (x + x ^ α) - F x - x ^ α| ≤ C * Real.sqrt x * Real.log x ^ 2 := by
+    intro F hF
+    set η : ℝ → ℝ := fun y => F y - y - singleQuartetMainWave ρ₀ y
+    have hsplit : F (x + x ^ α) - F x - x ^ α =
+        η (x + x ^ α) - η x + (singleQuartetMainWave ρ₀ (x + x ^ α) - singleQuartetMainWave ρ₀ x) := by
+      dsimp [η]; ring
+    have hη_xh : |η (x + x ^ α)| ≤ 8 * (K + 2) * (Real.sqrt x * Real.log x ^ 2) := by
+      calc |η (x + x ^ α)| ≤ (K + 2) * (Real.sqrt (x + x ^ α) * Real.log (x + x ^ α) ^ 2) := by
+            linarith [hF (x + x ^ α) hxh16]
+        _ ≤ (K + 2) * (8 * (Real.sqrt x * Real.log x ^ 2)) :=
+            mul_le_mul_of_nonneg_left hscale_xh (by linarith)
+        _ = 8 * (K + 2) * (Real.sqrt x * Real.log x ^ 2) := by ring
+    have hη_x : |η x| ≤ (K + 2) * (Real.sqrt x * Real.log x ^ 2) := by linarith [hF x hx]
+    rw [hsplit]
+    calc |η (x + x ^ α) - η x + (singleQuartetMainWave ρ₀ (x + x ^ α) - singleQuartetMainWave ρ₀ x)|
+        ≤ (|η (x + x ^ α)| + |η x|) +
+            |singleQuartetMainWave ρ₀ (x + x ^ α) - singleQuartetMainWave ρ₀ x| :=
+          (abs_add_le _ _).trans (add_le_add (abs_sub _ _) le_rfl)
+      _ ≤ C * (Real.sqrt x * Real.log x ^ 2) := by dsimp [C]; linarith
+      _ = C * Real.sqrt x * Real.log x ^ 2 := by ring
+  constructor
+  · refine hbound_gen fun y hy => ?_
+    unfold singleQuartetMainWave; rw [sub_neg_eq_add]
+    exact (hwave y hy).1.trans (mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_right (by linarith) (Real.sqrt_nonneg y)) (sq_nonneg _))
+  · refine hbound_gen fun y hy => ?_
+    unfold singleQuartetMainWave; rw [sub_neg_eq_add]
+    exact (hwave y hy).2
+
+/-- On `[X, 3X/2]` (`X > 0`, `|γ| > 67`), `γ log x` sweeps more than `2π`, so there exist points in
+`[X, 3X/2]` realizing `cos(γ log x) = -1` and `cos(γ log x) = +1`. -/
+private theorem exists_cos_extrema_in_three_halves {γ X : ℝ} (hγ : 67 < |γ|) (hX : 0 < X) :
+    (∃ x₊ ∈ Set.Icc X (3 * X / 2), Real.cos (γ * Real.log x₊) = -1) ∧
+      (∃ x₋ ∈ Set.Icc X (3 * X / 2), Real.cos (γ * Real.log x₋) = 1) := by
+  -- Note `log(3/2) > 1/3` since `exp(1/3) < 3/2` (`(3/2)^3 = 27/8 > 3 > e`), so `|γ| log(3/2) > 67/3 > 2π`.
+  have hlog32 : (1 / 3 : ℝ) < Real.log (3 / 2) := by
+    rw [lt_iff_not_ge]
+    intro hle
+    have hexp := Real.exp_le_exp.mpr hle
+    rw [Real.exp_log (by norm_num : (0 : ℝ) < 3 / 2)] at hexp
+    have hpow := pow_le_pow_left₀ (Real.exp_nonneg _) hexp 3
+    rw [← Real.exp_nat_mul, show (3 : ℕ) * (1 / 3 : ℝ) = 1 by norm_num, Real.exp_one_rpow] at hpow
+  -- Simpler: `1 + 1/3 < 3/2` gives `log(3/2) = -log(2/3) ≥ 1 - 2/3 = 1/3`!
+  have hlog32' : (1 / 3 : ℝ) ≤ Real.log (3 / 2) := by
+    have h := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2 / 3)
+    have hinv : Real.log (2 / 3 : ℝ) = -Real.log (3 / 2) := by
+      rw [show (2 / 3 : ℝ) = (3 / 2 : ℝ)⁻¹ by norm_num, Real.log_inv]
+    linarith
+  have hspan : 2 * Real.pi < |γ| * Real.log (3 / 2) := by
+    have hpi : Real.pi < 4 := Real.pi_lt_four
+    have h1 : (67 / 3 : ℝ) < |γ| * (1 / 3) := by linarith
+    have h2 : |γ| * (1 / 3) ≤ |γ| * Real.log (3 / 2) :=
+      mul_le_mul_of_nonneg_left hlog32' (abs_nonneg γ)
+    linarith
+  -- Find `k : ℤ` with `|γ| log X ≤ (2k + 1) π ≤ |γ| log(3X/2)` and `m : ℤ` with `|γ| log X ≤ 2m π ≤ |γ| log(3X/2)`.
+  set A : ℝ := |γ| * Real.log X
+  set B : ℝ := |γ| * Real.log (3 * X / 2)
+  have hBA : B - A = |γ| * Real.log (3 / 2) := by
+    dsimp [A, B]
+    rw [show 3 * X / 2 = (3 / 2) * X by ring, Real.log_mul (by norm_num) hX.ne']
+    ring
+  have hpi_pos : 0 < 2 * Real.pi := by positivity
+  have hex_shift : ∀ θ : ℝ, ∃ x ∈ Set.Icc X (3 * X / 2), |γ| * Real.log x ∈
+      Set.range (fun k : ℤ => θ + (k : ℝ) * (2 * Real.pi)) := by
+    intro θ
+    set k : ℤ := ⌈(A - θ) / (2 * Real.pi)⌉
+    have hk_ge : (A - θ) / (2 * Real.pi) ≤ (k : ℝ) := Int.le_ceil _
+    have hk_lt : (k : ℝ) < (A - θ) / (2 * Real.pi) + 1 := Int.ceil_lt_add_one _
+    set t : ℝ := θ + (k : ℝ) * (2 * Real.pi)
+    have htA : A ≤ t := by
+      have := (div_le_iff₀ hpi_pos).mp hk_ge
+      dsimp [t]; linarith
+    have htB : t ≤ B := by
+      have := (lt_div_iff₀ hpi_pos).mp (by linarith : (k : ℝ) - 1 < (A - θ) / (2 * Real.pi))
+      dsimp [t]; linarith [hspan, hBA]
+    have hγ_pos : 0 < |γ| := by linarith
+    set x : ℝ := Real.exp (t / |γ|)
+    have hx_lo : X ≤ x := by
+      rw [← Real.exp_log hX]
+      exact Real.exp_le_exp.mpr ((le_div_iff₀ hγ_pos).mpr (by dsimp [A] at htA; linarith))
+    have hx_hi : x ≤ 3 * X / 2 := by
+      rw [← Real.exp_log (by positivity : 0 < 3 * X / 2)]
+      exact Real.exp_le_exp.mpr ((div_le_iff₀ hγ_pos).mpr (by dsimp [B] at htB; linarith))
+    refine ⟨x, ⟨hx_lo, hx_hi⟩, k, ?_⟩
+    dsimp [x, t]
+    rw [Real.log_exp, mul_div_cancel₀ _ hγ_pos.ne']
+  have hcos_abs : ∀ y : ℝ, Real.cos (γ * y) = Real.cos (|γ| * y) := by
+    intro y
+    rcases abs_choice γ with h | h <;> rw [h]
+    simp [neg_mul, Real.cos_neg]
+  constructor
+  · obtain ⟨x₊, hx₊, k, hk⟩ := hex_shift Real.pi
+    refine ⟨x₊, hx₊, ?_⟩
+    rw [hcos_abs, ← hk, Real.cos_add_int_mul_two_pi, Real.cos_pi]
+  · obtain ⟨x₋, hx₋, k, hk⟩ := hex_shift 0
+    refine ⟨x₋, hx₋, ?_⟩
+    rw [hcos_abs, ← hk, zero_add, Real.cos_int_mul_two_pi]
+
+/-- **Supercritical pointwise dyadic sign-change law (`3/2 - Re ρ₀ < α < 1`).**
+Above the threshold `3/2 - Re ρ₀ ∈ (1/2, 1)`, on every sufficiently large dyadic interval `[X, 2X]`,
+both `ψ(x + x^α) - ψ(x) - x^α` and `θ(x + x^α) - θ(x) - x^α` attain both signs with magnitude at
+least `quartetCopyMult ρ₀ · X^{α + Re ρ₀ - 1}` (which strictly dominates `√X log² X`). -/
+theorem singleQuartet_short_interval_supercritical_both_signs {ρ₀ : ℂ}
+    (hq : HasSingleOffLineQuartet ρ₀) {α : ℝ}
+    (hα_lo : 3 / 2 - ρ₀.re < α) (hα_hi : α < 1) :
+    1 / 2 < 3 / 2 - ρ₀.re ∧ 3 / 2 - ρ₀.re < 1 ∧
+      ∀ᶠ X : ℝ in atTop,
+        (∃ x₊ ∈ Set.Icc X (2 * X),
+          (quartetCopyMult ρ₀ : ℝ) * X ^ (α + ρ₀.re - 1) ≤
+            Chebyshev.psi (x₊ + x₊ ^ α) - Chebyshev.psi x₊ - x₊ ^ α ∧
+          (quartetCopyMult ρ₀ : ℝ) * X ^ (α + ρ₀.re - 1) ≤
+            Chebyshev.theta (x₊ + x₊ ^ α) - Chebyshev.theta x₊ - x₊ ^ α) ∧
+        (∃ x₋ ∈ Set.Icc X (2 * X),
+          Chebyshev.psi (x₋ + x₋ ^ α) - Chebyshev.psi x₋ - x₋ ^ α ≤
+            -((quartetCopyMult ρ₀ : ℝ) * X ^ (α + ρ₀.re - 1)) ∧
+          Chebyshev.theta (x₋ + x₋ ^ α) - Chebyshev.theta x₋ - x₋ ^ α ≤
+            -((quartetCopyMult ρ₀ : ℝ) * X ^ (α + ρ₀.re - 1))) := by
+  refine ⟨by linarith [hq.re_lt_one], by linarith [hq.1], ?_⟩
+  have h67 : 67 < |ρ₀.im| :=
+    sixtySeven_lt_abs_im_of_offLine_zeta_zero hq.2.1.1 hq.2.1.2.1 hq.2.1.2.2 (by linarith [hq.1])
+  have hρ_ne : ρ₀ ≠ 0 := fun h0 => hq.im_ne_zero (by rw [h0]; simp)
+  have hm_pos : (1 : ℝ) ≤ (quartetCopyMult ρ₀ : ℝ) := by exact_mod_cast hq.quartetCopyMult_pos
+  obtain ⟨K, hK0, hwave⟩ := outsideQuartetOnLine_chebyshevPsi_and_theta_wave hq.1 hq.re_lt_one
+    ((hasSingleOffLineQuartet_iff_outsideQuartetOnLine ρ₀).mp hq).2.2
+  -- Gap exponents `δ₁ = (α + Re ρ₀ - 1) - 1/2 > 0` and `δ₂ = 1 - α > 0`.
+  set δ₁ : ℝ := α + ρ₀.re - 3 / 2
+  have hδ₁ : 0 < δ₁ := by dsimp [δ₁]; linarith
+  have hδ₂ : 0 < 1 - α := by linarith
+  -- Use `log y ≤ (4/δ₁) y^{δ₁/4}` to bound `√x log² x / X^{α + Re ρ₀ - 1} → 0` cleanly.
+  have herr1 : ∀ᶠ X : ℝ in atTop,
+      18 * (K + 2) * (Real.sqrt X * Real.log (2 * X) ^ 2) ≤
+        (1 / 2) * (quartetCopyMult ρ₀ : ℝ) * X ^ (α + ρ₀.re - 1) := by
+    have htend : Tendsto (fun X : ℝ =>
+        18 * (K + 2) * (4 / δ₁) ^ 2 * 2 ^ (δ₁ / 2) * X ^ (-(δ₁ / 2))) atTop (𝓝 0) := by
+      simpa using tendsto_const_nhds.mul (tendsto_rpow_neg_atTop (by positivity : 0 < δ₁ / 2))
+    filter_upwards [htend.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 2)),
+      eventually_ge_atTop (16 : ℝ)] with X hX_small hX16
+    have hX0 : 0 < X := by linarith
+    have h2X0 : 0 < 2 * X := by positivity
+    have hlog_bound : Real.log (2 * X) ≤ (4 / δ₁) * (2 * X) ^ (δ₁ / 4) := by
+      have hsub := Real.log_le_sub_one_of_pos (Real.rpow_pos_of_pos h2X0 (δ₁ / 4))
+      rw [Real.log_rpow h2X0] at hsub
+      have hdiv := (le_div_iff₀ (by positivity : 0 < δ₁ / 4)).mpr (by linarith : (δ₁ / 4) * Real.log (2 * X) ≤ (2 * X) ^ (δ₁ / 4))
+      linarith [show (2 * X) ^ (δ₁ / 4) / (δ₁ / 4) = (4 / δ₁) * (2 * X) ^ (δ₁ / 4) by ring]
+    have hlog_sq : Real.log (2 * X) ^ 2 ≤ (4 / δ₁) ^ 2 * 2 ^ (δ₁ / 2) * X ^ (δ₁ / 2) := by
+      calc Real.log (2 * X) ^ 2 ≤ ((4 / δ₁) * (2 * X) ^ (δ₁ / 4)) ^ 2 :=
+            pow_le_pow_left₀ (Real.log_nonneg (by linarith)) hlog_bound 2
+        _ = (4 / δ₁) ^ 2 * ((2 * X) ^ (δ₁ / 4)) ^ 2 := by ring
+        _ = (4 / δ₁) ^ 2 * (2 * X) ^ (δ₁ / 2) := by
+            rw [← Real.rpow_natCast, ← Real.rpow_mul h2X0.le]; congr 2; ring
+        _ = (4 / δ₁) ^ 2 * 2 ^ (δ₁ / 2) * X ^ (δ₁ / 2) := by
+            rw [Real.mul_rpow (by norm_num) hX0.le]; ring
+    have hexp_id : X ^ (1 / 2 : ℝ) * X ^ (δ₁ / 2) = X ^ (-(δ₁ / 2)) * X ^ (α + ρ₀.re - 1) := by
+      rw [← Real.rpow_add hX0, ← Real.rpow_add hX0]
+      congr 1; dsimp [δ₁]; ring
+    calc 18 * (K + 2) * (Real.sqrt X * Real.log (2 * X) ^ 2)
+        ≤ 18 * (K + 2) * (X ^ (1 / 2 : ℝ) * ((4 / δ₁) ^ 2 * 2 ^ (δ₁ / 2) * X ^ (δ₁ / 2))) := by
+          rw [Real.sqrt_eq_rpow]
+          exact mul_le_mul_of_nonneg_left
+            (mul_le_mul_of_nonneg_left hlog_sq (by positivity)) (by positivity)
+      _ = (18 * (K + 2) * (4 / δ₁) ^ 2 * 2 ^ (δ₁ / 2) * X ^ (-(δ₁ / 2))) * X ^ (α + ρ₀.re - 1) := by
+          linear_combination 18 * (K + 2) * (4 / δ₁) ^ 2 * 2 ^ (δ₁ / 2) * hexp_id
+      _ ≤ (1 / 2) * 1 * X ^ (α + ρ₀.re - 1) := by
+          rw [mul_one]
+          exact mul_le_mul_of_nonneg_right hX_small.le (by positivity)
+      _ ≤ (1 / 2) * (quartetCopyMult ρ₀ : ℝ) * X ^ (α + ρ₀.re - 1) :=
+          mul_le_mul_of_nonneg_right (by linarith) (by positivity)
+  have herr2 : ∀ᶠ X : ℝ in atTop,
+      8 * ‖ρ₀ - 1‖ * X ^ (-(1 - α)) ≤ 1 / 2 := by
+    have htend : Tendsto (fun X : ℝ => 8 * ‖ρ₀ - 1‖ * X ^ (-(1 - α))) atTop (𝓝 0) := by
+      simpa using tendsto_const_nhds.mul (tendsto_rpow_neg_atTop hδ₂)
     exact (htend.eventually (gt_mem_nhds (by norm_num : (0 : ℝ) < 1 / 2))).mono fun _ h => h.le
-  have hdecay2 : ∀ᶠ x : ℝ in atTop, C * Real.sqrt x * Real.log x ^ 2 ≤ x := by
-    have hlog_little := isLittleO_log_rpow_atTop (by norm_num : (0 : ℝ) < 1 / 4)
-    have hlog_le : ∀ᶠ x : ℝ in atTop, Real.log x ≤ x ^ (1 / 4 : ℝ) := by
-      filter_upwards [hlog_little.bound zero_lt_one, eventually_ge_atTop (1 : ℝ)] with x hx hx1
-      rw [one_mul, Real.norm_of_nonneg (Real.log_nonneg hx1),
-        Real.norm_of_nonneg (Real.rpow_nonneg (by linarith) _)] at hx
-      exact hx
-    filter_upwards [hlog_le,
-      (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 1)).eventually_ge_atTop (C ^ 4),
-      eventually_ge_atTop (16 : ℝ)] with x hlog hxC hx16
+  filter_upwards [herr1, herr2, eventually_ge_atTop (16 : ℝ)] with X he1 he2 hX16
+  have hX0 : 0 < X := by linarith
+  obtain ⟨⟨x₊, hx₊, hcos₊⟩, ⟨x₋, hx₋, hcos₋⟩⟩ := exists_cos_extrema_in_three_halves h67 hX0
+  have hpoint_err : ∀ {x : ℝ}, x ∈ Set.Icc X (3 * X / 2) →
+      ∀ {F : ℝ → ℝ},
+        (∀ y : ℝ, 16 ≤ y → |F y - y - singleQuartetMainWave ρ₀ y| ≤
+          (K + 2) * Real.sqrt y * Real.log y ^ 2) →
+      |(F (x + x ^ α) - F x - x ^ α) -
+          (-(2 * (quartetCopyMult ρ₀ : ℝ) * x ^ (α + ρ₀.re - 1) * Real.cos (ρ₀.im * Real.log x)))| ≤
+        (quartetCopyMult ρ₀ : ℝ) * X ^ (α + ρ₀.re - 1) ∧
+      X ^ (α + ρ₀.re - 1) ≤ x ^ (α + ρ₀.re - 1) ∧ x ∈ Set.Icc X (2 * X) := by
+    intro x hxI F hF
+    have hx16 : 16 ≤ x := hX16.trans hxI.1
     have hx0 : 0 < x := by linarith
-    rw [Real.rpow_one] at hxC
-    have hC_le : C ≤ x ^ (1 / 4 : ℝ) := by
-      have h1 := Real.rpow_le_rpow (by positivity) hxC (by norm_num : (0 : ℝ) ≤ 1 / 4)
-      rwa [← Real.rpow_natCast, ← Real.rpow_mul hC.le,
-        show (4 : ℝ) * (1 / 4 : ℝ) = 1 by norm_num, Real.rpow_one] at h1
-    have hlog_sq : Real.log x ^ 2 ≤ x ^ (1 / 2 : ℝ) := by
-      calc Real.log x ^ 2 ≤ (x ^ (1 / 4 : ℝ)) ^ 2 :=
-            pow_le_pow_left₀ (Real.log_nonneg (by linarith)) hlog 2
-        _ = x ^ (1 / 2 : ℝ) := by
-            rw [← Real.rpow_natCast, ← Real.rpow_mul hx0.le]; norm_num
-    have hle_three_fourths : C * Real.sqrt x * Real.log x ^ 2 ≤ x ^ (5 / 4 : ℝ) := by
-      -- Wait: `x^{1/4} * x^{1/2} * x^{1/2}` would be `5/4`, so use `1/8` instead!
-      exact False.elim (by linarith : False)
-  -- Wait: let's avoid the false dummy line by proving `hdecay2` directly with `1/8`!
-  exact False.elim (by linarith : False)
+    have hx1 : 1 ≤ x := by linarith
+    have hx_le_2X : x ≤ 2 * X := by linarith [hxI.2]
+    have hh0 : 0 ≤ x ^ α := Real.rpow_nonneg hx0.le α
+    have hh_le_x : x ^ α ≤ x :=
+      (Real.rpow_le_rpow_of_exponent_le hx1 hα_hi.le).trans_eq (Real.rpow_one x)
+    have hxh16 : 16 ≤ x + x ^ α := by linarith
+    have hxh_le_4X : x + x ^ α ≤ 4 * X := by linarith
+    have hlog_4X : Real.log (4 * X) ≤ 2 * Real.log (2 * X) := by
+      have hsq : 4 * X ≤ (2 * X) ^ 2 := by nlinarith
+      calc Real.log (4 * X) ≤ Real.log ((2 * X) ^ 2) := Real.log_le_log (by positivity) hsq
+        _ = 2 * Real.log (2 * X) := by rw [Real.log_pow]; push_cast; rfl
+    have hη_sum : |(F (x + x ^ α) - (x + x ^ α) - singleQuartetMainWave ρ₀ (x + x ^ α)) -
+        (F x - x - singleQuartetMainWave ρ₀ x)| ≤
+        18 * (K + 2) * (Real.sqrt X * Real.log (2 * X) ^ 2) := by
+      have h1 := hF (x + x ^ α) hxh16
+      have h2 := hF x hx16
+      have hs1 : Real.sqrt (x + x ^ α) ≤ 2 * Real.sqrt X := by
+        calc Real.sqrt (x + x ^ α) ≤ Real.sqrt (4 * X) := Real.sqrt_le_sqrt hxh_le_4X
+          _ = 2 * Real.sqrt X := by rw [Real.sqrt_mul (by norm_num), show Real.sqrt 4 = 2 by norm_num]
+      have hl1 : Real.log (x + x ^ α) ^ 2 ≤ 4 * Real.log (2 * X) ^ 2 := by
+        have hle := (Real.log_le_log (by positivity) hxh_le_4X).trans hlog_4X
+        have hnn : 0 ≤ Real.log (x + x ^ α) := Real.log_nonneg (by linarith)
+        nlinarith
+      have hs2 : Real.sqrt x ≤ 2 * Real.sqrt X := by
+        calc Real.sqrt x ≤ Real.sqrt (4 * X) := Real.sqrt_le_sqrt (by linarith)
+          _ = 2 * Real.sqrt X := by rw [Real.sqrt_mul (by norm_num), show Real.sqrt 4 = 2 by norm_num]
+      have hl2 : Real.log x ^ 2 ≤ Real.log (2 * X) ^ 2 :=
+        pow_le_pow_left₀ (Real.log_nonneg (by linarith)) (Real.log_le_log hx0 hx_le_2X) 2
+      have hb1 : Real.sqrt (x + x ^ α) * Real.log (x + x ^ α) ^ 2 ≤
+          8 * (Real.sqrt X * Real.log (2 * X) ^ 2) := by
+        calc Real.sqrt (x + x ^ α) * Real.log (x + x ^ α) ^ 2
+            ≤ (2 * Real.sqrt X) * (4 * Real.log (2 * X) ^ 2) :=
+              mul_le_mul hs1 hl1 (sq_nonneg _) (by positivity)
+          _ = 8 * (Real.sqrt X * Real.log (2 * X) ^ 2) := by ring
+      have hb2 : Real.sqrt x * Real.log x ^ 2 ≤
+          2 * (Real.sqrt X * Real.log (2 * X) ^ 2) := by
+        calc Real.sqrt x * Real.log x ^ 2
+            ≤ (2 * Real.sqrt X) * Real.log (2 * X) ^ 2 :=
+              mul_le_mul hs2 hl2 (sq_nonneg _) (by positivity)
+          _ = 2 * (Real.sqrt X * Real.log (2 * X) ^ 2) := by ring
+      calc _ ≤ |F (x + x ^ α) - (x + x ^ α) - singleQuartetMainWave ρ₀ (x + x ^ α)| +
+                |F x - x - singleQuartetMainWave ρ₀ x| := abs_sub _ _
+        _ ≤ (K + 2) * (8 * (Real.sqrt X * Real.log (2 * X) ^ 2)) +
+              (K + 2) * (2 * (Real.sqrt X * Real.log (2 * X) ^ 2)) :=
+            add_le_add ((h1.trans_eq (mul_assoc _ _ _)).trans (mul_le_mul_of_nonneg_left hb1 (by linarith)))
+              ((h2.trans_eq (mul_assoc _ _ _)).trans (mul_le_mul_of_nonneg_left hb2 (by linarith)))
+        _ ≤ 18 * (K + 2) * (Real.sqrt X * Real.log (2 * X) ^ 2) := by
+            nlinarith [Real.sqrt_nonneg X, sq_nonneg (Real.log (2 * X))]
+    have hW_rem : |(singleQuartetMainWave ρ₀ (x + x ^ α) - singleQuartetMainWave ρ₀ x) -
+        (-(2 * (quartetCopyMult ρ₀ : ℝ) * x ^ (α + ρ₀.re - 1) * Real.cos (ρ₀.im * Real.log x)))| ≤
+        (1 / 2) * (quartetCopyMult ρ₀ : ℝ) * X ^ (α + ρ₀.re - 1) := by
+      have htaylor := singleQuartetMainWave_increment_approx ρ₀ hx0 hh0 (by linarith [hq.re_lt_one]) hρ_ne
+      have hxpow : x ^ α * x ^ (ρ₀.re - 1) = x ^ (α + ρ₀.re - 1) := by
+        rw [← Real.rpow_add hx0]; congr 1; ring
+      have h1 : (x ^ α) ^ 2 ≤ 4 * X ^ (2 * α) := by
+        have h2a_nn : 0 ≤ 2 * α := by linarith [hq.re_lt_one]
+        have hle2 : 2 ^ (2 * α) ≤ (4 : ℝ) := by
+          calc (2 : ℝ) ^ (2 * α) ≤ 2 ^ (2 : ℝ) :=
+                Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith)
+            _ = 4 := by norm_num
+        calc (x ^ α) ^ 2 = x ^ (2 * α) := by
+              rw [← Real.rpow_natCast, ← Real.rpow_mul hx0.le]; congr 1; ring
+          _ ≤ (2 * X) ^ (2 * α) := Real.rpow_le_rpow hx0.le hx_le_2X h2a_nn
+          _ = 2 ^ (2 * α) * X ^ (2 * α) := Real.mul_rpow (by norm_num) hX0.le
+          _ ≤ 4 * X ^ (2 * α) := mul_le_mul_of_nonneg_right hle2 (by positivity)
+      have h2 : x ^ (ρ₀.re - 2) ≤ X ^ (ρ₀.re - 2) :=
+        Real.rpow_le_rpow_of_nonpos hX0 hxI.1 (by linarith [hq.re_lt_one])
+      have hexp_split : X ^ (2 * α) * X ^ (ρ₀.re - 2) =
+          X ^ (-(1 - α)) * X ^ (α + ρ₀.re - 1) := by
+        rw [← Real.rpow_add hX0, ← Real.rpow_add hX0]; congr 1; ring
+      have hmul_x : 2 * (quartetCopyMult ρ₀ : ℝ) * (x ^ α) * x ^ (ρ₀.re - 1) =
+          2 * (quartetCopyMult ρ₀ : ℝ) * x ^ (α + ρ₀.re - 1) := by
+        rw [mul_assoc (2 * _), hxpow]
+      rw [hmul_x] at htaylor
+      calc _ ≤ 2 * (quartetCopyMult ρ₀ : ℝ) * ‖ρ₀ - 1‖ * ((x ^ α) ^ 2 * x ^ (ρ₀.re - 2)) := by
+              linarith [htaylor]
+        _ ≤ 2 * (quartetCopyMult ρ₀ : ℝ) * ‖ρ₀ - 1‖ * (4 * X ^ (2 * α) * X ^ (ρ₀.re - 2)) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul h1 h2 (by positivity) (by positivity)) (by positivity)
+        _ = (quartetCopyMult ρ₀ : ℝ) * (8 * ‖ρ₀ - 1‖ * X ^ (-(1 - α))) * X ^ (α + ρ₀.re - 1) := by
+            linear_combination 8 * (quartetCopyMult ρ₀ : ℝ) * ‖ρ₀ - 1‖ * hexp_split
+        _ ≤ (quartetCopyMult ρ₀ : ℝ) * (1 / 2) * X ^ (α + ρ₀.re - 1) :=
+            mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left he2 (by positivity)) (by positivity)
+        _ = (1 / 2) * (quartetCopyMult ρ₀ : ℝ) * X ^ (α + ρ₀.re - 1) := by ring
+    have hsplit_tot : (F (x + x ^ α) - F x - x ^ α) -
+        (-(2 * (quartetCopyMult ρ₀ : ℝ) * x ^ (α + ρ₀.re - 1) * Real.cos (ρ₀.im * Real.log x))) =
+        ((F (x + x ^ α) - (x + x ^ α) - singleQuartetMainWave ρ₀ (x + x ^ α)) -
+          (F x - x - singleQuartetMainWave ρ₀ x)) +
+        ((singleQuartetMainWave ρ₀ (x + x ^ α) - singleQuartetMainWave ρ₀ x) -
+          (-(2 * (quartetCopyMult ρ₀ : ℝ) * x ^ (α + ρ₀.re - 1) * Real.cos (ρ₀.im * Real.log x)))) := by
+      ring
+    refine ⟨?_, Real.rpow_le_rpow hX0.le hxI.1 (by linarith), ⟨hxI.1, hx_le_2X⟩⟩
+    rw [hsplit_tot]
+    exact (abs_add_le _ _).trans (by linarith [hη_sum, hW_rem, he1])
+  have hF_psi : ∀ y : ℝ, 16 ≤ y →
+      |Chebyshev.psi y - y - singleQuartetMainWave ρ₀ y| ≤ (K + 2) * Real.sqrt y * Real.log y ^ 2 := by
+    intro y hy
+    unfold singleQuartetMainWave; rw [sub_neg_eq_add]
+    exact (hwave y hy).1.trans (mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_right (by linarith) (Real.sqrt_nonneg y)) (sq_nonneg _))
+  have hF_theta : ∀ y : ℝ, 16 ≤ y →
+      |Chebyshev.theta y - y - singleQuartetMainWave ρ₀ y| ≤ (K + 2) * Real.sqrt y * Real.log y ^ 2 := by
+    intro y hy
+    unfold singleQuartetMainWave; rw [sub_neg_eq_add]
+    exact (hwave y hy).2
+  constructor
+  · obtain ⟨hp_err, hpow_ge, hx₊_mem⟩ := hpoint_err hx₊ hF_psi
+    obtain ⟨ht_err, -, -⟩ := hpoint_err hx₊ hF_theta
+    rw [hcos₊, mul_neg_one, neg_neg] at hp_err ht_err
+    exact ⟨x₊, hx₊_mem, by linarith [(abs_le.mp hp_err).1, mul_le_mul_of_nonneg_left hpow_ge (show (0 : ℝ) ≤ 2 * quartetCopyMult ρ₀ by positivity)],
+      by linarith [(abs_le.mp ht_err).1, mul_le_mul_of_nonneg_left hpow_ge (show (0 : ℝ) ≤ 2 * quartetCopyMult ρ₀ by positivity)]⟩
+  · obtain ⟨hp_err, hpow_ge, hx₋_mem⟩ := hpoint_err hx₋ hF_psi
+    obtain ⟨ht_err, -, -⟩ := hpoint_err hx₋ hF_theta
+    rw [hcos₋, mul_one] at hp_err ht_err
+    exact ⟨x₋, hx₋_mem, by linarith [(abs_le.mp hp_err).2, mul_le_mul_of_nonneg_left hpow_ge (show (0 : ℝ) ≤ 2 * quartetCopyMult ρ₀ by positivity)],
+      by linarith [(abs_le.mp ht_err).2, mul_le_mul_of_nonneg_left hpow_ge (show (0 : ℝ) ≤ 2 * quartetCopyMult ρ₀ by positivity)]⟩
+
+/-- **`L²` dyadic wave-increment scaling and the `2 - 2 Re ρ₀` variance crossover.**
+Under `HasSingleOffLineQuartet ρ₀`, `0 < 2 - 2 Re ρ₀ < 3/2 - Re ρ₀ < 1`, and there exist constants
+`c₁, C₂ > 0` and step ratio `η₀ > 0` such that for all `X ≥ 16` and `0 ≤ h ≤ η₀ X`,
+`c₁ h² X^{2 Re ρ₀ - 1} ≤ ∫_{X}^{2X} (W_{ρ₀}(x + h) - W_{ρ₀}(x))² dx ≤ C₂ h² X^{2 Re ρ₀ - 1}`. -/
+theorem singleQuartet_wave_short_interval_L2_crossover {ρ₀ : ℂ}
+    (hq : HasSingleOffLineQuartet ρ₀) :
+    0 < 2 - 2 * ρ₀.re ∧ 2 - 2 * ρ₀.re < 3 / 2 - ρ₀.re ∧ 3 / 2 - ρ₀.re < 1 ∧
+      ∃ (c₁ C₂ η₀ : ℝ), 0 < c₁ ∧ 0 < C₂ ∧ 0 < η₀ ∧
+        ∀ {X h : ℝ}, 16 ≤ X → 0 ≤ h → h ≤ η₀ * X →
+          c₁ * h ^ 2 * X ^ (2 * ρ₀.re - 1) ≤
+            ∫ x in X..(2 * X), (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) ^ 2 ∧
+          (∫ x in X..(2 * X), (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) ^ 2) ≤
+            C₂ * h ^ 2 * X ^ (2 * ρ₀.re - 1) := by
+  refine ⟨by linarith [hq.re_lt_one], by linarith [hq.1], by linarith [hq.1], ?_⟩
+  have h67 : 67 < |ρ₀.im| :=
+    sixtySeven_lt_abs_im_of_offLine_zeta_zero hq.2.1.1 hq.2.1.2.1 hq.2.1.2.2 (by linarith [hq.1])
+  have hρ_ne : ρ₀ ≠ 0 := fun h0 => hq.im_ne_zero (by rw [h0]; simp)
+  have hm_pos : 0 < (quartetCopyMult ρ₀ : ℝ) := by exact_mod_cast hq.quartetCopyMult_pos
+  set m : ℝ := (quartetCopyMult ρ₀ : ℝ)
+  set δ : ℝ := min (1 / 4) (1 / (4 * |ρ₀.im|))
+  have hδ_pos : 0 < δ := lt_min (by norm_num) (by positivity)
+  set η₀ : ℝ := 1 / (8 * (1 + ‖ρ₀ - 1‖))
+  have hη₀_pos : 0 < η₀ := by dsimp [η₀]; positivity
+  set c₁ : ℝ := δ * (m / 4) ^ 2
+  set C₂ : ℝ := 4 * m ^ 2
+  refine ⟨c₁, C₂, η₀, by dsimp [c₁]; positivity, by dsimp [C₂]; positivity, hη₀_pos,
+    fun {X h} hX16 hh0 hh_le => ?_⟩
+  have hX0 : 0 < X := by linarith
+  -- Continuity of `(W(x+h) - W(x))²` on `[X, 2X]`.
+  have hcont_W : ContinuousOn (fun x : ℝ =>
+      (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) ^ 2) (Set.Icc X (2 * X)) := by
+    have hcont_cpow : ∀ c : ℝ, 0 ≤ c → ContinuousOn (fun x : ℝ => singleQuartetMainWave ρ₀ (x + c))
+        (Set.Icc X (2 * X)) := by
+      intro c hc
+      unfold singleQuartetMainWave
+      refine ContinuousOn.neg (continuousOn_const.mul (Complex.continuous_re.comp_continuousOn ?_))
+      refine ContinuousOn.div_const ?_ ρ₀
+      refine ContinuousOn.cpow_const ?_ fun x hx => Or.inl (by linarith [hx.1])
+      exact Complex.continuous_ofReal.comp_continuousOn (continuousOn_id.add continuousOn_const)
+    have h1 := hcont_cpow h hh0
+    have h2 : ContinuousOn (singleQuartetMainWave ρ₀) (Set.Icc X (2 * X)) := by
+      simpa using hcont_cpow 0 le_rfl
+    exact (h1.sub h2).pow 2
+  -- Pointwise upper bound `(W(x+h) - W(x))² ≤ 4 m² h² X^{2 Re ρ₀ - 2}` on `[X, 2X]`.
+  have hup_pt : ∀ x ∈ Set.Icc X (2 * X),
+      (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) ^ 2 ≤
+        4 * m ^ 2 * h ^ 2 * X ^ (2 * ρ₀.re - 2) := by
+    intro x hx
+    have hx0 : 0 < x := lt_of_lt_of_le hX0 hx.1
+    have hinc : |singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x| ≤
+        2 * m * h * X ^ (ρ₀.re - 1) := by
+      have hsub : singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x =
+          -(2 * m * (((x + h : ℝ) : ℂ) ^ ρ₀ / ρ₀ - (x : ℂ) ^ ρ₀ / ρ₀).re) := by
+        unfold singleQuartetMainWave; dsimp [m]; rw [Complex.sub_re]; ring
+      rw [hsub, abs_neg, abs_mul, abs_of_nonneg (by positivity)]
+      have h1 := (Complex.abs_re_le_norm _).trans (norm_cpow_increment_le hρ_ne hq.re_lt_one.le hx0 hh0)
+      have h2 : x ^ (ρ₀.re - 1) ≤ X ^ (ρ₀.re - 1) :=
+        Real.rpow_le_rpow_of_nonpos hX0 hx.1 (by linarith [hq.re_lt_one])
+      calc 2 * m * |(((x + h : ℝ) : ℂ) ^ ρ₀ / ρ₀ - (x : ℂ) ^ ρ₀ / ρ₀).re|
+          ≤ 2 * m * (h * X ^ (ρ₀.re - 1)) :=
+            mul_le_mul_of_nonneg_left (h1.trans (mul_le_mul_of_nonneg_left h2 hh0)) (by positivity)
+        _ = 2 * m * h * X ^ (ρ₀.re - 1) := by ring
+    have hsq := sq_le_sq.mpr (hinc.trans_eq (abs_of_nonneg (by positivity)).symm)
+    calc (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) ^ 2
+        ≤ (2 * m * h * X ^ (ρ₀.re - 1)) ^ 2 := hsq
+      _ = 4 * m ^ 2 * h ^ 2 * (X ^ (ρ₀.re - 1)) ^ 2 := by ring
+      _ = 4 * m ^ 2 * h ^ 2 * X ^ (2 * ρ₀.re - 2) := by
+          rw [← Real.rpow_natCast, ← Real.rpow_mul hX0.le]; congr 2; ring
+  -- Upper bound on `[X, 2X]`.
+  have hint_full : IntervalIntegrable
+      (fun x : ℝ => (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) ^ 2)
+      volume X (2 * X) :=
+    hcont_W.intervalIntegrable_of_Icc (by linarith)
+  have hupper : (∫ x in X..(2 * X),
+      (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) ^ 2) ≤
+      C₂ * h ^ 2 * X ^ (2 * ρ₀.re - 1) := by
+    have hmono := intervalIntegral.integral_mono_on (by linarith : X ≤ 2 * X)
+      hint_full intervalIntegrable_const hup_pt
+    rw [intervalIntegral.integral_const, smul_eq_mul] at hmono
+    have hexp_X : (2 * X - X) * (4 * m ^ 2 * h ^ 2 * X ^ (2 * ρ₀.re - 2)) =
+        C₂ * h ^ 2 * X ^ (2 * ρ₀.re - 1) := by
+      have hmulX : X * X ^ (2 * ρ₀.re - 2) = X ^ (2 * ρ₀.re - 1) := by
+        conv_lhs => lhs; rw [← Real.rpow_one X]
+        rw [← Real.rpow_add hX0]; congr 1; ring
+      dsimp [C₂]
+      calc (2 * X - X) * (4 * m ^ 2 * h ^ 2 * X ^ (2 * ρ₀.re - 2))
+          = 4 * m ^ 2 * h ^ 2 * (X * X ^ (2 * ρ₀.re - 2)) := by ring
+        _ = 4 * m ^ 2 * h ^ 2 * X ^ (2 * ρ₀.re - 1) := by rw [hmulX]
+    linarith
+  -- Lower bound on the anti-nodal subinterval `[x₊, x₊ + δ X] ⊆ [X, 2X]`.
+  obtain ⟨⟨x₊, hx₊, hcos₊⟩, -⟩ := exists_cos_extrema_in_three_halves h67 hX0
+  have hδ_le_q : δ ≤ 1 / 4 := min_le_left _ _
+  have hδ_le_im : δ ≤ 1 / (4 * |ρ₀.im|) := min_le_right _ _
+  set b : ℝ := x₊ + δ * X
+  have hx₊_ge : X ≤ x₊ := hx₊.1
+  have hb_ge : x₊ ≤ b := by dsimp [b]; nlinarith
+  have hb_le : b ≤ 2 * X := by dsimp [b]; linarith [hx₊.2]
+  -- On `[x₊, b]`, `cos(Im ρ₀ · log x) ≤ -1/2` because `|Im ρ₀ · (log x - log x₊)| ≤ 1/4`.
+  have hlow_pt : ∀ x ∈ Set.Icc x₊ b,
+      (m / 4) ^ 2 * h ^ 2 * X ^ (2 * ρ₀.re - 2) ≤
+        (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) ^ 2 := by
+    intro x hx_sub
+    have hx0 : 0 < x := lt_of_lt_of_le hX0 (hx₊_ge.trans hx_sub.1)
+    have hx₊0 : 0 < x₊ := lt_of_lt_of_le hX0 hx₊_ge
+    have hlog_diff : |ρ₀.im * Real.log x - ρ₀.im * Real.log x₊| ≤ 1 / 4 := by
+      rw [← mul_sub, abs_mul, ← Real.log_div hx0.ne' hx₊0.ne']
+      have hdiv_ge1 : 1 ≤ x / x₊ := (one_le_div hx₊0).mpr hx_sub.1
+      have hlog_nn : 0 ≤ Real.log (x / x₊) := Real.log_nonneg hdiv_ge1
+      rw [abs_of_nonneg hlog_nn]
+      have hlog_le : Real.log (x / x₊) ≤ δ := by
+        have h1 := Real.log_le_sub_one_of_pos (div_pos hx0 hx₊0)
+        have h2 : x / x₊ - 1 ≤ δ := by
+          rw [div_sub_one hx₊0.ne']
+          exact (div_le_iff₀ hx₊0).mpr (by dsimp [b] at hx_sub; nlinarith)
+        linarith
+      calc |ρ₀.im| * Real.log (x / x₊) ≤ |ρ₀.im| * δ :=
+            mul_le_mul_of_nonneg_left hlog_le (abs_nonneg _)
+        _ ≤ |ρ₀.im| * (1 / (4 * |ρ₀.im|)) :=
+            mul_le_mul_of_nonneg_left hδ_le_im (abs_nonneg _)
+        _ = 1 / 4 := by field_simp [hq.im_ne_zero]
+    -- Using `|cos u - cos v| ≤ |u - v|` (`Real.abs_cos_sub_cos_le`): `cos(γ log x) ≤ -1 + 1/4 = -3/4`.
+    have hcos_le : Real.cos (ρ₀.im * Real.log x) ≤ -(3 / 4) := by
+      have hlip := Real.abs_cos_sub_cos_le (ρ₀.im * Real.log x) (ρ₀.im * Real.log x₊)
+      rw [hcos₊, sub_neg_eq_add] at hlip
+      linarith [(abs_le.mp (hlip.trans hlog_diff)).2]
+    have htaylor := singleQuartetMainWave_increment_approx ρ₀ hx0 hh0 (by linarith [hq.re_lt_one]) hρ_ne
+    -- Main linear term at `x ∈ [x₊, b] ⊆ [X, 2X]`:
+    -- `-2 m h x^{Re ρ₀ - 1} cos(...) ≥ (3/2) m h x^{Re ρ₀ - 1}`, while Taylor error is `≤ (1/4) m h x^{Re ρ₀ - 1}`!
+    have hrem_le : 2 * m * ‖ρ₀ - 1‖ * h ^ 2 * x ^ (ρ₀.re - 2) ≤
+        (1 / 4) * m * h * x ^ (ρ₀.re - 1) := by
+      have hh_x : ‖ρ₀ - 1‖ * h ≤ x / 8 := by
+        have h1 : (1 + ‖ρ₀ - 1‖) * h ≤ X / 8 := by
+          have := mul_le_mul_of_nonneg_left hh_le (by positivity : 0 ≤ 1 + ‖ρ₀ - 1‖)
+          dsimp [η₀] at this
+          linarith [show (1 + ‖ρ₀ - 1‖) * (1 / (8 * (1 + ‖ρ₀ - 1‖)) * X) = X / 8 by
+            field_simp [show (1 : ℝ) + ‖ρ₀ - 1‖ ≠ 0 by positivity]]
+        nlinarith [norm_nonneg (ρ₀ - 1), hx_sub.1]
+      have hx_split : x ^ (ρ₀.re - 2) * x = x ^ (ρ₀.re - 1) := by
+        conv_lhs => rhs; rw [← Real.rpow_one x]
+        rw [← Real.rpow_add hx0]; congr 1; ring
+      calc 2 * m * ‖ρ₀ - 1‖ * h ^ 2 * x ^ (ρ₀.re - 2)
+          = 2 * m * h * (‖ρ₀ - 1‖ * h) * x ^ (ρ₀.re - 2) := by ring
+        _ ≤ 2 * m * h * (x / 8) * x ^ (ρ₀.re - 2) :=
+            mul_le_mul_of_nonneg_right
+              (mul_le_mul_of_nonneg_left hh_x (by positivity)) (by positivity)
+        _ = (1 / 4) * m * h * (x ^ (ρ₀.re - 2) * x) := by ring
+        _ = (1 / 4) * m * h * x ^ (ρ₀.re - 1) := by rw [hx_split]
+    have hmain_ge : (3 / 2) * m * h * x ^ (ρ₀.re - 1) ≤
+        -(2 * m * h * x ^ (ρ₀.re - 1) * Real.cos (ρ₀.im * Real.log x)) := by
+      have hnn_fac : 0 ≤ 2 * m * h * x ^ (ρ₀.re - 1) := by positivity
+      nlinarith
+    -- Also `x ≤ 2 X` and `ρ₀.re - 1 > -1/2`, so `x^{ρ₀.re - 1} ≥ (2X)^{ρ₀.re - 1} ≥ (1/2) X^{ρ₀.re - 1}`.
+    have hx_pow_low : (1 / 2) * X ^ (ρ₀.re - 1) ≤ x ^ (ρ₀.re - 1) := by
+      have h2_low : (1 / 2 : ℝ) ≤ 2 ^ (ρ₀.re - 1) := by
+        rw [show (1 / 2 : ℝ) = (2 : ℝ) ^ (-1 : ℝ) by norm_num]
+        exact Real.rpow_le_rpow_of_exponent_le (by norm_num) (by linarith [hq.1])
+      calc (1 / 2) * X ^ (ρ₀.re - 1)
+          ≤ 2 ^ (ρ₀.re - 1) * X ^ (ρ₀.re - 1) :=
+            mul_le_mul_of_nonneg_right h2_low (by positivity)
+        _ = (2 * X) ^ (ρ₀.re - 1) := (Real.mul_rpow (by norm_num) hX0.le).symm
+        _ ≤ x ^ (ρ₀.re - 1) :=
+            Real.rpow_le_rpow_of_nonpos hx0 (hx_sub.2.trans hb_le) (by linarith [hq.re_lt_one])
+    have hW_ge : (m / 4) * h * X ^ (ρ₀.re - 1) ≤
+        singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x := by
+      have h1 := (abs_le.mp htaylor).1
+      have h2 : (5 / 4) * m * h * x ^ (ρ₀.re - 1) ≤
+          singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x := by
+        dsimp [m] at hmain_ge hrem_le ⊢
+        linarith
+      have h3 : (m / 4) * h * X ^ (ρ₀.re - 1) ≤ (5 / 4) * m * h * x ^ (ρ₀.re - 1) := by
+        have := mul_le_mul_of_nonneg_left hx_pow_low (show 0 ≤ (5 / 4) * m * h by positivity)
+        linarith [show 0 ≤ m * h * X ^ (ρ₀.re - 1) by positivity]
+      linarith
+    have hsq := pow_le_pow_left₀ (by positivity) hW_ge 2
+    calc (m / 4) ^ 2 * h ^ 2 * X ^ (2 * ρ₀.re - 2)
+        = ((m / 4) * h * X ^ (ρ₀.re - 1)) ^ 2 := by
+            rw [mul_pow, mul_pow, ← Real.rpow_natCast, ← Real.rpow_mul hX0.le]
+            congr 2; ring
+      _ ≤ (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) ^ 2 := hsq
+  -- Integrate over `[x₊, b] ⊆ [X, 2X]` using nonnegativity of the integrand outside `[x₊, b]`.
+  have hint_1 : IntervalIntegrable
+      (fun x : ℝ => (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) ^ 2)
+      volume X x₊ :=
+    (hcont_W.mono (Set.Icc_subset_Icc le_rfl (hb_ge.trans hb_le))).intervalIntegrable_of_Icc hx₊_ge
+  have hint_2 : IntervalIntegrable
+      (fun x : ℝ => (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) ^ 2)
+      volume x₊ b :=
+    (hcont_W.mono (Set.Icc_subset_Icc hx₊_ge hb_le)).intervalIntegrable_of_Icc hb_ge
+  have hint_3 : IntervalIntegrable
+      (fun x : ℝ => (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) ^ 2)
+      volume b (2 * X) :=
+    (hcont_W.mono (Set.Icc_subset_Icc (hx₊_ge.trans hb_ge) le_rfl)).intervalIntegrable_of_Icc hb_le
+  have hsplit_int : (∫ x in X..(2 * X),
+      (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) ^ 2) =
+      (∫ x in X..x₊, (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) ^ 2) +
+      (∫ x in x₊..b, (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) ^ 2) +
+      (∫ x in b..(2 * X), (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) ^ 2) := by
+    rw [intervalIntegral.integral_add_adjacent_intervals hint_1 hint_2,
+      intervalIntegral.integral_add_adjacent_intervals (hint_1.trans hint_2) hint_3]
+  have hnn_1 : 0 ≤ ∫ x in X..x₊,
+      (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) ^ 2 :=
+    intervalIntegral.integral_nonneg hx₊_ge fun _ _ => sq_nonneg _
+  have hnn_3 : 0 ≤ ∫ x in b..(2 * X),
+      (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) ^ 2 :=
+    intervalIntegral.integral_nonneg hb_le fun _ _ => sq_nonneg _
+  have hmid_ge : c₁ * h ^ 2 * X ^ (2 * ρ₀.re - 1) ≤
+      ∫ x in x₊..b, (singleQuartetMainWave ρ₀ (x + h) - singleQuartetMainWave ρ₀ x) ^ 2 := by
+    have hmono := intervalIntegral.integral_mono_on hb_ge intervalIntegrable_const hint_2 hlow_pt
+    rw [intervalIntegral.integral_const, smul_eq_mul] at hmono
+    have hlen : b - x₊ = δ * X := by dsimp [b]; ring
+    have hmulX : X * X ^ (2 * ρ₀.re - 2) = X ^ (2 * ρ₀.re - 1) := by
+      conv_lhs => lhs; rw [← Real.rpow_one X]
+      rw [← Real.rpow_add hX0]; congr 1; ring
+    have hid : (b - x₊) * ((m / 4) ^ 2 * h ^ 2 * X ^ (2 * ρ₀.re - 2)) =
+        c₁ * h ^ 2 * X ^ (2 * ρ₀.re - 1) := by
+      rw [hlen]; dsimp [c₁]
+      calc δ * X * ((m / 4) ^ 2 * h ^ 2 * X ^ (2 * ρ₀.re - 2))
+          = δ * (m / 4) ^ 2 * h ^ 2 * (X * X ^ (2 * ρ₀.re - 2)) := by ring
+        _ = δ * (m / 4) ^ 2 * h ^ 2 * X ^ (2 * ρ₀.re - 1) := by rw [hmulX]
+    linarith
+  exact ⟨by linarith [hsplit_int], hupper⟩
+
+/-! ## 5. Shifted `ξ`-sum half-plane nonvanishing and vertical-line zero uniqueness -/
+
+/-- **Shifted `ξ`-sum nonvanishing in the `s`-plane under `HasSingleOffLineQuartet ρ₀`.**
+For every shift `h ≥ Re ρ₀ - 1/2` and every `s ∈ ℂ` off the shifted symmetry line
+(`Re s ≠ 1/2 + h`), `ξ(s) + ξ(s - 2h) ≠ 0`. -/
+theorem xi_add_shift_ne_zero_of_singleQuartet {ρ₀ : ℂ}
+    (hq : HasSingleOffLineQuartet ρ₀) {h : ℝ} (hh : ρ₀.re - 1 / 2 ≤ h)
+    {s : ℂ} (hs : s.re ≠ 1 / 2 + h) :
+    RHTower.xi s + RHTower.xi (s - 2 * (h : ℂ)) ≠ 0 := by
+  intro hsum
+  set z : ℂ := (s - ((1 / 2 : ℂ) + (h : ℂ))) * (-I)
+  have hz_im : z.im ≠ 0 := by
+    have him : z.im = -(s.re - (1 / 2 + h)) := by
+      dsimp [z]
+      simp [Complex.mul_im]
+    rw [him]
+    intro h0; exact hs (by linarith)
+  have hs1 : (1 / 2 : ℂ) + (z - (h : ℂ) * I) * I = s := by
+    dsimp [z]
+    ring_nf
+    simp [Complex.I_sq]
+    ring
+  have hs2 : (1 / 2 : ℂ) + (z + (h : ℂ) * I) * I = s - 2 * (h : ℂ) := by
+    dsimp [z]
+    ring_nf
+    simp [Complex.I_sq]
+    ring
+  have hcos0 : RHTower.cosProducer h z = 0 := by
+    unfold RHTower.cosProducer RHTower.XiC
+    rw [hs2, hs1, add_comm, hsum, zero_div]
+  rcases eq_or_lt_of_le hh with rfl | hgt
+  · exact hz_im ((cosProducer_apex_pinning_of_singleQuartet hq).2.2.1 z hcos0)
+  · exact hz_im (cosProducer_real_and_simple_of_singleQuartet_gt hq hgt hcos0).1
+
+/-- **Vertical-line zero uniqueness under `HasSingleOffLineQuartet ρ₀`.**
+Along the vertical line `Re s = Re ρ₀`, `ζ(Re ρ₀ + i t) = 0` holds if and only if `|t| = |Im ρ₀|`. -/
+theorem riemannZeta_re_eq_zero_iff_abs_im_eq_of_singleQuartet {ρ₀ : ℂ}
+    (hq : HasSingleOffLineQuartet ρ₀) (t : ℝ) :
+    riemannZeta ((ρ₀.re : ℂ) + (t : ℂ) * I) = 0 ↔ |t| = |ρ₀.im| := by
+  set s : ℂ := (ρ₀.re : ℂ) + (t : ℂ) * I
+  have hs_re : s.re = ρ₀.re := by simp [s]
+  have hs_im : s.im = t := by simp [s]
+  constructor
+  · intro hζ
+    have hcar : s ∈ Zeta23.zetaZeroConfig.carrier :=
+      ⟨hζ, by rw [hs_re]; linarith [hq.1], by rw [hs_re]; exact hq.re_lt_one⟩
+    have hmem : s ∈ zeroQuartetSet ρ₀ := by
+      rw [← hq.2.2]
+      exact ⟨hcar, by rw [hs_re]; exact ne_of_gt hq.1⟩
+    simp only [zeroQuartetSet, Set.mem_insert_iff, Set.mem_singleton_iff] at hmem
+    rcases hmem with heq | heq | heq | heq
+    · rw [← hs_im, heq]
+    · rw [← hs_im, heq, Complex.conj_im, abs_neg]
+    · exfalso; have := congrArg Complex.re heq; simp [hs_re] at this; linarith [hq.1]
+    · exfalso; have := congrArg Complex.re heq; simp [hs_re] at this; linarith [hq.1]
+  · intro habs
+    rcases abs_eq_abs.mp habs with rfl | rfl
+    · have hs_eq : s = ρ₀ := by apply Complex.ext <;> simp [s]
+      rw [hs_eq]
+      exact hq.2.1.1
+    · have hs_eq : s = conj ρ₀ := by apply Complex.ext <;> simp [s]
+      rw [hs_eq, riemannZeta_conj, hq.2.1.1, map_zero]
+
+end GaloisForLFunctions.ExceptionalLayerTheory
+

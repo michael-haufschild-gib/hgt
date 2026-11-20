@@ -433,24 +433,53 @@ theorem hasDerivAt_confiningHalfLineGroundEnergy_of_minimizer
   rw [criticalAliasCoefficient_inv]
   field_simp [ht.ne']
 
-/-- Optimal local Lipschitz response of the sign-aligned minimizer (squared distance
-`O(|a(S) - a(R)|²)` in `L²(e^{-8u})`), its eighth-exponential mass, and its polar pairing
-around any positive confinement ratio `R > 0`. -/
-theorem IsHalfLineEnergyMinimizer.minimizer_lipschitz_stability
-    {R : ℝ} (hR : 0 < R) {F : ℝ → ℝ} (hF : IsHalfLineEnergyMinimizer R F) :
-    ∃ δ L : ℝ, 0 < δ ∧ 0 ≤ L ∧ ∀ S : ℝ, 0 < S →
-      |criticalAliasCoefficient S - criticalAliasCoefficient R| ≤ δ →
-      ∀ H : ℝ → ℝ, IsHalfLineEnergyMinimizer S H →
-        ∃ σ : ℝ, (σ = 1 ∨ σ = -1) ∧
-          (∫ u, (H u - σ * F u) ^ 2 * Real.exp (-(8 * u))) ≤
-            L ^ 2 * (criticalAliasCoefficient S - criticalAliasCoefficient R) ^ 2 ∧
-          |(∫ u, H u ^ 2 * Real.exp (-(8 * u))) -
-            (∫ u, F u ^ 2 * Real.exp (-(8 * u)))| ≤
-              L * |criticalAliasCoefficient S - criticalAliasCoefficient R| ∧
-          |(∫ u, H u * polarSourceProfile u) -
-            σ * (∫ u, F u * polarSourceProfile u)| ≤
-              L * |criticalAliasCoefficient S - criticalAliasCoefficient R| := by
-  obtain ⟨γ, hγ, hgap⟩ := hF.controls_neutralPart hR
+/-- Response constant `(1 + 3w + √(2J))(1 + 6(1 + w)w/γ)` of the Lipschitz stability estimate,
+where `J = ∫ (e^{-|u|} polarSourceProfile u)²` is the fixed polar weight mass. -/
+def confiningResponseConstant (γ w : ℝ) : ℝ :=
+  (1 + 3 * w + Real.sqrt (2 * ∫ u, (Real.exp (-|u|) * polarSourceProfile u) ^ 2)) *
+    (1 + 6 * (1 + w) * w / γ)
+
+theorem confiningResponseConstant_nonneg {γ w : ℝ} (hγ : 0 < γ) (hw : 0 ≤ w) :
+    0 ≤ confiningResponseConstant γ w := by
+  unfold confiningResponseConstant
+  positivity
+
+theorem confiningResponseConstant_mono {γ w w' : ℝ} (hγ : 0 < γ) (hw : 0 ≤ w) (hww : w ≤ w') :
+    confiningResponseConstant γ w ≤ confiningResponseConstant γ w' := by
+  unfold confiningResponseConstant
+  have hJ := Real.sqrt_nonneg (2 * ∫ u, (Real.exp (-|u|) * polarSourceProfile u) ^ 2)
+  have hprod : (1 + w) * w ≤ (1 + w') * w' := by nlinarith only [hw, hww]
+  have h2 : 1 + 6 * (1 + w) * w / γ ≤ 1 + 6 * (1 + w') * w' / γ := by
+    have h := div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hprod (by norm_num : (0 : ℝ) ≤ 6))
+      hγ.le
+    rw [mul_assoc 6 (1 + w), mul_assoc 6 (1 + w')]
+    linarith only [h]
+  have h2pos : 0 ≤ 1 + 6 * (1 + w) * w / γ := by positivity
+  exact mul_le_mul (by linarith only [hww]) h2 h2pos (by linarith only [hJ, hw, hww])
+
+/-- Quantitative Lipschitz response around a ratio `R` from an explicit neutral-part control
+constant `γ` of the minimizer `F`: the admissible radius `γ / (8w(1 + w))` and the response
+constant depend only on `γ` and on the exponential mass `w` of `F`. -/
+theorem IsHalfLineEnergyMinimizer.minimizer_lipschitz_stability_of_control
+    {R : ℝ} {F : ℝ → ℝ} (hF : IsHalfLineEnergyMinimizer R F) {γ : ℝ} (hγ : 0 < γ)
+    (hgap : ∀ {G : ℝ → ℝ}, CriticalHalfLineEnergyDomain G →
+      γ * (∫ u, criticalHalfLineNeutralPart F G u ^ 2 * Real.exp (-(8 * u))) ≤
+        confiningShiftedEnergy R G)
+    {S : ℝ} (hS : 0 < S)
+    (hsmall : |criticalAliasCoefficient S - criticalAliasCoefficient R| ≤
+      γ / (8 * (∫ u, F u ^ 2 * Real.exp (-(8 * u))) *
+        (1 + ∫ u, F u ^ 2 * Real.exp (-(8 * u)))))
+    {H : ℝ → ℝ} (hH : IsHalfLineEnergyMinimizer S H) :
+    ∃ σ : ℝ, (σ = 1 ∨ σ = -1) ∧
+      (∫ u, (H u - σ * F u) ^ 2 * Real.exp (-(8 * u))) ≤
+        confiningResponseConstant γ (∫ u, F u ^ 2 * Real.exp (-(8 * u))) ^ 2 *
+          (criticalAliasCoefficient S - criticalAliasCoefficient R) ^ 2 ∧
+      |(∫ u, H u ^ 2 * Real.exp (-(8 * u))) - (∫ u, F u ^ 2 * Real.exp (-(8 * u)))| ≤
+        confiningResponseConstant γ (∫ u, F u ^ 2 * Real.exp (-(8 * u))) *
+          |criticalAliasCoefficient S - criticalAliasCoefficient R| ∧
+      |(∫ u, H u * polarSourceProfile u) - σ * (∫ u, F u * polarSourceProfile u)| ≤
+        confiningResponseConstant γ (∫ u, F u ^ 2 * Real.exp (-(8 * u))) *
+          |criticalAliasCoefficient S - criticalAliasCoefficient R| := by
   let w : ℝ := ∫ u, F u ^ 2 * Real.exp (-(8 * u))
   have hw1 : 1 ≤ w := one_le_exponential_square_of_domain hF.1 hF.2.1
   have hw : 0 < w := zero_lt_one.trans_le hw1
@@ -459,9 +488,6 @@ theorem IsHalfLineEnergyMinimizer.minimizer_lipschitz_stability
   let K0 : ℝ := 6 * (1 + w) * w / γ
   have hK0 : 0 < K0 := by dsimp only [K0]; positivity
   let L : ℝ := (1 + 3 * w + Real.sqrt (2 * J)) * (1 + K0)
-  have hL : 0 ≤ L := by dsimp only [L]; positivity
-  refine ⟨γ / (8 * w * (1 + w)), L, by positivity, hL, ?_⟩
-  intro S hS hsmall H hH
   let η : ℝ := criticalAliasCoefficient S - criticalAliasCoefficient R
   let c : ℝ := ∫ u, F u * H u
   let N : ℝ → ℝ := criticalHalfLineNeutralPart F H
@@ -747,8 +773,32 @@ theorem IsHalfLineEnergyMinimizer.minimizer_lipschitz_stability
     exact habs_le.trans (mul_le_mul_of_nonneg_right hL_dom2 (abs_nonneg η))
   exact ⟨σ, hσ, hd_le_L2, hvw_lip, hpolar_lip⟩
 
-/-- Both `criticalHalfLineGroundEnergy` and `confiningHalfLineGroundEnergy` are continuously
-differentiable (`C¹`) on `(0, ∞)` with locally Lipschitz derivatives (`C^{1,1}_loc`). -/
+/-- Optimal local Lipschitz response of the sign-aligned minimizer (squared distance
+`O(|a(S) - a(R)|²)` in `L²(e^{-8u})`), its eighth-exponential mass, and its polar pairing
+around any positive confinement ratio `R > 0`. -/
+theorem IsHalfLineEnergyMinimizer.minimizer_lipschitz_stability
+    {R : ℝ} (hR : 0 < R) {F : ℝ → ℝ} (hF : IsHalfLineEnergyMinimizer R F) :
+    ∃ δ L : ℝ, 0 < δ ∧ 0 ≤ L ∧ ∀ S : ℝ, 0 < S →
+      |criticalAliasCoefficient S - criticalAliasCoefficient R| ≤ δ →
+      ∀ H : ℝ → ℝ, IsHalfLineEnergyMinimizer S H →
+        ∃ σ : ℝ, (σ = 1 ∨ σ = -1) ∧
+          (∫ u, (H u - σ * F u) ^ 2 * Real.exp (-(8 * u))) ≤
+            L ^ 2 * (criticalAliasCoefficient S - criticalAliasCoefficient R) ^ 2 ∧
+          |(∫ u, H u ^ 2 * Real.exp (-(8 * u))) -
+            (∫ u, F u ^ 2 * Real.exp (-(8 * u)))| ≤
+              L * |criticalAliasCoefficient S - criticalAliasCoefficient R| ∧
+          |(∫ u, H u * polarSourceProfile u) -
+            σ * (∫ u, F u * polarSourceProfile u)| ≤
+              L * |criticalAliasCoefficient S - criticalAliasCoefficient R| := by
+  obtain ⟨γ, hγ, hgap⟩ := hF.controls_neutralPart hR
+  have hw1 : 1 ≤ ∫ u, F u ^ 2 * Real.exp (-(8 * u)) :=
+    one_le_exponential_square_of_domain hF.1 hF.2.1
+  exact ⟨_, _, div_pos hγ (mul_pos (mul_pos (by norm_num) (by linarith only [hw1]))
+      (by linarith only [hw1])),
+    confiningResponseConstant_nonneg hγ (by linarith only [hw1]),
+    fun S hS hsmall H hH => hF.minimizer_lipschitz_stability_of_control hγ hgap hS hsmall hH⟩
+
+/-- The confining ground energy `μ(t) = λ(t⁻¹)` is continuously differentiable on `(0, ∞)`. -/
 theorem contDiffOn_one_confiningHalfLineGroundEnergy :
     ContDiffOn ℝ 1 confiningHalfLineGroundEnergy (Ioi 0) := by
   rw [show (1 : WithTop ℕ∞) = 0 + 1 from rfl, contDiffOn_succ_iff_deriv_of_isOpen isOpen_Ioi]
@@ -805,10 +855,264 @@ theorem contDiffOn_one_confiningHalfLineGroundEnergy :
     have hnonneg : 0 ≤ |s - t| := abs_nonneg _
     nlinarith only [hstep1, hstep2, hnonneg, hε]
 
+/-- Locally uniform neutral-part control. Near every positive ratio `R`, every minimizer `H` at a
+nearby ratio `S` has exponential mass at most `w_R + 1` and neutral-part control `γ / 8`, where
+`γ` controls the minimizer `F` at `R`. A test orthogonal to `H` is almost orthogonal to `F`,
+because `H` and `±F` are `O(|a(S) - a(R)|)`-close in `L²(e^{-8u})`, and the ratio change
+perturbs the shifted energy by `O(|a(S) - a(R)|)` times the exponential mass. -/
+theorem IsHalfLineEnergyMinimizer.uniform_neutral_control
+    {R : ℝ} (hR : 0 < R) {F : ℝ → ℝ} (hF : IsHalfLineEnergyMinimizer R F) :
+    ∃ ρ γ : ℝ, 0 < ρ ∧ 0 < γ ∧ ∀ S : ℝ, 0 < S →
+      |criticalAliasCoefficient S - criticalAliasCoefficient R| ≤ ρ →
+      ∀ H : ℝ → ℝ, IsHalfLineEnergyMinimizer S H →
+        (∫ u, H u ^ 2 * Real.exp (-(8 * u))) ≤ (∫ u, F u ^ 2 * Real.exp (-(8 * u))) + 1 ∧
+        ∀ {G : ℝ → ℝ}, CriticalHalfLineEnergyDomain G →
+          γ * (∫ u, criticalHalfLineNeutralPart H G u ^ 2 * Real.exp (-(8 * u))) ≤
+            confiningShiftedEnergy S G := by
+  obtain ⟨γ, hγ, hgap⟩ := hF.controls_neutralPart hR
+  obtain ⟨w, hw⟩ : ∃ w, (∫ u, F u ^ 2 * Real.exp (-(8 * u))) = w := ⟨_, rfl⟩
+  have hw1 : 1 ≤ w := hw ▸ one_le_exponential_square_of_domain hF.1 hF.2.1
+  have hw0 : 0 < w := zero_lt_one.trans_le hw1
+  have hL : 0 ≤ confiningResponseConstant γ w := confiningResponseConstant_nonneg hγ hw0.le
+  have hρ1 : 0 < γ / (8 * w * (1 + w)) :=
+    div_pos hγ (mul_pos (mul_pos (by norm_num) hw0) (by linarith only [hw0]))
+  have hρ2 : 0 < 1 / (2 * (w + 1) * (confiningResponseConstant γ w + 1)) :=
+    div_pos one_pos (mul_pos (mul_pos two_pos (by linarith only [hw0])) (by linarith only [hL]))
+  have hρ3 : 0 < γ / (8 * (w + 2)) := div_pos hγ (mul_pos (by norm_num) (by linarith only [hw0]))
+  refine ⟨min (γ / (8 * w * (1 + w)))
+      (min (1 / (2 * (w + 1) * (confiningResponseConstant γ w + 1))) (γ / (8 * (w + 2)))),
+    γ / 8, lt_min hρ1 (lt_min hρ2 hρ3), by positivity, ?_⟩
+  intro S hS hsmall H hH
+  rw [hw]
+  obtain ⟨η, hη⟩ : ∃ η, criticalAliasCoefficient S - criticalAliasCoefficient R = η := ⟨_, rfl⟩
+  rw [hη] at hsmall
+  have hη1 : |η| ≤ γ / (8 * w * (1 + w)) := hsmall.trans (min_le_left _ _)
+  have hη2 : |η| ≤ 1 / (2 * (w + 1) * (confiningResponseConstant γ w + 1)) :=
+    hsmall.trans ((min_le_right _ _).trans (min_le_left _ _))
+  have hη3 : |η| ≤ γ / (8 * (w + 2)) :=
+    hsmall.trans ((min_le_right _ _).trans (min_le_right _ _))
+  obtain ⟨σ, hσ, hd, hv, -⟩ := hF.minimizer_lipschitz_stability_of_control hγ hgap hS
+    (by rw [hη, hw]; exact hη1) hH
+  rw [hw, hη] at hd hv
+  obtain ⟨v, hvv⟩ : ∃ v, (∫ u, H u ^ 2 * Real.exp (-(8 * u))) = v := ⟨_, rfl⟩
+  rw [hvv] at hv ⊢
+  have hv1 : 1 ≤ v := hvv ▸ one_le_exponential_square_of_domain hH.1 hH.2.1
+  -- `L |η| ≤ 1 / (2(w + 1))`
+  have hx : 2 * (w + 1) * (confiningResponseConstant γ w * |η|) ≤ 1 := by
+    have h := (le_div_iff₀ (mul_pos (mul_pos two_pos (by linarith only [hw0]))
+      (by linarith only [hL]))).mp hη2
+    have hpos : 0 ≤ |η| * (2 * (w + 1)) := mul_nonneg (abs_nonneg η) (by linarith only [hw0])
+    linarith only [h, hpos]
+  have hLη0 : 0 ≤ confiningResponseConstant γ w * |η| := mul_nonneg hL (abs_nonneg η)
+  have hvw : v ≤ w + 1 := by
+    have h1 := (abs_le.mp hv).2
+    nlinarith only [h1, hx, hLη0, hw0]
+  refine ⟨hvw, ?_⟩
+  have hlamS_le : criticalHalfLineGroundEnergy S ≤ criticalHalfLineGroundEnergy R + η * w := by
+    have h := criticalHalfLineGroundEnergy_le hS hF.1 hF.2.1
+    rwa [criticalHalfLineFullEnergy_change_ratio S R hF.1, hF.2.2, hη, hw] at h
+  have hlamR_le : criticalHalfLineGroundEnergy R ≤ criticalHalfLineGroundEnergy S - η * v := by
+    have h := criticalHalfLineGroundEnergy_le hR hH.1 hH.2.1
+    rw [criticalHalfLineFullEnergy_change_ratio R S hH.1, hH.2.2, hvv] at h
+    have h' : criticalAliasCoefficient R - criticalAliasCoefficient S = -η := by
+      rw [← hη]; ring
+    rw [h'] at h
+    linarith only [h]
+  have hlam_abs : |criticalHalfLineGroundEnergy S - criticalHalfLineGroundEnergy R| ≤
+      |η| * (w + 1) := by
+    have h1 := mul_le_mul_of_nonneg_right (le_abs_self η) hw0.le
+    have h2 := mul_le_mul_of_nonneg_right (neg_abs_le η) (zero_le_one.trans hv1)
+    have h3 := mul_le_mul_of_nonneg_left hvw (abs_nonneg η)
+    have h4 := abs_nonneg η
+    refine abs_le.mpr ⟨?_, ?_⟩ <;> nlinarith only [hlamS_le, hlamR_le, h1, h2, h3, h4]
+  have hσ2 : σ ^ 2 = 1 := by rcases hσ with rfl | rfl <;> norm_num
+  have hD : CriticalHalfLineEnergyDomain (fun u => H u - σ * F u) := by
+    simpa only [neg_mul, sub_eq_add_neg] using hH.1.add_const_mul hF.1 (-σ)
+  have hDsq : (∫ u, (H u - σ * F u) ^ 2) ≤ confiningResponseConstant γ w ^ 2 * η ^ 2 :=
+    hD.square_mass_le_exponential_mass.trans hd
+  have hLη2 : confiningResponseConstant γ w ^ 2 * η ^ 2 * w ≤ 1 / 4 := by
+    have hx2 : (2 * (w + 1) * (confiningResponseConstant γ w * |η|)) ^ 2 ≤ 1 := by
+      have h2 : 0 ≤ 2 * (w + 1) * (confiningResponseConstant γ w * |η|) :=
+        mul_nonneg (by linarith only [hw0]) hLη0
+      calc _ ≤ (1 : ℝ) ^ 2 := pow_le_pow_left₀ h2 hx 2
+        _ = 1 := one_pow 2
+    have hsq : confiningResponseConstant γ w ^ 2 * η ^ 2 =
+        (confiningResponseConstant γ w * |η|) ^ 2 := by rw [mul_pow, sq_abs]
+    rw [hsq]
+    nlinarith only [hx2, mul_nonneg (sq_nonneg (confiningResponseConstant γ w * |η|))
+      (show (0 : ℝ) ≤ w ^ 2 + w + 1 by nlinarith only [hw0])]
+  -- Transfer of the gap to tests orthogonal to `H`.
+  have key : ∀ {G : ℝ → ℝ}, CriticalHalfLineEnergyDomain G → (∫ u, H u * G u) = 0 →
+      γ / 8 * (∫ u, G u ^ 2 * Real.exp (-(8 * u))) ≤ confiningShiftedEnergy S G := by
+    intro G hG horth
+    have hm0 : 0 ≤ ∫ u, G u ^ 2 := integral_nonneg fun u => sq_nonneg _
+    have hmg : (∫ u, G u ^ 2) ≤ ∫ u, G u ^ 2 * Real.exp (-(8 * u)) :=
+      hG.square_mass_le_exponential_mass
+    have hDG : (∫ u, (H u - σ * F u) * G u) = -(σ * ∫ u, F u * G u) := by
+      have heq : (fun u => (H u - σ * F u) * G u) = fun u => H u * G u - σ * (F u * G u) := by
+        funext u; ring
+      rw [heq, integral_sub (pair_integrable_domain hH.1 hG)
+        ((pair_integrable_domain hF.1 hG).const_mul σ), integral_const_mul, horth]
+      ring
+    have hcs : (∫ u, (H u - σ * F u) * G u) ^ 2 ≤ (∫ u, (H u - σ * F u) ^ 2) * ∫ u, G u ^ 2 := by
+      have h := HTGeometry.abs_integral_mul_le_sqrt hD.meas.aestronglyMeasurable
+        hG.meas.aestronglyMeasurable hD.sq hG.sq
+      have hnn : 0 ≤ (∫ u, (H u - σ * F u) ^ 2) * ∫ u, G u ^ 2 :=
+        mul_nonneg (integral_nonneg fun u => sq_nonneg _) hm0
+      calc _ = |∫ u, (H u - σ * F u) * G u| ^ 2 := (sq_abs _).symm
+        _ ≤ Real.sqrt ((∫ u, (H u - σ * F u) ^ 2) * ∫ u, G u ^ 2) ^ 2 :=
+          pow_le_pow_left₀ (abs_nonneg _) h 2
+        _ = _ := Real.sq_sqrt hnn
+    have hc2 : (∫ u, F u * G u) ^ 2 ≤
+        confiningResponseConstant γ w ^ 2 * η ^ 2 * ∫ u, G u ^ 2 * Real.exp (-(8 * u)) := by
+      have h1 : (∫ u, F u * G u) ^ 2 = (∫ u, (H u - σ * F u) * G u) ^ 2 := by
+        rw [hDG, neg_sq, mul_pow, hσ2, one_mul]
+      rw [h1]
+      exact hcs.trans (mul_le_mul hDsq hmg hm0 (by positivity))
+    have hsplit := criticalHalfLine_exponential_mass_add_const_mul_le (hF.1.neutralPart hG) hF.1
+      (∫ v, F v * G v)
+    have hrepr (u : ℝ) : criticalHalfLineNeutralPart F G u + (∫ v, F v * G v) * F u = G u :=
+      sub_add_cancel _ _
+    simp only [hrepr] at hsplit
+    rw [hw] at hsplit
+    have hg0 : 0 ≤ ∫ u, G u ^ 2 * Real.exp (-(8 * u)) := hm0.trans hmg
+    have hc2w : (∫ u, F u * G u) ^ 2 * w ≤ (∫ u, G u ^ 2 * Real.exp (-(8 * u))) / 4 := by
+      calc (∫ u, F u * G u) ^ 2 * w ≤ confiningResponseConstant γ w ^ 2 * η ^ 2 *
+            (∫ u, G u ^ 2 * Real.exp (-(8 * u))) * w := mul_le_mul_of_nonneg_right hc2 hw0.le
+        _ = (confiningResponseConstant γ w ^ 2 * η ^ 2 * w) *
+            ∫ u, G u ^ 2 * Real.exp (-(8 * u)) := by ring
+        _ ≤ (1 / 4) * ∫ u, G u ^ 2 * Real.exp (-(8 * u)) := mul_le_mul_of_nonneg_right hLη2 hg0
+        _ = _ := by ring
+    have hQR : γ / 4 * (∫ u, G u ^ 2 * Real.exp (-(8 * u))) ≤ confiningShiftedEnergy R G := by
+      have hnF : (∫ u, G u ^ 2 * Real.exp (-(8 * u))) / 4 ≤
+          ∫ u, criticalHalfLineNeutralPart F G u ^ 2 * Real.exp (-(8 * u)) := by
+        linarith only [hsplit, hc2w]
+      have h := mul_le_mul_of_nonneg_left hnF hγ.le
+      linarith only [h, hgap hG]
+    have hQS : confiningShiftedEnergy S G = confiningShiftedEnergy R G +
+        η * (∫ u, G u ^ 2 * Real.exp (-(8 * u))) -
+          (criticalHalfLineGroundEnergy S - criticalHalfLineGroundEnergy R) * ∫ u, G u ^ 2 := by
+      unfold confiningShiftedEnergy
+      rw [criticalHalfLineFullEnergy_change_ratio S R hG, hη]
+      ring
+    have hterm : (criticalHalfLineGroundEnergy S - criticalHalfLineGroundEnergy R) *
+        (∫ u, G u ^ 2) ≤ |η| * (w + 1) * ∫ u, G u ^ 2 * Real.exp (-(8 * u)) := by
+      calc _ ≤ |criticalHalfLineGroundEnergy S - criticalHalfLineGroundEnergy R| *
+            ∫ u, G u ^ 2 := mul_le_mul_of_nonneg_right (le_abs_self _) hm0
+        _ ≤ |η| * (w + 1) * ∫ u, G u ^ 2 := mul_le_mul_of_nonneg_right hlam_abs hm0
+        _ ≤ _ := mul_le_mul_of_nonneg_left hmg
+            (mul_nonneg (abs_nonneg η) (by linarith only [hw0]))
+    have hηg : -(|η| * ∫ u, G u ^ 2 * Real.exp (-(8 * u))) ≤
+        η * ∫ u, G u ^ 2 * Real.exp (-(8 * u)) := by
+      simpa only [neg_mul] using mul_le_mul_of_nonneg_right (neg_abs_le η) hg0
+    have hsmall3 : |η| * (w + 2) * (∫ u, G u ^ 2 * Real.exp (-(8 * u))) ≤
+        γ / 8 * ∫ u, G u ^ 2 * Real.exp (-(8 * u)) := by
+      refine mul_le_mul_of_nonneg_right ?_ hg0
+      have h := (le_div_iff₀ (by linarith only [hw0] : (0 : ℝ) < 8 * (w + 2))).mp hη3
+      linarith only [h]
+    linarith only [hQS, hQR, hterm, hηg, hsmall3]
+  intro G hG
+  have h := key (hH.1.neutralPart hG) (hH.neutralPart_orthogonal hG)
+  rwa [hH.shiftedEnergy_neutralPart hS hG] at h
+
+/-- The coupling slope `μ'(t) = a(1) W₈(F_{t⁻¹})` is locally Lipschitz on `(0, ∞)`, so the
+confining ground energy `μ` is `C^{1,1}_loc`. Around `t`, the minimizers at all nearby
+reciprocal ratios share one neutral-part control constant and one exponential-mass bound, so the
+quantitative response estimate centred at each of them has a common radius and constant. -/
+theorem locallyLipschitzOn_deriv_confiningHalfLineGroundEnergy :
+    LocallyLipschitzOn (Ioi 0) (deriv confiningHalfLineGroundEnergy) := by
+  intro t ht
+  have ht' : (0 : ℝ) < t := ht
+  obtain ⟨F, hF⟩ := exists_criticalHalfLineGroundEnergy_minimizer (inv_pos.mpr ht')
+  obtain ⟨ρ, γ, hρ, hγ, hunif⟩ := hF.uniform_neutral_control (inv_pos.mpr ht')
+  obtain ⟨w, hw⟩ : ∃ w, (∫ u, F u ^ 2 * Real.exp (-(8 * u))) = w := ⟨_, rfl⟩
+  have hw1 : 1 ≤ w := hw ▸ one_le_exponential_square_of_domain hF.1 hF.2.1
+  have hK := criticalAliasCoefficient_positive zero_lt_one
+  have hL₀ : 0 ≤ confiningResponseConstant γ (w + 1) :=
+    confiningResponseConstant_nonneg hγ (by linarith only [hw1])
+  obtain ⟨r, hr_def⟩ : ∃ r, min (ρ / 2) (γ / (16 * (w + 1) * (w + 2))) = r := ⟨_, rfl⟩
+  have hr : 0 < r := hr_def ▸ lt_min (half_pos hρ)
+    (div_pos hγ (mul_pos (mul_pos (by norm_num) (by linarith only [hw1])) (by linarith only [hw1])))
+  have hrρ : r ≤ ρ / 2 := hr_def ▸ min_le_left _ _
+  have hrγ : r ≤ γ / (16 * (w + 1) * (w + 2)) := hr_def ▸ min_le_right _ _
+  obtain ⟨r', hr'_def⟩ : ∃ r', min (t / 2) (r / criticalAliasCoefficient 1) = r' := ⟨_, rfl⟩
+  have hr' : 0 < r' := hr'_def ▸ lt_min (half_pos ht') (div_pos hr hK)
+  have hr't : r' ≤ t / 2 := hr'_def ▸ min_le_left _ _
+  have hr'r : r' ≤ r / criticalAliasCoefficient 1 := hr'_def ▸ min_le_right _ _
+  have hKr' : criticalAliasCoefficient 1 * r' ≤ r := by
+    have h := mul_le_mul_of_nonneg_left hr'r hK.le
+    rwa [mul_div_cancel₀ r hK.ne'] at h
+  refine ⟨Real.toNNReal (criticalAliasCoefficient 1 ^ 2 * confiningResponseConstant γ (w + 1)),
+    Ioo (t - r') (t + r'),
+    mem_nhdsWithin_of_mem_nhds (Ioo_mem_nhds (by linarith only [hr']) (by linarith only [hr'])),
+    ?_⟩
+  apply lipschitzOnWith_iff_dist_le_mul.mpr
+  intro s hs s' hs'
+  have hs0 : 0 < s := by linarith only [hs.1, hr't]
+  have hs'0 : 0 < s' := by linarith only [hs'.1, hr't]
+  have hcoord (x : ℝ) : criticalAliasCoefficient x⁻¹ - criticalAliasCoefficient t⁻¹ =
+      criticalAliasCoefficient 1 * (x - t) := by
+    rw [criticalAliasCoefficient_inv, criticalAliasCoefficient_inv]; ring
+  have hst : |s - t| ≤ r' := abs_le.mpr ⟨by linarith only [hs.1], by linarith only [hs.2]⟩
+  have hs't : |s' - t| ≤ r' := abs_le.mpr ⟨by linarith only [hs'.1], by linarith only [hs'.2]⟩
+  have hsR : |criticalAliasCoefficient s⁻¹ - criticalAliasCoefficient t⁻¹| ≤ ρ := by
+    rw [hcoord, abs_mul, abs_of_pos hK]
+    have h := mul_le_mul_of_nonneg_left hst hK.le
+    linarith only [h, hKr', hrρ, hρ]
+  obtain ⟨H, hH⟩ := exists_criticalHalfLineGroundEnergy_minimizer (inv_pos.mpr hs0)
+  obtain ⟨H', hH'⟩ := exists_criticalHalfLineGroundEnergy_minimizer (inv_pos.mpr hs'0)
+  obtain ⟨hvH, hgapH⟩ := hunif s⁻¹ (inv_pos.mpr hs0) hsR H hH
+  rw [hw] at hvH
+  obtain ⟨v, hvv⟩ : ∃ v, (∫ u, H u ^ 2 * Real.exp (-(8 * u))) = v := ⟨_, rfl⟩
+  rw [hvv] at hvH
+  have hv1 : 1 ≤ v := hvv ▸ one_le_exponential_square_of_domain hH.1 hH.2.1
+  have hss' : criticalAliasCoefficient s'⁻¹ - criticalAliasCoefficient s⁻¹ =
+      criticalAliasCoefficient 1 * (s' - s) := by
+    rw [criticalAliasCoefficient_inv, criticalAliasCoefficient_inv]; ring
+  have hdist : |s' - s| ≤ 2 * r' := by
+    have h := abs_sub_le s' t s
+    rw [abs_sub_comm t s] at h
+    linarith only [h, hst, hs't]
+  have hsmall : |criticalAliasCoefficient s'⁻¹ - criticalAliasCoefficient s⁻¹| ≤
+      γ / (8 * (∫ u, H u ^ 2 * Real.exp (-(8 * u))) *
+        (1 + ∫ u, H u ^ 2 * Real.exp (-(8 * u)))) := by
+    rw [hvv, hss', abs_mul, abs_of_pos hK]
+    have h1 : criticalAliasCoefficient 1 * |s' - s| ≤ 2 * r := by
+      have h := mul_le_mul_of_nonneg_left hdist hK.le
+      linarith only [h, hKr']
+    have hvpos : 0 < 8 * v * (1 + v) := by positivity
+    have hwpos : 0 < 16 * (w + 1) * (w + 2) := by positivity
+    have hvle : 8 * v * (1 + v) ≤ 8 * (w + 1) * (w + 2) := by nlinarith only [hvH, hv1]
+    have h2 : γ / (8 * (w + 1) * (w + 2)) ≤ γ / (8 * v * (1 + v)) :=
+      div_le_div_of_nonneg_left hγ.le hvpos hvle
+    have h3 : 2 * r ≤ γ / (8 * (w + 1) * (w + 2)) := by
+      have h := mul_le_mul_of_nonneg_left hrγ (by norm_num : (0 : ℝ) ≤ 2)
+      have heq : 2 * (γ / (16 * (w + 1) * (w + 2))) = γ / (8 * (w + 1) * (w + 2)) := by
+        field_simp; ring
+      linarith only [h, heq]
+    linarith only [h1, h2, h3]
+  obtain ⟨σ, -, -, hvlip, -⟩ :=
+    hH.minimizer_lipschitz_stability_of_control hγ hgapH (inv_pos.mpr hs'0) hsmall hH'
+  rw [hvv, hss', abs_mul, abs_of_pos hK] at hvlip
+  have hLmono := confiningResponseConstant_mono hγ (zero_le_one.trans hv1) hvH
+  have hds := (hasDerivAt_confiningHalfLineGroundEnergy_of_minimizer hs0 hH).deriv
+  have hds' := (hasDerivAt_confiningHalfLineGroundEnergy_of_minimizer hs'0 hH').deriv
+  rw [hvv] at hds
+  rw [Real.dist_eq, Real.dist_eq, hds, hds', Real.coe_toNNReal _ (by positivity), ← mul_sub,
+    abs_mul, abs_of_pos hK, abs_sub_comm, abs_sub_comm s s']
+  have hstep := mul_le_mul_of_nonneg_left
+    (hvlip.trans (mul_le_mul_of_nonneg_right hLmono
+      (mul_nonneg hK.le (abs_nonneg _)))) hK.le
+  calc _ ≤ _ := hstep
+    _ = _ := by ring
+
 #print axioms IsHalfLineEnergyMinimizer.controls_neutralPart
 #print axioms IsHalfLineEnergyMinimizer.hasDerivAt_criticalHalfLineGroundEnergy
 #print axioms hasDerivAt_confiningHalfLineGroundEnergy_of_minimizer
 #print axioms IsHalfLineEnergyMinimizer.minimizer_lipschitz_stability
 #print axioms contDiffOn_one_confiningHalfLineGroundEnergy
+#print axioms IsHalfLineEnergyMinimizer.minimizer_lipschitz_stability_of_control
+#print axioms IsHalfLineEnergyMinimizer.uniform_neutral_control
+#print axioms locallyLipschitzOn_deriv_confiningHalfLineGroundEnergy
 
 end GaloisForLFunctions.ArithmeticHodgeTheoryOfDegenerations

@@ -1,9 +1,9 @@
 # Cyclotomic Gauss-monomial parity, reflection-Hölder duality gap, planted dispersion saturation, and twist-coupling obstructions
 
 - **ID:** fct-cyclotomic-parity-and-twist-coupling-obstructions
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Source:** `docs/reports/review-1911/todo.md` #12 · `formal/GaloisForLFunctions/FamilyContinuationTheory/`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
+- **Source:** `docs/reports/review-1911/todo.md` #12 · `formal/GaloisForLFunctions/FamilyContinuationTheory/CyclotomicParityAndTwistCouplingObstructions.lean`
 - **Statement:** For `n > 0` with `6 ∣ n`, `gcd(gcd(n/3, n/2), n) = n / 6`, so cubic and quadratic Gauss sums span unit character index modulo `n` iff `n = 6` (blocking `n = 12`), and among all even `n > 3` and prime cover orders `p₀ ≤ 3` dividing `n`, `gcd(gcd(n/p₀, n/2), n) = 1 ↔ (p₀, n) = (3, 6)`; the $L^{2r}$ Hölder-Poisson dual length `2rU - a` satisfies `2rU - a < a ↔ rU < a` (exceeding `a` by `≥ 2(1 - a)` for all `r ≥ 1, U ≥ 1, a < 1`); planted conjugate characters saturate multilinear character dispersion sums at `(∏_r |S_r|)^2`; and coherent twist averaging obeys `‖∑_{v ∈ V} λ_v‖^2 ≤ |V| ∑_{v ∈ V} ‖λ_v‖^2` while shifting `lx ↦ lx + ν` (`ν ≥ 0, n > 0`) raises `lowBoundaryGenOrder` by at least `ν / (2n)`.
 
 ## Goal
@@ -12,7 +12,7 @@ Formalize the four structural obstructions governing higher-order cyclotomic cov
 ## Gates
 - [x] 0 → 1  in-progress: exact interfaces in `FamilyContinuationTheory/TheBudgetInTheTwistExponent.lean` verified
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean module `CyclotomicParityAndTwistCouplingObstructions.lean`, `lake --old env lean` green, standard axioms only
+- [x] 2 → 3  formalized: Lean module `CyclotomicParityAndTwistCouplingObstructions.lean`, `lake --old env lean` green, standard axioms only
 
 ## Paper Proof (`[PROVED HERE]`)
 

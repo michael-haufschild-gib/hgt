@@ -18,7 +18,8 @@ This module is the transfer tool between observables related by a positive dilat
   exponent no bound on `g` controls `f`.
 * `dilationGain_lt_one_of_barycentric`: for probability weights with barycentre `Σ a_j λ_j = 1` and
   two distinct scales, `ρ(s) < 1` for every `0 < s < 1`, by strict concavity of `x^s`. The neutral
-  exponents are `0` and `1` (`dilationGain_zero`, `dilationGain_one`).
+  exponents are `0` and `1` (`dilationGain_zero`, `dilationGain_one`). `IsBarycentric` packages
+  such stencils; every pair of scales `lo < 1 < hi` carries one (`isBarycentric_two_scales`).
 
 The halving kernel (`λ = ½`, `ρ(s) = 2^(−s)`) and the midpoint kernel (`λ = ⅔, 4/3` with weights
 `½, ½`) are the two instances used by the landing theorems of the corpus.
@@ -201,5 +202,48 @@ theorem dilationGain_lt_one_of_barycentric {t : Finset ι} {a lam : ι → ℝ}
   simp only [smul_eq_mul] at h
   rw [h1, Real.one_rpow] at h
   exact h
+
+/-- A barycentric stencil: probability weights on positive scales with barycentre `1`, not all
+scales equal. -/
+structure IsBarycentric (t : Finset ι) (a lam : ι → ℝ) : Prop where
+  weight_pos : ∀ j ∈ t, 0 < a j
+  scale_pos : ∀ j ∈ t, 0 < lam j
+  sum_weight : ∑ j ∈ t, a j = 1
+  barycentre : ∑ j ∈ t, a j * lam j = 1
+  spread : ∃ j ∈ t, ∃ k ∈ t, lam j ≠ lam k
+
+theorem IsBarycentric.gain_lt_one {t : Finset ι} {a lam : ι → ℝ} (h : IsBarycentric t a lam)
+    {s : ℝ} (hs0 : 0 < s) (hs1 : s < 1) : dilationGain t a lam s < 1 :=
+  dilationGain_lt_one_of_barycentric h.weight_pos h.scale_pos h.sum_weight h.barycentre h.spread
+    hs0 hs1
+
+theorem IsBarycentric.gain_one {t : Finset ι} {a lam : ι → ℝ} (h : IsBarycentric t a lam) :
+    dilationGain t a lam 1 = 1 := by
+  rw [dilationGain_one, h.barycentre]
+
+/-- Every pair of scales `lo < 1 < hi` carries exactly one barycentric stencil, with weights
+`(hi − 1)/(hi − lo)` and `(1 − lo)/(hi − lo)`. -/
+theorem isBarycentric_two_scales {lo hi : ℝ} (h0 : 0 < lo) (h1 : lo < 1) (h2 : 1 < hi) :
+    IsBarycentric (Finset.univ : Finset (Fin 2))
+      ![(hi - 1) / (hi - lo), (1 - lo) / (hi - lo)] ![lo, hi] := by
+  have hd : 0 < hi - lo := by linarith
+  have hne : hi - lo ≠ 0 := hd.ne'
+  have hw0 : 0 < (hi - 1) / (hi - lo) := div_pos (by linarith) hd
+  have hw1 : 0 < (1 - lo) / (hi - lo) := div_pos (by linarith) hd
+  have hhi : 0 < hi := by linarith
+  refine ⟨fun j _ => (Fin.forall_fin_two
+      (p := fun j => 0 < ![(hi - 1) / (hi - lo), (1 - lo) / (hi - lo)] j)).mpr ⟨hw0, hw1⟩ j,
+    fun j _ => (Fin.forall_fin_two (p := fun j => 0 < ![lo, hi] j)).mpr ⟨h0, hhi⟩ j, ?_, ?_,
+    ⟨0, Finset.mem_univ _, 1, Finset.mem_univ _, ?_⟩⟩
+  · rw [Fin.sum_univ_two]
+    show (hi - 1) / (hi - lo) + (1 - lo) / (hi - lo) = 1
+    rw [← add_div, div_eq_one_iff_eq hne]
+    ring
+  · rw [Fin.sum_univ_two]
+    show (hi - 1) / (hi - lo) * lo + (1 - lo) / (hi - lo) * hi = 1
+    rw [div_mul_eq_mul_div, div_mul_eq_mul_div, ← add_div, div_eq_one_iff_eq hne]
+    ring
+  · show lo ≠ hi
+    exact (by linarith : lo < hi).ne
 
 end GaloisForLFunctions.ArithmeticProducerTheory
