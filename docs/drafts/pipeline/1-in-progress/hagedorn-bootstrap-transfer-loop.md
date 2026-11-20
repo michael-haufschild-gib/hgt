@@ -26,6 +26,7 @@ Lean folder: formal/GaloisForLFunctions/HagedornBootstrap/ ; umbrella formal/Gal
 - CurieWeissTwin
 - EdgeRootAndKernel
 - HagedornPole
+- HagedornNecklaces
 
 ## Contribution count
-236
+242

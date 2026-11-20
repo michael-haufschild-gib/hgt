@@ -92,7 +92,7 @@ theorem not_summable_necklace_at_hagedorn {a : ℕ} (ha : 2 ≤ a) :
     intro n
     set m := n + 1 with hm
     have herr := necklaceCount_error_le_half_pow a n
-    rw [max_eq_left (by omega : 1 ≤ a)] at herr
+    rw [max_eq_left (by omega : 1 ≤ a), ← hm] at herr
     have hb := mul_necklaceCount_le_pow a m (by omega)
     have hR : ((a : ℝ) ^ m) ≤ (m : ℝ) * necklaceCount a m + ((m / 2 : ℕ) : ℝ) * (a : ℝ) ^ (m / 2) := by
       have : a ^ m ≤ m * necklaceCount a m + (m / 2) * a ^ (m / 2) := by omega
@@ -107,7 +107,7 @@ theorem not_summable_necklace_at_hagedorn {a : ℕ} (ha : 2 ≤ a) :
         rw [← mul_pow, Real.mul_self_sqrt ha0.le]
       rw [this]; field_simp
     have hcast : ((n : ℝ) + 1) = (m : ℝ) := by rw [hm]; push_cast; ring
-    rw [hcast, one_div_pow, ← div_eq_mul_inv]
+    rw [hcast, one_div_pow, mul_one_div]
     rw [div_le_iff₀ hmpos]
     have key : (a : ℝ) ^ m ≤ (m : ℝ) * necklaceCount a m + (m : ℝ) * Real.sqrt a ^ m := by
       have : ((m / 2 : ℕ) : ℝ) * (a : ℝ) ^ (m / 2) ≤ (m : ℝ) * Real.sqrt a ^ m :=

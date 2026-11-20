@@ -13,6 +13,7 @@ the same window. This closes the frequency-moment recurrence.
 
 noncomputable section
 open Complex MeasureTheory Set
+open scoped ContDiff
 namespace GaloisForLFunctions.BlackHoleRingdown
 
 /-- The j-th time moment of a compact pulse, with the same support bound. -/
@@ -42,7 +43,7 @@ theorem moment_pulses_separate_frequencies (h : CompactPulse) (hn : ∃ t : ℝ,
     ring
   have ae := _root_.RHTower.ae_eq_zero_of_moments_eq_zero' hc.aestronglyMeasurable zero_lt_one hweight mom
   obtain ⟨t,ht⟩ := hn
-  have he := congrFun (MeasureTheory.eq_of_ae_eq ae hc continuous_const) t
+  have he := congrFun ((Continuous.ae_eq_iff_eq (μ := volume) hc continuous_zero).mp ae) t
   exact (mul_ne_zero ht (Complex.exp_ne_zero _)) he
 
 /-- The real flat window on the unit interval about zero. -/
@@ -56,7 +57,9 @@ private theorem flat_compact : HasCompactSupport flatWindow := by
   apply HasCompactSupport.intro (K:=Icc (-1:ℝ) 1) isCompact_Icc
   intro t ht
   apply expNegInvGlue.zero_of_nonpos
-  have hh : t < -1 ∨ 1<t := by simpa [not_and_or,not_le] using ht
+  have hh : t < -1 ∨ 1<t := by
+    rw [mem_Icc, not_and_or, not_le, not_le] at ht
+    exact ht
   rcases hh with hh|hh
   · nlinarith only [sq_nonneg (t+1),hh]
   · nlinarith only [sq_nonneg (t-1),hh]
@@ -74,18 +77,20 @@ theorem flat_pulse_zero_time : flatPulse 0 ≠ 0 := by
 
 private theorem glue_derivative (x : ℝ) :
     HasDerivAt expNegInvGlue ((x⁻¹)^2*expNegInvGlue x) x := by
-  simpa using expNegInvGlue.hasDerivAt_polynomial_eval_inv_mul (1:ℝ[X]) x
+  simpa using expNegInvGlue.hasDerivAt_polynomial_eval_inv_mul (1 : Polynomial ℝ) x
 
 /-- Polynomial differential equation, valid also at the flat endpoints. -/
 theorem flat_window_differential (t : ℝ) :
     (1-t^2)^2*deriv flatWindow t = -(2*t)*flatWindow t := by
   have h := (glue_derivative (1-t^2)).comp t ((hasDerivAt_const t (1:ℝ)).sub ((hasDerivAt_id t).pow 2))
   change (1-t^2)^2 * deriv (fun x : ℝ => expNegInvGlue (1-x^2)) t = _
-  rw [h.deriv]
+  rw [show (fun x : ℝ => expNegInvGlue (1-x^2)) = expNegInvGlue ∘ ((fun _ => (1:ℝ)) - id^2) from rfl,
+    h.deriv]
   dsimp only [flatWindow]
   by_cases h0 : 1-t^2=0
   · simp [h0,expNegInvGlue.zero]
-  · field_simp [h0]
+  · simp only [id_eq]
+    field_simp [h0]
     <;> ring
 
 #print axioms moment_pulses_separate_frequencies

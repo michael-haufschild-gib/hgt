@@ -18,3 +18,4 @@ import GaloisForLFunctions.HagedornBootstrap.CrossingKernelFourier
 import GaloisForLFunctions.HagedornBootstrap.CurieWeissTwin
 import GaloisForLFunctions.HagedornBootstrap.EdgeRootAndKernel
 import GaloisForLFunctions.HagedornBootstrap.HagedornPole
+import GaloisForLFunctions.HagedornBootstrap.HagedornNecklaces

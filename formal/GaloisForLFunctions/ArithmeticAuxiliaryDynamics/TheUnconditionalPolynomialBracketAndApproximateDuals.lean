@@ -123,7 +123,7 @@ private lemma sum_Icc_inv_sq_le_two_sub {M : ℕ} (hM : 1 ≤ M) :
   | zero => omega
   | succ n ih =>
     rcases Nat.eq_zero_or_pos n with rfl | hn
-    · simp
+    · norm_num
     · rw [Finset.sum_Icc_succ_top (by omega)]
       have hih := ih hn
       have hnR : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hn
@@ -177,55 +177,77 @@ private lemma sum_increment_div_sq_le_pronic {c : ℕ →₀ ℤ} {m B : ℕ} (h
     ∑ d ∈ Icc 1 K, |(increment c d : ℝ)| / (d : ℝ) ^ 2 ≤
       3 * ∑ j ∈ range K,
         (1 / (((j : ℝ) + 1) * ((j : ℝ) + 2))) * (stepWeight c (j + 1) : ℝ) := by
-  induction K with
-  | zero => simp
-  | succ K ih =>
-    rw [Finset.sum_Icc_succ_top (by omega), Finset.sum_range_succ]
-    have hsucc : (stepWeight c (K + 1) : ℝ) = stepWeight c K + increment c (K + 1) := by
-      exact_mod_cast stepWeight_succ c K
-    have hg1 : (0 : ℝ) ≤ stepWeight c (K + 1) := by exact_mod_cast hP.nonneg (K + 1)
-    have hg0 : (0 : ℝ) ≤ stepWeight c K := by exact_mod_cast hP.nonneg K
-    have habs : |(increment c (K + 1) : ℝ)| ≤ stepWeight c (K + 1) + stepWeight c K := by
-      rw [abs_le]
-      constructor <;> linarith
-    have hcur : (stepWeight c (K + 1) : ℝ) / ((K + 1 : ℕ) : ℝ) ^ 2 ≤
-        2 * ((1 / (((K : ℝ) + 1) * ((K : ℝ) + 2))) * (stepWeight c (K + 1) : ℝ)) := by
-      push_cast
-      have hK1 : (0 : ℝ) < (K : ℝ) + 1 := by positivity
-      have hK2 : (0 : ℝ) < (K : ℝ) + 2 := by positivity
-      rw [one_div_mul_eq_div, ← mul_div_assoc,
-        div_le_div_iff₀ (pow_pos hK1 2) (mul_pos hK1 hK2)]
-      nlinarith
+  have hsplit : ∑ d ∈ Icc 1 K, |(increment c d : ℝ)| / (d : ℝ) ^ 2 ≤
+      (∑ d ∈ Icc 1 K, (stepWeight c d : ℝ) / (d : ℝ) ^ 2) +
+        (∑ d ∈ Icc 1 K, (stepWeight c (d - 1) : ℝ) / (d : ℝ) ^ 2) := by
+    rw [← sum_add_distrib]
+    refine sum_le_sum fun d hd => ?_
+    have hd1 := (mem_Icc.mp hd).1
+    have hsucc : (stepWeight c d : ℝ) = stepWeight c (d - 1) + increment c d := by
+      have hd_eq : d - 1 + 1 = d := by omega
+      have h0 : (stepWeight c (d - 1 + 1) : ℝ) = stepWeight c (d - 1) + increment c (d - 1 + 1) := by
+        exact_mod_cast stepWeight_succ c (d - 1)
+      rwa [hd_eq] at h0
+    have hg1 : (0 : ℝ) ≤ stepWeight c d := by exact_mod_cast hP.nonneg d
+    have hg0 : (0 : ℝ) ≤ stepWeight c (d - 1) := by exact_mod_cast hP.nonneg (d - 1)
+    have habs : |(increment c d : ℝ)| ≤ stepWeight c d + stepWeight c (d - 1) :=
+      abs_le.mpr ⟨by linarith, by linarith⟩
+    rw [← add_div]
+    exact div_le_div_of_nonneg_right habs (sq_nonneg _)
+  have hsum1 : ∑ d ∈ Icc 1 K, (stepWeight c d : ℝ) / (d : ℝ) ^ 2 ≤
+      2 * ∑ j ∈ range K,
+        (1 / (((j : ℝ) + 1) * ((j : ℝ) + 2))) * (stepWeight c (j + 1) : ℝ) := by
+    have hbij : ∑ d ∈ Icc 1 K, (stepWeight c d : ℝ) / (d : ℝ) ^ 2 =
+        ∑ j ∈ range K, (stepWeight c (j + 1) : ℝ) / ((j + 1 : ℕ) : ℝ) ^ 2 := by
+      refine sum_nbij' (fun d => d - 1) (fun j => j + 1) ?_ ?_ ?_ ?_ ?_
+      · intro d hd; obtain ⟨h1, h2⟩ := mem_Icc.mp hd; exact mem_range.mpr (by omega)
+      · intro j hj; have := mem_range.mp hj; exact mem_Icc.mpr ⟨by omega, by omega⟩
+      · intro d hd; have := (mem_Icc.mp hd).1; omega
+      · intro j _; omega
+      · intro d hd
+        have h1 : d - 1 + 1 = d := by have := (mem_Icc.mp hd).1; omega
+        rw [h1]
+    rw [hbij, mul_sum]
+    refine sum_le_sum fun j _ => ?_
+    push_cast
+    have hg1 : (0 : ℝ) ≤ stepWeight c (j + 1) := by exact_mod_cast hP.nonneg (j + 1)
+    have hj0 : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
+    have hj1 : (0 : ℝ) < (j : ℝ) + 1 := by positivity
+    have hj2 : (0 : ℝ) < (j : ℝ) + 2 := by positivity
+    rw [one_div_mul_eq_div, ← mul_div_assoc, div_le_div_iff₀ (pow_pos hj1 2) (mul_pos hj1 hj2)]
+    nlinarith [mul_nonneg hg1 hj0, mul_nonneg hg1 (sq_nonneg (j : ℝ))]
+  have hsum2 : ∑ d ∈ Icc 1 K, (stepWeight c (d - 1) : ℝ) / (d : ℝ) ^ 2 ≤
+      ∑ j ∈ range K,
+        (1 / (((j : ℝ) + 1) * ((j : ℝ) + 2))) * (stepWeight c (j + 1) : ℝ) := by
     rcases Nat.eq_zero_or_pos K with rfl | hKpos
-    · simp only [range_zero, sum_empty, mul_zero, zero_add, stepWeight_zero, Int.cast_zero,
-        add_zero] at ih ⊢
-      have hdiv1 : |(increment c 1 : ℝ)| / ((1 : ℕ) : ℝ) ^ 2 ≤
-          (stepWeight c 1 : ℝ) / ((1 : ℕ) : ℝ) ^ 2 := by
-        exact div_le_div_of_nonneg_right (by simpa [stepWeight_zero] using habs) (by positivity)
-      have hnn : 0 ≤ (1 / (((0 : ℝ) + 1) * ((0 : ℝ) + 2))) * (stepWeight c 1 : ℝ) := by positivity
-      linarith
-    · obtain ⟨r, rfl⟩ : ∃ r, K = r + 1 := ⟨K - 1, by omega⟩
-      rw [Finset.sum_range_succ] at ih ⊢
-      have hprev : (stepWeight c (r + 1) : ℝ) / ((r + 1 + 1 : ℕ) : ℝ) ^ 2 ≤
-          (1 / (((r : ℝ) + 1) * ((r : ℝ) + 2))) * (stepWeight c (r + 1) : ℝ) := by
-        push_cast
-        have hr1 : (0 : ℝ) < (r : ℝ) + 1 := by positivity
-        have hr2 : (0 : ℝ) < (r : ℝ) + 1 + 1 := by positivity
-        rw [show (r : ℝ) + 2 = (r : ℝ) + 1 + 1 by ring, one_div_mul_eq_div,
-          div_le_div_iff₀ (pow_pos hr2 2) (mul_pos hr1 hr2)]
-        nlinarith [hg0]
-      have hsplit : |(increment c (r + 1 + 1) : ℝ)| / ((r + 1 + 1 : ℕ) : ℝ) ^ 2 ≤
-          (stepWeight c (r + 1 + 1) : ℝ) / ((r + 1 + 1 : ℕ) : ℝ) ^ 2 +
-            (stepWeight c (r + 1) : ℝ) / ((r + 1 + 1 : ℕ) : ℝ) ^ 2 := by
-        rw [← add_div]
-        exact div_le_div_of_nonneg_right habs (by positivity)
-      have hnn_last :
-          0 ≤ (1 / (((r + 1 : ℕ) : ℝ) + 1) * (((r + 1 : ℕ) : ℝ) + 2)⁻¹) *
-            (stepWeight c (r + 1 + 1) : ℝ) := by positivity
-      have hnn_last' :
-          0 ≤ (1 / ((((r + 1 : ℕ) : ℝ) + 1) * (((r + 1 : ℕ) : ℝ) + 2))) *
-            (stepWeight c (r + 1 + 1) : ℝ) := by positivity
-      linarith
+    · simp
+    · have hunion : Icc 1 K = insert 1 (Icc 2 K) := by
+        ext d; simp only [mem_Icc, mem_insert]; omega
+      rw [hunion, sum_insert (by simp)]
+      simp only [Nat.sub_self, stepWeight_zero, Int.cast_zero, zero_div, zero_add]
+      have hbij : ∑ d ∈ Icc 2 K, (stepWeight c (d - 1) : ℝ) / (d : ℝ) ^ 2 =
+          ∑ j ∈ range (K - 1), (stepWeight c (j + 1) : ℝ) / ((j + 2 : ℕ) : ℝ) ^ 2 := by
+        refine sum_nbij' (fun d => d - 2) (fun j => j + 2) ?_ ?_ ?_ ?_ ?_
+        · intro d hd; obtain ⟨h1, h2⟩ := mem_Icc.mp hd; exact mem_range.mpr (by omega)
+        · intro j hj; have := mem_range.mp hj; exact mem_Icc.mpr ⟨by omega, by omega⟩
+        · intro d hd; have := (mem_Icc.mp hd).1; omega
+        · intro j _; omega
+        · intro d hd
+          have h1 : d - 2 + 1 = d - 1 := by have := (mem_Icc.mp hd).1; omega
+          have h2 : d - 2 + 2 = d := by have := (mem_Icc.mp hd).1; omega
+          rw [h1, h2]
+      rw [hbij]
+      refine (sum_le_sum fun j _ => ?_).trans
+        (sum_le_sum_of_subset_of_nonneg (range_mono (by omega : K - 1 ≤ K)) fun j _ _ =>
+          mul_nonneg (by positivity) (by exact_mod_cast hP.nonneg (j + 1)))
+      push_cast
+      have hg1 : (0 : ℝ) ≤ stepWeight c (j + 1) := by exact_mod_cast hP.nonneg (j + 1)
+      have hj0 : (0 : ℝ) ≤ (j : ℝ) := Nat.cast_nonneg j
+      have hj1 : (0 : ℝ) < (j : ℝ) + 1 := by positivity
+      have hj2 : (0 : ℝ) < (j : ℝ) + 2 := by positivity
+      rw [one_div_mul_eq_div, div_le_div_iff₀ (pow_pos hj2 2) (mul_pos hj1 hj2)]
+      nlinarith [mul_nonneg hg1 hj0, mul_nonneg hg1 (sq_nonneg (j : ℝ))]
+  linarith
 
 /-- **Alphabet-independent quadratic coefficient mass law.** For every producer `(c, m, B)`,
 `∑_{k ∈ supp c} |c(k)| / k² ≤ 6 · stencilSlope c`, with no dependence on `K` or `B`. -/
@@ -399,7 +421,9 @@ theorem IsApproxFakePrimeMeasure.le_mul_normSlope {K : ℕ} {η : ℝ} {u : ℕ 
     subst hk_eq1
     simp [Nat.mod_one]
   have hslope_eq : stencilSlope c = ∑ k ∈ S2, (-(c k : ℝ) / k) * Real.log k := by
-    rw [stencilSlope]
+    have hrew : stencilSlope c = ∑ k ∈ c.support, (-(c k : ℝ) / k) * Real.log k :=
+      sum_congr rfl fun k _ => by ring
+    rw [hrew]
     symm
     refine sum_subset (filter_subset _ _) fun k hk hnot => ?_
     have hk1 := (mem_Icc.mp (hsub hk)).1

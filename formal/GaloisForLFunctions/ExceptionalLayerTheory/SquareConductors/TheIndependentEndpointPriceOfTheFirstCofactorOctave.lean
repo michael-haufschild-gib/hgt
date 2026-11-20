@@ -51,7 +51,7 @@ private def octaveWeight (a4 a3 a2 p : ℕ) : ℝ :=
 private theorem abs_octaveWeight_le {a4 a3 a2 : ℕ} (h32 : a2 ≤ a3) (h43 : a3 ≤ a4) (p : ℕ) :
     |octaveWeight a4 a3 a2 p| ≤ 1 := by
   unfold octaveWeight
-  split_ifs <;> first | norm_num | (exfalso; omega)
+  split_ifs <;> first | (exfalso; omega) | norm_num
 
 private theorem octaveWeight_eq_zero {a4 a3 a2 p : ℕ} (h32 : a2 ≤ a3) (h43 : a3 ≤ a4)
     (hp : p ≤ a2) : octaveWeight a4 a3 a2 p = 0 := by
@@ -128,7 +128,7 @@ private theorem abs_row_sub_thetaCombo_le {n Q v : ℕ} (hn : 0 < n) (hv : 0 < v
       have hpQ : p ≤ Q := by
         by_contra hlt
         exact hpA (mem_filter.mpr ⟨mem_Icc.mpr ⟨hpr.one_lt.le, hp4⟩, lt_of_not_ge hlt, hpr, hd⟩)
-      rw [octaveWeight_eq_zero h32 h43 (hpQ.trans hQ), mul_zero, abs_zero]
+      rw [show w p = 0 from octaveWeight_eq_zero h32 h43 (hpQ.trans hQ), mul_zero, abs_zero]
   have hfac : ∑ p ∈ Nat.primesLE (4*n) \ A, (if p ∣ n then Real.log p else 0) ≤ Real.log n := by
     rw [← sum_filter]
     have hsubF : (Nat.primesLE (4*n) \ A).filter (· ∣ n) ⊆ n.primeFactors := fun p hp => by
@@ -217,11 +217,12 @@ private theorem octave_cut_below {n : ℕ} (hn : 1024 ≤ n) :
     have h : (V:ℝ) ≤ (4*n:ℝ)^((1:ℝ)/3) := Nat.floor_le (by positivity)
     have h3 : (V:ℝ)^3 ≤ 4*n := by
       have := pow_le_pow_left₀ (Nat.cast_nonneg V) h 3
-      rwa [← Real.rpow_natCast, ← Real.rpow_mul (by positivity),
-        show (1:ℝ)/3 * ((3:ℕ):ℝ) = 1 by norm_num, Real.rpow_one] at this
+      have e : ((4*n:ℝ)^((1:ℝ)/3))^3 = 4*n := by
+        rw [← Real.rpow_natCast, ← Real.rpow_mul (by positivity)]
+        norm_num
+      rwa [e] at this
     exact_mod_cast h3
-  by_contra hlt
-  push_neg at hlt
+  by_contra! hlt
   have hpow := Nat.pow_lt_pow_left hlt (show 6 ≠ 0 by norm_num)
   have hbig : (Q * (2*V))^6 = 64 * (Q^2)^3 * (V^3)^2 := by ring
   have hle : 64 * (Q^2)^3 * (V^3)^2 ≤ 64 * (4*n)^3 * (4*n)^2 :=
