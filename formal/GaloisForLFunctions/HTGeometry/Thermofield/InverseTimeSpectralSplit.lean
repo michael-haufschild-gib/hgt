@@ -326,12 +326,101 @@ theorem thermalReplicaCrossover_tendsto_affinePlateau (β : ℝ) (E F : α → �
   simpa only [jointReplicaCollisionMass, Complex.ofReal_sum, apply_ite, Complex.ofReal_zero]
     using thermalReplicaCrossover_tendsto_jointCollision β E F n
 
+omit [Nonempty α] in
+/-- The collision mass removed by resolving the fine spectrum is precisely the
+weight of the coarse resonances separated by the fine perturbation. -/
+theorem collisionMass_sub_jointReplicaCollisionMass (w E F : α → ℝ) (n : ℕ) :
+    fidelityReplicaCollisionMass w E n - jointReplicaCollisionMass w E F n =
+      ∑ p ∈ Finset.univ.piAntidiag n, ∑ q ∈ Finset.univ.piAntidiag n,
+        if replicaMultiplicityEnergy E p = replicaMultiplicityEnergy E q ∧
+            replicaMultiplicityEnergy F p ≠ replicaMultiplicityEnergy F q
+        then fidelityReplicaMultiplicityWeight w p q else 0 := by
+  rw [← fidelityReplicaResonantMass_eq_collisionMass, fidelityReplicaResonantMass,
+    jointReplicaCollisionMass, ← Finset.sum_sub_distrib]
+  refine Finset.sum_congr rfl fun p _ => ?_
+  rw [← Finset.sum_sub_distrib]
+  refine Finset.sum_congr rfl fun q _ => ?_
+  by_cases hE : replicaMultiplicityEnergy E p = replicaMultiplicityEnergy E q <;>
+    by_cases hF : replicaMultiplicityEnergy F p = replicaMultiplicityEnergy F q <;>
+    simp [hE, hF]
+
+/-- Every separated resonance contributes a positive share of the downward
+jump at finite temperature. -/
+theorem gibbsJointCollision_le_and_lt_iff (β : ℝ) (E F : α → ℝ) (n : ℕ) :
+    let w := finiteGibbsStateWeight β E
+    jointReplicaCollisionMass w E F n ≤ fidelityReplicaCollisionMass w E n ∧
+    (jointReplicaCollisionMass w E F n < fidelityReplicaCollisionMass w E n ↔
+      ∃ p ∈ Finset.univ.piAntidiag n, ∃ q ∈ Finset.univ.piAntidiag n,
+        replicaMultiplicityEnergy E p = replicaMultiplicityEnergy E q ∧
+        replicaMultiplicityEnergy F p ≠ replicaMultiplicityEnergy F q) := by
+  let w := finiteGibbsStateWeight β E
+  let split (p q : α → ℕ) := replicaMultiplicityEnergy E p = replicaMultiplicityEnergy E q ∧
+    replicaMultiplicityEnergy F p ≠ replicaMultiplicityEnergy F q
+  let m (p q : α → ℕ) := if split p q then fidelityReplicaMultiplicityWeight w p q else 0
+  have hw (p q : α → ℕ) : 0 < fidelityReplicaMultiplicityWeight w p q :=
+    fidelityReplicaMultiplicityWeight_pos (finiteGibbsStateWeight_pos β E) p q
+  have hn (p q : α → ℕ) : 0 ≤ m p q := by
+    dsimp only [m]
+    split_ifs
+    · exact (hw p q).le
+    · exact le_rfl
+  have hp (p q : α → ℕ) : 0 < m p q ↔ split p q := by
+    by_cases h : split p q <;> simp [m, h, hw p q]
+  have hrow (p : α → ℕ) :
+      0 < ∑ q ∈ Finset.univ.piAntidiag n, m p q ↔
+        ∃ q ∈ Finset.univ.piAntidiag n, split p q := by
+    rw [Finset.sum_pos_iff_of_nonneg (fun q _ => hn p q)]
+    simp only [hp]
+  dsimp only
+  rw [← sub_nonneg, ← sub_pos, collisionMass_sub_jointReplicaCollisionMass]
+  change 0 ≤ (∑ p ∈ Finset.univ.piAntidiag n, ∑ q ∈ Finset.univ.piAntidiag n, m p q) ∧
+    (0 < (∑ p ∈ Finset.univ.piAntidiag n, ∑ q ∈ Finset.univ.piAntidiag n, m p q) ↔
+      ∃ p ∈ Finset.univ.piAntidiag n, ∃ q ∈ Finset.univ.piAntidiag n, split p q)
+  have hrows (p : α → ℕ) : 0 ≤ ∑ q ∈ Finset.univ.piAntidiag n, m p q :=
+    Finset.sum_nonneg fun q _ => hn p q
+  refine ⟨Finset.sum_nonneg fun p _ => hrows p, ?_⟩
+  rw [Finset.sum_pos_iff_of_nonneg (fun p _ => hrows p)]
+  simp only [hrow]
+
+/-- The settled two-copy plateau is discontinuous at zero splitting exactly
+when the perturbation separates two levels with the same coarse energy. -/
+theorem affinePartitionReturnPlateau_discontinuousAt_iff (β : ℝ) (E F : α → ℝ) :
+    ¬ ContinuousAt (fun s => returnPlateau β (affineSpectrum E F s)) (0 : ℝ) ↔
+      ∃ i j, E i = E j ∧ F i ≠ F j := by
+  let J := jointReplicaCollisionMass (finiteGibbsStateWeight β E) E F 1
+  have hz : affineSpectrum E F 0 = E := by
+    funext i
+    simp only [affineSpectrum, zero_mul, add_zero]
+  have hlim := affinePartitionReturnPlateau_tendsto_joint β E F
+  have hcont : ContinuousAt (fun s => returnPlateau β (affineSpectrum E F s)) 0 ↔
+      J = returnPlateau β E := by
+    rw [continuousAt_iff_punctured_nhds]
+    simp only [hz]
+    exact ⟨fun h => tendsto_nhds_unique hlim h, fun h => h ▸ hlim⟩
+  obtain ⟨hle, hlt⟩ := gibbsJointCollision_le_and_lt_iff β E F 1
+  change J ≤ returnPlateau β E at hle
+  rw [hcont, ← hle.lt_iff_ne]
+  change J < returnPlateau β E ↔ _
+  rw [returnPlateau, hlt]
+  simp only [piAntidiag_one_eq_image_single, Finset.mem_image, Finset.mem_univ, true_and]
+  constructor
+  · rintro ⟨p, ⟨i, rfl⟩, q, ⟨j, rfl⟩, h⟩
+    exact ⟨i, j, by simpa [replicaMultiplicityEnergy] using h⟩
+  · rintro ⟨i, j, h⟩
+    exact ⟨(fun k => if k = i then 1 else 0), ⟨i, rfl⟩,
+      (fun k => if k = j then 1 else 0), ⟨j, rfl⟩, by
+      simpa [replicaMultiplicityEnergy] using h⟩
+
 #print axioms thermalReplicaMean_tendsto_inverseTimeSpectrum
 #print axioms thermalReplicaCrossover_tendsto_jointCollision
 #print axioms partitionReturnMean_tendsto_inverseTimeSpectrum
 #print axioms exists_affine_resonance_neighborhood
 #print axioms gibbsAffinePlateau_tendsto_joint
 #print axioms affinePartitionReturnPlateau_tendsto_joint
+#print axioms thermalReplicaCrossover_tendsto_affinePlateau
+#print axioms collisionMass_sub_jointReplicaCollisionMass
+#print axioms gibbsJointCollision_le_and_lt_iff
+#print axioms affinePartitionReturnPlateau_discontinuousAt_iff
 
 end
 

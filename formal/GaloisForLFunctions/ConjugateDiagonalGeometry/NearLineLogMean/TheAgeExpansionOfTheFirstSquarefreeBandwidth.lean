@@ -23,20 +23,26 @@ private def primitive (N : ℝ) (m : ℕ) (x : ℝ) :=
 private theorem primitive_deriv {N x : ℝ} (hN : 0 < N) (hx : 0 < x) (m : ℕ) :
     HasDerivAt (primitive N m) (((N-x)/N)^m/x) x := by
   induction m with
-  | zero => simpa [primitive,one_div] using Real.hasDerivAt_log hx.ne'
+  | zero =>
+    have h0 : primitive N 0 = Real.log := by funext t; simp [primitive]
+    rw [h0]
+    simpa [one_div] using Real.hasDerivAt_log hx.ne'
   | succ m ih =>
     have hbase : HasDerivAt (fun t : ℝ => (N-t)/N) (-1/N) x := by
-      simpa only [zero_sub] using ((hasDerivAt_const x N).sub (hasDerivAt_id x)).div_const N
+      exact ((hasDerivAt_id' x).const_sub N).div_const N
     have hp := ((hbase.pow (m+1)).div_const ((m:ℝ)+1))
     have sum := ih.add hp
     have hf : primitive N (m+1) = fun t => primitive N m t+
-        ((N-t)/N)^(m+1)/((m:ℝ)+1) := by ext t;simp only [primitive,sum_range_succ,add_assoc]
+        ((N-t)/N)^(m+1)/((m:ℝ)+1) := by ext t;simp only [primitive,Finset.sum_range_succ,add_assoc]
     rw [hf]
-    convert sum using 1
-    simp only [Nat.cast_succ,Nat.add_sub_cancel]
-    rw [pow_succ]
-    field_simp [hN.ne',hx.ne',show (m:ℝ)+1≠0 by positivity]
-    <;> ring
+    have hv : ((N-x)/N)^(m+1)/x =
+        ((N-x)/N)^m/x+((m+1:ℕ):ℝ)*((N-x)/N)^(m+1-1)*(-1/N)/((m:ℝ)+1) := by
+      simp only [Nat.cast_succ,Nat.add_sub_cancel]
+      rw [pow_succ]
+      field_simp [hN.ne',hx.ne',show (m:ℝ)+1≠0 by positivity]
+      <;> ring
+    rw [hv]
+    exact sum
 
 /-- Exact positive remainder after m age moments. A single point ξ of
 the last occupied interval represents the entire difference. -/
@@ -68,7 +74,8 @@ theorem squarefree_bandwidth_mean_value_remainder {N : ℕ} (hN : 2 ≤ N) (m : 
       firstSquarefreeBandwidth N-∑ j∈range m,ageMoment j s/(N:ℝ)^(j+1) := by
     rw [hg,primitive,primitive,add_sub_add_comm,←sum_sub_distrib]
     simp_rw [hterm,neg_div]
-    rw [sum_neg_distrib,sub_eq_add_neg]
+    rw [sum_neg_distrib]
+    ring
   rw [hdiff,show k+1-k=1 by ring,div_one] at he
   change (N:ℝ)^m*(firstSquarefreeBandwidth N-
       ∑ j∈range m,ageMoment j s/(N:ℝ)^(j+1))=_
@@ -86,7 +93,9 @@ theorem squarefree_bandwidth_remainder_interval {N : ℕ} (hN : 2 ≤ N) (m : �
   let s := (squarefreePairAge N:ℝ)
   obtain ⟨hk,hkN,_⟩ := last_squarefree_neighbor_spec hN
   have kp : 0 < k := Nat.cast_pos.mpr hk
-  have step : k+1 ≤ N := by exact_mod_cast hkN
+  have step : k+1 ≤ N := by
+    have h : ((lastSquarefreeNeighbor N:ℕ):ℝ)+1 ≤ (N:ℝ) := by exact_mod_cast hkN
+    exact h
   have hs : s=(N:ℝ)-k := Nat.cast_sub hkN.le
   obtain ⟨ξ,hlo,hhi,he⟩ := squarefree_bandwidth_mean_value_remainder hN m
   have hξ := kp.trans hlo
@@ -96,8 +105,9 @@ theorem squarefree_bandwidth_remainder_interval {N : ℕ} (hN : 2 ≤ N) (m : �
   change (s-1)^m/(k+1) ≤ _ ∧ _ ≤ s^m/k
   rw [he]
   constructor
-  · exact div_le_div₀ (pow_nonneg hpos _) (pow_le_pow_left₀ hpos hsmall m) hξ hhi.le
-  · exact div_le_div₀ (pow_nonneg (hpos.trans hsmall) _) (pow_le_pow_left₀ (hpos.trans hsmall) hlarge m) kp hlo.le
+  · exact div_le_div₀ (pow_nonneg (hpos.trans hsmall) _) (pow_le_pow_left₀ hpos hsmall m) hξ hhi.le
+  · exact div_le_div₀ (pow_nonneg (hpos.trans (hsmall.trans hlarge)) _)
+      (pow_le_pow_left₀ (hpos.trans hsmall) hlarge m) kp hlo.le
 
 private theorem cubic_age_price :
     Tendsto (fun N : ℕ => (squarefreePairAge N:ℝ)^3/(lastSquarefreeNeighbor N:ℝ)) atTop (𝓝 0) := by
@@ -143,7 +153,7 @@ theorem squarefree_bandwidth_uniform_half_unit :
   apply h.congr'
   filter_upwards [eventually_ge_atTop 1] with N hn
   have hn' : (N:ℝ)≠0 := (Nat.cast_pos.mpr hn : 0 < (N:ℝ)).ne'
-  simp only [squarefreeBandwidthCorrection,sum_range_succ,sum_range_zero,zero_add,ageMoment,
+  simp only [squarefreeBandwidthCorrection,Finset.sum_range_succ,Finset.sum_range_zero,zero_add,ageMoment,
     Nat.cast_zero,Nat.cast_one,pow_one,div_one,sub_sub_cancel]
   field_simp [hn']
   <;> ring
@@ -159,7 +169,7 @@ theorem squarefree_bandwidth_uniform_third_unit :
   apply h.congr'
   filter_upwards [eventually_ge_atTop 1] with N hn
   have hn' : (N:ℝ)≠0 := (Nat.cast_pos.mpr hn : 0 < (N:ℝ)).ne'
-  simp only [sum_range_succ,sum_range_zero,zero_add,ageMoment,Nat.cast_zero,Nat.cast_one,Nat.cast_ofNat,
+  simp only [Finset.sum_range_succ,Finset.sum_range_zero,zero_add,ageMoment,Nat.cast_zero,Nat.cast_one,Nat.cast_ofNat,
     pow_one,div_one,sub_sub_cancel]
   field_simp [hn']
   <;> ring

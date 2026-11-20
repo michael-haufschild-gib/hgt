@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.GaussianMeanReturns
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.AbsoluteCircuitClock
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.DatedExcursion
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.ReflectionVisitPacking

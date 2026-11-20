@@ -67,7 +67,7 @@ theorem residualKernel_strip_bound {n : ℕ} (hN : 4 ≤ n+1) (h : modulusGRH (n
   have htri' := norm_sub_le (characterKernel (n+1) s z) (diagonalSeries (n+1) (s+conj z))
   change ‖_ - betaModel (n+1) s (conj z)‖ ≤ _
   change ‖betaModel (n+1) s (conj z)‖ ≤ K * heightGrowth s.im * heightGrowth z.im at hmod
-  linarith only [htri,htri',hp s z hs hz,hdiag',hmod]
+  exact htri.trans ((add_le_add (htri'.trans (add_le_add (hp s z hs hz) hdiag')) hmod).trans_eq (by ring))
 
 private theorem denominator_height {s : ℂ} (hs : 0 ≤ s.re) :
     1+|s.im| ≤ 2*‖1+s‖ := by
