@@ -23,7 +23,7 @@ private def cloud (p : ℂ) (u h : ℝ) : Finset ℂ :=
 
 private theorem site_inj (p : ℂ) (u : ℝ) : Function.Injective (site p u) := by
   intro x y h
-  exact Complex.ofReal_injective (add_left_inj.mp (add_right_inj.mp h))
+  exact Complex.ofReal_injective ((add_left_inj _).mp ((add_right_inj _).mp h))
 
 private theorem site_gap (p : ℂ) (u x y : ℝ) :
     site p u x-site p u y=((x-y:ℝ):ℂ) := by unfold site; push_cast; ring
@@ -56,7 +56,7 @@ private theorem four_terms (a b c d : ℂ) (hab : a≠b) (hac : a≠c) (had : a�
       f a/((a-b)*(a-c)*(a-d))+f b/((b-a)*(b-c)*(b-d))+
       f c/((c-a)*(c-b)*(c-d))+f d/((d-a)*(d-b)*(d-c)) := by
   classical
-  simp [Lagrange.nodalWeight,hab,hac,had,hbc,hbd,hcd,hab.symm,hac.symm,had.symm,
+  simp [Lagrange.nodalWeight,Finset.erase_insert_of_ne,hab,hac,had,hbc,hbd,hcd,hab.symm,hac.symm,had.symm,
     hbc.symm,hbd.symm,hcd.symm,div_eq_mul_inv] <;> ring
 
 /-- Four readings of the actual logarithmic derivative. -/
@@ -73,7 +73,8 @@ private theorem four_site_as_barycentric (p : ℂ) {h : ℝ} (hh : h≠0) (u : �
   let b := site p u (-h)
   let c := site p u h
   let d := site p u (3*h)
-  obtain ⟨hab,hac,had,hbc,hbd,hcd⟩ := sites_distinct (p:=p) (u:=u) hh
+  obtain ⟨hab,hac,had,hbc,hbd,hcd⟩ : a≠b ∧ a≠c ∧ a≠d ∧ b≠c ∧ b≠d ∧ c≠d :=
+    sites_distinct (p:=p) (u:=u) hh
   have hp : (∏ x ∈ cloud p u h, (p-x))=((u^2+h^2)*(u^2+9*h^2):ℝ) := by
     change (∏ x ∈ ({a,b,c,d}:Finset ℂ), (p-x))=_
     simp only [Finset.prod_insert,Finset.prod_singleton,Finset.mem_insert,Finset.mem_singleton,
@@ -122,7 +123,11 @@ theorem horizontal_four_site_error (p : ℂ) :
   intro h u hh hr
   obtain ⟨hab,hac,had,hbc,hbd,hcd⟩ := sites_distinct (p:=p) (u:=u) hh
   have hcard : (cloud p u h).card=4 := by
-    simp [cloud,hab,hac,had,hbc,hbd,hcd]
+    rw [cloud,Finset.card_insert_of_notMem (by
+        simp only [Finset.mem_insert,Finset.mem_singleton,not_or]; exact ⟨hab,hac,had⟩),
+      Finset.card_insert_of_notMem (by
+        simp only [Finset.mem_insert,Finset.mem_singleton,not_or]; exact ⟨hbc,hbd⟩),
+      Finset.card_pair hcd]
   have hne : p∉cloud p u h := by
     have hn (x : ℝ) (hx : x≠0) : p≠site p u x := by
       intro he
@@ -130,12 +135,13 @@ theorem horizontal_four_site_error (p : ℂ) :
       simp only [site,Complex.add_re,Complex.mul_re,Complex.I_re,Complex.I_im,Complex.ofReal_im,
         Complex.ofReal_re,mul_zero,zero_mul,sub_zero,add_zero] at hr
       exact hx (by linarith only [hr])
-    simp [cloud,hn _ (mul_ne_zero (by norm_num : (-3:ℝ)≠0) hh),
-      hn _ (neg_ne_zero.mpr hh),hn h hh,hn _ (mul_ne_zero (by norm_num : (3:ℝ)≠0) hh)]
+    simp only [cloud,Finset.mem_insert,Finset.mem_singleton,not_or]
+    exact ⟨hn _ (mul_ne_zero (by norm_num : (-3:ℝ)≠0) hh),hn _ (neg_ne_zero.mpr hh),hn h hh,
+      hn _ (mul_ne_zero (by norm_num : (3:ℝ)≠0) hh)⟩
   have hs (x : ℂ) (hx : x∈cloud p u h) : dist x p≤3*|h|+|u| := by
     simp only [cloud,Finset.mem_insert,Finset.mem_singleton] at hx
     rcases hx with rfl|rfl|rfl|rfl <;> apply (norm_site _ _ _).trans <;>
-      simp only [abs_mul,abs_neg,abs_of_pos (by norm_num : (0:ℝ)<3)] <;> linarith only [abs_nonneg h]
+      (try simp only [abs_mul,abs_neg,abs_of_pos (by norm_num : (0:ℝ)<3)]) <;> linarith only [abs_nonneg h]
   have hb := hbound _ (by positivity) hr _ (Finset.card_pos.mp (by omega)) hne hs
   rw [hcard] at hb
   have hreal := (Complex.abs_re_le_norm (barycentricResidue (cloud p u h) p (logDeriv xi)-

@@ -76,13 +76,15 @@ private theorem normalized_path_increment {L : ℕ} (hL : 1 ≤ L)
   have hsmall' : |t/(R:ℝ)| * m * h ≤ 1 := by
     rw [abs_div,abs_of_pos hr]
     rw [abs_div,abs_mul,abs_of_nonneg hh,abs_of_pos hr,mul_one] at hsmall
-    convert hsmall using 1 <;> ring
+    convert hsmall using 1
+    ring
   obtain ⟨c,hc,C,hC,he⟩ := exists_twoLocal_projectiveTrotterCircuit_normBound
     (by omega : 2 ≤ L*2) H hloc t R (continuousCircuitPlateauRepetitions_pos L) hsmall'
   refine ⟨c,hc,C,hC.le,he.trans ?_⟩
   rw [abs_mul,abs_of_nonneg hh,one_pow,mul_one] at herr
   change 3*(m:ℝ)^3*h^2*|t| ^2 / R ≤ 1/100
-  convert herr using 1 <;> ring
+  convert herr using 1
+  ring
 
 private theorem reaches_robust_threshold {n d P : ℕ} (e : (Fin n → Bool) ≃ Fin (d+1))
     (H : selfAdjoint (Reg n))

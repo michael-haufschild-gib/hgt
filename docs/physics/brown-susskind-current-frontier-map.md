@@ -1,6 +1,6 @@
 # Brown–Susskind: live proof routes
 
-**Full second law: open.** One static nearest-neighbour Hamiltonian can exhibit both an initial linear lower bound and much later hard intervals followed by re-entry. What is missing is the trajectory between them: no theorem reviewed puts the **first plateau** at the end of an exponentially long ramp and excludes **every** early low-cost return for a typical draw. [Killed routes](brown-susskind-killed-routes.md).
+**Full second law: open.** Almost every sufficiently long Gaussian nearest-neighbour chain reaches a robust exponential circuit threshold. Its first crossing from identity excludes all polynomial-cost returns for a proved exponential duration. Matching linear growth up to that crossing, an exponential upper bound on its onset, and a doubly exponential first-return lower bound remain open. [Killed routes](brown-susskind-killed-routes.md).
 
 ## Target and strongest results
 
@@ -15,6 +15,8 @@ Use the [project’s second-law statement](second-law.md): fix the local ensembl
 **Continuous-gate fluctuation bound.** On almost every sufficiently long fixed Gaussian path with K even, put r = ⌊D/[128(K+1)]⌋ and M = (r+1)ʳ. For projective operator error 1/10, at most a 1/M upper fraction of starting times admit any r-gate hit during the next (M−1)/[40(1+‖H‖)] time units. The estimate is uniform in observation origin and the same H retains its locality signal at every time. Its finite-time correction depends on H and supplies no first-saturation deadline. [Lean theorem](../../formal/GaloisForLFunctions/HTGeometry/Quantum/TranslatedCircuitOccupation.lean) · [proof and quantifiers](../drafts/pipeline/3-formalized/gaussian-path-short-circuit-window-occupation.md).
 
 **Affordable time from identity.** For every gate budget s between zero and r, the time spent at cost at most s in [0,T] lies between T/100ᴰ⁻¹ and (T+S)/M on the same draw. The lower bound already holds for the empty circuit on every static Hamiltonian. The first affordable time after any u is attained by (|u|+1)100ᴰ⁻¹. These estimates quantify duration and a return deadline. The first post-saturation lower bound remains open. [Occupation theorem](../drafts/pipeline/3-formalized/identity-prefix-short-circuit-occupation.md) · [first-entry theorem](../drafts/pipeline/3-formalized/projective-operator-first-short-circuit-deadline.md).
+
+**First robust threshold from identity.** Let P = ⌊D/[64(K+1)]⌋ and r = ⌊P/2⌋. The first time σ at which distance to the P-gate set reaches 9/80 obeys σ > B = 2^⌊K/4⌋/(1+‖H‖). Throughout [σ−B,σ+B], every r-gate circuit fails at error 1/10. For any s ≤ r, the first s-gate return v after σ satisfies σ+B < v ≤ (σ+1)100ᴰ⁻¹. This lower bound starts at a specified first crossing and has single-exponential duration. [First crossing and first return](../drafts/pipeline/3-formalized/first-saturation-boundary-for-the-gaussian-path.md).
 
 **Actual orbit maximum.** At error 1/10 the minimum gate count attains its own maximum on recurrent positive-length intervals. The maximum equals the largest cost on the full torus of independently assigned energy phases, exceeds r, and coexists with permanent two-query locality separation. The time spent near this exact height remains unquantified. [Maximum theorem](../drafts/pipeline/3-formalized/attained-orbit-maximum-and-permanent-locality.md).
 

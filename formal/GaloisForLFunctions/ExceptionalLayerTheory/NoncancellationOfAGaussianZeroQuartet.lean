@@ -103,7 +103,8 @@ theorem gaussian_functional_equation_quartet {ρ : ℂ} (hβ : 1/2<ρ.re) (σ : 
   have hconst : -ρ.im-ρ.im= -(2*ρ.im) := by ring
   have hb : k<1-∑ i : Fin 3, if (z i).re=ρ.re then Real.exp (Real.pi*((z i).im-ρ.im)/4) else 0 := by
     simpa [Fin.sum_univ_succ,z,Complex.sub_re,hleft.ne,hconst,
-      show Real.pi * -(2*ρ.im)/4= -(Real.pi*ρ.im/2) by ring] using hk
+      show Real.pi * -(2*ρ.im)/4= -(Real.pi*ρ.im/2) by ring,
+      show -(Real.pi*(2*ρ.im))/4 = -(Real.pi*ρ.im/2) by ring] using hk
   filter_upwards [finite_gaussian_modes_survive Finset.univ z ρ hm σ L hL hb] with t ht q hq
   exact ht q (fun i _ => hq i)
 

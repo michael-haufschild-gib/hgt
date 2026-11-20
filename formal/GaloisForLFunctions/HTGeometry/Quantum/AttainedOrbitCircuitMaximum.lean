@@ -192,6 +192,17 @@ private theorem circuit_approx_phase (n s : ℕ) (ε : ℝ) {X : Reg n} (z : ℂ
   simpa only [smul_smul,inv_mul_cancel₀ h0,one_smul] using
     move (z • X) z⁻¹ (by rw [norm_inv,hz,inv_one]) h
 
+/-- Physical circuit affordability is precisely capture of the relative
+spectral phases, also when the spectrum has rational relations. -/
+theorem physical_circuit_approximation_iff_spectral_capture {n d : ℕ}
+    (e : (Fin n → Bool) ≃ Fin (d+1)) (H : selfAdjoint (Reg n)) (s : ℕ) (ε t : ℝ) :
+    HasProjectiveCircuitApproximation n ε s (unitaryEvolution (H : Reg n) t) ↔
+      RHTower.projectivePhysicalPhaseFlow (fun i => H.2.isHermitian.eigenvalues (e.symm i)) t ∈
+        projectiveContinuousCircuitCaptureTarget e (hermitianEigenbasisUnitary H.2.isHermitian) s ε := by
+  rw [unitaryEvolution_eq_anchorPhase_smul_projectiveSpectralMatrix e H.2.isHermitian]
+  exact (circuit_approx_phase n s ε _ (by simp [Complex.norm_exp])).trans
+    (mem_projectiveContinuousCircuitCaptureTarget_iff e _ s ε _).symm
+
 /-- At every error, the budgets covering a full-rank physical orbit are
 exactly the budgets covering every independently assigned energy phase.
 Thus the orbit maximum depends on the eigenbasis and the gate model. -/
@@ -206,10 +217,8 @@ theorem uniform_circuit_budget_iff_all_spectral_phases {n d : ℕ}
   let Φ := RHTower.projectivePhysicalPhaseFlowHom E
   let V := hermitianEigenbasisUnitary H.2.isHermitian
   let A := projectiveContinuousCircuitCaptureTarget e V s ε
-  have ht (t : ℝ) : HasProjectiveCircuitApproximation n ε s (unitaryEvolution (H : Reg n) t) ↔ Φ t ∈ A := by
-    rw [unitaryEvolution_eq_anchorPhase_smul_projectiveSpectralMatrix e H.2.isHermitian]
-    exact (circuit_approx_phase n s ε _ (by simp [Complex.norm_exp])).trans
-      (mem_projectiveContinuousCircuitCaptureTarget_iff e V s ε _).symm
+  have ht (t : ℝ) : HasProjectiveCircuitApproximation n ε s (unitaryEvolution (H : Reg n) t) ↔ Φ t ∈ A :=
+    physical_circuit_approximation_iff_spectral_capture e H s ε t
   constructor
   · intro h θ
     have hs : range Φ ⊆ A := by rintro y ⟨t,rfl⟩; exact (ht t).mp (h t)
