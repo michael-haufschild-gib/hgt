@@ -59,7 +59,7 @@ private theorem local_deviation {S : ℝ} (hS : 0<S) :
                       _ = _ := by ring)
 
 private theorem factor_diff (r : ℝ) : Differentiable ℂ (rectangularWindow r) :=
-  differentiable_entireSinc.comp (differentiable_const.mul differentiable_id)
+  differentiable_entireSinc.comp ((differentiable_const (r:ℂ)).mul differentiable_id)
 
 private theorem centered (w : ℂ) : 1+(w-1)=w := by abel
 
@@ -70,7 +70,9 @@ private theorem product_locally {S : ℝ} (hS : 0<S) :
   have h := Summable.hasProdLocallyUniformlyOn_nat_one_add
     (f:=fun n z => rectangularWindow (r n) z-1) isOpen_ball (hsum.mul_left C)
     (Eventually.of_forall hC) (fun n => ((factor_diff (r n)).continuous.sub continuous_const).continuousOn)
-  simpa only [centered,windowSpectrum] using h
+  show HasProdLocallyUniformlyOn (fun n => rectangularWindow (r n))
+    (fun z => ∏' n : ℕ, rectangularWindow (r n) z) (ball 0 S)
+  simpa only [centered] using h
 
 include hr hsum in
 theorem windowSpectrum_hasProd (z : ℂ) :
