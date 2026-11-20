@@ -109,7 +109,7 @@ theorem mul_terminalJointHeight (s : ℝ) {H : ℕ} (hH : 0 < H) :
   have hp : (H:ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hH.ne'
   simp only [terminalJointHeight, oppositePrimeProduct, middleTestFlank, if_true, terminalOddHalf,
     terminalFlank]
-  field_simp <;> ring_nf
+  field_simp
 
 /-- **The flank is the negative halving increment up to `95 √H`.** -/
 theorem abs_terminalFlank_add_terminalOddHalf_le {H : ℕ} (hH : 2 ≤ H) :
@@ -156,17 +156,23 @@ to `95 √H |ΔE(H)|`. -/
 theorem abs_mul_sum_terminalJointHeight_sub_sq_le {H : ℕ} (hH : 2 ≤ H) :
     |(H:ℝ) * (terminalJointHeight 1 H + terminalJointHeight (-1) H) - (terminalOddHalf H)^2| ≤
       95 * Real.sqrt H * |terminalOddHalf H| := by
-  have e1 := abs_le.mp (abs_mul_terminalJointHeight_sub_sq_le (Or.inl rfl) hH)
-  have e2 := abs_le.mp (abs_mul_terminalJointHeight_sub_sq_le (Or.inr rfl) hH)
-  simp only [one_mul, neg_one_mul] at e1 e2
-  rw [mul_add]
-  rcases le_total 0 (terminalOddHalf H) with h | h
-  · rw [max_eq_right h, max_eq_left (neg_nonpos.mpr h)] at e1 e2
-    rw [abs_of_nonneg h]
-    exact abs_le.mpr ⟨by linarith only [e1.1, e2.1], by linarith only [e1.2, e2.2]⟩
-  · rw [max_eq_left h, max_eq_right (neg_nonneg.mpr h)] at e1 e2
-    rw [abs_of_nonpos h]
-    exact abs_le.mpr ⟨by nlinarith only [e1.1, e2.1], by nlinarith only [e1.2, e2.2]⟩
+  have h1 := abs_mul_terminalJointHeight_sub_sq_le (Or.inl rfl) hH
+  have h2 := abs_mul_terminalJointHeight_sub_sq_le (Or.inr rfl) hH
+  simp only [one_mul, neg_one_mul] at h1 h2
+  have hsq : (max 0 (terminalOddHalf H))^2 + (max 0 (-terminalOddHalf H))^2 =
+      (terminalOddHalf H)^2 := by
+    rcases le_total 0 (terminalOddHalf H) with h | h
+    · rw [max_eq_right h, max_eq_left (neg_nonpos.mpr h)]; ring
+    · rw [max_eq_left h, max_eq_right (neg_nonneg.mpr h)]; ring
+  have habs : max 0 (terminalOddHalf H) + max 0 (-terminalOddHalf H) = |terminalOddHalf H| := by
+    rcases le_total 0 (terminalOddHalf H) with h | h
+    · rw [max_eq_right h, max_eq_left (neg_nonpos.mpr h), abs_of_nonneg h, add_zero]
+    · rw [max_eq_left h, max_eq_right (neg_nonneg.mpr h), abs_of_nonpos h, zero_add]
+  rw [← habs, ← hsq, mul_add, mul_add]
+  calc _ = |((H:ℝ) * terminalJointHeight 1 H - (max 0 (terminalOddHalf H))^2) +
+        ((H:ℝ) * terminalJointHeight (-1) H - (max 0 (-terminalOddHalf H))^2)| := by
+          congr 1; ring
+    _ ≤ _ := (abs_add_le _ _).trans (add_le_add h1 h2)
 
 #print axioms mul_terminalJointHeight
 #print axioms abs_terminalFlank_add_terminalOddHalf_le

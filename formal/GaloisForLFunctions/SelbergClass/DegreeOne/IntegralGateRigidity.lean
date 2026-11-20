@@ -19,8 +19,8 @@ for `a : ℕ → ℤ` (assuming neither Ramanujan bounds, nor `ϑ < 1/2`, nor `i
    for every conductor `q ≥ 1`, and `F` is the untwisted Dirichlet `L`-function `L(s, χ)` of a
    primitive real (quadratic) character `χ` modulo `q` (`χ u ∈ {-1, 0, 1}` for all `u : ZMod q`).
 4. **Unique Zeta Pinning (`degreeOne_integral_gate_eq_zeta_iff`)**: Conductor `q = 1` is equivalent
-   to having a pole at `s = 1` (`meromorphicOrderAt F 1 < 0`), and either condition uniquely pins
-   `a p = 1` at every prime `p` and `F(s) = ζ(s)` for all `s ≠ 1`.
+   to having a pole at `s = 1` (`meromorphicOrderAt F 1 < 0`, of exact order `-1`), and either
+   condition uniquely pins `a p = 1` at every prime `p` and `F(s) = ζ(s)` for all `s ≠ 1`.
 -/
 
 noncomputable section
@@ -46,7 +46,8 @@ def primeIntMultHom (a : ℕ → ℤ) : ℕ →*₀ ℂ where
     · simp
     rcases eq_or_ne n 0 with rfl | hn
     · simp
-    simp only [mul_eq_zero.not.mpr ⟨hm, hn⟩, hm, hn, ↓reduceIte]
+    have hmn : m * n ≠ 0 := mul_ne_zero hm hn
+    simp only [hmn, hm, hn, ↓reduceIte]
     rw [((Nat.perm_primeFactorsList_mul hm hn).map fun p => ((a p : ℤ) : ℂ)).prod_eq,
       List.map_append, List.prod_append]
 
@@ -72,7 +73,6 @@ theorem coeff_eq_primeIntMultHom {f : ArithmeticFunction ℂ} {a : ℕ → ℤ}
     · simp [primeIntMultHom]
     rcases eq_or_ne n 1 with rfl | hn1
     · simpa [primeIntMultHom] using h1
-    have hn2 : 2 ≤ n := by omega
     set p : ℕ := n.minFac
     have hp : p.Prime := Nat.minFac_prime hn1
     have hdvd : p ∣ n := Nat.minFac_dvd n
@@ -97,37 +97,40 @@ theorem norm_primeIntMultHom_le_one {a : ℕ → ℤ}
   rcases eq_or_ne n 0 with rfl | hn
   · simp
   simp only [primeIntMultHom, MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk, if_neg hn]
-  have hmem : ∀ z ∈ n.primeFactorsList.map (fun p => ((a p : ℤ) : ℂ)), ‖z‖ ≤ 1 := by
-    intro z hz
-    obtain ⟨p, hpL, rfl⟩ := List.mem_map.mp hz
-    have hp : p.Prime := Nat.prime_of_mem_primeFactorsList hpL
-    rw [Complex.norm_intCast]
-    exact_mod_cast ha hp
-  clear hn
-  induction n.primeFactorsList with
-  | nil => simp
-  | cons p ps ih =>
-    simp only [List.map_cons, List.prod_cons, norm_mul]
-    exact mul_le_one₀ (hmem _ (List.mem_cons_self)) (norm_nonneg _)
-      (ih fun z hz => hmem z (List.mem_cons_of_mem _ hz))
+  have hlist : ∀ l : List ℕ, (∀ p ∈ l, p.Prime) →
+      ‖(l.map fun p => ((a p : ℤ) : ℂ)).prod‖ ≤ 1 := by
+    intro l
+    induction l with
+    | nil => intro _; simp
+    | cons p ps ih =>
+      intro hl
+      simp only [List.map_cons, List.prod_cons, norm_mul]
+      have hp1 : ‖((a p : ℤ) : ℂ)‖ ≤ 1 := by
+        rw [Complex.norm_intCast]
+        exact_mod_cast ha (hl p List.mem_cons_self)
+      exact mul_le_one₀ hp1 (norm_nonneg _)
+        (ih fun q hq => hl q (List.mem_cons_of_mem _ hq))
+  exact hlist n.primeFactorsList fun p hp => Nat.prime_of_mem_primeFactorsList hp
 
 theorem primeIntMultHom_mem_signs {a : ℕ → ℤ}
     (ha : ∀ {p : ℕ}, p.Prime → a p = -1 ∨ a p = 0 ∨ a p = 1) {n : ℕ} (hn : n ≠ 0) :
     primeIntMultHom a n = -1 ∨ primeIntMultHom a n = 0 ∨ primeIntMultHom a n = 1 := by
   simp only [primeIntMultHom, MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk, if_neg hn]
-  have hmem : ∀ z ∈ n.primeFactorsList.map (fun p => ((a p : ℤ) : ℂ)),
-      z = -1 ∨ z = 0 ∨ z = 1 := by
-    intro z hz
-    obtain ⟨p, hpL, rfl⟩ := List.mem_map.mp hz
-    rcases ha (Nat.prime_of_mem_primeFactorsList hpL) with h | h | h <;> simp [h]
-  clear hn
-  induction n.primeFactorsList with
-  | nil => exact Or.inr (Or.inr (by simp))
-  | cons p ps ih =>
-    simp only [List.map_cons, List.prod_cons]
-    have hp_s := hmem _ List.mem_cons_self
-    have hps_s := ih fun z hz => hmem z (List.mem_cons_of_mem _ hz)
-    rcases hp_s with h1 | h1 | h1 <;> rcases hps_s with h2 | h2 | h2 <;> simp [h1, h2]
+  have hlist : ∀ l : List ℕ, (∀ p ∈ l, p.Prime) →
+      (l.map fun p => ((a p : ℤ) : ℂ)).prod = -1 ∨
+      (l.map fun p => ((a p : ℤ) : ℂ)).prod = 0 ∨
+      (l.map fun p => ((a p : ℤ) : ℂ)).prod = 1 := by
+    intro l
+    induction l with
+    | nil => intro _; exact Or.inr (Or.inr (by simp))
+    | cons p ps ih =>
+      intro hl
+      simp only [List.map_cons, List.prod_cons]
+      have hp_s : ((a p : ℤ) : ℂ) = -1 ∨ ((a p : ℤ) : ℂ) = 0 ∨ ((a p : ℤ) : ℂ) = 1 := by
+        rcases ha (hl p List.mem_cons_self) with h | h | h <;> simp [h]
+      have hps_s := ih fun q hq => hl q (List.mem_cons_of_mem _ hq)
+      rcases hp_s with h1 | h1 | h1 <;> rcases hps_s with h2 | h2 | h2 <;> simp [h1, h2]
+  exact hlist n.primeFactorsList fun p hp => Nat.prime_of_mem_primeFactorsList hp
 
 /-! ### Step 1: Boundary periodicity forces `a p ∈ {-1, 0, 1}` without Ramanujan -/
 
@@ -165,7 +168,7 @@ theorem integral_prime_gate_mem_signs (F : ExtendedSelbergClass) (hd : F.gammaDa
     · obtain ⟨j, hj⟩ := Nat.dvd_of_mod_eq_zero hr0
       have hj0 : j ≠ 0 := fun h => hm (by rw [hj, h, mul_zero])
       obtain ⟨j', rfl⟩ := Nat.exists_eq_succ_of_ne_zero hj0
-      have heq : m = q + j' * q := by rw [hj]; ring
+      have heq : m = q + j' * q := by rw [hj, Nat.mul_succ]; ring
       rw [heq, hkper j' q hq0]
       exact Finset.le_sup' (fun r => ‖F.coeff r‖) (Finset.mem_Icc.mpr ⟨hq_pos, le_rfl⟩)
     · have hdiv := (Nat.div_add_mod m q).symm
@@ -177,15 +180,25 @@ theorem integral_prime_gate_mem_signs (F : ExtendedSelbergClass) (hd : F.gammaDa
     by_contra hgt
     push Not at hgt
     have h2 : (2 : ℝ) ≤ |(a p : ℝ)| := by
-      have hi : 2 ≤ |a p| := by omega
+      have hi : 2 ≤ |a p| := by
+        rcases le_or_gt 0 (a p) with h0 | h0
+        · rw [abs_of_nonneg h0] at hgt; omega
+        · rw [abs_of_neg h0] at hgt; omega
       exact_mod_cast hi
-    obtain ⟨k, hk⟩ := exists_pow_gt (by norm_num : (1 : ℝ) < 2) M
+    obtain ⟨k, hkM⟩ := exists_nat_gt M
+    have hk_pow : (k : ℝ) < (2 : ℝ) ^ k := by
+      exact_mod_cast Nat.lt_two_pow_self
+    have hk : M < (2 : ℝ) ^ k := hkM.trans hk_pow
     have hpk := hbound (p ^ k) (pow_ne_zero k hp.ne_zero)
     rw [hpow hp k, norm_pow, Complex.norm_intCast] at hpk
     have hpow_le : (2 : ℝ) ^ k ≤ |(a p : ℝ)| ^ k := pow_le_pow_left₀ (by norm_num) h2 k
     linarith
   refine ⟨habs_le, ?_⟩
-  omega
+  rcases le_or_gt 0 (a p) with h0 | h0
+  · rw [abs_of_nonneg h0] at habs_le
+    omega
+  · rw [abs_of_neg h0] at habs_le
+    omega
 
 /-! ### Step 2: Automatic Euler-product lift to the full Selberg class -/
 
@@ -223,7 +236,7 @@ private theorem exp_lSeries_primeIntEulerLog {a : ℕ → ℤ}
   let fs : ℕ →*₀ ℂ :=
     { toFun := fun n => LSeries.term (primeIntMultHom a) s n
       map_zero' := by simp
-      map_one' := by simp [LSeries.term_of_ne_zero one_ne_zero]
+      map_one' := by simp
       map_mul' := fun m n => by
         rcases eq_or_ne m 0 with rfl | hm
         · simp
@@ -244,13 +257,13 @@ private theorem exp_lSeries_primeIntEulerLog {a : ℕ → ℤ}
       exact mul_le_mul_of_nonneg_right (norm_primeIntMultHom_le_one ha n)
         (inv_nonneg.mpr (norm_nonneg ((n : ℂ) ^ s)))
   have hlog_eq : LSeries (primeIntEulerLog a) s =
-      ∑' p : Nat.Primes, -Complex.log (1 - fs p) := by
+      ∑' p : Nat.Primes, -Complex.log (1 - fs (p : ℕ)) := by
     rw [LSeries, tsum_eq_tsum_primes_of_support_subset_prime_powers
       (lSeriesSummable_primeIntEulerLog ha hs)]
     · refine tsum_congr fun p => ?_
       have hp : (p : ℕ).Prime := p.prop
-      have hnorm_lt : ‖fs p‖ < 1 := by
-        show ‖LSeries.term (primeIntMultHom a) s p‖ < 1
+      have hnorm_lt : ‖fs (p : ℕ)‖ < 1 := by
+        show ‖LSeries.term (primeIntMultHom a) s (p : ℕ)‖ < 1
         rw [LSeries.term_of_ne_zero hp.ne_zero, norm_div,
           Complex.norm_natCast_cpow_of_pos hp.pos]
         have hp1 : (1 : ℝ) < p := by exact_mod_cast hp.one_lt
@@ -263,13 +276,15 @@ private theorem exp_lSeries_primeIntEulerLog {a : ℕ → ℤ}
       refine tsum_congr fun k => ?_
       have hne : (p : ℕ) ^ (k + 1) ≠ 0 := pow_ne_zero _ hp.ne_zero
       show LSeries.term (primeIntEulerLog a) s ((p : ℕ) ^ (k + 1)) =
-        fs p ^ (k + 1) / ((k + 1 : ℕ) : ℂ)
-      have hfs_pow : fs p ^ (k + 1) = LSeries.term (primeIntMultHom a) s ((p : ℕ) ^ (k + 1)) := by
-        rw [← map_pow fs p (k + 1)]; rfl
+        fs (p : ℕ) ^ (k + 1) / ((k + 1 : ℕ) : ℂ)
+      have hfs_pow : fs (p : ℕ) ^ (k + 1) =
+          LSeries.term (primeIntMultHom a) s ((p : ℕ) ^ (k + 1)) := by
+        rw [← map_pow fs (p : ℕ) (k + 1)]; rfl
       rw [hfs_pow, LSeries.term_of_ne_zero hne, LSeries.term_of_ne_zero hne]
       show (primeIntMultHom a ((p : ℕ) ^ (k + 1)) * eulerLogDirichletCoeff ((p : ℕ) ^ (k + 1))) /
           (((p : ℕ) ^ (k + 1) : ℕ) : ℂ) ^ s = _
       rw [eulerLogDirichletCoeff_prime_pow_succ p k hp]
+      push_cast
       ring
     · intro n hn
       by_contra hpp
@@ -338,6 +353,7 @@ private theorem internalShift_eq_zero_of_integral_primes {q : ℕ} [NeZero q]
   have hp₁₂_ne : p₁ ≠ p₂ := by omega
   set M : ℕ := Fintype.card (ZMod q)ˣ
   have hM_pos : 0 < M := Fintype.card_pos
+  have h2M_ne : 2 * M ≠ 0 := by omega
   have hunit_pow : ∀ {p : ℕ}, p.Prime → q < p →
       ∃ k : ℤ, -((2 * M : ℝ) * θ * Real.log p) = (k : ℝ) * (2 * Real.pi) := by
     intro p hp hgt
@@ -347,11 +363,13 @@ private theorem internalShift_eq_zero_of_integral_primes {q : ℕ} [NeZero q]
     have hu_coe : (u : ZMod q) = (p : ZMod q) := ZMod.coe_unitOfCoprime p hcop
     have hχ_pow : (χ p) ^ (2 * M) = 1 := by
       rw [← hu_coe, show 2 * M = M * 2 by ring, pow_mul, ← map_pow,
-        show (u : ZMod q) ^ M = (((u ^ M : (ZMod q)ˣ) : ZMod q)) from (Units.val_pow_eq_pow_val u M).symm,
+        show (u : ZMod q) ^ M = (((u ^ M : (ZMod q)ˣ) : ZMod q)) from
+          (Units.val_pow_eq_pow_val u M).symm,
         pow_card_eq_one, Units.val_one, map_one, one_pow]
     have hχ_norm : ‖χ p‖ = 1 := by
-      rw [← hu_coe]
-      exact MulChar.norm_apply_of_isUnit χ u.isUnit
+      have hnpow : ‖χ p‖ ^ (2 * M) = 1 := by
+        rw [← norm_pow, hχ_pow, norm_one]
+      exact (pow_eq_one_iff_of_nonneg (norm_nonneg _) h2M_ne).mp hnpow
     have ha_eq := ha_prime hp
     have ha_norm : ‖((a p : ℤ) : ℂ)‖ = 1 := by
       rw [ha_eq, norm_mul, hχ_norm, one_mul, Complex.norm_natCast_cpow_of_pos hp.pos]
@@ -361,7 +379,7 @@ private theorem internalShift_eq_zero_of_integral_primes {q : ℕ} [NeZero q]
       have habs : |a p| = 1 := by exact_mod_cast ha_norm
       rcases abs_eq (by norm_num : (0 : ℤ) ≤ 1) |>.mp habs with h | h <;> simp [h]
     have ha_pow : (((a p : ℤ) : ℂ)) ^ (2 * M) = 1 := by
-      rw [show 2 * M = 2 * M from rfl, pow_mul]
+      rw [pow_mul]
       have hsqC : (((a p : ℤ) : ℂ)) ^ 2 = 1 := by exact_mod_cast ha_sq
       rw [hsqC, one_pow]
     have hexp_eq : ((p : ℂ) ^ (-(I * (θ : ℂ)))) ^ (2 * M) =
@@ -378,24 +396,26 @@ private theorem internalShift_eq_zero_of_integral_primes {q : ℕ} [NeZero q]
     obtain ⟨k, hk⟩ := Complex.exp_eq_one_iff.mp h1
     refine ⟨k, ?_⟩
     have him := congrArg Complex.im hk
-    simpa [mul_assoc, mul_comm, mul_left_comm] using him
+    simp only [Complex.mul_im, Complex.I_re, Complex.I_im, Complex.ofReal_re, Complex.ofReal_im,
+      Complex.intCast_re, Complex.intCast_im, Complex.re_ofNat, Complex.im_ofNat] at him
+    linarith
   obtain ⟨k₁, hk₁⟩ := hunit_pow hp₁ hp₁_gt
   obtain ⟨k₂, hk₂⟩ := hunit_pow hp₂ hp₂_gt
   have hlog₁ : 0 < Real.log p₁ := Real.log_pos (by exact_mod_cast hp₁.one_lt)
   have hlog₂ : 0 < Real.log p₂ := Real.log_pos (by exact_mod_cast hp₂.one_lt)
   have hM_R : (0 : ℝ) < 2 * M := by positivity
   have hk₁_ne : k₁ ≠ 0 := by
-    intro h0; rw [h0] at hk₁; simp at hk₁
-    rcases hk₁ with h | h | h
-    · linarith
-    · exact hθ h
-    · linarith
+    intro h0
+    have hlhs : -((2 * M : ℝ) * θ * Real.log p₁) ≠ 0 :=
+      neg_ne_zero.mpr (mul_ne_zero (mul_ne_zero hM_R.ne' hθ) hlog₁.ne')
+    rw [h0, Int.cast_zero, zero_mul] at hk₁
+    exact hlhs hk₁
   have hk₂_ne : k₂ ≠ 0 := by
-    intro h0; rw [h0] at hk₂; simp at hk₂
-    rcases hk₂ with h | h | h
-    · linarith
-    · exact hθ h
-    · linarith
+    intro h0
+    have hlhs : -((2 * M : ℝ) * θ * Real.log p₂) ≠ 0 :=
+      neg_ne_zero.mpr (mul_ne_zero (mul_ne_zero hM_R.ne' hθ) hlog₂.ne')
+    rw [h0, Int.cast_zero, zero_mul] at hk₂
+    exact hlhs hk₂
   set n₁ : ℕ := k₁.natAbs
   set n₂ : ℕ := k₂.natAbs
   have hn₁_pos : 0 < n₁ := Int.natAbs_pos.mpr hk₁_ne
@@ -474,8 +494,8 @@ theorem degreeOne_integral_gate_classification (F : ExtendedSelbergClass)
   have hGd : G.gammaData.degree = 1 := by rw [← hGF] at hd; exact hd
   obtain ⟨q, hq_ne, χ, hprim, hcond, _, hGcoeff, hGval⟩ := degreeOne_classification G hGd
   haveI : NeZero q := hq_ne
+  have hθG : G.gammaData.internalShift = F.gammaData.internalShift := by rw [hGF]
   have hθ0 : F.gammaData.internalShift = 0 := by
-    have hθG : G.gammaData.internalShift = F.gammaData.internalShift := by rw [hGF]
     rw [← hθG]
     refine internalShift_eq_zero_of_integral_primes (q := q) (χ := χ) (a := a) ?_
     intro p hp
@@ -501,10 +521,8 @@ theorem degreeOne_integral_gate_classification (F : ExtendedSelbergClass)
     exact primeIntMultHom_mem_signs ha_signs hn0
   have hχ_inv : χ⁻¹ = χ := by
     ext u
-    by_cases hu : IsUnit u
-    · rw [MulChar.inv_apply_eq_inv]
-      rcases hχ_signs u with h | h | h <;> simp [h]
-    · rw [MulChar.map_nonunit _ hu, MulChar.map_nonunit _ hu]
+    rw [MulChar.inv_apply_eq_inv]
+    rcases hχ_signs u with h | h | h <;> simp [h]
   refine ⟨ha_signs, hθ0, q, hq_ne, χ, hprim, ?_, hχ_signs, hχ_inv, hFcoeff, ?_⟩
   · rw [← hGF]; exact hcond
   · intro s hs
@@ -512,7 +530,7 @@ theorem degreeOne_integral_gate_classification (F : ExtendedSelbergClass)
     have hGs : G s = F s := by
       change G.toExtendedSelbergClass.continuation.value s = F.continuation.value s
       rw [hGF]
-    rw [hGs, hθ0] at hv
+    rw [hGs, hθG, hθ0] at hv
     simpa using hv
 
 /-- **Unique Pinning to the Riemann Zeta Function.**
@@ -521,7 +539,8 @@ and integral prime-power coefficients `F.coeff (p ^ k) = (a p : ℂ) ^ k` (`a p 
 following are equivalent:
 1. `F.gammaData.conductor = 1`;
 2. `F` has a pole at `s = 1` (`meromorphicOrderAt F 1 < 0`);
-3. `a p = 1` for every prime `p` (equivalently `F s = riemannZeta s` for all `s ≠ 1`). -/
+and under either condition `meromorphicOrderAt F 1 = -1`, `a p = 1` for every prime `p`, and
+`F s = riemannZeta s` for all `s ≠ 1`. -/
 theorem degreeOne_integral_gate_eq_zeta_iff (F : ExtendedSelbergClass)
     (hd : F.gammaData.degree = 1) {a : ℕ → ℤ}
     (h1 : F.coeff 1 = 1)
@@ -549,9 +568,10 @@ theorem degreeOne_integral_gate_eq_zeta_iff (F : ExtendedSelbergClass)
       rw [hFval s hs, hχ1, DirichletCharacter.LFunction_modOne_eq]
     have hpole : meromorphicOrderAt F 1 = ((-1 : ℤ) : WithTop ℤ) := by
       have hev : (F : ℂ → ℂ) =ᶠ[𝓝[≠] (1 : ℂ)]
-          fun s : ℂ => RHTower.zetaPoleUnit s * (s - 1)⁻¹ := by
+          (RHTower.zetaPoleUnit * fun s : ℂ => (s - 1)⁻¹) := by
         filter_upwards [self_mem_nhdsWithin] with s hs
         have hs1 : s - 1 ≠ 0 := sub_ne_zero.mpr hs
+        dsimp only [Pi.mul_apply]
         rw [hzeta s hs, RHTower.zetaPoleUnit_of_ne hs]
         field_simp [hs1]
       rw [meromorphicOrderAt_congr hev,
@@ -570,11 +590,13 @@ theorem degreeOne_integral_gate_eq_zeta_iff (F : ExtendedSelbergClass)
       rfl
     refine ⟨hpole, ?_, hzeta⟩
     intro p hp
-    have hp1 := (hpow hp 1).symm.trans (hFcoeff p hp.ne_zero)
-    rw [pow_one, pow_one, hχ1] at hp1
+    have hp1 := hpow hp 1
+    rw [pow_one, pow_one] at hp1
+    have hp1' := hp1.symm.trans (hFcoeff p hp.ne_zero)
+    rw [hχ1] at hp1'
     have hone_mod : (p : ZMod 1) = 1 := Subsingleton.elim _ _
-    rw [hone_mod, map_one] at hp1
-    exact_mod_cast hp1.symm
+    rw [hone_mod, map_one] at hp1'
+    exact_mod_cast hp1'.symm
   refine ⟨⟨fun hc => by rw [(hq_one_imp hc).1]; decide, fun hpole => ?_⟩, hq_one_imp⟩
   by_contra hne1
   have hq_ne1 : q ≠ 1 := fun h => hne1 (by rw [hcond, h]; norm_num)

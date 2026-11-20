@@ -36,8 +36,8 @@ Procedure: topological order over the listed modules plus the three unlisted dep
 | `ExceptionalLayerTheory/TheLogarithmicCorrectionToGaussianObservation` | olean built |
 | `ExclusionOfTheCriticalState/Wall/OppositeExcursionsOfTheThirdConfinedPrimeWave` | olean built |
 | `GaloisTheoryOfZeros/Analysis/HermiteConstantsOfTheHeatMinors` | checked |
-| `GaloisTheoryOfZeros/Analysis/MultiplicityStrataOfTheHeatWinding` | pending |
-| `GaloisTheoryOfZeros/Analysis/RecoveringHeatTimeFromOneReflectedPair` | pending |
+| `GaloisTheoryOfZeros/Analysis/MultiplicityStrataOfTheHeatWinding` | olean built |
+| `GaloisTheoryOfZeros/Analysis/RecoveringHeatTimeFromOneReflectedPair` | olean built |
 | `GaloisTheoryOfZeros/Analysis/ThreeBoundaryMomentsDetectEveryHeatCollision` | pending |
 | `ArithmeticContinuationAndCriticalEnergy/TheHalfEndpointChargeOfADilatedLattice` | pending |
 | `ArithmeticCountingPositivity/TwoSquarefreeTranslatesInShortIntervals` | pending |
