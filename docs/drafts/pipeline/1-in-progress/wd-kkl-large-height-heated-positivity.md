@@ -1,1 +1,0 @@
-rh/weil-dilation/wd-kkl-large-height-heated-positivity.md

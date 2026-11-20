@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/harmonic-invisibility-and-the-one-over-delta-law.md

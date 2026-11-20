@@ -1,8 +1,0 @@
-{
-  "date": "2026-09-13T07:54:36.508152+00:00",
-  "head": "6ba671fa1ddf6c1f519445b4a0172e2abbfcac1c",
-  "toolchain": "leanprover/lean4:v4.32.2",
-  "module_count": 1250,
-  "declaration_names": 22138,
-  "scope": "All Lean paths matching ThetaCuspHawking or Hawking.*(Clock|Extinction|Cokernel); inventory, not a semantic certification of every declaration."
-}

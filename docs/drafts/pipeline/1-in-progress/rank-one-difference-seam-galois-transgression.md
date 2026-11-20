@@ -1,1 +1,0 @@
-rh/arithmetic-geometry-and-motives/rank-one-difference-seam-galois-transgression.md

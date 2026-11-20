@@ -1,1 +1,0 @@
-rh/hedenmalm-sonin/sonin-free-fermion-number-variance.md

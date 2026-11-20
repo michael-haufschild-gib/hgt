@@ -1,1 +1,0 @@
-rh/arithmetic-and-analytic-routes/kubalalika-weighted-tail-lean.md

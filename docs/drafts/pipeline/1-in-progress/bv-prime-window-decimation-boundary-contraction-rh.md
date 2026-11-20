@@ -1,1 +1,0 @@
-rh/prime-arithmetic/bv-prime-window-decimation-boundary-contraction-rh.md

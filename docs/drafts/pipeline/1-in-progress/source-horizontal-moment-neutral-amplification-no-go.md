@@ -1,1 +1,0 @@
-rh/source-and-receiver-laws/source-horizontal-moment-neutral-amplification-no-go.md

@@ -1,1 +1,0 @@
-rh/xi-zero-geometry/xi-entire-high-shell-bipolar-completion-graph.md

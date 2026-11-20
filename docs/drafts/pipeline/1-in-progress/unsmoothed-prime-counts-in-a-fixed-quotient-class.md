@@ -1,7 +1,0 @@
-# Unsmoothed prime counts in a fixed quotient class
-
-Put $S_q(x)=\sum_{m\le x}\Lambda(m)\mathbf1_{q\mid\lfloor x/m\rfloor+1}$ and $D_q(s)=\sum_{n\ge1}(\mathbf1_{q\mid n+1}-\mathbf1_{q\mid n})n^{-s}$. Is $S_q(x)=D_q(1)x+O_{q,b}(x^b)$ for every fixed $q\ge2$ and $b>\Theta$? Under one quartet the predicted additional term is $-2m\Re(D_q(\rho)x^\rho/\rho)$, with remainder $O_{q,\varepsilon}(x^{1/2+\varepsilon})$.
-
-The jump coefficients of $S_q$ have Dirichlet series $-(\zeta'/\zeta)D_q$. At integers $N$ the difference of the triangular sums at $N+1$ and $N$ recovers $S_q(N)$ exactly. Its Mellin kernel has size $O_c(\min(N^c/|t|,N^{c+1}/t^2))$ on $\Re s=c$. A mean-square bound $\int_T^{2T}|D_q(c+it)|^2\,dt\ll_{q,c}T\log(2T)$ and a logarithmic bound for the pole-subtracted zeta derivative would give the sharp power after shifting this kernel. No pointwise estimate for all Dirichlet characters is needed.
-
-Truncate the jumps at $M$. The tail divided by $s$ is the Mellin transform of $A(\lfloor x\rfloor)-A(M)$ on $x>M$, where $A(n)=\mathbf1_{q\mid n+1}$. Mellin–Plancherel bounds its total squared norm by $\pi M^{-2c}/c$, uniformly in $q$. Thus on $T\le t\le2T$ the unnormalized tail has squared norm $O_c(T^2 M^{-2c})$. Taking $M\asymp T$ leaves a finite Dirichlet polynomial of length $O(T)$ and bounded coefficient square sum for $c>1/2$. The mean-value theorem gives the required $O_c(T\log(2T))$ uniformly in the width. Excluding a right zero still requires an independent arithmetic estimate.

@@ -1,1 +1,0 @@
-rh/critical-horizon-mobius-dynamics/chmd-archimedean-operator-core-2026-10-16.md

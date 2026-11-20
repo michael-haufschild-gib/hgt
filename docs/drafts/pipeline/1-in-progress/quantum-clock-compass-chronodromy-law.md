@@ -1,1 +1,0 @@
-quantum/recurrence-and-localization/quantum-clock-compass-chronodromy-law.md

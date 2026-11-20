@@ -1,9 +1,0 @@
-# precision dps=260, maxcoeff=1000000000000
-CTRL: FOUND [-6, 1]
-        => -6*zeta2 + 1*pi^2 = 0
-E2a: NONE  (no Z-relation with |coeff|<= 1000000000000 among ['1', 'gammaE', 'zeta3', 'zeta5', 'pi^2', 'log2', 'log3'])
-E2b: NONE  (no Z-relation with |coeff|<= 1000000000000 among ['1', 'gammaE', 'gamma1', 'zeta3', 'zeta5', 'pi^2', 'log2', 'log3'])
-E2c: NONE  (no Z-relation with |coeff|<= 1000000000000 among ['1', 'gammaE', 'zeta2', 'zeta3', 'zeta5', 'zeta7'])
-E2d: NONE  (no Z-relation with |coeff|<= 1000000000000 among ['1', 'gammaE', 'gamma1', 'gamma2', 'zeta3', 'zeta5', 'pi^2'])
-E2e: NONE  (no Z-relation with |coeff|<= 1000000000000 among ['1', 'gammaE', 'gammaE^2', 'zeta3', 'pi^2', 'gammaE*pi^2', 'gammaE*zeta3'])
-# done

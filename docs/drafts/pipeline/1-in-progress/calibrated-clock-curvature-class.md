@@ -1,1 +1,0 @@
-physics/time-and-causality/calibrated-clock-curvature-class.md

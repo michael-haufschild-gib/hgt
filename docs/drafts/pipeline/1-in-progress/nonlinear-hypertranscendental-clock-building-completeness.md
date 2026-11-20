@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/nonlinear-hypertranscendental-clock-building-completeness.md

@@ -1,1 +1,0 @@
-rh/hedenmalm-sonin/sonin-log-shell-cyclic-finite-part-descent.md

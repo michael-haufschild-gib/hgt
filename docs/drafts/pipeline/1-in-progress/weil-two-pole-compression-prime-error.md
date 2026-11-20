@@ -1,1 +1,0 @@
-rh/weil-positivity/weil-two-pole-compression-prime-error.md

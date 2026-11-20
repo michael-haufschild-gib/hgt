@@ -1,1 +1,0 @@
-rh/analytic-number-theory/halasz-ghs-proof-map.md

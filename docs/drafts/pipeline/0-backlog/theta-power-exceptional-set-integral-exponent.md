@@ -1,1 +1,0 @@
-rh/theta-and-heat-flow/theta-power-exceptional-set-integral-exponent.md

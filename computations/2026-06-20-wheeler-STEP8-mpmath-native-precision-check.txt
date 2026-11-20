@@ -1,6 +1,0 @@
-GENUINE high-precision (mpmath-native) precision-saturation test
-DA 1/k  vs  HT zeta(k):  does residual DROP with dps (DA) or SATURATE (HT)?
-  dps= 25:  1/k residual=1.001e-13   zeta(k) residual=9.649e-7
-  dps= 50:  1/k residual=2.8e-26   zeta(k) residual=9.649e-7
-
-DA should fall ~10^-(dps); HT should hold roughly fixed (real infinite-order defect).

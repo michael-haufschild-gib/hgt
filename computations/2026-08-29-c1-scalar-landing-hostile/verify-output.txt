@@ -1,1 +1,0 @@
-verified: direct theta quadrature, independent packet formulas, nested convergence, and stable C1 landing mismatch

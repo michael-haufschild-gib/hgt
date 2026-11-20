@@ -1,1 +1,0 @@
-{"range": {"negL1": 0, "negL2": 0, "minL1n": {"tau": 0.2, "L1n": 0.04417709288366843, "L2n": 1.0, "L1neg": false, "L2neg": false}, "minL2n": {"tau": 12.65, "L1n": 0.16054109608269282, "L2n": 0.08178428484569747, "L1neg": false, "L2neg": false}}, "lehmer": {"neg": 0, "min": {"tau": 7005.182, "L1n": 0.36481961383624106, "L2n": 0.9629781057689495, "L1neg": false, "L2neg": false}}}

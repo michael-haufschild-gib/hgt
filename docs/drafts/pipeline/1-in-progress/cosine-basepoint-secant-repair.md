@@ -1,1 +1,0 @@
-rh/arithmetic-and-analytic-routes/cosine-basepoint-secant-repair.md

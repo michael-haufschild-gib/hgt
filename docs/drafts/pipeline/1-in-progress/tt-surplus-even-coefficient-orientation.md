@@ -1,1 +1,0 @@
-rh/theta-source-transport/tt-surplus-even-coefficient-orientation.md

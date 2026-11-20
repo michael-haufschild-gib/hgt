@@ -1,1 +1,0 @@
-physics/time-and-causality/clock-descent-anomaly.md

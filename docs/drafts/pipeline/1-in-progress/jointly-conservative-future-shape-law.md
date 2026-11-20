@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/jointly-conservative-future-shape-law.md

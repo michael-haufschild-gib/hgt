@@ -1,1 +1,0 @@
-rh/prime-arithmetic/matomaki-radziwill-lean-programme.md

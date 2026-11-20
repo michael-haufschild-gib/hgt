@@ -1,1 +1,0 @@
-rh/suzuki-source/sz-ground-global-gamma-domain.md

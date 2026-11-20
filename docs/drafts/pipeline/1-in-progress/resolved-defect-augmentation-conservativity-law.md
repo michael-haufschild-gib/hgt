@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/resolved-defect-augmentation-conservativity-law.md

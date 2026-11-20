@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/compute-omega-h2-gl.md

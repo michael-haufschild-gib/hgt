@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-two-sided-source-current-reduction.md

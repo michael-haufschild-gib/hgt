@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/oriented-no-shortcut-without-return-law.md

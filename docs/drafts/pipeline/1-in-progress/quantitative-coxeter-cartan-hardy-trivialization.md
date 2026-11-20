@@ -1,1 +1,0 @@
-rh/analytic-number-theory/quantitative-coxeter-cartan-hardy-trivialization.md

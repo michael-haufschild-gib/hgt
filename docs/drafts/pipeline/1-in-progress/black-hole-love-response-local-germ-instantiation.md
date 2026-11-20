@@ -1,1 +1,0 @@
-physics/thermal-and-black-holes/black-hole-love-response-local-germ-instantiation.md

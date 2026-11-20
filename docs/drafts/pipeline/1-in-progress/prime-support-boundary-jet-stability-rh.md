@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-support-boundary-jet-stability-rh.md

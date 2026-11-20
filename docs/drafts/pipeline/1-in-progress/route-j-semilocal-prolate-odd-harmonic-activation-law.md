@@ -1,1 +1,0 @@
-rh/numbered-routes/j/route-j-semilocal-prolate-odd-harmonic-activation-law.md

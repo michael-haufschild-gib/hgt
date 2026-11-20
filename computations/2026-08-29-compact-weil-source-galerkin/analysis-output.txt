@@ -1,8 +1,0 @@
-{
-  "result_count": 66,
-  "grid": 65536,
-  "C1_negative_cases": 0,
-  "C1_upward_cases": 0,
-  "C2_negative_cases": 0,
-  "physical_negative_cases": 0
-}

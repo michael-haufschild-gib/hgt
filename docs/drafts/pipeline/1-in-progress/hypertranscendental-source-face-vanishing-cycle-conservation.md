@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/hypertranscendental-source-face-vanishing-cycle-conservation.md

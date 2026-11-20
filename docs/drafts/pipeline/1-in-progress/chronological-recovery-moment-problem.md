@@ -1,1 +1,0 @@
-rh/chronological-source-and-recovery/chronological-recovery-moment-problem.md

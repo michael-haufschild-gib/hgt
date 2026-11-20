@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/scale-matched-signed-action-packet-law.md

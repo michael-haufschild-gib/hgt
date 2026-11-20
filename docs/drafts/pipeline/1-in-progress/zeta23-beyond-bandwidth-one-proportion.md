@@ -1,1 +1,0 @@
-rh/zeta-analysis/zeta23-beyond-bandwidth-one-proportion.md

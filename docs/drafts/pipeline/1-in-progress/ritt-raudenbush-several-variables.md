@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/ritt-raudenbush-several-variables.md

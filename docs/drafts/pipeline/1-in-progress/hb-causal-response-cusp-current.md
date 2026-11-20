@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-causal-response-cusp-current.md

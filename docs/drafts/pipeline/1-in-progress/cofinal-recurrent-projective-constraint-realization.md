@@ -1,1 +1,0 @@
-rh/cofinal-source/cofinal-recurrent-projective-constraint-realization.md

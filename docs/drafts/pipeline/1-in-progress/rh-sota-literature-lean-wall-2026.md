@@ -1,1 +1,0 @@
-rh/riemann-hypothesis-general/rh-sota-literature-lean-wall-2026.md

@@ -1,1 +1,0 @@
-rh/critical-horizon-mobius-dynamics/chmd-operator-core-and-synthesis-2026-10-16.md

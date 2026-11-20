@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-mixed-complete-current.md

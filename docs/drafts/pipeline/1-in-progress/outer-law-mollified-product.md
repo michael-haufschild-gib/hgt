@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/outer-law-mollified-product.md

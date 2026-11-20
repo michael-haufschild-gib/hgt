@@ -1,1 +1,0 @@
-rh/xi-zero-geometry/fixed-pole-zero-margin-law.md

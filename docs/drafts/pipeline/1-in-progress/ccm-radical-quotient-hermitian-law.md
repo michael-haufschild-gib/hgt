@@ -1,1 +1,0 @@
-rh/ccm-fu-and-clock-motives/ccm-radical-quotient-hermitian-law.md

@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-gamma-reflection-decimation-defect-resolvent-rh.md

@@ -1,1 +1,0 @@
-../../bookkeeping/audits-ledgers-and-reviews/open-core-falsification-pass-2026-09-04.md

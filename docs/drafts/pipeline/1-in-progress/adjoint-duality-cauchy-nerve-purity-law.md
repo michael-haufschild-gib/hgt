@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/adjoint-duality-cauchy-nerve-purity-law.md

@@ -1,1 +1,0 @@
-rh/theta-source-transport/tt-all-rank-center-flux-induction.md

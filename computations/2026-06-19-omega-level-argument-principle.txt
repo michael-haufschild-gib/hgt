@@ -1,8 +1,0 @@
-Argument-principle zero-count of det_zeta(N+a)=sqrt(2pi)/Gamma(a):
-  contour center=0.0 r=0.4: winding = (1.0 - 1.3797573e-38j)   (expect 1  [ground state a=0 only])
-  contour center=-1.0 r=0.4: winding = (1.0 + 1.4966859e-38j)   (expect 1  [rung a=-1 only])
-  contour center=-1.0 r=1.6: winding = (3.0 + 5.9867436e-38j)   (expect 3  [rungs a=0,-1,-2])
-  contour center=0.5 r=0.3: winding = (-1.5625071e-32 + 1.4966859e-38j)   (expect 0  [no rung enclosed])
-
-Residue check: psi(a) ~ -1/a near 0  => Res(-psi,0)=+1
-psi near 0: a*psi(a) -> -1.0 (-> -1, simple pole res -1)

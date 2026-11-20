@@ -1,6 +1,0 @@
-NODE transfer toy: completed positivity is not componentwise positivity
-{'bulk': [[2.0, 3.0], [3.0, 2.0]], 'inertia': (1, 0, 1)}
-{'correction': [[-1.0, -3.0], [-3.0, -1.0]], 'inertia': (1, 0, 1)}
-{'completed': [[1.0, 0.0], [0.0, 1.0]], 'inertia': (0, 0, 2)}
-
-Interpretation: missing trace-formula corrections can change the quadratic form, but this only restates the known seam-blocked split: the proof route must prove positivity of the completed residue, not componentwise positivity of bulk/prime/Gamma pieces.

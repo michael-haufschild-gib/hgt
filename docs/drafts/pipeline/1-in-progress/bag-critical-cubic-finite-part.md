@@ -1,1 +1,0 @@
-rh/bagchi-and-cubic-sources/bag-critical-cubic-finite-part.md

@@ -1,1 +1,0 @@
-rh/deninger-spectral/deninger-meyer-gaussian-green-resolvent.md

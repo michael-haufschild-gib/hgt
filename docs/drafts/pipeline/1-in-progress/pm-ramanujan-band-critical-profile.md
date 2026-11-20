@@ -1,1 +1,0 @@
-rh/prime-mobius/pm-ramanujan-band-critical-profile.md

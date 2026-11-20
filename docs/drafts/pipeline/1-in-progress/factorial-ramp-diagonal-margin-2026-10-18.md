@@ -1,1 +1,0 @@
-rh/arithmetic-and-analytic-routes/factorial-ramp-diagonal-margin-2026-10-18.md

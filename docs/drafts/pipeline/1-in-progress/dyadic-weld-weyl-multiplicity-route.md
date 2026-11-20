@@ -1,1 +1,0 @@
-rh/arithmetic-and-analytic-routes/dyadic-weld-weyl-multiplicity-route.md

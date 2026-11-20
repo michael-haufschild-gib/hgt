@@ -1,1 +1,0 @@
-rh/ccm-fu-and-clock-motives/ccm-gamma-conductor-schur-capacity-law.md

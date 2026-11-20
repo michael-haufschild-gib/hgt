@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/u0-phi-independence-disconnected.md

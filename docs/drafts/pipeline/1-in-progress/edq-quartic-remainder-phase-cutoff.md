@@ -1,1 +1,0 @@
-rh/euler-dyadic-quantization/edq-quartic-remainder-phase-cutoff.md

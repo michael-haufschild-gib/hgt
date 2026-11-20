@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/static-local-complexity-law.md

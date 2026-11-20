@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/universal-replica-collision-law-of-quantum-return.md

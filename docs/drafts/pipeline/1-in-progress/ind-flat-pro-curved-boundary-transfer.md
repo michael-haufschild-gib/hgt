@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/ind-flat-pro-curved-boundary-transfer.md

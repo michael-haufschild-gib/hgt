@@ -1,1 +1,0 @@
-rh/source-and-receiver-laws/source-curved-prime-torus-conormal-temperedness.md

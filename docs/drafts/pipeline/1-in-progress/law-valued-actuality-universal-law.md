@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/law-valued-actuality-universal-law.md

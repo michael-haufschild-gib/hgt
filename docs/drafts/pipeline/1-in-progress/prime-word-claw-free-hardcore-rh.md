@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-word-claw-free-hardcore-rh.md

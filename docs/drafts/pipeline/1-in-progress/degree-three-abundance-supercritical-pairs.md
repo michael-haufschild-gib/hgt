@@ -1,1 +1,0 @@
-rh/analytic-number-theory/degree-three-abundance-supercritical-pairs.md

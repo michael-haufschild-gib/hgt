@@ -1,1 +1,0 @@
-rh/analytic-number-theory/standard-twist-boundary-radius-conjecture.md

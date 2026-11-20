@@ -1,1 +1,0 @@
-rh/prime-weil-boundary/pw-rigid-side-excursion-threshold.md

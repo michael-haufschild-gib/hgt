@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/self-noncontainment-minimal-repair-law.md

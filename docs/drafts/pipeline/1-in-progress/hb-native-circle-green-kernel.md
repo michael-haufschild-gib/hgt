@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-native-circle-green-kernel.md

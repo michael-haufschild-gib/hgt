@@ -1,1 +1,0 @@
-rh/euler-dyadic-quantization/edq-compensated-log-renewal.md

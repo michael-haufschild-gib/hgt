@@ -1,1 +1,0 @@
-rh/deninger-spectral/deninger-source-native-arithmetic-cohomology-roadmap.md

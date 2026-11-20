@@ -1,1 +1,0 @@
-rh/fzz-cigar/fzz-puncture-generalized-spectrum-landing.md

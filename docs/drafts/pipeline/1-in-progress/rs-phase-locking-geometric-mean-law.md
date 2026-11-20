@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/rs-phase-locking-geometric-mean-law.md

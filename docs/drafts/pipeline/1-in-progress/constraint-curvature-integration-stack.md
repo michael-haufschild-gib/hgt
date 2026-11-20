@@ -1,1 +1,0 @@
-physics/constraint-relativity/constraint-curvature-integration-stack.md

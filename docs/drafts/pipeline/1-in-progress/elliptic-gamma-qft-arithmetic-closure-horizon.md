@@ -1,1 +1,0 @@
-hypertranscendence/special-functions/elliptic-gamma-qft-arithmetic-closure-horizon.md

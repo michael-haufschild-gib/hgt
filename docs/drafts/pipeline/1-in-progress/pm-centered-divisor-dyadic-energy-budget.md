@@ -1,1 +1,0 @@
-rh/prime-mobius/pm-centered-divisor-dyadic-energy-budget.md

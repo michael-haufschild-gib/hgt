@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-log-clock-module-field-classification.md

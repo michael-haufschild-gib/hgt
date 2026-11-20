@@ -1,1 +1,0 @@
-rh/weil-positivity/weil-gamma-pole-boundary-action.md

@@ -1,1 +1,0 @@
-rh/theta-quantum-boundary/sqb-positive-occurrence-conjecturing-loop.md

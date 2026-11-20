@@ -1,1 +1,0 @@
-rh/theta-and-heat-flow/theta-rank-three-direct-parabolic-determinant.md

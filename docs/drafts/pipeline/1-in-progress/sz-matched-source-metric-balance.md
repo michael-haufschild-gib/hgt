@@ -1,1 +1,0 @@
-rh/suzuki-source/sz-matched-source-metric-balance.md

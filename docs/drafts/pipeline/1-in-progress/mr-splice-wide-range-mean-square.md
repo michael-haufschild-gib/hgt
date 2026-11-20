@@ -1,1 +1,0 @@
-rh/analytic-number-theory/mr-splice-wide-range-mean-square.md

@@ -1,1 +1,0 @@
-rh/reflected-prime/rn-center-schur-coordinate-row-flow.md

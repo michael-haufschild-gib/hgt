@@ -1,8 +1,0 @@
-=== STEP8: interior Cauchy-reconstruction error (boundary determines bulk) ===
-  function                         | reconstructed       | true                | |error|
-  exp (NON-HT analytic control)    | (72.230705 + 14.641889j) | (72.230705 + 14.641889j) | 2.41e-29
-  Gamma (HT)                       | (8.4954655 + 2.3298127j) | (8.4954655 + 2.3298127j) | 1.76e-30
-  zeta (HT)                        | (1.0633435 - 0.010388143j) | (1.0633435 - 0.010388143j) | 2.18e-31
-
-READ: if HT (Gamma,zeta) and NON-HT (exp) reconstruct to the SAME (~machine) accuracy, the
-boundary-determines-bulk constraint is HT-BLIND (Cauchy's theorem holds for ALL analytic functions).

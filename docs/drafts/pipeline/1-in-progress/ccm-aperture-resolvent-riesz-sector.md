@@ -1,1 +1,0 @@
-rh/ccm-fu-and-clock-motives/ccm-aperture-resolvent-riesz-sector.md

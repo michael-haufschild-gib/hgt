@@ -1,1 +1,0 @@
-rh/weil-positivity/weil-positivity-soft-prime-entry.md

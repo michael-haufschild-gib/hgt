@@ -1,1 +1,0 @@
-rh/li-criterion/li-clock-single-damping-strip-sign.md

@@ -1,4 +1,0 @@
-NODE: biofilm detachment is active life-history process, not accidental sloughing
-case final_biomass total_detached burst_frac detachment_cv late_detach_frac
-passive_slough 0.372101 1.910510 0.100000 0.181454 0.520465
-active_detach  0.344453 2.166431 0.100000 0.360358 0.529941

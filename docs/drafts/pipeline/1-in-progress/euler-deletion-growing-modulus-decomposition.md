@@ -1,1 +1,0 @@
-rh/euler-products/euler-deletion-growing-modulus-decomposition.md

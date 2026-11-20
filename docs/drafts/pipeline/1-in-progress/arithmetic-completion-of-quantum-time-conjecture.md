@@ -1,1 +1,0 @@
-rh/arithmetic-positivity-and-criticality/arithmetic-completion-of-quantum-time-conjecture.md

@@ -1,1 +1,0 @@
-rh/prime-arithmetic/pa-complete-current-source-passivity-2026-10-17.md

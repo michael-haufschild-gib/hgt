@@ -1,7 +1,0 @@
-JET probe (DeWitt's): sigma_min at dps=25 vs 50 -> tracks 10^-dps = HT-blind?
-  exp(DA)    dps25=5.37e-13  dps50=1.2e-25  ratio=4.47e+12
-  Gamma(HT)  dps25=1.4e-13  dps50=9.55e-21  ratio=1.46e+7
-
-COEFFICIENT probe (mine): sigma_min at dps=25 vs 50 -> saturates for HT?
-  exp 1/k!(DA)   dps25=1.47e-13  dps50=3.5e-26  ratio=4.21e+12
-  zeta(k)(HT)    dps25=9.25e-7  dps50=9.25e-7  ratio=1.0

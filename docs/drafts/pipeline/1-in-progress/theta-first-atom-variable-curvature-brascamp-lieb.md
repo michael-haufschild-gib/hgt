@@ -1,1 +1,0 @@
-rh/theta-and-heat-flow/theta-first-atom-variable-curvature-brascamp-lieb.md

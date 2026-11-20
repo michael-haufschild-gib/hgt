@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-source-contact-spin-two-balance.md

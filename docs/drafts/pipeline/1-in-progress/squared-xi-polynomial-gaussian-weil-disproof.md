@@ -1,1 +1,0 @@
-rh/xi-zero-geometry/squared-xi-polynomial-gaussian-weil-disproof.md

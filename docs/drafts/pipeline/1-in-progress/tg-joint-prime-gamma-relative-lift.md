@@ -1,1 +1,0 @@
-rh/theta-gamma-source/tg-joint-prime-gamma-relative-lift.md

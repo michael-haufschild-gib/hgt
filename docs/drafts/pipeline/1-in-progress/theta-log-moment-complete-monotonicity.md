@@ -1,1 +1,0 @@
-rh/theta-and-heat-flow/theta-log-moment-complete-monotonicity.md

@@ -1,1 +1,0 @@
-rh/weil-dilation/wd-heat-per-pair-twelfth.md

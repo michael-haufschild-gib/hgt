@@ -1,1 +1,0 @@
-rh/suzuki-source/suzuki-jump-kernel-loewner-growth.md

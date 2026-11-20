@@ -1,1 +1,0 @@
-rh/mobius-and-prime-sums/squarefree-fourier-torsion-counterface-completion.md

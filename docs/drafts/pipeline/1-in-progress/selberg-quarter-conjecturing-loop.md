@@ -1,1 +1,0 @@
-rh/selberg-and-automorphic/selberg-quarter-conjecturing-loop.md

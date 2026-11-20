@@ -1,1 +1,0 @@
-rh/source-and-receiver-laws/source-horizontal-wold-weighted-resolvent-edge-frankenstein.md

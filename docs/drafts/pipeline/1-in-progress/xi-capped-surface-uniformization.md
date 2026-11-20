@@ -1,1 +1,0 @@
-rh/xi-zero-geometry/xi-capped-surface-uniformization.md

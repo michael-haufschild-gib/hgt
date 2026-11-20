@@ -1,1 +1,0 @@
-rh/gamma-and-archimedean/multiplicative-wold-gamma-anomaly-purity-rh.md

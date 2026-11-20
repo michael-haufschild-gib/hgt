@@ -1,8 +1,0 @@
-{
-  "workers": 4,
-  "seconds": 2.618551053106785,
-  "failure": "TypeError('Object of type bool_ is not JSON serializable')",
-  "script_sha256": "83166f7954e622e7d5b1860ef8f53c3bae8f023647ee5bb979c93d00707a3b43",
-  "source_sha256": "77bcc9058e05d01f20fdbe49536ab800b5a046512324cb2e5e2605cde2313427",
-  "results": []
-}

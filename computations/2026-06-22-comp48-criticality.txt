@@ -1,3 +1,0 @@
-d=8: inertia(H0_minus)=(8,1); a_c(-0.16)=0.16 (true mass 0.16, deficit=2.96e-41); argmin a_c at y*=-0.16 a_c=0.16  [margin=1.85e-40]
-d=12: inertia(H0_minus)=(12,1); a_c(-0.16)=0.16 (true mass 0.16, deficit=1.49e-64); argmin a_c at y*=-0.16 a_c=0.16  [margin=9.34e-64]
-d=16: inertia(H0_minus)=(16,1); a_c(-0.16)=0.16 (true mass 0.16, deficit=3.92e-89); argmin a_c at y*=-0.16 a_c=0.16  [margin=2.45e-88]

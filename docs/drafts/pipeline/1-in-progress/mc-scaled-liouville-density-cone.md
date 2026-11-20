@@ -1,1 +1,0 @@
-rh/mobius-and-prime-sums/mc-scaled-liouville-density-cone.md

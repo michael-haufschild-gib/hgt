@@ -1,1 +1,0 @@
-rh/bagchi-and-cubic-sources/bag-hyperbolic-phase-cell-cancellation.md

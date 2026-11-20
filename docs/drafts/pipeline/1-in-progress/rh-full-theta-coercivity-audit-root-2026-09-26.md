@@ -1,1 +1,0 @@
-bookkeeping/audits-ledgers-and-reviews/rh-full-theta-coercivity-audit-root-2026-09-26.md

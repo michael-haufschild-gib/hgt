@@ -1,1 +1,0 @@
-rh/hedenmalm-sonin/hedenmalm-center-mixed-double-positivity-law.md

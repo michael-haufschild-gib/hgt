@@ -1,1 +1,0 @@
-rh/li-criterion/li-complex-orientation-conjecture-loop-2026-09-29.md

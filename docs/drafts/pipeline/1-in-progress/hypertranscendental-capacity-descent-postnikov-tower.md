@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/hypertranscendental-capacity-descent-postnikov-tower.md

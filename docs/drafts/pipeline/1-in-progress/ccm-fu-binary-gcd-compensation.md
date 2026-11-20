@@ -1,1 +1,0 @@
-rh/ccm-fu-and-clock-motives/ccm-fu-binary-gcd-compensation.md

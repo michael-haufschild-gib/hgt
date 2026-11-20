@@ -1,1 +1,0 @@
-rh/spectral-and-operator-routes/levinson-critical-proportion-programme.md

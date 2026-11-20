@@ -1,1 +1,0 @@
-rh/arithmetic-and-analytic-routes/steinhaus-ldp-lean.md

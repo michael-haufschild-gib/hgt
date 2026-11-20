@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-valuation-veronese-master-law.md

@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/labeled-lattice-section-periodicity.md

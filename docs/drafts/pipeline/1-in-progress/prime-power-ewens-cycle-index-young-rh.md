@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-power-ewens-cycle-index-young-rh.md

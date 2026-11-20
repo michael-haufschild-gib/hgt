@@ -1,1 +1,0 @@
-rh/gamma-and-archimedean/irregular-stokes-robin-gamma-holonomy-coercivity.md

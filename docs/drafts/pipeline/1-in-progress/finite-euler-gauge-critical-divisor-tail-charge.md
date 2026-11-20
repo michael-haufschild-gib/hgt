@@ -1,1 +1,0 @@
-rh/finite-models-and-criteria/finite-euler-gauge-critical-divisor-tail-charge.md

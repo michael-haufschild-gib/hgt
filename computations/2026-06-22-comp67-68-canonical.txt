@@ -1,8 +1,0 @@
-=== comp67: s_d presentation-invariance ===
-  d=8: s(1/K)=2.9550313e-41  s(a_*+1/m)=2.9550313e-41  s(source M>=2+R^P)=2.9550313e-41  max-reldiff=1.8e-116
-  d=12: s(1/K)=1.4949316e-64  s(a_*+1/m)=1.4949316e-64  s(source M>=2+R^P)=1.4949316e-64  max-reldiff=8.3e-99
-=== comp68: gauge audit Xi -> e^{c w^2} Xi ===
-  true T_1=0.0462099862308 T_2=7.43451985705e-5 (power sums of zeros; GAUGE-INVARIANT by definition)
-  q=(0.3)w^2: naive Lemma-1 T_1 (from gauged Xi'/Xi) = 0.6462099862 = T_1 + 2c (contaminated by q'=c); contamination=0.6
-  q=(-1.5)w^2: naive Lemma-1 T_1 (from gauged Xi'/Xi) = -2.953790014 = T_1 + 2c (contaminated by q'=c); contamination=-3.0
-  => s_d uses the TRUE zero power-sums (gauge-invariant); naive source-extraction needs the canonical xi q-counterterm.

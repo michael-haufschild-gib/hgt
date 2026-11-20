@@ -1,1 +1,0 @@
-rh/spectral-and-operator-routes/theorem-m-with-margin-endpoint.md

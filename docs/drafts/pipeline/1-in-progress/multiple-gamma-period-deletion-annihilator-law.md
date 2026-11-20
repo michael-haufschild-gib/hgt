@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/multiple-gamma-period-deletion-annihilator-law.md

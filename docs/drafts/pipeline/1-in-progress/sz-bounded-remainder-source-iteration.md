@@ -1,1 +1,0 @@
-rh/suzuki-source/sz-bounded-remainder-source-iteration.md

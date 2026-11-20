@@ -1,1 +1,0 @@
-physics/time-and-causality/event-boundary-identity-spacetime-law.md

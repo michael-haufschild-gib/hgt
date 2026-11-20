@@ -1,1 +1,0 @@
-rh/weil-positivity/compact-weil-source-galerkin-discriminator.md

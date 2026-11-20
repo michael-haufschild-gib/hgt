@@ -1,1 +1,0 @@
-rh/cross-route-producers-and-frontiers/la-frontier-conjecture-loop-2026-09-29.md

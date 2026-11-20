@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-fundamental-radial-source-moment.md

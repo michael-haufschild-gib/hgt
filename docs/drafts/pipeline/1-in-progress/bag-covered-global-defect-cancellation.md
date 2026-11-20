@@ -1,1 +1,0 @@
-rh/bagchi-and-cubic-sources/bag-covered-global-defect-cancellation.md

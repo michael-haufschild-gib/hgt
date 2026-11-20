@@ -1,1 +1,0 @@
-rh/prime-mobius/pm-prime-square-coupled-source.md

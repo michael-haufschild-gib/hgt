@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-arch-bernstein-reflected-kernel-collar.md

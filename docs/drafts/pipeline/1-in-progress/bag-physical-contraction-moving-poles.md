@@ -1,1 +1,0 @@
-rh/bagchi-and-cubic-sources/bag-physical-contraction-moving-poles.md

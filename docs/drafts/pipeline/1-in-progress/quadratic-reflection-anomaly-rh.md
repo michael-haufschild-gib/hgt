@@ -1,1 +1,0 @@
-rh/arithmetic-and-analytic-routes/quadratic-reflection-anomaly-rh.md

@@ -1,1 +1,0 @@
-rh/riemann-hypothesis-general/rh-nonlocal-tail-root-2026-09-26.md

@@ -1,1 +1,0 @@
-rh/euler-products/euler-deletion-remainder-mobius-inversion.md

@@ -1,1 +1,0 @@
-rh/xi-zero-geometry/xi-same-fibre-fixed-star-source-descent.md

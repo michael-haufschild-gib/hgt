@@ -1,1 +1,0 @@
-rh/source-and-receiver-laws/source-localization-modular-defect-conservation-law.md

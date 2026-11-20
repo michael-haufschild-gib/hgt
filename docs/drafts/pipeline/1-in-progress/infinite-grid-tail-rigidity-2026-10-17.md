@@ -1,1 +1,0 @@
-rh/cross-route-producers-and-frontiers/infinite-grid-tail-rigidity-2026-10-17.md

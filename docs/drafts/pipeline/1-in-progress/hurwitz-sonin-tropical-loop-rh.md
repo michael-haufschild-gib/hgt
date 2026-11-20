@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/hurwitz-sonin-tropical-loop-rh.md

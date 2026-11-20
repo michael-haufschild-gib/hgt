@@ -1,1 +1,0 @@
-rh/arithmetic-positivity-and-criticality/arithmetic-sieve-prime-depth.md

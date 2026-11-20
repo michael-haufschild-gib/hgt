@@ -1,1 +1,0 @@
-rh/suzuki-source/suzuki-mangoldt-macroscopic-prime-block-surplus.md

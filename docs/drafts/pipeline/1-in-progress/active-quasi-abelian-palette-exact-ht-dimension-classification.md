@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/active-quasi-abelian-palette-exact-ht-dimension-classification.md

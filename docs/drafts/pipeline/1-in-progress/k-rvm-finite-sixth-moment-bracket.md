@@ -1,1 +1,0 @@
-rh/spectral-and-operator-routes/k-rvm-finite-sixth-moment-bracket.md

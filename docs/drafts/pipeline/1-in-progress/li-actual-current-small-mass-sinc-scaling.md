@@ -1,1 +1,0 @@
-rh/li-criterion/li-actual-current-small-mass-sinc-scaling.md

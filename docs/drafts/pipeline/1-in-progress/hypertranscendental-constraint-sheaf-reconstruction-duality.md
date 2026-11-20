@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/hypertranscendental-constraint-sheaf-reconstruction-duality.md

@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-syndrome-duursma-code-zeta-limit-rh.md

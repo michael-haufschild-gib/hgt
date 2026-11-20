@@ -1,1 +1,0 @@
-rh/spectral-and-operator-routes/entire-regularized-fredholm-determinant.md

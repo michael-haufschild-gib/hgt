@@ -1,1 +1,0 @@
-rh/horizon-contact/hcf-exact-layer-loop-2026-10-09.md

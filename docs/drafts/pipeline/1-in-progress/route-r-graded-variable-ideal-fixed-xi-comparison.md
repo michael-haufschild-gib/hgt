@@ -1,1 +1,0 @@
-rh/numbered-routes/r/route-r-graded-variable-ideal-fixed-xi-comparison.md

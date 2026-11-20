@@ -1,1 +1,0 @@
-rh/hedenmalm-sonin/sonin-cutoff-transversality-realization.md

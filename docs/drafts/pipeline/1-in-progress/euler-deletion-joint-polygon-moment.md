@@ -1,1 +1,0 @@
-rh/euler-products/euler-deletion-joint-polygon-moment.md

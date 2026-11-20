@@ -1,1 +1,0 @@
-rh/quasi-rh/quasi-rh-fixed-strip-improvement.md

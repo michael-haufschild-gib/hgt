@@ -1,1 +1,0 @@
-rh/theta-and-heat-flow/theta-cusp-c5-orbit-first-contact.md

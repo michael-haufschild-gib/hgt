@@ -1,1 +1,0 @@
-rh/finite-models-and-criteria/finite-planar-polynomial-realization.md

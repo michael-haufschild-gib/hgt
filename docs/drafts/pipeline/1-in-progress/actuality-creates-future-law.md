@@ -1,1 +1,0 @@
-physics/spacetime-and-gravity/actuality-creates-future-law.md

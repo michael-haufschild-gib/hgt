@@ -1,1 +1,0 @@
-rh/riemann-hypothesis-general/rh-nonmetric-infinite-geometry-loop.md

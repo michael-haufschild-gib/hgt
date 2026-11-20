@@ -1,1 +1,0 @@
-verified: interpolation margin survived; monotone likelihood improvement is killed

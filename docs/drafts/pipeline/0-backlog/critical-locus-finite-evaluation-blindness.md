@@ -1,1 +1,0 @@
-rh/spectral-and-operator-routes/critical-locus-finite-evaluation-blindness.md

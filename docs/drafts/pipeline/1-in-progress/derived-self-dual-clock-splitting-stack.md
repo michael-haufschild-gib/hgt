@@ -1,1 +1,0 @@
-physics/time-and-causality/derived-self-dual-clock-splitting-stack.md

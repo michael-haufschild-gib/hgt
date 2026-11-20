@@ -1,1 +1,0 @@
-Reserved independent character-theta challenge. All selected 160-digit interior/forward roots and t+.01 controls; direct190-digit source integral,40 character terms,cutoffs3.5/4. No Dirichlet kernel positivity claim. Parent108.35 seconds plus supplement465+10cleanup stays below600 whole-family seconds. This validates arithmetic continuation, not HB physics.

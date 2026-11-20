@@ -1,1 +1,0 @@
-rh/theta-source-transport/tt-actual-odd-border-primitive.md

@@ -1,5 +1,0 @@
-import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePUnitRieszRenewalBridge
-
-#print axioms RHTower.routeP_unitRiesz_renewal_moment_bridge
-#print axioms RHTower.routePWeightedChebyshevNullCredit_eq_centered_unitRiesz_renewal
-#print axioms RHTower.routePWeightedChebyshevNullCredit_eq_unitRiesz_resolvent_source

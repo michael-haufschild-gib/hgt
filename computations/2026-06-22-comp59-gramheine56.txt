@@ -1,8 +1,0 @@
-(a) d=5, N=13: det=9.238929669e-101 tuple-sum=9.238929669e-101 rel=1.33e-63 (all on-line tuples >0)
-(a) d=6, N=13: det=4.639350021e-141 tuple-sum=4.639350021e-141 rel=1.85e-61 (all on-line tuples >0)
-(b) d* for injected quartets (det H_d unconditional iff d*>d):
-    gamma0=16: d*(.05)=7 d*(.45)=5 -> det H_5 flips, H_6 flips
-    gamma0=18: d*(.05)=7 d*(.45)=5 -> det H_5 flips, H_6 flips
-    gamma0=20: d*(.05)=None d*(.45)=5 -> det H_5 flips, H_6 flips
-    gamma0=25: d*(.05)=None d*(.45)=7 -> det H_5 OK, H_6 OK
-    gamma0=30: d*(.05)=None d*(.45)=None -> det H_5 OK, H_6 OK

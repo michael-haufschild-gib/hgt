@@ -1,1 +1,0 @@
-physics/time-and-causality/forbidden-transition-causalization-universal-law.md

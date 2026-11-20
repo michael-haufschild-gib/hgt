@@ -1,1 +1,0 @@
-rh/suzuki-source/suzuki-paired-gamma-logistic-flat-sector-conjecture.md

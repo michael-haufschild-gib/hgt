@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-arch-koszul-spectral-quotient-cancellation-rh.md

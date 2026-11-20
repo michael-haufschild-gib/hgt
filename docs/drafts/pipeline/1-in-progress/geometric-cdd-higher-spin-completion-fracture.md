@@ -1,1 +1,0 @@
-hypertranscendence/dynamical-systems/geometric-cdd-higher-spin-completion-fracture.md

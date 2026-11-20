@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-kirchhoff-matroid-half-plane-rh.md

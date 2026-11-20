@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/composition-curvature-universal-law.md

@@ -1,7 +1,0 @@
-import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenTypeIIPartition
-
-#print axioms RHTower.Sieve.halaszMontgomery_blockPoly_finset_explicit
-#print axioms RHTower.Sieve.matomakiTeravainen_typeII_T1_sparse_energy
-#print axioms RHTower.Sieve.matomakiTeravainen_typeII_T3_energy
-#print axioms RHTower.Sieve.matomakiTeravainen_typeII_T3_power_saving
-#print axioms RHTower.Sieve.matomakiTeravainen_typeII_partition_energy

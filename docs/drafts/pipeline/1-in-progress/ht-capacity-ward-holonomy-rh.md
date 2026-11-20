@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/ht-capacity-ward-holonomy-rh.md

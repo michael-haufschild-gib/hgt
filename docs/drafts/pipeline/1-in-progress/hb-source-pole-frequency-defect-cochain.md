@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-source-pole-frequency-defect-cochain.md

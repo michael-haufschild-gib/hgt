@@ -1,6 +1,0 @@
-import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantileOddWindowMismatchMass
-
-#print axioms RHTower.odd_window_prime_count_weight_le_mismatch_mass_add_separators
-#print axioms RHTower.odd_window_proper_power_separator_cost_le_log
-#print axioms RHTower.odd_window_prime_count_weight_le_two_mismatch_mass_add_log
-#print axioms RHTower.eventually_odd_window_prime_count_weight_le_two_mismatch_mass_add_log

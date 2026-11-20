@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-causal-onset-contact-cancellation.md

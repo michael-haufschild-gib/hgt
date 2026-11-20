@@ -1,5 +1,0 @@
-Step 9 method 12: invariant
-NODE invariant: quadratic variation remains O(1) for Brownian paths under mesh refinement; smooth-path QV tends to 0.
-Transfer invariant: for log transport, the mesh-independent source object is the divisor current / contour integral of d log F.
-For an analytic nonzero patch, this invariant vanishes; around a zero, it is the integer winding/residue.
-Therefore the transfer is source geometry, not a new hypertranscendence detector.

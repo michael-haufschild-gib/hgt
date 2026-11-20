@@ -1,3 +1,0 @@
-building normalized source jets
-factoring source-coordinate minors
-factoring reconstructed-gap minors

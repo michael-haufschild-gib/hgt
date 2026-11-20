@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/wick-kolchin-interaction-spectrum.md

@@ -1,1 +1,0 @@
-rh/mobius-and-prime-sums/mc-complete-signed-correlation.md

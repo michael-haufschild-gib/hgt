@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/hypertranscendental-conormal-integrability-correspondence.md

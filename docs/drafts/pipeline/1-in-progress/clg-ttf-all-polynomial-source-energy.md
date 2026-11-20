@@ -1,1 +1,0 @@
-rh/critical-line-geometry/clg-ttf-all-polynomial-source-energy.md

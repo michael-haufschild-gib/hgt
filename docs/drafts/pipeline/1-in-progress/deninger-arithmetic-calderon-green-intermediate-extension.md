@@ -1,1 +1,0 @@
-rh/deninger-spectral/deninger-arithmetic-calderon-green-intermediate-extension.md

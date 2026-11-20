@@ -1,1 +1,0 @@
-rh/weil-positivity/weil-positivity-operator.md

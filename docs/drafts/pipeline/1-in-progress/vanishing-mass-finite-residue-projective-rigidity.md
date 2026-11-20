@@ -1,1 +1,0 @@
-rh/spectral-and-operator-routes/vanishing-mass-finite-residue-projective-rigidity.md

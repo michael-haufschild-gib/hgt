@@ -1,1 +1,0 @@
-rh/theta-gamma-source/tg-fourier-jet-mixed-cubic-closure.md

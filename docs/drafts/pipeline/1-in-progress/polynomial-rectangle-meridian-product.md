@@ -1,1 +1,0 @@
-rh/arithmetic-geometry-and-motives/polynomial-rectangle-meridian-product.md

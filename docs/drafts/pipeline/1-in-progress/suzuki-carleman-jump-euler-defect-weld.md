@@ -1,1 +1,0 @@
-rh/suzuki-source/suzuki-carleman-jump-euler-defect-weld.md

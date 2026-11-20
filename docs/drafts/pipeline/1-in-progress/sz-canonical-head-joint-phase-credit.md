@@ -1,1 +1,0 @@
-rh/suzuki-source/sz-canonical-head-joint-phase-credit.md

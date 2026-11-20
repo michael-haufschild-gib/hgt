@@ -1,1 +1,0 @@
-rh/deninger-spectral/deninger-closed-generator-hodge-weil-purity-universality-law.md

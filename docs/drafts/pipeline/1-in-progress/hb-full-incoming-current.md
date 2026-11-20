@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-full-incoming-current.md

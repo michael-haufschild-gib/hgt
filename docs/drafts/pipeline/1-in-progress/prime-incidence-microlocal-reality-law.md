@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-incidence-microlocal-reality-law.md

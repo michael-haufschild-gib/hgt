@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/excursion-intervention-geometry.md

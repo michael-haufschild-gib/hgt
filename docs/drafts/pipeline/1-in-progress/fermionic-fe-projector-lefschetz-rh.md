@@ -1,1 +1,0 @@
-quantum/recurrence-and-operators/fermionic-fe-projector-lefschetz-rh.md

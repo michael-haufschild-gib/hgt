@@ -1,1 +1,0 @@
-rh/theta-and-heat-flow/theta-krein-pick-congruence.md

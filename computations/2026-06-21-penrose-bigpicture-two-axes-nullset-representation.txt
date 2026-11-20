@@ -1,7 +1,0 @@
-Step 9 method 17: change representation
-Representation A: measure algebra
-  T and T_prime differ on {0}; the symmetric-difference support has Lebesgue measure 0.
-  In this quotient representation, all L1 observables see the same transformation.
-Representation B: point-orbit graph
-  Orbit_T(0) is dense for irrational rotation; Orbit_Tprime(0) is fixed at 0.
-Transfer: a density/average/realization-axis representation can quotient away a density-zero off-line defect; a source-current or faithful index representation cannot.

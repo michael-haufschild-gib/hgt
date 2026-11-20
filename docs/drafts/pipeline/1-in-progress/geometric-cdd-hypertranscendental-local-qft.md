@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/geometric-cdd-hypertranscendental-local-qft.md

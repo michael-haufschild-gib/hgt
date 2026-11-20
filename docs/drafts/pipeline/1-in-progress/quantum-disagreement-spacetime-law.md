@@ -1,1 +1,0 @@
-quantum/recurrence-and-localization/quantum-disagreement-spacetime-law.md

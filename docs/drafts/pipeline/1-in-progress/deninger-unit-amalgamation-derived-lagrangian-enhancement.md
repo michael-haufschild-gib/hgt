@@ -1,1 +1,0 @@
-rh/deninger-spectral/deninger-unit-amalgamation-derived-lagrangian-enhancement.md

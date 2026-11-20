@@ -1,1 +1,0 @@
-rh/theta-and-heat-flow/completed-seam-theta-green-square-boundary-law.md

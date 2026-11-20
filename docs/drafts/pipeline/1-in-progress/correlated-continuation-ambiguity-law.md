@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/correlated-continuation-ambiguity-law.md

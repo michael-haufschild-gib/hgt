@@ -1,1 +1,0 @@
-rh/theta-gamma-source/tg-fourier-radial-jet-completion.md

@@ -1,1 +1,0 @@
-rh/bi-scale-uncertainty/biscale-mixed-stability-strata-1810.md

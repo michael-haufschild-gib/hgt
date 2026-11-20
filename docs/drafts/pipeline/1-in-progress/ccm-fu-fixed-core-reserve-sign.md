@@ -1,1 +1,0 @@
-rh/ccm-fu-and-clock-motives/ccm-fu-fixed-core-reserve-sign.md

@@ -1,1 +1,0 @@
-rh/suzuki-source/sz-first-contact-multiplier-identity.md

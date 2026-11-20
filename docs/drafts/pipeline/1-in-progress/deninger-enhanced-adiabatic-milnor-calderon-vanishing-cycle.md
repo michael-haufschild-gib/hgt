@@ -1,1 +1,0 @@
-rh/deninger-spectral/deninger-enhanced-adiabatic-milnor-calderon-vanishing-cycle.md

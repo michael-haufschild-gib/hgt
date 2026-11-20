@@ -1,9 +1,0 @@
-- Augmented rational period rank classifies every finite multiple elliptic gamma function as differentially algebraic or hypertranscendental.
-
-- One rank-three period pair controls every finite section of every ambient family; otherwise all periods lie on one rational affine line.
-
-- Every occupation sector retaining one-particle states has exactly the one-particle positive Schatten spectrum and Hagedorn boundary.
-
-- Full bosonic occupation mass is a directed Euler product, yielding an entire enumeration-free infinite-mode determinant at every admissible genus.
-
-- Adjoining any mode obeys exact coface recursion; changing genus adds a finite local counterterm without changing the zero set.

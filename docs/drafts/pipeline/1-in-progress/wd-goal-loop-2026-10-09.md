@@ -1,1 +1,0 @@
-rh/weil-dilation/wd-goal-loop-2026-10-09.md

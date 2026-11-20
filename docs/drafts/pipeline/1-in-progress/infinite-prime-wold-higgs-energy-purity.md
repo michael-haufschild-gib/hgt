@@ -1,1 +1,0 @@
-rh/prime-arithmetic/infinite-prime-wold-higgs-energy-purity.md

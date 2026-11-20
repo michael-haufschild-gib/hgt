@@ -1,1 +1,0 @@
-rh/weil-positivity/weil-pole-vanishing-bathtub-certificate-sqrt2.md

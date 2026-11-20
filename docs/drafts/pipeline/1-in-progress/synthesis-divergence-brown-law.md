@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/synthesis-divergence-brown-law.md

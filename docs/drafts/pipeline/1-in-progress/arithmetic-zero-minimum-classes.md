@@ -1,1 +1,0 @@
-rh/arithmetic-positivity-and-criticality/arithmetic-zero-minimum-classes.md

@@ -1,6 +1,0 @@
-import GaloisForLFunctions.RHTower.SPEQuantileRieszRoutePIdealCentroidVarianceEscape
-
-#print axioms RHTower.routeP_matched_variance_correction
-#print axioms RHTower.tendsto_routeP_mass_div_psi_zero
-#print axioms RHTower.tendsto_routeP_psi_div_mass_atTop
-#print axioms RHTower.routeP_matched_variance_correction_atBot

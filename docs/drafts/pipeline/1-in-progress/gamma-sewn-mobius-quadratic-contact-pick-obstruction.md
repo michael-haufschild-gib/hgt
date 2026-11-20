@@ -1,1 +1,0 @@
-rh/gamma-and-archimedean/gamma-sewn-mobius-quadratic-contact-pick-obstruction.md

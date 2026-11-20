@@ -1,1 +1,0 @@
-rh/riemann-hypothesis-general/rh-goal-loop-opus-2026-09-29.md

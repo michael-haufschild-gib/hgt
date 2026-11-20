@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-gamma-signed-permutation-eulerian-rh.md

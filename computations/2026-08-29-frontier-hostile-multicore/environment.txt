@@ -1,7 +1,0 @@
-Linux 2052ac7867f4 6.8.0-138-generic #138-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 31 22:41:49 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
-Python 3.12.3
-mpmath==1.4.1
-numpy==2.5.2
-python-flint==0.9.0
-scipy==1.18.1
-128

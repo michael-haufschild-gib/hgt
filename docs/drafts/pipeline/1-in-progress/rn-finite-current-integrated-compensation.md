@@ -1,1 +1,0 @@
-rh/reflected-prime/rn-finite-current-integrated-compensation.md

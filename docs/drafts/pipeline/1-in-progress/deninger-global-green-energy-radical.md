@@ -1,1 +1,0 @@
-rh/deninger-spectral/deninger-global-green-energy-radical.md

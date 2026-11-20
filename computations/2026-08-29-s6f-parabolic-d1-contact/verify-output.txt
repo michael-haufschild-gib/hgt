@@ -1,1 +1,0 @@
-verified: direct D1 positive and scale-increasing; clock concavity survives, order-4 hierarchy fails; outer minimum is upper corner

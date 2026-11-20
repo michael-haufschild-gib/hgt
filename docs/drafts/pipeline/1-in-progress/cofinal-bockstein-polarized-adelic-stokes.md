@@ -1,1 +1,0 @@
-rh/cofinal-source/cofinal-bockstein-polarized-adelic-stokes.md

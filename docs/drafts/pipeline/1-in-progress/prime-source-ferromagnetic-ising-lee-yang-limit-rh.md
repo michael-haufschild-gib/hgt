@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-source-ferromagnetic-ising-lee-yang-limit-rh.md

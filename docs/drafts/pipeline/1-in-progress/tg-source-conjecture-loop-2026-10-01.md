@@ -1,1 +1,0 @@
-rh/theta-gamma-source/tg-source-conjecture-loop-2026-10-01.md

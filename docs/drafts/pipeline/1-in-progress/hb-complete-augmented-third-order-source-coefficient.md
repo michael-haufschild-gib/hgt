@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-complete-augmented-third-order-source-coefficient.md

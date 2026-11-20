@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/g2-dss-lower-bound.md

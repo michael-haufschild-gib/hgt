@@ -1,1 +1,0 @@
-rh/gamma-and-archimedean/gamma-opposite-variance-weyl-seam.md

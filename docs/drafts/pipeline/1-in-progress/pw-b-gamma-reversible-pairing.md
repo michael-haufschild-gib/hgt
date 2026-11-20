@@ -1,1 +1,0 @@
-rh/prime-weil-boundary/pw-b-gamma-reversible-pairing.md

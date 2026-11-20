@@ -1,7 +1,0 @@
-# D2 free-sector facts
-
-- The exact incidence-to-completed-source correction is non-differentiable at the centered clock and its normalized positive-imaginary slope cannot tend to zero. Therefore no analytic KMS counterterm can supply it. Lean: `MobiusIncidenceSourceCompletionSingularity.lean`.
-- Every finite Hermitian KMS entropy-production response has nonpositive normalized real slope on the positive imaginary clock; neither it nor a thermodynamic limit can be a source-faithful incidence completion. Lean: `MobiusIncidencePassiveCompletionNoGo.lean`.
-- If an independently passive finite KMS response minus a universal scalar response converges to the completion, the combined response already proves RH. Scalar post-response cancellation is not a D2 mechanism. Lean: `MobiusKMSScalarCancellationCapstone.lean`.
-- Finite prime-prefix schedules beneath the exact Chebyshev depth envelope have D2 defect unbounded below; an order-23 source budget only advances the verified finite-height receiver threshold to `141858 / 10000`. It does not give the required infinite source lower bound. Lean: `PrimeArchFinitePrefixSubcriticalScheduleNoGo.lean`, `PrimeArchLogHeightDefectOrderTwentyThreeEndpointOptimization.lean`.
-- Therefore the only live D2 target is a signed infinite prime--Gamma lower bound retained before scalar passive response formation. Boundary-to-interior transfer, local finite-prefix control, analytic completion, and scalar cancellation are established no-go/RH-receiver paths.

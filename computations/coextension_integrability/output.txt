@@ -1,2 +1,0 @@
-co-extension LHS sigma_1(A2)A1 == RHS sigma_2(A1)A2 for generic A? : False
-scalar/const example co-extension holds: True

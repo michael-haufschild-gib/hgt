@@ -1,7 +1,0 @@
-# Critical theta-wall finite part: facts
-
-- The leading rational-ratio wall coefficient is `ζ(1+2a) (pq)^(-1/2-a)` at a reduced ratio `p/q`, after removal of its positive analytic aperture factor. This is established in `docs/drafts/pipeline/1-in-progress/theta-center-pair-singularity-condensation.md`; analytic wall identification is paper-level, not the content of the new Lean file.
-- Its critical Laurent first variation after any scalar counterterm `C` has squarefree prime-cube pair kernel `∏_{p: unequal bits} p^(-1/2) · (C - 1/2 ∑_{p: unequal bits} log p)`.
-- New unconditional Lean fact: on the actual prime cube for a finite set `P`, the all-ones energy is exactly `∏_{p∈P} 2(1+p^(-1/2)) · (C - 1/2 ∑_{p∈P} log p/(√p+1))`. The sum diverges along finite prime sets. Therefore every scalar `C` gives a negative finite-cube energy on some `P`; no scalar finite-part counterterm preserves positivity on all prime cubes. See `ThetaWallCriticalPrimeCubeFinitePartNoGo.lean`.
-- Route implication: positive leading wall cannot be converted into an RH-selective positive critical kernel by scalar pole subtraction. The result does not control the signed completed prime–polar–Γ current, joint cutoff/order passage, or any RH-bearing source inequality. Its positive survivor is the exact product-mass/first-variation factorization, already public in Lean.
-- Priority limit: classical GCD-kernel positivity and log-type GCD sums exist in literature. No claim of external novelty or RH progress follows without a broader prior-art and source-landing audit.

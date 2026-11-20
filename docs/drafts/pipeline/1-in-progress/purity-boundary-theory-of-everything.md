@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/purity-boundary-theory-of-everything.md

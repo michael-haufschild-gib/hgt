@@ -1,3 +1,0 @@
-# Integral power cuts
-
-**Integral power contacts.** For the perfect $d$-th power correspondence, pair $i,j$ at the integer root $k=\lfloor (j/i)^{1/d}\rfloor$. The expected raw entry is $\psi(k)$, its continuum degree is $(j/i)^{1/d}$, and their endpoint discrepancy includes the fractional root. At $j=m^d$, $i=1$ every Chebyshev test is still realized. For a square correspondence this gives a genuinely square-root-scale bound in the original conductor even if the zero abscissa is one. The same degree change appears in the [smooth power contact](../3-formalized/sac-perfect-power-contacts-and-opposite-degrees.md).

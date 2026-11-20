@@ -1,1 +1,0 @@
-rh/hedenmalm-sonin/hedenmalm-theta-route-p-adjacent-prime-cofinal-feshbach.md

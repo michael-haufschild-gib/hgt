@@ -1,1 +1,0 @@
-rh/prime-arithmetic/calibrated-gamma-mertens-zero-orbit-comparison-rh.md

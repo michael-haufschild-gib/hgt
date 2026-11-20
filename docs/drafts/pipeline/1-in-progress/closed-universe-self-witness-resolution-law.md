@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/closed-universe-self-witness-resolution-law.md

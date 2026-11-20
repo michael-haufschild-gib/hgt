@@ -1,1 +1,0 @@
-rh/theta-and-heat-flow/theta-cusp-one-seam-turan-window-balance.md

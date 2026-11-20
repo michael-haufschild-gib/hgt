@@ -1,1 +1,0 @@
-rh/li-criterion/li-clock-integrated-source-sign.md

@@ -1,1 +1,0 @@
-rh/deninger-spectral/deninger-arithmetic-calderon-paugam-hardy-comparison.md

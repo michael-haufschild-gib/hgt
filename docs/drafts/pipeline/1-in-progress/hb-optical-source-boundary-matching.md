@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-optical-source-boundary-matching.md

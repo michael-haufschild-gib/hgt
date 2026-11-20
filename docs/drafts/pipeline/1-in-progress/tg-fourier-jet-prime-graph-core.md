@@ -1,1 +1,0 @@
-rh/theta-gamma-source/tg-fourier-jet-prime-graph-core.md

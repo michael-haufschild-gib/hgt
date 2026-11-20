@@ -1,1 +1,0 @@
-rh/arithmetic-geometry-and-motives/f1-object-forced-shape.md

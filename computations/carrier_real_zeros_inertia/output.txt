@@ -1,9 +1,0 @@
-first 8 zeta-zero heights γ_n: [14.135, 21.022, 25.011, 30.425, 32.935, 37.586, 40.919, 43.327]
-
-=== RH-true case: all zeros on the line (real γ_n), poles {±γ_n} ===
-  carrier Pick signature (n+, n-) = (10, 0)   -> κ₋ = 0  (expect 0 = Herglotz/RH)
-
-=== perturb k zeros OFF the line (γ_1..γ_k → γ + iε), exact-inertia predicts κ₋ = k ===
-  k=1 off-line: signature (n+, n-) = (9, 3)   -> κ₋ = 3  (expect 1)
-  k=2 off-line: signature (n+, n-) = (9, 3)   -> κ₋ = 3  (expect 2)
-  k=3 off-line: signature (n+, n-) = (8, 4)   -> κ₋ = 4  (expect 3)

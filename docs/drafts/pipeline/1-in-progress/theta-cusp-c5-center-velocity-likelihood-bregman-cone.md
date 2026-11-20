@@ -1,1 +1,0 @@
-rh/theta-and-heat-flow/theta-cusp-c5-center-velocity-likelihood-bregman-cone.md

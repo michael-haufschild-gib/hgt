@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-gamma-free-poisson-cumulant-rh.md

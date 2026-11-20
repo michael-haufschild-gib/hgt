@@ -1,1 +1,0 @@
-rh/prime-mobius/pm-log-smoothed-mobius-haar.md

@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-source-ramanujan-lift-ihara-limit-rh.md

@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/reality-obstruction-fixed-point-law.md

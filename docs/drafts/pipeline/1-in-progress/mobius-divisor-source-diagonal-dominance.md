@@ -1,1 +1,0 @@
-rh/mobius-and-prime-sums/mobius-divisor-source-diagonal-dominance.md

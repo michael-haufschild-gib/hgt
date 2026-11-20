@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/hypertranscendental-mackey-corona-field.md

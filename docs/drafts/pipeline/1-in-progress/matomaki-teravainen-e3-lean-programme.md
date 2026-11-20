@@ -1,1 +1,0 @@
-rh/prime-arithmetic/matomaki-teravainen-e3-lean-programme.md

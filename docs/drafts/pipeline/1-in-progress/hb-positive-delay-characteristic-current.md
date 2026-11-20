@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-positive-delay-characteristic-current.md

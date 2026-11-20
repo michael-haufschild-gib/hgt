@@ -1,1 +1,0 @@
-physics/time-and-causality/continuum-chronometric-equivalence-theorem.md

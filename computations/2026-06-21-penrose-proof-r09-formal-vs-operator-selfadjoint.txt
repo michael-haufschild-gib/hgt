@@ -1,8 +1,0 @@
-NODE experiment: boundary equations for the same formal expression -d^2/dx^2
-dirichlet {'rank_AB': 2, 'ABt_minus_BAt': [[0, 0], [0, 0]], 'self_adjoint_boundary': True}
-neumann {'rank_AB': 2, 'ABt_minus_BAt': [[0, 0], [0, 0]], 'self_adjoint_boundary': True}
-periodic {'rank_AB': 2, 'ABt_minus_BAt': [[0, 0], [0, 0]], 'self_adjoint_boundary': True}
-overfixed_left_endpoint {'rank_AB': 2, 'ABt_minus_BAt': [[0, 1], [-1, 0]], 'self_adjoint_boundary': False}
-
-Interpretation:
-The same formally self-adjoint differential expression supports both self-adjoint and non-self-adjoint operator domains. The missing datum is not another scalar detector; it is the boundary subspace satisfying the Green/Lagrange boundary-form condition. For the proof route this restates the existing boundary-extension/domain obligation for kappa_-.

@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/projective-source-square-universal-law.md

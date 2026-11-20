@@ -1,1 +1,0 @@
-../../bookkeeping/audits-ledgers-and-reviews/whole-corpus-mechanism-audit-and-acceptance-gate.md

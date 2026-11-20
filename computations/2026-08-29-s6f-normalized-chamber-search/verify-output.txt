@@ -1,1 +1,0 @@
-verified: exact scale elimination, z factor, independent tensor-Bernstein positivity at z <= 3/10, and an exact full-simplex counterexample

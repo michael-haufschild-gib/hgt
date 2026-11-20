@@ -1,1 +1,0 @@
-rh/suzuki-source/suzuki-rooted-midpoint-compound-gram.md

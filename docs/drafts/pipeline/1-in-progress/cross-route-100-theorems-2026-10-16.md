@@ -1,1 +1,0 @@
-rh/cross-route-producers-and-frontiers/cross-route-100-theorems-2026-10-16.md

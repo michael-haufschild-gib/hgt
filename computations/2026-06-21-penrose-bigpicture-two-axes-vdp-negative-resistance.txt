@@ -1,8 +1,0 @@
-Van der Pol negative-resistance energy balance
-initial=(0.1, 0.0) final=(+1.5301,-0.7680) last_radius_range=(1.5317,2.8300) net_dE_last20=-0.008042 pos_power_frac=0.307 last_peaks=[2.0086, 2.0086, 2.0086]
-initial=(1.0, 0.0) final=(+1.5633,-0.7465) last_radius_range=(1.5317,2.8300) net_dE_last20=-0.008172 pos_power_frac=0.307 last_peaks=[2.0086, 2.0086, 2.0086]
-initial=(4.0, 0.0) final=(+1.0373,-1.1285) last_radius_range=(1.5317,2.8300) net_dE_last20=-0.001137 pos_power_frac=0.307 last_peaks=[2.0086, 2.0086, 2.0086]
-Averaged amplitude equation terminal radii
-r0=0.1 -> r(T)=2.00000000
-r0=1.0 -> r(T)=2.00000000
-r0=4.0 -> r(T)=2.00000000

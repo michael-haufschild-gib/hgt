@@ -1,1 +1,0 @@
-physics/time-and-causality/observer-spectral-shortcut-action-law.md

@@ -1,1 +1,0 @@
-rh/gamma-and-archimedean/absolute-euler-squared-seam-sign-violation.md

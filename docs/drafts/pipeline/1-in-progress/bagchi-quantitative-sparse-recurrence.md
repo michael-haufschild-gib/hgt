@@ -1,1 +1,0 @@
-rh/bagchi-and-cubic-sources/bagchi-quantitative-sparse-recurrence.md

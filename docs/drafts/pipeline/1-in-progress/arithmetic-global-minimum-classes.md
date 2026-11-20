@@ -1,1 +1,0 @@
-rh/arithmetic-positivity-and-criticality/arithmetic-global-minimum-classes.md

@@ -1,9 +1,0 @@
-=== chunk 1: smallest d with lambda_min<0 (N=80, DMAX=8, dps80) ===
-  a=0.1  g0=14.13  d*=4 ; a=0.25 g0=14.13 d*=4 ; a=0.4 g0=14.13 d*=3 ; g0>=30 d*>8
-=== chunk 2: push DMAX=14, dps140, N=120 ===
-# a    g0    d*(up to 14)
-  0.25    14.1   4
-  0.25    30.0   11
-  0.25    80.0   None
-  0.40    80.0   None
-  0.25   200.0   None

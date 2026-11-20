@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/quenched-observer-spectral-action-law.md

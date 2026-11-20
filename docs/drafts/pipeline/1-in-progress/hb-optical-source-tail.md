@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-optical-source-tail.md

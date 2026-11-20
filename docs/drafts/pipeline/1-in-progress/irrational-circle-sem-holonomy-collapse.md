@@ -1,1 +1,0 @@
-quantum/recurrence-and-operators/irrational-circle-sem-holonomy-collapse.md

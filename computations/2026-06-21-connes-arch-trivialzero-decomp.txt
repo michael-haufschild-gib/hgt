@@ -1,6 +1,0 @@
-# arch trivial-zero decomposition cross-check, d=6, dps=60
-Qa via Hankel(polygamma) = -426732108.675193807629921
-Qa via -4p(-4)^2 + trivial-zero squares = -426732108.675193807629921
-   pole term = -426732109.5   trivial-zero sum = 0.83673363
-rel diff = 9.7865e-62
----

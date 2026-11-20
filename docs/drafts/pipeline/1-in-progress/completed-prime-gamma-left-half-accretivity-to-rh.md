@@ -1,1 +1,0 @@
-rh/prime-arithmetic/completed-prime-gamma-left-half-accretivity-to-rh.md

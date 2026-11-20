@@ -1,1 +1,0 @@
-rh/weil-positivity/weil-polar-bombieri-yoshida-prime-two-entry.md

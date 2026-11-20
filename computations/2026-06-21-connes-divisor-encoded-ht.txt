@@ -1,9 +1,0 @@
-Testing s-independence of R(s) = xi'/xi - sum_rho[1/(s-rho)+1/rho]  (should -> constant):
-  N_zeros   R(s1)              R(s2)              |R(s1)-R(s2)|
-     40   (-0.0202257 + 0.421509j)  (-0.0159233 + 0.123j)       0.299
-     80   (-0.0210272 + 0.285591j)  (-0.0181501 + 0.0847935j)       0.201
-
-Verdict: |R(s1)-R(s2)| shrinks as N grows => R is s-independent (a constant b).
-=> the divisor-quotiented connection of xi is TAME (constant); a Kolchin/diff-algebraic-closure
-   test on it returns ZERO defect. GPT-02's source-quotiented detector removes xi's HT, which is
-   DIVISOR-ENCODED (in the zero locations {gamma_n} = the value/arithmetic axis, APEX-A).

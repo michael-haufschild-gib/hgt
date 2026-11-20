@@ -1,1 +1,0 @@
-rh/spectral-and-operator-routes/nested-wold-first-defect-logclock-determinant-anomaly.md

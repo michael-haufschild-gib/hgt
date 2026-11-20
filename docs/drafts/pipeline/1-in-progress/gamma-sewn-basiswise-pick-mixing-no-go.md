@@ -1,1 +1,0 @@
-rh/gamma-and-archimedean/gamma-sewn-basiswise-pick-mixing-no-go.md

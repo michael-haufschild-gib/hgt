@@ -1,1 +1,0 @@
-rh/euler-dyadic-quantization/edq-logarithmic-cotangent-orientation.md

@@ -1,3 +1,0 @@
-non_scalar_holonomy_closure: 104
-mode_triad_beyond_passport: 100
-phase_area_counterexample: 103

@@ -1,1 +1,0 @@
-rh/numbered-routes/e/route-e-physical-shell-conditioned-parity-energy-regression-law.md

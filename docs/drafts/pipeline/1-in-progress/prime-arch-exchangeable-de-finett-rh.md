@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-arch-exchangeable-de-finett-rh.md

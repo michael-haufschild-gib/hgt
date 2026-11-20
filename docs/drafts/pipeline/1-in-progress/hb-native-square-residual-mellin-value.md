@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-native-square-residual-mellin-value.md

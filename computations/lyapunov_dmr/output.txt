@@ -1,6 +1,0 @@
-=== DMR / Avila Lyapunov referee (golden-mean frequency, N=3e5) ===
-rotation (reducible, abelian hull)        L = 0.000000   [DMR-abelian: expect 0]
-AMO lam=0.5 (subcritical)                 L = 0.000002   [expect ~0 if E in spectrum]
-AMO lam=1.0 (critical, self-dual)         L = 0.000015   [Avila: max(0,log1)=0]
-AMO lam=2.0 (supercritical, SL2 hull)     L = 0.693151   [Avila: log2 = 0.693147]
-log2 reference = 0.693147

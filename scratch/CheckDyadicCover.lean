@@ -1,5 +1,0 @@
-import GaloisForLFunctions.RHTower.RouteBDyadicCore
-
-#check exists_dyadic_cover
-#check RHTower.exists_dyadic_cover
-#check GaloisForLFunctions.RHTower.exists_dyadic_cover

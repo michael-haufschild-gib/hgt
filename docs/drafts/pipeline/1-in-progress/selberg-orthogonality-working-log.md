@@ -1,1 +1,0 @@
-bookkeeping/audits-ledgers-and-reviews/selberg-orthogonality-working-log.md

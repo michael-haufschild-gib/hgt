@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/supergaussian-da-coefficient-floor.md

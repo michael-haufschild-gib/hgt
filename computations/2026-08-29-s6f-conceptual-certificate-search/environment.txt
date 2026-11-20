@@ -1,5 +1,0 @@
-RunPod host: 216.81.151.68:16020
-CPU count: 128
-Python 3.12.3
-numpy 2.1.2
-sympy 1.13.3

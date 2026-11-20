@@ -1,1 +1,0 @@
-rh/ccm-fu-and-clock-motives/ccm-critical-mellin-adjacent-block-subpower-lower.md

@@ -1,1 +1,0 @@
-rh/xi-zero-geometry/no-boundary-selection-of-zeta.md

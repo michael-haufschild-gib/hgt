@@ -1,1 +1,0 @@
-rh/source-and-receiver-laws/source-polarized-laurent-pluecker-tangent-ward-law.md

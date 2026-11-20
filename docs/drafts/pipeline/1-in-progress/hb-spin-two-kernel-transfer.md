@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-spin-two-kernel-transfer.md

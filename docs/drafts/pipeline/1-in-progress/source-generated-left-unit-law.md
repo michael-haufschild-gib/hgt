@@ -1,1 +1,0 @@
-rh/source-and-receiver-laws/source-generated-left-unit-law.md

@@ -1,6 +1,0 @@
-# SA cross-check (polygamma vs Taylor[A]) max rel err = 1.05e-121
-# mode=band N=300 DMAX=6 dps=120 (cache 300@170)
-# lmin=Q0[p_d]=1.02739e-39 sum_c=9.58154e-40 peak n*=4(gamma=30.425,frac=0.2943)
-# 50% within n<=7; 90% within n<=29; top(1-3)=0.04448 mid(4-20)=0.7506 tail(>=21)=0.2049
-# first 8 fr: 7.03e-9 0.000797 0.0437 0.294 0.0138 0.091 0.114 0.0887
-EXIT=0

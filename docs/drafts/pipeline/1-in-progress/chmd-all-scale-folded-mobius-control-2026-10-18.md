@@ -1,1 +1,0 @@
-rh/critical-horizon-mobius-dynamics/chmd-all-scale-folded-mobius-control-2026-10-18.md

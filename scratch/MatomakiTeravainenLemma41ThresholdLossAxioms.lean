@@ -1,4 +1,0 @@
-import GaloisForLFunctions.RHTower.Sieve.MatomakiTeravainenLemma41ThresholdLoss
-
-#print axioms RHTower.Sieve.rpow_neg_huxleyThresholdLossSigma
-#print axioms RHTower.Sieve.exists_lemma41_huxley_threshold_loss

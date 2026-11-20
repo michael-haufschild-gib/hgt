@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-causal-horizon-circle-kernel.md

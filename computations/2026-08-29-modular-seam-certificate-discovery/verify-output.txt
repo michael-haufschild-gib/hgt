@@ -1,1 +1,0 @@
-verified: exact decompositions, C5 interval certificate, and S6F odd seam-derivative audit

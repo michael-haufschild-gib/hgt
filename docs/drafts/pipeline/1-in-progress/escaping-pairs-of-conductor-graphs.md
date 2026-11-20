@@ -1,7 +1,0 @@
-# Escaping pairs of conductor graphs
-
-Let \(T_d\) multiply every conductor by \(d\). The integral operator \(P_R=1+T_{R^2}-T_{(R+1)^2}\) kills the positive pole on every divisor. Its two added translates are separated by \(2\log(1+1/R)\). For a fixed integral divisor, each interaction with the original support is a difference of spline traces of size \(O_a(R^{2w-1})\), where \(w<1/2\) is the established width. Interactions internal to the added pair tend to zero by continuity at the original lags. Hence \(Q(P_Ra)\to Q(a)\), with at most three times the original total variation.
-
-Reflection gives the integral operator \(T_{R^2(R+1)^2}+T_{(R+1)^2}-T_{R^2}\), killing the negative pole. The two operators commute and preserve previously vanishing pole degrees. Consecutive approximation therefore produces integral divisors annihilating both poles with degrees tending to the original signed degree and variation at most nine times the original. The comparison target is the actual ordinary-prime generator on these doubly balanced divisors.
-
-**Four units on squares.** For \(a=e_1+e_{n^2}\), one escaping pair suffices to kill the positive pole: add \(e_{R^2}-e_{(R+n+1)^2}\). On sending \(R\to\infty\) with fixed \(n\), the degree approaches that of the effective pair. The fixed choice \(R=n^4\) gives a uniform error of order \(n^{8w-3}\) for the long lags. [Width-sensitive difference bound](../../../../formal/GaloisForLFunctions/SurfaceOfSpecZ/TheGapMethodIterates.lean)

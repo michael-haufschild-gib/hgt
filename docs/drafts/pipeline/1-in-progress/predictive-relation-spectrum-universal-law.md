@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/predictive-relation-spectrum-universal-law.md

@@ -1,1 +1,0 @@
-rh/spectral-and-operator-routes/completed-seam-thorin-subordinator-rh.md

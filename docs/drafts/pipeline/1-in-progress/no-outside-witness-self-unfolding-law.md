@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/no-outside-witness-self-unfolding-law.md

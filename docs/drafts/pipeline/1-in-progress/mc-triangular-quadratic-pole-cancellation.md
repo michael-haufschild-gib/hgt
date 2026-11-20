@@ -1,1 +1,0 @@
-rh/mobius-and-prime-sums/mc-triangular-quadratic-pole-cancellation.md

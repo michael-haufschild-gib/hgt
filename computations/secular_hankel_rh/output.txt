@@ -1,7 +1,0 @@
-=== RH-true: real Ξ-zeros ±γ_n (first 20) — secular-moment Hankel [P_{i+j}] ===
-  Hankel size 6: (n+, n-) = (4, 0)   κ₋ expect 0 (PSD = Hamburger moment matrix)
-
-=== off-line: move k zeros γ→γ+iδ (δ=2.0); Hankel should lose positivity ===
-  k=1 off-line: (n+, n-) = (4, 0)  -> n- = 0  (RH-broken ⟹ expect n- > 0)
-  k=2 off-line: (n+, n-) = (4, 0)  -> n- = 0  (RH-broken ⟹ expect n- > 0)
-  k=3 off-line: (n+, n-) = (4, 0)  -> n- = 0  (RH-broken ⟹ expect n- > 0)

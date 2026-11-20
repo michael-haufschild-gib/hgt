@@ -1,1 +1,0 @@
-rh/xi-zero-geometry/cubic-flat-current-normalization.md

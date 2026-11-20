@@ -1,1 +1,0 @@
-rh/arithmetic-and-analytic-routes/multiplicity-parity-ladder-route.md

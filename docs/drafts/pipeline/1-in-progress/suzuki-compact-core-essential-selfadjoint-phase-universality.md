@@ -1,1 +1,0 @@
-rh/suzuki-source/suzuki-compact-core-essential-selfadjoint-phase-universality.md

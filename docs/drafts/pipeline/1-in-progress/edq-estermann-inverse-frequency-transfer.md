@@ -1,1 +1,0 @@
-rh/euler-dyadic-quantization/edq-estermann-inverse-frequency-transfer.md

@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/scalar-recurrence-traceless-replica-decoupling-law.md

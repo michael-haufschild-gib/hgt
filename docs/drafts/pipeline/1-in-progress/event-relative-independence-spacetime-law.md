@@ -1,1 +1,0 @@
-physics/time-and-causality/event-relative-independence-spacetime-law.md

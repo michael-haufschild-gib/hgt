@@ -1,7 +1,0 @@
-{
-  "production_cases": 36,
-  "validation_tasks": 12,
-  "selected_configurations": 6,
-  "max_scaled_100_160_difference": 1.7362057423160386e-13,
-  "max_scaled_production_difference": 1.735936243616081e-09
-}

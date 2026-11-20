@@ -1,1 +1,0 @@
-rh/arithmetic-positivity/apt-critical-collar-resonance-2026-10-18.md

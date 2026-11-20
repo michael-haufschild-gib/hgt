@@ -1,1 +1,0 @@
-rh/spectral-and-operator-routes/hyperbolic-multiplier-lifting-2026-10-17.md

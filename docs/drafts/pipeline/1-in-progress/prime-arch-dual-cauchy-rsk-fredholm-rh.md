@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-arch-dual-cauchy-rsk-fredholm-rh.md

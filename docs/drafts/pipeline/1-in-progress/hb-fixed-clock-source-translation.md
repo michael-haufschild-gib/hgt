@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-fixed-clock-source-translation.md

@@ -1,1 +1,0 @@
-physics/spacetime-and-gravity/actuality-order-curvature-law.md

@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-onset-pulse-green-action.md

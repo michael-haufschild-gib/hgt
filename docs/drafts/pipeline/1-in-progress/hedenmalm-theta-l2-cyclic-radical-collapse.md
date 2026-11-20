@@ -1,1 +1,0 @@
-rh/hedenmalm-sonin/hedenmalm-theta-l2-cyclic-radical-collapse.md

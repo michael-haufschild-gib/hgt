@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-theta-young-thoma-schur-rh.md

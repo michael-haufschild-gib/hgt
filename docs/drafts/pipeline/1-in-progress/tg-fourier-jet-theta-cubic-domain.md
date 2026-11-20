@@ -1,1 +1,0 @@
-rh/theta-gamma-source/tg-fourier-jet-theta-cubic-domain.md

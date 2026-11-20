@@ -1,1 +1,0 @@
-rh/source-and-receiver-laws/source-generated-ternary-reciprocity-law.md

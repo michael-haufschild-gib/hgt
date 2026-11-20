@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-principal-growth-energy.md

@@ -1,1 +1,0 @@
-rh/arithmetic-geometry-and-motives/birch-tate-unconditional-lean.md

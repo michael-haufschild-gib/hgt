@@ -1,1 +1,0 @@
-rh/source-and-receiver-laws/source-contraction-two-volterra-domination.md

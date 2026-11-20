@@ -1,7 +1,0 @@
-=== marginal-regime (sigma=1/2) value distribution: Ingham 2nd moment & Selberg log-variance (D5 12.1-12.2) ===
-T=   500 N=4000 : <|z|^2>=4.5528 (log(T/2pi)=4.3767) ; Var(log|z|)=1.3043 ((1/2)loglogT=0.9135) ; mean(log|z|)=0.0024
-T=  2000 N=8000 : <|z|^2>=5.9149 (log(T/2pi)=5.7630) ; Var(log|z|)=1.4478 ((1/2)loglogT=1.0141) ; mean(log|z|)=0.0063
-T= 10000 N=12000 : <|z|^2>=7.5275 (log(T/2pi)=7.3725) ; Var(log|z|)=1.6606 ((1/2)loglogT=1.1102) ; mean(log|z|)=-0.0060
-
-# Reading: 2nd moment ~ log(T/2pi) confirmed (excess ~ 2*gamma-1 = 0.15); mean(log|z|) -> 0 (Selberg centering);
-# Var(log|z|) grows in the loglog order but overshoots (1/2)loglogT (slow Selberg convergence + near-zero sampling).

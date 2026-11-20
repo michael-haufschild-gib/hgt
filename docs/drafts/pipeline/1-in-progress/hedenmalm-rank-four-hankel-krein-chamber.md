@@ -1,1 +1,0 @@
-rh/hedenmalm-sonin/hedenmalm-rank-four-hankel-krein-chamber.md

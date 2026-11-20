@@ -1,1 +1,0 @@
-rh/xi-zero-geometry/xi-marked-joint-monodromy.md

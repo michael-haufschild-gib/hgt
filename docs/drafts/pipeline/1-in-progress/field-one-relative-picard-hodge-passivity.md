@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/field-one-relative-picard-hodge-passivity.md

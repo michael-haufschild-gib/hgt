@@ -1,1 +1,0 @@
-rh/source-and-receiver-laws/source-rigged-clock-domain.md

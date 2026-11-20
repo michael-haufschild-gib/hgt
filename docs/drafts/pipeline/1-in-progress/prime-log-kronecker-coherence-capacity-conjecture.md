@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-log-kronecker-coherence-capacity-conjecture.md

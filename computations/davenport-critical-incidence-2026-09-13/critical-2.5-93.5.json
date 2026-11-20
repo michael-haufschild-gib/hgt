@@ -1,8 +1,0 @@
-{
-  "start_real": 2.5,
-  "start_height": 93.5,
-  "dps": 60,
-  "status": "error",
-  "error": "ArithmeticError('critical Newton domain escape')",
-  "seconds": 0.7131644729524851
-}

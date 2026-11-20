@@ -1,1 +1,0 @@
-rh/source-and-receiver-laws/source-poisson-rees-even-odd-energy.md

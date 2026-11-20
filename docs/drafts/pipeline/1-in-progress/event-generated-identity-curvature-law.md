@@ -1,1 +1,0 @@
-physics/time-and-causality/event-generated-identity-curvature-law.md

@@ -1,1 +1,0 @@
-verified: refined D1 direct signs and boundary records are internally consistent

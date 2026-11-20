@@ -1,1 +1,0 @@
-physics/time-and-causality/color-blind-event-gram-spacetime-law.md

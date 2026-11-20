@@ -1,1 +1,0 @@
-rh/reflected-prime/rn-finite-pair-positive-transport-primitive.md

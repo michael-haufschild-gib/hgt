@@ -1,1 +1,0 @@
-rh/bagchi-and-cubic-sources/bag-rational-product-trace-euler-cancellation.md

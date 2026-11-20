@@ -1,1 +1,0 @@
-rh/numbered-routes/e/route-e-literal-renewal-energy-attack.md

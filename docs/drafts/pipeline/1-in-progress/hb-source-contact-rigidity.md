@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-source-contact-rigidity.md

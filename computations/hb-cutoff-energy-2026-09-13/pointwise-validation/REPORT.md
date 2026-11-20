@@ -1,3 +1,0 @@
-# Independent pointwise source check
-
-Evaluated the original normalized Fourier sum pointwise, then squared and subtracted before integrating. This bypasses the parent Fourier-convolution and cutoff-increment implementations. The full-period angular grid integrates the finite trigonometric polynomial without aliasing; compact-cell angular integration uses a separate Gaussian grid. All packets completed. Parent analysis records differences, all below the frozen1e-9 threshold. Special functions use50 digits, accumulation and Gaussian nodes use doubles; no rigorous tail/interval certificate. Exact cases, parameters, raw packets and original download manifest retained.

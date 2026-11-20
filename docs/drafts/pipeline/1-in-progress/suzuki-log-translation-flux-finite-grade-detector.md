@@ -1,1 +1,0 @@
-rh/suzuki-source/suzuki-log-translation-flux-finite-grade-detector.md

@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/hypertranscendental-scattering-elliptic-uv-boundary.md

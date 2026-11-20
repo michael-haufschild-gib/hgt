@@ -1,1 +1,0 @@
-rh/prime-mobius/pm-power-damped-mobius-haar.md

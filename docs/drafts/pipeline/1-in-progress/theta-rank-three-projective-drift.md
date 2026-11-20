@@ -1,1 +1,0 @@
-rh/theta-and-heat-flow/theta-rank-three-projective-drift.md

@@ -1,1 +1,0 @@
-rh/xi-zero-geometry/arbitrary-modulus-hurwitz-virtual-anomaly-descent.md

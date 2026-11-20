@@ -1,1 +1,0 @@
-Actual ξ collision exclusion throughout 0<t≤9/128, using additional arithmetic information.

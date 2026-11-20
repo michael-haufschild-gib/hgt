@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/energy-matched-eigenframe-source-memory-law.md

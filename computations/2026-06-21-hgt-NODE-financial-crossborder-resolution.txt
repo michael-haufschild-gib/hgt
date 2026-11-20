@@ -1,5 +1,0 @@
-NODE: cross-border legal/resolution differences alter loss propagation
-case defaults_q50 defaults_q90 loss_q50 loss_q90 front_loaded_loss_q50
-uniform_rules           1.000000      3.000000     0.362874     1.095162           1.000000
-fragmented_rules        1.000000     87.000000     0.470392     7.549881           1.000000
-harsh_crossborder       2.000000     88.000000     0.764101     7.647569           0.501834

@@ -1,1 +1,0 @@
-quantum/recurrence-and-operators/wick-contracted-differential-matroid-field.md

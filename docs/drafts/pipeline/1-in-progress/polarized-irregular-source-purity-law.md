@@ -1,1 +1,0 @@
-cross-disciplinary/universal-laws-and-structures/polarized-irregular-source-purity-law.md

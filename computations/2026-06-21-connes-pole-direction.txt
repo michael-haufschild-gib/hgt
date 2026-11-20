@@ -1,8 +1,0 @@
-# pole-direction test, d=5, dps=100
-# (i) Q_arch most-negative eigenvalue = -4.4739e+6; |<negeigvec, u_hat>| = 1.0  (->1 means it IS the pole dir)
-# (ii) on u=(-4)^i:  Q_arch[u]=-5.004e+12  Q_prime[u]=5.004e+12  Q_0[u]=0.0456287
-#      ratio |Q_0[u]| / |Q_arch[u]| = 9.118e-15  (small = pole cancels)
-# (iii) Q_arch inertia (npos,nneg)=(5,1); Q_0 inertia=(6,0)
-0)
-# => verified: the single negative direction of Q_arch IS the pole direction u_i=(-4)^i; Q_arch[u] and
-#    Q_prime[u] cancel to the entireness residue (s=1 pole cancellation, ~1e-12); Q_arch is PD on u^perp.

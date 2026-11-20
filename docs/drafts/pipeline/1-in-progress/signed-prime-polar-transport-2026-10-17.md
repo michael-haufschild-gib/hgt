@@ -1,1 +1,0 @@
-rh/prime-arithmetic/signed-prime-polar-transport-2026-10-17.md

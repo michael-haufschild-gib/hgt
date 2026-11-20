@@ -1,1 +1,0 @@
-rh/source-and-receiver-laws/source-effective-polar-kummer-conormal-purity.md

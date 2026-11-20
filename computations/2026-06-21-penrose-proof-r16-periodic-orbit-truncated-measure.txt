@@ -1,6 +1,0 @@
-NODE representation: chaotic physical sample versus periodic invariant measure
-{'name': 'physical_sample', 'moments_0_to_6': [1.0, 0.494622, 0.37108269, 0.31010523, 0.2722897, 0.24586154, 0.22598304], 'H0_d2_inertia': (0, 0, 3), 'H1_d2_inertia': (0, 0, 3)}
-{'name': 'fixed_orbit_measure', 'moments_0_to_6': [1.0, 0.75, 0.5625, 0.421875, 0.31640625, 0.23730469, 0.17797852], 'H0_d2_inertia': (0, 2, 1), 'H1_d2_inertia': (0, 2, 1)}
-
-Proof-route transfer audit:
-Both physical and atypical finite/atomic invariant measures give PSD truncated Hankel forms. This only says finite square-test positivity can be represented by finite atomic impostors. That is the existing finite-prefix/finite-flat warning, not a new proof-route result.

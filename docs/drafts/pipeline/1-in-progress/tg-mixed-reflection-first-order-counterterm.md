@@ -1,1 +1,0 @@
-rh/theta-gamma-source/tg-mixed-reflection-first-order-counterterm.md

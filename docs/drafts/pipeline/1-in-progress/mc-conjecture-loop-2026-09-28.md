@@ -1,1 +1,0 @@
-rh/mobius-and-prime-sums/mc-conjecture-loop-2026-09-28.md

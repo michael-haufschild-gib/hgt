@@ -1,1 +1,0 @@
-bookkeeping/audits-ledgers-and-reviews/nearest-neighbor-chain-projective-spectral-maximality-priority-audit.md

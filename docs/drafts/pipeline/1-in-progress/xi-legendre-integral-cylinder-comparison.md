@@ -1,1 +1,0 @@
-rh/xi-zero-geometry/xi-legendre-integral-cylinder-comparison.md

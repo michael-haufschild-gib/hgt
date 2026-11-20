@@ -1,1 +1,0 @@
-rh/bagchi-and-cubic-sources/bag-complete-hyperbolic-transition-action.md

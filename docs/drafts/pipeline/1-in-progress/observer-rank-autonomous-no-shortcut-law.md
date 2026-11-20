@@ -1,1 +1,0 @@
-physics/time-and-causality/observer-rank-autonomous-no-shortcut-law.md

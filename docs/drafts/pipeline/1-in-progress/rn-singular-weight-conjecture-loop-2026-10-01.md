@@ -1,1 +1,0 @@
-rh/reflected-prime/rn-singular-weight-conjecture-loop-2026-10-01.md

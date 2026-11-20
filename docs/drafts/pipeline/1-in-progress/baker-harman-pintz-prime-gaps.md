@@ -1,1 +1,0 @@
-rh/prime-arithmetic/baker-harman-pintz-prime-gaps.md

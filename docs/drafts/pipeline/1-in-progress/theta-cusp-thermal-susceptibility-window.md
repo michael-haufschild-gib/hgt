@@ -1,1 +1,0 @@
-rh/theta-and-heat-flow/theta-cusp-thermal-susceptibility-window.md

@@ -1,6 +1,0 @@
-=== RH-true (±γ_n real): Hankel size 7 (n+,n-)=(4,0) maxImag=0.0e+00  expect n-=0 ===
-
-=== off-line via FE QUADRUPLE {γ±iδ,-γ±iδ} (δ=1.0); moments stay real; expect n- > 0 ===
-  k=1: (n+,n-)=(4,0)  n-=0  maxImag(Hankel)=0.0e+00  (RH-broken ⟹ n->0 expected)
-  k=2: (n+,n-)=(4,0)  n-=0  maxImag(Hankel)=0.0e+00  (RH-broken ⟹ n->0 expected)
-  k=3: (n+,n-)=(4,0)  n-=0  maxImag(Hankel)=0.0e+00  (RH-broken ⟹ n->0 expected)

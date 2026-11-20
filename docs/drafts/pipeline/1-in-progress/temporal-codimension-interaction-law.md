@@ -1,1 +1,0 @@
-physics/time-and-causality/temporal-codimension-interaction-law.md

@@ -1,1 +1,0 @@
-rh/reflected-prime/rn-positive-correction-current.md

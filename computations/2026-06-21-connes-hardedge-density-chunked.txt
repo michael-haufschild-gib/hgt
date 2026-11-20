@@ -1,9 +1,0 @@
-# hard-edge density via chunked interval zero-count queries
-# count([a,b]) = N(1/sqrt(a)) - N(1/sqrt(b)); no zetazero loop
-y-bin                 empirical   predicted   elapsed_s
-[1.00e-06,4.00e-06]        380       525.3     0.0231
-[4.00e-06,1.60e-05]        161       235.1     0.0119
-[1.60e-05,6.40e-05]         67       103.7     0.0095
-[6.40e-05,2.56e-04]         27        45.0     0.0069
-[2.56e-04,1.02e-03]         10        19.0     0.0057
-total_elapsed_s=0.0573

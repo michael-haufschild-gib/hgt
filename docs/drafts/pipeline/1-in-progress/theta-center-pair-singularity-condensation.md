@@ -1,1 +1,0 @@
-rh/theta-and-heat-flow/theta-center-pair-singularity-condensation.md

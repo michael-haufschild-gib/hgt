@@ -1,1 +1,0 @@
-rh/bagchi-and-cubic-sources/bag-three-frequency-ramanujan-source.md

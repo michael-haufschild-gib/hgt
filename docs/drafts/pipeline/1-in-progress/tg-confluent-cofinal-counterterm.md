@@ -1,1 +1,0 @@
-rh/theta-gamma-source/tg-confluent-cofinal-counterterm.md

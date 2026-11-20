@@ -1,1 +1,0 @@
-rh/source-and-receiver-laws/source-modular-drift-realization-equivalence-law.md

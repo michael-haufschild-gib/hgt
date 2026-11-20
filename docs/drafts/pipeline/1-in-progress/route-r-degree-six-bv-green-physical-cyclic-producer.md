@@ -1,1 +1,0 @@
-rh/numbered-routes/r/route-r-degree-six-bv-green-physical-cyclic-producer.md

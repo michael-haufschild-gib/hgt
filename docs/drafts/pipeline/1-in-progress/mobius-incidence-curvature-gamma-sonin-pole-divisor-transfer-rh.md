@@ -1,1 +1,0 @@
-rh/mobius-and-prime-sums/mobius-incidence-curvature-gamma-sonin-pole-divisor-transfer-rh.md

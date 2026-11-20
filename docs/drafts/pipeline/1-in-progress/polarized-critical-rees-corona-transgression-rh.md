@@ -1,1 +1,0 @@
-rh/xi-zero-geometry/polarized-critical-rees-corona-transgression-rh.md

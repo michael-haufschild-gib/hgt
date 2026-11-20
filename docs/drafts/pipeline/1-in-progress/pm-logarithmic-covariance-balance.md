@@ -1,1 +1,0 @@
-rh/prime-mobius/pm-logarithmic-covariance-balance.md

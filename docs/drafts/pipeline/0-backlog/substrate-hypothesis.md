@@ -1,1 +1,0 @@
-bookkeeping/project-framing/substrate-hypothesis.md

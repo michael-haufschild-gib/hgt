@@ -1,1 +1,0 @@
-rh/riemann-hypothesis-general/riemann-failure-nerve-cobar-antipode-purity-law.md

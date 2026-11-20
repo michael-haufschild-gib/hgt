@@ -1,1 +1,0 @@
-physics/time-and-causality/temporal-atlas-relativity-conjecture.md

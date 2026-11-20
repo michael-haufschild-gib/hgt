@@ -1,1 +1,0 @@
-rh/theta-and-heat-flow/theta-c5-curvature-defect-growth.md

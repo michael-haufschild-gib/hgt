@@ -1,1 +1,0 @@
-rh/cofinal-source/cofinal-conormal-picard-purity-law.md

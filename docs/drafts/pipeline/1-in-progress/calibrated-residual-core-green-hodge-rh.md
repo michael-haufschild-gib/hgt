@@ -1,1 +1,0 @@
-rh/arithmetic-geometry-and-motives/calibrated-residual-core-green-hodge-rh.md

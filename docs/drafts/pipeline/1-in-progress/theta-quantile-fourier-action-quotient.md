@@ -1,1 +1,0 @@
-rh/theta-and-heat-flow/theta-quantile-fourier-action-quotient.md

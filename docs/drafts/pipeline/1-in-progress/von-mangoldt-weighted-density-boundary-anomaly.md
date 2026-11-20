@@ -1,1 +1,0 @@
-rh/prime-arithmetic/von-mangoldt-weighted-density-boundary-anomaly.md

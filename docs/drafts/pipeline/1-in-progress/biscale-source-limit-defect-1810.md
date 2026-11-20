@@ -1,1 +1,0 @@
-rh/bi-scale-uncertainty/biscale-source-limit-defect-1810.md

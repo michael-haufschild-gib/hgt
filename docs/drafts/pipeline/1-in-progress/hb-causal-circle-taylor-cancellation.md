@@ -1,1 +1,0 @@
-rh/hawking-boundary/hb-causal-circle-taylor-cancellation.md

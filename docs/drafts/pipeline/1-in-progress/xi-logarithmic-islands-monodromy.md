@@ -1,1 +1,0 @@
-rh/xi-zero-geometry/xi-logarithmic-islands-monodromy.md

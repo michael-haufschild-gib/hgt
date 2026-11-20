@@ -1,1 +1,0 @@
-rh/xi-zero-geometry/offline-isolation-dichotomy.md

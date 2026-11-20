@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-additive-differential-field-primitive-rigidity.md

@@ -1,1 +1,0 @@
-physics/spacetime-and-gravity/actuality-fracture-weak-gravity-law.md

@@ -1,1 +1,0 @@
-rh/xi-zero-geometry/xi-legendre-formal-source-section.md

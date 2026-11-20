@@ -1,1 +1,0 @@
-verified: candidate ordering and high-precision signs are consistent

@@ -1,1 +1,0 @@
-rh/arithmetic-geometry-and-motives/residue-corrected-determinant-cofinal-torsion-spectrum.md

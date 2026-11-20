@@ -1,1 +1,0 @@
-rh/weil-positivity/weil-lag-function-bochner-form.md

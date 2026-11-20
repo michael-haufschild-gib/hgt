@@ -1,1 +1,0 @@
-rh/gamma-and-archimedean/gamma-thin-universal-clock-horizon.md

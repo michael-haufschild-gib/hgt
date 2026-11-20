@@ -1,6 +1,0 @@
-import GaloisForLFunctions.RHTower.CCM.CCMActualHeadMatchedQuantileOddWindowCofinalCount
-import GaloisForLFunctions.RHTower.Sieve.ProperPrimePowerCount
-
-#print axioms RHTower.eventually_ccmOddLogWindow_primeCount_le_twice_baseMismatch_add_properPower
-#print axioms RHTower.Sieve.properPrimePower_count_mul_log_two_le_defect
-#print axioms RHTower.Sieve.properPrimePower_count_mul_log_two_le_sqrt_log

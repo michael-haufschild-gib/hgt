@@ -1,1 +1,0 @@
-rh/suzuki-source/sz-growing-physical-coercivity.md

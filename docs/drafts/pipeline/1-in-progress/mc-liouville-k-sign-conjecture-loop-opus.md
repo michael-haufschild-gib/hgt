@@ -1,1 +1,0 @@
-rh/mobius-and-prime-sums/mc-liouville-k-sign-conjecture-loop-opus.md

@@ -1,1 +1,0 @@
-rh/source-and-receiver-laws/source-anomaly-boundary-colligation-field.md

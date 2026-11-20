@@ -1,1 +1,0 @@
-rh/theta-gamma-source/tg-principal-polar-operator-cancellation.md

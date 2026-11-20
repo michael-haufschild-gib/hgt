@@ -1,1 +1,0 @@
-rh/prime-arithmetic/prime-source-monomer-dimer-matching-limit-rh.md

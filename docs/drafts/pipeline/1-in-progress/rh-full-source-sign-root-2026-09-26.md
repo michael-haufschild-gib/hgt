@@ -1,1 +1,0 @@
-rh/riemann-hypothesis-general/rh-full-source-sign-root-2026-09-26.md

@@ -1,1 +1,0 @@
-verified: exact sl2 structure survives; coefficientwise matrix-Bernstein Gram is killed

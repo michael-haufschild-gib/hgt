@@ -1,1 +1,0 @@
-rh/theta-and-heat-flow/theta-c5-nonlocal-defect-transport.md

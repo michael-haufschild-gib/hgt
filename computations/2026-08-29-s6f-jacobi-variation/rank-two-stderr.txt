@@ -1,2 +1,0 @@
-reconstructing signed reflected-jet matrix
-testing diagonal and rank-two Loewner minors

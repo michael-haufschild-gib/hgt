@@ -1,1 +1,0 @@
-rh/xi-zero-geometry/xi-single-mark-infinite-cover-exclusion.md

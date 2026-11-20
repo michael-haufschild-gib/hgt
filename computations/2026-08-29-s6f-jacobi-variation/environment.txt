@@ -1,5 +1,0 @@
-RunPod: root@216.81.151.68:16020
-Python: 3.12.3
-SymPy: 1.13.3
-Platform: Linux-6.8.0-138-generic-x86_64-with-glibc2.39
-Execution: foreground; one Python process; exact rational arithmetic

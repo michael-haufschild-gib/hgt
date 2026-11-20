@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/hypertranscendental-critical-closure-defect-principle.md

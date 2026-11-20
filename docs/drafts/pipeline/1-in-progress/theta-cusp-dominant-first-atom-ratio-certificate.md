@@ -1,1 +1,0 @@
-rh/theta-and-heat-flow/theta-cusp-dominant-first-atom-ratio-certificate.md

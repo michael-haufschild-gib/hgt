@@ -1,5 +1,0 @@
-# Root SEC facts
-
-- `XiPrimeSeamAdjacentEssentialNormNoGo.lean` proves the exact Calkin norm of the SEC even-space seam edge: `essentialNorm = ‖charge(p)-charge(q)‖/(√p√q)` for every positive cutoff and prime pair. The archimedean weighted-space analogue was **already** proved in `XiPrimeSeamCalkinGram.lean`; this is a transfer to the SEC corner, not a new norm mechanism.
-- Along consecutive primes, both the unscaled essential norm and its full `√(pq)` normalization tend to zero at **every** point of the open strip, using unconditional cofinal seam decay. Thus adjacent asymptotic Calkin smallness is a vacuous SEC producer even under hypothetical RH failure. Exact edge compactness or a fixed-prime anchor is essential to remain selective.
-- The corpus already has a stronger fixed-pair receiver: equality of the prime-2 and prime-3 seam values forces the critical line (`XiPrimeTwoThreeSeamRigidity.lean`). SEC's unsolved step is arithmetic source compactness/coherence, not more one-ended receiver geometry.

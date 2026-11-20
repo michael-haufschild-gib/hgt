@@ -1,1 +1,0 @@
-rh/arithmetic-and-analytic-routes/thin-random-deletion-beurling-alpha-beta.md

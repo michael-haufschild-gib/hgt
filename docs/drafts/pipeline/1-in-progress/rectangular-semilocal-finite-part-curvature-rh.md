@@ -1,1 +1,0 @@
-rh/spectral-and-operator-routes/rectangular-semilocal-finite-part-curvature-rh.md

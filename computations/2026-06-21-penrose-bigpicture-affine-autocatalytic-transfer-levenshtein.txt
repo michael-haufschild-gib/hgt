@@ -1,3 +1,0 @@
-passport_subtracted_shape: 122
-log_ratio_transport: 126
-central_moment_tower: 119

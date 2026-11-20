@@ -1,1 +1,0 @@
-rh/prime-theta-response/ptr-goal-loop-2026-10-09.md

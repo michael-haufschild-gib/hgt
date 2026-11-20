@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/hypertranscendental-polarized-strict-descent-field.md

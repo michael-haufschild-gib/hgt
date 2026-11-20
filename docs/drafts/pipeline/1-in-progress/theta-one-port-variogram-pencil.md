@@ -1,1 +1,0 @@
-rh/theta-and-heat-flow/theta-one-port-variogram-pencil.md

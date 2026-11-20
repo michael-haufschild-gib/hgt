@@ -1,1 +1,0 @@
-hypertranscendence/dynamical-systems/bottcher-pruefer-sem-monodromy-rh.md

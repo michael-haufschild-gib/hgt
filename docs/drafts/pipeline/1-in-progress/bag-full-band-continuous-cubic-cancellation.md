@@ -1,1 +1,0 @@
-rh/bagchi-and-cubic-sources/bag-full-band-continuous-cubic-cancellation.md

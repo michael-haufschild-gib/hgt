@@ -1,1 +1,0 @@
-rh/xi-zero-geometry/xi-cayley-paraorthogonal-opuc-rh.md

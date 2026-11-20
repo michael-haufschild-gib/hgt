@@ -1,1 +1,0 @@
-rh/gamma-and-archimedean/cocycle-shape-rigidity-gamma-extremality.md

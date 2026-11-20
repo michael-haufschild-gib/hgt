@@ -1,9 +1,0 @@
-# How much can a static quantum history be compressed?
-
-For n ≥ 3 qubits in the ordinary nearest-neighbour coefficient-shell ensemble, let D = 2ⁿ. Optimizing the long-time normalized trace echo over every autonomous comparison with k energies gives exactly [D+k(k−1)]/D². Any q frequencies carry at most min(1,(k+q−1)/D) of the normalized amplitude mass. A commuting model keeping k source energies attains all these bounds. [Exact echo](../3-formalized/sharp-autonomous-echo-model-order.md) · [frequency coverage](../3-formalized/local-chain-echo-frequency-coverage.md).
-
-On a finite interval, equal-multiplicity energy blocks give one fixed reduced Hamiltonian and a uniform squared Hilbert–Schmidt error controlled by time times bandwidth divided by k. For the equally spaced clock, any fixed k-sector encoding has total normalized squared trace fidelity at most k on any set of distinct Fourier ticks, even with independently adjustable phases. [Compression](../3-formalized/equal-multiplicity-autonomous-spectral-simulation.md) · [Fourier clock](../3-formalized/fourier-clock-fixed-sector-capacity.md).
-
-**Open model-order questions.** Can a bound uniform over all autonomous comparisons at finite horizon be derived from the minimum spacing between distinct oriented source gaps? For a continuous decoder of r periodic phase readings, can one prove optimal completed fidelity [D+r(r+1)]/D² when r < D? A finite observation window alone cannot certify a bound for arbitrary decoders. One sufficiently slow periodic clock can encode a prescribed finite interval without wrapping.
-
-**Relation to Brown–Susskind.** An n-gate product of single-qubit rotations can already have D distinct energies in an autonomous realization. The echo result concerns the model chosen for an entire history. Minimum gate count allows the circuit to be selected anew at each time. [Physical circuit route](translated-circuit-nets-and-long-operator-excursions.md).

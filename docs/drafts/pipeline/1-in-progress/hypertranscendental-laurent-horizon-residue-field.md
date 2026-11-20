@@ -1,1 +1,0 @@
-hypertranscendence/differential-algebra/hypertranscendental-laurent-horizon-residue-field.md

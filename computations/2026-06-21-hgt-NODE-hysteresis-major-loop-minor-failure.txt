@@ -1,9 +1,0 @@
-NODE: major-loop fit failure under partial cycling/reversal
-hysterons=1200
-major_loop_rmse=0.00000000
-protocol true_range pred_range rmse max_abs_error loop_area_true loop_area_pred
-minor_high_reversal  -1.000000,0.934847 -1.000000,0.990090 0.150391 0.688348 -1.316476 -1.563601
-minor_mid_reversal   -1.000000,0.388755 -1.000000,0.858344 0.155024 0.469589 -1.673148 -1.955191
-nested_training      -1.000000,0.961648 -1.000000,0.990090 0.115545 0.519936 -2.101362 -2.390442
-
-Interpretation: the major-loop-only predictor has essentially zero training error on the major branch but fails on partial reversals. The missing constraint is hidden memory state, not a better static curve fit.

@@ -1,1 +1,0 @@
-rh/li-criterion/li-clock-finite-eta-orientation-window.md
