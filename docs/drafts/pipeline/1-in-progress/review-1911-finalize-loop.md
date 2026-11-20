@@ -72,11 +72,11 @@ Procedure: topological order over the listed modules plus the three unlisted dep
 | `ExceptionalLayerTheory/SquareConductors/TheDirichletPoleOfTheEighthPowerShortfall` | checked, wired |
 | `ExceptionalLayerTheory/SquareConductors/TheDistributionOfAccumulatedGcdShortfall` | checked, wired |
 | `ExceptionalLayerTheory/TheExactBadHeightsOfHorizontalHadamardTests` | checked, wired |
-| `ExceptionalLayerTheory/SquareConductors/TheFiniteHorizonProfileOfProperPrimePowers` | fails: Tactic `rewrite` failed: Did not find an occurrence of the pattern |
-| `ExceptionalLayerTheory/SquareConductors/TheFourthOrderEvenHorizonShortfall` | pending |
-| `ExceptionalLayerTheory/TheHeightErrorOfTheHadamardThreshold` | pending |
-| `ExceptionalLayerTheory/TheOptimalSpacingOfFourHadamardReadings` | pending |
-| `ExceptionalLayerTheory/ThePolynomialWeightsOfTheXiDivisor` | pending |
+| `ExceptionalLayerTheory/SquareConductors/TheFiniteHorizonProfileOfProperPrimePowers` | olean built |
+| `ExceptionalLayerTheory/SquareConductors/TheFourthOrderEvenHorizonShortfall` | checked, wired |
+| `ExceptionalLayerTheory/TheHeightErrorOfTheHadamardThreshold` | olean built |
+| `ExceptionalLayerTheory/TheOptimalSpacingOfFourHadamardReadings` | olean built |
+| `ExceptionalLayerTheory/ThePolynomialWeightsOfTheXiDivisor` | fails: Type mismatch: After simplification, term |
 | `ExceptionalLayerTheory/TwoSpacingsOfTheExceptionalPrimeFilter` | pending |
 | `ExceptionalLayerTheory/WhatTheThirdDerivativeAreaSees` | pending |
 | `ExceptionalLayerTheory/SquareConductors/AlternatingCornersOfTheProperPowerHorizon` | pending |

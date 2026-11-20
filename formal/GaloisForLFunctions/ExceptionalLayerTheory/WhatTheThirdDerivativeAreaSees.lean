@@ -45,11 +45,15 @@ theorem sqrt_order_relation_iff_square_classes {ι : Type*} (S : Finset ι)
     (∑ i ∈ S, (c i:ℝ)*Real.sqrt (m i:ℝ)=0) ↔
       ∀ j, ∑ i ∈ S with IsSquare (m i*m j), (c i:ℝ)*Real.sqrt (m i:ℝ)=0 := by
   classical
+  haveI : Algebra.IsAlgebraic ℚ A := by
+    convert algebraicClosure.isAlgebraic ℚ ℂ
   letI : IsAlgClosure ℚ A := ⟨HTGeometry.algebraicClosure_isAlgClosed ℚ ℂ,inferInstance⟩
   letI : IsGalois ℚ A := ⟨⟩
   have hs (i : ι) : algebraicSqrt (m i)^2=algebraMap ℚ A (m i:ℚ) := by
     apply Subtype.ext
     change ((Real.sqrt (m i:ℝ):ℝ):ℂ)^2=((algebraMap ℚ A (m i:ℚ):A):ℂ)
+    rw [map_natCast]
+    change _ = algebraMap A ℂ ((m i : ℕ) : A)
     rw [map_natCast]
     exact_mod_cast Real.sq_sqrt (Nat.cast_nonneg (m i) : (0:ℝ) ≤ m i)
   have hn (i : ι) : algebraicSqrt (m i)≠0 := by
@@ -74,7 +78,7 @@ theorem third_area_equal_iff_square_classes {W : ℕ} (a b : Fin W → ℕ) :
   have h := sqrt_order_relation_iff_square_classes Finset.univ (fun k : Fin W => k.val+1)
     (fun k => Nat.succ_pos _) (fun k => (a k:ℤ)-(b k:ℤ))
   rw [←sub_eq_zero,divisorAreaMoment,divisorAreaMoment,←Finset.sum_sub_distrib]
-  simpa only [third_weight,←mul_sub,Int.cast_sub,Int.cast_natCast,mul_comm] using h
+  simpa only [third_weight,←mul_sub,←sub_mul,Int.cast_sub,Int.cast_natCast,mul_comm] using h
 
 /-- One third-order area distinguishes squarefree-supported integer histograms. -/
 theorem third_area_injective_on_squarefree_orders {W : ℕ} (a b : Fin W → ℕ)

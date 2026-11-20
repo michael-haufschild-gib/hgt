@@ -50,11 +50,12 @@ selected detunings together cover at most k+q−1 distinct labels. -/
 theorem maximallyProjective_detuningCoverage {I A B : Type*}
     [Fintype I] [DecidableEq I] [Fintype A] [Fintype B] [Nonempty A] [Nonempty B]
     (E : I → ℝ) (hE : MaximallyProjectiveEnergy E) (F : A → ℝ) (v : B → ℝ) :
-    Fintype.card {i : I // ∃ a b, E i = F a + v b} + 1 ≤
+    Nat.card {i : I // ∃ a b, E i = F a + v b} + 1 ≤
       Fintype.card A + Fintype.card B := by
   classical
   let S := {i : I // ∃ a b, E i = F a + v b}
-  change Fintype.card S + 1 ≤ _
+  change Nat.card S + 1 ≤ _
+  rw [Nat.card_eq_fintype_card]
   cases isEmpty_or_nonempty S with
   | inl h =>
     letI := h
@@ -87,7 +88,7 @@ each covered source energy. -/
 theorem selectedEchoWeight_le_covered {I A B : Type*}
     [Fintype I] [DecidableEq I] (E : I → ℝ) (V : Matrix.unitaryGroup I ℂ)
     (g : I → A) (F : A → ℝ) (v : B → ℝ) :
-    selectedEchoWeight E V g F v ≤ (Fintype.card {i : I // ∃ a b, E i = F a + v b} : ℝ) := by
+    selectedEchoWeight E V g F v ≤ (Nat.card {i : I // ∃ a b, E i = F a + v b} : ℝ) := by
   classical
   let covered (i : I) := ∃ a b, E i = F a + v b
   calc
@@ -104,7 +105,7 @@ theorem selectedEchoWeight_le_covered {I A B : Type*}
       · have hno (j : I) : ¬ ∃ b, E i = F (g j) + v b :=
           fun ⟨b, hb⟩ => h ⟨g j,b,hb⟩
         simp only [if_neg h, if_neg (hno _), Finset.sum_const_zero, le_refl]
-    _ = _ := by rw [Finset.sum_boole, Fintype.card_subtype]
+    _ = _ := by rw [Nat.card_eq_fintype_card, Finset.sum_boole, Fintype.card_subtype]
 
 /-- For the commuting model retaining one representative per sector, every
 nonrepresentative level contributes its own distinct nonzero echo frequency.
@@ -134,14 +135,13 @@ spectra and frequency sets chosen after observing the source Hamiltonian. -/
 theorem chainShell_detuningCoverage_ae (n : ℕ) :
     ∀ᵐ θ ∂(shellProbability (Fin (Fintype.card (ChainLabel (n+3))))),
       ∀ k q : ℕ, ∀ (F : Fin (k+1) → ℝ) (v : Fin (q+1) → ℝ),
-        Fintype.card {i // ∃ a b,
+        Nat.card {i // ∃ a b,
           (isHermitian_spectralEnsembleMatrix (chainPauliFin_isHermitian (n+3)) θ).eigenvalues i =
             F a + v b} ≤ k + q + 1 := by
   filter_upwards [maximallyProjectiveEnergy_chainShell_ae n] with θ hθ
   intro k q F v
   have h := maximallyProjective_detuningCoverage _ hθ F v
   simp only [Fintype.card_fin] at h
-  simp only [← Nat.card_eq_fintype_card] at h ⊢
   omega
 
 /-- All choices of model eigenbasis, energy labels, and selected echo
@@ -157,7 +157,6 @@ theorem chainShell_selectedEchoWeight_ae (n : ℕ) :
   intro k q V g F v
   apply (selectedEchoWeight_le_covered _ V g F v).trans
   have hc := hθ k q F v
-  rw [← Nat.card_eq_fintype_card] at hc ⊢
   exact_mod_cast hc
 
 #print axioms chainShell_selectedEchoWeight_ae

@@ -1,0 +1,9 @@
+# How long can a static local unitary avoid every short circuit?
+
+**Question.** Can the near-Hilbert gate threshold for arbitrary continuous two-qubit gates persist throughout a doubly exponential interval, up to global phase, for one static local Hamiltonian that retains a permanent locality signal?
+
+**Construction.** For D = 2ⁿ and fixed energy eigenbasis, use the 2^(D−1) independently signed spectral reflections with one anchored sign. Distinct reflections have projective operator-norm distance at least one. For each of M sampling times translate the same quarter-net of short circuits backwards by the actual unitary increment. If the net has N elements and MN < 2^(D−1), a single reflection misses all translated net points by more than 2/5 for every global phase. Every sampled increment starting at this reflection therefore misses every short circuit by more than 3/20. This counting argument permits arbitrary correlations between samples.
+
+**Physical transfer.** A dense projective spectral orbit visits a neighbourhood of the selected reflection with bounded gaps. Operator-norm speed at most ‖H‖ extends the grid certificate across the intervening times. The near-Hilbert budget leaves an exponential-in-D factor for the number of grid points. The onset time supplied by density has no dimension-uniform bound. An identity-origin first return and exponential-duration linear growth require further estimates.
+
+**Comparison.** The earlier [nearest-neighbour capstone](../../../../formal/GaloisForLFunctions/RHTower/NearestNeighborExponentialContinuousCircuitPlateauCapstone.lean) uses a product-formula compiler for increments and proves width 2^(L/2) on 2L qubits. The [cubic-phase result](../3-formalized/cubic-phase-seeded-static-local-full-scale-plateau-law.md) treats a prepared state and finite gate alphabet. Here the target is the full evolution operator and the short circuit may choose continuous gates afresh at each time.

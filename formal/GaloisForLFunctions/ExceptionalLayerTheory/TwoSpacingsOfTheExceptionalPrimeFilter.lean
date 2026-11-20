@@ -115,6 +115,7 @@ theorem finite_top_filter_spacing_dilation :
   change (lam:ℂ)^d*((A t (lam*h t)/(((lam*h t:ℝ):ℂ)^d*K t))/(A t (h t)/((h t:ℂ)^d*K t))) = _
   rw [Complex.ofReal_mul,mul_pow]
   field_simp
+  exact (mul_div_cancel_left₀ (A t (lam*h t)) hak).symm
 
 #print axioms finite_top_filter_uniform_recovery
 #print axioms finite_top_filter_spacing_dilation

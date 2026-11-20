@@ -1,0 +1,81 @@
+\documentclass[11pt]{article}
+\usepackage[a4paper,margin=28mm]{geometry}
+\usepackage{amsmath,amssymb,amsthm,microtype,xcolor}
+\usepackage[colorlinks=true,linkcolor=black,citecolor=black,urlcolor=blue!50!black]{hyperref}
+\newtheorem{theorem}{Theorem}
+\newcommand{\Tr}{\operatorname{tr}}
+\newcommand{\ii}{\mathrm{i}}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\HS}{\mathrm{HS}}
+\setlength{\emergencystretch}{2em}
+\title{How many energy levels reproduce a quantum history?}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+\begin{abstract}
+How accurately can a smaller autonomous model reproduce the evolution of a many-body Hamiltonian if it can choose its energy levels and eigenvectors after seeing the source? For almost every static nearest-neighbour qubit chain on a fixed register with $D$ levels, the best completed-time process fidelity achievable with $k$ model energies is exactly $[D+k(k-1)]/D^2$. The result follows from a constraint on the entire frequency distribution of the relative trace. Any $q$ selected frequencies can carry at most $(k+q-1)/D$ of its mass. A commuting model attains every one of these concentration bounds simultaneously. On a finite observation interval one can compress any bounded spectrum into equal-multiplicity energy sectors, with an explicit error proportional to the time--bandwidth product. These conclusions distinguish the number of energies required to model a history from the gate count of its individual snapshots.
+\end{abstract}
+
+\section{Fitting a time evolution}
+An observer who knows a Hamiltonian $H$ can choose a simpler generator $K$ to reproduce its dynamics. Fix a Hilbert space of dimension $D$ and allow $K$ any eigenbasis, any multiplicities and at most $k$ energies. For $1\le k\le D$, the performance criterion is the completed normalized trace echo
+\[
+ \overline{F}(H,K)=\lim_{T\to\infty}\frac1T\int_0^T
+      \left|\frac{1}{D}\Tr(e^{-\ii tH}e^{\ii tK})\right|^2\dd t .
+\]
+This is the mean fidelity between the normalized Choi states of the two evolution operators. It is invariant under an additive scalar shift of either generator. The model is chosen once for the entire history.
+
+\begin{theorem}\label{main}
+Take the full traceless on-site and nearest-neighbour Pauli family on an open chain of $n\ge3$ qubits, with coefficient direction uniform on its Euclidean sphere. Put $D=2^n$. On one probability-one event, simultaneously for all $1\le k\le D$,
+\[
+             \max_{K:\,|\operatorname{spec} K|\le k}\overline{F}(H,K)
+                    = \frac{D+k(k-1)}{D^2}.
+\]
+\end{theorem}
+For $k=1$ the attainable value is $1/D$. Retaining a fraction $k/D\to\alpha$ of the levels gives limiting fidelity $\alpha^2$. In particular, retaining half the levels gives $1/4+1/(2D)$. The optimizing model can keep any chosen $k$ source energies.
+
+\section{Weight of an echo frequency}
+Let $E_i$ be the source energies. For model energies $F_a$ with spectral projections $P_a$, set $p_{ia}=\langle i|P_a|i\rangle$ in the source energy basis. Positivity and completeness give $p_{ia}\ge0$ and $\sum_a p_{ia}=1$. Define the unnormalized frequency weights
+\[
+       w_d=\sum_{i,a:\,E_i-F_a=d}p_{ia}.
+\]
+Their sum is $D$. The normalized trace amplitude is $D^{-1}\sum_d w_d e^{-\ii td}$. Averaging its squared modulus eliminates each pair of distinct frequencies, giving
+\begin{equation}\label{collision}
+        D^2\overline F(H,K)=\sum_d w_d^2.
+\end{equation}
+
+The spectral input is rational independence of the anchored source gaps. This holds almost surely for the local family in Theorem~\ref{main} by the generic local spectral results in \cite{lee,corpus}. It means that every subset of $s$ energies has rational affine dimension $s-1$. The argument below then applies to every model on that same source.
+
+Choose $q\ge1$ detunings $v_b$. Every contributing source level belongs to the sumset $\{F_a+v_b\}$. Its rational affine dimension is at most $(k-1)+(q-1)$. After subtracting $F_1+v_1$, each sum lies in the span of the $k-1$ model differences and $q-1$ selected detuning differences. At most $k+q-1$ source energies can belong to it. Each contributes at most its row mass. Hence
+\begin{equation}\label{coverage}
+              \sum_{d\in\{v_1,\ldots,v_q\}} w_d \le \min(D,k+q-1).
+\end{equation}
+Each $w_d$ is at most $k$. Applying \eqref{coverage} to the set of weights larger than one shows that $\sum_d(w_d-1)_+\le k-1$, including the case of an empty set. Therefore
+\[
+  \sum_d w_d^2 \le \sum_d w_d+k\sum_d(w_d-1)_+ \le D+k(k-1).
+\]
+
+For equality choose a set $S$ of $k$ source levels and an anchor $a\in S$. Take $K$ diagonal in the source basis, retaining the energies in $S$ and assigning $E_a$ to every other level. The zero detuning has mass $k$. All $D-k$ other detunings $E_j-E_a$ are distinct and nonzero. Equation~\eqref{collision} proves Theorem~\ref{main}. The ordered mass vector $(k,1,\ldots,1,0,\ldots)$ also attains every partial-sum bound in \eqref{coverage}. If equal sector sizes are required and $k$ divides $D$, put one retained level in each sector and give the other members that energy. Distinctness of nonzero ordered source gaps gives the same mass vector.
+
+\section{What a finite window can resolve}
+Let $D=km$ and assume the source spectrum is in $[a,b]$. A single choice of basis $W$ and a diagonal $k$-level generator $L$ obey, for all real $t$,
+\begin{equation}\label{window}
+ \frac1D\left\|e^{-\ii tH}-W(e^{-\ii tL}\otimes I_m)W^*\right\|_{\HS}^2
+          \le \frac{2|t|(b-a)}{k}.
+\end{equation}
+Order the energies, partition into $k$ successive groups of size $m$ and retain the lowest energy of each group. If its width is $w$, each squared chord error is at most $\min(4,t^2w^2)\le2|t|w$. The group widths sum to at most $b-a$. This proves \eqref{window} in the energy basis and unitary invariance gives the matrix statement. The phase-sensitive Hilbert--Schmidt estimate also bounds the normalized Choi infidelity, by $1-|z|^2\le2(1-\Re z)$ for the normalized trace overlap $z$.
+
+Time--bandwidth compression of quantum dynamics using proper orthogonal decomposition was established by Kosut, Ho and Rabitz \cite{kosut}. Equation~\eqref{window} gives a uniform error for an autonomous simulator with a prescribed identity factor. The cost of constructing the encoding $W$ is unconstrained.
+
+\section{Physical scope}
+Resolution in frequency and elapsed observation time play different roles. For the completed echo, the frequency weights assigned by a change of eigenbasis cannot exceed the mass available from the source levels covered by the sumset. For a finite window, nearby frequencies can still interfere. Theorem~\ref{main} fixes the source dimension and takes the completed-time limit separately for each model. A bound on the first large deviation of the echo at fixed error as $n$ grows requires additional estimates.
+
+Brown and Susskind ask for the minimum gate count at each time along a static local orbit \cite{brown}. A product of independent single-qubit rotations can already have $2^n$ distinct eigenvalues. The spectral model order proved here consequently leaves the growth rate, maximal circuit plateau and initial return to the full low-complexity set open. A conclusion about black-hole interior volume would further require a gravitational model connecting that volume to the observable.
+
+\begin{thebibliography}{9}
+\bibitem{lee} W. Lee, S. Pilatowsky-Cameo and S. Choi, Sustained growth of quantum circuit complexity in many-body Hamiltonian dynamics, \href{https://arxiv.org/abs/2609.26885}{arXiv:2609.26885} (2026).
+\bibitem{corpus} M. Haufschild, Exact observable recurrence on connected quantum networks, research manuscript (2026). The shell-measure genericity certificate used here is \texttt{maximallyProjectiveEnergy\_chainShell\_ae}.
+\bibitem{kosut} R. L. Kosut, T.-S. Ho and H. Rabitz, Quantum system compression: A Hamiltonian guided walk through Hilbert space, \href{https://doi.org/10.1103/PhysRevA.103.012406}{Phys. Rev. A \textbf{103}, 012406} (2021).
+\bibitem{brown} A. R. Brown and L. Susskind, Second law of quantum complexity, \href{https://doi.org/10.1103/PhysRevD.97.086015}{Phys. Rev. D \textbf{97}, 086015} (2018).
+\end{thebibliography}
+\end{document}

@@ -20,13 +20,13 @@ noncomputable section
 private def sectorWeight {D k : ℕ} [NeZero D]
     (V : Matrix.unitaryGroup (ZMod D) ℂ) (g : ZMod D → Fin k)
     (a : Fin k) (x : ZMod D) : ℝ :=
-  ∑ y : {y // g y = a}, Complex.normSq ((V : Matrix _ _ ℂ) x y)
+  ∑ y : {y // g y = a}, Complex.normSq ((V : Matrix (ZMod D) (ZMod D) ℂ) x y.val)
 
 private theorem sum_sectorWeight {D k : ℕ} [NeZero D]
     (V : Matrix.unitaryGroup (ZMod D) ℂ) (g : ZMod D → Fin k) (x : ZMod D) :
     ∑ a, sectorWeight V g a x = 1 := by
   rw [← RHTower.sum_normSq_row_of_mem_unitary V.2 x]
-  exact Fintype.sum_fiberwise g _
+  exact Fintype.sum_fiberwise g (fun y => Complex.normSq ((V : Matrix (ZMod D) (ZMod D) ℂ) x y))
 
 /-- The clock and its competitor can have unrelated eigenbases. Sector phases
 may change independently at each sample. -/
@@ -34,8 +34,8 @@ def clockSectorTrace {D k : ℕ} [NeZero D]
     (V : Matrix.unitaryGroup (ZMod D) ℂ) (g : ZMod D → Fin k)
     (angle : ZMod D → Fin k → ℝ) (s : ZMod D) : ℂ :=
   Matrix.trace (Matrix.diagonal (fun x => (ZMod.stdAddChar (s*x) : ℂ)) *
-    ((V : Matrix _ _ ℂ) * Matrix.diagonal (fun y =>
-      Complex.exp (((angle s (g y) : ℝ) : ℂ) * Complex.I)) * star (V : Matrix _ _ ℂ)))
+    ((V : Matrix (ZMod D) (ZMod D) ℂ) * Matrix.diagonal (fun y =>
+      Complex.exp (((angle s (g y) : ℝ) : ℂ) * Complex.I)) * star (V : Matrix (ZMod D) (ZMod D) ℂ)))
 
 private theorem clockSectorTrace_expansion {D k : ℕ} [NeZero D]
     (V : Matrix.unitaryGroup (ZMod D) ℂ) (g : ZMod D → Fin k)
@@ -44,10 +44,15 @@ private theorem clockSectorTrace_expansion {D k : ℕ} [NeZero D]
       ∑ a, Complex.exp ((angle s a : ℂ) * Complex.I) *
         ∑ x, (sectorWeight V g a x : ℂ) * ZMod.stdAddChar (s*x) := by
   classical
-  unfold clockSectorTrace Matrix.trace
-  simp only [Matrix.diag_apply, Matrix.diagonal_mul, Matrix.mul_apply,
-    Matrix.mul_diagonal, Matrix.star_apply, Complex.star_def]
-  simp_rw [Finset.mul_sum]
+  unfold clockSectorTrace
+  simp only [Matrix.trace, Matrix.diag_apply, Matrix.diagonal_mul]
+  have hd (x : ZMod D) : ((V : Matrix (ZMod D) (ZMod D) ℂ) * Matrix.diagonal (fun y =>
+      Complex.exp ((angle s (g y) : ℂ) * Complex.I)) * star (V : Matrix (ZMod D) (ZMod D) ℂ)) x x =
+      ∑ y, ((V : Matrix (ZMod D) (ZMod D) ℂ) x y * Complex.exp ((angle s (g y) : ℂ) * Complex.I)) *
+        (starRingEnd ℂ) ((V : Matrix (ZMod D) (ZMod D) ℂ) x y) := by
+    rw [Matrix.mul_apply]
+    simp only [Matrix.mul_diagonal, Matrix.star_apply, Complex.star_def]
+  simp_rw [hd, Finset.mul_sum]
   rw [Finset.sum_comm (s := Finset.univ (α := Fin k)) (t := Finset.univ (α := ZMod D))]
   apply Finset.sum_congr rfl
   intro x _
@@ -75,8 +80,9 @@ theorem fourierClock_sectorTrace_energy_le
       D id Function.injective_id (fun x => (sectorWeight V g a x : ℂ))
     simpa only [F, id_eq, Complex.normSq_eq_norm_sq, Complex.norm_real,
       Real.norm_eq_abs, sq_abs] using h
-  have hn (a : Fin k) (x : ZMod D) : 0 ≤ sectorWeight V g a x :=
-    Finset.sum_nonneg fun _ _ => Complex.normSq_nonneg _
+  have hn (a : Fin k) (x : ZMod D) : 0 ≤ sectorWeight V g a x := by
+    unfold sectorWeight
+    exact Finset.sum_nonneg fun _ _ => Complex.normSq_nonneg _
   have hrow (x : ZMod D) : ∑ a, (sectorWeight V g a x)^2 ≤ 1 := by
     rw [← sum_sectorWeight V g x]
     apply Finset.sum_le_sum

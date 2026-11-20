@@ -18,8 +18,11 @@
 - [x] G5 (card 1, Part I.1) — `TheExplicitPlateauHasAConductorOneMargin.lean`: Robin margin `≥ 477001/250000`, `E(1) > 68/1000`, `E(m) > E(1)` for `m ≥ 2`.
 - [x] G6 (card 1, Part III.1) — `TheSteklovProfileHasUnitL1DerivativeProducts.lean`: `∫|φ_DC^{(q)}| ≤ ∏_{j<q} a_j⁻¹ ≤ 6·16^q W_q` (L¹ Steklov contraction).
 - [x] G7 (card 1, Part III.1) — same module: `steklovDCProfile ≥ 0`.
-- [ ] Wiring: `PrimeTwoDeformedApertureLogTwoTest` and `ArithmeticHawkingPagePhaseStructure` into their umbrellas; direct import of the cutoff-gap module.
-- [ ] Final audit: one foreground `lake --old env lean` per module + headline `#print axioms`.
+- [x] Wiring: `PrimeTwoDeformedApertureLogTwoTest` and `ArithmeticHawkingPagePhaseStructure` into their umbrellas; direct import of the cutoff-gap module.
+- [ ] Final audit: all card modules compile clean with standard axioms (ExplicitPlateauParameters, TransMetzlerDecomposition, TransMetzlerPositivity, LiouvilleTwinSelectivity, SuperGevreyCriticalGrowth, ZeroSideStratum, the five new TMWP modules, PositiveDensityTransfersTheExactCutoffGap, ConfiningMinimizerOuterAndCyclic, ConfiningGlobalTransverseGapAndResponse, ConfiningSourceEndpointSelection, ConfiningHalfLineGroundEnergyCurvature, ArithmeticHawkingPagePhaseStructure, the new occupation/susceptibility module). Remaining: `PrimeTwoDeformedApertureLogTwoTest` check, blocked on a chain of missing WindowTowerOfSpecZ oleans (being built one by one). one foreground `lake --old env lean` per module + headline `#print axioms`.
 
 ## Covered (claim → Lean)
 See each card's Lean section once moved.
+
+## Status
+PAUSED by user 2026-11-20 after finishing the running Lean work. Remaining steps: PrimeTwo check (if not finished), then card Lean sections + move of the three cards to 3-formalized.
