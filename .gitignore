@@ -21,6 +21,11 @@ agentchattr/
 .agentchattr/
 logs/
 docs/
+!/docs/
+/docs/*
+!/docs/riemann-hypothesis/
+!/docs/physics/
+!/docs/goldbach/
 tmp/
 .claude/
 .codex/
