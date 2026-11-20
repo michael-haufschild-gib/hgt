@@ -28,8 +28,11 @@ tmp/
 computations
 output/
 scratch/
+/scratchpad/
 scratchpade/
 scripts/
+/launch.sh
+/lean-toolchain
 .env
 AGENTS.md
 CLAUDE.md
