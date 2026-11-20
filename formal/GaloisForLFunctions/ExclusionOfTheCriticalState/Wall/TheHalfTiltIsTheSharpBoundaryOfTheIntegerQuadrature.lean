@@ -157,7 +157,7 @@ private theorem norm_altPhaseSum_le {ε : ℝ} (hε : 0 < ε) (N : ℕ) (ξ : �
 
 private theorem continuous_altPhaseSum (ε : ℝ) (N : ℕ) : Continuous (altPhaseSum ε N) := by
   unfold altPhaseSum
-  exact continuous_finset_sum _ fun n _ => continuous_const.mul
+  exact continuous_finsetSum _ fun n _ => continuous_const.mul
     (continuous_phase.comp (continuous_const.mul continuous_id))
 
 private theorem altCoeff_zero (ε : ℝ) : altCoeff ε 0 = 1 := by simp [altCoeff]
@@ -282,7 +282,8 @@ private theorem one_add_rpow_le {x : ℝ} (hx : 0 ≤ x) :
     (1+x)^(5/8:ℝ) ≤ 1+x^(5/8:ℝ) := by
   have h := NNReal.rpow_add_le_add_rpow (1:NNReal) ⟨x,hx⟩ (p := 5/8) (by norm_num) (by norm_num)
   have h' := NNReal.coe_le_coe.2 h
-  simpa [NNReal.coe_rpow] using h'
+  simp only [NNReal.coe_rpow,NNReal.coe_add,NNReal.coe_one,NNReal.one_rpow] at h'
+  exact h'
 
 /-- The line `Re s = 1`: the uniform bound `|η(s)| ≪ (1 + |Im s|)^{5/16}` on
 `Re s ≥ 1/2` and the fractional energy of the half-tilted state dominate the
@@ -311,7 +312,7 @@ private theorem window_mass_le_line {ψ : ℝ → ℂ} (hψ1 : Integrable ψ) (h
       linarith [hεs k]
     have him : |(lineArg (εs k) ξ).im| = 2*Real.pi*|ξ| := by
       simp only [lineArg,Complex.sub_im,Complex.ofReal_im,Complex.mul_im,Complex.I_re,Complex.I_im,
-        Complex.ofReal_re,mul_zero,mul_one,zero_sub,zero_add,add_zero,abs_neg]
+        Complex.ofReal_re,mul_zero,mul_one,zero_sub,add_zero,abs_neg]
       rw [abs_mul,abs_of_pos (by positivity : (0:ℝ) < 2*Real.pi)]
     have hb := hηb _ hre
     rw [him] at hb
@@ -348,7 +349,7 @@ private theorem cosh_le_two_mul_sinh {X : ℝ} (hX : 1 ≤ X) : Real.cosh X ≤ 
 /-- The functional equation at `s = iτ`: `|τ| |ζ(1 − iτ)|² ≤ 4π |ζ(iτ)|²` for `|τ| ≥ 1`,
 from `|Γ(iτ)|² τ sinh(πτ) = π` and `|cos(πiτ/2)| = cosh(πτ/2)`. -/
 private theorem abs_mul_norm_sq_zeta_one_sub_le {τ : ℝ} (hτ : 1 ≤ |τ|) :
-    |τ|*‖riemannZeta (1-(τ:ℂ)*I)‖^2 ≤ 4*Real.pi*‖riemannZeta ((τ:ℂ)*I)‖^2 := by
+    |τ| *‖riemannZeta (1-(τ:ℂ)*I)‖^2 ≤ 4*Real.pi*‖riemannZeta ((τ:ℂ)*I)‖^2 := by
   have hτ0 : τ ≠ 0 := by intro h; rw [h,abs_zero] at hτ; linarith
   have hw0 : (τ:ℂ)*I ≠ 0 := mul_ne_zero (Complex.ofReal_ne_zero.2 hτ0) Complex.I_ne_zero
   have hwn : ∀ n : ℕ, (τ:ℂ)*I ≠ -n := by
@@ -385,7 +386,7 @@ private theorem abs_mul_norm_sq_zeta_one_sub_le {τ : ℝ} (hτ : 1 ≤ |τ|) :
     apply mul_left_cancel₀ hτ0
     linear_combination h2
   -- the even quantities in `t = |τ|`
-  have hts : τ*Real.sinh (Real.pi*τ) = |τ|*Real.sinh (Real.pi*|τ|) := by
+  have hts : τ*Real.sinh (Real.pi*τ) = |τ| *Real.sinh (Real.pi*|τ|) := by
     rcases le_or_gt 0 τ with h | h
     · rw [abs_of_nonneg h]
     · rw [abs_of_neg h,mul_neg,Real.sinh_neg]; ring
@@ -408,14 +409,14 @@ private theorem abs_mul_norm_sq_zeta_one_sub_le {τ : ℝ} (hτ : 1 ≤ |τ|) :
   have hcp := Real.cosh_pos (Real.pi*|τ|/2)
   have hkey := mul_le_mul_of_nonneg_left hc (mul_nonneg (mul_nonneg (mul_nonneg ht0
     (sq_nonneg ‖Complex.Gamma ((τ:ℂ)*I)‖)) hcp.le) (sq_nonneg ‖riemannZeta ((τ:ℂ)*I)‖))
-  have hπZ : 4*Real.pi*‖riemannZeta ((τ:ℂ)*I)‖^2 = 4*(‖Complex.Gamma ((τ:ℂ)*I)‖^2*(|τ|*(2*Real.sinh
+  have hπZ : 4*Real.pi*‖riemannZeta ((τ:ℂ)*I)‖^2 = 4*(‖Complex.Gamma ((τ:ℂ)*I)‖^2*(|τ| *(2*Real.sinh
       (Real.pi*|τ|/2)*Real.cosh (Real.pi*|τ|/2))))*‖riemannZeta ((τ:ℂ)*I)‖^2 := by rw [hgam]
   rw [hπZ]
   nlinarith [hkey]
 
 /-- `|τ| |η(1 − iτ)|² ≤ 16π |ζ(iτ)|²` for `|τ| ≥ 1`, since `|1 − 2^{iτ}| ≤ 2`. -/
 private theorem abs_mul_norm_sq_eta_le {τ : ℝ} (hτ : 1 ≤ |τ|) :
-    |τ|*‖etaFn (1-(τ:ℂ)*I)‖^2 ≤ 16*Real.pi*‖riemannZeta ((τ:ℂ)*I)‖^2 := by
+    |τ| *‖etaFn (1-(τ:ℂ)*I)‖^2 ≤ 16*Real.pi*‖riemannZeta ((τ:ℂ)*I)‖^2 := by
   have hτ0 : τ ≠ 0 := by intro h; rw [h,abs_zero] at hτ; linarith
   have hne : 1-(τ:ℂ)*I ≠ 1 := by
     intro h
@@ -432,10 +433,10 @@ private theorem abs_mul_norm_sq_eta_le {τ : ℝ} (hτ : 1 ≤ |τ|) :
   rw [norm_mul,mul_pow]
   have h4 : ‖1-(2:ℂ)^((τ:ℂ)*I)‖^2 ≤ 4 := by
     have := pow_le_pow_left₀ (norm_nonneg _) h2 2; norm_num at this; exact this
-  calc |τ|*(‖1-(2:ℂ)^((τ:ℂ)*I)‖^2*‖riemannZeta (1-(τ:ℂ)*I)‖^2)
-      ≤ |τ|*(4*‖riemannZeta (1-(τ:ℂ)*I)‖^2) :=
+  calc |τ| *(‖1-(2:ℂ)^((τ:ℂ)*I)‖^2*‖riemannZeta (1-(τ:ℂ)*I)‖^2)
+      ≤ |τ| *(4*‖riemannZeta (1-(τ:ℂ)*I)‖^2) :=
         mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right h4 (sq_nonneg _)) (abs_nonneg _)
-    _ = 4*(|τ|*‖riemannZeta (1-(τ:ℂ)*I)‖^2) := by ring
+    _ = 4*(|τ| *‖riemannZeta (1-(τ:ℂ)*I)‖^2) := by ring
     _ ≤ 4*(4*Real.pi*‖riemannZeta ((τ:ℂ)*I)‖^2) := mul_le_mul_of_nonneg_left hz (by norm_num)
     _ = 16*Real.pi*‖riemannZeta ((τ:ℂ)*I)‖^2 := by ring
 
@@ -469,7 +470,7 @@ private theorem norm_sq_one_sub_phase_le_wq {h : ℝ} (hh : 0 < h) (ξ : ℝ) :
   rw [hdiff]
   have hden : 0 < (1+y)*(2+y) := by positivity
   have hrhs : h*(24*a*(y/((1+y)*(2+y)))) = 24*y^2/((1+y)*(2+y)) := by
-    rw [hydef]; field_simp; ring
+    rw [hydef]; field_simp
   rw [hrhs,le_div_iff₀ hden]
   set N := ‖1-Complex.exp (((2*Real.pi*(h*ξ):ℝ):ℂ)*I)‖^2
   have hN : 0 ≤ N := sq_nonneg _
@@ -538,7 +539,7 @@ theorem criticalState_not_integrable_half_tilt_integer_error {W₀ : ℝ} (hW : 
     have him : |(lineArg 0 ξ).im| = a ξ := by
       rw [hline0]
       simp only [a,Complex.sub_im,Complex.one_im,Complex.mul_im,Complex.ofReal_re,
-        Complex.ofReal_im,Complex.I_re,Complex.I_im,mul_zero,mul_one,zero_add,add_zero,zero_sub,abs_neg]
+        Complex.ofReal_im,Complex.I_re,Complex.I_im,mul_zero,mul_one,add_zero,zero_sub,abs_neg]
       rw [abs_mul,abs_of_pos (by positivity : (0:ℝ) < 2*Real.pi)]
     rw [him] at h
     exact h
@@ -551,7 +552,7 @@ theorem criticalState_not_integrable_half_tilt_integer_error {W₀ : ℝ} (hW : 
     have hq : a ξ*wq (a ξ/2) = a ξ^2/(2+a ξ) := by
       have h1 : (1:ℝ)+a ξ/2 ≠ 0 := (by linarith [ha0 ξ] : (0:ℝ) < 1+a ξ/2).ne'
       have h2 : (2:ℝ)+a ξ ≠ 0 := (by linarith [ha0 ξ] : (0:ℝ) < 2+a ξ).ne'
-      unfold wq; field_simp; ring
+      unfold wq; field_simp
     have hZn : 0 ≤ 384*Real.pi*‖riemannZeta (((2*Real.pi*ξ:ℝ):ℂ)*I)*
         negativeHalfLineLaplace (cx F) (1/2-((2*Real.pi*ξ:ℝ):ℂ)*I)‖^2 := by positivity
     have hHn : 0 ≤ 48*A^2*‖𝓕 ψ ξ‖^2 := by positivity
@@ -743,7 +744,9 @@ theorem criticalState_not_memLp_supercritical_integer_error {W₀ : ℝ} (hW : 0
   intro hm
   apply criticalState_not_integrable_half_tilt_integer_error hW ht hF hc he hC hb
   have hsq : IntegrableOn (fun t => (tiltedIntegerError Φ β t)^2) (Ioi 0) := by
-    simpa only [Real.norm_eq_abs,sq_abs] using (memLp_two_iff_integrable_sq_norm hm.1).1 hm
+    have h := (memLp_two_iff_integrable_sq_norm hm.1).1 hm
+    simp only [Real.norm_eq_abs,sq_abs] at h
+    exact h
   have hN := continuous_integerReferenceWave hc hC hb
   have hcont : Continuous (tiltedIntegerError Φ (1/2)) := by unfold tiltedIntegerError; fun_prop
   refine hsq.mono' (hcont.pow 2).aestronglyMeasurable ?_

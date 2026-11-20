@@ -56,6 +56,7 @@ import GaloisForLFunctions.ArithmeticCountingPositivity.EveryPrimePatternHasItsF
 
 import GaloisForLFunctions.ArithmeticCountingPositivity.RelativePrimePatternCoordinates
 import GaloisForLFunctions.ArithmeticCountingPositivity.EveryPrimePatternInheritsFiniteCutoffUpperBounds
+import GaloisForLFunctions.ArithmeticCountingPositivity.TwoSquarefreeTranslatesInShortIntervals
 
 /-!
 # Arithmetic Counting Positivity

@@ -62,7 +62,8 @@ theorem simultaneous_squarefree_interval_lower {a b L R : ℕ} (hR : 1 ≤ R)
   have hcast : (S.card:ℝ)+(T.card:ℝ) ≤ L+((pairedSquarefreeSites a b L).card:ℝ) := by exact_mod_cast hn
   have hA : _ ≤ (S.card:ℝ) := hlocal a ha
   have hB : _ ≤ (T.card:ℝ) := hlocal b hb
-  linarith only [hcast,hA,hB]
+  have hid : (12/Real.pi^2-1)*(L:ℝ) = 2*((L:ℝ)*(6/Real.pi^2))-L := by ring
+  linarith only [hcast,hA,hB,hid]
 
 /-- At least one in ten relative positions works for both shifts at
 length forty times the square root scale, with explicit constants. -/

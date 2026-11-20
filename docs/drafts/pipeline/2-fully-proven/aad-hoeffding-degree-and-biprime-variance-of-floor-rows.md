@@ -30,5 +30,10 @@ Isolate the exact combinatorial degree of sawtooth sums on smooth-frozen CRT cos
 3. **First-order Bernoulli slope nonnegativity at `θ = 0`.**
    - For any `IsFeasible K S q`, `saw q K 0 = 0` and `saw q K r ≥ 0` for all `r : ℕ`, so at `θ = 0` the derivative of `∑_{A ⊆ I} θ^{|A|}(1-θ)^{|I|-|A|} saw q K (r_A)` with `r_∅ = 0` equals `∑_{i ∈ I} saw q K (r_{{i}}) ≥ 0`.
 
+4. **Coset fiber expectations, individual rough-prime positivity above `√K`, and solo-prime rigidity above `K / 2`.**
+   - For `1 ≤ k₂` and `a < k₁`, `a + j k₁ < k₁ k₂` for all `j < k₂`, so `∑_{j < k₂} ((a + j k₁) % (k₁ k₂)) = k₂ (a + k₁ (k₂ - 1) / 2)`.
+   - When `K < (Y + 1)^2` and `p₀ ∈ (Y, K]` is prime, `p₀` is coprime to every `Y`-smooth `m ≤ K` and every prime `p ∈ (Y, K] \ {p₀}`. Choosing `r ≡ v (mod p₀)` and `r ≡ 0` modulo all smooth moduli and all other rough primes makes `saw q K r = cosetPrimeSaw q Y K 0 p₀ v ≥ 0` for every `v`. Setting `Y = p - 1` (`K < p^2`, `p ≤ K`) and summing over `v ∈ range p` via the bijection `j ↦ (j u) % p` yields `0 ≤ ∑_{1 ≤ u ≤ K/p} u q(u p)`, hence `∑_{1 ≤ u ≤ K/p} c(u p) ≤ 0` for every integer producer `(c, m, B)` on `[1, K]`.
+   - For any prime `p` with `K < 2 p` and `p ≤ K`, `p` divides no `k ∈ [2, K] \ {p}`; choosing `r ≡ p - 1 (mod p)` and `r ≡ 0` modulo `[2, K] \ {p}` gives `p · stepWeight c r = -c(p)(p - 1)` in `ℤ`, whence `c(p) = p(c(p) + stepWeight c r)` (`p ∣ c(p)`) and `c(p) ≤ 0`.
+
 ## Log
 - 2026-11-20 — complete paper proof recorded in `2-fully-proven`.

@@ -22,6 +22,13 @@ moduli `p q` almost all `L²` variance resides in the pure degree-2 Hoeffding in
 * **First-order Bernoulli slope nonnegativity at `θ = 0` (`IsFeasible.sum_singleton_saw_nonneg`).**
   Because `saw q K 0 = 0` and `saw q K ≥ 0` everywhere, the linear variation around `A = ∅` of any
   subset-sampled sawtooth expectation is nonnegative.
+* **Coset fiber expectations, individual rough-prime positivity above `√K`, and solo-prime
+  divisibility rigidity above `K / 2` (`coset_fiber_sum_mod`,
+  `IsFeasible.cosetPrimeSaw_zero_nonneg`, `IsProducer.sum_multiples_prime_above_sqrt_nonpos`,
+  `IsProducer.solo_prime_dvd_and_nonpos`).** On the zero smooth coset, every individual prime
+  `p ∈ (Y, K]` above `√K` has `cosetPrimeSaw q Y K 0 p v ≥ 0` for all `v`, forcing
+  `∑_{1 ≤ u ≤ K/p} c(u p) ≤ 0` for every prime `p > √K`; above `K / 2`, every prime `p` additionally
+  satisfies `p ∣ c(p)` and `c(p) ≤ 0`.
 -/
 
 open Finset
@@ -31,6 +38,7 @@ noncomputable section
 namespace GaloisForLFunctions.ArithmeticAuxiliaryDynamics.FloorSpectrum
 
 open GaloisForLFunctions.ArithmeticAuxiliaryDynamics
+open GaloisForLFunctions.ArithmeticKreinLangerTheory
 
 /-! ### Part 1: Prime-factor degree bounds and coset additivity above `√K` -/
 
@@ -78,10 +86,9 @@ theorem dvd_smoothModulus {Y K m : ℕ} (hm1 : 1 ≤ m) (hmK : m ≤ K)
 /-- Canonical CRT lift on `ℤ/(up)ℤ` from a fixed `u`-residue `a` and variable `p`-residue `b`: the
 unique `x ∈ range (u * p)` with `x % u = a % u` and `x % p = b % p` when `Coprime u p`. -/
 def crtPairLift (u p a b : ℕ) : ℕ :=
-  (Nat.chineseRemainder (a := a) (b := b)
-    (if h : Nat.Coprime u p then h else Nat.coprime_one_left p) : ℕ) % (u * p)
+  if h : Nat.Coprime u p then (Nat.chineseRemainder h a b).val % (u * p) else 0
 
-private lemma crtPairLift_eq_mod {u p r z : ℕ} (hu : 0 < u) (hp : 0 < p) (hcop : Nat.Coprime u p)
+private lemma crtPairLift_eq_mod {u p r z : ℕ} (hcop : Nat.Coprime u p)
     (hru : r % u = z % u) :
     crtPairLift u p z (r % p) = r % (u * p) := by
   unfold crtPairLift
@@ -91,7 +98,8 @@ private lemma crtPairLift_eq_mod {u p r z : ℕ} (hu : 0 < u) (hp : 0 < p) (hcop
   have hcp : c.val ≡ r [MOD p] := c.property.2.trans (Nat.mod_modEq r p)
   have hcup : c.val ≡ r [MOD u * p] :=
     (Nat.modEq_and_modEq_iff_modEq_mul hcop).mp ⟨hcu, hcp⟩
-  exact hcup.symm
+  change c.val % (u * p) = r % (u * p) at hcup
+  exact hcup
 
 /-- Univariate contribution of a single prime `p ∈ (Y, K]` to `saw q K` on the coset of `z`. -/
 def cosetPrimeSaw (q : ℕ → ℝ) (Y K z p v : ℕ) : ℝ :=
@@ -158,6 +166,7 @@ theorem saw_coset_above_sqrt_eq_add_sum (q : ℕ → ℝ) {Y K z r : ℕ} (hKY :
       exact ⟨fun hk => let ⟨p, ⟨hpP, hpd⟩, _⟩ := hrough_fact k hk; ⟨p, hpP, hk, hpd⟩,
         fun ⟨_, _, hk, _⟩ => hk⟩
     · intro p₁ hp₁ p₂ hp₂ hne
+      change Disjoint _ _
       rw [Finset.disjoint_left]
       intro k hk₁ hk₂
       obtain ⟨hkR, hd₁⟩ := mem_filter.mp hk₁
@@ -175,8 +184,11 @@ theorem saw_coset_above_sqrt_eq_add_sum (q : ℕ → ℝ) {Y K z r : ℕ} (hKY :
     rw [← sum_filter]
     refine sum_nbij' (fun k => k / p) (fun u => u * p) ?_ ?_ ?_ ?_ ?_
     · intro k hk
-      obtain ⟨⟨hkI, _⟩, hpd⟩ := mem_filter.mp hk
+      have hkR : k ∈ R_rough := (mem_filter.mp hk).1
+      have hpd : p ∣ k := (mem_filter.mp hk).2
+      have hkI : k ∈ Icc 2 K := (mem_filter.mp hkR).1
       obtain ⟨hk2, hkK⟩ := mem_Icc.mp hkI
+      clear hk hkR hkI
       obtain ⟨u, rfl⟩ := hpd
       rw [Nat.mul_comm p u, Nat.mul_div_cancel _ hp_pr.pos]
       have hu1 : 1 ≤ u := by
@@ -193,13 +205,14 @@ theorem saw_coset_above_sqrt_eq_add_sum (q : ℕ → ℝ) {Y K z r : ℕ} (hKY :
       · exact (Nat.le_div_iff_mul_le hp_pr.pos).mpr (by rw [Nat.mul_comm]; exact hkK)
       · intro l hl
         exact (Nat.le_of_dvd hu1 (Nat.dvd_of_mem_primeFactors hl)).trans hu_lt
-      · rwa [Nat.mul_comm]
+      · rw [Nat.mul_comm]
+        exact mem_Icc.mpr ⟨hk2, hkK⟩
     · intro u hu
       obtain ⟨huU, huI⟩ := mem_filter.mp hu
-      refine mem_filter.mpr ⟨mem_filter.mpr ⟨huI, ?_⟩, ⟨u, Nat.mul_comm p u⟩⟩
+      refine mem_filter.mpr ⟨mem_filter.mpr ⟨huI, ?_⟩, dvd_mul_left p u⟩
       intro hall
       exact (not_le.mpr hpY) (hall p (Nat.mem_primeFactors.mpr
-        ⟨hp_pr, ⟨u, Nat.mul_comm p u⟩, by have := (mem_Icc.mp huI).1; omega⟩))
+        ⟨hp_pr, dvd_mul_left p u, by have := (mem_Icc.mp huI).1; omega⟩))
     · intro k hk
       exact Nat.div_mul_cancel (mem_filter.mp hk).2
     · intro u _
@@ -222,7 +235,7 @@ theorem saw_coset_above_sqrt_eq_add_sum (q : ℕ → ℝ) {Y K z r : ℕ} (hKY :
       (hp_pr.coprime_iff_not_dvd.mpr fun hpu => by
         have := Nat.le_of_dvd hu1 hpu; omega).symm
     have hru : r % u = z % u := hmod_smooth hu1 (hu_le_Y.trans (by omega)) husm
-    rw [crtPairLift_eq_mod hu1 hp_pr.pos hcop hru]
+    rw [crtPairLift_eq_mod hcop hru]
   · rfl
 
 /-! ### Part 2: Exact Hoeffding ANOVA variance of `(t mod pq) / (pq)` on `ℤ/(pq)ℤ` -/
@@ -377,15 +390,17 @@ private lemma sum_range_mul_decomp {p q : ℕ} (hp : 1 ≤ p) (f : ℕ → ℝ) 
       _ ≤ q * p := Nat.mul_le_mul_right p (by omega)
       _ = p * q := Nat.mul_comm q p
   · intro t _
-    rw [Nat.mul_comm, Nat.div_add_mod]
+    dsimp only
+    rw [Nat.mul_comm (t / p) p, Nat.mod_add_div]
   · intro x hx
     obtain ⟨ha, _⟩ := mem_product.mp hx
     have hap := mem_range.mp ha
     ext
     · rw [Nat.add_mul_mod_self_right, Nat.mod_eq_of_lt hap]
     · rw [Nat.add_mul_div_right _ _ hp, Nat.div_eq_of_lt hap, zero_add]
-  · intro _ _
-    rfl
+  · intro t _
+    dsimp only
+    rw [Nat.mul_comm (t / p) p, Nat.mod_add_div]
 
 private lemma biprimeInteraction_fiber_sum_left {p q a : ℕ} (hp : 1 ≤ p) (hq : 1 ≤ q)
     (hcop : Nat.Coprime p q) (ha : a < p) :
@@ -421,7 +436,7 @@ theorem biprime_hoeffding_orthogonal {p q : ℕ} (hp : 1 ≤ p) (hq : 1 ≤ q)
           biprimeMarginalLeft p q a * ((1 / (p : ℝ)) * centRes q (a + j * p)) := by
       intro j _
       unfold biprimeMarginalLeft biprimeMarginalRight centRes
-      rw [Nat.add_mul_mod_self_right, Nat.mod_mod]
+      rw [Nat.add_mul_mod_self_right]
     rw [sum_congr rfl hc, ← mul_sum, ← mul_sum, sum_centRes_prog_eq_zero hq hcop, mul_zero,
       mul_zero]
   · rw [sum_range_mul_decomp hp]
@@ -431,7 +446,7 @@ theorem biprime_hoeffding_orthogonal {p q : ℕ} (hp : 1 ≤ p) (hq : 1 ≤ q)
           biprimeMarginalLeft p q a * biprimeInteraction p q (a + j * p) := by
       intro j _
       unfold biprimeMarginalLeft centRes
-      rw [Nat.add_mul_mod_self_right, Nat.mod_mod]
+      rw [Nat.add_mul_mod_self_right]
     rw [sum_congr rfl hc, ← mul_sum,
       biprimeInteraction_fiber_sum_left hp hq hcop (mem_range.mp ha), mul_zero]
   · rw [Nat.mul_comm p q, sum_range_mul_decomp hq]
@@ -448,7 +463,7 @@ theorem biprime_hoeffding_orthogonal {p q : ℕ} (hp : 1 ≤ p) (hq : 1 ≤ q)
       intro i _
       rw [hswap]
       unfold biprimeMarginalRight centRes
-      rw [Nat.add_mul_mod_self_right, Nat.mod_mod]
+      rw [Nat.add_mul_mod_self_right]
     rw [sum_congr rfl hc, ← mul_sum,
       biprimeInteraction_fiber_sum_left hq hp hcop.symm (mem_range.mp hb), mul_zero]
 
@@ -469,7 +484,7 @@ theorem biprime_marginal_variances {p q : ℕ} (hp : 1 ≤ p) (hq : 1 ≤ q) :
           (1 / (q : ℝ) ^ 2) * (centRes p a) ^ 2 := by
         intro j _
         unfold biprimeMarginalLeft centRes
-        rw [Nat.add_mul_mod_self_right, Nat.mod_mod]
+        rw [Nat.add_mul_mod_self_right]
         ring
       rw [sum_congr rfl hjc, sum_const, card_range, nsmul_eq_mul]
       field_simp
@@ -484,7 +499,7 @@ theorem biprime_marginal_variances {p q : ℕ} (hp : 1 ≤ p) (hq : 1 ≤ q) :
           (1 / (p : ℝ) ^ 2) * (centRes q b) ^ 2 := by
         intro i _
         unfold biprimeMarginalRight centRes
-        rw [Nat.add_mul_mod_self_right, Nat.mod_mod]
+        rw [Nat.add_mul_mod_self_right]
         ring
       rw [sum_congr rfl hic, sum_const, card_range, nsmul_eq_mul]
       field_simp
@@ -523,7 +538,6 @@ theorem biprime_interaction_variance {p q : ℕ} (hp : 1 ≤ p) (hq : 1 ≤ q)
     push_cast
     field_simp
   have hmul_pyth := congrArg (fun x : ℝ => (1 / ((p * q : ℕ) : ℝ)) * x) hpyth
-  dsimp only at hmul_pyth
   rw [mul_add, mul_add, htot, hm1, hm2] at hmul_pyth
   have hsub :
       (1 / ((p * q : ℕ) : ℝ)) * ∑ t ∈ range (p * q), (biprimeInteraction p q t) ^ 2 =
@@ -545,6 +559,356 @@ theorem _root_.GaloisForLFunctions.ArithmeticAuxiliaryDynamics.IsFeasible.sum_si
     saw q K 0 = 0 ∧ 0 ≤ ∑ i ∈ I, saw q K (r i) :=
   ⟨saw_zero q K, sum_nonneg fun i _ => hF.saw_nonneg (r i)⟩
 
+/-! ### Part 4: Coset fiber expectations, rough-prime positivity above `√K`, and solo-prime rigidity -/
+
+/-- **General coset conditional expectation identity.** Freezing the `k₁`-residue at `a < k₁`
+collapses `(a + j * k₁) mod (k₁ * k₂)` in expectation over `j ∈ range k₂` to
+`a + k₁ * (k₂ - 1) / 2`. -/
+theorem coset_fiber_sum_mod {k₁ k₂ a : ℕ} (hk₂ : 1 ≤ k₂) (ha : a < k₁) :
+    ∑ j ∈ range k₂, (((a + j * k₁) % (k₁ * k₂) : ℕ) : ℝ) =
+      (k₂ : ℝ) * ((a : ℝ) + (k₁ : ℝ) * ((k₂ : ℝ) - 1) / 2) := by
+  have hcongr : ∑ j ∈ range k₂, (((a + j * k₁) % (k₁ * k₂) : ℕ) : ℝ) =
+      ∑ j ∈ range k₂, ((a : ℝ) + (j : ℝ) * (k₁ : ℝ)) := by
+    refine sum_congr rfl fun j hj => ?_
+    have hjlt := mem_range.mp hj
+    have hlt : a + j * k₁ < k₁ * k₂ := by
+      calc a + j * k₁ < k₁ + j * k₁ := Nat.add_lt_add_right ha _
+        _ = (j + 1) * k₁ := by ring
+        _ ≤ k₂ * k₁ := Nat.mul_le_mul_right k₁ (by omega)
+        _ = k₁ * k₂ := Nat.mul_comm k₂ k₁
+    rw [Nat.mod_eq_of_lt hlt]
+    push_cast
+    rfl
+  rw [hcongr, sum_add_distrib, ← sum_mul, sum_range_cast_id, sum_const, card_range, nsmul_eq_mul]
+  have hk₂R : (k₂ : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+  field_simp
+
+private lemma coprime_prod_right {ι : Type*} {p : ℕ} {s : Finset ι} {f : ι → ℕ}
+    (h : ∀ x ∈ s, p.Coprime (f x)) : p.Coprime (∏ x ∈ s, f x) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | insert a s ha ih =>
+    rw [Finset.prod_insert ha]
+    exact (h a (mem_insert_self a s)).mul_right (ih fun x hx => h x (mem_insert_of_mem hx))
+
+private lemma dvd_prod_id {s : Finset ℕ} {x : ℕ} (hx : x ∈ s) : x ∣ ∏ y ∈ s, y := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp at hx
+  | insert a s ha ih =>
+    rw [Finset.prod_insert ha]
+    rcases mem_insert.mp hx with rfl | hxs
+    · exact dvd_mul_right _ _
+    · exact (ih hxs).trans (dvd_mul_left _ _)
+
+private lemma crtPairLift_zero_zero (u p : ℕ) : crtPairLift u p 0 0 = 0 := by
+  by_cases hcop : Nat.Coprime u p
+  · have h := crtPairLift_eq_mod (r := 0) (z := 0) hcop rfl
+    simpa using h
+  · simp [crtPairLift, hcop]
+
+private lemma crtPairLift_mod_right (u p z v : ℕ) :
+    crtPairLift u p z (v % p) = crtPairLift u p z v := by
+  by_cases hcop : Nat.Coprime u p
+  · unfold crtPairLift
+    rw [dif_pos hcop, dif_pos hcop]
+    set c₁ := Nat.chineseRemainder hcop z (v % p)
+    set c₂ := Nat.chineseRemainder hcop z v
+    have h1 : c₁.val ≡ c₂.val [MOD u] := c₁.property.1.trans c₂.property.1.symm
+    have h2 : c₁.val ≡ c₂.val [MOD p] :=
+      (c₁.property.2.trans (Nat.mod_modEq v p)).trans c₂.property.2.symm
+    have h12 : c₁.val ≡ c₂.val [MOD u * p] :=
+      (Nat.modEq_and_modEq_iff_modEq_mul hcop).mp ⟨h1, h2⟩
+    change c₁.val % (u * p) = c₂.val % (u * p) at h12
+    exact h12
+  · simp [crtPairLift, hcop]
+
+/-- **Individual rough-prime coset nonnegativity above `√K`.** When `K < (Y + 1)²`, on the zero
+`Y`-smooth coset every individual prime `p₀ ∈ (Y, K]` satisfies `0 ≤ cosetPrimeSaw q Y K 0 p₀ v`
+for every residue `v`. -/
+theorem _root_.GaloisForLFunctions.ArithmeticAuxiliaryDynamics.IsFeasible.cosetPrimeSaw_zero_nonneg
+    {K : ℕ} {S : Finset ℕ} {q : ℕ → ℝ} (hF : IsFeasible K S q)
+    {Y p₀ : ℕ} (hKY : K < (Y + 1) ^ 2) (hp₀ : p₀.Prime) (hpY : Y < p₀) (hpK : p₀ ≤ K)
+    (v : ℕ) :
+    0 ≤ cosetPrimeSaw q Y K 0 p₀ v := by
+  classical
+  set S_sm := (Icc 1 K).filter (fun m => ∀ l ∈ m.primeFactors, l ≤ Y)
+  set P_oth := ((Ioc Y K).filter Nat.Prime).erase p₀
+  set M_oth := (∏ m ∈ S_sm, m) * (∏ p ∈ P_oth, p)
+  have hcop_sm : p₀.Coprime (∏ m ∈ S_sm, m) := by
+    refine coprime_prod_right fun m hm => ?_
+    obtain ⟨hmI, hsm⟩ := mem_filter.mp hm
+    have hm1 := (mem_Icc.mp hmI).1
+    exact hp₀.coprime_iff_not_dvd.mpr fun hd =>
+      (not_le.mpr hpY) (hsm p₀ (Nat.mem_primeFactors.mpr ⟨hp₀, hd, by omega⟩))
+  have hcop_oth : p₀.Coprime (∏ p ∈ P_oth, p) := by
+    refine coprime_prod_right fun p hp => ?_
+    have hne : p ≠ p₀ := ne_of_mem_erase hp
+    have hp_pr : p.Prime := (mem_filter.mp (mem_of_mem_erase hp)).2
+    exact hp₀.coprime_iff_not_dvd.mpr fun hd =>
+      hne (((Nat.dvd_prime hp_pr).mp hd).resolve_left hp₀.ne_one).symm
+  have hcop : p₀.Coprime M_oth := hcop_sm.mul_right hcop_oth
+  set r := (Nat.chineseRemainder hcop v 0).val
+  have hr_M : M_oth ∣ r := Nat.dvd_of_mod_eq_zero (Nat.chineseRemainder hcop v 0).property.2
+  have hsm_dvd : smoothModulus Y K ∣ M_oth :=
+    (Finset.lcm_dvd fun m hm => dvd_prod_id hm).trans (dvd_mul_right _ _)
+  have hr_sm : r % smoothModulus Y K = 0 % smoothModulus Y K := by
+    rw [Nat.mod_eq_zero_of_dvd (hsm_dvd.trans hr_M), Nat.zero_mod]
+  have hsaw := saw_coset_above_sqrt_eq_add_sum q hKY hr_sm
+  have h0_sm : cosetSmoothSaw q Y K 0 = 0 := by simp [cosetSmoothSaw]
+  have hsum_eq : ∑ p ∈ (Ioc Y K).filter Nat.Prime, cosetPrimeSaw q Y K 0 p (r % p) =
+      cosetPrimeSaw q Y K 0 p₀ v := by
+    rw [sum_eq_single p₀]
+    · have hrp₀ : r % p₀ = v % p₀ := (Nat.chineseRemainder hcop v 0).property.1
+      unfold cosetPrimeSaw
+      simp_rw [hrp₀, crtPairLift_mod_right]
+    · intro p hp hne
+      have hp_er : p ∈ P_oth := mem_erase.mpr ⟨hne, hp⟩
+      have hp_dvd : p ∣ M_oth := (dvd_prod_id hp_er).trans (dvd_mul_left _ _)
+      have hrp : r % p = 0 := Nat.mod_eq_zero_of_dvd (hp_dvd.trans hr_M)
+      simp [cosetPrimeSaw, hrp, crtPairLift_zero_zero]
+    · intro hnot
+      exact absurd (mem_filter.mpr ⟨mem_Ioc.mpr ⟨hpY, hpK⟩, hp₀⟩) hnot
+  have hnn := hF.saw_nonneg r
+  rw [hsaw, h0_sm, zero_add, hsum_eq] at hnn
+  exact hnn
+
+private lemma sum_crtPairLift_zero_range {u p : ℕ} (hu1 : 1 ≤ u) (hp : p.Prime) (hu : u < p) :
+    ∑ v ∈ range p, ((crtPairLift u p 0 v : ℕ) : ℝ) =
+      ((p : ℝ) * ((p : ℝ) - 1) / 2) * (u : ℝ) := by
+  have hcop : Nat.Coprime u p :=
+    (hp.coprime_iff_not_dvd.mpr fun hd => by have := Nat.le_of_dvd hu1 hd; omega).symm
+  have hinj : Set.InjOn (fun j : ℕ => (j * u) % p) (range p : Set ℕ) := by
+    intro j₁ hj₁ j₂ hj₂ heq
+    have h₁ : j₁ < p := mem_range.mp hj₁
+    have h₂ : j₂ < p := mem_range.mp hj₂
+    change (j₁ * u) % p = (j₂ * u) % p at heq
+    have hmul : j₁ * u ≡ j₂ * u [MOD p] := heq
+    rcases le_total j₂ j₁ with hle | hle
+    · have hdvd : p ∣ (j₁ - j₂) * u := by
+        have hsub : j₂ * u + (j₁ - j₂) * u = j₁ * u := by
+          rw [← Nat.add_mul, Nat.add_sub_of_le hle]
+        have h0 : 0 + j₂ * u ≡ (j₁ - j₂) * u + j₂ * u [MOD p] := by
+          rw [Nat.zero_add, Nat.add_comm ((j₁ - j₂) * u), hsub]
+          exact hmul.symm
+        exact Nat.dvd_of_mod_eq_zero (Nat.ModEq.add_right_cancel' (j₂ * u) h0).symm
+      have hdvd' : p ∣ j₁ - j₂ := hcop.symm.dvd_of_dvd_mul_right hdvd
+      have hzero : j₁ - j₂ = 0 := Nat.eq_zero_of_dvd_of_lt hdvd' (by omega)
+      omega
+    · have hdvd : p ∣ (j₂ - j₁) * u := by
+        have hsub : j₁ * u + (j₂ - j₁) * u = j₂ * u := by
+          rw [← Nat.add_mul, Nat.add_sub_of_le hle]
+        have h0 : 0 + j₁ * u ≡ (j₂ - j₁) * u + j₁ * u [MOD p] := by
+          rw [Nat.zero_add, Nat.add_comm ((j₂ - j₁) * u), hsub]
+          exact hmul
+        exact Nat.dvd_of_mod_eq_zero (Nat.ModEq.add_right_cancel' (j₁ * u) h0).symm
+      have hdvd' : p ∣ j₂ - j₁ := hcop.symm.dvd_of_dvd_mul_right hdvd
+      have hzero : j₂ - j₁ = 0 := Nat.eq_zero_of_dvd_of_lt hdvd' (by omega)
+      omega
+  have himg : (range p).image (fun j => (j * u) % p) = range p := by
+    refine eq_of_subset_of_card_le (fun b hb => ?_) ?_
+    · obtain ⟨j, _, rfl⟩ := mem_image.mp hb
+      exact mem_range.mpr (Nat.mod_lt _ hp.pos)
+    · rw [card_image_of_injOn hinj]
+  have hsum_img := sum_image (f := fun v => ((crtPairLift u p 0 v : ℕ) : ℝ)) hinj
+  rw [← himg, hsum_img]
+  have hterm : ∀ j ∈ range p, ((crtPairLift u p 0 ((j * u) % p) : ℕ) : ℝ) = (j : ℝ) * (u : ℝ) := by
+    intro j hj
+    have hjlt := mem_range.mp hj
+    have hru : (j * u) % u = 0 % u := by rw [Nat.mul_mod_left, Nat.zero_mod]
+    rw [crtPairLift_eq_mod hcop hru]
+    have hlt : j * u < u * p := by
+      calc j * u < p * u := Nat.mul_lt_mul_of_pos_right hjlt hu1
+        _ = u * p := Nat.mul_comm p u
+    rw [Nat.mod_eq_of_lt hlt]
+    push_cast
+    rfl
+  rw [sum_congr rfl hterm, ← sum_mul, sum_range_cast_id]
+
+/-- **Weighted multiple nonnegativity for every prime `p > √K`.** For any feasible sawtooth `q` on
+`[2, K]` and every prime `p ≤ K` with `K < p²`, `0 ≤ ∑_{u=1}^{K/p} u · q(u p)`. -/
+theorem _root_.GaloisForLFunctions.ArithmeticAuxiliaryDynamics.IsFeasible.sum_multiples_prime_above_sqrt_nonneg
+    {K : ℕ} {S : Finset ℕ} {q : ℕ → ℝ} (hF : IsFeasible K S q)
+    {p : ℕ} (hp : p.Prime) (hpK : p ≤ K) (hp2 : K < p ^ 2) :
+    0 ≤ ∑ u ∈ Icc 1 (K / p), (u : ℝ) * q (u * p) := by
+  have hp_ge2 := hp.two_le
+  have hKY : K < (p - 1 + 1) ^ 2 := by
+    rwa [Nat.sub_add_cancel hp.one_le]
+  have hsum_nn : 0 ≤ ∑ v ∈ range p, cosetPrimeSaw q (p - 1) K 0 p v :=
+    sum_nonneg fun v _ => hF.cosetPrimeSaw_zero_nonneg hKY hp (by omega) hpK v
+  have hfilt : (Icc 1 (K / p)).filter (fun u => ∀ l ∈ u.primeFactors, l ≤ p - 1) = Icc 1 (K / p) := by
+    refine filter_true_of_mem fun u hu => ?_
+    obtain ⟨hu1, huKp⟩ := mem_Icc.mp hu
+    have hup_le : u * p ≤ K := Nat.mul_le_of_le_div p u K huKp
+    have hu_lt_p : u < p := by
+      by_contra hge
+      have hsq : p ^ 2 ≤ u * p := by
+        calc p ^ 2 = p * p := sq p
+          _ ≤ u * p := Nat.mul_le_mul_right p (by omega)
+      omega
+    intro l hl
+    exact (Nat.le_of_dvd hu1 (Nat.dvd_of_mem_primeFactors hl)).trans (by omega)
+  have hrew : ∀ v ∈ range p, cosetPrimeSaw q (p - 1) K 0 p v =
+      ∑ u ∈ Icc 1 (K / p), q (u * p) * ((crtPairLift u p 0 v : ℕ) : ℝ) := by
+    intro v _
+    unfold cosetPrimeSaw
+    rw [hfilt]
+    refine sum_congr rfl fun u hu => ?_
+    obtain ⟨hu1, huKp⟩ := mem_Icc.mp hu
+    have hup_le : u * p ≤ K := Nat.mul_le_of_le_div p u K huKp
+    have hup_ge : 2 ≤ u * p := by nlinarith
+    rw [if_pos (mem_Icc.mpr ⟨hup_ge, hup_le⟩)]
+  rw [sum_congr rfl hrew, sum_comm] at hsum_nn
+  have heval : ∑ u ∈ Icc 1 (K / p), ∑ v ∈ range p, q (u * p) * ((crtPairLift u p 0 v : ℕ) : ℝ) =
+      ((p : ℝ) * ((p : ℝ) - 1) / 2) * ∑ u ∈ Icc 1 (K / p), (u : ℝ) * q (u * p) := by
+    rw [mul_sum]
+    refine sum_congr rfl fun u hu => ?_
+    obtain ⟨hu1, huKp⟩ := mem_Icc.mp hu
+    have hup_le : u * p ≤ K := Nat.mul_le_of_le_div p u K huKp
+    have hu_lt_p : u < p := by
+      by_contra hge
+      have hsq : p ^ 2 ≤ u * p := by
+        calc p ^ 2 = p * p := sq p
+          _ ≤ u * p := Nat.mul_le_mul_right p (by omega)
+      omega
+    rw [← mul_sum, sum_crtPairLift_zero_range hu1 hp hu_lt_p]
+    ring
+  rw [heval] at hsum_nn
+  have hpos : 0 < (p : ℝ) * ((p : ℝ) - 1) / 2 := by
+    have hpR : (2 : ℝ) ≤ (p : ℝ) := by exact_mod_cast hp_ge2
+    nlinarith
+  exact nonneg_of_mul_nonneg_right hsum_nn hpos
+
+private lemma stepWeight_eq_saw {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProducer c m B)
+    (hK : AlphabetLE c K) (r : ℕ) :
+    (stepWeight c r : ℝ) = saw (fun k => -(c k : ℝ) / (k : ℝ)) K r := by
+  classical
+  rw [stepWeight_eq_sum_mod hP.zero hP.balanced, saw]
+  have h1 : ∑ k ∈ c.support, (-(c k : ℝ) / k) * ((r % k : ℕ) : ℝ) =
+      ∑ k ∈ c.support.filter (fun k => 2 ≤ k), (-(c k : ℝ) / k) * ((r % k : ℕ) : ℝ) := by
+    symm
+    refine sum_subset (filter_subset _ _) fun k hk hnot => ?_
+    have hk0 : k ≠ 0 := fun h => Finsupp.mem_support_iff.mp hk (h ▸ hP.zero)
+    have hk1 : k = 1 := by
+      by_contra hne
+      exact hnot (mem_filter.mpr ⟨hk, by omega⟩)
+    subst hk1
+    simp [Nat.mod_one]
+  rw [h1]
+  refine sum_subset (fun k hk => ?_) (fun k hkI hnot => ?_)
+  · obtain ⟨hks, hk2⟩ := mem_filter.mp hk
+    exact mem_Icc.mpr ⟨hk2, hK k hks⟩
+  · have hc0 : c k = 0 := by
+      by_contra hne
+      exact hnot (mem_filter.mpr ⟨Finsupp.mem_support_iff.mpr hne, (mem_Icc.mp hkI).1⟩)
+    simp [hc0]
+
+private lemma isFeasible_empty_of_isProducer {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProducer c m B)
+    (hK : AlphabetLE c K) :
+    IsFeasible K ∅ (fun k => -(c k : ℝ) / (k : ℝ)) where
+  nonneg r _ _ := by
+    rw [← stepWeight_eq_saw hP hK r]
+    exact_mod_cast hP.nonneg r
+  target _ hr := by simp at hr
+
+/-- **Rough-prime multiple sum nonpositivity above `√K` for integer producers.** For every producer
+`(c, m, B)` on `[1, K]` and every prime `p` with `K < p²`, `∑_{u=1}^{K/p} c(u p) ≤ 0`. -/
+theorem _root_.GaloisForLFunctions.ArithmeticAuxiliaryDynamics.IsProducer.sum_multiples_prime_above_sqrt_nonpos
+    {c : ℕ →₀ ℤ} {m B K p : ℕ} (hP : IsProducer c m B) (hK : AlphabetLE c K)
+    (hp : p.Prime) (hp2 : K < p ^ 2) :
+    ∑ u ∈ Icc 1 (K / p), c (u * p) ≤ 0 := by
+  by_cases hpK : p ≤ K
+  · have hnn := (isFeasible_empty_of_isProducer hP hK).sum_multiples_prime_above_sqrt_nonneg hp hpK hp2
+    have hpR : (0 : ℝ) < (p : ℝ) := by exact_mod_cast hp.pos
+    have hmul : 0 ≤ (p : ℝ) * ∑ u ∈ Icc 1 (K / p), (u : ℝ) * (-(c (u * p) : ℝ) / ((u * p : ℕ) : ℝ)) :=
+      mul_nonneg hpR.le hnn
+    have hsimp : (p : ℝ) * ∑ u ∈ Icc 1 (K / p), (u : ℝ) * (-(c (u * p) : ℝ) / ((u * p : ℕ) : ℝ)) =
+        -((∑ u ∈ Icc 1 (K / p), c (u * p) : ℤ) : ℝ) := by
+      rw [mul_sum, Int.cast_sum, ← sum_neg_distrib]
+      refine sum_congr rfl fun u hu => ?_
+      have hu1 := (mem_Icc.mp hu).1
+      have huR : (u : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (by omega)
+      have hpR' : (p : ℝ) ≠ 0 := hpR.ne'
+      push_cast
+      field_simp
+    rw [hsimp] at hmul
+    have hR : ((∑ u ∈ Icc 1 (K / p), c (u * p) : ℤ) : ℝ) ≤ 0 := by linarith
+    exact_mod_cast hR
+  · have hdiv0 : K / p = 0 := Nat.div_eq_of_lt (by omega)
+    simp [hdiv0]
+
+/-- **Solo-prime sign rigidity above `K / 2` for feasible LP weights.** Every prime `p ∈ (K/2, K]`
+has `0 ≤ q p`. -/
+theorem _root_.GaloisForLFunctions.ArithmeticAuxiliaryDynamics.IsFeasible.solo_prime_nonneg
+    {K : ℕ} {S : Finset ℕ} {q : ℕ → ℝ} (hF : IsFeasible K S q)
+    {p : ℕ} (hp : p.Prime) (hpK : p ≤ K) (hp2 : K < 2 * p) :
+    0 ≤ q p := by
+  have hp_sq : K < p ^ 2 := by
+    have hp_ge2 := hp.two_le
+    nlinarith
+  have hdiv1 : K / p = 1 := by
+    refine le_antisymm ?_ ((Nat.le_div_iff_mul_le hp.pos).mpr (by omega))
+    exact Nat.le_of_lt_succ ((Nat.div_lt_iff_lt_mul hp.pos).mpr (by omega))
+  have hnn := hF.sum_multiples_prime_above_sqrt_nonneg hp hpK hp_sq
+  rw [hdiv1] at hnn
+  simpa using hnn
+
+/-- **Solo-prime divisibility and sign rigidity above `K / 2` for integer producers.** For every
+producer `(c, m, B)` on `[1, K]` and every prime `p` with `K < 2 * p`, `p ∣ c(p)` and `c(p) ≤ 0`. -/
+theorem _root_.GaloisForLFunctions.ArithmeticAuxiliaryDynamics.IsProducer.solo_prime_dvd_and_nonpos
+    {c : ℕ →₀ ℤ} {m B K p : ℕ} (hP : IsProducer c m B) (hK : AlphabetLE c K)
+    (hp : p.Prime) (hp2 : K < 2 * p) :
+    (p : ℤ) ∣ c p ∧ c p ≤ 0 := by
+  classical
+  by_cases hpK : p ≤ K
+  · set P_oth := (Icc 2 K).erase p
+    set M := ∏ k ∈ P_oth, k
+    have hcop : p.Coprime M := by
+      refine coprime_prod_right fun k hk => ?_
+      have hne : k ≠ p := ne_of_mem_erase hk
+      obtain ⟨hk2, hkK⟩ := mem_Icc.mp (mem_of_mem_erase hk)
+      refine hp.coprime_iff_not_dvd.mpr fun hd => ?_
+      obtain ⟨d, rfl⟩ := hd
+      have hd0 : d ≠ 0 := by omega
+      have hd1 : d ≠ 1 := fun h => hne (by rw [h, mul_one])
+      have hge : 2 * p ≤ p * d := by
+        calc 2 * p ≤ d * p := Nat.mul_le_mul_right p (by omega)
+          _ = p * d := Nat.mul_comm d p
+      omega
+    set r := (Nat.chineseRemainder hcop (p - 1) 0).val
+    have hrp : r % p = p - 1 := by
+      have h1 : r % p = (p - 1) % p := (Nat.chineseRemainder hcop (p - 1) 0).property.1
+      rw [h1, Nat.mod_eq_of_lt (by have := hp.two_le; omega)]
+    have hrM : M ∣ r := Nat.dvd_of_mod_eq_zero (Nat.chineseRemainder hcop (p - 1) 0).property.2
+    have hstep_p : (stepWeight c r : ℝ) = (-(c p : ℝ) / (p : ℝ)) * ((p - 1 : ℕ) : ℝ) := by
+      rw [stepWeight_eq_saw hP hK r, saw, sum_eq_single p]
+      · rw [hrp]
+      · intro k hk hne
+        have hkM : k ∣ M := dvd_prod_id (mem_erase.mpr ⟨hne, hk⟩)
+        rw [Nat.mod_eq_zero_of_dvd (hkM.trans hrM)]
+        simp
+      · intro hnot
+        exact absurd (mem_Icc.mpr ⟨hp.two_le, hpK⟩) hnot
+    have hpR_ne : (p : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hp.ne_zero
+    have hmulR : ((p : ℤ) * stepWeight c r : ℝ) = ((-c p * ((p : ℤ) - 1) : ℤ) : ℝ) := by
+      push_cast
+      rw [hstep_p, Nat.cast_sub hp.one_le]
+      push_cast
+      field_simp
+      ring
+    have hmulZ : (p : ℤ) * stepWeight c r = -c p * ((p : ℤ) - 1) := by exact_mod_cast hmulR
+    have hdvd : (p : ℤ) ∣ c p := ⟨c p + stepWeight c r, by linarith⟩
+    have hnn : 0 ≤ stepWeight c r := hP.nonneg r
+    have hpZ : (2 : ℤ) ≤ (p : ℤ) := by exact_mod_cast hp.two_le
+    have hnonpos : c p ≤ 0 := by nlinarith
+    exact ⟨hdvd, hnonpos⟩
+  · have hcp : c p = 0 := by
+      by_contra hne
+      have := hK p (Finsupp.mem_support_iff.mpr hne)
+      omega
+    exact ⟨⟨0, by simp [hcp]⟩, by simp [hcp]⟩
+
 #print axioms card_primeFactors_gt_le_of_lt_pow
 #print axioms card_primeFactors_above_sqrt_le_one
 #print axioms card_primeFactors_above_cubeRoot_le_two
@@ -553,5 +917,11 @@ theorem _root_.GaloisForLFunctions.ArithmeticAuxiliaryDynamics.IsFeasible.sum_si
 #print axioms biprime_marginal_variances
 #print axioms biprime_interaction_variance
 #print axioms GaloisForLFunctions.ArithmeticAuxiliaryDynamics.IsFeasible.sum_singleton_saw_nonneg
+#print axioms coset_fiber_sum_mod
+#print axioms GaloisForLFunctions.ArithmeticAuxiliaryDynamics.IsFeasible.cosetPrimeSaw_zero_nonneg
+#print axioms GaloisForLFunctions.ArithmeticAuxiliaryDynamics.IsFeasible.sum_multiples_prime_above_sqrt_nonneg
+#print axioms GaloisForLFunctions.ArithmeticAuxiliaryDynamics.IsProducer.sum_multiples_prime_above_sqrt_nonpos
+#print axioms GaloisForLFunctions.ArithmeticAuxiliaryDynamics.IsFeasible.solo_prime_nonneg
+#print axioms GaloisForLFunctions.ArithmeticAuxiliaryDynamics.IsProducer.solo_prime_dvd_and_nonpos
 
 end GaloisForLFunctions.ArithmeticAuxiliaryDynamics.FloorSpectrum

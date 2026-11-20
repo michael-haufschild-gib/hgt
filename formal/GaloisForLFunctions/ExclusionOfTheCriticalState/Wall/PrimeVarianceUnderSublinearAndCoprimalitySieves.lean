@@ -193,7 +193,8 @@ theorem criticalState_commonSieve_sublinear_tilted_cost {W₀ : ℝ} (hW : 0 < W
 private theorem primorial_rpow_neg_eq {s : ℝ} (P : Finset Nat.Primes) :
     ((sievePrimorial P:ℕ):ℝ)^(-s) = Real.exp (-(s*sieveLogSize P)) := by
   have hpos : (0:ℝ) < (sievePrimorial P:ℕ) := by
-    exact_mod_cast Finset.prod_pos fun p _ => p.2.pos
+    unfold sievePrimorial
+    exact_mod_cast Finset.prod_pos fun (p : Nat.Primes) _ => p.2.pos
   rw [Real.rpow_def_of_pos hpos,← sieveLogSize_eq_log_primorial]; congr 1; ring
 
 /-- Tonelli over all finite sieves: with weight `(∏_{p ∈ P} p)^{-s}`, `s > 1`, the
@@ -233,7 +234,7 @@ theorem criticalState_primorial_weighted_total_variance {W₀ : ℝ} (hW : 0 < W
 /-- The primes dividing `q`, as a sieve: coprimality to `q`. -/
 def coprimalitySieve (q : ℕ) : Finset Nat.Primes :=
   q.primeFactors.attach.map ⟨fun p => ⟨p.1,Nat.prime_of_mem_primeFactors p.2⟩,
-    fun _ _ h => Subtype.ext (congrArg Subtype.val h)⟩
+    fun a b h => Subtype.ext (by simpa using congrArg (fun r : Nat.Primes => (r:ℕ)) h)⟩
 
 theorem sievePrimorial_coprimalitySieve (q : ℕ) :
     sievePrimorial (coprimalitySieve q) = ∏ p ∈ q.primeFactors, p := by
@@ -243,10 +244,10 @@ theorem sievePrimorial_coprimalitySieve (q : ℕ) :
 
 theorem sieveLogSize_coprimalitySieve_le {q : ℕ} (hq : q ≠ 0) :
     sieveLogSize (coprimalitySieve q) ≤ Real.log q := by
-  rw [sieveLogSize_eq_log_primorial,sievePrimorial_coprimalitySieve]
+  have hd : (∏ p ∈ q.primeFactors, p) ≤ q := Nat.le_of_dvd (Nat.pos_of_ne_zero hq) (Nat.prod_primeFactors_dvd q)
   have hpos : 0 < ∏ p ∈ q.primeFactors, p := Finset.prod_pos fun p hp => (Nat.prime_of_mem_primeFactors hp).pos
-  exact Real.log_le_log (by exact_mod_cast hpos)
-    (by exact_mod_cast Nat.le_of_dvd (Nat.pos_of_ne_zero hq) (Nat.prod_primeFactors_dvd q))
+  rw [sieveLogSize_eq_log_primorial,sievePrimorial_coprimalitySieve]
+  exact Real.log_le_log (Nat.cast_pos.2 hpos) (Nat.cast_le.2 hd)
 
 /-- Sieving by coprimality to a measurable modulus `1 ≤ q(t) ≤ e^{γt}`, which may
 depend on the observed wave, keeps an exponentially integrable variance error
@@ -261,14 +262,16 @@ theorem criticalState_coprimality_modulus_variance {W₀ : ℝ} (hW : 0 < W₀)
     IntegrableOn (fun t => Real.exp (b*t)*
       |(commonSievedPrimeError (coprimalitySieve (q t)) Φ t)^2-(ordinaryPrimePolarError Φ t)^2|) (Ioi 0) := by
   obtain ⟨A,hA,hmaj⟩ := criticalState_adaptive_prime_variance_envelope hW ht hF hc he hC hb hb0 hγ hroom
-  let G := fun p : ℝ × ℕ => Real.exp (b*p.1)*
-    |(commonSievedPrimeError (coprimalitySieve p.2) Φ p.1)^2-(ordinaryPrimePolarError Φ p.1)^2|
-  have hG : Measurable G := measurable_from_prod_countable_left fun n =>
-    (by fun_prop : Measurable fun t : ℝ => Real.exp (b*t)).mul
-      ((((measurable_commonSievedPrimeError hc _).pow_const 2).sub
-        ((measurable_ordinaryPrimePolarError hc).pow_const 2)).abs)
-  have hm : Measurable fun t => G (t,q t) := hG.comp (measurable_id.prodMk hq)
-  refine hA.mono' hm.aestronglyMeasurable ?_
+  have hm : Measurable (fun t => Real.exp (b*t)*
+      |(commonSievedPrimeError (coprimalitySieve (q t)) Φ t)^2-(ordinaryPrimePolarError Φ t)^2|) := by
+    have hG : Measurable (fun p : ℝ × ℕ => Real.exp (b*p.1)*
+        |(commonSievedPrimeError (coprimalitySieve p.2) Φ p.1)^2-(ordinaryPrimePolarError Φ p.1)^2|) := by
+      refine measurable_from_prod_countable_left fun n => ?_
+      exact (by fun_prop : Measurable fun t : ℝ => Real.exp (b*t)).mul
+        ((((measurable_commonSievedPrimeError hc (coprimalitySieve n)).pow_const 2).sub
+          ((measurable_ordinaryPrimePolarError hc).pow_const 2)).abs)
+    exact hG.comp (measurable_id.prodMk hq)
+  refine Integrable.mono' hA hm.aestronglyMeasurable ?_
   filter_upwards [hmaj,ae_restrict_mem (μ := volume) (measurableSet_Ioi (a := (0:ℝ)))] with t ht ht0
   rw [Real.norm_of_nonneg (mul_nonneg (Real.exp_pos _).le (abs_nonneg _))]
   apply ht
@@ -286,8 +289,7 @@ theorem integral_sq_eq_lpNorm_sq_of_measure {f : ℝ → ℝ} {ν : Measure ℝ}
 
 /-- Deleting the true primes below `T²` costs `O(T²)` in `L²`: each deleted prime is
 a translate of the state with a bounded coefficient. -/
-theorem criticalState_quadratic_removed_primes {W₀ : ℝ} (hW : 0 < W₀)
-    (ht : (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a)=(W₀:EReal))
+theorem criticalState_quadratic_removed_primes {W₀ : ℝ}
     {F Φ : ℝ → ℝ} (hF : IsCriticalHalfLineGroundState W₀ F) (he : F =ᵐ[volume] Φ) :
     ∃ K : ℝ, 0 ≤ K ∧ ∀ (T : ℝ) (P : Finset Nat.Primes), (∀ p ∈ P, ((p:ℕ):ℝ) ≤ T^2) →
       MemLp (removedPrimeWave P Φ) 2 ∧ lpNorm (removedPrimeWave P Φ) 2 volume ≤ K*T^2 := by
@@ -359,7 +361,7 @@ theorem criticalState_quadratic_sieve_variance_ratio {W₀ : ℝ} (hW : 0 < W₀
   have hBpos : 0 < B := (mul_pos hK1 hu).trans_le hBlow
   have hx : |A/B-1| ≤ 1/(K-1) := by
     rw [div_sub_one hBpos.ne',abs_div,abs_of_pos hBpos,div_le_div_iff₀ hBpos hK1,one_mul]
-    calc |A-B|*(K-1) ≤ u*(K-1) := mul_le_mul_of_nonneg_right hAB hK1.le
+    calc |A-B| *(K-1) ≤ u*(K-1) := mul_le_mul_of_nonneg_right hAB hK1.le
       _ ≤ B := by linarith only [hBlow]
   have hx1 : 1/(K-1) ≤ 1 := by
     rw [div_le_one hK1]; simp only [K]; linarith
@@ -378,8 +380,8 @@ theorem criticalState_quadratic_sieve_variance_ratio {W₀ : ℝ} (hW : 0 < W₀
       _ ≤ |A/B-1|+|(2:ℝ)| := abs_add_le _ _
       _ = |A/B-1|+2 := by norm_num
   have hxle : |A/B-1| ≤ 1 := hx.trans hx1
-  calc |A/B-1|*|A/B+1| ≤ |A/B-1|*(|A/B-1|+2) := mul_le_mul_of_nonneg_left hy (abs_nonneg _)
-    _ ≤ |A/B-1|*3 := mul_le_mul_of_nonneg_left (by linarith only [hxle]) (abs_nonneg _)
+  calc |A/B-1| *|A/B+1| ≤ |A/B-1| *(|A/B-1|+2) := mul_le_mul_of_nonneg_left hy (abs_nonneg _)
+    _ ≤ |A/B-1| *3 := mul_le_mul_of_nonneg_left (by linarith only [hxle]) (abs_nonneg _)
     _ ≤ (η/3)*3 := mul_le_mul_of_nonneg_right (hx.trans hxη) (by norm_num)
     _ = η := by ring
 
@@ -407,7 +409,7 @@ theorem riemannHypothesis_or_sublinear_and_modular_sieves : RiemannHypothesis �
   rcases riemannHypothesis_or_exists_criticalHalfLineGroundState with hr | ⟨W₀,F,hW,ht,hF⟩
   · exact Or.inl hr
   obtain ⟨_,_,Φ,hc,he,_,⟨C,hC,hb⟩,_⟩ := criticalState_exists_continuous_representative hW ht hF
-  obtain ⟨K,hK,hrem⟩ := criticalState_quadratic_removed_primes hW ht hF he
+  obtain ⟨K,hK,hrem⟩ := criticalState_quadratic_removed_primes hF he
   refine Or.inr ⟨W₀,F,Φ,hW,ht,hF,hc,he,fun η hη => ?_,
     fun b γ hb0 hγ hroom q hq hq0 hqγ =>
       criticalState_coprimality_modulus_variance hW ht hF hc he hC hb hb0 hγ hroom hq hq0 hqγ,

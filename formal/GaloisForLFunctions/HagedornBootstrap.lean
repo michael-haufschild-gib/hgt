@@ -19,3 +19,5 @@ import GaloisForLFunctions.HagedornBootstrap.CurieWeissTwin
 import GaloisForLFunctions.HagedornBootstrap.EdgeRootAndKernel
 import GaloisForLFunctions.HagedornBootstrap.HagedornPole
 import GaloisForLFunctions.HagedornBootstrap.HagedornNecklaces
+import GaloisForLFunctions.HagedornBootstrap.TipsWallsAndCounts
+import GaloisForLFunctions.HagedornBootstrap.EigenIdentity

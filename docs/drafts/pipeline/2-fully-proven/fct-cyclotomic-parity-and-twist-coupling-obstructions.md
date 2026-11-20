@@ -27,10 +27,15 @@ Formalize the four structural obstructions governing higher-order cyclotomic cov
 3. **Planted conjugate-character saturation of multilinear character dispersion.**
    - Given finite sets `S_0, …, S_{k-1}`, a finite index set `B` with `u₀ ∈ B`, and unit-modulus factors `‖χ(u₀, r, x)‖ = 1` on `S_r`, define `w(r, x) = \overline{χ(u₀, r, x)}`. Then `‖w(r, x)‖ = 1` and `w(r, x) χ(u₀, r, x) = 1` on `S_r`, so the `u₀`-term of `∑_{u ∈ B} ‖∑_{x ∈ ∏ S_r} ∏_r w(r, x_r) χ(u, r, x_r)‖^2` equals `(∏_r |S_r|)^2`, lower-bounding the full sum over `B` by nonnegativity.
 
-4. **Twist-coupling Cauchy–Schwarz ceiling and low-side `lx`-shift penalty.**
-   - By Cauchy–Schwarz (`Finset.sum_mul_sq_le_sq_mul_sq`), `‖∑_{v ∈ V} λ_v‖^2 ≤ (∑_{v ∈ V} ‖λ_v‖)^2 ≤ |V| ∑_{v ∈ V} ‖λ_v‖^2`, and for `Z ≥ 1, 0 ≤ ν ≤ U`, `Z^{ν/2} ≤ Z^{U/2}`.
+4. **Twist-coupling Cauchy–Schwarz ceiling, double-square-root off-diagonal noise, and low-side `lx`-shift penalty.**
+   - By Cauchy–Schwarz (`Finset.sum_mul_sq_le_sq_mul_sq`), `‖∑_{v ∈ V} λ_v‖^2 ≤ (∑_{v ∈ V} ‖λ_v‖)^2 ≤ |V| ∑_{v ∈ V} ‖λ_v‖^2`; for `Z ≥ 1` and `ν ≤ U`, `Z^{ν/2} ≤ Z^{U/2}` and the off-diagonal double-square-root exponent `(U + ν)/2` satisfies `Z^ν ≤ Z^{(U+ν)/2}` (strictly when `ν < U`).
    - For `n > 0` and `ν ≥ 0`, `max 0 (ly - lx - ν) ≥ max 0 (ly - lx) - ν` and `max 0 (lx + ν + ly + ℓ - 1) ≥ max 0 (lx + ly + ℓ - 1)`, so
      $$\operatorname{lowBoundaryGenOrder}(n, lx + \nu, ly, \ell) - \operatorname{lowBoundaryGenOrder}(n, lx, ly, \ell) \ge \frac{\nu - \nu/2}{n} = \frac{\nu}{2n}.$$
+
+5. **Double obstruction at `(1/3, 1/3, 1/3)`, outer-factor Cauchy–Schwarz `11/12` floor, and direct vs. reflected `w`-contour identity.**
+   - Direct evaluation at `(1/3, 1/3, 1/3)` gives `lowBoundaryGen = 5/6`, while `1 + 3(1/3) = 2 > 4/3 = 2(1/3 + 1/3)` and `endpointExponent (1/3) (1/3) (1/3) σ₀ 0 0 1 = 1 - σ₀`.
+   - If `a + b = 1 + ly + ℓ` with `a, b ≤ (1 - lx + ℓ)/2`, summing gives `lx + ly ≤ 0`. If `0 ≤ lx`, `a + b = 1 + ly + ℓ`, `2(a + b) ≤ 2(1 + ly + ℓ) + (1 - lx + ℓ)/3 - 1/3` (`lx ≤ ℓ`), `2a + (1 - lx + ℓ) + b ≤ 2(1 + ly + ℓ) + (1 - lx + ℓ)/3 - 1/3`, and `2(1 - lx + ℓ) - a ≤ a`, then `3 + 2ℓ ≤ 5 lx + 3 ly`, hence `1 ≤ lx + ly` and `12(lowBoundaryGen lx ly ℓ - 11/12) ≥ 7(lx + ly - 1) + 4ℓ ≥ 0` (sharp at `(0, 1, 0, 1, 1)`).
+   - Expanding both definitions gives `directWExponentOrder n lx ly ℓ σ₀ δ q R - endpointExponentOrder n lx ly ℓ σ₀ δ q R = (δ/2)(2 ly + lx - ℓ - 1)` identically.
 
 ## Log
 - 2026-11-20 — complete paper proof recorded in `2-fully-proven`.

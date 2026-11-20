@@ -102,6 +102,7 @@ theorem windowSpectrum_strip_bound {r : ℕ → ℝ} (hr : ∀ n, 0 < r n ∧ r 
     intro n
     change _ = ∏ j ∈ Finset.range n, ‖rectangularWindow (r j) z‖/Real.exp (r j*|z.im|)
     rw [Finset.prod_div_distrib,←norm_prod,←Real.exp_sum,←Finset.sum_mul]
+    rfl
   have hw : 0≤W^k := pow_nonneg (by dsimp only [W]; positivity) _
   have h := le_of_tendsto (hlim.mul_const (W^k)) (by
     filter_upwards [eventually_ge_atTop k] with n hn

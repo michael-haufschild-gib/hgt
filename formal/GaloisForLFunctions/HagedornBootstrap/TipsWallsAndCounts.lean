@@ -115,8 +115,7 @@ theorem hasDerivAt_wallModel_farSaddle {m B : ℝ} (h : m < B / 2) :
   have hs := farSaddle_sq h
   unfold wallModel
   refine (((hasDerivAt_id _).const_mul (m - B / 2)).add ((hasDerivAt_pow 3 _).const_mul (4 / 3))).congr_deriv ?_
-  simp only [id]
-  push_cast
+  norm_num
   linarith
 
 /-- **Birth of the large black hole at `T_min`:** for `m ≥ B/2` the gap point itself is the
@@ -143,8 +142,10 @@ theorem zeroCount_ge {x : ℝ} (hx : bootstrapTip ≤ x) : (x - bootstrapTip) ^ 
   have h := intervalIntegral.integral_mono_on hx
     ((by fun_prop : Continuous fun s : ℝ => 4 / 3 * (s - bootstrapTip)).intervalIntegrable _ _)
     (intervalIntegrable_zeroLaw hx) (fun s hs => zeroLaw_ge_linear hs.1)
-  rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_sub intervalIntegrable_id
-    intervalIntegrable_const, integral_id, intervalIntegral.integral_const, smul_eq_mul] at h
+  have e : ∫ s in bootstrapTip..x, (s - bootstrapTip) = (x - bootstrapTip) ^ 2 / 2 := by
+    rw [intervalIntegral.integral_comp_sub_right (fun s => s), integral_id]
+    ring
+  rw [intervalIntegral.integral_const_mul, e] at h
   nlinarith
 
 /-- **Upper count:** `N(x) ≤ (x² − x*²)/3`. -/

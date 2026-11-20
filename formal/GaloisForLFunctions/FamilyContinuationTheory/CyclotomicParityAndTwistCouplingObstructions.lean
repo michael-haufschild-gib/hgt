@@ -22,10 +22,17 @@ in `FamilyContinuationTheory`:
   oscillation at `u₀ ∈ B`, forcing `∑_{u ∈ B} ‖∑_{x} ∏_r w_r(x_r) χ_{u, r}(x_r)‖² ≥ (∏_r |S_r|)²`.
 * **Twist-coupling Cauchy–Schwarz ceiling and `lx`-shift penalty
   (`norm_sum_sq_le_card_mul_sum_norm_sq`, `twist_coupling_signal_le_noise_exp`,
-  `lowBoundaryGenOrder_shift_lx_ge`).** Coherent averaging over `V` obeys
-  `‖∑_{v ∈ V} λ_v‖² ≤ |V| ∑_{v ∈ V} ‖λ_v‖²` (`Z^{ν/2} ≤ Z^{U/2}` for `0 ≤ ν ≤ U`, `Z ≥ 1`), while
-  shifting `lx ↦ lx + ν` (`ν ≥ 0`, `n > 0`) raises `lowBoundaryGenOrder n (lx + ν) ly ℓ` by at
-  least `ν / (2 n)` across both Gram and reflection regimes.
+  `twist_offdiag_double_sqrt_dominates`, `lowBoundaryGenOrder_shift_lx_ge`).** Coherent averaging
+  over `V` obeys `‖∑_{v ∈ V} λ_v‖² ≤ |V| ∑_{v ∈ V} ‖λ_v‖²` (`Z^{ν/2} ≤ Z^{U/2}` and off-diagonal
+  double-square-root noise `Z^{(U+ν)/2} ≥ Z^ν` for `ν ≤ U`, `Z ≥ 1`), while shifting `lx ↦ lx + ν`
+  (`ν ≥ 0`, `n > 0`) raises `lowBoundaryGenOrder n (lx + ν) ly ℓ` by at least `ν / (2 n)`.
+* **Double obstruction at `(1/3, 1/3, 1/3)`, outer-factor Cauchy–Schwarz `11/12` floor, and direct
+  vs. reflected `w`-contour identity (`double_obstruction_at_one_third`,
+  `short_sieve_split_impossible`, `outer_cs_reflection_forces_eleven_twelfths`,
+  `directWExponentOrder_sub_endpointExponentOrder`).** At `(1/3, 1/3, 1/3)`, `lowBoundaryGen = 5/6`
+  violates both the reflected tuple allowance and the floor bin (`1 - σ₀`); any outer-factor CS +
+  non-lengthening Poisson reflection split forces `1 ≤ lx + ly` and `11/12 ≤ lowBoundaryGen`; and
+  bypassing `w`-reflection shifts the high-side exponent by `(δ/2)(2 ly + lx - ℓ - 1)` identically.
 -/
 
 noncomputable section
@@ -191,6 +198,13 @@ theorem twist_coupling_signal_le_noise_exp {Z ν U : ℝ} (hZ : 1 ≤ Z) (hνU :
     Z ^ (ν / 2) ≤ Z ^ (U / 2) :=
   Real.rpow_le_rpow_of_exponent_le hZ (by linarith)
 
+/-- Whenever `1 ≤ Z` and `ν ≤ U` (so diagonal pairs exist), the off-diagonal double-square-root
+exponent `(U + ν) / 2` over `Z^{U + ν}` twist pairs dominates the diagonal exponent `ν`, strictly
+whenever `ν < U`. -/
+theorem twist_offdiag_double_sqrt_dominates {Z ν U : ℝ} (hZ : 1 ≤ Z) (hνU : ν ≤ U) :
+    Z ^ ν ≤ Z ^ ((U + ν) / 2) ∧ (ν < U → ν < (U + ν) / 2) :=
+  ⟨Real.rpow_le_rpow_of_exponent_le hZ (by linarith), fun hlt => by linarith⟩
+
 /-- **Universal low-side `lx`-shift penalty.** For every residue order `n > 0` and nonnegative scale
 shift `ν ≥ 0`, shifting `lx ↦ lx + ν` increases `Budget.lowBoundaryGenOrder` by at least `ν / (2n)`
 across both Gram regimes and both reflection regimes. -/
@@ -220,6 +234,83 @@ theorem lowBoundaryGenOrder_shift_lx_ge {n lx ly ℓ ν : ℝ} (hn : 0 < n) (hν
     linarith
   linarith
 
+/-! ### Part 5: Double obstruction at `(1/3, 1/3, 1/3)`, outer-factor CS reflection floor, and direct vs. reflected `w`-contour identity -/
+
+/-- **Double obstruction at the `5/6` low-side point `(1/3, 1/3, 1/3)`.** Although
+`lowBoundaryGen (1/3) (1/3) (1/3) = 5/6`, it simultaneously violates the reflected marked-row
+allowance `1 + 3ℓ ≤ 2(lx + ly)` and forces `1 - σ₀` in the floor bin (`δ = 0, q = 0, R = 1`). -/
+theorem double_obstruction_at_one_third (σ₀ : ℝ) :
+    Budget.lowBoundaryGen (1 / 3) (1 / 3) (1 / 3) = 5 / 6 ∧
+      ¬ ((1 : ℝ) + 3 * (1 / 3) ≤ 2 * (1 / 3 + 1 / 3)) ∧
+      Budget.endpointExponent (1 / 3) (1 / 3) (1 / 3) σ₀ 0 0 1 = 1 - σ₀ := by
+  refine ⟨?_, by norm_num, ?_⟩
+  · rw [← Budget.lowBoundaryGenOrder_six]
+    norm_num [Budget.lowBoundaryGenOrder]
+  · rw [← Budget.endpointExponentOrder_six]
+    unfold Budget.endpointExponentOrder
+    ring
+
+/-- Splitting `T = 1 + ly + ℓ = a + b` into two blocks both inside the diagonal sieve range `U / 2`
+(`U = 1 - lx + ℓ`) forces `lx + ly ≤ 0`. -/
+theorem short_sieve_split_impossible {lx ly ℓ a b : ℝ}
+    (hsplit : a + b = 1 + ly + ℓ)
+    (ha : a ≤ (1 - lx + ℓ) / 2) (hb : b ≤ (1 - lx + ℓ) / 2) :
+    lx + ly ≤ 0 := by
+  linarith
+
+/-- **Outer-factor Cauchy–Schwarz + non-lengthening Poisson reflection forces `11/12`.** Whenever
+`0 ≤ lx` and `1 + ly + ℓ = a + b` satisfies the planted-diagonal bound
+`2(a + b) ≤ 2(1 + ly + ℓ) + (1 - lx + ℓ)/3 - 1/3`, the Parseval-diagonal bound
+`2a + (1 - lx + ℓ) + b ≤ 2(1 + ly + ℓ) + (1 - lx + ℓ)/3 - 1/3`, and non-lengthening reflection
+`2(1 - lx + ℓ) - a ≤ a`, one has `1 ≤ lx + ly` and `11 / 12 ≤ Budget.lowBoundaryGen lx ly ℓ`
+(attained at `(0, 1, 0, 1, 1)`). -/
+theorem outer_cs_reflection_forces_eleven_twelfths {lx ly ℓ a b : ℝ} (hlx : 0 ≤ lx)
+    (hsplit : a + b = 1 + ly + ℓ)
+    (hplant : 2 * (a + b) ≤ 2 * (1 + ly + ℓ) + (1 - lx + ℓ) / 3 - 1 / 3)
+    (hpars : 2 * a + (1 - lx + ℓ) + b ≤ 2 * (1 + ly + ℓ) + (1 - lx + ℓ) / 3 - 1 / 3)
+    (hrefl : 2 * (1 - lx + ℓ) - a ≤ a) :
+    1 ≤ lx + ly ∧ 11 / 12 ≤ Budget.lowBoundaryGen lx ly ℓ ∧
+      Budget.lowBoundaryGen 0 1 0 = 11 / 12 := by
+  have hlx_le_ℓ : lx ≤ ℓ := by linarith
+  have hℓ0 : 0 ≤ ℓ := le_trans hlx hlx_le_ℓ
+  have h3 : 3 + 2 * ℓ ≤ 5 * lx + 3 * ly := by linarith
+  have hM1 : 1 ≤ lx + ly := by linarith
+  refine ⟨hM1, ?_, ?_⟩
+  · rw [← Budget.lowBoundaryGenOrder_six]
+    unfold Budget.lowBoundaryGenOrder
+    have hν : ly - lx ≤ max 0 (ly - lx) := le_max_right 0 (ly - lx)
+    have hμ : lx + ly + ℓ - 1 ≤ max 0 (lx + ly + ℓ - 1) := le_max_right 0 (lx + ly + ℓ - 1)
+    generalize max 0 (ly - lx) = ν at hν ⊢
+    generalize max 0 (lx + ly + ℓ - 1) = μ at hμ ⊢
+    linarith
+  · rw [← Budget.lowBoundaryGenOrder_six]
+    norm_num [Budget.lowBoundaryGenOrder]
+
+/-- High-side exponent obtained by shifting the direct `w`-contour without functional-equation
+reflection. -/
+def directWExponentOrder (n lx ly ℓ σ₀ δ q R : ℝ) : ℝ :=
+  (1 + δ) / 2 - (1 - δ) * ly / 2 - σ₀ - ℓ / 2 + q * ℓ + (1 - lx + ℓ) * (R - 1 / n)
+
+/-- **Exact difference between the direct and reflected `w`-contour high-side exponents.** Bypassing
+the `w`-functional equation changes the high-side exponent by `(δ / 2)(2 ly + lx - ℓ - 1)`
+identically, so for `0 ≤ δ` and `1 ≤ 2 ly + lx - ℓ` (in particular at `(17/48, 23/48, 1/6)` where
+`2 ly + lx - ℓ = 55/48 > 1`), reflection strictly dominates or ties the direct `w`-contour. -/
+theorem directWExponentOrder_sub_endpointExponentOrder (n lx ly ℓ σ₀ δ q R : ℝ) :
+    directWExponentOrder n lx ly ℓ σ₀ δ q R -
+      Budget.endpointExponentOrder n lx ly ℓ σ₀ δ q R =
+        (δ / 2) * (2 * ly + lx - ℓ - 1) := by
+  unfold directWExponentOrder Budget.endpointExponentOrder
+  ring
+
+theorem endpointExponentOrder_le_directWExponentOrder {n lx ly ℓ σ₀ δ q R : ℝ}
+    (hδ : 0 ≤ δ) (hgeom : 1 ≤ 2 * ly + lx - ℓ) :
+    Budget.endpointExponentOrder n lx ly ℓ σ₀ δ q R ≤
+      directWExponentOrder n lx ly ℓ σ₀ δ q R := by
+  have hdiff := directWExponentOrder_sub_endpointExponentOrder n lx ly ℓ σ₀ δ q R
+  have hprod : 0 ≤ (δ / 2) * (2 * ly + lx - ℓ - 1) :=
+    mul_nonneg (by linarith) (by linarith)
+  linarith
+
 #print axioms gcd_cubic_quadratic_index_eq_div_six
 #print axioms cubic_quadratic_span_unit_iff_eq_six
 #print axioms not_cubic_quadratic_span_twelve
@@ -229,6 +320,12 @@ theorem lowBoundaryGenOrder_shift_lx_ge {n lx ly ℓ ν : ℝ} (hn : 0 < n) (hν
 #print axioms planted_conjugate_character_saturates_multilinear_sum
 #print axioms norm_sum_sq_le_card_mul_sum_norm_sq
 #print axioms twist_coupling_signal_le_noise_exp
+#print axioms twist_offdiag_double_sqrt_dominates
 #print axioms lowBoundaryGenOrder_shift_lx_ge
+#print axioms double_obstruction_at_one_third
+#print axioms short_sieve_split_impossible
+#print axioms outer_cs_reflection_forces_eleven_twelfths
+#print axioms directWExponentOrder_sub_endpointExponentOrder
+#print axioms endpointExponentOrder_le_directWExponentOrder
 
 end GaloisForLFunctions.FamilyContinuationTheory
