@@ -98,7 +98,7 @@ private theorem central_step (n : ℕ) :
   have h : ((n:ℝ)+1)*(Nat.centralBinom (n+1):ℝ)=2*(2*(n:ℝ)+1)*(Nat.centralBinom n:ℝ) := by
     exact_mod_cast Nat.succ_mul_centralBinom_succ n
   have he := congrArg (fun y : ℝ => y*((1/2:ℝ)/(4:ℝ)^n)) h
-  dsimp only at he
+  simp only [div_eq_mul_inv] at he
   simp only [normalizedCentralBinom,pow_succ,div_eq_mul_inv,mul_inv_rev]
   linarith only [he]
 
@@ -154,7 +154,8 @@ theorem midpoint_euclidean_gain_asymptotic :
     Tendsto (fun b : ℕ => Real.sqrt (∑ i ∈ midpointReadIndices b, (midpointReadWeight b i)^2)/
       Real.sqrt (Real.sqrt b)) atTop (𝓝 (Real.sqrt (1/(2*Real.sqrt Real.pi)))) := by
   have hinv : Tendsto (fun b : ℕ => (1:ℝ)/b) atTop (𝓝 0) := by
-    simpa only [one_div] using (tendsto_inv_atTop_zero.comp (tendsto_natCast_atTop_atTop (R:=ℝ)))
+    simpa only [Function.comp_def,one_div] using
+      (tendsto_inv_atTop_zero.comp (tendsto_natCast_atTop_atTop (R:=ℝ)))
   have hl := tendsto_sqrtNat_mul_normalizedCentralBinom.mul (hinv.add_const (1/2:ℝ))
   have hs : Tendsto (fun b : ℕ => ((1+(b:ℝ)/2)*normalizedCentralBinom b)/Real.sqrt b)
       atTop (𝓝 (1/(2*Real.sqrt Real.pi))) := by
@@ -170,7 +171,11 @@ theorem midpoint_euclidean_gain_asymptotic :
          _ = _ := by rw [Real.sq_sqrt hb'.le]; field_simp [hb'.ne'] <;> ring
   have hn (b : ℕ) : 0≤(1+(b:ℝ)/2)*normalizedCentralBinom b :=
     mul_nonneg (by positivity) (div_nonneg (Nat.cast_nonneg _) (by positivity))
-  simpa only [Function.comp_apply,midpoint_weight_energy,Real.sqrt_div (hn _)] using
-    Real.continuous_sqrt.continuousAt.tendsto.comp hs
+  apply (Real.continuous_sqrt.continuousAt.tendsto.comp hs).congr
+  intro b
+  change Real.sqrt (((1+(b:ℝ)/2)*normalizedCentralBinom b)/Real.sqrt b) =
+    Real.sqrt (∑ i ∈ midpointReadIndices b, (midpointReadWeight b i)^2)/Real.sqrt (Real.sqrt b)
+  rw [midpoint_weight_energy]
+  exact Real.sqrt_div (hn b) _
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

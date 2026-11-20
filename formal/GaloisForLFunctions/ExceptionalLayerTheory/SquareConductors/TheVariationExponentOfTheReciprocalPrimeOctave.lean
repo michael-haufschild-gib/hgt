@@ -30,7 +30,7 @@ theorem reciprocal_octave_psi_identity {x : ℝ} (hx : 0<x) :
   have habel := sum_mul_eq_sub_sub_integral_mul (𝕜:=ℝ) (fun n => vonMangoldt n) hx.le hx₂
     (f:=fun t : ℝ => t⁻¹) (fun t ht => (hasDerivAt_inv (hx.trans_le ht.1).ne').differentiableAt)
     (show IntegrableOn (deriv (fun t : ℝ => t⁻¹)) (Set.Icc x (2*x)) from by
-      simpa only [deriv_inv] using cont.neg.integrableOn_compact isCompact_Icc)
+      simpa only [deriv_inv] using cont.neg.integrableOn_compact (μ:=volume) isCompact_Icc)
   simp only [←Chebyshev.psi_eq_sum_Icc,deriv_inv,neg_mul] at habel
   rw [← intervalIntegral.integral_of_le hx₂,intervalIntegral.integral_neg,sub_neg_eq_add] at habel
   have hi₁ : IntervalIntegrable (fun t : ℝ => (t^2)⁻¹*Chebyshev.psi t) volume x (2*x) :=
@@ -69,7 +69,7 @@ theorem reciprocal_octave_psi_bound {x η : ℝ} (hx : 0<x)
         exact (div_le_div_of_nonneg_right (h _ ⟨ht.1.le,ht.2⟩) ht₀.le).trans
           (div_le_div_of_nonneg_left hη hx ht.1.le))
     simpa only [Real.norm_eq_abs,abs_of_nonneg (sub_nonneg.mpr hx₂),
-      show 2*x-x=x by ring,div_mul_cancel₀ _ hx.ne',mul_div_cancel₀ _ hx.ne'] using hi
+      show 2*x-x=x by ring,abs_of_pos hx,div_mul_cancel₀ _ hx.ne',mul_div_cancel₀ _ hx.ne'] using hi
   rw [reciprocal_octave_psi_identity hx]
   refine (abs_add_le _ _).trans ?_
   have hd := abs_add_le (Chebyshev.psi (2*x)/(2*x)-1) (-(Chebyshev.psi x/x-1))
@@ -138,8 +138,9 @@ theorem reciprocal_octave_global_envelope :
   change _ ≤ (1+3*A+D)*octaveEnvelope c n
   by_cases h : N≤n
   · exact (late n h).trans (mul_le_mul_of_nonneg_right (by linarith only [hD]) (Real.exp_pos _).le)
-  · have hle : |reciprocalOctaveError n|/octaveEnvelope c n ≤ D := single_le_sum
-      (fun j _ => div_nonneg (abs_nonneg _) (Real.exp_pos _).le) (mem_range.mpr (lt_of_not_ge h))
+  · have hle : |reciprocalOctaveError n|/octaveEnvelope c n ≤ D :=
+      single_le_sum (f:=fun j => |reciprocalOctaveError j|/octaveEnvelope c j)
+        (fun j _ => div_nonneg (abs_nonneg _) (Real.exp_pos _).le) (mem_range.mpr (lt_of_not_ge h))
     exact ((div_le_iff₀ (Real.exp_pos _)).mp hle).trans
       (mul_le_mul_of_nonneg_right (by linarith only [hA]) (Real.exp_pos _).le)
 
@@ -156,9 +157,12 @@ private theorem jump_le_reciprocal_log {n : ℕ} (hn : 1<n) :
     by_cases he : m=1
     · subst m
       have hlog := Real.log_le_sub_one_of_pos (by norm_num : 0<(2:ℝ))
-      norm_num [octave_even_endpoint (n:=1) (by decide),octaveMangoldtMass,
-        vonMangoldt_apply_prime Nat.prime_two,abs_of_nonneg (by positivity : 0≤Real.log 2/2)]
-      <;> linarith only [hlog,Real.log_natCast_nonneg 2]
+      have edge : octaveEndpointJump (2*1) = Real.log 2/2 := by
+        rw [octave_even_endpoint (n:=1) (by decide)]
+        norm_num [octaveMangoldtMass,vonMangoldt_apply_prime Nat.prime_two]
+      rw [edge,abs_of_nonneg (by positivity : 0≤Real.log 2/2)]
+      simp only [Nat.mul_one,Nat.cast_ofNat]
+      constructor <;> linarith only [hlog,Real.log_nonneg (by norm_num : (1:ℝ)≤2)]
     have hneg := octave_even_endpoint_nonpositive (by omega : 1 < m)
     rw [abs_of_nonpos hneg,octave_even_endpoint hm]
     have hl : Real.log m ≤ Real.log (2*m:ℕ) :=
@@ -206,7 +210,8 @@ private theorem envelope_weighted_jump_sum {C c q : ℝ} (hC : 0<C) (hc : 0<c) (
     ring
   change (C*octaveEnvelope c n)^(q-1)*_ ≤ K*(Real.exp (-(2*d*x))/n)
   refine (mul_le_mul_of_nonneg_left hJ (Real.rpow_nonneg (mul_nonneg hC.le (Real.exp_pos _).le) _)).trans ?_
-  rw [Real.mul_rpow hC.le (Real.exp_pos _).le,octaveEnvelope,←Real.exp_mul]
+  change (C*Real.exp (-(c*x)))^(q-1)*(2*Real.log n/n) ≤ _
+  rw [Real.mul_rpow hC.le (Real.exp_pos _).le,←Real.exp_mul]
   change C^(q-1)*Real.exp (-(c*x)*(q-1))*(2*Real.log n/n) ≤ _
   rw [show -(c*x)*(q-1) = -(4*d*x) by dsimp only [d]; ring]
   dsimp only [K]
@@ -243,8 +248,9 @@ private theorem consecutive_variation (M : ℕ) :
   induction M with
   | zero => simp [octaveFineVariation]
   | succ M ih =>
-    rw [sum_range_succ,ih,octaveFineVariation,sum_Ioc_succ_top (by omega : 1≤M+1)]
-    rfl
+    rw [Finset.sum_range_succ,ih]
+    unfold octaveFineVariation
+    rw [sum_Ioc_succ_top (by omega : 1≤M+1)] <;> rfl
 
 /-- The first exponent is the exact threshold. The divergence there
 already occurs on the consecutive-integer grid. -/

@@ -44,7 +44,7 @@ theorem prime_interval_power_cost_above_the_abscissa {s : ℝ} (hs : _root_.RHTo
       |(∑ n ∈ Ioc K X,a n)-((X:ℝ)-K)| ≤ C*(X:ℝ)^s := by
   obtain ⟨B,hB,psi⟩ := _root_.RHTower.exists_psiRemainder_le_rpow_zetaZeroAbscissa
     (s-_root_.RHTower.zetaZeroAbscissa) (sub_pos.mpr hs)
-  rw [add_sub_cancel_left] at psi
+  rw [show _root_.RHTower.zetaZeroAbscissa+(s-_root_.RHTower.zetaZeroAbscissa)=s by ring] at psi
   have sh := _root_.RHTower.half_le_zetaZeroAbscissa.trans_lt hs
   have sp := (by norm_num : (0:ℝ) < 1/2).trans sh
   let D := 36/(s-1/2)
@@ -61,6 +61,7 @@ theorem prime_interval_power_cost_above_the_abscissa {s : ℝ} (hs : _root_.RHTo
       simp only [f,same q hp,roughMangoldtWeight,roughRestriction_apply,if_pos free,
         sub_self,abs_zero,hp,not_true_eq_false,if_false,le_rfl]
     · rw [if_pos hp]
+      change |a q-vonMangoldt q| ≤ 2*vonMangoldt q
       exact (abs_sub ..).trans (by
         rw [abs_of_nonneg (vonMangoldt_nonneg (n:=q)),two_mul]
         exact add_le_add (dom q) le_rfl)
@@ -70,13 +71,25 @@ theorem prime_interval_power_cost_above_the_abscissa {s : ℝ} (hs : _root_.RHTo
     exact mem_filter.mpr ⟨mem_Icc.mpr ⟨(Nat.zero_le K).trans_lt (mem_Ioc.mp hi).1,(mem_Ioc.mp hi).2⟩,hp⟩
   have cost := (abs_sum_le_sum_abs I f).trans (sum_le_sum point)
   rw [←sum_filter,←mul_sum] at cost
-  have subcost := (sum_le_sum_of_subset_of_nonneg sub (fun _ _ _ => vonMangoldt_nonneg)).trans (nonprime_cost sh hu X)
+  have subcost := (sum_le_sum_of_subset_of_nonneg (f:=fun q : ℕ => vonMangoldt q)
+    sub (fun _ _ _ => vonMangoldt_nonneg)).trans (nonprime_cost sh hu X)
   have diff : |(∑ q ∈ I,a q)-(∑ q ∈ I,vonMangoldt q)| ≤ 2*(D*(X:ℝ)^s) := by
     rw [←sum_sub_distrib]
     exact cost.trans (mul_le_mul_of_nonneg_left subcost (by norm_num))
-  have sets : Icc 1 X \ Icc 1 K = I := by ext q; simp only [I,mem_sdiff,mem_Icc,mem_Ioc]; omega
+  have sets : Icc 1 X \ Icc 1 K = I := by
+    apply Finset.ext
+    intro q
+    constructor
+    · intro member
+      obtain ⟨inc,out⟩ := mem_sdiff.mp member
+      obtain ⟨qp,top⟩ := mem_Icc.mp inc
+      exact mem_Ioc.mpr ⟨lt_of_not_ge (fun low => out (mem_Icc.mpr ⟨qp,low⟩)),top⟩
+    · intro member
+      obtain ⟨low,top⟩ := mem_Ioc.mp member
+      exact mem_sdiff.mpr ⟨mem_Icc.mpr ⟨(Nat.zero_le K).trans_lt low,top⟩,
+        fun inc => low.not_ge (mem_Icc.mp inc).2⟩
   have psiDiff : (∑ q ∈ I,vonMangoldt q) = _root_.RHTower.chebyshevPsi X-_root_.RHTower.chebyshevPsi K := by
-    rw [←sets,sum_sdiff_eq_sub (Icc_subset_Icc_right hX)]; rfl
+    rw [←sets,sum_sdiff_eq_sub (Icc_subset_Icc_right hX)] <;> rfl
   rw [psiDiff] at diff
   have small := (psi K hK).trans (mul_le_mul_of_nonneg_left
     (Real.rpow_le_rpow (Nat.cast_nonneg _) (Nat.cast_le.mpr hX) sp.le) hB)
@@ -107,9 +120,7 @@ private theorem recover_reciprocal {p X : ℕ} {M E : ℝ} (hp : 0 < p) (he : 0 
     nlinarith only [enough,(abs_le.mp err).2,ep2]
   have dp : 0 < d := (mul_nonneg (by norm_num) ep).trans_lt gap
   have he' : |(X:ℝ)/d-p| < 1/2 := by
-    rw [div_sub' _ _ dp.ne',abs_div,abs_of_pos dp,div_lt_iff₀ dp]
-    have eq : (X:ℝ)-(p:ℝ)*d = (X:ℝ)-d*p := by ring
-    rw [eq]
+    rw [div_sub' dp.ne',abs_div,abs_of_pos dp,div_lt_iff₀ dp]
     linarith only [err,gap]
   apply (Nat.floor_eq_iff (show 0 ≤ (X:ℝ)/d+1/2 by positivity)).mpr
   constructor <;> linarith only [(abs_lt.mp he').1,(abs_lt.mp he').2]

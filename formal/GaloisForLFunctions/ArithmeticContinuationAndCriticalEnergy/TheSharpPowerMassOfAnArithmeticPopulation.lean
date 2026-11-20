@@ -24,7 +24,7 @@ theorem minimum_shifted_index_mass (f : ℕ → ℝ) (hf : Monotone f) (a : ℕ)
     have hn : x∉S := fun h => (hx x h).false
     have hS := fun k (hk : k∈S) => ha k (mem_insert_of_mem hk)
     have hsub : S ⊆ Finset.Ico a x := fun k hk => mem_Ico.mpr ⟨hS k hk,hx k hk⟩
-    have hc := card_le_card hsub
+    have hc := Finset.card_le_card hsub
     rw [Nat.card_Ico] at hc
     have hax := ha x (mem_insert_self ..)
     have hlast := hf (show a+S.card≤x by omega)
@@ -42,7 +42,7 @@ theorem initial_segment_is_unique_minimizer (f : ℕ → ℝ) (hf : StrictMono f
       intro he
       have hn : x∉S := fun h => (hx x h).false
       have hsub : S ⊆ range x := fun k hk => mem_range.mpr (hx k hk)
-      have hcx : S.card≤x := by simpa only [card_range] using card_le_card hsub
+      have hcx : S.card≤x := by simpa only [card_range] using Finset.card_le_card hsub
       have hprev := minimum_shifted_index_mass f hf.monotone 0 S (fun _ _ => Nat.zero_le _)
       simp only [zero_add] at hprev
       rw [sum_insert hn,card_insert_of_notMem hn,sum_range_succ] at he
@@ -50,7 +50,7 @@ theorem initial_segment_is_unique_minimizer (f : ℕ → ℝ) (hf : StrictMono f
       have heq := hf.injective (show f x=f S.card by linarith only [he,hfx,hprev])
       have hS := ih (show (∑ k ∈ S, f k)=(∑ j ∈ range S.card, f j) by
         rw [heq] at he; linarith only [he])
-      rw [card_insert_of_notMem hn,range_succ,heq]
+      rw [card_insert_of_notMem hn,Finset.range_add_one,heq]
       exact congrArg (insert S.card) hS
   · intro h; exact congrArg (fun T : Finset ℕ => ∑ k ∈ T, f k) h
 
@@ -70,9 +70,9 @@ theorem square_cost_of_displaced_indices (S : Finset ℕ) :
   let H := S.filter fun k => S.card≤k
   let A := S \ H
   have hs : H⊆S := filter_subset _ _
-  have hA := minimum_shifted_index_mass (fun k : ℕ => (k:ℝ)) Nat.cast_mono 0 A
+  have hA := minimum_shifted_index_mass (fun k : ℕ => (k:ℝ)) (fun _ _ h => Nat.cast_le.mpr h) 0 A
     (fun _ _ => Nat.zero_le _)
-  have hH := minimum_shifted_index_mass (fun k : ℕ => (k:ℝ)) Nat.cast_mono S.card H
+  have hH := minimum_shifted_index_mass (fun k : ℕ => (k:ℝ)) (fun _ _ h => Nat.cast_le.mpr h) S.card H
     (fun _ hk => (mem_filter.mp hk).2)
   rw [sum_shifted_indices] at hA hH
   have hc : (S.card:ℝ)=(A.card:ℝ)+(H.card:ℝ) := by

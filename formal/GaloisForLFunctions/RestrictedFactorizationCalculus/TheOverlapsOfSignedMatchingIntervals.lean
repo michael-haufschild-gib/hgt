@@ -13,7 +13,7 @@ growth exponent of this signed pair sum therefore reads the zero abscissa.
 -/
 
 namespace GaloisForLFunctions.RestrictedFactorizationCalculus
-open Finset Filter RHTower ArithmeticFunction
+open Finset Filter _root_.RHTower ArithmeticFunction
 open GaloisForLFunctions.BezoutValuationIncidence GaloisForLFunctions.QuantitativeFactorizationMatching
 noncomputable section
 open scoped Classical ArithmeticFunction.Moebius
@@ -92,8 +92,7 @@ private theorem charge_eq_cut (F : ℕ → ℕ) {Y X : ℕ} (hYX : Y≤X) :
   have hny := (mem_Icc.mp hn).2
   have hy : Y<X+1 := by omega
   by_cases he : F n=n
-  · have hcross : ¬ Y<F n := by omega
-    by_cases hs : Squarefree n <;> simp [matchingIntervalEnd,hs,he,hny,hy,hcross,hny.not_gt]
+  · by_cases hs : Squarefree n <;> simp [matchingIntervalEnd,hs,he,hny,hy,hny.not_gt]
   · by_cases hs : Squarefree n <;> simp [matchingIntervalEnd,hs,he,hny]
 
 /-- Equality of overlap energies for every admissible involution. The
@@ -143,7 +142,7 @@ theorem sparse_matching_overlap_iff_rh {ε : ℝ} (hε : 0<ε) :
     ∃ F : ℕ → ℕ, (∀ n : ℕ, Squarefree n → F (F n)=n ∧
         (F n=n ∨ GlobalDyadicOneTwoRel n (F n)) ∧ |(F n:ℝ)-n|≤ε*n) ∧
       (∀ᶠ X : ℕ in Filter.atTop, ((prefixUnpaid F X).card:ℝ)≤ε*X) ∧
-      ((∀ c>2, ∃ C : ℝ, ∀ X : ℕ, matchingOverlap F X≤C*((X:ℝ)+1)^c) ↔ RiemannHypothesis) := by
+      ((∀ c : ℝ, c>2 → ∃ C : ℝ, ∀ X : ℕ, matchingOverlap F X≤C*((X:ℝ)+1)^c) ↔ RiemannHypothesis) := by
   obtain ⟨F,hF,_,hd,_⟩ := one_sparse_fixed_set_detects_every_mertens_power hε
   refine ⟨F,hF,hd,?_⟩
   have hb := matchingOverlap_halfplane F (fun n hn => ⟨(hF n hn).1,(hF n hn).2.1⟩)

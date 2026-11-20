@@ -40,7 +40,7 @@ private theorem row_with_holes {N M : ℕ} (hN : 0<N) {S : Finset ℕ} (hS : S�
   have hsum := (sum_le_sum_of_subset_of_nonneg (f:=fun m => jetKernel m n) hsub
     (fun m _ _ => jetKernel_nonneg m n)).trans hjet
   rw [sum_union hd] at hsum
-  apply le_trans (add_le_add_right _ _) hsum
+  refine le_trans (add_le_add ?_ (le_refl _)) hsum
   change (∑ m ∈ V, 1/|(m:ℝ)-n|)/2 ≤ _
   rw [sum_div]
   exact sum_le_sum fun m _ => by
@@ -62,7 +62,8 @@ theorem combForm_forward_holes_floor {Q N : ℕ} (hQ : 0<Q) (hN : 0<N)
   have hN' : (0:ℝ)<N := Nat.cast_pos.mpr hN
   have hQ' : (0:ℝ)<Q := Nat.cast_pos.mpr hQ
   have har := harm_le_one_add_log (2*(Q*N))
-  rw [Nat.cast_mul,Nat.cast_ofNat,Nat.cast_mul,← mul_assoc,Real.log_mul (by positivity) hN'.ne'] at har
+  rw [Nat.cast_mul,Nat.cast_ofNat,Nat.cast_mul,← mul_assoc (2:ℝ) (Q:ℝ) (N:ℝ),
+    Real.log_mul (by positivity) hN'.ne'] at har
   have hreg : ((2*(Q*N):ℕ):ℝ)/(4*N) = (Q:ℝ)/2 := by push_cast; field_simp [hN'.ne'] <;> ring
   have hrow (n : ℕ) (hn : n∈S) :
       forwardHarmonicHoles S n (Q*N)/2 + combPotential S n ≤ C := by
@@ -114,7 +115,7 @@ theorem harmonic_holes_of_no_run {r M K : ℕ} (hr : 0<r) (hK : K*r≤M)
       have hhigh : (f j:ℝ)≤(n:ℝ)+((j:ℝ)+1)*r := by exact_mod_cast (bounds j).2
       rw [abs_of_pos (sub_pos.mpr hlow),div_div]
       exact one_div_le_one_div_of_le (sub_pos.mpr hlow) (by linarith only [hhigh])
-    _ = ∑ m ∈ (range K).image f, 1/|(m:ℝ)-n| := (sum_image hmono.injective.injOn).symm
+    _ = ∑ m ∈ (range K).image f, 1/|(m:ℝ)-n| := by rw [sum_image hmono.injective.injOn]
     _ ≤ _ := sum_le_sum_of_subset_of_nonneg hsub (fun m _ _ => by positivity)
 
 /-- Finite-scale logarithmic penalty for support with no full r-block.

@@ -58,11 +58,11 @@ theorem squarefreeActivity_rescaling (P : Finset ℕ) (t : ℝ) :
     ring
   have he : (1+y)^P.card = C (t^P.card)*X^P.card := by
     rw [show 1+y = C t*X by dsimp [y]; ring,mul_pow,←map_pow]
-  simp only [squarefreeCardinalityPolynomial,sum_comp,mul_comp,C_comp,pow_comp,X_comp]
+  simp only [squarefreeCardinalityPolynomial,Polynomial.sum_comp,mul_comp,C_comp,pow_comp,X_comp]
   change (∑ S ∈ P.powerset, C (Real.exp (-(finitePrimeSubsetProduct S : ℝ)*t^P.card))*y^S.card) = _
   simp_rw [h]
   rw [sum_add_distrib,sum_card_pow,he,←mul_sum,squarefreeActivityBlowup,mul_add]
-  simp only [slopePolynomial,sum_comp,mul_comp,C_comp,pow_comp,sub_comp,X_comp,one_comp,y]
+  simp only [slopePolynomial,Polynomial.sum_comp,mul_comp,C_comp,pow_comp,sub_comp,X_comp,one_comp,y]
 
 /-- The limiting root polynomial, including the signed product of all prime gaps. -/
 theorem squarefreeActivityBlowup_zero {P : Finset ℕ} (hP : 0 < P.card) :
@@ -78,14 +78,16 @@ theorem squarefreeActivityBlowup_zero {P : Finset ℕ} (hP : 0 < P.card) :
          _ = _ := by simpa only [prod_const,one_pow,mul_one,sub_eq_add_neg,add_comm (1:ℝ)] using hprod.symm
   rw [squarefreeActivityBlowup,zero_pow hP.ne',map_zero,zero_mul,comp_zero,slopePolynomial,
     eval_finsetSum]
-  simp only [eval_mul,eval_C,eval_pow,eval_sub,eval_X,eval_one,zero_sub,slope_zero,hsum,C_neg,sub_eq_add_neg]
+  simp only [eval_mul,eval_C,eval_pow,eval_sub,eval_X,eval_one,zero_sub,slope_zero,hsum]
+  rw [map_neg,sub_eq_add_neg]
 
 private theorem blowup_degree (P : Finset ℕ) (t : ℝ) : (squarefreeActivityBlowup P t).natDegree ≤ P.card := by
   have ha : (slopePolynomial P (t^P.card)).natDegree ≤ P.card := by
     apply natDegree_sum_le_of_forall_le
     intro S hS
     apply (natDegree_C_mul_le _ _).trans
-    exact (natDegree_pow_le.trans (Nat.mul_le_mul_left S.card (show (X-1 : ℝ[X]).natDegree ≤ 1 by simp))).trans
+    have hdeg : (X-1 : ℝ[X]).natDegree ≤ 1 := by simpa only [map_one] using (natDegree_X_sub_C (1:ℝ)).le
+    exact (natDegree_pow_le.trans (Nat.mul_le_mul_left S.card hdeg)).trans
       (by simpa using card_le_card (mem_powerset.mp hS))
   apply natDegree_le_iff_coeff_eq_zero.mpr
   intro j hj
@@ -101,11 +103,13 @@ theorem squarefreeActivityBlowup_limit {P : Finset ℕ} (hP : 0 < P.card) (j : �
   simp only [squarefreeActivityBlowup,coeff_add,comp_C_mul_X_coeff,slopePolynomial,finsetSum_coeff,coeff_C_mul]
   apply continuousAt_const.add
   apply ContinuousAt.mul _ (continuousAt_id.pow _)
-  apply continuousAt_finsetSum
+  apply tendsto_finsetSum
   intro S _
   apply ContinuousAt.mul _ continuousAt_const
   apply ContinuousAt.comp _ (continuousAt_id.pow _)
-  simpa only [zero_pow hP.ne',energySlope] using continuousAt_dslope_same.mpr (slope_deriv S).differentiableAt
+  change ContinuousAt (energySlope S) ((0:ℝ)^P.card)
+  rw [zero_pow hP.ne']
+  exact continuousAt_dslope_same.mpr (slope_deriv S).differentiableAt
 
 private theorem model_not_splits {m : ℕ} (hm : 3 ≤ m) {a : ℝ} (ha : a ≠ 0) :
     ¬ ((X:ℝ[X])^m-C a).Splits := by
@@ -131,7 +135,7 @@ theorem squarefreeCardinality_eventually_not_splits {P : Finset ℕ} (hP : ∀ p
   let a : ℝ := ∏ p ∈ P, (1-(p:ℝ))
   have ha : a ≠ 0 := prod_ne_zero_iff.mpr fun p hp => sub_ne_zero.mpr
     (ne_of_lt (by exact_mod_cast (hP p hp).one_lt : (1:ℝ)<p))
-  have hq : (X^m-C a : ℝ[X]).natDegree ≤ m := by rw [natDegree_X_pow_sub_C hm']
+  have hq : (X^m-C a : ℝ[X]).natDegree ≤ m := natDegree_X_pow_sub_C.le
   have hn := _root_.HTGeometry.eventually_not_splits_of_coeff_limit (blowup_degree P) hq
     (X_pow_sub_C_ne_zero hm' a) (squarefreeActivityBlowup_limit hm') (model_not_splits hm ha)
   have hroot : Tendsto (fun β : ℝ => β^((m:ℝ)⁻¹)) (𝓝[>] 0) (𝓝 0) := by
@@ -148,7 +152,7 @@ theorem squarefreeCardinality_eventually_not_splits {P : Finset ℕ} (hP : ∀ p
     (max_le (by simpa using natDegree_C_mul_le t (X:ℝ[X])) (by simp))
   have hfull := hs.comp_of_natDegree_le_one (g:=C t*X-1) hy
   rw [←he,squarefreeActivity_rescaling] at hfull
-  exact hβ ((splits_C_mul (pow_ne_zero _ ht.ne')).mp hfull)
+  exact hβ ((splits_mul_iff_right (C_ne_zero.mpr (pow_ne_zero _ ht.ne')) (Polynomial.Splits.C _)).mp hfull)
 
 
 end

@@ -317,8 +317,8 @@ private theorem completed_law {F : ℕ → ℕ} (law : seedLaw F) (n : ℕ) :
         exact pair (forward true) (returnMap true) (double_edge actual odd odd')
           (by change 2*F t ≤ 8*(2*t); omega)
   · have fixed : G n=n := if_neg sq
-    rw [fixed]
-    exact ⟨fixed,Or.inl rfl,fun h => (sq h).elim,by omega⟩
+    exact ⟨(congrArg G fixed).trans fixed,Or.inl fixed,fun h => (sq h).elim,
+      fixed.le.trans (Nat.le_mul_of_pos_left n (by decide : 0<8))⟩
 
 /-- The reserved odd ray meets an initial interval at most logarithmically often. -/
 private theorem count_on_odd_ray (X : ℕ) :
