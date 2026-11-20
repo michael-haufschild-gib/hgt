@@ -24,8 +24,9 @@ def hardySpace (a b : ℝ) : Submodule ℂ (Lp ℂ 2 (boundaryMeasure a b)) :=
   (Submodule.span ℂ {u | IsHardyTrace a b u}).topologicalClosure
 
 instance (a b : ℝ) : CompleteSpace (hardySpace a b) := by
-  letI : IsClosed ((hardySpace a b : Submodule ℂ _) : Set _) := Submodule.isClosed_topologicalClosure _
-  exact IsClosed.completeSpace_coe
+  let K : Submodule ℂ (Lp ℂ 2 (boundaryMeasure a b)) := Submodule.span ℂ {u | IsHardyTrace a b u}
+  exact @IsClosed.completeSpace_coe (Lp ℂ 2 (boundaryMeasure a b)) _ _
+    (K.topologicalClosure : Set (Lp ℂ 2 (boundaryMeasure a b))) K.isClosed_topologicalClosure
 
 theorem mem_hardySpace_of_trace {a b : ℝ} {u : Lp ℂ 2 (boundaryMeasure a b)}
     (hu : IsHardyTrace a b u) : u ∈ hardySpace a b :=
@@ -76,8 +77,10 @@ theorem arithmetic_column_trace {n : ℕ} (hN : 4 ≤ n+1) (h : modulusGRH (n+1)
   obtain ⟨B,hB,hb⟩ := boundaryKernel_strip_decay hN h ha
   have hzc := clippedPoint_re hab z
   let C := B*edgeDecay z.im
-  apply exists_trace_of_majorant (g := fun t => C*edgeDecay t)
-  · exact (extendedKernel_continuous h ha hab).comp (continuous_id.prodMk continuous_const)
+  apply exists_trace_of_majorant (a := a) (b := 1/8) (F := fun s : ℂ => extendedKernel (n+1) a s z)
+    (g := fun t => C*edgeDecay t)
+  · have hv : Continuous (fun s : ℂ => (s,z)) := continuous_id.prodMk continuous_const
+    exact (extendedKernel_continuous h ha hab).comp hv
   · intro s hs
     let S := {u : ℂ | u.re ∈ Ioo a (1/8)}
     have ho : IsOpen S := isOpen_Ioo.preimage continuous_re

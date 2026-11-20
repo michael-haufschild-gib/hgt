@@ -94,9 +94,8 @@ lemma mem_zpowers_sq {G : Type*} [Group G] {g x : G} (hg : g ^ 2 = 1) :
 
 lemma neg_one_sq_units {n : ℕ} : (-1 : (ZMod (2 ^ n))ˣ) ^ 2 = 1 := neg_one_sq
 
-lemma gen_sq {n : ℕ} : ((-1, 1, 1) : GalL n) ^ 2 = 1 := by
-  rw [Prod.pow_mk, Prod.pow_mk, neg_one_sq_units, one_pow]
-  all_goals rfl
+lemma gen_sq {n : ℕ} : ((-1, 1, 1) : GalL n) ^ 2 = 1 :=
+  Prod.ext neg_one_sq_units (Prod.ext (one_pow 2) (one_pow 2))
 
 abbrev QQ (s : ℕ) : Type := (ZMod (2 ^ (s + 2)))ˣ ⧸ Subgroup.zpowers (-1 : (ZMod (2 ^ (s + 2)))ˣ)
 
@@ -155,9 +154,11 @@ lemma phiE_ker (s : ℕ) : (phiE s).ker = Subgroup.zpowers ((-1, 1, 1) : GalL (s
   tauto
 
 noncomputable def eGamE (s : ℕ) : GamE s ≃* Multiplicative (ZMod (2 ^ s)) × ℤˣ × ℤˣ :=
-  ((QuotientGroup.quotientMulEquivOfEq (phiE_ker s).symm).trans
-    (QuotientGroup.quotientKerEquivOfSurjective _ (phiE_surj s))).trans
-    (MulEquiv.prodCongr (eQQ s) (MulEquiv.refl _))
+  let e1 : GamE s ≃* GalL (s + 2) ⧸ (phiE s).ker :=
+    QuotientGroup.quotientMulEquivOfEq (phiE_ker s).symm
+  let e2 : GalL (s + 2) ⧸ (phiE s).ker ≃* QQ s × ℤˣ × ℤˣ :=
+    QuotientGroup.quotientKerEquivOfSurjective (phiE s) (phiE_surj s)
+  (e1.trans e2).trans (MulEquiv.prodCongr (eQQ s) (MulEquiv.refl _))
 
 private lemma card_int_units_eq_two : Nat.card ℤˣ = 2 := by
   rw [Nat.card_eq_fintype_card, Fintype.card_units_int]
@@ -291,7 +292,8 @@ lemma range_le_closure {s m : ℕ} (h : s ≤ m) :
     Subgroup.subset_closure (Set.mem_insert_of_mem _ (Set.mem_singleton_iff.2 rfl))
   have heq : ((iota (m + 2) e * wgen s m ^ (Multiplicative.toAdd k).val, 1, 1) : GalL (m + 2))
       = (iota (m + 2) e, 1, 1) * (wgen s m, 1, 1) ^ (Multiplicative.toAdd k).val := by
-    rw [Prod.pow_mk, Prod.pow_mk, one_pow, Prod.mk_mul_mk, Prod.mk_mul_mk, mul_one]
+    exact Prod.ext rfl (Prod.ext (show (1 : ℤˣ) = 1 * 1 ^ _ by rw [one_pow, mul_one])
+      (show (1 : ℤˣ) = 1 * 1 ^ _ by rw [one_pow, mul_one]))
   rw [heq]
   exact Subgroup.mul_mem _ hA (Subgroup.pow_mem _ hB _)
 
@@ -319,8 +321,7 @@ theorem gamEModel : GamEModel := by
     · rw [← QuotientGroup.mk_pow]
       have hJ : JJ (s + 2) ^ 2 = 1 := by
         unfold JJ
-        rw [Prod.pow_mk, Prod.pow_mk, neg_one_sq, neg_one_sq]
-        all_goals rfl
+        exact Prod.ext neg_one_sq (Prod.ext neg_one_sq neg_one_sq)
       rw [hJ, QuotientGroup.mk_one]
     · rw [Ne, QuotientGroup.eq_one_iff, mem_zpowers_sq gen_sq]
       unfold JJ
