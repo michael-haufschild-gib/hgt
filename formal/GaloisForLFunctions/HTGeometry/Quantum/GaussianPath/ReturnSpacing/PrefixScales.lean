@@ -25,7 +25,10 @@ theorem isolatedFieldScale_bounds (n : ℕ) :
       ((n+2:ℕ):ℝ)^((48:ℝ)⁻¹)/4 ≤ k := by
   let j := isolatedFieldScaleIndex n
   let k : ℕ := 2^j
-  have he : (2^48)^j = k^48 := by dsimp [k]; rw [← pow_mul,← pow_mul,Nat.mul_comm 48 j]
+  have he : (2^48)^j = k^48 := calc
+    _ = 2^(48*j) := (pow_mul (2:ℕ) 48 j).symm
+    _ = 2^(j*48) := by rw [Nat.mul_comm 48 j]
+    _ = k^48 := pow_mul (2:ℕ) j 48
   have hlo := Nat.pow_log_le_self (2^48) (show (n+2)/2 ≠ 0 by omega)
   have hhi := Nat.lt_pow_succ_log_self (by decide : 1 < 2^48) ((n+2)/2)
   change (2^48)^j ≤ (n+2)/2 at hlo
@@ -35,11 +38,12 @@ theorem isolatedFieldScale_bounds (n : ℕ) :
   have hN : ((n+2:ℕ):ℝ) ≤ 2^49*(k:ℝ)^48 := by
     exact_mod_cast (show n+2 ≤ 2^49*k^48 by norm_num at hhi ⊢; omega)
   refine ⟨by change 2*k^48 ≤ n+2; omega,?_,?_⟩
-  · apply (Real.sqrt_le_iff).mpr
-    exact ⟨by positivity,hN.trans (by
-      rw [mul_pow,← pow_mul]
-      norm_num
-      linarith only [pow_nonneg (Nat.cast_nonneg k : 0 ≤ (k:ℝ)) 48])⟩
+  · change Real.sqrt ((n+2:ℕ):ℝ) ≤ (2:ℝ)^25*(k:ℝ)^24
+    apply Real.sqrt_le_iff.mpr
+    refine ⟨by positivity,hN.trans ?_⟩
+    calc
+      _ ≤ (2:ℝ)^50*(k:ℝ)^48 := mul_le_mul_of_nonneg_right (by norm_num) (by positivity)
+      _ = _ := by ring
   · have h4 : ((n+2:ℕ):ℝ) ≤ (4*(k:ℝ))^48 := hN.trans (by
       rw [mul_pow]
       exact mul_le_mul_of_nonneg_right (by norm_num) (by positivity))

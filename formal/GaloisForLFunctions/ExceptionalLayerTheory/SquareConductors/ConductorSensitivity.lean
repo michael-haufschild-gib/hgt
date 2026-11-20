@@ -76,7 +76,7 @@ private theorem rapid : _root_.RHTower.MellinRapid squarePrimeWeight := by
   refine ⟨?_,?_,?_⟩
   · exact (show ContinuousOn squarePrimeWeight (Set.Ioi (0:ℝ)) from
       fun x hx => (continuousAt_squarePrimeWeight hx).continuousWithinAt).locallyIntegrableOn
-      isOpen_Ioi.isLocallyClosed
+      measurableSet_Ioi
   · intro a
     apply Asymptotics.IsBigO.of_bound 1
     filter_upwards [eventually_gt_atTop (Real.exp (8+Real.log 4))] with x hx
@@ -104,7 +104,7 @@ theorem log_power_reading (r : ℂ) (hr : 0 < r.re) (j : ℕ) {X : ℝ} (hX : 0 
     (X:ℂ)^(r+1) * ((t:ℂ)^(r-1) * ((Real.log t)^j • squarePrimeWeight t))
   rw [mul_div_cancel_left₀ _ hX.ne',density,Complex.ofReal_mul,
     Complex.mul_cpow_ofReal_nonneg hX.le ht'.le,show r-1=(r+1)+(-(2:ℂ)) by ring,
-    Complex.cpow_add _ _ htz,Complex.cpow_neg,Complex.cpow_two,
+    Complex.cpow_add (r+1) (-(2:ℂ)) htz,Complex.cpow_neg,Complex.cpow_two,
     Complex.real_smul,Complex.ofReal_pow]
   ring
 
@@ -114,12 +114,15 @@ private def sinc (r : ℂ) := Complex.sinh (r-1/2)/(r-1/2)
 private theorem germ_factorization {r : ℂ} (hr : r-1/2 ≠ 0) :
     mellin squarePrimeWeight =ᶠ[𝓝 r] dyadic*sinc^8 := by
   filter_upwards [(continuous_id.sub continuous_const).continuousAt.eventually_ne hr] with u hu
-  simpa only [multiplier,sinhRatio,if_neg hu,Pi.mul_apply,Pi.pow_apply,dyadic,sinc]
+  have hu' : u-1/2 ≠ 0 := hu
+  simpa only [multiplier,sinhRatio,if_neg hu',Pi.mul_apply,Pi.pow_apply,dyadic,sinc]
 
 private theorem dyadic_order (r : ℂ) : analyticOrderAt dyadic r = if dyadic r=0 then 1 else 0 := by
   have h := (((hasDerivAt_id r).sub_const (1/2)).mul_const (Real.log 4:ℂ)).cexp
   have hd : HasDerivAt dyadic (-cexp ((r-1/2)*(Real.log 4:ℝ))*(Real.log 4:ℝ)) r := by
-    simpa only [dyadic,id_eq,one_mul,neg_mul] using h.const_sub 2
+    have h2 := h.const_sub 2
+    simp only [id_eq,one_mul,neg_mul] at h2 ⊢
+    exact h2
   have ha : AnalyticAt ℂ dyadic r := by unfold dyadic; fun_prop
   split_ifs with hzero
   · exact ha.analyticOrderAt_eq_one_of_zero_deriv_ne_zero hzero (hd.deriv ▸ mul_ne_zero
@@ -133,11 +136,12 @@ private theorem sinc_order {r : ℂ} (hr : r-1/2 ≠ 0) : analyticOrderAt sinc r
   · have hc : Complex.cosh (r-1/2) ≠ 0 := by
       intro hc
       have h := Complex.cosh_sq (r-1/2)
-      simp [hc,hz] at h
+      rw [hc,hz] at h
+      norm_num at h
     have hd := (Complex.hasDerivAt_sinh (r-1/2)).comp r ((hasDerivAt_id r).sub_const (1/2))
     have he := (hd.div ((hasDerivAt_id r).sub_const (1/2)) hr).deriv
-    simp only [id_eq,hz,one_mul,mul_one,zero_mul,sub_zero] at he
-    exact ha.analyticOrderAt_eq_one_of_zero_deriv_ne_zero (by simp [sinc,hz])
+    simp only [id_eq,Function.comp_apply,hz,one_mul,mul_one,zero_mul,sub_zero] at he
+    exact ha.analyticOrderAt_eq_one_of_zero_deriv_ne_zero (by rw [sinc,hz,zero_div])
       (he ▸ div_ne_zero (mul_ne_zero hc hr) (pow_ne_zero 2 hr))
   · exact ha.analyticOrderAt_eq_zero.mpr (div_ne_zero hz hr)
 
@@ -164,7 +168,7 @@ theorem first_visible_log_degree {r : ℂ} (hr : 0 < r.re) (m : ℕ) {X : ℝ} (
   have ha := differentiable_mellin_squarePrimeWeight.analyticAt r
   have hx := Complex.cpow_ne_zero_iff.mpr (Or.inl (Complex.ofReal_ne_zero.mpr hX.ne') :
     (X:ℂ) ≠ 0 ∨ r+1=0)
-  simp only [ha.analyticOrderAt_eq_nat_iff_iteratedDeriv_eq_zero,log_power_reading r hr _ hX,
+  simp only [analyticOrderAt_eq_nat_iff_iteratedDeriv_eq_zero ha,log_power_reading r hr _ hX,
     mul_eq_zero,or_iff_right hx]
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval.ConductorMoment

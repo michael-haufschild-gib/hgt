@@ -100,15 +100,6 @@ theorem affordable_occupation_of_hard_lag {n s q : ℕ} (H : selfAdjoint (Reg n)
   simpa only [Fintype.card_fin,Nat.cast_add,Nat.cast_one] using
     occupation_mul_card_le_of_disjoint_shifts hm u hB hu hsep a T hT
 
-/-- Two translates give the half-occupation bound at half the error. -/
-theorem affordable_time_le_half_of_hard_lag {n s : ℕ} (H : selfAdjoint (Reg n))
-    (u : ℝ) (hu : 0 ≤ u) (hh : ProjectiveCircuitSeparated n (1/10:ℝ) (2*s)
-      (unitaryEvolution H.val u)) (a T : ℝ) (hT : 0 ≤ T) :
-    2*volume.real ({t | HasProjectiveCircuitApproximation n (1/20:ℝ) s
-      (unitaryEvolution H.val t)} ∩ Icc a (a+T)) ≤ T+u := by
-  simpa using affordable_occupation_of_hard_lag H (q := 1) (s := s) (by decide)
-    (by norm_num : (0:ℝ) ≤ 1/20) u hu (by norm_num; exact hh) a T hT
-
 #print axioms affordable_occupation_of_hard_lag
 end
 end GaloisForLFunctions.HTGeometry

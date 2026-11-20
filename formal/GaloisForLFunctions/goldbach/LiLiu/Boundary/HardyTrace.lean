@@ -69,32 +69,40 @@ theorem exists_trace_of_majorant {a b : ℝ} {F : ℂ → ℂ} (hc : Continuous 
         exact Eventually.of_forall fun t => (((hv t).sub continuous_const).norm.pow 2).continuousAt
     simpa using hcont.tendsto.mono_left nhdsWithin_le_nhds
 
+private theorem continuous_column {K : ℂ → ℂ → ℂ} (hK : Continuous (Function.uncurry K)) (z : ℂ) :
+    Continuous (fun s => K s z) := by
+  exact hK.comp (f := fun s : ℂ => (s,z)) (continuous_id.prodMk continuous_const)
+
+private theorem extended_column_holomorphic {n : ℕ} (h : modulusGRH (n+1))
+    {a : ℝ} (ha : 0 < a) (hab : a ≤ 1/8) (z : ℂ) :
+    DifferentiableOn ℂ (fun s => extendedKernel (n+1) a s z) {s | s.re ∈ Ioo a (1/8)} := by
+  intro s hs
+  let S := {u : ℂ | u.re ∈ Ioo a (1/8)}
+  have ho : IsOpen S := isOpen_Ioo.preimage continuous_re
+  have he : (fun u => extendedKernel (n+1) a u z) =ᶠ[𝓝 s]
+      fun u => boundaryKernel (n+1) u (clippedPoint a (1/8) z) := by
+    filter_upwards [ho.mem_nhds hs] with u hu
+    rw [extendedKernel,clippedPoint_eq (z := u) ⟨hu.1.le,hu.2.le⟩]
+  have hzc := clippedPoint_re hab z
+  have hD := boundaryKernel_column_differentiableAt h (s := s) (z := clippedPoint a (1/8) z)
+    ⟨ha.trans hs.1,hs.2.trans (by norm_num)⟩ ⟨ha.trans_le hzc.1,hzc.2.trans_lt (by norm_num)⟩
+  exact (hD.congr_of_eventuallyEq he).differentiableWithinAt
+
 /-- Each arithmetic column gives an actual Hardy trace. -/
 theorem arithmetic_column_trace {n : ℕ} (hN : 4 ≤ n+1) (h : modulusGRH (n+1))
     {a : ℝ} (ha : 0 < a) (hab : a ≤ 1/8) (z : ℂ) :
     ∃ u : Lp ℂ 2 (boundaryMeasure a (1/8)), u ∈ hardySpace a (1/8) ∧
       (u : ℂ → ℂ) =ᵐ[boundaryMeasure a (1/8)] fun s => extendedKernel (n+1) a s z := by
   obtain ⟨B,hB,hb⟩ := boundaryKernel_strip_decay hN h ha
-  have hzc := clippedPoint_re hab z
   let C := B*edgeDecay z.im
-  apply exists_trace_of_majorant (a := a) (b := 1/8) (F := fun s : ℂ => extendedKernel (n+1) a s z)
+  refine exists_trace_of_majorant (a := a) (b := 1/8) (F := fun s : ℂ => extendedKernel (n+1) a s z)
     (g := fun t => C*edgeDecay t)
-  · have hv : Continuous (fun s : ℂ => (s,z)) := continuous_id.prodMk continuous_const
-    exact (extendedKernel_continuous h ha hab).comp hv
-  · intro s hs
-    let S := {u : ℂ | u.re ∈ Ioo a (1/8)}
-    have ho : IsOpen S := isOpen_Ioo.preimage continuous_re
-    have he : (fun u => extendedKernel (n+1) a u z) =ᶠ[𝓝 s]
-        fun u => boundaryKernel (n+1) u (clippedPoint a (1/8) z) := by
-      filter_upwards [ho.mem_nhds hs] with u hu
-      rw [extendedKernel,clippedPoint_eq ⟨hu.1.le,hu.2.le⟩]
-    exact ((boundaryKernel_column_differentiableAt h
-      ⟨ha.trans hs.1,hs.2.trans (by norm_num)⟩ ⟨ha.trans_le hzc.1,hzc.2.trans_lt (by norm_num)⟩
-      ).congr_of_eventuallyEq he).differentiableWithinAt
+    (continuous_column (K := extendedKernel (n+1) a) (extendedKernel_continuous h ha hab) z)
+    (extended_column_holomorphic h ha hab z) ?_ ?_
   · simpa only [mul_pow] using edgeDecay_sq_line_integrable.const_mul (C^2)
   · intro x t
     have H := hb (clippedPoint a (1/8) (mellinLine x t)) (clippedPoint a (1/8) z)
-      (clippedPoint_re hab _) hzc
+      (clippedPoint_re hab _) (clippedPoint_re hab z)
     simpa only [extendedKernel,clippedPoint_im,mellinLine_im,C,edgeDecay,mul_right_comm] using H
 
 #print axioms arithmetic_column_trace

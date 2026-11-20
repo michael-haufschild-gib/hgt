@@ -44,7 +44,7 @@ private theorem local_variation (P : ℕ → Bool) {n j : ℕ} (hj : j<n) :
 debit contributed by every pair of primes whose separation is n. -/
 theorem sharp_midpoint_variation (P : ℕ → Bool) (n : ℕ) :
     (∑ j∈range n,abs (midpointReading n P (j+1)-midpointReading n P j))=
-      2*(∑ j∈range n,upper P n j+lower P n j)-4*pairedLog P n := by
+      2*(∑ j∈range n,(upper P n j+lower P n j))-4*pairedLog P n := by
   rw [pairedLog,mul_sum,mul_sum,←sum_sub_distrib]
   exact sum_congr rfl fun j hj => local_variation P (mem_range.mp hj)
 
@@ -52,7 +52,7 @@ theorem sharp_midpoint_variation (P : ℕ → Bool) (n : ℕ) :
 the ordinary variation determines the lower-logarithm pair sum. -/
 theorem sharp_midpoint_quadratic_variation (P : ℕ → Bool) (n : ℕ) :
     (∑ j∈range n,(midpointReading n P (j+1)-midpointReading n P j)^2)=
-      4*(∑ j∈range n,(upper P n j)^2+(lower P n j)^2)-
+      4*(∑ j∈range n,((upper P n j)^2+(lower P n j)^2))-
       8*(∑ j∈range n,lower P n j*upper P n j) := by
   rw [mul_sum,mul_sum,←sum_sub_distrib]
   apply sum_congr rfl
@@ -66,7 +66,7 @@ if and only if the interval contains no ordinary-prime pair at displacement n. -
 theorem prime_midpoint_full_variation_iff (n : ℕ) :
     (∑ j∈range n,abs (midpointReading n (fun x => decide x.Prime) (j+1)-
       midpointReading n (fun x => decide x.Prime) j))=
-       2*∑ j∈range n,upper (fun x => decide x.Prime) n j+lower (fun x => decide x.Prime) n j ↔
+       2*∑ j∈range n,(upper (fun x => decide x.Prime) n j+lower (fun x => decide x.Prime) n j) ↔
       ∀ m∈Ioc (2*n) (3*n),m.Prime → ¬(m+n).Prime := by
   let P := fun m : ℕ => decide m.Prime
   rw [sharp_midpoint_variation,sub_eq_self,mul_eq_zero]
@@ -84,7 +84,7 @@ theorem prime_midpoint_full_variation_iff (n : ℕ) :
     have he : leftSite n j=m := by dsimp [leftSite,j];omega
     have hz := hh j (mem_range.mpr hj)
     simp [P,he,hq,lower,selectedLog,hp] at hz
-    exact (Real.log_pos (show (1:ℝ)<m by exact_mod_cast hp.one_lt)).ne' hz
+    exact (Real.log_pos (show (1:ℝ)< m by exact_mod_cast hp.one_lt)).ne' hz
   · intro h j hj
     have hm : leftSite n j∈Ioc (2*n) (3*n) := by
       have h' := mem_range.mp hj

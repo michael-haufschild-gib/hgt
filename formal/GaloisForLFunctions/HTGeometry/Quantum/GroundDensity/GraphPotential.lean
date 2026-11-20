@@ -1,4 +1,6 @@
 import GaloisForLFunctions.HTGeometry.WeightedGraphSpectralGap
+import Mathlib.Analysis.Calculus.LocalExtr.Basic
+import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Tactic.FieldSimp
 
 /-!
@@ -95,7 +97,7 @@ theorem inversePotential_defect (G : WeightedGraph V) (f : PositiveAmplitude V)
     apply Finset.sum_congr rfl
     intro u _
     change G.w v u * (f.1 v * f.1 u) * ((x v / f.1 v) * (x u / f.1 u)) = _
-    field_simp [(f.2 v).ne', (f.2 u).ne'] <;> ring
+    field_simp [(f.2 v).ne', (f.2 u).ne']
   have hdiag : G.massInner x x + potentialForm (G.inversePotential f E) x =
       E * potentialForm (fun _ => 1) x + H.massInner r r := by
     simp only [massInner, potentialForm, one_mul, Finset.mul_sum, ← Finset.sum_add_distrib]
@@ -105,7 +107,8 @@ theorem inversePotential_defect (G : WeightedGraph V) (f : PositiveAmplitude V)
       E * (x v * x v) + (G.groundConductance f).mass v *
         ((x v / f.1 v) * (x v / f.1 v))
     rw [inversePotential, groundConductance_mass]
-    field_simp [(f.2 v).ne'] <;> ring
+    field_simp [(f.2 v).ne']
+    ring
   change _ = H.dirichlet r r
   rw [schrodingerForm, G.dirichlet_self_eq_sub, H.dirichlet_self_eq_sub, hcross]
   linarith only [hdiag]
@@ -157,10 +160,102 @@ theorem inversePotential_eq_groundEnergy_iff (G : WeightedGraph V)
   change (0 < G.w v u * (f.1 v * f.1 u) → _) ↔ _
   rw [mul_pos_iff_of_pos_right (mul_pos (f.2 v) (f.2 u))]
 
+/-- A strictly positive ground amplitude determines its site potential at
+fixed ground energy. Varying one coordinate reads the corresponding diagonal
+coefficient, since the transformed Dirichlet energy has zero first variation. -/
+theorem isGroundAt_positive_iff (G : WeightedGraph V)
+    (f : {f : PositiveAmplitude V // potentialForm (fun _ => 1) f.1 = 1})
+    (a : V → ℝ) (E : ℝ) :
+    G.IsGroundAt a E f.1.1 ↔ a = G.inversePotential f.1 E := by
+  classical
+  constructor
+  · intro h
+    funext i
+    let H := G.groundConductance f.1
+    let b := G.inversePotential f.1 E
+    let d : V → ℝ := fun v => if v = i then 1 else 0
+    let r : V → ℝ := fun v => d v / f.1.1 v
+    let x : ℝ → V → ℝ := fun t v => f.1.1 v + t * d v
+    let defect : ℝ → ℝ := fun t =>
+      G.schrodingerForm a (x t) - E * potentialForm (fun _ => 1) (x t)
+    have htrans (t : ℝ) : (fun v => x t v / f.1.1 v) = fun v => 1 + t * r v := by
+      funext v
+      change (f.1.1 v + t * d v) / f.1.1 v = 1 + t * (d v / f.1.1 v)
+      rw [add_div, div_self (f.1.2 v).ne', mul_div_assoc]
+    have hd (t : ℝ) :
+        H.dirichlet (fun v => 1 + t * r v) (fun v => 1 + t * r v) =
+          (t * t) * H.dirichlet r r := by
+      rw [dirichlet, dirichlet, ← mul_div_assoc, Finset.mul_sum]
+      apply congrArg (· / 2)
+      refine Finset.sum_congr rfl fun v _ => ?_
+      rw [Finset.mul_sum]
+      exact Finset.sum_congr rfl fun u _ => by ring
+    have hform (t : ℝ) : defect t = (t * t) * H.dirichlet r r +
+        potentialForm (fun v => a v - b v) (x t) := by
+      have hb := G.inversePotential_defect f.1 E (x t)
+      rw [htrans, hd] at hb
+      change G.schrodingerForm b (x t) - _ = _ at hb
+      change G.schrodingerForm a (x t) - _ = _
+      linarith only [hb, G.schrodingerForm_sub a b (x t)]
+    have hmin : IsMinOn defect Set.univ 0 := by
+      have hx0 : x 0 = f.1.1 := by funext v; simp only [x, zero_mul, add_zero]
+      apply isMinOn_univ_iff.mpr
+      intro t
+      change G.schrodingerForm a (x 0) - E * potentialForm (fun _ => 1) (x 0) ≤ _
+      rw [hx0, h.2.1, f.2, mul_one, sub_self]
+      exact sub_nonneg.mpr (h.2.2 (x t))
+    have hc : HasDerivAt (fun t : ℝ => (t * t) * H.dirichlet r r) 0 0 := by
+      simpa only [Pi.mul_apply, id_eq, zero_mul, mul_zero, add_zero] using
+        (((hasDerivAt_id (0 : ℝ)).mul (hasDerivAt_id (0 : ℝ))).mul_const
+          (H.dirichlet r r))
+    have hp : HasDerivAt (fun t => potentialForm (fun v => a v - b v) (x t))
+        (∑ v, (a v - b v) * (d v * f.1.1 v + f.1.1 v * d v)) 0 := by
+      apply HasDerivAt.fun_sum
+      intro v _
+      have hxv : HasDerivAt (fun t => x t v) (d v) 0 := by
+        simpa only [x, id_eq, one_mul] using
+          (((hasDerivAt_id (0 : ℝ)).mul_const (d v)).const_add (f.1.1 v))
+      simpa only [Pi.mul_apply, x, zero_mul, add_zero] using
+        ((hxv.mul hxv).const_mul (a v - b v))
+    have hderiv : HasDerivAt defect
+        (∑ v, (a v - b v) * (d v * f.1.1 v + f.1.1 v * d v)) 0 := by
+      rw [show defect = (fun t => (t * t) * H.dirichlet r r) +
+        (fun t => potentialForm (fun v => a v - b v) (x t)) from funext hform]
+      simpa only [zero_add] using hc.add hp
+    have hz := (hmin.isLocalMin (Filter.univ_mem)).hasDerivAt_eq_zero hderiv
+    rw [Finset.sum_eq_single i] at hz
+    · simp only [d, if_true, one_mul, mul_one] at hz
+      exact sub_eq_zero.mp ((mul_eq_zero.mp hz).resolve_right
+        (add_pos (f.1.2 i) (f.1.2 i)).ne')
+    · intro v _ hv
+      simp only [d, if_neg hv, zero_mul, mul_zero, add_zero]
+    · exact fun hi => (hi (Finset.mem_univ i)).elim
+  · rintro rfl
+    exact G.inversePotential_ground f E
+
+/-- Equal positive ground densities determine the same potential up to an
+additive shift, and the shift equals the difference in ground energies. -/
+theorem eq_density_potential_shift (G : WeightedGraph V)
+    (x y : {f : PositiveAmplitude V // potentialForm (fun _ => 1) f.1 = 1})
+    (a b : V → ℝ) (E F : ℝ) :
+    G.IsGroundAt a E x.1.1 ∧ G.IsGroundAt b F y.1.1 ∧
+      (∀ v, x.1.1 v * x.1.1 v = y.1.1 v * y.1.1 v) →
+      ∀ v, a v - b v = E - F := by
+  rintro ⟨ha, hb, hρ⟩
+  have hcommon := (G.commonGround_of_eq_density a b x.1.1 y.1.1 E F
+    ⟨ha, hb, hρ⟩).2.1
+  rw [(G.isGroundAt_positive_iff x a E).mp ha,
+    (G.isGroundAt_positive_iff x b F).mp hcommon]
+  intro v
+  unfold inversePotential
+  ring
+
 #print axioms commonGround_of_eq_density
 #print axioms inversePotential_defect
 #print axioms inversePotential_ground
 #print axioms inversePotential_eq_groundEnergy_iff
+#print axioms isGroundAt_positive_iff
+#print axioms eq_density_potential_shift
 
 end
 

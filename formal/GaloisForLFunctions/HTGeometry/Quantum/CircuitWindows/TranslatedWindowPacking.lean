@@ -22,7 +22,11 @@ theorem occupation_mul_card_le_of_disjoint_shifts {ι : Type*} [Fintype ι]
   have hfin : volume F ≠ ⊤ := measure_ne_top_of_subset inter_subset_right measure_Icc_lt_top.ne
   have hd : Pairwise (fun i j => Disjoint (G i) (G j)) := by
     intro i j hij
-    exact Set.disjoint_left.mpr fun x hi hj => hsep i j hij x hi.1 hj.1
+    apply Set.disjoint_left.mpr
+    intro x hi hj
+    apply hsep i j hij x
+    · simpa only [sub_eq_add_neg] using hi.1
+    · simpa only [sub_eq_add_neg] using hj.1
   have hsub : (⋃ i, G i) ⊆ Icc a (a+T+B) := by
     intro x hx
     obtain ⟨i,hi⟩ := mem_iUnion.mp hx
