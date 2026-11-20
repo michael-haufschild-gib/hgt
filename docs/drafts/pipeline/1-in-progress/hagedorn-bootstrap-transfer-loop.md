@@ -23,6 +23,7 @@ Lean folder: formal/GaloisForLFunctions/HagedornBootstrap/ ; umbrella formal/Gal
 - BesselSeries
 - ZeroLawAndDeficit
 - CrossingKernelFourier
+- CurieWeissTwin
 
 ## Contribution count
-206
+219

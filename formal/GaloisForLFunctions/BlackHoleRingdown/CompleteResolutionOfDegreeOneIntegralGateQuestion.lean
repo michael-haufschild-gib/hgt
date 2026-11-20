@@ -1919,7 +1919,7 @@ theorem complete_resolution_of_degree_one_integral_gate_question :
   · intro S hS ε hε
     exact finiteFlipped_strip_and_rh_equivalence S hS hε
   · intro p hp5
-    obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, hfail4⟩ :=
+    obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, hfail4⟩ :=
       integral_trace_degree_two_slow_mode_of_ge_five hp5
     exact hfail4
   · intro F hd a h1 hmul hpow

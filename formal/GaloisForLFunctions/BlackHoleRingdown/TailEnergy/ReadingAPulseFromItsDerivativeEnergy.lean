@@ -18,7 +18,7 @@ namespace GaloisForLFunctions.BlackHoleRingdown
 theorem reflected_field_tends_to_zero (h : CompactPulse) :
     Tendsto (pulseReflected h) atTop (𝓝 0) := by
   have H := ((tendsto_tailEnergy_atTop h).const_mul 4).mul (tendsto_tailEnergy_atTop h.D)
-  rw [mul_zero,mul_zero] at H
+  simp only [mul_zero] at H
   have hp := squeeze_zero (show ∀ T : ℝ, 0≤‖pulseReflected h T‖^4 from fun _ => by positivity)
     (norm_pulseReflected_pow_four_le h) H
   rw [tendsto_zero_iff_norm_tendsto_zero]
@@ -43,8 +43,9 @@ private theorem unit_field_change (h : CompactPulse) {C σ t : ℝ} (ht : 0≤t)
   apply (intervalIntegral.norm_integral_le_integral_norm hle).trans
   have hpt (u : ℝ) : (2*L)*‖pulseReflected h.D u‖ ≤ L^2+‖pulseReflected h.D u‖^2 :=
     by nlinarith only [sq_nonneg (L-‖pulseReflected h.D u‖)]
-  have hi := intervalIntegral.integral_mono_on hle ((continuous_const.mul hcont).intervalIntegrable ..)
+  have hi := intervalIntegral.integral_mono_on (μ := volume) hle ((continuous_const.mul hcont).intervalIntegrable ..)
     ((continuous_const.add (hcont.pow 2)).intervalIntegrable ..) (fun u _ => hpt u)
+  simp only [Pi.mul_apply, Pi.add_apply, Pi.pow_apply] at hi
   rw [intervalIntegral.integral_const_mul,intervalIntegral.integral_add intervalIntegrable_const
     ((hcont.pow 2).intervalIntegrable ..),intervalIntegral.integral_const,smul_eq_mul,
     show t+1-t=1 by ring,one_mul] at hi
@@ -82,7 +83,7 @@ theorem reflected_decay_from_derivative_energy (h : CompactPulse) {σ C : ℝ} (
     induction n with
     | zero => simp
     | succ n ih =>
-      rw [show f (n+1)-f 0=(f (n+1)-f n)+(f n-f 0) by abel,sum_range_succ,mul_add]
+      rw [show f (n+1)-f 0=(f (n+1)-f n)+(f n-f 0) by abel,Finset.sum_range_succ,mul_add]
       exact (norm_add_le _ _).trans (by linarith only [ih,hdiff n])
   have hg := hasSum_geometric_of_lt_one hq.le hq1
   have uniform (n : ℕ) : ‖f n-f 0‖ ≤ (A*(1-q)⁻¹)*Real.exp (-σ*T) := by

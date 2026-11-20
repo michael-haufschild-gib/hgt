@@ -21,7 +21,7 @@ theorem card_sieving_primes_le {T : ℝ} (P : Finset Nat.Primes)
     intro n hn
     obtain ⟨p,hp,rfl⟩ := mem_map.1 hn
     exact mem_Icc.2 ⟨p.2.one_le,Nat.le_floor (hP p hp)⟩
-  have h := card_le_card hsub
+  have h := Finset.card_le_card hsub
   simp only [card_map,Nat.card_Icc,Nat.add_sub_cancel] at h
   exact (show (P.card:ℝ) ≤ (⌊T^2⌋₊:ℕ) by exact_mod_cast h).trans (Nat.floor_le (sq_nonneg T))
 
@@ -102,7 +102,7 @@ theorem memLp_ordinaryPolar_on_window {W₀ : ℝ} (hW : 0 < W₀)
   let f := fun t : ℝ => Real.exp (-(d*t))*E t
   have hd : zetaZeroAbscissa-1/2 < d := (le_abs_self _).trans_lt (lt_add_of_pos_right _ zero_lt_one)
   have hf : MemLp f 2 ν := (memLp_damped_ordinaryPrimePolarError hW ht hF he hd).mono_measure
-    (Measure.restrict_mono Ioc_subset_Ioi_self le_rfl)
+    (Measure.restrict_mono Set.Ioc_subset_Ioi_self le_rfl)
   have hundo (t : ℝ) : Real.exp (d*t)*f t=E t := by
     dsimp only [f]; rw [← mul_assoc,← Real.exp_add,add_neg_cancel,Real.exp_zero,one_mul]
   have hm : AEStronglyMeasurable E ν := ((show AEStronglyMeasurable (fun t : ℝ => Real.exp (d*t)) ν by fun_prop).mul hf.1).congr

@@ -22,7 +22,7 @@ the ordinary-prime wave by at most `M 16^{|P|} e^{-rU}` on `[U, ∞)`.
 -/
 
 noncomputable section
-open MeasureTheory Filter Set Topology Finset
+open MeasureTheory Filter Set Topology
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open HTGeometry ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
   CriticalArithmeticCorrelationTheory _root_.RHTower
@@ -71,10 +71,12 @@ theorem criticalState_commonSieve_sublinear_tail {W₀ : ℝ} (hW : 0 < W₀)
     (by norm_num : (0:ℝ) ≤ r) hr'
   let L := Real.log 16
   have hL : 0 < L := Real.log_pos (by norm_num)
+  have hL0 : L ≠ 0 := hL.ne'
+  have hL16 : Real.exp L = 16 := Real.exp_log (by norm_num)
   have hrη : 0 < r*η := mul_pos (by norm_num) hη
-  refine ⟨r*η/(4*L),r*η/2,by positivity,by positivity,?_⟩
+  refine ⟨r*η/(4*L),r*η/2,div_pos hrη (mul_pos four_pos hL),half_pos hrη,?_⟩
   have hgrow : Tendsto (fun T : ℝ => Real.exp ((r*η/4)*T)) atTop atTop :=
-    Real.tendsto_exp_atTop.comp (tendsto_id.const_mul_atTop (by positivity))
+    Real.tendsto_exp_atTop.comp (tendsto_id.const_mul_atTop (div_pos hrη four_pos))
   filter_upwards [eventually_ge_atTop (0:ℝ),hgrow.eventually_ge_atTop M] with T hT hMT
   intro P hP
   let V := fun t => |(commonSievedPrimeError P Φ t)^2-(ordinaryPrimePolarError Φ t)^2|
@@ -83,7 +85,7 @@ theorem criticalState_commonSieve_sublinear_tail {W₀ : ℝ} (hW : 0 < W₀)
   obtain ⟨hi,hbd⟩ := hmom P
   have hU : 0 ≤ η*T := mul_nonneg hη.le hT
   have hint : IntegrableOn V (Ioi (η*T)) := by
-    refine (hi.mono_set (Ioi_subset_Ioi hU)).mono' hV.aestronglyMeasurable ?_
+    refine (hi.mono_set (Set.Ioi_subset_Ioi hU)).mono' hV.aestronglyMeasurable ?_
     filter_upwards [ae_restrict_mem (μ := volume) (measurableSet_Ioi (a := η*T))] with t htt
     rw [Real.norm_of_nonneg (abs_nonneg _)]
     exact le_mul_of_one_le_left (abs_nonneg _) (Real.one_le_exp (mul_nonneg (by norm_num)
@@ -92,16 +94,16 @@ theorem criticalState_commonSieve_sublinear_tail {W₀ : ℝ} (hW : 0 < W₀)
   have htail := (abs_tail_le_exp_neg_mul (by norm_num : (0:ℝ) ≤ r) hU hi).trans
     (mul_le_mul_of_nonneg_left hbd (Real.exp_pos _).le)
   have h16 : (16:ℝ)^P.card ≤ Real.exp ((r*η/4)*T) := by
-    calc (16:ℝ)^P.card = Real.exp (P.card*L) := by
-            rw [Real.exp_nat_mul,Real.exp_log (by norm_num : (0:ℝ) < 16)]
+    calc (16:ℝ)^P.card = Real.exp (P.card*L) := by rw [Real.exp_nat_mul,hL16]
       _ ≤ _ := Real.exp_le_exp.2 (by
             have h := mul_le_mul_of_nonneg_right hP hL.le
             calc (P.card:ℝ)*L ≤ r*η/(4*L)*T*L := h
-              _ = (r*η/4)*T := by field_simp)
+              _ = (r*η/4)*T := by
+                  rw [show r*η/(4*L)*T*L = (r*η/4)*T*(L/L) by ring,div_self hL0,mul_one])
   calc (∫ t in Ioi (η*T), V t) ≤ Real.exp (-(r*(η*T)))*(M*(16:ℝ)^P.card) := htail
     _ ≤ Real.exp (-(r*(η*T)))*(Real.exp ((r*η/4)*T)*Real.exp ((r*η/4)*T)) := by
         apply mul_le_mul_of_nonneg_left _ (Real.exp_pos _).le
-        exact mul_le_mul hMT h16 (by positivity) (Real.exp_pos _).le
+        exact mul_le_mul hMT h16 (pow_nonneg (by norm_num) _) (Real.exp_pos _).le
     _ = Real.exp (-(r*η/2*T)) := by
         rw [← Real.exp_add,← Real.exp_add]; congr 1; ring
 
@@ -170,7 +172,9 @@ theorem criticalState_commonSieve_sublinear_tilted_cost {W₀ : ℝ} (hW : 0 < W
   obtain ⟨B,hB,hbound⟩ := criticalState_commonSieve_tilted_error hW ht hF hc he hC hb hβ hβ'
   let L := Real.log 4
   have hL : 0 < L := Real.log_pos (by norm_num)
-  refine ⟨ε/(2*L),by positivity,?_⟩
+  have hL0 : L ≠ 0 := hL.ne'
+  have hL4 : Real.exp L = 4 := Real.exp_log (by norm_num)
+  refine ⟨ε/(2*L),div_pos hε (mul_pos two_pos hL),?_⟩
   have hgrow : Tendsto (fun T : ℝ => Real.exp ((ε/2)*T)) atTop atTop :=
     Real.tendsto_exp_atTop.comp (tendsto_id.const_mul_atTop (by positivity))
   filter_upwards [hgrow.eventually_ge_atTop B] with T hBT
@@ -178,11 +182,11 @@ theorem criticalState_commonSieve_sublinear_tilted_cost {W₀ : ℝ} (hW : 0 < W
   obtain ⟨hg,hn⟩ := hbound P
   refine ⟨hg,hn.trans ?_⟩
   have h4 : (4:ℝ)^P.card ≤ Real.exp ((ε/2)*T) := by
-    calc (4:ℝ)^P.card = Real.exp (P.card*L) := by
-            rw [Real.exp_nat_mul,Real.exp_log (by norm_num : (0:ℝ) < 4)]
+    calc (4:ℝ)^P.card = Real.exp (P.card*L) := by rw [Real.exp_nat_mul,hL4]
       _ ≤ _ := Real.exp_le_exp.2 (by
             calc (P.card:ℝ)*L ≤ ε/(2*L)*T*L := mul_le_mul_of_nonneg_right hP hL.le
-              _ = (ε/2)*T := by field_simp)
+              _ = (ε/2)*T := by
+                  rw [show ε/(2*L)*T*L = (ε/2)*T*(L/L) by ring,div_self hL0,mul_one])
   calc (4:ℝ)^P.card*B ≤ Real.exp ((ε/2)*T)*Real.exp ((ε/2)*T) := mul_le_mul h4 hBT hB (Real.exp_pos _).le
     _ = Real.exp (ε*T) := by rw [← Real.exp_add]; congr 1; ring
 
@@ -334,11 +338,11 @@ theorem criticalState_quadratic_sieve_variance_ratio {W₀ : ℝ} (hW : 0 < W₀
   dsimp only
   rw [ha,hb']
   intro hcase
-  let u := Real.exp ((δ/2)*T)
-  have hu : 0 < u := Real.exp_pos _
+  have hu : 0 < Real.exp ((δ/2)*T) := Real.exp_pos _
+  set u := Real.exp ((δ/2)*T) with hudef
   have hA0 : 0 ≤ A := lpNorm_nonneg
   have hB0 : 0 ≤ B := lpNorm_nonneg
-  have hD : Real.exp (δ*T) = Real.exp ((δ/2)*T)*u := by rw [← Real.exp_add]; congr 1; ring
+  have hD : Real.exp (δ*T) = u*u := by rw [hudef,← Real.exp_add]; congr 1; ring
   have hDK : K*u ≤ Real.exp (δ*T) := by rw [hD]; exact mul_le_mul_of_nonneg_right hK hu.le
   have h2 : Real.exp (2*δ*T) = (Real.exp (δ*T))^2 := by rw [sq,← Real.exp_add]; congr 1; ring
   have hab := abs_le.1 hAB
@@ -346,24 +350,28 @@ theorem criticalState_quadratic_sieve_variance_ratio {W₀ : ℝ} (hW : 0 < W₀
     rcases hcase with h | h
     · rw [h2] at h
       have hAD := (pow_le_pow_iff_left₀ (Real.exp_pos _).le hA0 two_ne_zero).1 h
-      linarith only [hAD,hDK,hab.1]
+      linarith only [hAD,hDK,hab.2]
     · rw [h2] at h
       have hBD := (pow_le_pow_iff_left₀ (Real.exp_pos _).le hB0 two_ne_zero).1 h
       linarith only [hBD,hDK,hu]
-  have hK1 : 0 < K-1 := by dsimp only [K]; positivity
+  have h3η : 0 < 3/η := div_pos (by norm_num) hη
+  have hK1 : 0 < K-1 := by simp only [K]; linarith
   have hBpos : 0 < B := (mul_pos hK1 hu).trans_le hBlow
   have hx : |A/B-1| ≤ 1/(K-1) := by
     rw [div_sub_one hBpos.ne',abs_div,abs_of_pos hBpos,div_le_div_iff₀ hBpos hK1,one_mul]
     calc |A-B|*(K-1) ≤ u*(K-1) := mul_le_mul_of_nonneg_right hAB hK1.le
       _ ≤ B := by linarith only [hBlow]
   have hx1 : 1/(K-1) ≤ 1 := by
-    rw [div_le_one hK1]; dsimp only [K]; linarith only [div_pos (by norm_num : (0:ℝ) < 3) hη]
+    rw [div_le_one hK1]; simp only [K]; linarith
   have hxη : 1/(K-1) ≤ η/3 := by
     rw [div_le_div_iff₀ hK1 (by norm_num : (0:ℝ) < 3)]
-    dsimp only [K]
-    have : η*(2+3/η-1) = η+3 := by field_simp; ring
+    simp only [K]
+    have hη0 : η ≠ 0 := hη.ne'
+    have h3 : η*(3/η) = 3 := by field_simp
+    have : η*(2+3/η-1) = η+3 := by linear_combination h3
     linarith only [this]
-  have hsq : A^2/B^2-1 = (A/B-1)*(A/B+1) := by field_simp; ring
+  have hB0' : B ≠ 0 := hBpos.ne'
+  have hsq : A^2/B^2-1 = (A/B-1)*(A/B+1) := by rw [← div_pow]; ring
   rw [hsq,abs_mul]
   have hy : |A/B+1| ≤ |A/B-1|+2 := by
     calc |A/B+1| = |(A/B-1)+2| := by ring_nf

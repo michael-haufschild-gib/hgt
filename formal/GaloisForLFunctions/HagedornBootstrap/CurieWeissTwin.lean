@@ -52,48 +52,43 @@ def sheetRho (p : ℂ × ℂ) : ℂ := Complex.I / (2 * π * p.1) - p.2
 def sheetW (p : ℂ × ℂ) : ℂ := π ^ 2 * p.1 * sheetRho p
 
 /-- With `τ = i/(2πξ) − ρ`, the image position is `ξ' = −ρξτ`. -/
-theorem sheetMap_fst {ξ ρ : ℂ} (hξ : ξ ≠ 0) :
-    let τ := Complex.I / (2 * π * ξ) - ρ
+theorem sheetMap_fst {ξ ρ τ : ℂ} (hξ : ξ ≠ 0) (hτdef : τ = Complex.I / (2 * π * ξ) - ρ) :
     (sheetMap (ξ, τ)).1 = -(ρ * ξ * τ) := by
-  intro τ
   have hπ : (π : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
   have hI : (2 * π * Complex.I : ℂ) ≠ 0 := mul_ne_zero (mul_ne_zero two_ne_zero hπ) Complex.I_ne_zero
   have hinv : 1 / (2 * π * Complex.I) = -Complex.I / (2 * π) := by
     rw [div_eq_div_iff hI (mul_ne_zero two_ne_zero hπ)]
     linear_combination (2 * (π : ℂ)) * Complex.I_sq
   have hτξ : τ * ξ = Complex.I / (2 * π) - ρ * ξ := by
-    simp only [τ]; field_simp
+    rw [hτdef]; field_simp
   simp only [sheetMap]
   calc τ ^ 2 * ξ + τ / (2 * π * Complex.I) = τ * (τ * ξ + 1 / (2 * π * Complex.I)) := by ring
     _ = τ * (Complex.I / (2 * π) - ρ * ξ + -Complex.I / (2 * π)) := by rw [hτξ, hinv]
     _ = -(ρ * ξ * τ) := by ring
 
 /-- **In the coordinates `(ρ, w)` the sheet map is `(ρ, w) ↦ (−1/ρ, iπ/2 − w)`.** -/
-theorem sheetMap_rho_w {ξ ρ : ℂ} (hξ : ξ ≠ 0) (hρ : ρ ≠ 0)
-    (hτ : Complex.I / (2 * π * ξ) - ρ ≠ 0) :
-    let τ := Complex.I / (2 * π * ξ) - ρ
+theorem sheetMap_rho_w {ξ ρ τ : ℂ} (hξ : ξ ≠ 0) (hρ : ρ ≠ 0) (hτ : τ ≠ 0)
+    (hτdef : τ = Complex.I / (2 * π * ξ) - ρ) :
     sheetRho (sheetMap (ξ, τ)) = -1 / ρ ∧
       sheetW (sheetMap (ξ, τ)) = π * Complex.I / 2 - π ^ 2 * ξ * ρ := by
-  intro τ
   have hπ : (π : ℂ) ≠ 0 := by exact_mod_cast Real.pi_ne_zero
-  have h1 := sheetMap_fst (ρ := ρ) hξ
-  simp only at h1
+  have h1 := sheetMap_fst hξ hτdef
   have hξ' : ρ * ξ * τ ≠ 0 := mul_ne_zero (mul_ne_zero hρ hξ) hτ
   have hkey : 2 * π * ξ * τ = Complex.I - 2 * π * ξ * ρ := by
-    simp only [τ]; field_simp
+    rw [hτdef]; field_simp
+  have hd1 : (2 * (π : ℂ) * -(ρ * ξ * τ)) ≠ 0 :=
+    mul_ne_zero (mul_ne_zero two_ne_zero hπ) (neg_ne_zero.mpr hξ')
   have hrho : sheetRho (sheetMap (ξ, τ)) = -1 / ρ := by
     unfold sheetRho
     rw [h1]
     simp only [sheetMap]
-    rw [div_sub_div _ _ (by simpa using mul_ne_zero (mul_ne_zero two_ne_zero hπ) (neg_ne_zero.mpr hξ')) hτ,
-      div_eq_div_iff (mul_ne_zero (by simpa using mul_ne_zero (mul_ne_zero two_ne_zero hπ)
-        (neg_ne_zero.mpr hξ')) hτ) hρ]
+    rw [div_sub_div _ _ hd1 hτ, div_eq_div_iff (mul_ne_zero hd1 hτ) hρ]
     linear_combination (-(ρ * τ)) * hkey
   refine ⟨hrho, ?_⟩
-  unfold sheetW
-  rw [hrho, h1]
-  field_simp
-  linear_combination (-(π : ℂ) / 2) * hkey
+  calc sheetW (sheetMap (ξ, τ)) = π ^ 2 * (-(ρ * ξ * τ)) * (-1 / ρ) := by
+        unfold sheetW; rw [hrho, h1]
+    _ = π ^ 2 * ξ * τ := by field_simp
+    _ = π * Complex.I / 2 - π ^ 2 * ξ * ρ := by rw [hτdef]; field_simp
 
 /-! ### The tanh functional equation -/
 

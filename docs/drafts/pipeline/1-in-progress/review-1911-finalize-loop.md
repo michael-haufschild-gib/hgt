@@ -38,13 +38,13 @@ Procedure: topological order over the listed modules plus the three unlisted dep
 | `GaloisTheoryOfZeros/Analysis/HermiteConstantsOfTheHeatMinors` | checked |
 | `GaloisTheoryOfZeros/Analysis/MultiplicityStrataOfTheHeatWinding` | olean built |
 | `GaloisTheoryOfZeros/Analysis/RecoveringHeatTimeFromOneReflectedPair` | olean built |
-| `GaloisTheoryOfZeros/Analysis/ThreeBoundaryMomentsDetectEveryHeatCollision` | pending |
-| `ArithmeticContinuationAndCriticalEnergy/TheHalfEndpointChargeOfADilatedLattice` | pending |
-| `ArithmeticCountingPositivity/TwoSquarefreeTranslatesInShortIntervals` | pending |
-| `ArithmeticPositiveDuality/TheRangeOfGreedyPrimeDeletions` | pending |
-| `BlackHoleRingdown/TailEnergy/CarrierFrequenciesThatMissNoResonance` | pending |
-| `BlackHoleRingdown/TailEnergy/ReadingAPulseFromItsDerivativeEnergy` | pending |
-| `BlackHoleRingdown/TailEnergy/ResonancesOfTwoSimultaneousReceiverSweeps` | pending |
+| `GaloisTheoryOfZeros/Analysis/ThreeBoundaryMomentsDetectEveryHeatCollision` | olean built |
+| `ArithmeticContinuationAndCriticalEnergy/TheHalfEndpointChargeOfADilatedLattice` | olean built |
+| `ArithmeticCountingPositivity/TwoSquarefreeTranslatesInShortIntervals` | fails: linarith failed to find a contradiction |
+| `ArithmeticPositiveDuality/TheRangeOfGreedyPrimeDeletions` | checked, wired |
+| `BlackHoleRingdown/TailEnergy/CarrierFrequenciesThatMissNoResonance` | olean built |
+| `BlackHoleRingdown/TailEnergy/ReadingAPulseFromItsDerivativeEnergy` | fails: Tactic `rewrite` failed: Did not find an occurrence of the pattern |
+| `BlackHoleRingdown/TailEnergy/ResonancesOfTwoSimultaneousReceiverSweeps` | olean built |
 | `BlackHoleRingdown/TailEnergy/SpectraOfCascadedRectangularWindows` | pending |
 | `BlackHoleRingdown/TailEnergy/TheMomentPulsesOfAFlatWindow` | pending |
 | `BlackHoleRingdown/TailEnergy/ASingleCompactPulseDetectsEveryStrip` | pending |

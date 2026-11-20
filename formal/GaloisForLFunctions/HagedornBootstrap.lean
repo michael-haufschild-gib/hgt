@@ -15,3 +15,4 @@ import GaloisForLFunctions.HagedornBootstrap.CumulantAndScheme
 import GaloisForLFunctions.HagedornBootstrap.BesselSeries
 import GaloisForLFunctions.HagedornBootstrap.ZeroLawAndDeficit
 import GaloisForLFunctions.HagedornBootstrap.CrossingKernelFourier
+import GaloisForLFunctions.HagedornBootstrap.CurieWeissTwin
