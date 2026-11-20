@@ -270,6 +270,7 @@ theorem localTerm_unramified (D : FrobeniusData H) (hD : D.Admissible) (N : ℕ)
   congr 1
   by_cases hin' : IsInertPrime D p
   · rw [if_pos hin', inertCount, Finset.sum_filter, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun i _ => by split_ifs <;> ring
   · rw [if_neg hin']
     have hsp : IsSplit (D.frob p) := by
       by_contra hc
@@ -305,8 +306,9 @@ theorem localTerm_ramified (D : FrobeniusData H) (hD : D.Admissible) (N : ℕ) (
   by_cases h1 : IsSplit g <;> by_cases h2 : g - i • D.frob D.d ∈ D.inertia D.d <;>
     simp [h1, h2, cutValue]
 
+omit [DecidableEq H] in
 /-- With `a/w ≤ N` on split classes, the ramified part vanishes when `d > N`. -/
-theorem ramifiedCount_eq_zero (D : FrobeniusData H) (hD : D.Admissible) {N : ℕ} {a : ℝ} {t : H}
+theorem ramifiedCount_eq_zero (D : FrobeniusData H) {N : ℕ} {a : ℝ} {t : H}
     {w : SignPair × H → ℝ} (hw : ∀ ρ, IsSplit ρ → 0 < w ρ) (hN : ∀ ρ, IsSplit ρ → a / w ρ ≤ N)
     (hdN : N < D.d) : ramifiedCount D N a t w = 0 := by
   classical
@@ -387,7 +389,7 @@ theorem inertTotal_eq_characterSum (D : FrobeniusData H) (hD : D.Admissible) {a 
         apply hdm
         rw [Finset.mem_filter, Finset.mem_range]
         exact ⟨by omega, hD.d_prime⟩
-      rw [ramifiedCount_eq_zero D hD hw hN hdN, mul_zero]
+      rw [ramifiedCount_eq_zero D hw hN hdN, mul_zero]
 
 /-! ## The inner sums are Cesàro functionals -/
 

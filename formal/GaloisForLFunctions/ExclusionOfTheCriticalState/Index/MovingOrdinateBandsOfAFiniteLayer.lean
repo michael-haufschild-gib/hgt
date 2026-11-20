@@ -18,6 +18,14 @@ namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
   CriticalArithmeticCorrelationTheory HTGeometry _root_.RHTower
 
+private theorem ite_zero_nonneg {p : Prop} [Decidable p] {a : ℝ} (ha : 0 ≤ a) :
+    0 ≤ (if p then a else 0) := by
+  by_cases hp : p <;> simp [hp, ha]
+
+private theorem ite_zero_le {p : Prop} [Decidable p] {a : ℝ} (ha : 0 ≤ a) :
+    (if p then a else 0) ≤ a := by
+  by_cases hp : p <;> simp [hp, ha]
+
 private theorem band_eq_tail_sub {F : ℝ → ℝ}
     (hs : Summable (fun q : onLineCopies => zeroValueMass F q)) (u v : ℝ) :
     ordinateBandMass F u v = ordinateTailMass F u - ordinateTailMass F (max u v) := by
@@ -145,7 +153,7 @@ theorem single_ordinate_mass_vanishes {W : ℝ} {F : ℝ → ℝ} (hW : 0 < W)
   · filter_upwards [eventually_gt_atTop (0:ℝ)] with t h₀
     rw [mul_one]
     exact mul_le_mul_of_nonneg_left (atom_le_band hs
-      (by rw [mul_sub,mul_one,mul_one_div_cancel h₀.ne']; linarith)) h₀.le
+      (by rw [mul_sub,mul_one,id_eq,mul_one_div_cancel h₀.ne']; linarith)) h₀.le
 
 /-- Uniformly over all moving packets of at most k ordinate heights above
 T, their total mass is o(1/T). The number of copies at any selected height

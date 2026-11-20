@@ -18062,3 +18062,5 @@ import GaloisForLFunctions.HTGeometry.Quantum.PhysicalCircuitReturnDeadline
 import GaloisForLFunctions.HTGeometry.Quantum.InverseBandwidthCircuitCost
 import GaloisForLFunctions.HTGeometry.Quantum.AttainedOrbitCircuitMaximum
 import GaloisForLFunctions.HTGeometry.Quantum.FirstCircuitSaturationBoundary
+import GaloisForLFunctions.HTGeometry.Quantum.DyadicCircuitCapture
+import GaloisForLFunctions.HTGeometry.Quantum.SpectralSignReturnClock

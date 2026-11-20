@@ -122,7 +122,7 @@ def dyadicCircuitCapture {n d : ℕ} (e : (Fin n → Bool) ≃ Fin (d+1))
   | k+1 => projectiveContinuousCircuitCaptureTarget e V s (1/10:ℝ) ∩
       doubleSpectralPhase ⁻¹' dyadicCircuitCapture e V s k
 
-private theorem dyadicCircuitCapture_closed {n d : ℕ} (e : (Fin n → Bool) ≃ Fin (d+1))
+theorem dyadicCircuitCapture_closed {n d : ℕ} (e : (Fin n → Bool) ≃ Fin (d+1))
     (V : Matrix.unitaryGroup (Fin n → Bool) ℂ) (s k : ℕ) :
     IsClosed (dyadicCircuitCapture e V s k) := by
   induction k with
@@ -163,7 +163,8 @@ def physicalDyadicCircuitHits (H : selfAdjoint (Reg n)) (s k : ℕ) : Set ℝ :=
   {t | ∀ j < k, HasProjectiveCircuitApproximation n (1/10:ℝ) s
     (unitaryEvolution (H : Reg n) ((2:ℝ)^j*t))}
 
-private theorem physical_dyadic_preimage {n d : ℕ} (e : (Fin n → Bool) ≃ Fin (d+1))
+/-- The physical observation run is the pullback of the closed spectral event. -/
+theorem physical_dyadic_preimage {n d : ℕ} (e : (Fin n → Bool) ≃ Fin (d+1))
     (H : selfAdjoint (Reg n)) (s k : ℕ) :
     physicalDyadicCircuitHits H s k =
       finiteClockPhasePoint (RHTower.zeroProjectiveFrequency (fun i => H.2.isHermitian.eigenvalues (e.symm i))) ⁻¹'
@@ -301,7 +302,7 @@ theorem physical_hard_prehistory_liminf {n d : ℕ} (e : (Fin n → Bool) ≃ Fi
   rw [finiteTorusHaarProbabilityMeasure_toMeasure_eq_volume] at hlim
   refine le_trans ?_ hlim
   have h := ENNReal.ofReal_le_ofReal (volume_dyadicHardPrehistory_ge e V s F hF.measurableSet k)
-  rwa [measureReal_def,ENNReal.ofReal_toReal (measure_ne_top _ _)] at h
+  simpa only [measureReal_def, ENNReal.ofReal_toReal (measure_ne_top _ _)] using h
 
 #print axioms volume_dyadicHardPrehistory_ge
 #print axioms physical_hard_prehistory_liminf

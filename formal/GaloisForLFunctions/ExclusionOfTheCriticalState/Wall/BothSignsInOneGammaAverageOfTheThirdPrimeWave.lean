@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.OppositeExcursionsOfTheThirdConfinedPrimeWave
+import GaloisForLFunctions.RHTower.LandauAbscissaRigidity
 
 /-!
 # Simultaneous opposite mass in one gamma average
@@ -51,8 +52,8 @@ private theorem laplace_of_gamma_series {v : ℝ → ℝ} (hm : Measurable v)
   let P := fun N t => ∑ n ∈ Finset.range N, g n t
   have hP (N : ℕ) : IntegrableOn (P N) (Ioi 0) := integrable_finsetSum _ fun n _ => hg n
   have hsum (t : ℝ) : HasSum (fun n => g n t) (Real.exp (-(1-r)*t)*max (v t) 0) := by
-    have h := (summable_shift_terms 1 r t).hasSum
-    rw [←exp_shift_tsum] at h
+    have h := (GaloisForLFunctions.RHTower.summable_shift_terms 1 r t).hasSum
+    rw [←GaloisForLFunctions.RHTower.exp_shift_tsum] at h
     exact (h.mul_right (max (v t) 0)).congr_fun fun n => by
       dsimp only [g,primeGammaWeight]; rw [neg_one_mul]; ring
   apply integrable_of_tendsto (Eventually.of_forall fun t => (hsum t).tendsto_sum_nat) (fun n => (hP n).1)
@@ -104,9 +105,13 @@ private theorem paired_gamma_growth {v : ℝ → ℝ} (hm : Measurable v)
       (hi n).neg.congr (.of_forall fun t => (mul_neg ..).symm)
     have h : gammaSignMass v n-gammaSignMass (fun t => -v t) n =
         ∫ t in Ioi (0:ℝ), primeGammaWeight n t*v t := by
-      rw [gammaSignMass,gammaSignMass,←integral_sub (sign_integrable hm (hi n)) (sign_integrable hm.neg hin)]
+      rw [gammaSignMass,gammaSignMass]
+      refine (integral_sub (sign_integrable hm (hi n))
+        (sign_integrable (v := fun t => -v t) hm.neg hin)).symm.trans ?_
       apply setIntegral_congr_fun measurableSet_Ioi
       intro t _
+      show primeGammaWeight n t * max (v t) 0 - primeGammaWeight n t * max (-v t) 0 =
+        primeGammaWeight n t * v t
       rw [←mul_sub]
       congr 1
       rcases le_total 0 (v t) with h | h
@@ -120,6 +125,7 @@ private theorem paired_gamma_growth {v : ℝ → ℝ} (hm : Measurable v)
     have geom := (summable_geometric_of_lt_one (mul_nonneg rp.le (zero_lt_one.trans dp).le) rd).mul_left (|M|+B)
     apply notSum
     apply Summable.of_norm_bounded_eventually geom
+    rw [Nat.cofinite_eq_atTop]
     filter_upwards [he] with n hn
     rw [Real.norm_of_nonneg (mul_nonneg (pow_nonneg rp.le _) (mass_nonneg _ _)),mul_pow]
     exact (mul_le_mul_of_nonneg_left (le_of_not_gt hn) (pow_nonneg rp.le _)).trans_eq (by ring)
