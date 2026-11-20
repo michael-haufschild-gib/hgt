@@ -18,4 +18,4 @@ The [fixed-Hamiltonian second law](second-law.md) remains open. Each obstruction
 
 HIT remains live. Discounted occupation counts revisits after first entrance. A two-sided comparison bounds the first-entrance potential within a discount-dependent factor. [Comparison theorem](../../formal/GaloisForLFunctions/HTGeometry/RenewalOccupationPotential.lean#L242)
 
-Lean corpus checkpoint for the next diff under `formal/`: `670b088b7750109a4dcd8b9420635da2b6caef2a`. Also reviewed working-tree sources in `AbsoluteCircuitClock`, `Discriminant`, `HorizonGrowth` and `ReflectionVisitPacking`.
+Lean corpus reviewed through `34348fbf9cae44d25940d4df55e2904fea2ba4a3`. For the next update, compare this commit with HEAD under `formal/`.
