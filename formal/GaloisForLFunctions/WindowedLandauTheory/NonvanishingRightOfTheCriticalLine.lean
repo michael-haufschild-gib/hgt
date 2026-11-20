@@ -27,34 +27,34 @@ noncomputable section
 /-- **RH from windows.** If for every `ε > 0` there are `δ > 0` and `C` with `G_ζ(y) ≤ C y^{1/2+ε}` for
 all `y ∈ [Y, Y^{1+δ}]` and arbitrarily large `Y`, then the Riemann hypothesis holds. -/
 theorem riemannHypothesis_of_zeta_windows
-    (h : ∀ ε > 0, ∃ δ > 0, ∃ C : ℝ, ∀ Y₀ : ℝ, ∃ Y ≥ Y₀, ∀ y ∈ Icc Y (Y ^ (1 + δ)),
+    (h : ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∃ C : ℝ, ∀ Y₀ : ℝ, ∃ Y ≥ Y₀, ∀ y ∈ Icc Y (Y ^ (1 + δ)),
       zetaCesaroFunctional y ≤ C * y ^ (1 / 2 + ε)) :
     RiemannHypothesis := by
   rw [RHTower.riemannHypothesis_iff_riemannZeta_ne_zero_of_half_lt_re]
   intro s hs
   obtain ⟨δ, hδ, C, hwin⟩ := h ((s.re - 1 / 2) / 2) (by linarith)
   have hfam : ∀ Y₀ : ℝ, ∃ Y ≥ Y₀, ∀ y ∈ Icc Y (Y ^ (1 + δ)),
-      familyCesaroFunctional (ι := Empty) (N := fun i => i.elim) (fun i => i.elim)
-        (fun i => i.elim) y ≤ C * y ^ (1 / 2 + (s.re - 1 / 2) / 2) := by
+      familyCesaroFunctional (N := fun _ : Empty => 1) (fun i : Empty => i.elim)
+        (fun i : Empty => i.elim) y ≤ C * y ^ (1 / 2 + (s.re - 1 / 2) / 2) := by
     intro Y₀
     obtain ⟨Y, hY, hYw⟩ := hwin Y₀
     refine ⟨Y, hY, fun y hy => ?_⟩
     simpa [familyCesaroFunctional] using hYw y hy
-  exact (zeroFree_of_windowed_cesaro_bound (fun i => i.elim) (fun i => i.elim) (fun i => i.elim)
-    (by positivity) hδ hfam s (by linarith)).1
+  exact (zeroFree_of_windowed_cesaro_bound (χ := fun i : Empty => i.elim) (fun i => i.elim)
+    (fun i : Empty => i.elim) (fun i => i.elim) (by linarith) hδ hfam s (by linarith)).1
 
 /-- **A fixed family with windows at every exponent above `1/2`.** Then `ζ` and every `L(·, χ_i)`
 are zero-free on `Re s > 1/2`. -/
 theorem zeroFree_of_windowed_family_all_eps {ι : Type*} [Fintype ι] {N : ι → ℕ}
     [∀ i, NeZero (N i)] {χ : (i : ι) → DirichletCharacter ℂ (N i)} (hχ : ∀ i, χ i ≠ 1)
     (w : ι → ℝ) (hw : ∀ i, 0 < w i)
-    (h : ∀ ε > 0, ∃ δ > 0, ∃ C : ℝ, ∀ Y₀ : ℝ, ∃ Y ≥ Y₀, ∀ y ∈ Icc Y (Y ^ (1 + δ)),
+    (h : ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∃ C : ℝ, ∀ Y₀ : ℝ, ∃ Y ≥ Y₀, ∀ y ∈ Icc Y (Y ^ (1 + δ)),
       familyCesaroFunctional χ w y ≤ C * y ^ (1 / 2 + ε)) :
     ∀ s : ℂ, 1 / 2 < s.re →
       riemannZeta s ≠ 0 ∧ ∀ i, DirichletCharacter.LFunction (χ i) s ≠ 0 := by
   intro s hs
   obtain ⟨δ, hδ, C, hwin⟩ := h ((s.re - 1 / 2) / 2) (by linarith)
-  exact zeroFree_of_windowed_cesaro_bound hχ w hw (by positivity) hδ hwin s (by linarith)
+  exact zeroFree_of_windowed_cesaro_bound hχ w hw (by linarith) hδ hwin s (by linarith)
 
 /-! ## A family around a given character -/
 
@@ -97,7 +97,7 @@ def HasWindowedFamily {N₀ : ℕ} [NeZero N₀] (χ₀ : DirichletCharacter ℂ
   ∃ (ι : Type) (_ : Fintype ι) (N : ι → ℕ) (_ : ∀ i, NeZero (N i))
     (χ : (i : ι) → DirichletCharacter ℂ (N i)) (_ : ∀ i, χ i ≠ 1) (w : ι → ℝ)
     (_ : ∀ i, 0 < w i) (w₀ : ℝ) (_ : 0 < w₀),
-    ∀ ε > 0, ∃ δ > 0, ∃ C : ℝ, ∀ Y₀ : ℝ, ∃ Y ≥ Y₀, ∀ y ∈ Icc Y (Y ^ (1 + δ)),
+    ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∃ C : ℝ, ∀ Y₀ : ℝ, ∃ Y ≥ Y₀, ∀ y ∈ Icc Y (Y ^ (1 + δ)),
       familyCesaroFunctional χ w y + w₀ * (charCesaroFunctional χ₀ y).re ≤ C * y ^ (θ + ε)
 
 /-- A nonprincipal character with windowed families at exponent `1/2` has a zero-free
@@ -114,7 +114,7 @@ theorem LFunction_ne_zero_of_hasWindowedFamily {N₀ : ℕ} [NeZero N₀]
     rintro (_ | i)
     · exact hw₀
     · exact hw i
-  have hwin' : ∀ ε > 0, ∃ δ > 0, ∃ C : ℝ, ∀ Y₀ : ℝ, ∃ Y ≥ Y₀, ∀ y ∈ Icc Y (Y ^ (1 + δ)),
+  have hwin' : ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∃ C : ℝ, ∀ Y₀ : ℝ, ∃ Y ≥ Y₀, ∀ y ∈ Icc Y (Y ^ (1 + δ)),
       familyCesaroFunctional (extendedFamily χ₀ χ) (extendedWeight w₀ w) y ≤
         C * y ^ (1 / 2 + ε) := by
     intro ε hε
@@ -181,7 +181,7 @@ theorem LFunction_ne_zero_of_primitive {θ : ℝ} (hθ : 0 ≤ θ)
 /-- **Every Dirichlet `L`-function is zero-free right of the critical line**, given windows for
 `G_ζ` and windowed families around every primitive nonprincipal character. -/
 theorem LFunction_ne_zero_of_windows
-    (hζ : ∀ ε > 0, ∃ δ > 0, ∃ C : ℝ, ∀ Y₀ : ℝ, ∃ Y ≥ Y₀, ∀ y ∈ Icc Y (Y ^ (1 + δ)),
+    (hζ : ∀ ε : ℝ, 0 < ε → ∃ δ : ℝ, 0 < δ ∧ ∃ C : ℝ, ∀ Y₀ : ℝ, ∃ Y ≥ Y₀, ∀ y ∈ Icc Y (Y ^ (1 + δ)),
       zetaCesaroFunctional y ≤ C * y ^ (1 / 2 + ε))
     (hfam : ∀ (M : ℕ) [NeZero M] (ψ : DirichletCharacter ℂ M), ψ.IsPrimitive → ψ ≠ 1 →
       HasWindowedFamily ψ (1 / 2))
