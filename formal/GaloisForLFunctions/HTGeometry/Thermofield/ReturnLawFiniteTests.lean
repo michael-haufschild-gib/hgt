@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Thermofield.ReturnLawResolution
+import GaloisForLFunctions.HTGeometry.ReplicaOperatorCovarianceCrowdingLaw
 import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 import Mathlib.RingTheory.Noetherian.Basic
 
@@ -166,10 +167,128 @@ theorem gibbsAffineReturnLaw_generic_instability (β : ℝ) (E : α → ℝ) :
   have hpos := isOpen_interior.measure_pos (μ := (volume : Measure (α → ℝ))) (Set.nonempty_iff_ne_empty.mpr hne)
   exact (ne_of_gt hpos) (measure_mono_null interior_subset hzero)
 
+/-- Equality of an individual moment is equivalent to preserving all
+coarse replica collisions at that order. -/
+theorem returnFidelityMoment_eq_iff_preserves_replicas (β : ℝ) (E F : α → ℝ) (n : ℕ) :
+    returnFidelityMoment (gibbsResolvedReturnLaw β E F) n =
+        returnFidelityMoment (gibbsUnresolvedReturnLaw β E) n ↔
+      ∀ p ∈ Finset.univ.piAntidiag n, ∀ q ∈ Finset.univ.piAntidiag n,
+        replicaMultiplicityEnergy E p = replicaMultiplicityEnergy E q →
+          replicaMultiplicityEnergy F p = replicaMultiplicityEnergy F q := by
+  rw [returnFidelityMoment_resolved, returnFidelityMoment_unresolved]
+  obtain ⟨hle, hlt⟩ := gibbsJointCollision_le_and_lt_iff β E F n
+  constructor
+  · intro heq p hp q hq hE
+    by_contra hF
+    have hs := hlt.mpr ⟨p, hp, q, hq, hE, hF⟩
+    rw [heq] at hs
+    exact lt_irrefl _ hs
+  · intro hp
+    apply le_antisymm hle
+    apply le_of_not_gt
+    intro hs
+    obtain ⟨p, hp', q, hq, hE, hF⟩ := hlt.mp hs
+    exact hF (hp p hp' q hq hE)
+
+/-- An affine function of the coarse energies preserves the full return law. -/
+theorem gibbsResolvedReturnLaw_affine_equivalent (β : ℝ) (E : α → ℝ) (a b : ℝ) :
+    gibbsResolvedReturnLaw β E (fun i => a + b * E i) = gibbsUnresolvedReturnLaw β E := by
+  apply (gibbsResolvedReturnLaw_eq_iff_relationLattice_le β E _).mpr
+  intro k hk
+  obtain ⟨hbal, hE⟩ := (mem_projectiveSpectralRelationLattice_iff E k).mp hk
+  have hbal' : ∑ i, (k i : ℝ) = 0 := by
+    change (∑ i, k i) = 0 at hbal
+    exact_mod_cast hbal
+  apply (mem_projectiveSpectralRelationLattice_iff _ k).mpr
+  refine ⟨hbal, ?_⟩
+  calc
+    _ = a * (∑ i, (k i : ℝ)) + b * finiteTorusCharacterDetuning k E := by
+      unfold finiteTorusCharacterDetuning
+      rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_add_distrib]
+      exact Finset.sum_congr rfl fun _ _ => by ring
+    _ = 0 := by rw [hbal', hE, mul_zero, mul_zero, add_zero]
+
+omit [Nonempty α] in
+private theorem twoReplica_mem (i j : α) :
+    replicaOneHot i + replicaOneHot j ∈ Finset.univ.piAntidiag 2 := by
+  refine Finset.mem_piAntidiag.mpr ⟨?_, fun _ _ => Finset.mem_univ _⟩
+  simp [replicaOneHot, Pi.add_apply, Finset.sum_add_distrib]
+
+omit [Nonempty α] in
+private theorem twoReplica_energy (E : α → ℝ) (i j : α) :
+    replicaMultiplicityEnergy E (replicaOneHot i + replicaOneHot j) = E i + E j := by
+  have h : replicaMultiplicityEnergy E (replicaOneHot i + replicaOneHot j) =
+      replicaMultiplicityEnergy E (replicaOneHot i) + replicaMultiplicityEnergy E (replicaOneHot j) := by
+    simp only [replicaMultiplicityEnergy, Pi.add_apply, Nat.cast_add, add_mul, Finset.sum_add_distrib]
+  rw [h, replicaMultiplicityEnergy_oneHot, replicaMultiplicityEnergy_oneHot]
+
+/-- On an arithmetic progression of levels the second moment decides the
+whole law. The preserving perturbations are exactly affine functions of the levels. -/
+theorem equispacedReturnSecondMoment_eq_iff_affine (β e ω : ℝ) (d : ℕ) (F : Fin (d + 2) → ℝ) :
+    let E := fun i : Fin (d + 2) => e + ω * (i.val : ℝ)
+    returnFidelityMoment (gibbsResolvedReturnLaw β E F) 2 =
+      returnFidelityMoment (gibbsUnresolvedReturnLaw β E) 2 ↔
+      ∃ a b : ℝ, ∀ i, F i = a + b * E i := by
+  let E := fun i : Fin (d + 2) => e + ω * (i.val : ℝ)
+  change returnFidelityMoment (gibbsResolvedReturnLaw β E F) 2 =
+      returnFidelityMoment (gibbsUnresolvedReturnLaw β E) 2 ↔
+      ∃ a b : ℝ, ∀ i, F i = a + b * E i
+  constructor
+  · intro h
+    have hpres := (returnFidelityMoment_eq_iff_preserves_replicas β E F 2).mp h
+    have hpair (i j k l : Fin (d + 2)) (he : E i + E j = E k + E l) : F i + F j = F k + F l := by
+      have he' : replicaMultiplicityEnergy E (replicaOneHot i + replicaOneHot j) =
+          replicaMultiplicityEnergy E (replicaOneHot k + replicaOneHot l) := by
+        simpa only [twoReplica_energy] using he
+      simpa only [twoReplica_energy] using hpres _ (twoReplica_mem i j) _ (twoReplica_mem k l) he'
+    by_cases hω : ω = 0
+    · refine ⟨F 0, 0, fun i => ?_⟩
+      have hf := hpair i 0 0 0 (by simp [E, hω])
+      simp only [zero_mul, add_zero]
+      linarith only [hf]
+    · let m := F 1 - F 0
+      have hrec (i : Fin (d + 1)) : F 0 + F i.succ = F 1 + F i.castSucc := by
+        apply hpair
+        simp only [E, Fin.val_zero, Fin.val_one, Fin.val_succ, Fin.val_castSucc,
+          Nat.cast_zero, Nat.cast_one, Nat.cast_add]
+        ring
+      have hf (i : Fin (d + 2)) : F i = F 0 + m * (i.val : ℝ) := by
+        refine Fin.induction ?_ ?_ i
+        · simp
+        · intro i ih
+          dsimp only [m] at ih ⊢
+          simp only [Fin.val_castSucc, Fin.val_succ, Nat.cast_add, Nat.cast_one] at ih ⊢
+          linear_combination ih + hrec i
+      refine ⟨F 0 - m / ω * e, m / ω, fun i => ?_⟩
+      rw [hf i]
+      dsimp only [E]
+      field_simp
+      ring
+  · rintro ⟨a, b, h⟩
+    have he : F = fun i => a + b * E i := funext h
+    rw [he, gibbsResolvedReturnLaw_affine_equivalent]
+
+/-- On equally spaced coarse levels, a second-moment test decides continuity
+of the full weak return law at zero splitting. -/
+theorem equispacedAffineReturnLaw_continuousAt_iff_affine (β e ω : ℝ) (d : ℕ) (F : Fin (d + 2) → ℝ) :
+    let E := fun i : Fin (d + 2) => e + ω * (i.val : ℝ)
+    ContinuousAt (fun s => gibbsUnresolvedReturnLaw β (affineSpectrum E F s)) (0 : ℝ) ↔
+      ∃ a b : ℝ, ∀ i, F i = a + b * E i := by
+  dsimp only
+  rw [gibbsAffineReturnLaw_continuousAt_iff, ← gibbsResolvedReturnLaw_eq_iff_relationLattice_le]
+  constructor
+  · intro h
+    apply (equispacedReturnSecondMoment_eq_iff_affine β e ω d F).mp
+    exact congrArg (fun law => returnFidelityMoment law 2) h
+  · rintro ⟨a, b, h⟩
+    rw [funext h, gibbsResolvedReturnLaw_affine_equivalent]
+
 #print axioms exists_gibbsReturnRelationTests
 #print axioms exists_gibbsReturnLaw_moment_cutoff
 #print axioms exists_gibbsAffineReturnLaw_continuity_cutoff
 #print axioms gibbsAffineReturnLaw_generic_instability
+#print axioms equispacedReturnSecondMoment_eq_iff_affine
+#print axioms equispacedAffineReturnLaw_continuousAt_iff_affine
 
 end
 

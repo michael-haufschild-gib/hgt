@@ -85,7 +85,7 @@ private theorem one_add_line_ne_zero {a : ℝ} (ha : 0 < a) (t : ℝ) : 1+mellin
 
 private theorem cancel_factors (u v k r s : ℂ) (hr : r ≠ 0) (hs : s ≠ 0) :
     (u*r) * (k/(r*s)) * (v*s) = (u*v)*k := by
-  field_simp [hr,hs] <;> ring
+  field_simp [hr,hs]
 
 /-- The denominators cancel pointwise before either Mellin integral is taken. -/
 theorem arithmetic_test_form {n : ℕ} (φ : TestWeight) (hN : 4 ≤ n+1) (hg : modulusGRH (n+1))

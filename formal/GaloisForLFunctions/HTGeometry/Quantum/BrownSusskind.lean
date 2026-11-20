@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.GaussianMaximumQuantiles
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.GaussianMeanReturns
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.AbsoluteCircuitClock
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.DatedExcursion
