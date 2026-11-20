@@ -99,6 +99,49 @@ theorem opposite_cofactor_density_endpoints {K : ℕ} (hK : 0<K) :
 def cofactorDensityRamp (x : ℝ) : ℝ :=
   ∑ j ∈ range ⌊x⌋₊, innerJump 1 (j+1)*(x/((j:ℝ)+1)-1)
 
+/-- With lower prime endpoint P the scaled ramp is the signed total length
+of the prime intervals (P, b/v] over the cofactors v ≤ b/P. -/
+theorem cofactorDensityRamp_interval_lengths {P : ℝ} (hP : 0<P) (b : ℝ) :
+    P*cofactorDensityRamp (b/P) = ∑ j ∈ range ⌊b/P⌋₊, innerJump 1 (j+1)*(b/((j:ℝ)+1)-P) := by
+  unfold cofactorDensityRamp
+  rw [mul_sum]
+  refine sum_congr rfl fun j _ => ?_
+  field_simp
+
+/-- On a product cell a < pv ≤ b the difference of scaled ramps is the
+signed length of the prime intervals max(P, a/v) < p ≤ b/v. -/
+theorem cofactorDensityRamp_cell {P a b : ℝ} (hP : 0<P) (ha : 0≤a) (hab : a≤b) :
+    P*cofactorDensityRamp (b/P)-P*cofactorDensityRamp (a/P) =
+      ∑ j ∈ range ⌊b/P⌋₊, innerJump 1 (j+1)*(b/((j:ℝ)+1)-max P (a/((j:ℝ)+1))) := by
+  have hm : ⌊a/P⌋₊ ≤ ⌊b/P⌋₊ := Nat.floor_mono (div_le_div_of_nonneg_right hab hP.le)
+  have hlow (j : ℕ) (hj : j ∈ range ⌊a/P⌋₊) :
+      innerJump 1 (j+1)*(b/((j:ℝ)+1)-max P (a/((j:ℝ)+1))) =
+        innerJump 1 (j+1)*(b/((j:ℝ)+1)-P)-innerJump 1 (j+1)*(a/((j:ℝ)+1)-P) := by
+    have hj1 : ((j+1:ℕ):ℝ) ≤ a/P :=
+      (Nat.le_floor_iff (div_nonneg ha hP.le)).mp (Nat.succ_le_of_lt (mem_range.mp hj))
+    push_cast at hj1
+    have hPa : P ≤ a/((j:ℝ)+1) := by
+      rw [le_div_iff₀ (by positivity)]
+      rw [le_div_iff₀ hP] at hj1
+      linarith only [hj1]
+    rw [max_eq_right hPa]
+    ring
+  have hhigh (j : ℕ) (hj : j ∈ Ico ⌊a/P⌋₊ ⌊b/P⌋₊) :
+      innerJump 1 (j+1)*(b/((j:ℝ)+1)-max P (a/((j:ℝ)+1))) =
+        innerJump 1 (j+1)*(b/((j:ℝ)+1)-P) := by
+    have hj1 : a/P < (j:ℝ)+1 := (Nat.lt_floor_add_one (a/P)).trans_le
+      (by exact_mod_cast Nat.succ_le_succ (mem_Ico.mp hj).1)
+    have haP : a/((j:ℝ)+1) ≤ P := by
+      rw [div_le_iff₀ (by positivity)]
+      rw [div_lt_iff₀ hP] at hj1
+      linarith only [hj1]
+    rw [max_eq_left haP]
+  rw [cofactorDensityRamp_interval_lengths hP,cofactorDensityRamp_interval_lengths hP,
+    ←sum_range_add_sum_Ico (fun j : ℕ => innerJump 1 (j+1)*(b/((j:ℝ)+1)-max P (a/((j:ℝ)+1)))) hm,
+    sum_congr rfl hlow,sum_congr rfl hhigh,
+    ←sum_range_add_sum_Ico (fun j : ℕ => innerJump 1 (j+1)*(b/((j:ℝ)+1)-P)) hm,sum_sub_distrib]
+  ring
+
 private theorem ramp_moments (x : ℝ) :
     cofactorDensityRamp x = x*(cofactorDirichletPrefix 1 ⌊x⌋₊).re -
       (cofactorDirichletPrefix 0 ⌊x⌋₊).re := by
@@ -397,4 +440,6 @@ theorem seventeenNinths_first_prime_discrepancy_comparison :
 #print axioms continuous_first_prime_quotient_bound
 #print axioms cofactor_density_ramp_asymptotic
 #print axioms cofactor_density_on_product_interval
+#print axioms cofactorDensityRamp_interval_lengths
+#print axioms cofactorDensityRamp_cell
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

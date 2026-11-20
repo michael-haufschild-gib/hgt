@@ -15,6 +15,7 @@ Lean folder: formal/GaloisForLFunctions/HagedornBootstrap/ ; umbrella formal/Gal
 - OneSidedEulerMaclaurin
 - SlitStripMap
 - EdgeFunction
+- CardyWeight
 
 ## Contribution count
-116
+129

@@ -21,8 +21,9 @@ private def price (p : ℕ) (U : Finset ℕ) (j : ℕ) : ℕ :=
 
 private theorem price_sum (p : ℕ) (U S : Finset ℕ) :
     ∑ j ∈ S, price p U j = 8*S.card+(S ∩ U).card+(if p ∈ S then 7+U.card else 0) := by
-  simp only [price,sum_add_distrib,sum_const,nsmul_eq_mul,sum_ite_eq',←sum_filter,
-    filter_mem_eq_inter, mul_one,mul_comm S.card 8]
+  simp only [price,sum_add_distrib,sum_const,smul_eq_mul,sum_ite_eq',←sum_filter,
+    filter_mem_eq_inter, mul_one]
+  ring
 
 private theorem pair_test {S U : Finset ℕ} {p : ℕ} (hp : p ∉ U) (hc : S.card ≤ 2) :
     47+2*U.card < 2*(∑ j ∈ S, price p U j) ↔
@@ -94,7 +95,8 @@ theorem realize_five_prime_star {P U : Finset ℕ} {p : ℕ} (h5 : P.card=5)
     omega
   have hstrict (S : Finset ℕ) (hS : S ⊆ P) : ∑ j ∈ S, w j ≠ ∑ j ∈ P \ S, w j := by
     intro h
-    have hn : ∑ j ∈ S, price p U j = ∑ j ∈ P \ S, price p U j := by exact_mod_cast h
+    have h' : ∑ j ∈ S, (price p U j : ℝ) = ∑ j ∈ P \ S, (price p U j : ℝ) := h
+    have hn : ∑ j ∈ S, price p U j = ∑ j ∈ P \ S, price p U j := by exact_mod_cast h'
     have hadd := sum_sdiff hS (f := price p U)
     rw [htotal] at hadd
     omega
@@ -104,7 +106,8 @@ theorem realize_five_prime_star {P U : Finset ℕ} {p : ℕ} (h5 : P.card=5)
   refine ⟨k,hk,hs,hd,?_⟩
   have hinj : Set.InjOn (fun x : ℕ => ({p,x}:Finset ℕ)) U := by
     intro a ha b hb he
-    have hmem : a ∈ ({p,b}:Finset ℕ) := he ▸ (by simp : a ∈ ({p,a}:Finset ℕ))
+    have he' : ({p,a}:Finset ℕ) = {p,b} := he
+    have hmem : a ∈ ({p,b}:Finset ℕ) := by rw [← he']; simp
     exact ((mem_insert.mp hmem).resolve_left (fun hh => hpu (hh ▸ ha))) |> mem_singleton.mp
   have hsum : ∑ S ∈ unitaryRankDefects k 2, (-1:ℤ)^S.card = U.card := by
     rw [hd,sum_image hinj]
@@ -128,7 +131,7 @@ theorem cofinal_range_of_five_prime_midpoint {P : Finset ℕ} (h5 : P.card=5)
   · intro H
     obtain ⟨k,hk,hs,hv⟩ := H 1
     by_cases hz : unitaryHalfWeight k=0
-    · exact ⟨⟨3,by decide⟩,by omega⟩
+    · exact ⟨⟨3,by decide⟩,by rw [← hv, hz]; norm_num⟩
     have hbalance := unitary_half_weight_support hk hz (by rw [hs,h5]; decide)
     let u : {k : ℕ // k.primeFactors.card=5 ∧ oddSmoothSupport k} := ⟨k,by rw [hs,h5],hbalance⟩
     have H₁ := balanced_five_unitary_weight u

@@ -1,4 +1,3 @@
-import GaloisForLFunctions.ConjugateDiagonalGeometry.SzegoCollision.BesselSzegoCertificate
 import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
 import Mathlib.Analysis.SpecialFunctions.Gaussian.GaussianIntegral
 import Mathlib.Analysis.SpecialFunctions.Exponential
@@ -8,9 +7,8 @@ import Mathlib.MeasureTheory.Integral.DominatedConvergence
 /-!
 # The Cardy kernel, the Cardy weight, and the vacuum as a Cardy continuum
 
-The Cardy kernel is `K_α(t) = I₀(4π√(αt))`, built here from the corpus Bessel series
-`I_j(x) = Σ (x/2)^{j+2i}/(i!(j+i)!)`. Its power series is `K_α(t) = Σ (4π²αt)ⁱ/(i!)²` and its
-Laplace transform is
+The Cardy kernel is `K_α(t) = I₀(4π√(αt)) = Σ (4π²αt)ⁱ/(i!)²` (the identification with the
+corpus Bessel series is in `CardyKernelBessel`). Its Laplace transform is
 
   `2π ∫₀^∞ K_α(t) e^{−2πβt} dt = β⁻¹ e^{2πα/β}`     (`α ≥ 0, β > 0`).
 
@@ -31,24 +29,27 @@ open Real Set MeasureTheory Filter
 
 namespace GaloisForLFunctions.HagedornBootstrap
 
-open GaloisForLFunctions.ConjugateDiagonalGeometry.SzegoCollision
+/-- Transport a sum along pointwise equal terms and an equal value. -/
+private theorem hasSum_congr_aux {f g : ℕ → ℝ} {a b : ℝ} (h : HasSum g b) (hf : ∀ n, f n = g n)
+    (hab : a = b) : HasSum f a := by
+  rw [funext hf, hab]; exact h
 
 /-! ### The Cardy kernel -/
 
-/-- The Cardy kernel `K_α(t) = I₀(4π√(αt))`. -/
-def cardyKernel (α t : ℝ) : ℝ := besselI 0 (4 * π * √(α * t))
+/-- The Cardy kernel `K_α(t) = I₀(4π√(αt)) = Σ (4π²αt)ⁱ/(i!)²`. -/
+def cardyKernel (α t : ℝ) : ℝ := ∑' i : ℕ, (4 * π ^ 2 * α * t) ^ i / (i.factorial : ℝ) ^ 2
+
+theorem summable_cardyTerm (x : ℝ) :
+    Summable fun i : ℕ => x ^ i / (i.factorial : ℝ) ^ 2 := by
+  refine Summable.of_norm_bounded (Real.summable_pow_div_factorial |x|) fun i => ?_
+  have hf : (1 : ℝ) ≤ i.factorial := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr (Nat.factorial_ne_zero i)
+  rw [Real.norm_eq_abs, abs_div, abs_pow, abs_of_pos (by positivity : (0 : ℝ) < (i.factorial : ℝ) ^ 2), sq]
+  exact div_le_div_of_nonneg_left (by positivity) (by positivity) (le_mul_of_one_le_left (by positivity) hf)
 
 /-- `K_α(t) = Σ (4π²αt)ⁱ/(i!)²`. -/
-theorem hasSum_cardyKernel {α t : ℝ} (hα : 0 ≤ α) (ht : 0 ≤ t) :
-    HasSum (fun i : ℕ => (4 * π ^ 2 * α * t) ^ i / (i.factorial : ℝ) ^ 2) (cardyKernel α t) := by
-  have hs := (summable_besselI_term 0 (4 * π * √(α * t))).hasSum
-  unfold cardyKernel besselI
-  refine hasSum_of_eq hs (fun i => ?_) rfl
-  have hsq : √(α * t) ^ 2 = α * t := Real.sq_sqrt (by positivity)
-  rw [zero_add, zero_add, pow_mul, sq]
-  congr 1
-  · rw [show 4 * π * √(α * t) / 2 * (4 * π * √(α * t) / 2) = 4 * π ^ 2 * (√(α * t) ^ 2) by ring, hsq]
-    ring
+theorem hasSum_cardyKernel {α t : ℝ} (_hα : 0 ≤ α) (_ht : 0 ≤ t) :
+    HasSum (fun i : ℕ => (4 * π ^ 2 * α * t) ^ i / (i.factorial : ℝ) ^ 2) (cardyKernel α t) :=
+  (summable_cardyTerm _).hasSum
 
 theorem cardyKernel_nonneg {α t : ℝ} (hα : 0 ≤ α) (ht : 0 ≤ t) : 0 ≤ cardyKernel α t :=
   (hasSum_cardyKernel hα ht).nonneg fun i => by positivity
@@ -71,9 +72,11 @@ theorem integral_pow_mul_exp_neg (k : ℕ) {r : ℝ} (hr : 0 < r) :
       ∫ t in Ioi (0 : ℝ), t ^ ((k : ℝ) + 1 - 1) * Real.exp (-(r * t)) := by
     refine setIntegral_congr_fun measurableSet_Ioi (fun t _ => ?_)
     simp [Real.rpow_natCast]
-  rw [hc, h, div_pow, one_pow, ← Real.rpow_natCast r (k + 1)]
-  push_cast
-  ring
+  rw [hc, h]
+  have e : (1 / r) ^ ((k : ℝ) + 1) = 1 / r ^ (k + 1) := by
+    rw [show ((k : ℝ) + 1) = ((k + 1 : ℕ) : ℝ) by push_cast; ring, Real.rpow_natCast, one_div_pow]
+  rw [e]
+  field_simp
 
 /-- **The Laplace transform of the Cardy kernel:** `2π∫₀^∞ K_α e^{−2πβt} = β⁻¹ e^{2πα/β}`. -/
 theorem laplace_cardyKernel {α β : ℝ} (hα : 0 ≤ α) (hβ : 0 < β) :
@@ -97,6 +100,7 @@ theorem laplace_cardyKernel {α β : ℝ} (hα : 0 ≤ α) (hβ : 0 < β) :
     intro i
     have hf : (i.factorial : ℝ) ≠ 0 := by exact_mod_cast (Nat.factorial_pos i).ne'
     simp only [hc]
+    rw [div_pow]
     field_simp
     ring
   have hexp : HasSum (fun i : ℕ => (4 * π ^ 2 * α / r) ^ i / i.factorial)
@@ -149,9 +153,11 @@ theorem hasSum_cardyWeight {a t : ℝ} (ha : 2 ≤ a) (ht : 0 ≤ t) :
   have h1 := hasSum_cardyKernel (by linarith : (0 : ℝ) ≤ a) ht
   have h2 := hasSum_cardyKernel (by linarith : (0 : ℝ) ≤ a - 1) ht
   have h3 := hasSum_cardyKernel (by linarith : (0 : ℝ) ≤ a - 2) ht
-  refine hasSum_of_eq' ((h1.sub (h2.mul_left 2)).add h3) (fun k => ?_) rfl
+  refine hasSum_congr_aux ((h1.sub (h2.mul_left 2)).add h3) (fun k => ?_) rfl
+  have hfac : ∀ α : ℝ, (4 * π ^ 2 * α * t) ^ k = (4 * π ^ 2 * t) ^ k * α ^ k := fun α => by
+    rw [show 4 * π ^ 2 * α * t = (4 * π ^ 2 * t) * α by ring, mul_pow]
   unfold secondDiffPow
-  rw [mul_pow, mul_pow, mul_pow, mul_pow, mul_pow, mul_pow, mul_pow, mul_pow]
+  rw [hfac a, hfac (a - 1), hfac (a - 2)]
   ring
 
 /-- **The Cardy weight is at least `8π⁴t²`.** -/
@@ -196,9 +202,13 @@ theorem vacuum_eq_cardy_continuum {a β : ℝ} (ha : 2 ≤ a) (hβ : 0 < β) :
         2 * (cardyKernel (a - 1) t * Real.exp (-(2 * π * β * t))) +
         cardyKernel (a - 2) t * Real.exp (-(2 * π * β * t)) := by
     funext t; unfold cardyWeight; ring
-  rw [e, integral_add ((hi a (by linarith)).sub ((hi (a - 1) (by linarith)).const_mul 2))
-    (hi (a - 2) (by linarith)), integral_sub (hi a (by linarith))
-    ((hi (a - 1) (by linarith)).const_mul 2), integral_const_mul]
+  have i1 := hi a (by linarith)
+  have i2 := hi (a - 1) (by linarith)
+  have i3 := hi (a - 2) (by linarith)
+  have i12 : Integrable (fun t => cardyKernel a t * Real.exp (-(2 * π * β * t)) -
+      2 * (cardyKernel (a - 1) t * Real.exp (-(2 * π * β * t)))) (volume.restrict (Ioi 0)) :=
+    i1.sub (i2.const_mul 2)
+  rw [e, integral_add i12 i3, integral_sub i1 (i2.const_mul 2), integral_const_mul]
   have l1 := laplace_cardyKernel (by linarith : (0 : ℝ) ≤ a) hβ
   have l2 := laplace_cardyKernel (by linarith : (0 : ℝ) ≤ a - 1) hβ
   have l3 := laplace_cardyKernel (by linarith : (0 : ℝ) ≤ a - 2) hβ
@@ -208,7 +218,7 @@ theorem vacuum_eq_cardy_continuum {a β : ℝ} (ha : 2 ≤ a) (hβ : 0 < β) :
     rw [← Real.exp_nat_mul, ← Real.exp_add]; congr 1; push_cast; ring
   rw [e2] at l2
   rw [e3] at l3
-  linear_combination l1 - 2 * l2 + l3
+  linear_combination -l1 + 2 * l2 - l3
 
 /-! ### Functionals against the Cardy weight -/
 

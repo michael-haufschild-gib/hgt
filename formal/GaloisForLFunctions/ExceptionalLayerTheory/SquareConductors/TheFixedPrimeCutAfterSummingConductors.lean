@@ -335,6 +335,112 @@ theorem fixed_prime_cut_upper_price :
          change _ ≤ (D+A)*(U+V)
          linarith only [mul_nonneg hD hv]))
 
+/-- Integrated ordinary primes above a fixed terminal cutoff K. -/
+def fixedHighPrimeReading (N K : ℕ) : ℂ :=
+  let H := ⌊((N:ℝ)/squareConductorBVWindow.lower)^2⌋₊
+  (N:ℂ)^2*∑ p ∈ (ordinaryPrimeLags H).filter (K < ·),
+    (Real.log p:ℂ)*squarePrefixPrimeWeight ((p:ℝ)/(N:ℝ)^2)
+
+theorem centeredFixedPrimeTail_eq (N K : ℕ) :
+    centeredFixedPrimeTail N K =
+      fixedHighPrimeReading N K + ((innerPrimeSlope*((K:ℝ)*(K+1)/2):ℝ):ℂ) := rfl
+
+/-- At K = ⌊X⌋ the triangular number K(K+1)/2 differs from X²/2 by at most X. -/
+private theorem floor_triangular_sub_half_sq {X : ℝ} (hX : 0 ≤ X) :
+    |(⌊X⌋₊:ℝ)*((⌊X⌋₊:ℝ)+1)/2-X^2/2| ≤ X := by
+  have hk : (⌊X⌋₊:ℝ) ≤ X := Nat.floor_le hX
+  have hk' : X < (⌊X⌋₊:ℝ)+1 := Nat.lt_floor_add_one X
+  have hk0 : (0:ℝ) ≤ ⌊X⌋₊ := Nat.cast_nonneg _
+  rw [abs_le]
+  constructor
+  · nlinarith [mul_nonneg (add_nonneg hX hk0) (by linarith only [hk'] : (0:ℝ) ≤ (⌊X⌋₊:ℝ)+1-X)]
+  · nlinarith [mul_nonneg (sub_nonneg.mpr hk) (by linarith only [hk0,hX] : (0:ℝ) ≤ (⌊X⌋₊:ℝ)+X+1)]
+
+/-- At the terminal cut K = ⌊N^(17/9)⌋ the restored first moment and the
+integrated high-prime reading have opposite leading terms ±c N^(34/9)/2,
+each with error O(N^(15/4)). The first follows from the prime moment at the
+cut, the second from the strip bound on the whole price. -/
+theorem seventeenNinths_fixed_cut_leading_terms :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ N : ℕ, 0 < N →
+      |innerPrimeSlope*(∑ p ∈ ordinaryPrimeLags ⌊(N:ℝ)^(17/9:ℝ)⌋₊, (p:ℝ)*Real.log p) -
+          innerPrimeSlope*(N:ℝ)^(34/9:ℝ)/2| ≤ C*(N:ℝ)^(15/4:ℝ) ∧
+      ‖fixedHighPrimeReading N ⌊(N:ℝ)^(17/9:ℝ)⌋₊ +
+          ((innerPrimeSlope*(N:ℝ)^(34/9:ℝ)/2:ℝ):ℂ)‖ ≤ C*(N:ℝ)^(15/4:ℝ) := by
+  obtain ⟨A,hA,hmom⟩ := first_prime_moment_at_cut
+  obtain ⟨D,hD,hup⟩ := fixed_prime_cut_upper_price
+  have hg : ∀ᶠ n : ℕ in atTop, Real.exp 8 ≤ (n:ℝ)^(1/9:ℝ) :=
+    ((tendsto_rpow_atTop (by norm_num : (0:ℝ)<1/9)).comp tendsto_natCast_atTop_atTop).eventually_ge_atTop _
+  obtain ⟨n₀,h₀⟩ := Filter.eventually_atTop.mp hg
+  let c := innerPrimeSlope
+  have hc : 0 < c := innerPrimeSlope_pos
+  let K (n : ℕ) := ⌊(n:ℝ)^(17/9:ℝ)⌋₊
+  let low (n : ℕ) := |c*(∑ p ∈ ordinaryPrimeLags (K n), (p:ℝ)*Real.log p) - c*(n:ℝ)^(34/9:ℝ)/2|
+  let high (n : ℕ) := ‖fixedHighPrimeReading n (K n) + ((c*(n:ℝ)^(34/9:ℝ)/2:ℝ):ℂ)‖
+  let E := ∑ n ∈ range n₀, (low n + high n)
+  have hE : 0 ≤ E := sum_nonneg fun n _ => add_nonneg (abs_nonneg _) (norm_nonneg _)
+  have hB : 0 ≤ c*A+2*D+2*c := by linarith only [mul_nonneg hc.le hA,hD,hc]
+  refine ⟨c*A+2*D+2*c+E,add_nonneg hB hE,fun N hN => ?_⟩
+  have hn : (0:ℝ) < N := Nat.cast_pos.mpr hN
+  have h₁ : (1:ℝ) ≤ N := by exact_mod_cast hN
+  let Y := (N:ℝ)^(15/4:ℝ)
+  have hY : 1 ≤ Y := Real.one_le_rpow h₁ (by norm_num)
+  have hY0 : 0 ≤ Y := zero_le_one.trans hY
+  change low N ≤ (c*A+2*D+2*c+E)*Y ∧ high N ≤ (c*A+2*D+2*c+E)*Y
+  by_cases hlate : n₀ ≤ N
+  · let X := (N:ℝ)^(17/9:ℝ)
+    have hX : 0 ≤ X := Real.rpow_nonneg hn.le _
+    have hKpos : 0 < K N := Nat.le_floor (show ((1:ℕ):ℝ) ≤ (N:ℝ)^(17/9:ℝ) by
+      push_cast; exact Real.one_le_rpow h₁ (by norm_num))
+    have hf : (K N:ℝ) ≤ X := Nat.floor_le hX
+    have hcut : (K N:ℝ) ≤ Real.exp (-8)*(N:ℝ)^2 := by
+      apply hf.trans
+      rw [Real.exp_neg,inv_mul_eq_div,le_div_iff₀ (Real.exp_pos 8)]
+      have hh := mul_le_mul_of_nonneg_left (h₀ N hlate) (Real.rpow_nonneg hn.le (17/9:ℝ))
+      rwa [←Real.rpow_add hn,show (17/9:ℝ)+1/9=2 by norm_num,Real.rpow_two] at hh
+    have hXY : X ≤ Y := Real.rpow_le_rpow_of_exponent_le h₁ (by norm_num)
+    have hKY : (K N:ℝ)^(17/9:ℝ) ≤ Y := by
+      apply (Real.rpow_le_rpow (Nat.cast_nonneg _) hf (by norm_num)).trans
+      dsimp only [X]
+      rw [←Real.rpow_mul hn.le]
+      exact Real.rpow_le_rpow_of_exponent_le h₁ (by norm_num)
+    have hX2 : X^2 = (N:ℝ)^(34/9:ℝ) := by
+      rw [←Real.rpow_natCast X 2]
+      dsimp only [X]
+      rw [←Real.rpow_mul hn.le]
+      norm_num
+    have hq : |(K N:ℝ)*((K N:ℝ)+1)/2-(N:ℝ)^(34/9:ℝ)/2| ≤ X := by
+      rw [←hX2]; exact floor_triangular_sub_half_sq hX
+    have hm := hmom (K N) hKpos
+    constructor
+    · have he : c*(∑ p ∈ ordinaryPrimeLags (K N), (p:ℝ)*Real.log p) - c*(N:ℝ)^(34/9:ℝ)/2 =
+          c*((∑ p ∈ ordinaryPrimeLags (K N), (p:ℝ)*Real.log p) - (K N:ℝ)*((K N:ℝ)+1)/2) +
+          c*((K N:ℝ)*((K N:ℝ)+1)/2-(N:ℝ)^(34/9:ℝ)/2) := by ring
+      dsimp only [low]
+      rw [he]
+      apply (abs_add_le _ _).trans
+      rw [abs_mul,abs_mul,abs_of_pos hc]
+      have h1 := mul_le_mul_of_nonneg_left (hm.trans (mul_le_mul_of_nonneg_left hKY hA)) hc.le
+      have h2 := mul_le_mul_of_nonneg_left (hq.trans hXY) hc.le
+      linarith only [h1,h2,mul_nonneg hE hY0,mul_nonneg hD hY0,mul_nonneg hc.le hY0]
+    · have hcen := hup hN hKpos hcut
+      have he : fixedHighPrimeReading N (K N) + ((c*(N:ℝ)^(34/9:ℝ)/2:ℝ):ℂ) =
+          centeredFixedPrimeTail N (K N) - ((c*((K N:ℝ)*((K N:ℝ)+1)/2-(N:ℝ)^(34/9:ℝ)/2):ℝ):ℂ) := by
+        rw [centeredFixedPrimeTail_eq]; push_cast; ring
+      dsimp only [high]
+      rw [he]
+      apply (norm_sub_le _ _).trans
+      rw [Complex.norm_real,Real.norm_eq_abs,abs_mul,abs_of_pos hc]
+      have h1 := hcen.trans (mul_le_mul_of_nonneg_left (add_le_add (le_refl Y) hKY) hD)
+      have h2 := mul_le_mul_of_nonneg_left (hq.trans hXY) hc.le
+      linarith only [h1,h2,mul_nonneg hE hY0,mul_nonneg (mul_nonneg hc.le hA) hY0,mul_nonneg hc.le hY0]
+  · have hs : low N + high N ≤ E := single_le_sum (f := fun n => low n + high n)
+      (fun n _ => add_nonneg (abs_nonneg _) (norm_nonneg _)) (mem_range.mpr (lt_of_not_ge hlate))
+    have hl0 : 0 ≤ low N := abs_nonneg _
+    have hh0 : 0 ≤ high N := norm_nonneg _
+    have hEY : E ≤ (c*A+2*D+2*c+E)*Y := (le_mul_of_one_le_right hE hY).trans
+      (mul_le_mul_of_nonneg_right (le_add_of_nonneg_left hB) hY0)
+    exact ⟨by linarith only [hs,hh0,hEY],by linarith only [hs,hl0,hEY]⟩
+
 #print axioms mellin_squarePrimeWeight_neg_one
 #print axioms squarePrefixPrimeWeight_before_first_knot
 #print axioms fixed_inner_prime_price
@@ -346,4 +452,5 @@ theorem fixed_prime_cut_upper_price :
 #print axioms five_sixths_iff_centered_fixed_prime_tail
 #print axioms riemannHypothesis_iff_centered_fixed_prime_tail
 #print axioms fixed_prime_cut_upper_price
+#print axioms seventeenNinths_fixed_cut_leading_terms
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

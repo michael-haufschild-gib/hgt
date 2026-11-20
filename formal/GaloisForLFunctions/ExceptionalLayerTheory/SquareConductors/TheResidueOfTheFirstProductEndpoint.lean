@@ -81,6 +81,37 @@ theorem LSeries_firstEndpointPrice {s : ℂ} (hs : 4 < s.re) :
 private theorem analytic_endpoint_error {s : ℂ} (hs : 3 < s.re) : AnalyticAt ℂ (LSeries endpointError) s :=
   LSeries_analyticOnNhd _ s (endpoint_error_abscissa.trans_lt (EReal.coe_lt_coe_iff.mpr hs))
 
+/-- The literal first-cell reading differs from the rational conductor price
+by O(n²) at every conductor. -/
+theorem firstEndpointPrice_discrepancy :
+    ∃ C : ℝ, 0 ≤ C ∧ ∀ {n : ℕ}, 0 < n →
+      ‖squareConductorPrice n - firstEndpointPrice n‖ ≤ C*(n:ℝ)^2 := by
+  obtain ⟨C,hC,h⟩ := firstQuotientPrimeEndpoint_price
+  obtain ⟨b,hb⟩ := eventually_atTop.mp (eventually_retainedPrimeEndpoint
+    (by norm_num : (0:ℝ)<17/9) (by norm_num : (17/9:ℝ)<2))
+  let F := ∑ n ∈ Finset.range b, ‖squareConductorPrice n - firstEndpointPrice n‖
+  have hF : 0 ≤ F := Finset.sum_nonneg fun _ _ => norm_nonneg _
+  refine ⟨C+F,add_nonneg hC hF,fun {n} hn => ?_⟩
+  have hn2 : (1:ℝ) ≤ (n:ℝ)^2 := one_le_pow₀ (by exact_mod_cast hn)
+  by_cases hbn : b ≤ n
+  · have he : squareConductorPrice n - firstEndpointPrice n =
+        squareConductorPrice n - (((n:ℝ)^2*firstQuotientPrimeEndpoint n:ℝ):ℂ) := by
+      simp only [firstEndpointPrice,hb n hbn,firstQuotientPrimeEndpoint_eq hn]
+    rw [he]
+    change ‖((Real.log (ordinaryPrimeGenerator (n • successorSquareTriple n):ℝ):ℝ):ℂ) -
+      (((n:ℝ)^2*firstQuotientPrimeEndpoint n:ℝ):ℂ)‖ ≤ _
+    rw [←Complex.ofReal_sub,Complex.norm_real,Real.norm_eq_abs]
+    exact (h hn).trans (mul_le_mul_of_nonneg_right (le_add_of_nonneg_right hF) (sq_nonneg _))
+  · exact (Finset.single_le_sum (f := fun j => ‖squareConductorPrice j - firstEndpointPrice j‖)
+      (fun _ _ => norm_nonneg _) (Finset.mem_range.mpr (lt_of_not_ge hbn))).trans
+      ((le_add_of_nonneg_left hC).trans (le_mul_of_one_le_right (add_nonneg hC hF) hn2))
+
+/-- The Dirichlet series of the first-cell discrepancy is holomorphic to the
+right of three; the price itself has its shifted zero poles there. -/
+theorem firstEndpoint_discrepancy_analytic :
+    AnalyticOnNhd ℂ (LSeries (squareConductorPrice - firstEndpointPrice)) {s : ℂ | 3 < s.re} :=
+  fun _ hs => analytic_endpoint_error hs
+
 /-- Removing the completed quotient cells preserves the full nonzero residue
 at each shifted right zero, including its multiplicity. -/
 theorem firstEndpointContinuation_zero_residue {ρ : ℂ} (hz : riemannZeta ρ = 0)
@@ -279,7 +310,21 @@ theorem squareDivider_opposite_real_poles :
       exact (le_add_of_nonneg_left (abs_nonneg _)).trans (h hn))
   exact ⟨H,G,hH,hG,fun {s} hs => ⟨hl hs,by simpa only [Complex.ofReal_neg] using hu hs⟩⟩
 
+/-- The real poles at four cancel: the lower and upper price series at the
+exact square sum to a function holomorphic to the right of 34/9. -/
+theorem squareDivider_real_poles_cancel :
+    ∃ F : ℂ → ℂ, AnalyticOnNhd ℂ F {s : ℂ | 34/9 < s.re} ∧ ∀ {s : ℂ}, 4 < s.re →
+      LSeries (fun n => (lowerPrimeEndpointPrice n (n^2):ℂ)) s +
+        LSeries (fun n => (((n:ℝ)^2*retainedPrimeEndpoint (n^2) n:ℝ):ℂ)) s = F s := by
+  obtain ⟨H,G,hH,hG,h⟩ := squareDivider_opposite_real_poles
+  refine ⟨H+G,hH.add hG,fun {s} hs => ?_⟩
+  rw [(h hs).1,(h hs).2,Pi.add_apply]
+  ring
+
 #print axioms LSeries_firstEndpointPrice
+#print axioms firstEndpointPrice_discrepancy
+#print axioms firstEndpoint_discrepancy_analytic
+#print axioms squareDivider_real_poles_cancel
 #print axioms firstEndpointContinuation_zero_residue
 #print axioms firstEndpoint_regular_real
 #print axioms quadraticDividerMass_pos_iff

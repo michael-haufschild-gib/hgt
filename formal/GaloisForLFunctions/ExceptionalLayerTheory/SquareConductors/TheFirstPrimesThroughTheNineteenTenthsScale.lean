@@ -14,19 +14,23 @@ open Finset Filter ArithmeticFunction
 open GaloisForLFunctions.CountingHolography.Sections
 namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 
-private theorem eventually_small_prime_mesh :
-    ∀ᶠ n : ℕ in atTop, ∀ p : ℕ, 0<p → (p:ℝ)≤(n:ℝ)^(19/10:ℝ) →
+/-- Below any fixed exponent a < 2 the prime mesh p/n² and the lower
+cofactor cut both shrink like a fixed negative power of the conductor. -/
+private theorem eventually_small_prime_mesh {a : ℝ} (ha : a<2) :
+    ∀ᶠ n : ℕ in atTop, ∀ p : ℕ, 0<p → (p:ℝ)≤(n:ℝ)^a →
       let h := (p:ℝ)/(n:ℝ)^2
       let l := ⌊(n:ℝ)^(17/9:ℝ)⌋₊/p
       Real.sqrt h≤1/8 ∧ 112*max ((l:ℝ)*h) (Real.sqrt h)<Real.exp (-8) := by
-  have hlt : Tendsto (fun n : ℕ => (n:ℝ)^(-(1/20):ℝ)) atTop (nhds 0) :=
-    (tendsto_rpow_neg_atTop (by norm_num : (0:ℝ)<1/20)).comp tendsto_natCast_atTop_atTop
+  obtain ⟨ε,hε,hεa,hε9⟩ : ∃ ε : ℝ, 0<ε ∧ ε≤(2-a)/2 ∧ ε≤1/9 :=
+    ⟨min ((2-a)/2) (1/9),lt_min (by linarith only [ha]) (by norm_num),min_le_left _ _,min_le_right _ _⟩
+  have hlt : Tendsto (fun n : ℕ => (n:ℝ)^(-ε)) atTop (nhds 0) :=
+    (tendsto_rpow_neg_atTop hε).comp tendsto_natCast_atTop_atTop
   filter_upwards [eventually_ge_atTop (1:ℕ),
     hlt.eventually (gt_mem_nhds (by norm_num : (0:ℝ)<1/8)),
     hlt.eventually (gt_mem_nhds (div_pos (Real.exp_pos (-8)) (by norm_num : (0:ℝ)<112)))]
     with n hn h8 h112
   intro p hp hP
-  let x := (n:ℝ)^(-(1/20):ℝ)
+  let x := (n:ℝ)^(-ε)
   let d := (p:ℝ)/(n:ℝ)^2
   let U := ⌊(n:ℝ)^(17/9:ℝ)⌋₊
   have hn1 : (1:ℝ)≤n := Nat.one_le_cast.mpr hn
@@ -35,42 +39,52 @@ private theorem eventually_small_prime_mesh :
   have hx : 0<x := Real.rpow_pos_of_pos hn0 _
   have prod (a : ℝ) : (n:ℝ)^a*(n:ℝ)^2=(n:ℝ)^(a+2) := by
     rw [←Real.rpow_two,←Real.rpow_add hn0]
-  have hx2 : x^2*(n:ℝ)^2=(n:ℝ)^(19/10:ℝ) := by
-    dsimp only [x]; rw [←Real.rpow_two ((n:ℝ)^_),←Real.rpow_mul hn0.le,prod]; norm_num
-  have hs : Real.sqrt d≤x := Real.sqrt_le_iff.mpr ⟨hx.le,(div_le_iff₀ hsq).mpr (by rwa [hx2])⟩
+  have hx2 : x^2*(n:ℝ)^2=(n:ℝ)^(-ε*2+2) := by
+    dsimp only [x]; rw [←Real.rpow_two ((n:ℝ)^_),←Real.rpow_mul hn0.le,prod]
+  have hs : Real.sqrt d≤x := Real.sqrt_le_iff.mpr ⟨hx.le,(div_le_iff₀ hsq).mpr (by
+    rw [hx2]; exact hP.trans (Real.rpow_le_rpow_of_exponent_le hn1 (by linarith only [hεa])))⟩
   have hU : (U:ℝ)≤(n:ℝ)^(17/9:ℝ) := Nat.floor_le (Real.rpow_nonneg hn0.le _)
   have hlow : ((U/p:ℕ):ℝ)*d ≤ x := by
     dsimp only [d]
     rw [←mul_div_assoc,div_le_iff₀ hsq]
     have hnU : ((U/p:ℕ):ℝ)*(p:ℝ)≤U := by exact_mod_cast Nat.div_mul_le_self U p
     dsimp only [x]; rw [prod]
-    exact (hnU.trans hU).trans (Real.rpow_le_rpow_of_exponent_le hn1 (by norm_num))
+    exact (hnU.trans hU).trans (Real.rpow_le_rpow_of_exponent_le hn1 (by linarith only [hε9]))
   exact ⟨hs.trans h8.le,(mul_le_mul_of_nonneg_left (max_le hlow hs) (by norm_num : (0:ℝ)≤112)).trans_lt
     (by simpa only [mul_comm] using (lt_div_iff₀ (by norm_num : (0:ℝ)<112)).mp h112)⟩
 
-/-- For any of the subquadratic prime cuts up to nineteen tenths, the
-actual late cofactor mesh has square-root fifth-power decay. -/
-theorem first_prime_cofactor_price_below_nineteen_tenths :
-    ∃ C : ℝ, 0≤C ∧ ∀ᶠ n : ℕ in atTop, ∀ p : ℕ, 0<p → (p:ℝ)≤(n:ℝ)^(19/10:ℝ) →
+/-- For every fixed subquadratic prime cut p ≤ n^a, a < 2, the actual
+late cofactor mesh has square-root fifth-power decay. -/
+theorem first_prime_cofactor_price_below_power {a : ℝ} (ha : a<2) :
+    ∃ C : ℝ, 0≤C ∧ ∀ᶠ n : ℕ in atTop, ∀ p : ℕ, 0<p → (p:ℝ)≤(n:ℝ)^a →
       let d := (p:ℝ)/(n:ℝ)^2
       let l := ⌊(n:ℝ)^(17/9:ℝ)⌋₊/p
       |∑ v ∈ Ioc l (splineHorizon n/p), innerJump 1 v * positiveCofactorProfile (splineHorizon n+1) d v| ≤
         C*((Real.sqrt d)^5+((l:ℝ)*d)^7) := by
   obtain ⟨C,hC,h⟩ := signed_cofactor_fine_mesh
   refine ⟨C,hC,?_⟩
-  filter_upwards [eventually_ge_atTop (1:ℕ),eventually_small_prime_mesh] with n hn hsmall
+  filter_upwards [eventually_ge_atTop (1:ℕ),eventually_small_prime_mesh ha] with n hn hsmall
   intro p hp hP
   obtain ⟨hs,hcut⟩ := hsmall p hp hP
   obtain ⟨hb,hm⟩ := positive_mesh_reaches_support hn hp
   exact h _ _ _ (div_pos (Nat.cast_pos.mpr hp) (sq_pos_of_pos (Nat.cast_pos.mpr hn))) hs hcut hb hm
 
-private theorem eventually_first_prime_power_price {a : ℝ} (ha : 12/7≤a) (ha' : a≤19/10) :
+/-- The nineteen-tenths case of the subquadratic cofactor price. -/
+theorem first_prime_cofactor_price_below_nineteen_tenths :
+    ∃ C : ℝ, 0≤C ∧ ∀ᶠ n : ℕ in atTop, ∀ p : ℕ, 0<p → (p:ℝ)≤(n:ℝ)^(19/10:ℝ) →
+      let d := (p:ℝ)/(n:ℝ)^2
+      let l := ⌊(n:ℝ)^(17/9:ℝ)⌋₊/p
+      |∑ v ∈ Ioc l (splineHorizon n/p), innerJump 1 v * positiveCofactorProfile (splineHorizon n+1) d v| ≤
+        C*((Real.sqrt d)^5+((l:ℝ)*d)^7) :=
+  first_prime_cofactor_price_below_power (by norm_num)
+
+private theorem eventually_first_prime_power_price {a : ℝ} (ha : 12/7≤a) (ha' : a<2) :
     ∃ C : ℝ, 0≤C ∧ ∀ᶠ n : ℕ in atTop,
       let U := ⌊(n:ℝ)^(17/9:ℝ)⌋₊
       let P := ⌊(n:ℝ)^a⌋₊
       |(n:ℝ)^2*(capFreeFirstPrimeReading U n-unrestrictedFirstPrimeReading P U n)| ≤
         C*(n:ℝ)^(7/2*a-4) := by
-  obtain ⟨C,hC,h⟩ := first_prime_cofactor_price_below_nineteen_tenths
+  obtain ⟨C,hC,h⟩ := first_prime_cofactor_price_below_power ha'
   obtain ⟨K,hK,hgeom⟩ := capFreeFirstPrimeCut_linear
   have htop := (tendsto_rpow_atTop (by linarith only [ha] : 0<a-1)).comp tendsto_natCast_atTop_atTop
   refine ⟨14*C,by positivity,?_⟩
@@ -122,7 +136,7 @@ private theorem eventually_first_prime_power_price {a : ℝ} (ha : 12/7≤a) (ha
       apply (pow_le_pow_left₀ (mul_nonneg (Nat.cast_nonneg _) hd.le) hl 7).trans
       rw [←Real.rpow_natCast _ 7,←Real.rpow_mul hn0.le]
       exact Real.rpow_le_rpow_of_exponent_le hn1 (by dsimp only [z]; norm_num; linarith only [ha])
-    exact (hrow p hp0 (hpa.trans (Real.rpow_le_rpow_of_exponent_le hn1 ha'))).trans
+    exact (hrow p hp0 hpa).trans
       ((mul_le_mul_of_nonneg_left (add_le_add hs hl7) hC).trans_eq (by ring))
   change |(n:ℝ)^2*(unrestrictedFirstPrimeReading F U n-unrestrictedFirstPrimeReading P U n)| ≤ _
   rw [first_prime_mesh_band hn hFP U]
@@ -142,9 +156,10 @@ private theorem eventually_first_prime_power_price {a : ℝ} (ha : 12/7≤a) (ha
                    _ = _ := by rw [←Real.rpow_add hn0,←Real.rpow_add hn0]; congr 1; ring
             linear_combination 14*C*he
 
-/-- Every terminal fragment inherits the signed first-prime power saving,
-with the original lower product cutoff. -/
-theorem cap_free_prime_power_fragments {a : ℝ} (ha : 12/7≤a) (ha' : a≤19/10) :
+/-- Every terminal fragment inherits the signed first-prime power saving
+for each fixed first-prime cut n^a with 12/7 ≤ a < 2, with the original
+lower product cutoff. -/
+theorem cap_free_prime_power_fragments {a : ℝ} (ha : 12/7≤a) (ha' : a<2) :
     ∃ C : ℝ, 0≤C ∧ ∀ J M : ℕ, 0<M →
       |∑ n ∈ Ioc J M, (n:ℝ)^2*(capFreeFirstPrimeReading ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n -
         unrestrictedFirstPrimeReading ⌊(n:ℝ)^a⌋₊ ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n)| ≤ C*(M:ℝ)^(7/2*a-3) := by
@@ -215,7 +230,7 @@ theorem nineteen_tenths_first_prime_fragments :
       |∑ n ∈ Ioc J M, (n:ℝ)^2*(cappedUpperProductReading ⌊(n:ℝ)^(17/9:ℝ)⌋₊ n n -
         unrestrictedFirstPrimeReading ⌊(n:ℝ)^(19/10:ℝ)⌋₊ 0 n)| ≤ C*(M:ℝ)^(73/20:ℝ) := by
   obtain ⟨A,hA,h⟩ := seventeenNinths_cap_free_first_prime_fragments
-  obtain ⟨B,hB,hp⟩ := cap_free_prime_power_fragments (a := 19/10) (by norm_num) le_rfl
+  obtain ⟨B,hB,hp⟩ := cap_free_prime_power_fragments (a := 19/10) (by norm_num) (by norm_num)
   obtain ⟨E,hE,he⟩ := conductorLog_subpower (by norm_num : (0:ℝ)<13/20)
   refine ⟨A*E+B,by positivity,fun J M hM => ?_⟩
   let U (n : ℕ) := ⌊(n:ℝ)^(17/9:ℝ)⌋₊
@@ -284,4 +299,6 @@ theorem eleven_thirds_iff_nineteen_tenths_first_primes :
 #print axioms nineteen_tenths_first_prime_fragments
 #print axioms eventually_first_prime_power_price
 #print axioms first_prime_cofactor_price_below_nineteen_tenths
+#print axioms first_prime_cofactor_price_below_power
+#print axioms cap_free_prime_power_fragments
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

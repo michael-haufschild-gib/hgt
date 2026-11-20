@@ -35,10 +35,7 @@ proofs must be unconditional without hypotheses or otherwise unproven premises.
 /goal
 
 formalize UNCONDITIONALLY in lean all proven theorem for every single card in: 
-- docs/drafts/pipeline/2-fully-proven/acs-pvc-cancellation-on-square-multiple-cofactors.md
-- docs/drafts/pipeline/2-fully-proven/acs-pvc-first-primes-beyond-the-conductor.md
-- docs/drafts/pipeline/2-fully-proven/acs-pvc-interior-shell-at-seven-fourths.md
-- docs/drafts/pipeline/2-fully-proven/acs-pvc-the-quadratic-product-divider.md
+- docs/drafts/pipeline/2-fully-proven/ecs
 
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
@@ -248,15 +245,48 @@ The goal is met when route QIC is fully closed and formalized unconditionally in
 - https://arxiv.org/abs/2611.22924
 - https://arxiv.org/abs/2611.22706
 
-20  Hölder
-
+20 x Hölder
+- https://arxiv.org/abs/2611.24677
+- https://arxiv.org/abs/2611.23979
+- https://arxiv.org/abs/2611.23490
+- https://arxiv.org/abs/2611.23023
+- https://arxiv.org/abs/2611.22679
+  
 21 Gershgorin
 
-22 Riesz
+22x Riesz
+- https://arxiv.org/abs/2611.24677
+- https://arxiv.org/abs/2611.24601
+- https://arxiv.org/abs/2611.24209
+- https://arxiv.org/abs/2611.23277
+- https://arxiv.org/abs/2611.22097
+- https://arxiv.org/abs/2611.21551
 
-23 Pitaevskii
+23x Pitaevskii
+- https://arxiv.org/abs/2611.23171
+- https://arxiv.org/abs/2611.21911
+- https://arxiv.org/abs/2611.17543
+- https://arxiv.org/abs/2611.14200
+- https://arxiv.org/abs/2611.13032
+- https://arxiv.org/abs/2611.08168
 
 24 Jensen
+
+25 CRT
+
+26 Steklov
+
+27 Mertens
+
+28 Stepanov
+
+29 Vinogradov–Korobov
+
+30 Hardy-Littlewood
+
+31 Ramanujan
+
+32 Schur
 
 ## apply external paper to corpus experiment
 
@@ -264,13 +294,8 @@ task:
 find as many places as possible in our lean corpus to apply theorems-lemmas-propositions-correlateries from the listed papers to our lean corpus, formalize them and see what happens. this is experimental. it does not have to be about rh or anything, purely mechanical. it has no goal other than this task done in as many places as possible. explain in chat whenever you find something what this could be about.
 
 papers:
-- https://arxiv.org/abs/1607.06150
-- https://arxiv.org/abs/2611.11593
-- https://arxiv.org/abs/2611.09555
-- https://arxiv.org/abs/2611.05863
-- https://arxiv.org/abs/2611.00445
-- https://arxiv.org/abs/2610.40099
-- https://arxiv.org/abs/2610.37750
+- https://hexagonmath.org/2611.00175v1
+- https://hexagonmath.org/2611.00174v1
 
 **Lean rules:**
 1. Proofs must be unconditional, no hypotheses, no added axioms, no premises, ...
@@ -596,7 +621,7 @@ first collect information in a working log in logs/ - facts, not process or stat
 
 the reports are not diaries or history log, but status quo reports.
 
-replace the reports in folder docs/reports/review-1911/ without history language or "this changed since last review".
+replace the reports in folder docs/reports/review-2011/ without history language or "this changed since last review".
 do not run builds. this is not a task to verify the work of other agents but to create consolidated reports and "big picture" interpretations on their research results.
 
 make sure to validate every claim. we have seen in previous rounds you simply restating old reports without actually validating that the old report facts were still valid. 
@@ -667,9 +692,9 @@ keep your eyes on the rh proof, that´s the ultimate goal.
 
 ## Init new field programme
 
-read and understand docs/reports/review-1811/obstacles-summary.md
+read and understand docs/reports/review-2011/obstacles-summary.md
 
-under "## 2.9 What new mathematics might a full proof need?" it suggest a new research programme
+under "## 2.9 Does a proof of RH need a new field?" it suggest a new research programme called "theory of arithmetic producers"
 
 Your task: develop this field/research programme and do the actual research and formalization.
 We are not interested in busywork, trivial work and discoveries, work on finite solution when the problem is infinite, optimizing numbers that provide nothing for the - we are only interested in focused work on solving the actual problems and questions and topics and move the frontier with every new lean module.
@@ -827,9 +852,9 @@ Goal is met when the RH is proven or the route is provably refuted.
 
 Do not use the hgtl7 skill.
 
-read docs/reports/review-1711/obstacles-summary.md and understand what problem B13 is about.
+read docs/reports/review-2011/obstacles-summary.md 
 
-your task: work through the open problems unconditionally, formalize their solutions and collaries. start with the easiest tasks and work towards the hardest. do so until you have found and proven a solution for B13.
+your task: work through the open problems in "## 2.1 Work with known mathematics", formalize their solutions and collaries. start with the easiest tasks and work towards the hardest. 
 
 where necessary lean infrastructure is absent from our lean corpus and mathlib -> build it no matter the effort.
 
@@ -885,9 +910,9 @@ Put lean code into the correct subfolder(s), do not bloat RHTower or HTGeometry 
 
 ## question
 
-read and understand fully: docs/reports/review-1911/obstacles-summary.md
+read and understand fully: docs/reports/review-2011/obstacles-summary.md
 
-under "## 2.19 The one smaller question with the largest shared payoff" it asks a question.
+under "## 2.7 RH as a physical phenomenon" it asks a question.
 
 your task: answer the question. find a complete solution for everything asked and unconditionally formalize the answer and its implications and collaries in lean.
 

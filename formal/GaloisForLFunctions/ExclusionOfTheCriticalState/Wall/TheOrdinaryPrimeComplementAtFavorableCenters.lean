@@ -165,4 +165,86 @@ theorem riemannHypothesis_or_ordinary_prime_complement_on_every_late_octave : Ri
 
 #print axioms riemannHypothesis_or_ordinary_prime_complement_on_every_late_octave
 
+
+/-- Below its center the state row has no integer weight: the wall support
+kills every integer `n ≤ e^t`. Hence the complement of the first critical
+window is exactly the tail strictly beyond `e^t + √(e^t · t)`. -/
+private theorem tsum_compl_wallWindow_eq {Φ : ℝ → ℝ} (hs : ∀ u, 0 ≤ u → Φ u = 0) {t : ℝ} (ht : 0 ≤ t) :
+    (∑' n : {j : ℕ // j ∉ wallIntegerWindow t (criticalWallWidth t)},
+        (ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t) =
+      ∑' n : {j : ℕ // Real.exp t+Real.sqrt (Real.exp t*Real.log (Real.exp t)) < j},
+        (ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t := by
+  let v := fun n : ℕ => (ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t
+  let w := criticalWallWidth t
+  have hwidth : Real.sqrt (Real.exp t*Real.log (Real.exp t)) = w := by
+    rw [Real.log_exp,Real.sqrt_mul (Real.exp_pos t).le,← Real.exp_half]; rfl
+  have hv (n : ℕ) (hn : (n:ℝ) ≤ Real.exp t) : v n = 0 := by
+    rcases Nat.eq_zero_or_pos n with rfl | hpos
+    · simp [v,continuousIntegerAtom]
+    · have hlog : Real.log n ≤ t := (Real.log_le_iff_le_exp (by exact_mod_cast hpos)).2 hn
+      simp [v,continuousIntegerAtom,hs _ (sub_nonneg.2 hlog)]
+  have hw0 : 0 ≤ Real.exp t+w := add_nonneg (Real.exp_pos t).le
+    (mul_nonneg (Real.exp_pos _).le (Real.sqrt_nonneg _))
+  have e1 : (∑' n : {j : ℕ // j ∉ wallIntegerWindow t w}, v n) =
+      ∑' n, ({j | j ∉ wallIntegerWindow t w} : Set ℕ).indicator v n := tsum_subtype _ v
+  have e2 : (∑' n : {j : ℕ // Real.exp t+w < j}, v n) =
+      ∑' n, ({j : ℕ | Real.exp t+w < j} : Set ℕ).indicator v n := tsum_subtype _ v
+  rw [hwidth]
+  refine e1.trans (Eq.trans (tsum_congr fun n => ?_) e2.symm)
+  by_cases hn : Real.exp t+w < n
+  · have hJ : n ∉ wallIntegerWindow t w := by
+      intro hm
+      have hle : n ≤ ⌊Real.exp t+w⌋₊ := (Finset.mem_Ioc.1 hm).2
+      exact absurd ((Nat.cast_le.2 hle).trans (Nat.floor_le hw0)) (not_le.2 hn)
+    rw [Set.indicator_of_mem (show n ∈ {j | j ∉ wallIntegerWindow t w} from hJ),
+      Set.indicator_of_mem (show n ∈ {j : ℕ | Real.exp t+w < j} from hn)]
+  · rw [Set.indicator_of_notMem (show n ∉ {j : ℕ | Real.exp t+w < j} from hn)]
+    by_cases hJ : n ∈ wallIntegerWindow t w
+    · exact Set.indicator_of_notMem (show n ∉ {j | j ∉ wallIntegerWindow t w} from fun h => h hJ) _
+    · rw [Set.indicator_of_mem (show n ∈ {j | j ∉ wallIntegerWindow t w} from hJ)]
+      apply hv
+      have hle : n ≤ ⌊Real.exp t+w⌋₊ := Nat.le_floor (le_of_not_gt hn)
+      have hlow : n ≤ ⌊Real.exp t⌋₊ := by
+        by_contra hc
+        exact hJ (Finset.mem_Ioc.2 ⟨lt_of_not_ge hc,hle⟩)
+      exact (Nat.cast_le.2 hlow).trans (Nat.floor_le (Real.exp_pos t).le)
+
+/-- The comparison on favorable centers with the complementary row written as
+the centered Mangoldt tail strictly beyond the critical width
+`x + √(x log x)`, `x = e^t`. -/
+theorem riemannHypothesis_or_ordinary_prime_tail_beyond_the_critical_width : RiemannHypothesis ∨
+    ∃ (W₀ : ℝ) (F Φ : ℝ → ℝ), 0 < W₀ ∧
+      (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a) = (W₀ : EReal) ∧
+      IsCriticalHalfLineGroundState W₀ F ∧ Continuous Φ ∧ F =ᵐ[volume] Φ ∧
+      ∀ ε : ℝ, 0 < ε → ∃ c k : ℝ, 0 < c ∧ c < 1 ∧ 0 < k ∧ ∀ᶠ T : ℝ in atTop,
+        ∃ B : Set ℝ, MeasurableSet B ∧ B ⊆ Ioc T (T+Real.log 2) ∧
+          k ≤ (∫ t in B, fractionalPrimeTest (T-t)) ∧ ∀ t ∈ B,
+            let x := Real.exp t
+            let m := ∫ u, Φ u
+            m*((∑' n : {j : ℕ // x+Real.sqrt (x*Real.log x) < j},
+                (ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t)-m/2)-ε <
+                  m*ordinaryPrimePolarError Φ t ∧
+              ∀ y ≥ x, let D := ⌊Real.exp (Real.log x/4)⌋₊
+                -(1-c)*(y-x)-c*Real.exp (Real.log (2*Real.exp T)/4)-1-D*Real.log D ≤
+                  lateDivisorCenteredCount D x y := by
+  rcases riemannHypothesis_or_ordinary_prime_complement_on_every_late_octave with hr |
+    ⟨W₀,F,Φ,hW,ht,hF,hΦ,he,h⟩
+  · exact Or.inl hr
+  obtain ⟨_,_,Ψ,hΨ,heΨ,hs,_,_⟩ := criticalState_exists_continuous_representative hW ht hF
+  have heq : Ψ=Φ := (Continuous.ae_eq_iff_eq volume hΨ hΦ).mp (heΨ.symm.trans he)
+  subst Ψ
+  refine Or.inr ⟨W₀,F,Φ,hW,ht,hF,hΨ,he,fun ε hε => ?_⟩
+  obtain ⟨c,k,hc0,hc1,hk,hev⟩ := h ε hε
+  refine ⟨c,k,hc0,hc1,hk,?_⟩
+  filter_upwards [hev,eventually_ge_atTop (0:ℝ)] with T hT hT0
+  obtain ⟨B,hmB,hBI,hkB,hB⟩ := hT
+  refine ⟨B,hmB,hBI,hkB,fun t htB => ?_⟩
+  have ht0 : 0 ≤ t := hT0.trans (hBI htB).1.le
+  have hBt := hB t htB
+  dsimp only at hBt ⊢
+  rw [← tsum_compl_wallWindow_eq hs ht0]
+  exact hBt
+
+#print axioms riemannHypothesis_or_ordinary_prime_tail_beyond_the_critical_width
+
 end GaloisForLFunctions.ExclusionOfTheCriticalState

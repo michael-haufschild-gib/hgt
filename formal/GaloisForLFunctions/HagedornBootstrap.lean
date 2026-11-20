@@ -7,3 +7,4 @@ import GaloisForLFunctions.HagedornBootstrap.TanhGaussianFloor
 import GaloisForLFunctions.HagedornBootstrap.OneSidedEulerMaclaurin
 import GaloisForLFunctions.HagedornBootstrap.SlitStripMap
 import GaloisForLFunctions.HagedornBootstrap.EdgeFunction
+import GaloisForLFunctions.HagedornBootstrap.CardyWeight

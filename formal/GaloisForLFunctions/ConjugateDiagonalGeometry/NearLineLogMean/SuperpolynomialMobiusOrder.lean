@@ -68,7 +68,7 @@ private theorem weighted_error_le_section (ρ : ℂ) (hr : 1/2 < ρ.re) (hi : 0 
       unfold lineError
       refine (norm_sub_le _ _).trans ?_
       rw [norm_mul,norm_one]
-      exact add_le_add_right (mul_le_mul_of_nonneg_right hzu hm) _
+      exact add_le_add (mul_le_mul_of_nonneg_right hzu hm) le_rfl
     have hsq := pow_le_pow_left₀ (norm_nonneg _) ht 2
     have hM2 : 1 ≤ M^2 := by nlinarith only [hM,sq_nonneg (M-1)]
     have haux : (M*m+1)^2 ≤ 2*M^2*(1+m^2) := by nlinarith only [sq_nonneg (M*m-1),hM2]
@@ -76,6 +76,7 @@ private theorem weighted_error_le_section (ρ : ℂ) (hr : 1/2 < ρ.re) (hi : 0 
   have hmeas := (integrable_zeroPoisson_mul_normSq_lineError hr N).integrableOn (s := S)
   have hint := setIntegral_mono_on hmeas ((continuous_const.mul (continuous_const.add hf)).integrableOn_Icc)
     measurableSet_Icc hrow
+  simp only [Pi.mul_apply,Pi.add_apply] at hint
   rw [integral_const_mul,integral_add (integrableOn_const (by simp [S])) hf.integrableOn_Icc,
     setIntegral_const,Real.volume_real_Icc_of_le (by dsimp [A,B]; linarith),
     smul_eq_mul,mul_one] at hint
@@ -111,7 +112,7 @@ theorem fixed_window_pays_each_subcritical_length_power {b : ℝ} (hb : 0 ≤ b)
       exact abs_le.mpr ⟨by linarith,by linarith⟩
     apply le_trans _ (poisson_lower_bound hδ hu')
     exact div_le_div₀ hδ.le hdl (by positivity)
-      (by dsimp only [p]; nlinarith only [mul_le_mul_of_nonneg_left hds Real.pi_pos.le])
+      (by nlinarith only [mul_le_mul_of_nonneg_left hds Real.pi_pos.le])
   have hmass : p ≤ ∫ u in S, zeroPoisson ρ u := by
     have h := setIntegral_mono_on (integrableOn_const (by simp [S])) (integrable_zeroPoisson hr).integrableOn
       measurableSet_Icc hpoint
@@ -166,7 +167,7 @@ private theorem section_energy_two_scales {e : ℝ} (he : 0 < e) :
     apply pow_le_pow_left₀ (norm_nonneg _)
     refine (hb N u).trans ((mul_le_mul (mul_le_mul_of_nonneg_left hlen hD) hpow (by positivity) (by positivity)).trans_eq ?_)
     dsimp only [K,F];ring
-  have hmono := intervalIntegral.integral_mono_on hT
+  have hmono := intervalIntegral.integral_mono_on (μ := volume) hT
     ((((differentiable_moebiusPoly N).continuous.comp continuous_linePoint).norm.pow 2).intervalIntegrable _ _)
     intervalIntegrable_const hpt
   rw [intervalIntegral.integral_const,smul_eq_mul] at hmono
@@ -226,7 +227,7 @@ theorem superpolynomial_section_energy_order {ι : Type*} {l : Filter ι}
       (tendsto_const_nhds (x := k))).add (hlog.const_mul d)
     simp only [mul_zero,zero_add,add_zero] at hlim
     have hkb : k < b := by dsimp only [e,k]; linarith
-    filter_upwards [hn,ht,hlim.eventually_lt hkb] with i hni hti hsmall
+    filter_upwards [hn,ht,hlim.eventually (eventually_lt_nhds hkb)] with i hni hti hsmall
     have hp : 1 < (N i:ℝ) := by exact_mod_cast (show 1 < N i by omega)
     have hn₀ := zero_lt_one.trans hp
     have ht₀ := zero_lt_one.trans_le hti
