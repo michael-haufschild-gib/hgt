@@ -102,10 +102,10 @@ theorem range_bothRescued {p q r : FailureRate} (C : Pairing p q) (D : Pairing p
     Set.range (bothRescued (C := C) (D := D)) =
       Set.Icc (max 0 (rescue C + rescue D - (p.1 : ℝ))) (min (rescue C) (rescue D)) := by
   ext x
-  have hslice := sliceRange (C.plan true) (D.plan true) (p.1 : ℝ)
-    (factualRow C true) (factualRow D true)
-  change Set.range (fun J : FiniteNNCoupling (C.plan true) (D.plan true) =>
-    (J.plan false false : ℝ)) = _ at hslice
+  have hslice : Set.range (fun J : FiniteNNCoupling (C.plan true) (D.plan true) =>
+      (J.plan false false : ℝ)) =
+      Set.Icc (max 0 (rescue C + rescue D - (p.1 : ℝ))) (min (rescue C) (rescue D)) :=
+    sliceRange (C.plan true) (D.plan true) (p.1 : ℝ) (factualRow C true) (factualRow D true)
   constructor
   · rintro ⟨J, rfl⟩
     rw [← hslice]

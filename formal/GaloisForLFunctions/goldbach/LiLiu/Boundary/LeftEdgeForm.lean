@@ -16,8 +16,13 @@ private theorem integral_supported_left {a b : ℝ} (hab : a < b) {F : ℂ → �
     (∫ z, F z ∂boundaryMeasure a b) = ∫ t : ℝ, F (mellinLine a t) := by
   have hz (t : ℝ) : F (mellinLine b t)=0 := hs _ (by simpa using hab.ne')
   by_cases hi : Integrable (fun t => F (mellinLine a t))
-  · rw [integral_boundaryMeasure hm ((integrable_boundaryMeasure_iff hm a b).mpr
-      ⟨hi,by simpa only [hz] using (integrable_zero ℝ ℂ volume)⟩)]
+  · have hr : Integrable (fun t : ℝ => F (mellinLine b t)) :=
+      hi.norm.mono' (hm.comp (mellinLine_continuous b).measurable).aestronglyMeasurable
+        (Eventually.of_forall fun t => by
+          change ‖F (mellinLine b t)‖ ≤ ‖F (mellinLine a t)‖
+          rw [hz, norm_zero]
+          exact norm_nonneg _)
+    rw [integral_boundaryMeasure hm ((integrable_boundaryMeasure_iff hm a b).mpr ⟨hi,hr⟩)]
     simp only [hz,integral_zero,add_zero]
   · rw [integral_undef hi,integral_undef (fun h => hi ((integrable_boundaryMeasure_iff hm a b).mp h).1)]
 
@@ -41,10 +46,12 @@ theorem leftLift_inner_op {a b : ℝ} (hab : a < b)
     filter_upwards [hu] with z hz
     simp only [G,hz]
   have hG' (s : ℂ) : (∫ z, G s z ∂μ) = ∫ y : ℝ, K.toFun s (mellinLine a y)*f y := by
-    rw [integral_supported_left hab (hG.comp (measurable_const.prodMk measurable_id)) (by
-      intro z hz
-      simp [G,L,leftLift,hz])]
-    simp only [G,hleft]
+    have hmrow : Measurable (G s) := hG.comp
+      (show Measurable (fun z : ℂ => (s,z)) from measurable_const.prodMk measurable_id)
+    calc
+      _ = ∫ y : ℝ, G s (mellinLine a y) :=
+        integral_supported_left hab hmrow (by intro z hz; simp [G,L,leftLift,hz])
+      _ = _ := by simp only [G,hleft]
   change ⟪u,K.op u⟫_ℂ = _
   rw [K.inner_op]
   calc
@@ -76,6 +83,10 @@ private theorem one_add_line_ne_zero {a : ℝ} (ha : 0 < a) (t : ℝ) : 1+mellin
   simp only [add_re,one_re,mellinLine_re,zero_re] at h
   linarith only [h,ha]
 
+private theorem cancel_factors (u v k r s : ℂ) (hr : r ≠ 0) (hs : s ≠ 0) :
+    (u*r) * (k/(r*s)) * (v*s) = (u*v)*k := by
+  field_simp [hr,hs] <;> ring
+
 /-- The denominators cancel pointwise before either Mellin integral is taken. -/
 theorem arithmetic_test_form {n : ℕ} (φ : TestWeight) (hN : 4 ≤ n+1) (hg : modulusGRH (n+1))
     (hl : 1 ≤ Real.log (n+1 : ℕ)) (ha : 0 < leftEdge (n+1)) (hab : leftEdge (n+1) < 1/8) :
@@ -88,17 +99,21 @@ theorem arithmetic_test_form {n : ℕ} (φ : TestWeight) (hN : 4 ≤ n+1) (hg : 
         conj (mellinMultiplier (n+1) φ (mellinLine a y))) *
         residualKernel (n+1) (mellinLine a x) (mellinLine a y) := by
   dsimp only
-  rw [leftLift_inner_op]
+  rw [leftLift_inner_op hab (arithmeticSqKernel hN hg ha hab.le)
+    (f := fun t => conj (boundaryTest φ (n+1) t))
+    (continuous_conj.measurable.comp (boundaryTest_continuous φ (Nat.succ_pos n)).measurable)
+    (conjugateBoundaryTest_memLp φ hl)]
   apply integral_congr_ae
   filter_upwards with x
   apply integral_congr_ae
   filter_upwards with y
   let a := leftEdge (n+1)
-  have hedge (t : ℝ) : (mellinLine a t).re ∈ Icc a (1/8) := by simp [hab.le]
+  have hedge (t : ℝ) : (mellinLine a t).re ∈ Icc a (1/8) := by
+    rw [mellinLine_re]
+    exact ⟨le_rfl,hab.le⟩
   change conj (conj (boundaryTest φ (n+1) x)) *
     extendedKernel (n+1) a (mellinLine a x) (mellinLine a y) * conj (boundaryTest φ (n+1) y) = _
   rw [extendedKernel,clippedPoint_eq (hedge x),clippedPoint_eq (hedge y)]
-  have hn := one_add_line_ne_zero ha x
   have hz : 1+conj (mellinLine a y) ≠ 0 := by
     intro he
     have h := congrArg conj he
@@ -109,8 +124,7 @@ theorem arithmetic_test_form {n : ℕ} (φ : TestWeight) (hN : 4 ≤ n+1) (hg : 
       ((1+mellinLine a x)*(1+conj (mellinLine a y)))) *
     conj (mellinMultiplier (n+1) φ (mellinLine a y)*(1+mellinLine a y)) = _
   rw [Complex.conj_conj,map_mul,map_add,map_one]
-  field_simp only [hn,hz,mul_ne_zero hn hz]
-  <;> ring
+  exact cancel_factors _ _ _ _ _ (one_add_line_ne_zero ha x) hz
 
 #print axioms arithmetic_test_form
 end

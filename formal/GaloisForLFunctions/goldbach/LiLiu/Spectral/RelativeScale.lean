@@ -25,13 +25,12 @@ theorem spectralScale_div_singularSeries_tendsto :
   have hn : 0 ≤ Real.log N ^ 3 / N :=
     div_nonneg (pow_nonneg (Real.log_natCast_nonneg _) _) (Nat.cast_nonneg N)
   have he : spectralScale N / singularSeries N = Real.sqrt ((Real.log N ^ 3 / N) / singularSeries N) := by
-    apply le_antisymm
-    all_goals
-      apply le_of_sq_le_sq _ (by first | exact Real.sqrt_nonneg _ | exact div_nonneg (Real.sqrt_nonneg _) hS.le)
-      rw [div_pow, spectralScale_sq, Real.sq_sqrt (div_nonneg hn hS.le)]
-      apply le_of_eq
-    · field_simp [hS.ne']; ring
-    · field_simp [hS.ne']; ring
+    have hsq : (spectralScale N / singularSeries N)^2 =
+        Real.sqrt ((Real.log N ^ 3 / N) / singularSeries N)^2 := by
+      rw [div_pow, spectralScale_sq, Real.sq_sqrt (div_nonneg hn hS.le), mul_div_assoc,
+        sq, mul_div_mul_left _ _ hS.ne']
+    exact le_antisymm (le_of_sq_le_sq hsq.le (Real.sqrt_nonneg _))
+      (le_of_sq_le_sq hsq.ge (div_nonneg (Real.sqrt_nonneg _) hS.le))
   rw [he]
   exact Real.sqrt_le_sqrt (div_le_div_of_nonneg_left hn hc (two_mul_twinPrimeConstant_le N))
 

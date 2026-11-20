@@ -169,6 +169,6 @@ theorem first_visible_log_degree {r : ℂ} (hr : 0 < r.re) (m : ℕ) {X : ℝ} (
   have hx := Complex.cpow_ne_zero_iff.mpr (Or.inl (Complex.ofReal_ne_zero.mpr hX.ne') :
     (X:ℂ) ≠ 0 ∨ r+1=0)
   simp only [analyticOrderAt_eq_nat_iff_iteratedDeriv_eq_zero ha,log_power_reading r hr _ hX,
-    mul_ne_zero_iff,ne_eq,hx,not_false_eq_true,true_and]
+    mul_ne_zero_iff,mul_eq_zero,ne_eq,hx,not_false_eq_true,true_and,false_or]
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval.ConductorMoment

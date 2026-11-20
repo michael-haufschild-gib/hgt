@@ -153,17 +153,17 @@ lemma phiE_ker (s : ℕ) : (phiE s).ker = Subgroup.zpowers ((-1, 1, 1) : GalL (s
   simp only [Prod.ext_iff, Prod.fst_one, Prod.snd_one]
   tauto
 
-/-- `Γ_E ≅ ℤ/2^s × {±1}²`: the quotient by `⟨(-1,1,1)⟩` is the image of `phiE`. -/
-lemma nonempty_eGamE (s : ℕ) : Nonempty (GamE s ≃* Multiplicative (ZMod (2 ^ s)) × ℤˣ × ℤˣ) := by
-  have e2 := QuotientGroup.quotientKerEquivOfSurjective (phiE s) (phiE_surj s)
-  have e1 : GamE s ≃* GalL (s + 2) ⧸ (phiE s).ker := QuotientGroup.quotientMulEquivOfEq (phiE_ker s).symm
-  exact ⟨(e1.trans e2).trans (MulEquiv.prodCongr (eQQ s) (MulEquiv.refl _))⟩
+noncomputable def eGamE (s : ℕ) : GamE s ≃* Multiplicative (ZMod (2 ^ s)) × ℤˣ × ℤˣ :=
+  ((QuotientGroup.quotientMulEquivOfEq (phiE_ker s).symm).trans
+    (QuotientGroup.quotientKerEquivOfSurjective (G := GalL (s + 2)) (H := QQ s × ℤˣ × ℤˣ)
+      (phiE s) (phiE_surj s))).trans
+    (MulEquiv.prodCongr (eQQ s) (MulEquiv.refl _))
 
 private lemma card_int_units_eq_two : Nat.card ℤˣ = 2 := by
   rw [Nat.card_eq_fintype_card, Fintype.card_units_int]
 
 lemma card_GamE (s : ℕ) : Nat.card (GamE s) = 2 ^ (s + 2) := by
-  rw [Nat.card_congr (nonempty_eGamE s).some.toEquiv, Nat.card_prod, Nat.card_prod, card_mz, card_int_units_eq_two]
+  rw [Nat.card_congr (eGamE s).toEquiv, Nat.card_prod, Nat.card_prod, card_mz, card_int_units_eq_two]
   ring
 
 lemma resMap_apply {s m : ℕ} (h : s ≤ m) (u : (ZMod (2 ^ (m + 2)))ˣ) (a b : ℤˣ) :
@@ -292,8 +292,8 @@ lemma range_le_closure {s m : ℕ} (h : s ≤ m) :
   have heq : ((iota (m + 2) e * wgen s m ^ (Multiplicative.toAdd k).val, 1, 1) : GalL (m + 2))
       = (iota (m + 2) e, 1, 1) * (wgen s m, 1, 1) ^ (Multiplicative.toAdd k).val := by
     exact Prod.ext rfl
-      (Prod.ext (show (1 : ℤˣ) = 1 * (1 : ℤˣ) ^ (Multiplicative.toAdd k).val by rw [one_pow, mul_one])
-        (show (1 : ℤˣ) = 1 * (1 : ℤˣ) ^ (Multiplicative.toAdd k).val by rw [one_pow, mul_one]))
+      (Prod.ext (show (1 : ℤˣ) = 1 * (1 : ℤˣ) ^ (Multiplicative.toAdd k).val by simp)
+        (show (1 : ℤˣ) = 1 * (1 : ℤˣ) ^ (Multiplicative.toAdd k).val by simp))
   rw [heq]
   exact Subgroup.mul_mem _ hA (Subgroup.pow_mem _ hB _)
 
@@ -312,7 +312,7 @@ theorem ggModel : GGModel := by
 theorem gamEModel : GamEModel := by
   unfold GamEModel
   intro s
-  refine ⟨card_GamE s, nonempty_eGamE s, ?_, ?_⟩
+  refine ⟨card_GamE s, ⟨eGamE s⟩, ?_, ?_⟩
   · unfold JJ
     rw [QuotientGroup.eq, mem_zpowers_sq gen_sq]
     right
