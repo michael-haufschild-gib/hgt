@@ -15,7 +15,7 @@ noncomputable section
 
 open Finset ArithmeticFunction
 open scoped Classical ArithmeticFunction.Moebius
-open GaloisForLFunctions.BezoutValuationIncidence GaloisForLFunctions.QuantitativeFactorizationMatching
+open GaloisForLFunctions.BezoutValuationIncidence
 
 namespace GaloisForLFunctions.RestrictedFactorizationCalculus
 

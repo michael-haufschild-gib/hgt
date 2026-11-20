@@ -191,4 +191,119 @@ theorem integer_midpoint_hidden_interpolation (S : Finset ℕ) (v : ℕ → ℝ)
 #print axioms midpoint_harmonic_iff_constant
 #print axioms linear_growth_midpoint_kernel
 
+/-- The origin and the outer band [B,4B/3] control a subharmonic price
+throughout [0,B]. A positive interior maximum would propagate to a
+strictly smaller maximizer under the lower dilation. -/
+theorem dilation_band_maximum {f : ℝ → ℝ} {B : ℝ} (hB : 0<B)
+    (hc : ContinuousOn f (Set.Icc 0 (4*B/3))) (h₀ : f 0 ≤ 0)
+    (hm : ∀ y : ℝ, 0<y → y<B → 2*f y ≤ f (2*y/3)+f (4*y/3))
+    (hband : ∀ y ∈ Set.Icc B (4*B/3), f y ≤ 0) :
+    ∀ y ∈ Set.Icc 0 B, f y ≤ 0 := by
+  let D := Set.Icc 0 (4*B/3)
+  have hD : IsCompact D := isCompact_Icc
+  obtain ⟨z,hz,hmax⟩ := hD.exists_isMaxOn ⟨0,le_rfl,by positivity⟩ hc
+  let K := {x ∈ D | f x=f z}
+  have hK : IsCompact K := hD.of_isClosed_subset
+    (isClosed_Icc.isClosed_eq hc continuousOn_const) (fun _ hx => hx.1)
+  obtain ⟨x,hx,hmin⟩ := hK.exists_isLeast ⟨z,hz,rfl⟩
+  intro y hy
+  by_contra! hpos
+  have htop := (isMaxOn_iff.mp hmax) y ⟨hy.1,by linarith only [hy.2,hB]⟩
+  have hpx : 0 < f x := hx.2.symm ▸ hpos.trans_le htop
+  have hx₀ : 0<x := lt_of_le_of_ne hx.1.1 (fun he => hpx.not_ge (he ▸ h₀))
+  have hxB : x<B := lt_of_not_ge fun h => hpx.not_ge (hband x ⟨h,hx.1.2⟩)
+  have hlow : 2*x/3 ∈ D := ⟨by positivity,by linarith only [hxB,hB]⟩
+  have hhigh : 4*x/3 ∈ D := ⟨by positivity,by linarith only [hxB]⟩
+  have he : f (2*x/3)=f z := le_antisymm ((isMaxOn_iff.mp hmax) _ hlow)
+    (by linarith only [hm x hx₀ hxB,hx.2,(isMaxOn_iff.mp hmax) _ hhigh])
+  have hle : x ≤ 2*x/3 := hmin ⟨hlow,he⟩
+  linarith only [hx₀,hle]
+
+/-- Comparison with an affine function needs only the origin and one outer band. -/
+theorem midpoint_affine_barrier {F : ℝ → ℝ} (hc : ContinuousOn F (Set.Ici 0))
+    (hh : ∀ y : ℝ, 0<y → 2*F (3*y)=F (2*y)+F (4*y)) {B x : ℝ}
+    (hB : 0<B) (hx : x ∈ Set.Icc 0 B) (c d e : ℝ) (h₀ : c*F 0+e≤0)
+    (hband : ∀ y ∈ Set.Icc B (4*B/3), c*F y+d*y+e≤0) : c*F x+d*x+e≤0 := by
+  apply dilation_band_maximum (f:=fun t => c*F t+d*t+e) hB
+    (((continuousOn_const.mul (hc.mono (fun _ ht => ht.1))).add
+      (continuousOn_const.mul continuousOn_id)).add continuousOn_const)
+    (by simpa only [mul_zero,add_zero] using h₀) _ hband x hx
+  intro y hy _
+  have hmean : 2*F y=F (2*y/3)+F (4*y/3) := by
+    simpa only [show 3*(y/3)=y by ring,show 2*(y/3)=2*y/3 by ring,
+      show 4*(y/3)=4*y/3 by ring] using hh (y/3) (by positivity)
+  linarith only [congrArg (c*·) hmean]
+
+/-- A monotone harmonic price vanishing at zero lies between the two
+linear barriers determined by its outer band. -/
+theorem midpoint_slope_enclosure {F : ℝ → ℝ} (hc : ContinuousOn F (Set.Ici 0))
+    (hmono : MonotoneOn F (Set.Ici 0)) (h₀ : F 0=0)
+    (hh : ∀ y : ℝ, 0<y → 2*F (3*y)=F (2*y)+F (4*y)) {B x : ℝ}
+    (hB : 0<B) (hx : x ∈ Set.Icc 0 B) :
+    3*F B*x ≤ 4*B*F x ∧ B*F x ≤ F (4*B/3)*x := by
+  have hF (y : ℝ) (hy : 0≤y) : 0 ≤ F y := by
+    rw [← h₀]
+    exact hmono (show (0:ℝ)≤0 from le_rfl) hy hy
+  have barrier (c d : ℝ) (hband : ∀ y ∈ Set.Icc B (4*B/3), c*F y+d*y ≤ 0) :
+      c*F x+d*x ≤ 0 := by
+    simpa only [add_zero] using midpoint_affine_barrier hc hh hB hx c d 0
+      (by simp [h₀]) (by simpa only [add_zero] using hband)
+  constructor
+  · have he := barrier (-(4*B)) (3*F B) (fun y hy => by
+      have h₁ := mul_le_mul_of_nonneg_left (show 3*y≤4*B by linarith only [hy.2]) (hF B hB.le)
+      have h₂ := mul_le_mul_of_nonneg_left (hmono hB.le (hB.le.trans hy.1) hy.1)
+        (by positivity : 0≤4*B)
+      linarith only [h₁,h₂])
+    linarith only [he]
+  · have he := barrier B (-F (4*B/3)) (fun y hy => by
+      have ht : (0:ℝ) ≤ 4*B/3 := by positivity
+      have h₁ := mul_le_mul_of_nonneg_left (hmono (hB.le.trans hy.1) ht hy.2) hB.le
+      have h₂ := mul_le_mul_of_nonneg_right hy.1 (hF (4*B/3) ht)
+      linarith only [h₁,h₂])
+    linarith only [he]
+
+/-- Continuity at zero and monotonicity suffice for full affine rigidity.
+The two outer-band barriers give the required linear growth at both ends. -/
+theorem monotone_midpoint_kernel {F : ℝ → ℝ} (hc : ContinuousOn F (Set.Ici 0))
+    (hm : MonotoneOn F (Set.Ici 0)) :
+    (∀ y : ℝ, 0<y → 2*F (3*y)=F (2*y)+F (4*y)) ↔
+      ∀ y : ℝ, 0≤y → F y=F 0+y*(F 1-F 0) := by
+  let G := fun y => F y-F 0
+  have hG : ContinuousOn G (Set.Ici 0) := hc.sub continuousOn_const
+  have hmono : MonotoneOn G (Set.Ici 0) := fun _ hi _ hj h => sub_le_sub_right (hm hi hj h) _
+  have hzero : G 0=0 := sub_self _
+  constructor
+  · intro h
+    have hh (y : ℝ) (hy : 0<y) : 2*G (3*y)=G (2*y)+G (4*y) := by
+      dsimp only [G]
+      linarith only [h y hy]
+    let C := max (G (4/3)) (4*G 1/3)
+    have hbd (y : ℝ) (hy : 0<y) : (G y/y)^2 ≤ C^2 := by
+      have hpos : 0≤G y := by
+        rw [← hzero]
+        exact hmono (show (0:ℝ)≤0 from le_rfl) hy.le hy.le
+      have hupper : G y/y ≤ C := by
+        apply (div_le_iff₀ hy).mpr
+        rcases le_total y 1 with hle | hle
+        · have hs := (midpoint_slope_enclosure hG hmono hzero hh zero_lt_one ⟨hy.le,hle⟩).2
+          simp only [mul_one,one_mul] at hs
+          exact hs.trans (mul_le_mul_of_nonneg_right (le_max_left _ (4*G 1/3)) hy.le)
+        · have hs := (midpoint_slope_enclosure hG hmono hzero hh hy ⟨zero_le_one,hle⟩).1
+          exact (show G y ≤ (4*G 1/3)*y by linarith only [hs]).trans
+            (mul_le_mul_of_nonneg_right (le_max_right (G (4/3)) _) hy.le)
+      exact pow_le_pow_left₀ (div_nonneg hpos hy.le) hupper 2
+    have hg := (linear_growth_midpoint_kernel G (hG.mono Set.Ioi_subset_Ici_self) ⟨C^2,hbd⟩).mp hh
+    intro y hy
+    rcases hy.eq_or_lt with he | hp
+    · simp [← he]
+    · have he := hg y hp
+      dsimp only [G] at he
+      linarith only [he]
+  · intro h y hy
+    rw [h _ (by positivity : 0≤3*y),h _ (by positivity : 0≤2*y),h _ (by positivity : 0≤4*y)]
+    ring
+
+#print axioms dilation_band_maximum
+#print axioms monotone_midpoint_kernel
+
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

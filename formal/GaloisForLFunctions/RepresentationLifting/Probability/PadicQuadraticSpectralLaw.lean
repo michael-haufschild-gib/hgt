@@ -46,6 +46,10 @@ def unitEntryTraceDetEquiv {R : Type*} [CommRing R] (t d : R) :
     · exact congrArg Prod.snd hr
   right_inv q := Prod.ext rfl (Units.ext (IsUnit.unit_spec _))
 
+private theorem card_residue_matrices (q : ℕ) [NeZero q] :
+    Nat.card (Matrix (Fin 2) (Fin 2) (ZMod q)) = q^4 := by
+  simp only [Matrix,Nat.card_fun,Nat.card_fin,Nat.card_zmod,← pow_mul]
+
 variable (p : ℕ) [Fact p.Prime]
 
 /-- Uniform joint trace and determinant on the unit chart. Its Haar mass
@@ -58,15 +62,14 @@ theorem padicMatrixHaar_unitEntry_traceDet (h : ℕ) (t d : ZMod (p^h)) :
   have hq : q ≠ 0 := pow_ne_zero h (Fact.out : p.Prime).ne_zero
   letI : NeZero q := ⟨hq⟩
   have hqR : (q:ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hq
-  rw [padicMatrixHaar_residue_probability, Nat.card_congr (unitEntryTraceDetEquiv t d), Nat.card_prod]
+  rw [padicMatrixHaar_residue_probability p h 2 (fun A => IsUnit (A 0 1) ∧ A.trace=t ∧ A.det=d),
+    Nat.card_congr (unitEntryTraceDetEquiv t d), Nat.card_prod]
   have hu : Nat.card (ZMod q)ˣ = q.totient := by
     rw [Nat.card_eq_fintype_card,ZMod.card_units_eq_totient]
   change (Nat.card (ZMod q)*Nat.card (ZMod q)ˣ : ℕ) / (Nat.card (Matrix (Fin 2) (Fin 2) (ZMod q)) : ℝ) = _
-  rw [hu]
-  simp only [Matrix,Nat.card_fun,Nat.card_fin,Nat.card_zmod,Nat.cast_mul,Nat.cast_pow,← pow_mul]
+  rw [hu,card_residue_matrices,Nat.card_zmod,Nat.cast_mul,Nat.cast_pow]
   change (q:ℝ)*q.totient/(q:ℝ)^4 = q.totient/(q:ℝ)^3
-  field_simp
-  ring
+  field_simp [hqR] <;> ring
 
 /-- Full joint residue law. Ground-field root count changes the density by
 exactly one over p³ per distinct root. -/
@@ -77,12 +80,11 @@ theorem padicMatrixHaar_traceDet_mod_prime (t d : ZMod (p^1)) :
   letI : Fact (p^1).Prime := ⟨by simpa using (Fact.out : p.Prime)⟩
   have hp := (Fact.out : p.Prime).one_le
   have hpR : (p:ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (Fact.out : p.Prime).ne_zero
-  rw [padicMatrixHaar_residue_probability,card_traceDetFibre]
-  simp only [Matrix,Nat.card_fun,Nat.card_fin,Nat.card_zmod,pow_one,Nat.cast_mul,Nat.cast_add,
-    Nat.cast_sub hp,Nat.cast_one,Nat.cast_pow,← pow_mul]
-  change (p:ℝ)*(p-1+Nat.card (traceDetRoot t d))/(p:ℝ)^4 = _
-  field_simp
-  ring
+  rw [padicMatrixHaar_residue_probability p 1 2 (fun A => A.trace=t ∧ A.det=d),card_traceDetFibre]
+  rw [card_residue_matrices,Nat.card_zmod,Nat.cast_mul,Nat.cast_add]
+  have he : (p^1 : ℕ)=p := pow_one _
+  simp only [he,Nat.cast_sub hp,Nat.cast_one,Nat.cast_pow]
+  field_simp [hpR] <;> ring
 
 #print axioms unitEntryTraceDetEquiv
 #print axioms padicMatrixHaar_unitEntry_traceDet

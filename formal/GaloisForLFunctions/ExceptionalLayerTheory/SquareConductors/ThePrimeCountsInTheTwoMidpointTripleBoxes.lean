@@ -686,26 +686,27 @@ theorem prime_triple_surplus_exceeds_power {t : ℝ} (ht : t < 1) (A : ℝ) :
 section ProductFibers
 open Finset ArithmeticFunction
 
-private def boxProductFiber (P : Finset ℕ) (k : ℕ) (omit : Bool) : Finset (ℕ × ℕ × ℕ) :=
-  (P ×ˢ P ×ˢ P).filter fun x => x.1*x.2.1*x.2.2=k ∧ ¬(omit=true ∧ x.1=x.2.1 ∧ x.1=x.2.2)
+private def boxProductFiber (P : Finset ℕ) (k : ℕ) (omitCubes : Bool) : Finset (ℕ × ℕ × ℕ) :=
+  (P ×ˢ P ×ˢ P).filter fun x => x.1*x.2.1*x.2.2=k ∧ ¬(omitCubes=true ∧ x.1=x.2.1 ∧ x.1=x.2.2)
 
-private theorem box_fiber_sum (I P : Finset ℕ) (omit : Bool) :
-    (∑ k ∈ I,((boxProductFiber P k omit).card:ℝ)*(Real.log k/3)) =
+private theorem box_fiber_sum (I P : Finset ℕ) (omitCubes : Bool) :
+    (∑ k ∈ I,((boxProductFiber P k omitCubes).card:ℝ)*(Real.log k/3)) =
       ∑ p ∈ P,∑ q ∈ P,∑ r ∈ P,if p*q*r ∈ I then
-        (if omit=true ∧ p=q ∧ p=r then 0 else Real.log (p*q*r:ℕ)/3) else 0 := by
+        (if omitCubes=true ∧ p=q ∧ p=r then 0 else Real.log (p*q*r:ℕ)/3) else 0 := by
   classical
   let S := P ×ˢ P ×ˢ P
   let F (x : ℕ × ℕ × ℕ) := x.1*x.2.1*x.2.2
-  let C (x : ℕ × ℕ × ℕ) := omit=true ∧ x.1=x.2.1 ∧ x.1=x.2.2
-  have h (k : ℕ) : ((boxProductFiber P k omit).card:ℝ)*(Real.log k/3)=
+  let C (x : ℕ × ℕ × ℕ) := omitCubes=true ∧ x.1=x.2.1 ∧ x.1=x.2.2
+  have h (k : ℕ) : ((boxProductFiber P k omitCubes).card:ℝ)*(Real.log k/3)=
       ∑ x ∈ S,if F x=k then (if C x then 0 else Real.log k/3) else 0 := by
     rw [←nsmul_eq_mul,←sum_const]
     unfold boxProductFiber
     rw [sum_filter]
     apply sum_congr rfl
     intro x _
-    by_cases he : F x=k <;> by_cases hc : C x <;>
-      simp only [F,C] at he hc ⊢ <;> simp [he,hc]
+    change (if F x=k ∧ ¬C x then Real.log k/3 else 0) =
+      (if F x=k then (if C x then 0 else Real.log k/3) else 0)
+    by_cases he : F x=k <;> by_cases hc : C x <;> simp [he,hc]
   rw [sum_congr rfl (fun k _ => h k),sum_comm]
   have point (x : ℕ × ℕ × ℕ) :
       (∑ k ∈ I,if F x=k then (if C x then 0 else Real.log k/3) else 0)=
@@ -725,18 +726,14 @@ private theorem lower_triple_ordering_weight {p q r : ℕ} (hp : p.Prime) (hq : 
       norm_num
     · rw [←pow_two,smooth_triple_repeated hp hr hpr]
       simp [hpr]
-      <;> norm_num
   rcases eq_or_ne p r with rfl | hpr
   · rw [show p*q*p=p^2*q by ring,smooth_triple_repeated hp hq hpq]
     simp [hpq]
-    <;> norm_num
   rcases eq_or_ne q r with rfl | hqr
   · rw [show p*q*q=q^2*p by ring,smooth_triple_repeated hq hp hpq.symm]
     simp [hpq]
-    <;> norm_num
   rw [smooth_triple_distinct hp hq hr hpq hpr hqr]
-  simp [hpq,hpr,hqr]
-  <;> norm_num
+  norm_num [hpq,hpr,hqr]
 
 private def orderedCubeIndex (k : ℕ) :=
   k.divisorsAntidiagonal.sigma (fun x => x.1.divisorsAntidiagonal)
@@ -746,8 +743,8 @@ private def orderedCubeTriple (z : Sigma (fun _ : ℕ × ℕ => ℕ × ℕ)) : �
 
 private theorem upper_fiber_count (Y k : ℕ) (hk : 0<k) (P : Finset ℕ)
     (hP : ∀ p q r : ℕ, p*q*r=k →
-      (p.Prime ∧ Y<p) ∧ (q.Prime ∧ Y<q) ∧ (r.Prime ∧ Y<r) ↔
-        p∈P ∧ q∈P ∧ r∈P) :
+      (((p.Prime ∧ Y<p) ∧ (q.Prime ∧ Y<q) ∧ (r.Prime ∧ Y<r)) ↔
+        p∈P ∧ q∈P ∧ r∈P)) :
     (cubicPrimeIndicator Y^3 : ArithmeticFunction ℝ) k=(boxProductFiber P k false).card := by
   classical
   let A (p : ℕ) := p.Prime ∧ Y<p
@@ -778,22 +775,24 @@ private theorem upper_fiber_count (Y k : ℕ) (hk : 0<k) (P : Finset ℕ)
     mul_apply]
   change _=(S.card:ℝ)
   have hsum : (S.card:ℝ)=∑ z ∈ orderedCubeIndex k,if A z.2.1 ∧ A z.2.2 ∧ A z.1.2 then 1 else 0 := by
-    simp [S]
+    calc
+      (S.card:ℝ) = ∑ _z ∈ S, (1:ℝ) := by simp
+      _ = _ := by dsimp only [S]; rw [Finset.sum_filter]
   rw [hsum,orderedCubeIndex,sum_sigma]
   apply sum_congr rfl
   intro x _
   rw [mul_apply,sum_mul]
   apply sum_congr rfl
   intro z _
-  simp only [cubic_prime_indicator_apply,A]
-  split_ifs <;> simp_all
+  by_cases hp : z.1.Prime ∧ Y<z.1 <;> by_cases hq : z.2.Prime ∧ Y<z.2 <;>
+    by_cases hr : x.2.Prime ∧ Y<x.2 <;> simp [cubic_prime_indicator_apply,A,hp,hq,hr]
 
 private theorem prime_box_as_product_sum {a b y : ℝ} (ha : 0≤a) (hb : 0≤b) (hy : 0<y)
-    (t : ℝ) (omit : Bool) :
-    primeTripleLogPrice a b t y omit =
+    (t : ℝ) (omitCubes : Bool) :
+    primeTripleLogPrice a b t y omitCubes =
       let P := windowPrimes (a*y) (b*y)
       ∑ p ∈ P,∑ q ∈ P,∑ r ∈ P,if ((p*q*r:ℕ):ℝ) ≤ t*y^3 then
-        (if omit=true ∧ p=q ∧ p=r then 0 else Real.log (p*q*r:ℕ)/3) else 0 := by
+        (if omitCubes=true ∧ p=q ∧ p=r then 0 else Real.log (p*q*r:ℕ)/3) else 0 := by
   let P := windowPrimes (a*y) (b*y)
   have hmem {p : ℕ} (hp : p∈P) : (p:ℝ)/y ∈ Set.Ioc a b := by
     obtain ⟨_,hl,hu⟩ := (mem_windowPrimes (mul_nonneg ha hy.le) (mul_nonneg hb hy.le)).mp hp
@@ -807,21 +806,22 @@ private theorem prime_box_as_product_sum {a b y : ℝ} (ha : 0≤a) (hb : 0≤b)
   intro r hr
   have e : (p:ℝ)/y*((q:ℝ)/y)*((r:ℝ)/y)=((p*q*r:ℕ):ℝ)/y^3 := by
     push_cast
-    rw [div_mul_div_comm,div_mul_div_comm,pow_three]
+    rw [div_mul_div_comm,div_mul_div_comm,pow_three,mul_assoc y y y]
   simp only [boxTest,hmem hp,hmem hq,hmem hr,true_and,e,div_le_iff₀ (pow_pos hy 3)]
   split_ifs <;> simp
 
-private theorem lower_coordinate {p q r y : ℝ} (hy : 0<y) (hp : 0≤p) (hq : 0≤q) (hr : 0≤r)
+private theorem lower_coordinate {p q r y : ℝ} (hy : 0<y) (hp : 0≤p) (hr : 0≤r)
     (hqy : q≤y) (hry : r≤y) (hprod : (2/3)*y^3<p*q*r) : (2/3)*y<p := by
   have hm := mul_le_mul (mul_le_mul_of_nonneg_left hqy hp) hry hr (mul_nonneg hp hy.le)
-  exact (lt_of_mul_lt_mul_right (b:=y^2) (by nlinarith only [hprod,hm]) (sq_nonneg y))
+  have bound : ((2/3)*y)*y^2 < p*y^2 := by linarith only [hprod,hm]
+  exact lt_of_mul_lt_mul_right bound (sq_nonneg y)
 
 private theorem upper_coordinate {p q r y : ℝ} (hy : 0<y) (hp : 0≤p)
     (hq : y<q) (hr : y<r) (hprod : p*q*r≤(4/3)*y^3) : p≤(4/3)*y := by
   have hm := mul_le_mul (mul_le_mul_of_nonneg_left hq.le hp) hr.le hy.le
     (mul_nonneg hp (hy.trans hq).le)
-  apply le_of_mul_le_mul_right (b:=y^2) _ (sq_pos_of_pos hy)
-  nlinarith only [hm,hprod]
+  have bound : p*y^2 ≤ ((4/3)*y)*y^2 := by linarith only [hm,hprod]
+  exact le_of_mul_le_mul_right bound (sq_pos_of_pos hy)
 
 private theorem lower_fiber_coefficient {n k : ℕ} (hY : 3 ≤ cubicMidpointCut n)
     (hk : k∈Finset.Ioc (2*n) (3*n)) (y : ℝ) (hy : 0<y)
@@ -835,7 +835,7 @@ private theorem lower_fiber_coefficient {n k : ℕ} (hY : 3 ≤ cubicMidpointCut
   let F := boxProductFiber P k true
   obtain ⟨hl,hu⟩ := Finset.mem_Ioc.mp hk
   have hmem {p : ℕ} : p∈P ↔ p.Prime ∧ (2/3)*y<p ∧ (p:ℝ)≤y := by
-    simpa only [one_mul] using (mem_windowPrimes (p:=p) (x:=(2/3)*y) (y:=1*y) (by positivity) (by positivity))
+    simpa only [P,one_mul] using (mem_windowPrimes (p:=p) (x:=(2/3)*y) (y:=1*y) (by positivity) (by positivity))
   have cut {p : ℕ} : p≤Y ↔ (p:ℝ)≤y := by rw [show Y=⌊y⌋₊ from hf,Nat.le_floor_iff hy.le]
   have hgt : (2/3)*y^3<(k:ℝ) := by rw [hy3]; exact_mod_cast (by linarith only [show 2*(n:ℝ)<k by exact_mod_cast hl] : (2/3:ℝ)*(3*n)<k)
   have members {p q r : ℕ} (hp : p.Prime) (hq : q.Prime) (hr : r.Prime)
@@ -844,7 +844,7 @@ private theorem lower_fiber_coefficient {n k : ℕ} (hY : 3 ≤ cubicMidpointCut
     rw [←e,Nat.cast_mul,Nat.cast_mul] at hg
     have h (a b c : ℕ) (ha : a.Prime) (haY : a≤Y) (hbY : b≤Y) (hcY : c≤Y)
         (hs : (2/3)*y^3<(a:ℝ)*b*c) : a∈P :=
-      hmem.mpr ⟨ha,lower_coordinate hy (Nat.cast_nonneg _) (Nat.cast_nonneg _) (Nat.cast_nonneg _)
+      hmem.mpr ⟨ha,lower_coordinate hy (Nat.cast_nonneg _) (Nat.cast_nonneg _)
         (cut.mp hbY) (cut.mp hcY) hs,cut.mp haY⟩
     exact ⟨h p q r hp h1 h2 h3 hg,h q p r hq h2 h1 h3 (by linarith only [hg]),
       h r p q hr h3 h1 h2 (by linarith only [hg])⟩
@@ -857,8 +857,8 @@ private theorem lower_fiber_coefficient {n k : ℕ} (hY : 3 ≤ cubicMidpointCut
     have hlen : (p*q*r).primeFactorsList.length<4 := by
       rw [(Nat.perm_primeFactorsList_mul (Nat.mul_ne_zero hp.ne_zero hq.ne_zero) hr.ne_zero).length_eq,
         List.length_append,(Nat.perm_primeFactorsList_mul hp.ne_zero hq.ne_zero).length_eq,
-        List.length_append,hp.primeFactorsList,hq.primeFactorsList,hr.primeFactorsList]
-      decide
+        List.length_append,Nat.primeFactorsList_prime hp,Nat.primeFactorsList_prime hq,Nat.primeFactorsList_prime hr]
+      norm_num
     rw [if_pos ⟨hs,hlen⟩,(high_divisor_weight_on_smooth_triple hp hq hr hY h1 h2 h3 hl).2,
       lower_triple_ordering_weight hp hq hr]
     have hperm (a b c : ℕ) (ha : a∈P) (hb : b∈P) (hc : c∈P) (e : a*b*c=p*q*r) :
@@ -873,22 +873,32 @@ private theorem lower_fiber_coefficient {n k : ℕ} (hY : 3 ≤ cubicMidpointCut
         exact ⟨hperm _ _ _ ha hb hc he,hn⟩
       · rintro ⟨ho,hn⟩
         have he := ((mem_prime_triple_orderings hp hq hr).mp ho).2.2.2
-        simp only [primeTripleOrderings,mem_insert,mem_singleton,Prod.mk.injEq] at ho
+        simp only [primeTripleOrderings,Finset.mem_insert,Finset.mem_singleton,Prod.mk.injEq] at ho
         rcases ho with ⟨rfl,rfl,rfl⟩|⟨rfl,rfl,rfl⟩|⟨rfl,rfl,rfl⟩|
           ⟨rfl,rfl,rfl⟩|⟨rfl,rfl,rfl⟩|⟨rfl,rfl,rfl⟩ <;> exact ⟨⟨by assumption,by assumption,by assumption⟩,he,hn⟩
     change _=((boxProductFiber P (p*q*r) true).card:ℝ)/3
     rw [eqs]
     by_cases same : p=q ∧ q=r
     · obtain ⟨rfl,rfl⟩ := same
-      simp [primeTripleOrderings]
+      have empty : (primeTripleOrderings p p p).filter (fun x => ¬(x.1=x.2.1 ∧ x.1=x.2.2)) = ∅ := by
+        apply Finset.eq_empty_iff_forall_notMem.mpr
+        intro x hx
+        obtain ⟨ho,hd⟩ := Finset.mem_filter.mp hx
+        have he : x=(p,p,p) := by simpa [primeTripleOrderings] using ho
+        subst x
+        exact hd ⟨rfl,rfl⟩
+      rw [empty]
+      simp
     · rw [if_neg same]
       have all : ∀ x ∈ primeTripleOrderings p q r,¬(x.1=x.2.1 ∧ x.1=x.2.2) := by
-        rintro ⟨a,b,c⟩ ho ⟨rfl,rfl⟩
-        simp only [primeTripleOrderings,mem_insert,mem_singleton,Prod.mk.injEq] at ho
+        rintro ⟨a,b,c⟩ ho hd
+        change a=b ∧ a=c at hd
+        obtain ⟨rfl,rfl⟩ := hd
+        simp only [primeTripleOrderings,Finset.mem_insert,Finset.mem_singleton,Prod.mk.injEq] at ho
         rcases ho with h|h|h|h|h|h <;> obtain ⟨h₁,h₂,h₃⟩ := h <;> exact same ⟨by omega,by omega⟩
       rw [filter_eq_self.mpr all]
   · have empty : F=∅ := by
-      apply eq_empty_iff_forall_notMem.mpr
+      apply Finset.eq_empty_iff_forall_notMem.mpr
       rintro ⟨p,q,r⟩ h
       obtain ⟨hm,he,_⟩ := mem_filter.mp h
       obtain ⟨hpm,hqr⟩ := mem_product.mp hm
@@ -898,7 +908,7 @@ private theorem lower_fiber_coefficient {n k : ℕ} (hY : 3 ≤ cubicMidpointCut
       obtain ⟨hr,_,h3⟩ := hmem.mp hrm
       exact hex ⟨p,q,r,hp,hq,hr,cut.mpr h1,cut.mpr h2,cut.mpr h3,he.symm⟩
     change _=(F.card:ℝ)/3
-    rw [empty,card_empty,Nat.cast_zero,zero_div]
+    rw [empty,Finset.card_empty,Nat.cast_zero,zero_div]
     split_ifs with h
     · have hw : twiceHighDivisorWeight Y (4*n/(Y+1)) k=0 := by
         by_contra hn
@@ -954,7 +964,7 @@ theorem cubic_triple_prices_eq_sharp_boxes {n : ℕ} (hY : 3 ≤ cubicMidpointCu
     simp only [Finset.mem_Ioc]
     split_ifs <;> first | rfl | omega | ring
   have hQ {p : ℕ} : p∈Q ↔ p.Prime ∧ y<p ∧ (p:ℝ)≤(4/3)*y := by
-    simpa only [one_mul] using (mem_windowPrimes (p:=p) (x:=1*y) (y:=(4/3)*y) (by positivity) (by positivity))
+    simpa only [Q,one_mul] using (mem_windowPrimes (p:=p) (x:=1*y) (y:=(4/3)*y) (by positivity) (by positivity))
   have cut {p : ℕ} : Y<p ↔ y<(p:ℝ) := Nat.floor_lt hy.le
   have upmem {k : ℕ} (hk : k≤4*n) (p q r : ℕ) (he : p*q*r=k) :
       ((p.Prime ∧ Y<p) ∧ (q.Prime ∧ Y<q) ∧ (r.Prime ∧ Y<r)) ↔ p∈Q ∧ q∈Q ∧ r∈Q := by
@@ -990,7 +1000,9 @@ theorem cubic_triple_prices_eq_sharp_boxes {n : ℕ} (hY : 3 ≤ cubicMidpointCu
       (mul_lt_mul_of_pos_left (hQ.mp hq).2.1 (hy.trans (hQ.mp hp).2.1)) hy
     have hr' := mul_lt_mul_of_pos_left (hQ.mp hr).2.1 (mul_pos (hy.trans (hQ.mp hp).2.1) (hy.trans (hQ.mp hq).2.1))
     have gt : 3*n<p*q*r := by
-      have he : ((3*n:ℕ):ℝ)<(p:ℝ)*q*r := by rw [←h3,one_mul,pow_three]; exact hh.trans (hq'.trans hr')
+      have he : ((3*n:ℕ):ℝ)<(p:ℝ)*q*r := by
+        rw [←h3,one_mul,pow_three]
+        simpa only [mul_assoc] using hh.trans (hq'.trans hr')
       exact_mod_cast he
     simp only [Finset.mem_Ioc,gt,true_and,Nat.cast_le]
   rw [lower,upper,sharpPrimeTripleSurplus]

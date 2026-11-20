@@ -113,6 +113,55 @@ theorem oddPrimeJump_twice_odd_full {u X : ℕ} (hu : Odd u) (hX : 2*u ≤ X) :
   rw [htwo,Nat.cast_mul,Nat.cast_ofNat]
   ring
 
+private theorem full_even_divisor_excess {u X : ℕ} (hu : Odd u) (r : ℕ)
+    (hX : 2^(r+1)*u≤X) :
+    divisorPrimeExcess (Ioc 0 X) (2^(r+1)*u) =
+      Real.log 2 + (∑ p ∈ u.primeFactors, Real.log p) -
+        ((r:ℝ)+2)*u.divisors.card := by
+  have hu₀ : 0<u := by obtain ⟨j,hj⟩ := hu; omega
+  have hc := (Nat.coprime_two_left.mpr hu).pow_left (r+1)
+  have hnot : 2∉u.primeFactors := fun h => hu.not_two_dvd_nat (Nat.dvd_of_mem_primeFactors h)
+  rw [full_divisor_excess (by positivity) hX,hc.card_divisors_mul,hc.primeFactors_mul,
+    Nat.primeFactors_pow 2 (Nat.succ_ne_zero r),Nat.prime_two.primeFactors,singleton_union,sum_insert hnot,
+    Nat.divisors_prime_pow Nat.prime_two,card_map,card_range,Nat.cast_mul,Nat.cast_succ,Nat.cast_succ]
+  ring
+
+/-- From dyadic exponent two onward the jump is affine in that exponent.
+Its slope is the number of divisors of the odd core. -/
+theorem oddPrimeJump_higher_full {u X : ℕ} (hu : Odd u) (r : ℕ) (hX : 2^(r+2)*u≤X) :
+    oddPrimeJump (Ioc 0 X) (2^(r+2)*u) =
+      ((r:ℝ)+1)*u.divisors.card - Real.log 2 - ∑ p ∈ u.primeFactors, Real.log p := by
+  have hu₀ : 0<u := by obtain ⟨j,hj⟩ := hu; omega
+  have hscale : 2^(r+2)*u = 2*(2^(r+1)*u) := by rw [pow_succ (2:ℕ) (r+1)]; ring
+  have hX' : 2^(r+1)*u≤X := by rw [hscale] at hX; omega
+  rw [hscale,oddPrimeJump_double _ (by positivity),← hscale,
+    full_even_divisor_excess hu (r+1) hX,full_even_divisor_excess hu r hX',Nat.cast_succ]
+  ring
+
+/-- Two successive high dyadic jumps read the divisor count of the odd
+core. The cutoff needs only to contain the later numerator. -/
+theorem dyadic_jump_difference_reads_divisor_count {u X : ℕ} (hu : Odd u) (r : ℕ)
+    (hX : 2^(r+3)*u≤X) :
+    oddPrimeJump (Ioc 0 X) (2^(r+3)*u) - oddPrimeJump (Ioc 0 X) (2^(r+2)*u) = u.divisors.card := by
+  have hs : 2^(r+3)*u=2*(2^(r+2)*u) := by rw [pow_succ (2:ℕ) (r+2)]; ring
+  have hX' : 2^(r+2)*u≤X := by rw [hs] at hX; omega
+  rw [oddPrimeJump_higher_full hu (r+1) hX,oddPrimeJump_higher_full hu r hX',Nat.cast_succ]
+  ring
+
+/-- A signed stencil of four numerator jumps has constant value log 2
+on every odd core. The radical and divisor count both cancel. -/
+theorem four_dyadic_jumps_constant {u X : ℕ} (hu : Odd u) (hX : 8*u≤X) :
+    oddPrimeJump (Ioc 0 X) u + oddPrimeJump (Ioc 0 X) (2*u) +
+      (oddPrimeJump (Ioc 0 X) (8*u) - oddPrimeJump (Ioc 0 X) (4*u)) = Real.log 2 := by
+  have hu₀ : 0<u := by obtain ⟨j,hj⟩ := hu; omega
+  rw [dyadic_jump_difference_reads_divisor_count hu 0 hX,oddPrimeJump_twice_odd_full hu (by omega),
+    oddPrimeJump_odd _ hu,full_divisor_excess hu₀ (by omega)]
+  ring
+
+#print axioms oddPrimeJump_higher_full
+#print axioms dyadic_jump_difference_reads_divisor_count
+#print axioms four_dyadic_jumps_constant
+
 #print axioms oddPrimeJump_divisors
 #print axioms divisorPrimeExcess_dyadic
 #print axioms oddPrimeJump_twice_odd_full

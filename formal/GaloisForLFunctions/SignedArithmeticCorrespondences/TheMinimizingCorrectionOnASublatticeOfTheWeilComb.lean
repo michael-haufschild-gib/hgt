@@ -31,7 +31,8 @@ private theorem site_expansion (E : Finset ℕ) (x : E → ℝ) :
   classical
   funext n
   by_cases h : n ∈ E
-  · have he (i : E) : n = (i:ℕ) ↔ (⟨n,h⟩ : E) = i := Subtype.ext_iff.symm
+  · have he (i : E) : n = (i:ℕ) ↔ (⟨n,h⟩ : E) = i :=
+      ⟨fun eq => Subtype.ext eq, fun eq => congrArg Subtype.val eq⟩
     simp only [combSiteExtension, dif_pos h, he, mul_ite, mul_one, mul_zero, sum_ite_eq,
       mem_univ, if_true]
   · have he (i : E) : n ≠ (i:ℕ) := fun eq => h (eq ▸ i.property)
@@ -84,8 +85,8 @@ theorem eventually_comb_site_response (d : ℕ+) (hd : 2 ≤ (d:ℕ)) (Q : ℕ+)
     have hs : (∑ n ∈ E, (combSiteExtension E x n)^2) = ∑ n ∈ S, (combSiteExtension E x n)^2 :=
       sum_subset (filter_subset ..) (fun n _ hn => by simp [combSiteExtension,hn])
     have hx : (∑ i : E, (x i)^2) = ∑ n ∈ E, (combSiteExtension E x n)^2 := by
-      rw [← sum_attach]
-      exact sum_congr rfl fun i _ => by simp [combSiteExtension,i.property]
+      rw [← sum_coe_sort E (fun n : ℕ => (combSiteExtension E x n)^2)]
+      exact sum_congr rfl fun (i : E) _ => by simp [combSiteExtension,i.property]
     rw [hx,hs]
     exact hfloor _ z
   have inj : Function.Injective L := by
@@ -180,7 +181,7 @@ theorem rh_iff_cofinal_even_row_equilibria :
   · intro h K _
     apply Eventually.frequently
     filter_upwards [top (eventually_combForm_nonneg_of_riemannHypothesis h K)] with N hN
-    intro c _
+    intro _ c _
     change 0 ≤ combForm (S K N) c
     rw [win]
     exact hN c

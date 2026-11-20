@@ -90,7 +90,7 @@ and holomorphic dependence on s throughout Re s > −3. -/
 theorem eighth_proper_power_dirichlet_correction :
     AnalyticOnNhd ℂ (LSeries (fun n => eighthShortfallCoeff true n-eighthShortfallCoeff false n)) {s : ℂ | -3 < s.re} := by
   obtain ⟨A,hA⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
-  have bound (n : ℕ) (np : 0<n) : ‖eighthShortfallCoeff true n-eighthShortfallCoeff false n‖ ≤ |A|*Real.sqrt 2/(n:ℝ)^4 := by
+  have bound (n : ℕ) (np : 0<n) : ‖eighthShortfallCoeff true n-eighthShortfallCoeff false n‖ ≤ |A| * Real.sqrt 2/(n:ℝ)^4 := by
     have nr : 0<(n:ℝ) := Nat.cast_pos.mpr np
     have hp := octave_gcd_product_ordinary_primes (pow_pos np 8) (n^9)
     let Q := Real.log (octaveGcdProduct (n^8) (n^9))
@@ -112,7 +112,7 @@ theorem eighth_proper_power_dirichlet_correction :
   have ab : LSeries.abscissaOfAbsConv (fun n => eighthShortfallCoeff true n-eighthShortfallCoeff false n) ≤ ((-3:ℝ):EReal) := by
     apply power_majorant
     intro y hy
-    refine ⟨|A|*Real.sqrt 2,-4-y,by linarith only [hy],?_⟩
+    refine ⟨|A| * Real.sqrt 2,-4-y,by linarith only [hy],?_⟩
     filter_upwards [eventually_ge_atTop (1:ℕ)] with n hn
     apply (div_le_div_of_nonneg_right (bound n hn) (Real.rpow_nonneg (Nat.cast_nonneg _) _)).trans_eq
     rw [Real.rpow_sub (Nat.cast_pos.mpr hn),Real.rpow_neg (Nat.cast_nonneg _),

@@ -51,11 +51,15 @@ private theorem assemble_exports {S V H : Finset ℕ} (hV : V ⊆ S)
     injOn := by
       intro n hn m hm he
       dsimp only [g] at he
-      split_ifs at he with h h'
-      · exact A.injOn h h' he
-      · exact ((hf m hm).2.1 (he ▸ hv n h)).elim
-      · exact ((hf n hn).2.1 (he ▸ hv m h')).elim
-      · exact hinj hn hm he
+      by_cases h : n ∈ A.sources <;> by_cases h' : m ∈ A.sources
+      · rw [if_pos h,if_pos h'] at he
+        exact A.injOn h h' he
+      · rw [if_pos h,if_neg h'] at he
+        exact ((hf m hm).2.1 (he ▸ hv n h)).elim
+      · rw [if_neg h,if_pos h'] at he
+        exact ((hf n hn).2.1 (he.symm ▸ hv m h')).elim
+      · rw [if_neg h,if_neg h'] at he
+        exact hinj hn hm he
     partner_mem := by
       intro n hn
       change g n ∈ negParity S
@@ -99,6 +103,19 @@ private def splitLarger (X n : ℕ) : ℕ :=
   let p := n.minFac
   let T := (X:ℝ)/p
   p*rankedSlot (windowPrimes T (2*T)) (semiprimeTargets T (2*T)) (n/p)
+
+/-- The least-prime fibre puts a squarefree cofactor back in the row of its new prime. -/
+private theorem restore_prime_row {m p : ℕ} (hm : 1 < m) (hs : Squarefree m)
+    (hp : p.Prime) (hlt : p < m.minFac) : (m*p).minFac = p ∧ Squarefree (m*p) := by
+  have hm0 := Nat.zero_lt_one.trans hm
+  have child : m ∈ roughTails (0/p) (m*p/p) p := by
+    rw [Nat.zero_div,Nat.mul_div_cancel _ hp.pos]
+    exact mem_roughTails.mpr ⟨hm,hm0,le_rfl,hs,hlt⟩
+  have row : m*p ∈ (roughTails 0 (m*p) 0).filter (fun n => n.minFac=p) := by
+    rw [roughTails_minFac_fibre hp hp.pos (Nat.le_mul_of_pos_left p hm0)]
+    exact mem_union_right _ (mem_image_of_mem _ child)
+  obtain ⟨tail,least⟩ := mem_filter.mp row
+  exact ⟨least,(mem_roughTails.mp tail).2.2.2.1⟩
 
 private theorem split_in_row {X n : ℕ} (hn : n ∈ Ioc X (2*X)) (hsq : Squarefree n)
     (hm : μ n=1) (hp : n.minFac.Prime) (hz : (n/n.minFac).Prime) (hbig : 5<n.minFac)
@@ -144,23 +161,21 @@ private theorem split_in_row {X n : ℕ} (hn : n ∈ Ioc X (2*X)) (hsq : Squaref
     have hh' : 5*p*p=5*p^2 := by ring
     exact hlow.not_ge ((hh.trans_eq hh').trans hscale)
   have hap' : a<p := ha5.trans_lt hbig
-  have hrp := append_smallest hb.one_lt hp (by rwa [hb.minFac_eq])
+  have hrp := restore_prime_row hb.one_lt (Irreducible.squarefree hb) hp (by rwa [hb.minFac_eq])
   have hbp : 1<b*p := hb.one_lt.trans_le (Nat.le_mul_of_pos_right b hp.pos)
-  have hsmall := append_smallest hbp hap (by rwa [hrp.1])
+  have hsmall := restore_prime_row hbp hrp.2 hap (by rwa [hrp.1])
   have form : N=(b*p)*a := by rw [hNW,hW]; ring
-  have hsN : Squarefree N := by
-    rw [form]; exact Nat.squarefree_mul_iff.mpr ⟨hsmall.2,
-      Nat.squarefree_mul_iff.mpr ⟨hrp.2,Irreducible.squarefree hb,Irreducible.squarefree hp⟩,Irreducible.squarefree hap⟩
+  have hsN : Squarefree N := form ▸ hsmall.2
   have hmu : μ N = -1 := by
-    rw [form,isMultiplicative_moebius.map_mul_of_coprime hsmall.2,
-      isMultiplicative_moebius.map_mul_of_coprime hrp.2,moebius_apply_prime hb,
+    rw [form,isMultiplicative_moebius.map_mul_of_coprime (Nat.squarefree_mul_iff.mp hsmall.2).1,
+      isMultiplicative_moebius.map_mul_of_coprime (Nat.squarefree_mul_iff.mp hrp.2).1,moebius_apply_prime hb,
       moebius_apply_prime hp,moebius_apply_prime hap]; decide
   have hmin : N.minFac=a := form ▸ hsmall.1
-  refine ⟨mem_filter.mpr ⟨mem_Ioc.mpr ⟨hNW ▸ hlow,hNW ▸ hhigh⟩,hmu⟩,
-    hmin ▸ has,?_,?_,hzwin⟩
-  · rw [hmin,form,Nat.mul_div_cancel _ hap.pos,hrp.1]
-  · exact ⟨hsq,hsN,by rw [hm,hmu]; decide,p,z,a,b,hz,hap,hb,hap'.trans hpb,
-      Or.inl ⟨hprod.symm.trans (Nat.mul_comm ..),by change p*W=p*(a*b); rw [hW]⟩⟩
+  have inWindow : N ∈ Ioc X (2*X) := by rw [hNW]; exact mem_Ioc.mpr ⟨hlow,hhigh⟩
+  have middle : (N/N.minFac).minFac=p := by rw [hmin,form,Nat.mul_div_cancel _ hap.pos,hrp.1]
+  refine ⟨mem_filter.mpr ⟨inWindow,hmu⟩,hmin ▸ has,middle,?_,hzwin⟩
+  exact ⟨hsq,hsN,by rw [hm,hmu]; decide,p,z,a,b,hz,hap,hb,hap'.trans hpb,
+    Or.inl ⟨hprod.symm.trans (Nat.mul_comm ..),by change p*W=p*(a*b); rw [hW]⟩⟩
 
 /-- All vertices of the fourth-root least-prime region can be covered.
 Exactly its signed excess exits the region, and every external target has
@@ -250,7 +265,7 @@ theorem eventually_exact_least_prime_exports :
     obtain ⟨a,b,ha,hb,hab,he⟩ := positive_is_semiprime hfour (mem_filter.mpr ⟨hs,hμ⟩)
     have hmin : n.minFac=a := by
       rw [he,Nat.mul_comm a b]
-      exact (append_smallest hb.one_lt ha (by rwa [hb.minFac_eq])).1
+      exact (restore_prime_row hb.one_lt (Irreducible.squarefree hb) ha (by rwa [hb.minFac_eq])).1
     have hz : (n/n.minFac).Prime := by rw [hmin,he,Nat.mul_div_cancel_left _ ha.pos]; exact hb
     exact split_in_row (hVI hm) (mem_roughTails.mp hs).2.2.2.1 hμ (hmin ▸ ha) hz h5 hsmall (hH _ hH') h30
   refine assemble_exports hVI A hAs hneg (splitLarger X) ?_ ?_

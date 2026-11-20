@@ -145,12 +145,11 @@ private theorem oriented_step (k r : ℕ) :
   rw [rank_successor,sum_union hd,he,mul_add,mul_left_comm,←mul_pow]
   norm_num [pow_succ]
 
-/-- Alternating cancellation leaves a nonnegative integer at most the top defect layer. -/
-theorem orientedDefectCount_bounds {k r : ℕ} (hr : k.primeFactors.card=2*r+1) :
-    0 ≤ orientedDefectCount k r ∧ orientedDefectCount k r ≤ (unitaryDefectLayer k r).card := by
-  suffices h : ∀ j ≤ r, 0 ≤ orientedDefectCount k j ∧ orientedDefectCount k j ≤ (unitaryDefectLayer k j).card
-    from h r le_rfl
-  intro j
+/-- Alternating cancellation at every rank below the midpoint is bounded by
+the size of its last layer. -/
+theorem orientedDefectCount_bounds_below {k r : ℕ} (hr : k.primeFactors.card=2*r+1)
+    (j : ℕ) : j ≤ r → 0 ≤ orientedDefectCount k j ∧
+      orientedDefectCount k j ≤ (unitaryDefectLayer k j).card := by
   induction j with
   | zero =>
     intro _
@@ -170,6 +169,84 @@ theorem orientedDefectCount_bounds {k r : ℕ} (hr : k.primeFactors.card=2*r+1) 
     rw [oriented_step]
     omega
 
+theorem orientedDefectCount_bounds {k r : ℕ} (hr : k.primeFactors.card=2*r+1) :
+    0 ≤ orientedDefectCount k r ∧ orientedDefectCount k r ≤ (unitaryDefectLayer k r).card :=
+  orientedDefectCount_bounds_below hr r le_rfl
+
+/-- Inclusion counting bounds how many heavy subsets can be hidden by
+alternating signs. At the middle rank at least 2/(r+2) of the layer survives. -/
+theorem unitaryDefectLayer_surviving_fraction {k r j : ℕ} (hr : k.primeFactors.card=2*r+1)
+    (hj : j < r) :
+    (2*((r:ℤ)-j))*(unitaryDefectLayer k (j+1)).card ≤
+      (2*(r:ℤ)+1-j)*orientedDefectCount k (j+1) := by
+  have hsub : j ≤ k.primeFactors.card := by omega
+  have hg := unitaryDefectLayer_normalized_growth k j
+  have hg' : ((unitaryDefectLayer k j).card:ℤ)*(k.primeFactors.card-j : ℕ) ≤
+      (unitaryDefectLayer k (j+1)).card*((j:ℤ)+1) := by exact_mod_cast hg
+  rw [Nat.cast_sub hsub,hr] at hg'
+  push_cast at hg'
+  have hco : 0 ≤ 2*(r:ℤ)+1-j := by omega
+  have h := mul_le_mul_of_nonneg_right (orientedDefectCount_bounds_below hr j hj.le).2 hco
+  rw [oriented_step]
+  linarith only [hg',h]
+
+private theorem zero_layer (k : ℕ) : unitaryDefectLayer k 0 = ∅ := by
+  apply eq_empty_iff_forall_notMem.mpr
+  intro S hS
+  obtain ⟨_,hc,hh⟩ := mem_layer.mp hS
+  rw [card_eq_zero.mp hc] at hh
+  have hpos : 0 < primePowerSubset k k.primeFactors :=
+    Finset.prod_pos fun p hp => pow_pos (Nat.prime_of_mem_primeFactors hp).pos _
+  rw [sdiff_empty,show primePowerSubset k ∅ = 1 by simp [primePowerSubset]] at hh
+  omega
+
+/-- An empty alternating defect forces absence of every overweight set
+of that rank. In particular cancellation cannot mimic the central price. -/
+theorem orientedDefectCount_zero_iff {k r j : ℕ} (hr : k.primeFactors.card=2*r+1)
+    (hj : j ≤ r) : orientedDefectCount k j = 0 ↔ unitaryDefectLayer k j = ∅ := by
+  obtain ⟨h₀,h₁⟩ := orientedDefectCount_bounds_below hr j hj
+  constructor
+  · intro h
+    cases j with
+    | zero => exact zero_layer k
+    | succ j =>
+      have H := unitaryDefectLayer_surviving_fraction hr (show j < r by omega)
+      rw [h,mul_zero] at H
+      apply card_eq_zero.mp
+      by_contra he
+      have hp : (0:ℤ) < (unitaryDefectLayer k (j+1)).card := by exact_mod_cast Nat.pos_of_ne_zero he
+      exact (not_lt_of_ge H) (mul_pos (by omega) hp)
+  · intro h
+    rw [h,card_empty,Nat.cast_zero] at h₁
+    omega
+
+private theorem odd_midpoint_oriented {k r : ℕ} (hr : k.primeFactors.card=2*r+1) :
+    (-1:ℤ)^r * unitaryHalfWeight k = (2*r).choose r-2*orientedDefectCount k r := by
+  have hw := unitaryHalfWeight_rank_formula k
+  dsimp only at hw
+  rw [hr,if_neg (by omega),if_neg (by simp),show (2*r+1)/2=r by omega] at hw
+  have hsg : (-1:ℤ)^r * (-1)^r = 1 := by rw [←mul_pow]; norm_num
+  rw [hw,mul_sub,←mul_assoc,hsg,one_mul,orientedDefectCount]
+  ring
+
+/-- The central price is attained precisely when every middle-rank
+unitary divisor lies on the small side of the square-root cut. -/
+theorem odd_midpoint_central_iff {k r : ℕ} (hr : k.primeFactors.card=2*r+1) :
+    (-1:ℤ)^r*unitaryHalfWeight k = (2*r).choose r ↔ unitaryDefectLayer k r = ∅ := by
+  rw [odd_midpoint_oriented hr,←orientedDefectCount_zero_iff hr le_rfl]
+  omega
+
+/-- At the opposite extreme the last layer must saturate Erdős–Ko–Rado
+and the preceding layer must be empty. These conditions also suffice. -/
+theorem odd_midpoint_opposite_iff {k s : ℕ} (hr : k.primeFactors.card=2*(s+1)+1) :
+    (-1:ℤ)^(s+1)*unitaryHalfWeight k = ((2*(s+1)).choose (s+1):ℤ)-2*(2*(s+1)).choose s ↔
+      (unitaryDefectLayer k (s+1)).card = (2*(s+1)).choose s ∧ unitaryDefectLayer k s = ∅ := by
+  have hmax := unitaryDefectLayer_erdos_ko_rado (k:=k) (j:=s+1) (by omega)
+  rw [hr,Nat.add_sub_cancel,Nat.add_sub_cancel] at hmax
+  have h₀ := (orientedDefectCount_bounds_below hr s (by omega)).1
+  rw [odd_midpoint_oriented hr,oriented_step,←orientedDefectCount_zero_iff hr (by omega : s ≤ s+1)]
+  omega
+
 /-- At every odd rank, the midpoint lies on a finite arithmetic progression.
 The number of downward steps from the central extremum is at most C(2r,r−1). -/
 theorem odd_unitary_midpoint_range_bound {k r : ℕ} (hr : k.primeFactors.card=2*r+1) :
@@ -188,6 +265,9 @@ theorem odd_unitary_midpoint_range_bound {k r : ℕ} (hr : k.primeFactors.card=2
     linear_combination (2*∑ S ∈ unitaryRankDefects k r, (-1:ℤ)^S.card)*hsg
 
 #print axioms unitaryDefectLayer_erdos_ko_rado
+#print axioms unitaryDefectLayer_surviving_fraction
+#print axioms odd_midpoint_central_iff
+#print axioms odd_midpoint_opposite_iff
 #print axioms orientedDefectCount_bounds
 #print axioms odd_unitary_midpoint_range_bound
 

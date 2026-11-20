@@ -101,8 +101,8 @@ theorem fourfold_path_sites_disjoint {k : ℕ} {u v : FourfoldPath}
   intro n hn hm
   cases u <;> cases v <;>
     simp only [FourfoldPath.admissible,FourfoldPath.sites,fourfoldPairs,fourfoldTriples,fourfoldQuads,
-      mem_insert,mem_singleton,mem_filter,mem_Ioc,FourfoldPath.pair.injEq,FourfoldPath.triple.injEq,
-      FourfoldPath.quad.injEq] at * <;> omega
+      mem_insert,mem_singleton,mem_filter,mem_Ioc] at hu hv hn hm <;>
+    (apply hne; congr 1; omega)
 
 theorem fourfold_path_sites_subset {k : ℕ} {u : FourfoldPath} (hu : u.admissible k) :
     u.sites ⊆ Ioc (6*k) (24*k) := by

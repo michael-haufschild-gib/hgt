@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.Chebyshev.OrbitCubicTraceOneElements
 import Mathlib.LinearAlgebra.Dimension.Constructions
+import Mathlib.LinearAlgebra.Matrix.PosDef
 
 /-!
 # A quadratic rank obstruction in every simplest cubic order
@@ -107,7 +108,10 @@ private abbrev RationalVectors (r : ℕ) := Fin r → ℚ × ℚ × ℚ
 private def synthesize (m : ℤ) (r : ℕ) : RationalVectors r →ₗ[ℚ] Vec m r where
   toFun v i := coords m (v i).1 (v i).2.1 (v i).2.2
   map_add' x y := by funext i; simp [coords,add_smul] <;> abel
-  map_smul' a x := by funext i; simp [coords,smul_add,smul_smul,smul_eq_mul]
+  map_smul' a x := by
+    funext i
+    simp [coords,smul_add,smul_smul,smul_eq_mul]
+    simp [Algebra.smul_def]
 
 private theorem rational_rank_bound {I : Type*} [Fintype I] (z : I → heightOne m)
     (hz : Function.Injective z) (Q : Matrix (Fin r) (Fin r) (K m)) (hQ : classicalPositive Q)

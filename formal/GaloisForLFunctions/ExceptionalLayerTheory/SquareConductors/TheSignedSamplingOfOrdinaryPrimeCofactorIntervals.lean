@@ -315,7 +315,9 @@ private theorem finite_cofactor_mass {η : ℝ} (hη : 0 < η) {n Q : ℕ} (hn :
     fun _ _ _ => by positivity).trans (_root_.RHTower.Sieve.sum_Icc_one_div_le_one_add_log (4*n))
   exact (mul_le_mul_of_nonneg_left h (by positivity : 0 ≤ 20*(n:ℝ)*M*L)).trans_eq (by change 20*(n:ℝ)*M*L*L=20*(n:ℝ)*M*L^2; ring)
 
-private theorem full_midpoint_motion {m n : ℕ} (hm : m ≤ n) :
+/-- Moving the midpoint from m to n costs at most six endpoint logarithms
+per integer step. -/
+theorem full_midpoint_motion {m n : ℕ} (hm : m ≤ n) :
     |primeMidpointPrice n-primeMidpointPrice m| ≤ 6*((n:ℝ)-m)*Real.log (4*n:ℕ) := by
   rcases eq_zero_or_pos n with rfl | hn
   · obtain rfl : m=0 := by omega

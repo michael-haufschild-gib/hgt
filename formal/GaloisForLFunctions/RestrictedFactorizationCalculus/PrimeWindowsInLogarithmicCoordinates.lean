@@ -206,9 +206,8 @@ private theorem primitive_derivative {x : ℝ} (hx : 0 < x) (hx' : x < 1) :
   have hc := (hasDerivAt_const x (1:ℝ)).sub (hasDerivAt_id x)
   have hp := (Real.hasDerivAt_log hx.ne').sub
     ((Real.hasDerivAt_log (sub_pos.mpr hx').ne').comp x hc)
-  convert hp using 1
-  · rfl
-  · field_simp [hx.ne',(sub_pos.mpr hx').ne'] <;> ring
+  apply hp.congr_deriv
+  field_simp [hx.ne',(sub_pos.mpr hx').ne'] <;> ring
 
 /-- The semiprime primitive on a compact exponent interval. The cubic term
 records the curvature lost by the constant lower bound four for its density. -/
@@ -221,10 +220,10 @@ theorem pairPrimitive_increment {d a b : ℝ} (hd : 0 < d) (ha : d ≤ a) (hab :
   have hder (x : ℝ) (hx : x ∈ Set.Icc a b) := primitive_derivative
     (hd.trans_le (ha.trans hx.1)) (by linarith only [hx.2,hb,hd] : x < 1)
   have hG (x : ℝ) : HasDerivAt G (g x) x := by
-    dsimp [G,g]
-    convert (hasDerivAt_id x |>.const_mul 4).sub
+    have H := (hasDerivAt_id x |>.const_mul 4).sub
       ((((hasDerivAt_const x (1:ℝ)).sub ((hasDerivAt_id x).const_mul 2)).pow 3).const_mul (2/3:ℝ))
-      using 1 <;> ring
+    apply H.congr_deriv
+    simp [g,id] <;> ring
   obtain ⟨x,hx,he⟩ := secant_value hab (fun t ht => (hder t ht).sub (hG t))
   have dx : 0 < x*(1-x) := mul_pos (hd.trans_le (ha.trans hx.1))
     (by linarith only [hx.2,hb,hd])
@@ -261,7 +260,9 @@ private theorem kernel_lip {d u v : ℝ} (hd : 0 < d)
     by linarith only [hu.1,hv.1,hd.le]⟩
   have he : 1/(u*(1-u))-1/(v*(1-v)) =
       ((v-u)*(1-u-v))/((u*(1-u))*(v*(1-v))) := by
-    field_simp [hdu.ne',hdv.ne'] <;> ring
+    rw [div_sub_div 1 1 hdu.ne' hdv.ne']
+    congr 1
+    ring
   rw [he,abs_div,abs_mul,abs_of_pos (mul_pos hdu hdv),abs_sub_comm v u]
   calc _ ≤ |u-v|/((u*(1-u))*(v*(1-v))) := div_le_div_of_nonneg_right
              (by simpa only [mul_one] using mul_le_mul_of_nonneg_left hlin (abs_nonneg (u-v)))
@@ -341,7 +342,8 @@ theorem no_limiting_deficit_below_one_quarter {x : ℝ} (xp : 0<x) (small : x �
 
 private lemma deficit_continuous {a b : ℝ} (ap : 0<a) (half : b ≤ 1/2) :
     ContinuousOn orderedRowDeficit (Set.Icc a b) := by
-  apply continuousOn_const.max
+  unfold orderedRowDeficit
+  apply continuousOn_const.sup
   apply continuousOn_const.sub
   apply continuousOn_const.sub
   exact fun x hx => (primitive_derivative (ap.trans_le hx.1) (hx.2.trans_lt (half.trans_lt (by norm_num)))).continuousAt.continuousWithinAt
@@ -379,8 +381,10 @@ theorem strict_spare_capacity_in_the_limiting_prime_row :
   have sub : Set.Icc s t ⊆ Set.Icc A B := Set.Icc_subset_Icc As tB
   have hgap := intervalIntegral.integral_mono_interval As sT tB
     ((ae_restrict_mem measurableSet_Ioc).mono (fun x hx => ge ⟨hx.1.le,hx.2⟩)) (integ cont)
-  have short := intervalIntegral.integral_mono_on sT
-    (((continuousOn_const.mul inv).mono sub).intervalIntegrable_of_Icc sT)
+  have shortBound : ContinuousOn (fun x : ℝ => (1/96:ℝ)*x⁻¹) (Set.Icc s t) :=
+    (continuousOn_const.mul inv).mono sub
+  have short := intervalIntegral.integral_mono_on (μ := volume) sT
+    (shortBound.intervalIntegrable_of_Icc sT)
     ((cont.mono sub).intervalIntegrable_of_Icc sT) (fun x hx => by
       change (1/96:ℝ)*x⁻¹ ≤ (4*x-1)/x-orderedRowDeficit x/x
       rw [←div_eq_mul_inv,←sub_div,div_le_div_iff_of_pos_right (pos (sub hx))]
@@ -388,7 +392,7 @@ theorem strict_spare_capacity_in_the_limiting_prime_row :
   rw [intervalIntegral.integral_const_mul,integral_inv_of_pos (by norm_num [s]) (by norm_num [t]),
     show t/s=9/8 by norm_num [s,t]] at short
   have total : (∫ x in A..B,(4*x-1)/x)+(∫ x in B..1,x⁻¹)=1 := by
-    have iden := intervalIntegral.integral_congr (a := A) (b := B) (f := fun x : ℝ => (4*x-1)/x)
+    have iden := intervalIntegral.integral_congr (μ := volume) (a := A) (b := B) (f := fun x : ℝ => (4*x-1)/x)
       (g := fun x : ℝ => 4-x⁻¹) (fun x hx => by
         rw [Set.uIcc_of_le AB] at hx; field_simp [(pos hx).ne'])
     rw [iden,intervalIntegral.integral_sub intervalIntegrable_const (integ inv),intervalIntegral.integral_const,
@@ -415,9 +419,10 @@ theorem limiting_surplus_at_the_fourth_root :
   have ab : A ≤ B := by norm_num [A,B]
   have pos {x : ℝ} (hx : x∈Set.Icc A B) := (by norm_num : 0<A).trans_le hx.1
   have primitive (x : ℝ) : HasDerivAt F (f x) x := by
-    dsimp only [F,f]
-    convert (((((hasDerivAt_id x).pow 3).const_mul (16/3:ℝ)).sub
-      (((hasDerivAt_id x).pow 2).const_mul (12:ℝ))).add ((hasDerivAt_id x).const_mul (8:ℝ))) using 1 <;> ring
+    have H := ((((hasDerivAt_id x).pow 3).const_mul (16/3:ℝ)).sub
+      (((hasDerivAt_id x).pow 2).const_mul (12:ℝ))).add ((hasDerivAt_id x).const_mul (8:ℝ))
+    apply H.congr_deriv
+    simp [f,id] <;> ring
   have cf : Continuous f := by dsimp only [f]; fun_prop
   have cp : ContinuousOn pairPrimitive (Set.Icc A B) :=
     fun x hx => (primitive_derivative (pos hx) (hx.2.trans_lt (by norm_num : B<1))).continuousAt.continuousWithinAt
@@ -433,7 +438,7 @@ theorem limiting_surplus_at_the_fourth_root :
     calc f x ≤ (2-4*x)*(1/x) := mul_le_mul_of_nonneg_left inv (by linarith only [upper])
          _ ≤ (pairPrimitive B-pairPrimitive x)*(1/x) := mul_le_mul_of_nonneg_right e (one_div_pos.mpr xp).le
          _ = _ := by dsimp only [g]; ring
-  have lower := intervalIntegral.integral_mono_on ab (cf.intervalIntegrable _ _) (cg.intervalIntegrable_of_Icc ab) point
+  have lower := intervalIntegral.integral_mono_on (μ := volume) ab (cf.intervalIntegrable _ _) (cg.intervalIntegrable_of_Icc ab) point
   rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun x _ => primitive x) (cf.intervalIntegrable _ _)] at lower
   have q : Q=Real.log 3 := by
     dsimp only [Q,pairPrimitive]

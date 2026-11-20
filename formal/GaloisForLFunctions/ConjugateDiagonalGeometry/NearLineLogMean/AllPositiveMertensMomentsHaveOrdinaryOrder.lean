@@ -54,7 +54,7 @@ theorem supercritical_mertens_moment {p c : ℝ} (hp : 0<p) (hc : 1+p*zetaZeroAb
     rw [Real.rpow_mul xp.le,←Real.mul_rpow hA (Real.rpow_nonneg xp.le _)]
     have hkn := Nat.lt_succ_iff.mp (mem_range.mp hk)
     exact Real.rpow_le_rpow (norm_nonneg _) ((hh k).trans (mul_le_mul_of_nonneg_left
-      (Real.rpow_le_rpow (by positivity) (add_le_add_right (Nat.cast_le.mpr hkn) 1) ha0) hA)) hp.le
+      (Real.rpow_le_rpow (by positivity) (add_le_add (Nat.cast_le.mpr hkn) (le_refl (1:ℝ))) ha0) hA)) hp.le
   have h := sum_le_sum hrow
   rw [sum_const,card_range,nsmul_eq_mul,Nat.cast_succ] at h
   have he : 1+a*p=c := by dsimp only [a]; field_simp; ring
@@ -81,7 +81,7 @@ theorem eventually_large_mertens_moment {p c : ℝ} (hp : 0<p) (hc : c<1+p*zetaZ
   have hX : Tendsto (fun N : ℕ => (N:ℝ)+1) atTop atTop :=
     tendsto_atTop_add_const_right _ _ tendsto_natCast_atTop_atTop
   filter_upwards [all_cutoffs_many_mertens_excursions hbθ hd1 1 1,
-    ((tendsto_rpow_atTop (sub_pos.mpr hedge)).comp hX).eventually_gt_atTop (2^q*|K|)] with N hpop hlarge
+    ((tendsto_rpow_atTop (sub_pos.mpr hedge)).comp hX).eventually_gt_atTop (2^q * |K|)] with N hpop hlarge
   let X := (N:ℝ)+1
   have xp : 0<X := by dsimp only [X]; positivity
   rw [one_mul] at hpop
@@ -89,12 +89,12 @@ theorem eventually_large_mertens_moment {p c : ℝ} (hp : 0<p) (hc : c<1+p*zetaZ
   rw [←Real.rpow_mul xp.le] at hf
   have hm := hf.trans (mertens_moment_from_population hp hb0.le N)
   have hh := mul_lt_mul_of_pos_right hlarge (Real.rpow_pos_of_pos xp c)
-  change (2^q*|K|)*X^c < X^(d*q-c)*X^c at hh
+  change (2^q * |K|)*X^c < X^(d*q-c)*X^c at hh
   rw [←Real.rpow_add xp,sub_add_cancel] at hh
   have hp2 : 0<(2:ℝ)^q := by positivity
   apply lt_of_le_of_lt (mul_le_mul_of_nonneg_right (le_abs_self K) (Real.rpow_nonneg xp.le c))
   apply (mul_lt_mul_iff_right₀ hp2).mp
-  change 2^q*(|K|*X^c) < 2^q*mertensMoment p N
+  change 2^q*(|K| * X^c) < 2^q*mertensMoment p N
   linarith only [hh,hm]
 
 /-- The ordinary logarithmic limit through all integer cutoffs, for each

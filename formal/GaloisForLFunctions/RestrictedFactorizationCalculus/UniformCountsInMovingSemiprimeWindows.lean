@@ -146,10 +146,11 @@ theorem eventually_uniform_semiprime_counts {d ε : ℝ} (hd : 0 < d) (hd' : d �
       (by linarith only [hxb,hxa,hd]) (sq_nonneg e)
     change Δ ≤ (x b-x a)/e^2 at hdmax
     linarith only [hdmax.trans hlen,hdiff]
-  have hc := normalized_pair_error hT1 hbT (a := a) (fun q hq => by
+  have hc := normalized_pair_error (η := η) hT1 hbT (a := a) (fun q hq => by
     obtain ⟨hp,_,hqb⟩ := (mem_windowPrimes (Nat.cast_nonneg _) (Nat.cast_nonneg _)).1 hq
     have hq0 : (0:ℝ) < q := by exact_mod_cast hp.pos
-    apply hH (T/q) ((le_max_right _ _).trans ?_)
+    apply hH (T/q)
+    apply (show H ≤ J from le_max_right 2 H).trans
     apply (le_div_iff₀ hq0).2
     rcases le_total J (q:ℝ) with h | h
     · exact (mul_le_mul (h.trans hqb) hqb hq0.le (Nat.cast_nonneg _)).trans

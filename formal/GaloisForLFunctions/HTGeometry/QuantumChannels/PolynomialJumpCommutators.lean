@@ -31,7 +31,9 @@ theorem bracket_mul (F a b : A) :
 
 private theorem bracket_nsmul (F a : A) (n : ℕ) :
     bracket F (n • a) = n • bracket F a := by
-  simp [bracket,mul_smul_comm,smul_mul_assoc,smul_sub]
+  induction n with
+  | zero => simp [bracket]
+  | succ n ih => simp only [succ_nsmul,bracket_add,ih]
 
 private theorem bracket_vanishes {F B : A} (h : Commute F B) : bracket F B = 0 :=
   sub_eq_zero.mpr h
@@ -83,9 +85,9 @@ private theorem iterate_product (F Q : A) (h : bracket F (bracket F Q) = 0) (B :
   | zero => simpa using bracket_mul F B Q
   | succ n ih =>
     rw [Function.iterate_succ_apply' _ (n+1),ih,bracket_add,bracket_mul,bracket_nsmul,
-      bracket_mul,h,mul_zero,add_zero,← Function.iterate_succ_apply',
-      ← Function.iterate_succ_apply']
-    rw [succ_nsmul]
+      bracket_mul,h,mul_zero,add_zero,← Function.iterate_succ_apply' (bracket F) (n+1) B,
+      ← Function.iterate_succ_apply' (bracket F) n B]
+    simp only [succ_nsmul]
     abel
 
 /-- The factorial commutator of a coordinate power and annihilation at the next order. -/
@@ -138,10 +140,13 @@ theorem weyl_square_closure (f : ℂ[X]) :
     (∃ g : ℂ[X], g.natDegree ≤ 2 ∧
       (bracket (aeval X f))^[2] (D^2) = aeval X g) ↔ f.natDegree ≤ 2 := by
   have he : (bracket (aeval X f))^[2] (D^2) = aeval X (2 * f.derivative^2) := by
-    have he := (weyl_top f 2).1
-    simpa [Nat.factorial_succ,two_nsmul,pow_two,two_mul] using he
+    calc
+      _ = (2 : ℕ) • (aeval X (-f.derivative))^2 := (weyl_top f 2).1
+      _ = aeval X ((-f.derivative)^2 + (-f.derivative)^2) := by
+        rw [two_nsmul,map_add,map_pow]
+      _ = _ := congrArg (aeval X) (by ring)
   have hd : (2 * f.derivative^2).natDegree = 2*(f.natDegree-1) := by
-    rw [show (2 : ℂ[X]) = C 2 by simp, natDegree_C_mul (by norm_num : (2:ℂ) ≠ 0),
+    rw [← Polynomial.C_ofNat 2, natDegree_C_mul (by norm_num : (2:ℂ) ≠ 0),
       natDegree_pow,natDegree_derivative]
   rw [he]
   constructor

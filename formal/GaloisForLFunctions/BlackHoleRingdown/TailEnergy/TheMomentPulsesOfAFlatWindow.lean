@@ -48,7 +48,8 @@ theorem moment_pulses_separate_frequencies (h : CompactPulse) (hn : ∃ t : ℝ,
 /-- The real flat window on the unit interval about zero. -/
 def flatWindow (t : ℝ) := expNegInvGlue (1-t^2)
 
-private theorem flat_smooth : ContDiff ℝ ∞ flatWindow :=
+/-- Smoothness of the compact window across both endpoints. -/
+theorem flat_window_smooth : ContDiff ℝ ∞ flatWindow :=
   expNegInvGlue.contDiff.comp (contDiff_const.sub (contDiff_id.pow 2))
 
 private theorem flat_compact : HasCompactSupport flatWindow := by
@@ -63,7 +64,7 @@ private theorem flat_compact : HasCompactSupport flatWindow := by
 /-- Explicit real-valued compact smooth input. -/
 def flatPulse : CompactPulse where
   toFun t := (flatWindow t:ℂ)
-  smooth := Complex.ofRealCLM.contDiff.comp flat_smooth
+  smooth := Complex.ofRealCLM.contDiff.comp flat_window_smooth
   compact := flat_compact.comp_left (g:=fun x : ℝ => (x:ℂ)) (by simp)
 
 theorem flat_pulse_zero_time : flatPulse 0 ≠ 0 := by

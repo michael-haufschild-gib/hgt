@@ -47,7 +47,9 @@ theorem jensenQuartetOrders_cost (d b : ℕ) :
   have hM : M.card = jensenQuartetCount d := by
     unfold M jensenQuadrantRoots jensenQuartetCount
     congr!
-  simpa only [Nat.mul_add 4 (b.choose 2),hM] using hall
+  calc
+    _ ≤ 4 * (b.choose 2 + M.card) := hall
+    _ = _ := by rw [hM,Nat.mul_add]
 
 /-- The whole quartet spectrum costs a triangular number even before
 the extra charge for a second orbit of the same multiplicity. -/

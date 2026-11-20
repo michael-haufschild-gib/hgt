@@ -14,31 +14,33 @@ noncomputable section
 open Finset Filter GaloisForLFunctions.FiniteWeakMoment
 namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 
-private def rowDeficit (r m : ℕ) : ℝ :=
+/-- Positive part of the normalized shortfall in one gcd row. -/
+def gcdRowDeficit (r m : ℕ) : ℝ :=
   max (Real.log 2 - Real.log (octaveGcdProduct (m^r) (m^(r+1))) / (m:ℝ)^(r+1)) 0
 
 /-- Rows whose gcd product falls below the indicated integer power threshold. -/
 def gcdPowerFailures (r K j : ℕ) : Finset ℕ :=
   (Icc 1 K).filter fun m => (octaveGcdProduct (m^r) (m^(r+1)))^j ≤ 2^((j-1)*m^(r+1))
 
-private theorem power_failure_iff (r : ℕ) {m j : ℕ} (hm : 0 < m) (hj : 0 < j) :
+/-- A positive logarithmic cutoff can be tested by comparing natural powers. -/
+theorem gcd_power_failure_iff (r : ℕ) {m j : ℕ} (hm : 0 < m) (hj : 0 < j) :
     (octaveGcdProduct (m^r) (m^(r+1)))^j ≤ 2^((j-1)*m^(r+1)) ↔
-      Real.log 2/(j:ℝ) ≤ rowDeficit r m := by
+      Real.log 2/(j:ℝ) ≤ gcdRowDeficit r m := by
   let G := octaveGcdProduct (m^r) (m^(r+1))
   change G^j ≤ _ ↔ _
   have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
   have hj' : 0 < (j:ℝ) := Nat.cast_pos.mpr hj
   have hX : 0 < (m:ℝ)^(r+1) := pow_pos (Nat.cast_pos.mpr hm) _
-  rw [rowDeficit,le_max_iff,or_iff_left (not_le.mpr (div_pos hlog hj'))]
+  rw [gcdRowDeficit,le_max_iff,or_iff_left (not_le.mpr (div_pos hlog hj'))]
   change _ ↔ Real.log 2/j ≤ Real.log 2-Real.log G/(m:ℝ)^(r+1)
   by_cases hG : G=0
-  · rw [hG,zero_pow hj.ne',Real.log_zero,zero_div,sub_zero]
+  · rw [hG,zero_pow hj.ne',Nat.cast_zero,Real.log_zero,zero_div,sub_zero]
     exact iff_of_true (Nat.zero_le _) (div_le_self hlog.le (by exact_mod_cast hj))
   have hG' : 0 < (G:ℝ) := Nat.cast_pos.mpr (Nat.pos_of_ne_zero hG)
   have hcast : G^j ≤ 2^((j-1)*m^(r+1)) ↔ (G:ℝ)^j ≤ (2:ℝ)^((j-1)*m^(r+1)) := by norm_cast
   rw [hcast,←Real.log_le_log_iff (pow_pos hG' _) (by positivity),Real.log_pow,Real.log_pow,
     Nat.cast_mul,Nat.cast_sub (show 1 ≤ j by omega),Nat.cast_one,Nat.cast_pow]
-  rw [le_sub_comm,div_le_iff₀ hX,sub_mul,div_mul_eq_mul_div,le_sub_comm,div_le_iff₀ hj']
+  rw [le_sub_comm,div_le_iff₀ hX,sub_mul (Real.log 2) (Real.log 2/(j:ℝ)),div_mul_eq_mul_div,le_sub_comm,div_le_iff₀ hj']
   constructor <;> intro h <;> linarith only [h]
 
 /-- Only dyadically many integer thresholds occur up to K. -/
@@ -49,21 +51,20 @@ def subpowerGcdPowerCounts (r : ℕ) : Prop :=
 private theorem failures_paid (r K : ℕ) {j : ℕ} (hj : 0 < j) :
     ((gcdPowerFailures r K j).card:ℝ)*(Real.log 2/(j:ℝ)) ≤ powerGridGcdDeficit r K := by
   rw [←nsmul_eq_mul,←sum_const]
-  apply (sum_le_sum (fun m hm => (power_failure_iff r (mem_Icc.mp (mem_filter.mp hm).1).1 hj).mp
+  apply (sum_le_sum (fun m hm => (gcd_power_failure_iff r (mem_Icc.mp (mem_filter.mp hm).1).1 hj).mp
     (mem_filter.mp hm).2)).trans
   exact sum_le_sum_of_subset_of_nonneg (filter_subset _ _) fun _ _ _ => le_max_right _ _
 
-private theorem row_le_log (r : ℕ) {m : ℕ} (hm : 0 < m) : rowDeficit r m ≤ Real.log 2 := by
-  apply max_le _ (Real.log_nonneg (by norm_num))
-  apply sub_le_self
-  exact div_nonneg (by rw [log_octave_gcd_product (pow_pos hm _)]; exact sum_nonneg fun _ _ =>
-    mul_nonneg (Nat.cast_nonneg _) ArithmeticFunction.vonMangoldt_nonneg) (by positivity)
+private theorem row_le_log (r m : ℕ) : gcdRowDeficit r m ≤ Real.log 2 := by
+  unfold gcdRowDeficit
+  exact max_le (sub_le_self _ (div_nonneg (Real.log_natCast_nonneg _) (by positivity)))
+    (Real.log_nonneg (by norm_num))
 
-private theorem weak_levels_paid (r : ℕ) {K : ℕ} (hK : 1 ≤ K) {B : ℝ} (hB : 0 ≤ B)
+private theorem weak_levels_paid (r : ℕ) {K : ℕ} {B : ℝ} (hB : 0 ≤ B)
     (h : ∀ k : ℕ, 2^k ≤ 2*K → ((gcdPowerFailures r K (2^k)).card:ℝ) ≤ (2:ℝ)^k*B)
-    (i : ℕ) (hi : i ∈ Icc 1 K) :
-    levelMass (Icc 1 K) (rowDeficit r) i ≤ Real.log 2*(1+2*B) := by
-  let f := rowDeficit r
+    (i : ℕ) :
+    levelMass (Icc 1 K) (gcdRowDeficit r) i ≤ Real.log 2*(1+2*B) := by
+  let f := gcdRowDeficit r
   let S := (Icc 1 K).filter fun m => f i ≤ f m
   change f i*(S.card:ℝ) ≤ _
   have hlog : 0 < Real.log 2 := Real.log_pos (by norm_num)
@@ -75,7 +76,7 @@ private theorem weak_levels_paid (r : ℕ) {K : ℕ} (hK : 1 ≤ K) {B : ℝ} (h
   · have hx := (mul_le_mul_of_nonneg_left (Nat.cast_le.mpr hc : (S.card:ℝ) ≤ K) hf).trans hs
     linarith only [hx,mul_nonneg hlog.le hB]
   have hfi : 0 < f i := lt_of_le_of_ne hf (fun he => by simp [←he,hlog.le] at hs)
-  have hr : 1 ≤ Real.log 2/f i := (one_le_div hfi).mpr (row_le_log r (mem_Icc.mp hi).1)
+  have hr : 1 ≤ Real.log 2/f i := (one_le_div hfi).mpr (row_le_log r i)
   obtain ⟨k,hlo,hhi⟩ := exists_nat_pow_near hr (show (1:ℝ)<2 by norm_num)
   have hscale := (le_div_iff₀ hfi).mp hlo
   have hk : (2:ℝ)^k ≤ K := hlo.trans ((div_le_iff₀ hfi).mpr (by linarith only [lt_of_not_ge hs]))
@@ -88,7 +89,7 @@ private theorem weak_levels_paid (r : ℕ) {K : ℕ} (hK : 1 ≤ K) {B : ℝ} (h
   have hsub : S ⊆ gcdPowerFailures r K (2^(k+1)) := by
     intro m hm
     obtain ⟨hm',hd⟩ := mem_filter.mp hm
-    refine mem_filter.mpr ⟨hm',(power_failure_iff r (mem_Icc.mp hm').1 (by positivity)).mpr ?_⟩
+    refine mem_filter.mpr ⟨hm',(gcd_power_failure_iff r (mem_Icc.mp hm').1 (by positivity)).mpr ?_⟩
     simpa only [Nat.cast_pow,Nat.cast_ofNat] using hlev.trans hd
   have hb := (Nat.cast_le.mpr (card_le_card hsub) : (S.card:ℝ) ≤ _).trans (h (k+1) hcut)
   have hx := mul_le_mul_of_nonneg_left hb hf
@@ -111,16 +112,16 @@ theorem subpower_counts_iff_gcd_grid (r : ℕ) : subpowerGcdPowerCounts r ↔ su
     have hx := Real.one_le_rpow (Nat.one_le_cast.mpr hK : (1:ℝ) ≤ K) hd.le
     let x := (K:ℝ)^d
     have hx₁ : 1 ≤ x := hx
-    have hlevels := weak_levels_paid r hK (mul_nonneg hA (zero_le_one.trans hx₁))
+    have hlevels := weak_levels_paid r (mul_nonneg hA (zero_le_one.trans hx₁))
       (fun k hk => (h k hk).trans_eq (mul_assoc ..))
-    have hs := sum_le_harmonic (Icc 1 K) (rowDeficit r) _ (fun _ _ => le_max_right _ _) hlevels
+    have hs := sum_le_harmonic (Icc 1 K) (gcdRowDeficit r) _ (fun _ _ => le_max_right _ _) (fun i _ => hlevels i)
     rw [Nat.card_Icc,Nat.add_sub_cancel] at hs
     have hh := harmonic_le_one_add_log K
     have hlog' := Real.log_le_sub_one_of_pos (Real.rpow_pos_of_pos hK' d)
     rw [Real.log_rpow hK'] at hlog'
     have hlogK : Real.log K ≤ x/d := (le_div_iff₀ hd).mpr (by linarith only [hlog'])
     have hh' : (harmonic K:ℝ) ≤ (1+1/d)*x := by
-      linarith only [hh,hlogK,hx₁]
+      exact (hh.trans (add_le_add hx₁ hlogK)).trans_eq (by ring)
     have hrow : Real.log 2*(1+2*(A*x)) ≤ (Real.log 2*(1+2*A))*x := by
       linarith only [mul_le_mul_of_nonneg_left hx₁ hlog.le]
     have he : (K:ℝ)^δ=x*x := by rw [show δ=d+d by dsimp [d]; ring, Real.rpow_add hK']

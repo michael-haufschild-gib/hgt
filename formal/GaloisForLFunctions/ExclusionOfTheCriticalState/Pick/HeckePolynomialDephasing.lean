@@ -60,7 +60,7 @@ theorem momentum_power_at_reflection (j : ℕ) (X : A) :
   simp only [one_pow, eval_pow, eval_X]
   rcases Nat.even_or_odd j with he | ho
   · simp [he,he.neg_one_pow]
-  · simp [ho.not_even,ho.neg_one_pow]
+  · simp [Nat.not_even_iff_odd.mpr ho,ho.neg_one_pow]
     <;> norm_num
 
 /-- Multiplying only mixed-sector observables by z. -/
@@ -71,18 +71,19 @@ private theorem mixed_add (X Y : A) : hullMixedPart p (X+Y) = hullMixedPart p X 
   abel
 
 private theorem mixed_smul (c : ℂ) (X : A) : hullMixedPart p (c • X) = c • hullMixedPart p X := by
-  simp only [hullMixedPart,mul_smul_comm,smul_mul_assoc,← smul_sub]
-  exact smul_comm _ _ _
+  simp only [hullMixedPart,mul_smul_comm,smul_mul_assoc,smul_sub,smul_smul]
+  module
 
 theorem mixed_attenuation (z : ℂ) (X : A) :
     hullMixedPart p (hullAttenuation p z X) = z • hullMixedPart p X := by
-  rw [hullAttenuation,mixed_add,mixed_smul,hullMixedPart_twice,sub_smul,one_smul]
-  abel
+  rw [hullAttenuation,mixed_add,mixed_smul,hullMixedPart_twice]
+  module
 
 /-- Independent attenuation steps multiply, even when one step is complete pinching. -/
 theorem hullAttenuation_mul (z w : ℂ) (X : A) :
     hullAttenuation p z (hullAttenuation p w X) = hullAttenuation p (z*w) X := by
-  rw [hullAttenuation p z,mixed_attenuation]
+  change hullAttenuation p w X + (z-1) • hullMixedPart p (hullAttenuation p w X) = _
+  rw [mixed_attenuation]
   simp only [hullAttenuation,smul_smul]
   module
 

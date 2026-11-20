@@ -257,7 +257,7 @@ theorem primeDisplacement_amplification_tfae :
     intro h4 N₀ a₀ _ hneg₀ P₀
     have hnRH : ¬ RiemannHypothesis := fun hRH =>
       (not_lt_of_ge (riemannHypothesis_iff_integerProbes.mp hRH N₀ a₀)) hneg₀
-    obtain ⟨N₁, b₁, _, _, hsig₁, hcard₁, _, _, _, _, _, _, hneg₁⟩ :=
+    obtain ⟨N₁, b₁, _, _, hsig₁, _, hcard₁, _, _, _, _, _, hneg₁⟩ :=
       exists_twoPrime_diff_neg_integerProbe_of_not_rh hnRH 0
     rw [← rightZeros_encard_eq_iSup_primeSubmatrix P₀]
     refine eq_top_iff.mpr (ENat.forall_natCast_le_iff_le.mp fun m _ => ?_)

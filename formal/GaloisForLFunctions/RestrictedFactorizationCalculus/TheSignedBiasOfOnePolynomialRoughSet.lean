@@ -21,13 +21,15 @@ private theorem powers_fit {θ : ℝ} (hθ : 0<θ) (small : θ<1) :
     ∃ j : ℕ,∀ Z : ℕ,∀ᶠ X : ℕ in atTop,Z ≤ powerCutoff θ X ∧ Z*powerCutoff θ X ≤ X ∧ X ≤ powerCutoff θ X^j := by
   let j := ⌈2/θ⌉₊
   have enough := (div_le_iff₀ hθ).mp (Nat.le_ceil (2/θ))
+  change 2 ≤ (j:ℝ)*θ at enough
   refine ⟨j,fun Z => ?_⟩
   have grows := (tendsto_rpow_atTop hθ).comp tendsto_natCast_atTop_atTop
   have quotient := (tendsto_rpow_atTop (sub_pos.mpr small)).comp tendsto_natCast_atTop_atTop
-  filter_upwards [tendsto_natCast_atTop_atTop (logarithmic_bounds_on_a_power_cutoff hθ),
+  filter_upwards [(tendsto_natCast_atTop_atTop (R:=ℝ)).eventually (logarithmic_bounds_on_a_power_cutoff hθ),
     grows.eventually_ge_atTop (Z:ℝ),quotient.eventually_ge_atTop (Z:ℝ),eventually_ge_atTop (2:ℕ)]
     with X hlog hy hq pos
   let y := powerCutoff θ X
+  change 2 ≤ y ∧ θ*Real.log (X:ℝ)/2 ≤ Real.log y at hlog
   have xp : (0:ℝ)<X := by exact_mod_cast (by omega : 0<X)
   have x1 : (1:ℝ) ≤ X := by exact_mod_cast (by omega : 1 ≤ X)
   have equal : (X:ℝ)^(1-θ)*(X:ℝ)^θ=X := by rw [←Real.rpow_add xp,sub_add_cancel,Real.rpow_one]
@@ -118,6 +120,8 @@ private theorem variation_and_rounding_at_power_cutoff {θ : ℝ} (hθ : 0<θ) (
   have v := rough_log_variation_from_prefix_counts y X δp count
   have vf : logVariation y X*L ≤ (2*A+1)*X := by
     have l2 : L^2 ≤ H := by
+      change 1*(1+L)^2 ≤ (X:ℝ)^(1/2:ℝ) at fee
+      change L^2 ≤ Real.sqrt (X:ℝ)
       rw [Real.sqrt_eq_rpow]
       exact (pow_le_pow_left₀ lx.le (by linarith : L ≤ 1+L) 2).trans (by simpa only [one_mul] using fee)
     have p := (mul_le_mul_of_nonneg_left l2 h0.le).trans_eq (Real.mul_self_sqrt x0.le)
@@ -163,10 +167,11 @@ theorem second_log_error_in_the_signed_smooth_main_term {θ : ℝ} (hθ : 0<θ) 
   refine ⟨K,kp,?_⟩
   have logs : Tendsto (fun X : ℕ => Real.log (X:ℝ)) atTop atTop :=
     Real.tendsto_log_atTop.comp tendsto_natCast_atTop_atTop
-  filter_upwards [vr,freeze,fit Y,tendsto_natCast_atTop_atTop (logarithmic_bounds_on_a_power_cutoff hθ),
+  filter_upwards [vr,freeze,fit Y,(tendsto_natCast_atTop_atTop (R:=ℝ)).eventually (logarithmic_bounds_on_a_power_cutoff hθ),
     logs.eventually_ge_atTop (4*(1+Real.log 2)/θ),eventually_ge_atTop (2:ℕ)] with X var fr wall scale hi pos
   let y := powerCutoff θ X
   let L := Real.log (X:ℝ)
+  change 2 ≤ y ∧ θ*L/2 ≤ Real.log y at scale
   have lx : 0<L := Real.log_pos (by exact_mod_cast (by omega : 1<X))
   have yp : 0<y := (show 0<Y by omega).trans_le wall.1
   have yX : y ≤ X := (Nat.le_mul_of_pos_left y (by omega : 0<Y)).trans wall.2.1
@@ -183,7 +188,7 @@ theorem second_log_error_in_the_signed_smooth_main_term {θ : ℝ} (hθ : 0<θ) 
     nlinarith only [ly,two,sq_nonneg (Real.log y-1)]
   have rate : (2/Real.log ((y:ℝ)/2)+1/Real.log y^2)*L ≤ 12/θ := by
     have weak := div_le_div_of_nonneg_left zero_le_one lhalf sq
-    apply (mul_le_mul_of_nonneg_right (add_le_add_left weak _) lx.le).trans
+    apply (mul_le_mul_of_nonneg_right (add_le_add (le_refl (2/Real.log ((y:ℝ)/2))) weak) lx.le).trans
     rw [←add_div,div_mul_eq_mul_div,div_le_div_iff₀ lhalf hθ]
     linarith only [lower]
   let E := ∑ m ∈ RoughReading.freeSet y (X/y),

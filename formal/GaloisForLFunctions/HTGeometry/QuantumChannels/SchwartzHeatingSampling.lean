@@ -67,7 +67,7 @@ bound, with equality as continuous operators on Schwartz space. -/
 theorem two_jump_compression {k : ℕ} (d : ℕ) (F : Fin k → Channel (d+1)) :
     ∃ G : Fin 2 → ℝ[X], (∀ i, (G i).natDegree≤d+1) ∧ bankHeating G=bankHeating (fun i => (F i).val) := by
   let J := fun i => (F i).val
-  rw [show (fun i => (F i).val)=J from rfl,bank_symbol]
+  rw [bank_symbol (fun i => (F i).val)]
   apply (two_jump_operator_cone d (realSymbol J)).mpr
   exact ⟨symbol_degree J d (fun i => (F i).property),fun x => by
     simp only [realSymbol,eval_finsetSum,eval_pow]

@@ -73,8 +73,9 @@ theorem evolve_limit (y : Fin n → Fin d → ℝ) (A : Mat n) :
     have hlim := Real.tendsto_exp_atBot.comp
       (tendsto_neg_atTop_atBot.comp (tendsto_id.const_mul_atTop (div_pos hc (by norm_num : (0:ℝ)<8))))
     have he (t : ℝ) : -(t/8)*c = -((c/8)*t) := by ring
-    simpa only [keep,if_neg h,evolve,Matrix.hadamard,finiteGaussianDistanceGram,← show c = _ from rfl,
-      he,Function.comp_def,id_eq,zero_mul] using hlim.mul_const (A i j)
+    simp only [keep,if_neg h]
+    change Tendsto (fun t : ℝ => Real.exp (-(t/8)*c) * A i j) atTop (𝓝 0)
+    simpa only [he,Function.comp_def,id_eq,zero_mul] using hlim.mul_const (A i j)
 
 private theorem evo_hermitian (t : ℝ) (y : Fin n → Fin d → ℝ) {A : Mat n} (hA : A.IsHermitian) :
     (evolve t y A).IsHermitian := by
@@ -121,7 +122,7 @@ theorem evolve_signed_complex (t : ℝ) (y : Fin n → Fin d → ℝ) (p : Fin n
 
 private theorem diag_quad {m : ℕ} (c : ℝ) (v : Fin m → ℝ) :
     v ⬝ᵥ (diagonal (fun _ => c)) *ᵥ v = c*(v ⬝ᵥ v) := by
-  simp [Matrix.diagonal_mulVec,dotProduct,Finset.mul_sum,mul_left_comm,mul_assoc]
+  simp [Matrix.mulVec_diagonal,dotProduct,Finset.mul_sum,mul_left_comm,mul_assoc]
 
 private theorem compressed_bounds {m : ℕ} (t : ℝ) (z : Fin m → Fin d → ℝ)
     (hz : Function.Injective z) (ht : 0 < t) :
@@ -166,24 +167,32 @@ theorem positive_time_comparison (logTime : ℝ) (y : Fin n → Fin d → ℝ) :
   have hm : Fintype.card s = (univ.image y).card := Fintype.card_coe s
   obtain ⟨μ,hμ,hlo,hhi⟩ := compressed_bounds (Real.exp logTime) z hz (Real.exp_pos _)
   refine ⟨μ,hμ,fun A hA => ⟨?_,?_⟩⟩
-  · convert ((hlo.submatrix r).hadamard hA) using 1
-    ext i j
-    by_cases he : y i = y j <;>
-      simp [evolve,keep,Matrix.hadamard,Matrix.diagonal_apply,finiteGaussianDistanceGram,hr,he,hzr] <;> ring
-  · convert ((hhi.submatrix r).hadamard hA) using 1
-    ext i j
-    by_cases he : y i = y j <;>
-      simp [evolve,keep,Matrix.hadamard,Matrix.diagonal_apply,finiteGaussianDistanceGram,hr,he,hzr,hm] <;> ring
+  · have same : evolve (Real.exp logTime) y A-μ • keep y A =
+        ((finiteGaussianDistanceGram z (Real.exp logTime/8)-diagonal (fun _ => μ)).submatrix r r).hadamard A := by
+      ext i j
+      by_cases he : y i = y j <;>
+        simp [evolve,keep,Matrix.hadamard,Matrix.diagonal_apply,finiteGaussianDistanceGram,hr,he,hzr] <;> ring
+    rw [same]
+    exact (hlo.submatrix r).hadamard hA
+  · have same : ((univ.image y).card:ℝ) • keep y A-evolve (Real.exp logTime) y A =
+        ((diagonal (fun _ => (Fintype.card s:ℝ))-finiteGaussianDistanceGram z
+          (Real.exp logTime/8)).submatrix r r).hadamard A := by
+      ext i j
+      by_cases he : y i = y j <;>
+        simp [evolve,keep,Matrix.hadamard,Matrix.diagonal_apply,finiteGaussianDistanceGram,hr,he,hzr,hm] <;> ring
+    rw [same]
+    exact (hhi.submatrix r).hadamard hA
 
 private theorem keep_psd (y : Fin n → Fin d → ℝ) {A : Mat n} (hA : A.PosSemidef) : (keep y A).PosSemidef := by
   classical
   let s := univ.image y
   let tag (i : Fin n) : s := ⟨y i,mem_image_of_mem y (mem_univ i)⟩
   have H := ((Matrix.PosSemidef.one : (1 : Matrix s s ℝ).PosSemidef).submatrix tag).hadamard hA
-  convert H using 1
-  ext i j
-  have h : tag i = tag j ↔ y i = y j := Subtype.ext_iff
-  by_cases he : y i = y j <;> simp [keep,Matrix.one_apply,Matrix.hadamard,h,he]
+  have same : keep y A = ((1 : Matrix s s ℝ).submatrix tag tag).hadamard A := by
+    ext i j
+    have h : tag i = tag j ↔ y i = y j := Subtype.ext_iff
+    by_cases he : y i = y j <;> simp [keep,Matrix.one_apply,Matrix.hadamard,h,he]
+  rwa [same]
 
 /-- At every positive time the Gaussian jump form of any Gram bank has
 exactly the kernel of its block projection, even if labels repeat.

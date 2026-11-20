@@ -1,13 +1,13 @@
-import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.RegularityAndReceiverEquivalence
+import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.NoDifferentialEquationAnnihilatesALateReceiver
 import Mathlib.Analysis.InnerProductSpace.Calculus
 
 /-!
 # Weighted Hardy identity for reflected pulses
 
-In the logarithmic coordinate of a modular return, the ground-state transform
-of the weighted Hardy inequality of Yang, Gu, Zhao and Zhou, Lemma 2.5
-(arXiv:2611.22698), gives a finite-window identity. The endpoint fluxes
-measure exactly what is lost when the receiver has no Dirichlet boundary.
+Under x = exp(−t), both weighted energies in the Hardy inequality of Yang,
+Gu, Zhao and Zhou, Lemma 2.5 (arXiv:2611.22698), acquire the same time
+weight exp(2st), where 2s = 1−α. Completing the square retains the exact
+endpoint fluxes of a reflected field with arbitrary boundary values.
 -/
 
 noncomputable section
@@ -75,5 +75,43 @@ theorem weightedReceiver_hardy_bound (h : CompactPulse) (s : ℝ) {a b : ℝ} (h
 
 #print axioms weightedReceiver_hardy_identity
 #print axioms weightedReceiver_hardy_bound
+
+/-- Two receiver samples distinguish the field from its derivative. Thus,
+after each starting time, one finite window makes the Hardy bound strict
+simultaneously for every real exponential weight and every later endpoint. -/
+theorem receiver_hardy_strict_after (h : CompactPulse) (hh : ∃ x : ℝ, h x ≠ 0) (a : ℝ) :
+    ∃ B > a, ∀ b ≥ B, ∀ s : ℝ,
+      s^2*weightedReceiverEnergy h s a b + s*Real.exp (2*s*a)*‖pulseReflected h a‖^2 <
+        weightedReceiverEnergy h.D s a b + s*Real.exp (2*s*b)*‖pulseReflected h b‖^2 := by
+  let ord : Fin 2 ↪ ℕ := ⟨Fin.val,Fin.val_injective⟩
+  obtain ⟨t,dual,_,hrec⟩ := receiver_late_sampling_recovery h hh ord a
+  let B := max (t 0 : ℝ) (t 1 : ℝ)
+  have hB : a < B := (t 0).2.trans_le (le_max_left _ _)
+  refine ⟨B,hB,?_⟩
+  intro b hb s
+  let v : Fin 2 → ℂ := ![(s:ℂ),1]
+  have hv (i : Fin 2) :
+      (∑ j, v j * iteratedDeriv (ord j) (pulseReflected h) (t i)) =
+        s • pulseReflected h (t i) + pulseReflected h.D (t i) := by
+    rw [Fin.sum_univ_two]
+    change (s:ℂ)*iteratedDeriv 0 _ _+1*iteratedDeriv 1 _ _=_
+    rw [iteratedDeriv_zero,iteratedDeriv_one,one_mul,(hasDerivAt_pulseReflected h _).deriv,Complex.real_smul]
+  have hl : ∃ i, s • pulseReflected h (t i) + pulseReflected h.D (t i) ≠ 0 := by
+    by_contra! hz
+    have he := hrec v 1
+    simp only [hv,hz,mul_zero,Finset.sum_const_zero] at he
+    exact zero_ne_one (show (0:ℂ)=1 from he)
+  obtain ⟨i,hi⟩ := hl
+  have hiB : (t i : ℝ) ≤ B := by
+    fin_cases i
+    · exact le_max_left _ _
+    · exact le_max_right _ _
+  have hp := intervalIntegral.integral_pos (hB.trans_le hb) (continuous_hardyRemainder h s).continuousOn
+    (fun u _ => mul_nonneg (Real.exp_pos _).le (sq_nonneg _))
+    ⟨(t i : ℝ),⟨(t i).2.le,hiB.trans hb⟩,
+      mul_pos (Real.exp_pos _) (sq_pos_of_pos (norm_pos_iff.mpr hi))⟩
+  linarith only [weightedReceiver_hardy_identity h s a b,hp]
+
+#print axioms receiver_hardy_strict_after
 
 end GaloisForLFunctions.BlackHoleRingdown

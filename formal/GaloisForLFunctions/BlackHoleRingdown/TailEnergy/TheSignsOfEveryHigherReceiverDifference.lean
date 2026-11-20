@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticPositiveDuality.OneSidedHigherDifferencesOnTheIntegerLine
+import GaloisForLFunctions.ArithmeticPositiveDuality.AOneDimensionalIndefinitePolyharmonicLaw
 import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.NoDifferentialEquationAnnihilatesALateReceiver
 import Mathlib.Analysis.InnerProductSpace.Calculus
 
@@ -27,7 +28,7 @@ theorem smooth_receiver_tail (h : CompactPulse) : ContDiff ℝ ∞ (tailEnergy h
   refine contDiff_infty_iff_deriv.mpr ⟨fun t => (hasDerivAt_tailEnergy h t).differentiableAt,?_⟩
   rw [show deriv (tailEnergy h)=(fun t => -(‖pulseReflected h t‖^2)) from
     funext fun t => (hasDerivAt_tailEnergy h t).deriv]
-  exact hs.norm_sq.neg
+  exact (hs.norm_sq ℂ).neg
 
 /-- At every nonzero order above the first, both signs occur on *each*
 bi-infinite sampling lattice for every nonzero compact input. -/
@@ -76,10 +77,58 @@ theorem receiver_higher_derivative_signs (h : CompactPulse) (hne : ∃ t : ℝ, 
       exact hh t
     have hp := higher_difference_nonneg_of_derivative _ zero_le_one _ (smooth_receiver_tail h).neg hd
       (0+(w:ℝ)*1)
+    change 0 ≤ (fwdDiff (1:ℝ))^[n+2] (-(tailEnergy h)) (0+(w:ℝ)*1) at hp
     rw [show -(tailEnergy h)=(-1:ℝ) • tailEnergy h by simp,fwdDiff_iter_const_smul] at hp
     exact hw.not_ge (by simpa only [Pi.smul_apply,smul_eq_mul,neg_one_mul,neg_nonneg] using hp)
 
 #print axioms receiver_lattice_higher_difference_signs
 #print axioms receiver_higher_derivative_signs
+
+/-- From third order onward no single threshold separates the derivative
+signs in either orientation. This holds for every phase of the input pulse. -/
+theorem receiver_derivative_straddles_every_affine_cut (h : CompactPulse)
+    (hh : ∃ x : ℝ, h x≠0) (n : ℕ) (c : ℝ) :
+    (∃ x, (x-c)*iteratedDeriv (n+3) (tailEnergy h) x<0) ∧
+      ∃ x, 0<(x-c)*iteratedDeriv (n+3) (tailEnergy h) x := by
+  have hb : ∃ M : ℝ, ∀ x, |tailEnergy h x|≤M := ⟨_,fun x => by
+    rw [abs_of_nonneg (tailEnergy_nonneg h x)]
+    exact tailEnergy_le_initial h x⟩
+  have hn : ¬∀ x, tailEnergy h x=tailEnergy h 0 := by
+    intro hc
+    have hl := tendsto_tailEnergy_atTop h
+    rw [show tailEnergy h=(fun _ : ℝ => tailEnergy h 0) from funext hc] at hl
+    exact (tailEnergy_pos h hh 0).ne' (tendsto_nhds_unique tendsto_const_nhds hl)
+  have hf := contDiff_infty.mp (smooth_receiver_tail h) (n+3)
+  constructor
+  · by_contra! he
+    exact hn (bounded_profile_single_crossing n c hf hb he)
+  · by_contra! he
+    have hneg : ∀ x, 0≤(x-c)*iteratedDeriv (n+3) (-(tailEnergy h)) x := by
+      intro x
+      rw [iteratedDeriv_neg,mul_neg,neg_nonneg]
+      exact he x
+    have hc := bounded_profile_single_crossing n c hf.neg
+      (by simpa only [Pi.neg_apply,abs_neg] using hb) hneg
+    exact hn fun x => neg_injective (hc x)
+
+#print axioms receiver_derivative_straddles_every_affine_cut
+
+/-- The m-th time derivative of the receiver tail has at least m ordered
+strict readings of alternating sign, beginning with a negative reading.
+This supplies m−1 disjoint intervals containing distinct zeros. -/
+theorem ordered_receiver_tail_derivatives (h : CompactPulse) (hh : ∃ x : ℝ, h x≠0) (n : ℕ) :
+    ∃ t : ℕ → ℝ, (∀ j<n, t j<t (j+1)) ∧
+      ∀ j≤n, 0<(-1:ℝ)^(j+1)*iteratedDeriv (n+1) (tailEnergy h) (t j) := by
+  obtain ⟨x,hx,hpos⟩ := (((tendsto_tailEnergy_atTop h).eventually_lt_const (tailEnergy_pos h hh 0)).and
+    (eventually_gt_atTop (0:ℝ))).exists
+  have hb : ∃ M : ℝ, ∀ y, |(-(tailEnergy h)) y|≤M := ⟨_,fun y => by
+    rw [Pi.neg_apply,abs_neg,abs_of_nonneg (tailEnergy_nonneg h y)]
+    exact tailEnergy_le_initial h y⟩
+  obtain ⟨t,ht,hs⟩ := ordered_derivative_signs_of_rising_secant (f:=-(tailEnergy h))
+    hpos (neg_lt_neg hx) hb n (contDiff_infty.mp (smooth_receiver_tail h).neg (n+1))
+  refine ⟨t,ht,fun j hj => ?_⟩
+  simpa only [pow_succ,iteratedDeriv_neg,mul_neg_one,neg_mul,mul_neg,mul_one] using hs j hj
+
+#print axioms ordered_receiver_tail_derivatives
 
 end GaloisForLFunctions.BlackHoleRingdown

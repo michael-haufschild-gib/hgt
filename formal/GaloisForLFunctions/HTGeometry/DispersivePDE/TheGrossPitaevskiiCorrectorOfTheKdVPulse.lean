@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.DispersivePDE.ScalarSolitons
+import Mathlib.Analysis.SpecialFunctions.Arcosh
 
 /-!
 # The Gross–Pitaevskii corrector of a KdV pulse
@@ -25,16 +26,16 @@ private def pulseCurvature (k z : ℝ) : ℝ := -(k^4)*solitonQ2 (k*z)
 
 private theorem pulse_diff (k z : ℝ) : HasDerivAt (acousticPulse k) (pulseSlope k z) z := by
   have h := ((hasDerivAt_solitonQ (k*z)).comp z ((hasDerivAt_id z).const_mul k)).const_mul (-(k^2))
-  convert h using 1 <;> simp [acousticPulse,pulseSlope,Function.comp_def] <;> ring
+  exact h.congr_deriv (by unfold pulseSlope; ring)
 
 private theorem slope_diff (k z : ℝ) : HasDerivAt (pulseSlope k) (pulseCurvature k z) z := by
   have h := ((hasDerivAt_solitonQ1 (k*z)).comp z ((hasDerivAt_id z).const_mul k)).const_mul (-(k^3))
-  convert h using 1 <;> simp [pulseSlope,pulseCurvature,Function.comp_def] <;> ring
+  exact h.congr_deriv (by unfold pulseCurvature; ring)
 
 private theorem curvature_diff (k z : ℝ) :
     HasDerivAt (pulseCurvature k) (-(k^5)*solitonQ3 (k*z)) z := by
   have h := ((hasDerivAt_solitonQ2 (k*z)).comp z ((hasDerivAt_id z).const_mul k)).const_mul (-(k^4))
-  convert h using 1 <;> simp [pulseCurvature,Function.comp_def] <;> ring
+  exact h.congr_deriv (by ring)
 
 private theorem pulse_second (k : ℝ) : deriv (deriv (acousticPulse k)) = pulseCurvature k := by
   rw [show deriv (acousticPulse k) = pulseSlope k from funext (fun z => (pulse_diff k z).deriv)]
@@ -77,7 +78,8 @@ theorem acousticCorrector_range (k z : ℝ) :
     linarith only [sq_nonneg (solitonT (k*z))]
   have hW : acousticPulse k z ≤ 0 := mul_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr (sq_nonneg k)) hq
   have hD : 0 ≤ k^2+acousticPulse k z := by
-    simpa only [acousticPulse,neg_mul,mul_sub,mul_one,sub_eq_add_neg] using mul_nonneg (sq_nonneg k) (sub_nonneg.mpr h1)
+    unfold acousticPulse
+    linarith only [mul_nonneg (sq_nonneg k) (sub_nonneg.mpr h1)]
   rw [acousticCorrector_polynomial,acousticCorrector_polynomial k 0]
   have sqid : k^4/8 - (-(acousticPulse k z)*(k^2+acousticPulse k z)/2) =
       (acousticPulse k z + k^2/2)^2/2 := by ring
@@ -91,13 +93,37 @@ theorem acousticCorrector_range (k z : ℝ) :
     ring
   · simp [acousticPulse,solitonQ,solitonT]
 
+/-- The two peaks occur at fixed rescaled distances from the pulse center. -/
+theorem acousticCorrector_peak_locations {k : ℝ} (hk : k ≠ 0) (z : ℝ) :
+    acousticCorrector k z = k^4/8 ↔ |k*z| = Real.arcosh (Real.sqrt 2) := by
+  rw [(acousticCorrector_range k z).2.2.1,acousticPulse,solitonQ_eq_inv_cosh_sq]
+  have hc := Real.cosh_pos (k*z)
+  have hr : (Real.sqrt 2)^2 = 2 := Real.sq_sqrt (by norm_num)
+  have hh : 1 ≤ Real.sqrt 2 := by norm_num
+  constructor
+  · intro he
+    field_simp [hc.ne'] at he
+    have hs : (k^2)*((Real.cosh (k*z))^2-2)=0 := by linarith only [he]
+    have heq := sub_eq_zero.mp ((mul_eq_zero.mp hs).resolve_left (pow_ne_zero 2 hk))
+    have hv := (sq_eq_sq_iff_eq_or_eq_neg.mp (heq.trans hr.symm)).resolve_right
+      (by linarith only [hc,hh])
+    calc |k*z| = Real.arcosh (Real.cosh |k*z|) := (Real.arcosh_cosh (abs_nonneg _)).symm
+         _ = _ := by rw [Real.cosh_abs,hv]
+  · intro he
+    have hv := congrArg Real.cosh he
+    rw [Real.cosh_abs,Real.cosh_arcosh hh] at hv
+    rw [hv,hr]
+    ring
+
+#print axioms acousticCorrector_peak_locations
+
 private theorem corrector_diff (k z : ℝ) :
     HasDerivAt (acousticCorrector k) (-(k^2/2+acousticPulse k z)*pulseSlope k z) z := by
   have hw := pulse_diff k z
   have hh := ((hw.neg.mul ((hasDerivAt_const z (k^2)).add hw)).div_const 2)
   rw [show acousticCorrector k = fun z => -(acousticPulse k z)*(k^2+acousticPulse k z)/2 from
     funext (acousticCorrector_polynomial k)]
-  exact hh.congr_deriv (by ring)
+  exact hh.congr_deriv (by simp only [Pi.add_apply,Pi.neg_apply]; ring)
 
 /-- After the KdV correction, the log-density continuity equation has
 exact residual of order seven, explicitly given by the product of the

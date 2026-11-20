@@ -39,7 +39,8 @@ theorem proper_chebyshev_square_root_density :
   change Real.exp (-Real.log x/2)*(Chebyshev.psi (Real.exp (Real.log x))-Chebyshev.theta
     (Real.exp (Real.log x)))=_
   rw [Real.exp_log hx,Real.sqrt_eq_rpow,Real.rpow_def_of_pos hx,
-    show -Real.log x/2 = -(Real.log x*(1/2)) by ring,Real.exp_neg,div_eq_mul_inv,mul_comm]
+    show -Real.log x/2 = -(Real.log x*(1/2)) by ring,Real.exp_neg,mul_comm]
+  exact (div_eq_mul_inv ..).symm
 
 private theorem pp_prefix_density :
     Tendsto (fun n : ℕ => properOctavePrefix n/Real.sqrt n) atTop (𝓝 1) := by
@@ -62,8 +63,11 @@ count in the octave, independent of the cofactor horizon. -/
 theorem proper_gcd_rounding {M : ℕ} (mp : 0<M) (X : ℕ) :
     0 ≤ (X:ℝ)*price properOctaveWeight M-properGcdOctavePrice M X ∧
       (X:ℝ)*price properOctaveWeight M-properGcdOctavePrice M X ≤ properOctavePrefix (2*M)-properOctavePrefix M := by
-  have sets : Icc 1 (2*M) \ Icc 1 M = Ioc M (2*M) := by
-    ext d; simp only [mem_sdiff,mem_Icc,mem_Ioc]; omega
+  have sets : (Icc 1 (2*M) : Finset ℕ) \ Icc 1 M = Ioc M (2*M) := by
+    apply Finset.ext
+    intro d
+    simp only [Finset.mem_sdiff,Finset.mem_Icc,Finset.mem_Ioc]
+    omega
   have diff : properOctavePrefix (2*M)-properOctavePrefix M = ∑ d ∈ Ioc M (2*M),properOctaveWeight d := by
     rw [←sets,sum_sdiff_eq_sub (Icc_subset_Icc_right (show M ≤ 2*M by omega))]
   rw [price,proper_gcd_as_floor_sum _ _ mp,mul_sum,←sum_sub_distrib,diff]
@@ -88,7 +92,7 @@ theorem dilated_gcd_proper_power_mass {ι : Type*} {l : Filter ι} {M X : ι →
   have main := (square_root_octave_transfer pp_prefix_density).comp hm
   rw [one_mul] at main
   obtain ⟨C,hC⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
-  have tiny := (tendsto_const_nhds (x:=|C|*Real.sqrt 2)).div_atTop hr
+  have tiny := (tendsto_const_nhds (x:=|C| * Real.sqrt 2)).div_atTop hr
   have delta : Tendsto (fun i => Real.sqrt (M i)*price properOctaveWeight (M i)-
       Real.sqrt (M i)*properGcdOctavePrice (M i) (X i)/(X i:ℝ)) l (𝓝 0) := by
     apply squeeze_zero' _ _ tiny
@@ -100,14 +104,14 @@ theorem dilated_gcd_proper_power_mass {ι : Type*} {l : Filter ι} {M X : ι →
       have factor : Real.sqrt (M i)*price properOctaveWeight (M i)-
           Real.sqrt (M i)*properGcdOctavePrice (M i) (X i)/(X i:ℝ) =
           Real.sqrt (M i)/(X i:ℝ)*((X i:ℝ)*price properOctaveWeight (M i)-properGcdOctavePrice (M i) (X i)) := by
-        field_simp; ring
+        field_simp
       rw [factor]
     · exact mul_nonneg (div_nonneg (Real.sqrt_nonneg _) xr.le) h.1
     · have hc := (hC ((2*M i:ℕ):ℝ)).trans (mul_le_mul_of_nonneg_right (le_abs_self C) (Real.sqrt_nonneg _))
       rw [←proper_octave_prefix_eq,Nat.cast_mul,Nat.cast_ofNat,Real.sqrt_mul (by norm_num : (0:ℝ) ≤ 2)] at hc
       have plen := (sub_le_self _ (sum_nonneg (fun n _ => pp_nonneg n) : 0 ≤ properOctavePrefix (M i))).trans hc
       apply (mul_le_mul_of_nonneg_left (h.2.trans plen) (div_nonneg (Real.sqrt_nonneg _) xr.le)).trans_eq
-      calc _ = |C|*Real.sqrt 2*(Real.sqrt (M i)*Real.sqrt (M i))/(X i:ℝ) := by ring
+      calc _ = |C| * Real.sqrt 2*(Real.sqrt (M i)*Real.sqrt (M i))/(X i:ℝ) := by ring
            _ = _ := by rw [Real.mul_self_sqrt mr.le]; field_simp
   have hd := main.sub delta
   rw [sub_zero] at hd

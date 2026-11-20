@@ -197,7 +197,8 @@ theorem cofinal_range_of_odd_unitary_midpoint {P : Finset ℕ} (hP : ∀ p ∈ P
   constructor
   · intro H
     obtain ⟨k,_,hk,hv⟩ := H 0
-    simpa only [hv,Nat.add_sub_cancel] using odd_unitary_midpoint_range_bound (hk.trans hr)
+    simpa only [hv,Nat.add_sub_cancel] using
+      odd_unitary_midpoint_range_bound ((congrArg Finset.card hk).trans hr)
   · rintro ⟨j,hj,rfl⟩ B
     obtain ⟨p,hp⟩ := card_pos.mp (by omega : 0 < P.card)
     exact realize_odd_unitary_midpoint hp hP hr hj B

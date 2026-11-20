@@ -92,7 +92,7 @@ theorem arbitrarily_large_donor_mass {p J : ℕ} (hp : p.Prime) (hJ : 0<J) (V : 
   have hj0 : (0:ℝ)<J := Nat.cast_pos.mpr hJ
   have hp2 : (2:ℝ) ≤ p := by exact_mod_cast hp.two_le
   have hp0 : (0:ℝ)<p := Nat.cast_pos.mpr hp.pos
-  have ha : 1<α := by dsimp [α]; positivity
+  have ha : 1<α := lt_add_of_pos_right 1 (by positivity)
   have ha2 : α ≤ 5/4 := by
     dsimp only [α]
     have he := one_div_le_one_div_of_le (by norm_num : (0:ℝ)<4)
@@ -136,7 +136,7 @@ theorem arbitrarily_large_donor_mass {p J : ℕ} (hp : p.Prime) (hJ : 0<J) (V : 
       mul_nonneg hp0.le (t0 i).le]
   let C := (α-1)/(2*(α*((K:ℝ)+1)*Real.log B))
   have hlogB := Real.log_pos hB
-  have hC : 0<C := by dsimp only [C]; positivity
+  have hC : 0<C := div_pos (sub_pos.mpr ha) (by positivity)
   have row (i : ℕ) : C*(1/((i:ℝ)+1)) ≤ ∑ r ∈ R i,1/(r:ℝ) := by
     have htlog : Real.log (T i)=((K:ℝ)+1)*((i:ℝ)+1)*Real.log B := by
       dsimp only [T]; rw [Real.log_pow]; push_cast; ring

@@ -33,10 +33,11 @@ theorem shanks_to_reciprocal (m : ℤ) (a b c : ℚ) :
       algebraMap ℚ (K m) c*shanksRoot m^2) = coords m (a+c) a (b-(m:ℚ)*a) := by
   have h := shanks_unit m
   have hV := (reciprocal_table m).2.2.2.2.2
-  have hsq : V m^2*shanksRoot m^2=1 := by rw [← mul_pow,mul_comm,h,one_pow]
+  have expand (A B C M u v s : K m) (hv : v^2=1+u-M*v) (hs : s*v=1) :
+      v^2*(A+B*s+C*s^2)=(A+C)+A*u+(B-M*A)*v := by
+    linear_combination A*hv + (B*v+C*(s*v+1))*hs
   simp only [coords,Algebra.smul_def,map_add,map_sub,map_mul,map_intCast,mul_one]
-  linear_combination (algebraMap ℚ (K m) a)*hV + (algebraMap ℚ (K m) b)*V m*h +
-    (algebraMap ℚ (K m) c)*hsq
+  exact expand _ _ _ _ _ _ _ hV h
 
 /-- The codifferent generator for the classical triangle reads a+c from
 a+bρ+cρ², independently of its linear coefficient. -/

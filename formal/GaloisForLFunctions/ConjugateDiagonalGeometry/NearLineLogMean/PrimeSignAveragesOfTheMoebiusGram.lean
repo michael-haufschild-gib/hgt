@@ -262,7 +262,8 @@ private theorem product_reading_factor (N m : ℕ) (K : ℝ → ℝ) :
   rw [moebius_mul_of_coprime hc,Int.cast_mul,Nat.cast_mul,Real.sqrt_mul (Nat.cast_nonneg _)]
   ring
 
-private theorem signed_product_expansion (N : ℕ) (P : Finset ℕ) (s : P → ℤˣ) (K : ℝ → ℝ) :
+/-- Group the twisted Gram spectrum by its squarefree prime character. -/
+theorem signed_product_expansion (N : ℕ) (P : Finset ℕ) (s : P → ℤˣ) (K : ℝ → ℝ) :
     signedRatioReading N P s K = ∑ m ∈ primitiveSignProducts N,
       (primeSignTwist P s m:ℝ)*primitiveProductReading N m K := by
   let F (q : ℕ × ℕ) := q.1*q.2
@@ -288,7 +289,8 @@ private theorem signed_product_expansion (N : ℕ) (P : Finset ℕ) (s : P → �
       fun hsf => hm (e ▸ (Nat.squarefree_mul hc).mpr hsf)
     simp [atom_zero_of_nonsquarefree hz]
 
-private theorem sign_product_support {N m : ℕ} (hm : m ∈ primitiveSignProducts N) :
+/-- Every prime in an occupied reduced product lies in the twist horizon. -/
+theorem sign_product_support {N m : ℕ} (hm : m ∈ primitiveSignProducts N) :
     m.primeFactors ⊆ (range (N+1)).filter Nat.Prime := by
   obtain ⟨q,hq,rfl⟩ := mem_image.mp (mem_filter.mp hm).1
   obtain ⟨ha,hb⟩ := mem_product.mp (mem_filter.mp hq).1
@@ -373,6 +375,75 @@ theorem prime_sign_covariance_nonnegative (N : ℕ) (K L : ℝ → ℝ)
     (sum_nonneg fun q _ => mul_nonneg (primitiveCubicScaleWeight_nonneg ..) (hK _))
     (sum_nonneg fun q _ => mul_nonneg (primitiveCubicScaleWeight_nonneg ..) (hL _)))
 
+
+private theorem twist_abs_one (P : Finset ℕ) (s : P → ℤˣ) (m : ℕ) :
+    |(primeSignTwist P s m:ℝ)| = 1 := by
+  have h := sign_sq P s m
+  have he : (primeSignTwist P s m:ℝ)^2 = (1:ℝ)^2 := by
+    rw [sq,one_pow]
+    exact_mod_cast h
+  simpa only [abs_one] using (sq_eq_sq_iff_abs_eq_abs _ _).mp he
+
+private theorem all_minus_on_product {N m : ℕ} (hm : m ∈ primitiveSignProducts N) :
+    let P := (range (N+1)).filter Nat.Prime
+    primeSignTwist P (fun _ => -1) m = ArithmeticFunction.moebius m := by
+  intro P
+  have hs : m.factorization.support ⊆ P := by
+    rw [Nat.support_factorization]
+    exact sign_product_support hm
+  have he := sum_subset (f:=fun p => m.factorization p) hs (fun _ _ hn => Finsupp.notMem_support_iff.mp hn)
+  rw [ArithmeticFunction.moebius_apply_of_squarefree (mem_filter.mp hm).2,
+    ArithmeticFunction.cardFactors_eq_sum_factorization]
+  simp only [primeSignTwist,Units.val_neg,Units.val_one,←pow_sum,sum_coe_sort,Finsupp.sum,he]
+
+/-- The all-negative prime choice attains the absolute envelope of every
+nonnegative spectral window at once. Each squarefree product then carries
+the sign of its own Möbius coefficient. -/
+theorem all_minus_primitive_envelope (N : ℕ) (K : ℝ → ℝ) (hK : ∀ x, 0≤K x) :
+    let P := (range (N+1)).filter Nat.Prime
+    signedRatioReading N P (fun _ => -1) K = ∑ m ∈ primitiveSignProducts N, |primitiveProductReading N m K| ∧
+      ∀ s : P → ℤˣ, |signedRatioReading N P s K| ≤ signedRatioReading N P (fun _ => -1) K := by
+  intro P
+  have halign (m : ℕ) (hm : m ∈ primitiveSignProducts N) :
+      (primeSignTwist P (fun _ => -1) m:ℝ)*primitiveProductReading N m K = |primitiveProductReading N m K| := by
+    have hχ := twist_abs_one P (fun _ => -1) m
+    have hpos : 0 ≤ (primeSignTwist P (fun _ => -1) m:ℝ)*primitiveProductReading N m K := by
+      rw [all_minus_on_product hm,product_reading_factor,←mul_assoc]
+      refine mul_nonneg ?_ (sum_nonneg fun q _ => mul_nonneg (primitiveCubicScaleWeight_nonneg ..) (hK _))
+      rw [coeff,mobiusRealCoefficient,←mul_div_assoc]
+      exact div_nonneg (mul_self_nonneg _) (Real.sqrt_nonneg _)
+    calc _ = |(primeSignTwist P (fun _ => -1) m:ℝ)*primitiveProductReading N m K| := (abs_of_nonneg hpos).symm
+         _ = _ := by rw [abs_mul,hχ,one_mul]
+  have h : signedRatioReading N P (fun _ => -1) K = _ :=
+    (signed_product_expansion N P _ K).trans (sum_congr rfl halign)
+  refine ⟨h,fun s => ?_⟩
+  rw [h,signed_product_expansion]
+  exact (abs_sum_le_sum_abs _ _).trans (sum_le_sum fun m _ => by rw [abs_mul,twist_abs_one,one_mul])
+
+/-- One prime-sign vector attains the average square variation on a whole
+finite family of spectral increments. Kernels may be signed and dependent. -/
+theorem exists_prime_sign_for_joint_square_variation {ι : Type*} (S : Finset ι)
+    (N : ℕ) (K : ι → ℝ → ℝ) :
+    let P := (range (N+1)).filter Nat.Prime
+    ∃ s : P → ℤˣ, (∑ j ∈ S, ∑ m ∈ primitiveSignProducts N, primitiveProductReading N m (K j)^2) ≤
+      ∑ j ∈ S, signedRatioReading N P s (K j)^2 := by
+  classical
+  intro P
+  have H (j : ι) := prime_sign_product_covariance N (K j) (K j)
+  simp only [←sq] at H
+  have hsum : ∑ s : P → ℤˣ, ∑ j ∈ S, signedRatioReading N P s (K j)^2 =
+      (2:ℝ)^P.card*∑ j ∈ S, ∑ m ∈ primitiveSignProducts N, primitiveProductReading N m (K j)^2 := by
+    rw [sum_comm,mul_sum]
+    exact sum_congr rfl fun j _ => H j
+  by_contra! h
+  have hlt := sum_lt_sum_of_nonempty (s:=univ) univ_nonempty (fun s _ => h s)
+  have hcard : Fintype.card (P → ℤˣ) = 2^P.card := by
+    rw [Fintype.card_fun,Fintype.card_coe,Fintype.card_units_int]
+  rw [hsum,sum_const,card_univ,hcard,nsmul_eq_mul,Nat.cast_pow,Nat.cast_ofNat] at hlt
+  exact hlt.false
+
+#print axioms all_minus_primitive_envelope
+#print axioms exists_prime_sign_for_joint_square_variation
 #print axioms prime_sign_product_readout
 #print axioms prime_sign_product_covariance
 #print axioms prime_sign_covariance_nonnegative

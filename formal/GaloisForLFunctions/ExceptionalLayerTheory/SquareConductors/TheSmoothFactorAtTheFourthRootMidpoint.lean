@@ -57,7 +57,7 @@ theorem truncated_weight_below_radical {k Y : ℕ} (hk : 1<k)
       exact hcut ((Nat.le_of_dvd (prod_pos fun p hp => (Nat.prime_of_mem_primeFactors hp).pos) hdvd).trans hY)
     rw [moebius_eq_zero_of_not_squarefree hns,Int.cast_zero]
   change (∑ e ∈ S,(μ e:ℝ))=0
-  rw [he,←Int.cast_sum,sum_moebius_divisors,if_neg hk.ne',Int.cast_zero]
+  rw [he,←Int.cast_sum,_root_.RHTower.sum_moebius_divisors,if_neg hk.ne',Int.cast_zero]
 
 /-- At most three rough prime factors occur below the fourth power.
 A surviving mixed product has at most two, and its smooth radical exceeds the cut. -/
@@ -90,7 +90,7 @@ theorem fourth_root_surviving_factors {k Y : ℕ} (hk : 0<k) (hY : 1 ≤ Y) (hca
   · by_contra! h
     have hlarge := (Nat.pow_le_pow_right (Nat.succ_pos Y) h).trans base
     have hrk : r ≤ k := Nat.le_of_dvd hk (_root_.RHTower.Sieve.roughPart_dvd Y k)
-    omega
+    exact h4.not_ge (hlarge.trans (hrk.trans hcap))
   · intro hmix hw
     have hcut : Y < ∏ p ∈ s.primeFactors,p := by
       by_contra! hz
@@ -101,7 +101,7 @@ theorem fourth_root_surviving_factors {k Y : ℕ} (hk : 0<k) (hY : 1 ≤ Y) (hca
     have hsy := hcut.trans_le (Nat.le_of_dvd hs (Nat.prod_primeFactors_dvd s))
     have hprod := Nat.mul_le_mul hlarge hsy
     rw [←pow_succ,Nat.mul_comm r s,prod] at hprod
-    omega
+    exact h4.not_ge (hprod.trans hcap)
 
 private theorem small_factor_log_sum {k X : ℕ} (hk : 0 < k) (hX : k ≤ X) (Y : ℕ) :
     Real.log (smoothPart Y k)=∑ p ∈ Nat.primesLE Y,∑ j ∈ Icc 1 (Nat.log p X),
@@ -148,9 +148,10 @@ private theorem primitive_multiple_second_difference {u : ℕ} (hu : 0<u) (n : �
     rw [←sum_filter,_root_.RHTower.Sieve.sum_filter_dvd_eq_sum_scaled hu]
     simp only [Nat.coprime_mul_iff_right]
     by_cases hc : n.Coprime u
-    · simp only [hc,true_and,if_true]
+    · simp only [and_iff_right hc,if_pos hc]
       rw [←sum_filter,sum_const,nsmul_eq_mul,mul_one]
-    · simp [hc]
+    · have off (j : ℕ) : ¬(n.Coprime u ∧ n.Coprime j) := fun h => hc h.1
+      simp only [if_neg hc,if_neg (off _),sum_const_zero]
   have inter (a b : ℕ) (hab : a ≤ b) :
       (∑ k ∈ Ioc a b,primitiveMultiple n u k)=F b-F a := by
     have he (t : ℕ) : Icc 1 t=Ioc 0 t := by ext j; simp only [mem_Icc,mem_Ioc]; omega
@@ -169,14 +170,16 @@ private theorem weighted_smooth_log_rows {k X : ℕ} (hk : 0 < k) (hX : k ≤ X)
       (μ e:ℝ)*Real.log p*primitiveMultiple n (e.lcm (p^j)) k := by
   rw [weightedSmoothLog,small_factor_log_sum hk hX,_root_.RHTower.truncMoebiusDivisorSum,sum_filter]
   by_cases hc : n.Coprime k
-  · simp only [if_pos hc,sum_mul,mul_sum,primitiveMultiple,hc,true_and,Nat.lcm_dvd_iff]
+  · rw [if_pos hc,sum_mul]
+    simp only [mul_sum]
     apply sum_congr rfl
     intro e _
     apply sum_congr rfl
     intro p _
     apply sum_congr rfl
     intro j _
-    split_ifs <;> simp_all
+    by_cases he : e ∣ k <;> by_cases hj : p^j ∣ k <;>
+      simp [primitiveMultiple,Nat.lcm_dvd_iff,he,hj,if_pos hc]
   · simp [hc,primitiveMultiple]
 
 /-- The signed log price removed by replacing each integer with its
@@ -204,7 +207,8 @@ theorem quarter_smooth_logarithm_cost {n : ℕ} (hn : 0<n) (Y : ℕ) :
       |F (3*n) (4*n) e p j-F (2*n) (3*n) e p j| ≤ M*Real.log p := by
     have hpr := Nat.prime_of_mem_primesLE hp
     have hu := Nat.lcm_pos (mem_Icc.mp he).1 (pow_pos hpr.pos j)
-    rw [F,F,←mul_sum,←mul_sum,←mul_sub,primitive_multiple_second_difference hu,abs_mul,abs_mul,
+    dsimp only [F]
+    rw [←mul_sum,←mul_sum,←mul_sub,primitive_multiple_second_difference hu,abs_mul,abs_mul,
       abs_of_nonneg (Real.log_natCast_nonneg p)]
     have hm : |(μ e:ℝ)| ≤ 1 := by exact_mod_cast ArithmeticFunction.abs_moebius_le_one (n:=e)
     exact (mul_le_mul (mul_le_of_le_one_left (Real.log_natCast_nonneg p) hm)
@@ -255,9 +259,8 @@ private theorem quarter_log_difference {n Y k : ℕ} (hn : 0 < n) (hY : 1 ≤ Y)
     have hc := (hp.coprime_iff_not_dvd.mpr (Nat.not_dvd_of_pos_of_lt hn hk)).symm
     simp [completeQuarterLog,compositeQuarterLog,weightedSmoothLog,hp,hc,hweight,hs]
   · by_cases hc : n.Coprime k
-    · simp only [completeQuarterLog,compositeQuarterLog,weightedSmoothLog,hc,hp,not_false_eq_true,
-        and_self,if_true,if_false,add_zero,←truncated_weight_on_smooth_factor hk0 Y]
-      rw [←hlog]
+    · rw [completeQuarterLog,if_pos hc,compositeQuarterLog,if_pos ⟨hc,hp⟩,weightedSmoothLog,
+        if_pos hc,if_neg hp,add_zero,←truncated_weight_on_smooth_factor hk0 Y,←hlog]
       ring
     · simp [completeQuarterLog,compositeQuarterLog,weightedSmoothLog,hc,hp]
 

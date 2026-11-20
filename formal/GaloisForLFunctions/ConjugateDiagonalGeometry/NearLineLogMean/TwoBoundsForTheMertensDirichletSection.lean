@@ -45,7 +45,7 @@ theorem norm_mertens_section_from_abel_cost {N : ℕ} (hN : 1≤N) {s : ℂ} (hs
     have diff := _root_.RHTower.norm_cpow_shift_sub_le_of_nonneg (x:=(i:ℝ)+1) (b:=1) xp zero_le_one hs
     rw [show (i:ℝ)+1+1=(i:ℝ)+2 by ring,mul_one] at diff
     rw [norm_sub_rev] at diff
-    have hweight := Real.rpow_le_rpow_of_exponent_le (by linarith only [Nat.cast_nonneg (α:=ℝ) i] : 1≤(i:ℝ)+1)
+    have hweight := Real.rpow_le_rpow_of_exponent_le (show 1≤(i:ℝ)+1 from le_add_of_nonneg_left (Nat.cast_nonneg i))
       (by linarith only [hs] : -s.re-1 ≤ -1)
     rw [Real.rpow_neg_one] at hweight
     rw [norm_mul,head]
@@ -62,7 +62,7 @@ theorem norm_mertens_section_from_abel_cost {N : ℕ} (hN : 1≤N) {s : ℂ} (hs
 /-- Uniform far-edge bound for the actual mollified error at every real
 abscissa at least three. The constant is independent of the abscissa. -/
 theorem far_right_mertens_error :
-    ∃ D : ℝ, 0 ≤ D ∧ ∀ {N : ℕ}, 1≤N → ∀ {s : ℂ}, 3≤s.re →
+    ∃ D : ℝ, 0 ≤ D ∧ ∀ {N : ℕ}, 1≤N → ∀ {s : ℂ}, 3 ≤ s.re →
       ‖mobMollifiedError N s‖ ≤ D*(N:ℝ)^(3-s.re) := by
   let w := fun n : ℕ => (n:ℝ)^(-(2:ℝ))
   have sw : Summable w := Real.summable_nat_rpow.mpr (by norm_num)

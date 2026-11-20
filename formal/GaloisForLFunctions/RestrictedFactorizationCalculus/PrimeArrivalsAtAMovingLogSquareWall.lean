@@ -192,12 +192,14 @@ theorem upper_variation_at_moving_prime_walls {s : ℝ} (strip : RHTower.zetaZer
     by_cases eq : Y (i+1)=Y i
     · have move : |headAt (a (i+1)) (Y i) (H (i+1))-headAt (a (i+1)) (Y i) (H i)| ≤
           ((H (i+1):ℝ)-H i)*L := by
-        by_cases stop : H (i+1)=H i
-        · simp [stop]
-        have next : H (i+1)=H i+1 := by have := stepH i (mem_range.mp hi); omega
-        rw [next,add_one_coefficient,add_sub_cancel_left,Nat.cast_add,Nat.cast_one,add_sub_cancel_left,one_mul]
-        exact (rough_coefficient_le_log (dom (i+1)) (Y i) (H i+1)).trans
-          (log_mono_on_integers ((le_of_eq next.symm).trans (heights iN)))
+        -- At the squares of the two heights the hyperbola cuts recover the two heads exactly.
+        have cross := square_crossings_pay_the_interval_error (dom (i+1)) (Y i)
+          (Nat.pow_le_pow_left hstep 2)
+        have paid (u : ℕ) := rough_head_and_interior (a (i+1)) (Y i) (u^2) (u^2).sqrt
+        simp only [paid,add_sub_cancel_left,min_eq_right (Nat.sqrt_le_self _)] at cross
+        simp only [Nat.sqrt_eq',Nat.cast_sub hstep] at cross
+        exact cross.trans (mul_le_mul_of_nonneg_left (log_mono_on_integers (heights iN))
+          (sub_nonneg.mpr (Nat.cast_le.mpr hstep)))
       have tri := abs_sub_le (headAt (a (i+1)) (Y i) (H (i+1)))
         (headAt (a (i+1)) (Y i) (H i)) (P i)
       change |headAt (a (i+1)) (Y (i+1)) (H (i+1))-P i| ≤ _

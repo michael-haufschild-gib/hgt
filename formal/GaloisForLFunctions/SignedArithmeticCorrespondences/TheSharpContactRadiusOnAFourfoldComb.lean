@@ -34,11 +34,11 @@ private theorem contact_eq_sum_paths (k : ℕ) (w c : ℕ → ℝ) :
   have hab : Disjoint A B := disjoint_left.mpr (by
     intro u ha hb
     obtain ⟨_,_,rfl⟩ := mem_image.mp ha
-    simpa [B] using hb)
+    simp [B] at hb)
   have hq : Disjoint (A∪B) Q := disjoint_left.mpr (by
     intro u hu h
     obtain ⟨_,_,rfl⟩ := mem_image.mp h
-    simpa [A,B] using hu)
+    simp [A,B] at hu)
   rw [fourfold_contact_blocks]
   change _ = ∑ u ∈ (A∪B)∪Q, _
   rw [sum_union hq,sum_union hab]
@@ -65,8 +65,8 @@ private theorem radius_data :
   let u := Real.sqrt (b^2+4*a^2)
   have hu : 0≤u := Real.sqrt_nonneg _
   have hs : u^2=b^2+4*a^2 := Real.sq_sqrt (by positivity)
-  have hab : 2*a ≤ u := by nlinarith only [hs,hu,ha,sq_nonneg b]
-  have hbu : b ≤ u := by nlinarith only [hs,hu,hb,sq_nonneg a]
+  have hab : 2*a ≤ u := (sq_le_sq₀ (by positivity) hu).mp (by nlinarith only [hs,sq_nonneg b])
+  have hbu : b ≤ u := (sq_le_sq₀ hb.le hu).mp (by nlinarith only [hs,sq_nonneg a])
   change 0<a ∧ 0<b ∧ 0<(b+u)/2 ∧ a≤(b+u)/2 ∧ b≤(b+u)/2 ∧ ((b+u)/2)^2=b*((b+u)/2)+a^2
   exact ⟨ha,hb,by linarith only [hb,hu],by linarith only [hab,hb],
     by linarith only [hbu],by nlinarith only [hs]⟩
@@ -131,26 +131,31 @@ theorem fourfold_prime_contact_le (k : ℕ) (c : ℕ → ℝ) :
     _ ≤ _ := mul_le_mul_of_nonneg_left (sum_le_sum_of_subset_of_nonneg hs (fun n _ _ => sq_nonneg (c n)))
       radius_data.2.2.1.le
 
-/-- The bound is attained by one four-site component. Its middle two values
-are r and its outside two values are log 2. -/
-theorem fourfold_prime_contact_attained {k : ℕ} (hk : 0 < k) :
-    ∃ c : ℕ → ℝ, 0 < ∑ n ∈ Ioc (6*k) (24*k), (c n)^2 ∧
+/-- The positive extremal profile of a four-site component. -/
+def fourfoldEigenprofile (i n : ℕ) : ℝ :=
+  if n=2*i ∨ n=6*i then fourfoldContactRadius
+  else if n=4*i ∨ n=3*i then Real.log 2 else 0
+
+/-- Each four-site component attains the bound by itself. Its middle two
+values are r and its two outside values are log 2. -/
+theorem fourfold_component_attains {k i : ℕ} (hiQ : i ∈ fourfoldQuads k) :
+    let c := fourfoldEigenprofile i
+    0 < ∑ n ∈ Ioc (6*k) (24*k), (c n)^2 ∧
       contactTerm ArithmeticFunction.vonMangoldt (Ioc (6*k) (24*k)) c c =
         fourfoldContactRadius * ∑ n ∈ Ioc (6*k) (24*k), (c n)^2 := by
-  let i := 4*k
-  have hi : 0<i := by dsimp [i]; omega
+  have hi : 0 < i := Nat.zero_lt_of_lt (mem_Ioc.mp hiQ).1
   let u := FourfoldPath.quad i
-  have hu : u.admissible k := mem_Ioc.mpr (by dsimp [i]; omega)
+  have hu : u.admissible k := hiQ
   let a := Real.log 2
   let r := fourfoldContactRadius
-  let c (n : ℕ) := if n=2*i ∨ n=6*i then r else if n=4*i ∨ n=3*i then a else 0
-  have hc₂ : c (2*i)=r := by simp [c]
-  have hc₆ : c (6*i)=r := by simp [c]
-  have hc₄ : c (4*i)=a := by simp [c,show 4*i≠2*i by omega,show 4*i≠6*i by omega]
-  have hc₃ : c (3*i)=a := by simp [c,show 3*i≠2*i by omega,show 3*i≠6*i by omega]
+  let c := fourfoldEigenprofile i
+  have hc₂ : c (2*i)=r := by simp [c,r,fourfoldEigenprofile]
+  have hc₆ : c (6*i)=r := by simp [c,r,fourfoldEigenprofile]
+  have hc₄ : c (4*i)=a := by simp [c,a,fourfoldEigenprofile,show 4*i≠2*i by omega,show 4*i≠6*i by omega]
+  have hc₃ : c (3*i)=a := by simp [c,a,fourfoldEigenprofile,show 3*i≠2*i by omega,show 3*i≠6*i by omega]
   have hzero (n : ℕ) (hn : n∉u.sites) : c n=0 := by
     simp only [u,FourfoldPath.sites,mem_insert,mem_singleton] at hn
-    simp only [c,if_neg (show ¬(n=2*i ∨ n=6*i) by tauto),if_neg (show ¬(n=4*i ∨ n=3*i) by tauto)]
+    simp only [c,fourfoldEigenprofile,if_neg (show ¬(n=2*i ∨ n=6*i) by tauto),if_neg (show ¬(n=4*i ∨ n=3*i) by tauto)]
   have energy : ∑ n ∈ Ioc (6*k) (24*k), (c n)^2 = 2*r^2+2*a^2 := by
     rw [← sum_subset (fourfold_path_sites_subset hu) (fun n _ hn => by rw [hzero n hn,zero_pow (by decide : 2≠0)])]
     have h₁ : 4*i∉({2*i,6*i,3*i}:Finset ℕ) := by simp only [mem_insert,mem_singleton]; omega
@@ -160,7 +165,10 @@ theorem fourfold_prime_contact_attained {k : ℕ} (hk : 0 < k) :
       hc₂,hc₃,hc₄,hc₆]
     ring
   obtain ⟨ha,_,hr,_,_,hrel⟩ := radius_data
-  refine ⟨c,?_,?_⟩
+  change 0 < ∑ n ∈ Ioc (6*k) (24*k), (c n)^2 ∧
+    contactTerm ArithmeticFunction.vonMangoldt (Ioc (6*k) (24*k)) c c =
+      r * ∑ n ∈ Ioc (6*k) (24*k), (c n)^2
+  constructor
   · rw [energy]
     have : 0<r := hr
     positivity
@@ -179,6 +187,13 @@ theorem fourfold_prime_contact_attained {k : ℕ} (hk : 0 < k) :
     | triple x => simp [pathContact,hz x (by simp [FourfoldPath.sites])]
     | quad j =>
       simp [pathContact,hz (2*j) (by simp [FourfoldPath.sites]),hz (3*j) (by simp [FourfoldPath.sites])]
+
+/-- At every positive aligned scale there is an extremizing profile. -/
+theorem fourfold_prime_contact_attained {k : ℕ} (hk : 0 < k) :
+    ∃ c : ℕ → ℝ, 0 < ∑ n ∈ Ioc (6*k) (24*k), (c n)^2 ∧
+      contactTerm ArithmeticFunction.vonMangoldt (Ioc (6*k) (24*k)) c c =
+        fourfoldContactRadius * ∑ n ∈ Ioc (6*k) (24*k), (c n)^2 :=
+  ⟨fourfoldEigenprofile (4*k),fourfold_component_attains (mem_Ioc.mpr ⟨by omega,le_rfl⟩)⟩
 
 /-- A profile on the dilated comb supported on multiples of d. -/
 def dilateCombProfile (d : ℕ) (c : ℕ → ℝ) (m : ℕ) : ℝ :=
@@ -246,6 +261,35 @@ theorem prime_contact_fourfold_uniform (N : ℕ) (c : ℕ → ℝ) :
   rw [← hcontact,← henergy]
   exact fourfold_prime_contact_le N _
 
+private theorem dilate_six_eigenprofile (i : ℕ) :
+    dilateCombProfile 6 (fourfoldEigenprofile i) = fourfoldEigenprofile (6*i) := by
+  funext n
+  by_cases hn : 6 ∣ n
+  · obtain ⟨j,rfl⟩ := hn
+    have scale (b : ℕ) : b*(6*i)=6*(b*i) := by ring
+    have cancel (b : ℕ) : 6*j=6*b ↔ j=b := by omega
+    simp only [dilateCombProfile,dvd_mul_right,if_true,Nat.mul_div_cancel_left _ (by decide : 0<6),
+      fourfoldEigenprofile,scale,cancel]
+  · have outside (b : ℕ) : n≠b*(6*i) := fun he => hn ⟨b*i,by rw [he]; ring⟩
+    simp [dilateCombProfile,hn,fourfoldEigenprofile,outside]
+
+/-- Every fourfold interval with base N≥5 attains the uniform spectral
+radius. Its subgraph at 2i,3i,4i,6i is present for i=⌊N/2⌋+1. -/
+theorem prime_contact_fourfold_attained {N : ℕ} (hN : 5 ≤ N) :
+    ∃ c : ℕ → ℝ, 0 < ∑ n ∈ Ioc N (4*N), (c n)^2 ∧
+      contactTerm ArithmeticFunction.vonMangoldt (Ioc N (4*N)) c c =
+        fourfoldContactRadius * ∑ n ∈ Ioc N (4*N), (c n)^2 := by
+  let i := N/2+1
+  have hi : 6*i∈fourfoldQuads N := mem_Ioc.mpr (by dsimp [i]; omega)
+  have h := fourfold_component_attains hi
+  let c := fourfoldEigenprofile i
+  obtain ⟨hc,he⟩ := contactTerm_dilate_interval (d:=6) (by decide) N (4*N)
+    ArithmeticFunction.vonMangoldt c c
+  exact ⟨c,by
+    rw [show 6*(4*N)=24*N by omega,show dilateCombProfile 6 c=fourfoldEigenprofile (6*i)
+      from dilate_six_eigenprofile i] at hc he
+    simpa only [hc,he] using h⟩
+
 /-- For a fixed width ratio the best threshold for the prime contact alone
 is already forced by finite intervals. Every finite witness lifts to
 arbitrarily late intervals without losing mass or changing the debit. -/
@@ -270,6 +314,7 @@ theorem eventual_prime_contact_bound_iff (Q : ℕ) (w : ℕ → ℝ) (C : ℝ) :
 
 #print axioms eventual_prime_contact_bound_iff
 #print axioms contactTerm_dilate_interval
+#print axioms prime_contact_fourfold_attained
 #print axioms prime_contact_fourfold_uniform
 #print axioms fourfold_prime_contact_attained
 #print axioms fourfold_prime_contact_le

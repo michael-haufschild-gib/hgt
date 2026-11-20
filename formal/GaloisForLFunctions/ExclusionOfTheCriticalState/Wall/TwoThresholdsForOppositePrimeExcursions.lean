@@ -44,9 +44,9 @@ theorem product_moment_at_two_thresholds (S : Finset ℕ) (f g w : ℕ → ℝ) 
   let bin := fun i => (dyadicBin (f i),dyadicBin (g i))
   have hmap (i : ℕ) (hi : i∈S) : bin i ∈ R := by
     obtain ⟨hf,hg,_⟩ := hS i hi
-    apply mem_product.mpr
-    exact ⟨mem_range.mpr (Nat.lt_succ_of_le (Nat.log_mono_right (Nat.floor_le_of_le hf.2))),
-      mem_range.mpr (Nat.lt_succ_of_le (Nat.log_mono_right (Nat.floor_le_of_le hg.2)))⟩
+    simp only [bin,R,B,mem_product,mem_range,dyadicBin]
+    exact ⟨Nat.lt_succ_of_le (Nat.log_mono_right (Nat.floor_le_of_le hf.2)),
+      Nat.lt_succ_of_le (Nat.log_mono_right (Nat.floor_le_of_le hg.2))⟩
   have hR : R.Nonempty := ⟨(0,0),mem_product.mpr ⟨mem_range.mpr (by omega),mem_range.mpr (by omega)⟩⟩
   obtain ⟨r,hr,hmax⟩ := R.exists_max_image (excursionRectangle S f g w) hR
   have hcell (z : ℕ × ℕ) :
@@ -55,7 +55,9 @@ theorem product_moment_at_two_thresholds (S : Finset ℕ) (f g w : ℕ → ℝ) 
     let E := S.filter fun i => (2:ℝ)^z.1 ≤ f i ∧ (2:ℝ)^z.2 ≤ g i
     have hd {i : ℕ} (hi : i∈D) : i∈S ∧ dyadicBin (f i)=z.1 ∧ dyadicBin (g i)=z.2 := by
       obtain ⟨hi,he⟩ := mem_filter.mp hi
-      exact ⟨hi,congrArg Prod.fst he,congrArg Prod.snd he⟩
+      change (dyadicBin (f i),dyadicBin (g i))=z at he
+      rw [←he]
+      exact ⟨hi,rfl,rfl⟩
     have hsub : D ⊆ E := by
       intro i hi
       obtain ⟨his,hr₁,hr₂⟩ := hd hi
@@ -126,7 +128,7 @@ theorem opposite_prime_moment_at_two_thresholds (left : Bool) {s a g d T : ℝ} 
   apply (product_moment_at_two_thresholds S (middleHeight s k L) (flankHeight left s k L)
     (fun H => 1/(H:ℝ)^2) (4*L^2) ?_).imp
   · intro r h
-    simpa only [oppositePrimeProduct,middleHeight,flankHeight,mul_one_div] using h
+    simpa only [S,primeExcursionRectangle,oppositePrimeProduct,middleHeight,flankHeight,mul_one_div] using h
   · intro H hj
     obtain ⟨hnum,hpos⟩ := hh H hj
     obtain ⟨hrange,hT,_⟩ := mem_filter.mp hnum

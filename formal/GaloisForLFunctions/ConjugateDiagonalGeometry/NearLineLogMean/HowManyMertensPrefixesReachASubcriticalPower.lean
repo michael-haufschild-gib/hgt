@@ -41,7 +41,7 @@ theorem mertens_second_moment_from_excursion_count {b a : ℝ}
   let E := mertensExcursions b C N
   have hsub : E ⊆ S := filter_subset _ _
   have cmp (k : ℕ) (hk : k ∈ S) : (k:ℝ)+1 ≤ (N:ℝ)+1 :=
-    add_le_add_right (Nat.cast_le.mpr (Nat.lt_succ_iff.mp (mem_range.mp hk))) _
+    add_le_add (Nat.cast_le.mpr (Nat.lt_succ_iff.mp (mem_range.mp hk))) le_rfl
   have cap (k : ℕ) (hk : k ∈ E) : shiftedMertensReal k^2 ≤ A^2*((N:ℝ)+1)^(2*a) := by
     have hh := h k
     rw [norm_mobiusMertensPartialSum_eq_abs_shiftedMertensReal] at hh

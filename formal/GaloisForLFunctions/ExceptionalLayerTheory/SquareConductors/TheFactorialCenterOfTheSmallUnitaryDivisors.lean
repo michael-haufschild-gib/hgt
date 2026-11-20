@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheParityOfTheSmallUnitaryDivisors
+import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.WeightedSectionsOfTheUnitaryFactorPairs
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheTotientTermInTheReflectedCompositePrice
 import GaloisForLFunctions.RHTower.Sieve.DifferentiatedBarbanVehovScaledKernels
 import Mathlib.Algebra.BigOperators.Associated
@@ -16,91 +16,18 @@ noncomputable section
 open Finset ArithmeticFunction
 namespace GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval
 
-private theorem subset_factor_pos {k : ℕ} {S : Finset ℕ} (hs : S ⊆ k.primeFactors) :
-    0 < primePowerSubset k S :=
-  prod_pos fun _ hp => pow_pos (Nat.prime_of_mem_primeFactors (hs hp)).pos _
-
-private theorem subset_complement_eq {k : ℕ} (hk : 0 < k) {S : Finset ℕ}
-    (hs : S ⊆ k.primeFactors) :
-    primePowerSubset k S*primePowerSubset k (k.primeFactors \ S)=k := by
-  unfold primePowerSubset
-  rw [mul_comm,prod_sdiff hs]
-  exact (Nat.prod_primeFactors_pow_factorization hk.ne').symm
-
-private theorem subset_complement_coprime {k : ℕ} {S : Finset ℕ} (hs : S ⊆ k.primeFactors) :
-    (primePowerSubset k S).Coprime (primePowerSubset k (k.primeFactors \ S)) := by
-  apply Nat.Coprime.prod_left
-  intro p hp
-  apply Nat.Coprime.prod_right
-  intro q hq
-  apply Nat.Coprime.pow
-  exact (Nat.coprime_primes (Nat.prime_of_mem_primeFactors (hs hp))
-    (Nat.prime_of_mem_primeFactors (mem_sdiff.mp hq).1)).mpr (fun he => (mem_sdiff.mp hq).2 (he ▸ hp))
-
-private theorem support_of_subset {k : ℕ} {S : Finset ℕ} (hs : S ⊆ k.primeFactors) :
-    (primePowerSubset k S).primeFactors=S := by
-  ext p
-  constructor
-  · intro hp
-    obtain ⟨hp',hd,_⟩ := Nat.mem_primeFactors.mp hp
-    unfold primePowerSubset at hd
-    obtain ⟨q,hq,hdiv⟩ := hp'.prime.exists_mem_finset_dvd hd
-    have he := (Nat.prime_dvd_prime_iff_eq hp' (Nat.prime_of_mem_primeFactors (hs hq))).mp
-      (hp'.dvd_of_dvd_pow hdiv)
-    simpa only [he] using hq
-  · intro hp
-    obtain ⟨hp',hd,hk⟩ := Nat.mem_primeFactors.mp (hs hp)
-    exact Nat.mem_primeFactors.mpr ⟨hp',(dvd_pow_self p (hp'.factorization_pos_of_dvd hk hd).ne').trans
-      (dvd_prod_of_mem (fun q => q^k.factorization q) hp),(subset_factor_pos hs).ne'⟩
-
-private theorem reconstruct_unitary {k d : ℕ} (hk : 0 < k) (hd : d ∣ k)
-    (hc : d.Coprime (k/d)) : primePowerSubset k d.primeFactors=d := by
-  have hm := Nat.mul_div_cancel' hd
-  have hdp : 0 < d := Nat.pos_of_dvd_of_pos hd hk
-  have hrp : 0 < k/d := Nat.div_pos (Nat.le_of_dvd hk hd) hdp
-  calc primePowerSubset k d.primeFactors = ∏ p ∈ d.primeFactors,p^d.factorization p := by
-         apply prod_congr rfl
-         intro p hp
-         obtain ⟨hpr,hpd,_⟩ := Nat.mem_primeFactors.mp hp
-         have hn := hpr.coprime_iff_not_dvd.mp (hc.of_dvd_left hpd)
-         have hfac := congrArg (fun n : ℕ => n.factorization p) hm
-         simp only [Nat.factorization_mul hdp.ne' hrp.ne',Finsupp.add_apply,
-           Nat.factorization_eq_zero_of_not_dvd hn,add_zero] at hfac
-         rw [hfac]
-       _ = d := (Nat.prod_primeFactors_pow_factorization hdp.ne').symm
-
 /-- Any function of the smaller block count may be summed on ordinary
 divisors with the unitary coprimality test and the exact square-root cut. -/
 theorem small_unitary_sum_on_divisors {M : Type*} [AddCommMonoid M] (w : ℕ → M)
     {k : ℕ} (hk : 0 < k) :
     (∑ S ∈ smallUnitarySubsets k,w S.card)=
       ∑ d ∈ k.divisors.filter (fun d => d.Coprime (k/d) ∧ d^2 ≤ k),w d.primeFactors.card := by
-  apply sum_nbij' (primePowerSubset k) Nat.primeFactors
-  · intro S hS
-    obtain ⟨hpow,hsm⟩ := mem_filter.mp hS
-    have hs := mem_powerset.mp hpow
-    have hm := subset_complement_eq hk hs
-    have hdiv := Nat.mul_div_cancel_left (primePowerSubset k (k.primeFactors \ S)) (subset_factor_pos hs)
-    rw [hm] at hdiv
-    have hf := Nat.mul_le_mul_left (primePowerSubset k S) hsm
-    rw [hm,←pow_two] at hf
-    exact mem_filter.mpr ⟨Nat.mem_divisors.mpr ⟨⟨_,hm.symm⟩,hk.ne'⟩,
-      hdiv.symm ▸ subset_complement_coprime hs,hf⟩
-  · intro d hd
-    obtain ⟨hdiv,hcop,hsq⟩ := mem_filter.mp hd
-    have hsub := Nat.primeFactors_mono (Nat.mem_divisors.mp hdiv).1 hk.ne'
-    have hr := reconstruct_unitary hk (Nat.mem_divisors.mp hdiv).1 hcop
-    have hm := subset_complement_eq hk hsub
-    rw [hr] at hm
-    apply mem_filter.mpr
-    refine ⟨mem_powerset.mpr hsub,?_⟩
-    rw [hr]
-    have hdp := Nat.pos_of_dvd_of_pos (Nat.mem_divisors.mp hdiv).1 hk
-    exact Nat.le_of_mul_le_mul_left ((pow_two d).symm.le.trans (hsq.trans hm.symm.le)) hdp
-  · exact fun S hS => support_of_subset (mem_powerset.mp (mem_filter.mp hS).1)
-  · exact fun d hd => reconstruct_unitary hk (Nat.mem_divisors.mp (mem_filter.mp hd).1).1 (mem_filter.mp hd).2.1
-  · intro S hS
-    rw [support_of_subset (mem_powerset.mp (mem_filter.mp hS).1)]
+  have cut : smallUnitarySubsets k=k.primeFactors.powerset.filter (fun S => (primePowerSubset k S)^2≤k) := by
+    ext S
+    simp only [smallUnitarySubsets,mem_filter,mem_powerset]
+    exact and_congr_right fun sub => unitarySubset_small_iff_square hk sub
+  rw [cut]
+  exact unitary_sum_on_divisor_section hk (fun d => d^2≤k) (fun _ S => w S.card)
 
 #print axioms small_unitary_sum_on_divisors
 

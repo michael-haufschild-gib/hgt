@@ -45,7 +45,7 @@ private theorem step_as_drop {d : ℕ} (hd : 2 ≤ d) :
   have hp := Real.sqrt_pos.mpr (Nat.cast_pos.mpr (by omega : 0<d-1) : 0<((d-1:ℕ):ℝ))
   have hq := Real.sqrt_pos.mpr (Nat.cast_pos.mpr (by omega : 0<d) : 0<(d:ℝ))
   calc step d/d = (root d-root (d-1))/(root d)^2 := by rw [Real.sq_sqrt (Nat.cast_nonneg d)]; rfl
-       _ = _ := by dsimp only [drop,root]; field_simp <;> ring
+       _ = _ := by dsimp only [drop,root]; field_simp
 
 private theorem drop_sum {M : ℕ} (hm : 0 < M) :
     root M*(∑ d ∈ Ioc M (2*M), drop d) = 1-1/Real.sqrt 2 := by
@@ -115,7 +115,8 @@ private theorem reciprocal_error {a : ℕ → ℝ}
     simpa only [sum_const,Nat.card_Ioc,show 2*M-M=M by omega,nsmul_eq_mul,
       mul_inv_cancel₀ (Nat.cast_pos.mpr mp : 0<(M:ℝ)).ne',w] using he
   have mw : (M:ℝ)*w (M+1) ≤ 1 := by
-    rw [w,←div_eq_mul_inv,div_le_one (by positivity)]
+    change (M:ℝ)*((M+1:ℕ):ℝ)⁻¹ ≤ 1
+    rw [←div_eq_mul_inv,div_le_one (by positivity)]
     exact Nat.cast_le.mpr (Nat.le_succ M)
   rw [Real.dist_eq,sub_zero,abs_mul,abs_of_pos mr]
   have hprice : |price a M| ≤ L*3 := by

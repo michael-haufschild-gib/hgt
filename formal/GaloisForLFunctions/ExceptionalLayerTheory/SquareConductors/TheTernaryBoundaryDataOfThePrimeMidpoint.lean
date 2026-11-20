@@ -23,6 +23,10 @@ def ternaryMidpointRow (seed data : ℕ → ℝ) : ℕ → ℕ → ℝ
   | b+1 => fun m => (ternaryMidpointRow seed data b (2*m)+
       ternaryMidpointRow seed data b (4*m)+data (3^b*m))/2
 
+theorem ternaryMidpointRow_succ_apply (seed data : ℕ → ℝ) (b m : ℕ) :
+    ternaryMidpointRow seed data (b+1) m=(ternaryMidpointRow seed data b (2*m)+
+      ternaryMidpointRow seed data b (4*m)+data (3^b*m))/2 := rfl
+
 /-- Finite inverse at the exact ternary valuation of the requested integer. -/
 def integerMidpointInverse (seed data : ℕ → ℝ) (n : ℕ) : ℝ :=
   ternaryMidpointRow seed data (n.factorization 3) (ordCompl[3] n)
@@ -34,7 +38,7 @@ theorem ternary_row_recovers_price (f : ℕ → ℝ) (b m : ℕ) :
   induction b generalizing m with
   | zero => simp [ternaryMidpointRow]
   | succ b ih =>
-    rw [ternaryMidpointRow,ih,ih,integerMidpointObservation,pow_succ]
+    rw [ternaryMidpointRow_succ_apply,ih,ih,integerMidpointObservation,pow_succ]
     rw [show 3^b*(2*m)=2*(3^b*m) by ac_rfl,
       show 3^b*(4*m)=4*(3^b*m) by ac_rfl,show 3^b*3*m=3*(3^b*m) by ac_rfl]
     ring
@@ -62,8 +66,8 @@ theorem observe_integerMidpointInverse (seed data : ℕ → ℝ) {n : ℕ} (hn :
   obtain ⟨h₃,e₃⟩ := prime3_times n hn.ne'
   obtain ⟨h₂,e₂⟩ := three_free_times (j:=2) (by decide) n hn.ne'
   obtain ⟨h₄,e₄⟩ := three_free_times (j:=4) (by decide) n hn.ne'
-  simp only [integerMidpointObservation,integerMidpointInverse,h₃,e₃,h₂,e₂,h₄,e₄,
-    ternaryMidpointRow,Nat.ordProj_mul_ordCompl_eq_self]
+  simp only [integerMidpointObservation,integerMidpointInverse]
+  rw [e₃,e₂,e₄,h₃,h₂,h₄,ternaryMidpointRow_succ_apply,Nat.ordProj_mul_ordCompl_eq_self]
   ring
 
 /-- Three-free values are precisely the independent initial data.
@@ -76,7 +80,7 @@ theorem unique_integer_midpoint_price (seed data : ℕ → ℝ) :
   have hF₀ : F 0=seed 0 := by simp [F,integerMidpointInverse,ternaryMidpointRow]
   refine ⟨F,⟨hF₀,fun _ => inverse_seed seed data,fun _ => observe_integerMidpointInverse seed data⟩,?_⟩
   rintro f ⟨hf₀,hfs,hfd⟩
-  have layer (b m : ℕ) (hm : 0<m) (h₃ : ¬3∣m) : f (3^b*m)=F (3^b*m) := by
+  have layer (b m : ℕ) (hm : 0 < m) (h₃ : ¬3∣m) : f (3^b*m)=F (3^b*m) := by
     induction b generalizing m with
     | zero => simpa only [pow_zero,one_mul] using (hfs m h₃).trans (inverse_seed seed data h₃).symm
     | succ b ih =>
@@ -107,8 +111,8 @@ theorem theta_integer_midpoint_inverse (n : ℕ) :
 
 /-- A normalized multiplicative mode. Its two local multipliers are λ at
 2 and (λ+2λ²)/3 at 3. -/
-def ternaryMidpointMode (λ₀ : ℝ) (n : ℕ) : ℝ :=
-  n*λ₀^(n.factorization 2)*((λ₀+2*λ₀^2)/3)^(n.factorization 3)
+def ternaryMidpointMode (l : ℝ) (n : ℕ) : ℝ :=
+  n*l^(n.factorization 2)*((l+2*l^2)/3)^(n.factorization 3)
 
 private lemma mode_mul (l : ℝ) (m n : ℕ) :
     ternaryMidpointMode l (m*n)=ternaryMidpointMode l m*ternaryMidpointMode l n := by
@@ -135,13 +139,13 @@ theorem ternary_modes_are_invisible (l : ℝ) :
     have hκ : |(l+2*l^2)/3| ≤ 1 := by
       rw [abs_div,abs_of_pos (by norm_num : (0:ℝ)<3)]
       apply (div_le_one (by norm_num)).mpr
-      have hsq := pow_le_one₀ (abs_nonneg l) hl 2
+      have hsq := pow_le_one₀ (n:=2) (abs_nonneg l) hl
       have ht := abs_add_le l (2*l^2)
       rw [abs_mul,abs_of_pos (by norm_num : (0:ℝ)<2),abs_pow] at ht
       linarith only [ht,hsq,hl]
     simp only [ternaryMidpointMode,abs_mul,abs_pow,Nat.abs_cast]
-    exact (mul_le_of_le_one_right (by positivity) (pow_le_one₀ (abs_nonneg _) hκ _)).trans
-      (mul_le_of_le_one_right (Nat.cast_nonneg _) (pow_le_one₀ (abs_nonneg l) hl _))
+    exact (mul_le_of_le_one_right (by positivity) (pow_le_one₀ (abs_nonneg _) hκ)).trans
+      (mul_le_of_le_one_right (Nat.cast_nonneg _) (pow_le_one₀ (abs_nonneg l) hl))
 
 #print axioms unique_integer_midpoint_price
 #print axioms theta_integer_midpoint_inverse
@@ -155,7 +159,7 @@ theorem ternary_row_linear_response (C A : ℝ) (b m : ℕ) :
   induction b generalizing m with
   | zero => simp [ternaryMidpointRow,mul_comm]
   | succ b ih =>
-    rw [ternaryMidpointRow,ih,ih]
+    rw [ternaryMidpointRow_succ_apply,ih,ih]
     push_cast
     rw [pow_succ]
     ring
@@ -186,5 +190,44 @@ theorem sharp_integer_midpoint_amplification (C A : ℝ) (n : ℕ) :
   · rw [integerMidpointInverse,ternary_row_linear_response,scaled]
 
 #print axioms sharp_integer_midpoint_amplification
+
+/-- Even uniformly increasing prices within 1/4 of n carry an independent
+binary choice at every three-free integer. Every such price has exactly
+zero integer midpoint, including at indices divisible by three. -/
+theorem strictly_increasing_hidden_prices (bits : ℕ → Bool) :
+    ∃ f : ℕ → ℝ, f 0=0 ∧ StrictMono f ∧ (∀ n, |f n-n| ≤ 1/4) ∧
+      (∀ n, ¬3∣n → f n=n+(if bits n then 1/4 else -(1/4))) ∧
+      ∀ n, integerMidpointObservation f n=0 := by
+  let seed := fun n : ℕ => if n=0 then (0:ℝ) else if bits n then 1/4 else -(1/4)
+  let g := integerMidpointInverse seed (fun _ => 0)
+  have hb (b m : ℕ) : |ternaryMidpointRow seed (fun _ => 0) b m| ≤ 1/4 := by
+    induction b generalizing m with
+    | zero => change |seed m| ≤ 1/4; unfold seed; split_ifs <;> norm_num
+    | succ b ih =>
+      rw [ternaryMidpointRow_succ_apply,add_zero,abs_div,abs_of_pos (by norm_num : (0:ℝ)<2)]
+      apply (div_le_iff₀ (by norm_num)).mpr
+      exact (abs_add_le _ _).trans ((add_le_add (ih (2*m)) (ih (4*m))).trans_eq (by ring))
+  have hg (m : ℕ) : |g m| ≤ 1/4 := hb _ _
+  have h₀ : g 0=0 := by simp [g,integerMidpointInverse,ternaryMidpointRow,seed]
+  refine ⟨fun n => (n:ℝ)+g n,by simp [h₀],?_,fun n => by simpa only [add_sub_cancel_left] using hg n,?_,?_⟩
+  · apply strictMono_nat_of_lt_succ
+    intro n
+    push_cast
+    linarith only [(abs_le.mp (hg n)).2,(abs_le.mp (hg (n+1))).1]
+  · intro n hn
+    have hpos : n ≠ 0 := fun h => hn (h ▸ dvd_zero _)
+    change (n:ℝ)+g n=_
+    rw [show g n=seed n from inverse_seed _ _ hn]
+    simp only [seed,if_neg hpos]
+  · intro n
+    rcases Nat.eq_zero_or_pos n with rfl | hp
+    · simp [integerMidpointObservation,h₀]
+    · have he := observe_integerMidpointInverse seed (fun _ => 0) hp
+      change 2*g (3*n)-g (2*n)-g (4*n)=0 at he
+      unfold integerMidpointObservation
+      push_cast
+      linarith only [he]
+
+#print axioms strictly_increasing_hidden_prices
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

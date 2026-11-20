@@ -47,7 +47,8 @@ private theorem halo_sum {K : ℕ} (hK : 0 < K) : HasSum (halo K) (1/4) := by
     rw [show (1/8:ℝ) = (1/2)*(1/4) by norm_num]
     exact h.congr_fun fun n => by simp [side]
   have h := HasSum.of_add_one_of_neg_add_one (f := halo K) hp hp
-  convert h using 1 <;> norm_num [halo]
+  convert h using 1
+  norm_num [halo]
 
 private theorem halo_dominates {K : ℕ} (hK : 0 < K) {z : ℤ} (hz : 8*K < z.natAbs) :
     gridSincWeight K z ≤ halo K z := by

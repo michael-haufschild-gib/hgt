@@ -99,7 +99,11 @@ private theorem negative_open (h T : ℝ) : IsOpen (negativeHadamardWindow h T) 
     intro hz
     rw [logDeriv_xi_eq_zero_of_xi_eq_zero hz,Complex.zero_re] at hn
     exact lt_irrefl _ hn
-  have hpnt : Continuous point := by unfold point; fun_prop
+  have hpnt : Continuous point := by
+    have he : point=(fun p : ℝ×ℝ => ((1/2+p.1:ℝ):ℂ)+(p.2:ℂ)*I) :=
+      funext fun p => (Complex.re_add_im (point p)).symm
+    rw [he]
+    fun_prop
   have ha := xi_differentiable.analyticAt (point p)
   have hc := Complex.continuous_re.continuousAt.comp ((ha.deriv.continuousAt.div ha.continuousAt nz).comp hpnt.continuousAt)
   have hh : ∀ᶠ z : ℝ×ℝ in 𝓝 p, (logDeriv xi (point z)).re < 0 := hc.eventually_lt_const hn

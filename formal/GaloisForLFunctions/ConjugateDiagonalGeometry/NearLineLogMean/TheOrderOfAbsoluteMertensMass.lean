@@ -18,13 +18,9 @@ namespace GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean
 
 theorem mertens_abel_mass_eq (N : ℕ) :
     mertensAbelMass N = ∑ k ∈ Icc 1 N, ‖mobiusMertensPartialSum k‖ / (k:ℝ) := by
-  induction N with
-  | zero => simp [mertensAbelMass]
-  | succ N ih =>
-    rw [sum_Icc_succ_top (by omega)]
-    change (∑ j ∈ range (N+1), _) = _
-    rw [sum_range_succ,←ih,Nat.cast_succ]
-    rfl
+  simpa only [mertensAbelMass,Nat.cast_succ] using
+    (_root_.RHTower.sum_Icc_eq_sum_range_shift
+      (fun k : ℕ => ‖mobiusMertensPartialSum k‖/(k:ℝ)) N).symm
 
 theorem mertens_abel_mass_mono : Monotone mertensAbelMass :=
   fun _ _ h => sum_le_sum_of_subset_of_nonneg (range_subset_range.mpr h)
@@ -63,7 +59,7 @@ any fixed multiple of each strictly subcritical power. -/
 theorem eventually_large_mertens_abel_mass {b : ℝ} (hb : 0 ≤ b) (h : b < zetaZeroAbscissa)
     (C : ℝ) :
     ∀ᶠ N : ℕ in atTop, C*((N:ℝ)+1)^b < mertensAbelMass N := by
-  obtain ⟨K,hK⟩ := eventually_atTop.mp (eventually_large_mertens_abel_cost hb h (3*|C|*3^b))
+  obtain ⟨K,hK⟩ := eventually_atTop.mp (eventually_large_mertens_abel_cost hb h (3 * |C| * 3^b))
   filter_upwards [eventually_ge_atTop (2*K+1)] with N hN
   obtain ⟨k,hk,hcost⟩ := upper_half_mertens_abel_selection (N:=N) (by omega)
   have hhalf := (mem_Ioc.mp hk).1
@@ -108,6 +104,7 @@ theorem mertens_abel_mass_log_order :
     simpa only [one_mul] using eventually_large_mertens_abel_mass hb h 1
   · exact fun h => supercritical_mertens_abel_mass h
 
+#print axioms mertens_abel_mass_eq
 #print axioms upper_half_mertens_abel_selection
 #print axioms eventually_large_mertens_abel_mass
 #print axioms mertens_abel_mass_log_order

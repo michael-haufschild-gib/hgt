@@ -53,7 +53,7 @@ private theorem multiply_nextColumn {k : ℕ} (A : Matrix (Fin (k+1)) (Fin (k+1)
     simp [Matrix.mul_apply,nextColumn,mul_ite]
 
 private theorem difference_det (k : ℕ) : ((1:Matrix (Fin (k+1)) (Fin (k+1)) ℤ)-nextColumn k).det=1 := by
-  have hn (i j : Fin (k+1)) (h : j≤i) : nextColumn k i j=0 := by
+  have hn (i j : Fin (k+1)) (h : j ≤ i) : nextColumn k i j=0 := by
     induction j using Fin.cases with
     | zero => rfl
     | succ j =>
@@ -62,7 +62,7 @@ private theorem difference_det (k : ℕ) : ((1:Matrix (Fin (k+1)) (Fin (k+1)) �
   rw [Matrix.det_of_upperTriangular]
   · simp [Matrix.sub_apply,hn]
   · intro i j hij
-    have h : j<i := hij
+    have h : j < i := hij
     simp [Matrix.sub_apply,Matrix.one_apply,h.ne',hn i j h.le]
 
 /-- Consecutive column differences first appear on the diagonal, always as

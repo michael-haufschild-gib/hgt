@@ -67,7 +67,7 @@ private theorem smooth_prime_multiplicity {s j n : ℕ} (hs : 2 ≤ s) (hn : 0<n
   have dvd := (prod_dvd_prod_of_subset A n.primeFactors id sub).trans (Nat.prod_primeFactors_dvd n)
   have power : s^A.card ≤ ∏ p ∈ A,p := by
     rw [←prod_const]
-    exact prod_le_prod' (fun p hp => ((mem_Icc.mp (mem_filter.mp (mem_filter.mp hp).1).1).1).le)
+    exact prod_le_prod' (fun p hp => Nat.le_of_lt (mem_Icc.mp (mem_filter.mp (mem_filter.mp hp).1).1).1)
   exact (pow_right_strictMono₀ (by omega : 1<s)).le_iff_le.mp (power.trans ((Nat.le_of_dvd hn dvd).trans size))
 
 private theorem smooth_row_count {s T : ℕ} (p : ℕ) (hp : p ∈ bigPrimeSet s (s^2)) :
@@ -102,8 +102,12 @@ private theorem all_smooth_rows {s T j : ℕ} (hs : 2 ≤ s) (size : T ≤ s^j) 
     rw [pow_succ,mul_comm]
     exact hi.trans (Nat.mul_le_mul hs size)
   have count : (∑ p ∈ P,(I.filter (p ∣ ·)).card)=∑ n ∈ I,(P.filter (· ∣ n)).card := by
-    simp only [←sum_boole]
-    rw [sum_comm]
+    have left (p : ℕ) : (I.filter (p ∣ ·)).card=∑ n ∈ I,if p ∣ n then 1 else 0 := by
+      rw [←sum_filter]; simp
+    have right (n : ℕ) : (P.filter (· ∣ n)).card=∑ p ∈ P,if p ∣ n then 1 else 0 := by
+      rw [←sum_filter]; simp
+    simp_rw [left,right]
+    exact sum_comm
   apply (sum_le_sum (fun p hp => smooth_row_count p hp)).trans
   change (∑ p ∈ P,(I.filter (p ∣ ·)).card) ≤ _
   rw [count]
@@ -121,7 +125,7 @@ theorem positive_smooth_population_at_all_polynomial_walls (j : ℕ) :
     filter_upwards [eventually_ge_atTop (1:ℕ)] with s hs
     intro T ht
     rw [pow_zero] at ht
-    have h : 1 ≤ s^2 := Nat.pow_pos hs _
+    have h : 1 ≤ s^2 := Nat.pow_pos hs
     rw [base_smooth_interval (Nat.mul_le_mul_left 2 (ht.trans h)),one_mul]
   | succ j ih =>
     obtain ⟨c,hc,eventual⟩ := ih
@@ -144,7 +148,7 @@ theorem positive_smooth_population_at_all_polynomial_walls (j : ℕ) :
         have m := Nat.mul_div_le T p
         by_contra! high
         have more := Nat.mul_lt_mul_of_pos_left high pr.pos
-        have less := Nat.mul_le_mul_right (s^j) sp.le
+        have less := Nat.mul_le_mul_right (s^j) (Nat.le_of_lt sp)
         rw [pow_succ,mul_comm] at ht
         omega
       have bound := prev (T/p) divT
@@ -159,13 +163,14 @@ theorem positive_smooth_population_at_all_polynomial_walls (j : ℕ) :
       apply LE.le.trans _ bound
       rw [mul_one_div,div_le_iff₀ pr0]
       linarith only [mul_le_mul_of_nonneg_left natbound hc.le]
-    have lower := (mul_le_mul_of_nonneg_left mass (by positivity : 0 ≤ c*T/2)).trans
-      (by rw [mul_sum]; exact sum_le_sum row)
+    have lower : c*T/2*δ ≤ ∑ p ∈ P,((smoothQuotientInterval (2*s^2) (T/p)).card:ℝ) :=
+      (mul_le_mul_of_nonneg_left mass (by positivity : 0 ≤ c*T/2)).trans
+        (by rw [mul_sum]; exact sum_le_sum row)
     have upper := (Nat.cast_le (α := ℝ)).mpr (all_smooth_rows hs ht)
     push_cast only [Nat.cast_sum,Nat.cast_mul,Nat.cast_succ] at upper
     have finish : (c*δ/(2*((j:ℝ)+2)))*T ≤ ((smoothQuotientInterval (2*s^2) T).card:ℝ) := by
       rw [div_mul_eq_mul_div,div_le_iff₀ (by positivity)]
-      change c*T/2*δ ≤ _ at lower
+      dsimp only [P] at lower
       linarith only [lower,upper]
     exact (mul_le_mul_of_nonneg_right (min_le_right ..) (Nat.cast_nonneg T)).trans finish
 
@@ -192,7 +197,7 @@ theorem uniform_logarithmic_upper_bound_for_smooth_population :
       split <;> first | exact Real.log_nonneg (Nat.one_le_cast.mpr prime.one_le) | exact le_rfl
     · simp only [prime,false_and,if_false,zero_add]; exact vonMangoldt_nonneg
   have sub : S ⊆ I := filter_subset ..
-  have local (n : ℕ) (hn : n ∈ S) : Real.log n=∑ d ∈ n.divisors,f d := by
+  have log_eq_divisor_sum (n : ℕ) (hn : n ∈ S) : Real.log n=∑ d ∈ n.divisors,f d := by
     rw [←(vonMangoldt_sum (n := n))]
     apply sum_congr rfl
     intro d hd
@@ -203,9 +208,11 @@ theorem uniform_logarithmic_upper_bound_for_smooth_population :
     · simp only [f,prime,false_and,if_false,RHTower.Mertens.notPrimeVonMangoldt,zero_add]
   have hyper : (∑ n ∈ I,∑ d ∈ n.divisors,f d)=∑ d ∈ I,f d*((T/d:ℕ):ℝ) := by
     have eq := RHTower.Sieve.sum_Icc_divisorsAntidiagonal_swap (fun d _ => f d) T
-    simpa only [Nat.sum_divisorsAntidiagonal,sum_const,nsmul_eq_mul,mul_comm _ (f _),Nat.card_Icc,Nat.add_sub_cancel] using eq
-  have coarse := sum_le_sum_of_subset_of_nonneg sub (fun n _ _ => sum_nonneg (fun d _ => pos d))
-  rw [hyper,←sum_congr rfl local] at coarse
+    simpa only [I,Nat.sum_divisorsAntidiagonal (fun d _ => f d),sum_const,nsmul_eq_mul,
+      mul_comm _ (f _),Nat.card_Icc,Nat.add_sub_cancel] using eq
+  have coarse : (∑ n ∈ S,∑ d ∈ n.divisors,f d) ≤ ∑ n ∈ I,∑ d ∈ n.divisors,f d :=
+    sum_le_sum_of_subset_of_nonneg sub (fun n _ _ => sum_nonneg (fun d _ => pos d))
+  rw [hyper,←sum_congr rfl log_eq_divisor_sum] at coarse
   have per (d : ℕ) (_ : d ∈ I) : f d*((T/d:ℕ):ℝ) ≤ (T:ℝ)*(f d/d) :=
     (mul_le_mul_of_nonneg_left Nat.cast_div_le (pos d)).trans_eq (by ring)
   have summed := sum_le_sum per
@@ -217,7 +224,9 @@ theorem uniform_logarithmic_upper_bound_for_smooth_population :
     have cost : (∑ d ∈ I,(if d.Prime ∧ d ≤ y then Real.log d else 0)/(d:ℝ))=
         ∑ d ∈ J,Real.log d/(d:ℝ) := by
       rw [sum_filter]; apply sum_congr rfl; intro d _
-      by_cases h : d.Prime ∧ d ≤ y <;> simp only [h,if_true,if_false,zero_div]
+      by_cases h : d.Prime ∧ d ≤ y
+      · simp only [if_pos h]
+      · simp only [if_neg h,zero_div]
     rw [cost]
     apply sum_le_sum_of_subset_of_nonneg
     · intro d hd
@@ -236,7 +245,7 @@ theorem uniform_logarithmic_upper_bound_for_smooth_population :
     have bigger := sum_le_sum_of_subset_of_nonneg sub (fun n hi _ => sub_nonneg.mpr
       (Real.log_le_log (Nat.cast_pos.mpr (mem_Icc.mp hi).1) (Nat.cast_le.mpr (mem_Icc.mp hi).2)))
     change _ ≤ ∑ n ∈ Icc 1 T,(Real.log T-Real.log n) at bigger
-    rw [sum_sub_distrib,sum_const,nsmul_eq_mul,Nat.card_Icc,Nat.add_sub_cancel] at bigger
+    simp only [sum_sub_distrib,sum_const,nsmul_eq_mul,Nat.card_Icc,Nat.add_sub_cancel] at bigger ⊢
     linarith only [bigger,lo]
   rw [sum_sub_distrib,sum_const,nsmul_eq_mul] at variation
   change (S.card:ℝ)*Real.log T ≤ _

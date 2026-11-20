@@ -33,11 +33,13 @@ theorem momentum_injective : Function.Injective momentum := by
   letI : Nontrivial (𝓢(ℝ, ℂ)) := ⟨⟨hermiteSchwartz 0,0,by
     intro h
     apply hermiteSchwartz_toLp_ne_zero 0
-    simp [h]⟩⟩
+    rw [h]
+    exact (SchwartzMap.toLpCLM ℂ ℂ 2 (MeasureTheory.volume : MeasureTheory.Measure ℝ)).map_zero⟩⟩
   exact canonical_aeval_injective I_ne_zero ccr
 
 private theorem jump_position (f : ℂ[X]) : bracket (momentum f) Q = (-I) • momentum f.derivative := by
-  rw [neg_smul,← conjugate_polynomial ccr]
+  unfold momentum
+  rw [neg_smul,← conjugate_polynomial ccr f]
   unfold bracket
   exact (neg_sub _ _).symm
 
@@ -62,9 +64,9 @@ theorem position_heating (f : ℂ[X]) : dissipator f (Q^2) = momentum (f.derivat
   have he := (position_power f 2).1
   change bracket (momentum f) (bracket (momentum f) (Q^2)) = _ at he
   rw [dissipator,he,map_pow]
-  simp only [Nat.factorial_succ,Nat.factorial_zero,mul_one,pow_two,smul_mul_assoc,mul_smul_comm,
-    smul_smul,two_nsmul,← two_smul ℂ,smul_smul]
-  norm_num
+  change (-1/2:ℂ) • ((2:ℕ) • ((-I) • momentum f.derivative)^2) = (momentum f.derivative)^2
+  rw [_root_.smul_pow,two_nsmul,← two_smul ℂ,smul_smul,smul_smul]
+  norm_num [neg_sq,Complex.I_sq]
 
 /-- The adjoint jump conserves the full momentum algebra, mean position,
 and the symmetrized position–momentum observable. -/
@@ -75,9 +77,11 @@ theorem conserved_observables (f g : ℂ[X]) :
     simpa [momentum] using annihilate_momentum f Polynomial.X
   have hq : bracket (momentum f) (bracket (momentum f) Q) = 0 := by
     rw [jump_position,bracket_smul,annihilate_momentum,smul_zero]
-  refine ⟨by simp [dissipator,annihilate_momentum,bracket],by rw [dissipator,hq,smul_zero],?_⟩
-  simp only [dissipator,bracket_add,bracket_mul,hp,hq,zero_mul,mul_zero,add_zero,
-    zero_add,smul_zero]
+  refine ⟨?_,by rw [dissipator,hq,smul_zero],?_⟩
+  · rw [dissipator,annihilate_momentum f g]
+    simp [bracket]
+  · simp only [dissipator,bracket_add,bracket_mul,hp,hq,zero_mul,mul_zero,add_zero,
+      zero_add,smul_zero]
 
 /-- The least momentum degree representing the noise correction to Q² is twice
 the predecessor of the jump degree. -/
@@ -100,8 +104,7 @@ theorem quartic_heating :
   · rw [position_heating]
     have hp : ((Polynomial.X^4 : ℂ[X]).derivative)^2 = C 16 * Polynomial.X^6 := by
       simp only [derivative_X_pow]
-      norm_num
-      ring
+      norm_num [Polynomial.C_ofNat] <;> ring
     rw [hp,map_mul,map_pow,momentum,aeval_C,aeval_X,Algebra.smul_def]
   · rw [heating_order]
     norm_num

@@ -40,10 +40,12 @@ private theorem strict_complement {k : ℕ} (hk : 1 < k) {S : Finset ℕ} (hs : 
   rw [hc, one_mul] at hm
   omega
 
-private theorem complement_membership {k : ℕ} (hk : 1 < k) {S : Finset ℕ} (hs : S ⊆ k.primeFactors) :
+/-- Exactly one of two complementary unitary divisors of k > 1 lies
+below the square root. -/
+theorem unitary_complement_mem_small_iff {k : ℕ} (hk : 1 < k) {S : Finset ℕ} (hs : S ⊆ k.primeFactors) :
     k.primeFactors \ S ∈ smallUnitarySubsets k ↔ S ∉ smallUnitarySubsets k := by
   simp only [smallUnitarySubsets, mem_filter, mem_powerset, sdiff_subset, hs, true_and,
-    sdiff_sdiff_eq_self hs, not_le]
+    Finset.sdiff_sdiff_eq_self hs, not_le]
   exact ⟨fun h => h.lt_of_ne (strict_complement hk hs).symm, LT.lt.le⟩
 
 private theorem odd_complement_sign {k r : ℕ} (hr : k.primeFactors.card = 2*r+1)
@@ -79,20 +81,21 @@ private theorem odd_defect_formula {k r : ℕ} (hk : 1 < k) (hr : k.primeFactors
       have hlow : (P \ S).card ≤ r := by
         rw [card_sdiff_of_subset hs]; change k.primeFactors.card - S.card ≤ r; omega
       exact mem_filter.mpr ⟨mem_filter.mpr ⟨mem_powerset.mpr sdiff_subset, hlow⟩,
-        fun hc => (complement_membership hk hs).mp hc hsm⟩
+        fun hc => (unitary_complement_mem_small_iff hk hs).mp hc hsm⟩
     · intro S hS
       obtain ⟨hlow, hnot⟩ := mem_filter.mp hS
       obtain ⟨hpow, hcard⟩ := mem_filter.mp hlow
       have hs : S ⊆ P := mem_powerset.mp hpow
-      refine mem_filter.mpr ⟨(complement_membership hk hs).mpr hnot, ?_⟩
+      refine mem_filter.mpr ⟨(unitary_complement_mem_small_iff hk hs).mpr hnot, ?_⟩
       rw [card_sdiff_of_subset hs]; change ¬k.primeFactors.card-S.card ≤ r; omega
     · intro S hS
-      exact sdiff_sdiff_eq_self (mem_powerset.mp (mem_filter.mp (mem_filter.mp hS).1).1)
+      exact Finset.sdiff_sdiff_eq_self (mem_powerset.mp (mem_filter.mp (mem_filter.mp hS).1).1)
     · intro S hS
-      exact sdiff_sdiff_eq_self (mem_powerset.mp (mem_filter.mp (mem_filter.mp hS).1).1)
+      exact Finset.sdiff_sdiff_eq_self (mem_powerset.mp (mem_filter.mp (mem_filter.mp hS).1).1)
     · intro S hS
       have hs : S ⊆ P := mem_powerset.mp (mem_filter.mp (mem_filter.mp hS).1).1
-      simp only [sign, odd_complement_sign hr hs, neg_neg]
+      change (-1:ℤ)^S.card = -((-1:ℤ)^(k.primeFactors \ S).card)
+      rw [odd_complement_sign hr hs,neg_neg]
   have hlow := sum_filter_add_sum_filter_not low (· ∈ small) sign
   have hsmall := sum_filter_add_sum_filter_not small (fun S => S.card ≤ r) sign
   rw [common] at hlow
@@ -116,7 +119,14 @@ theorem unitaryHalfWeight_rank_formula (k : ℕ) :
   dsimp only
   by_cases hz : k.primeFactors.card = 0
   · rw [if_pos hz]
-    simp [unitaryHalfWeight, smallUnitarySubsets, card_eq_zero.mp hz, primePowerSubset]
+    have empty : smallUnitarySubsets k={∅} := by
+      ext S
+      simp only [smallUnitarySubsets,card_eq_zero.mp hz,powerset_empty,mem_filter,mem_singleton]
+      constructor
+      · exact And.left
+      · rintro rfl
+        simp [primePowerSubset]
+    rw [unitaryHalfWeight,empty,sum_singleton,card_empty,pow_zero]
   rw [if_neg hz]
   have hk : 1 < k := Nat.nonempty_primeFactors.mp (card_pos.mp (Nat.pos_of_ne_zero hz))
   split_ifs with he
@@ -198,6 +208,7 @@ theorem balanced_five_unitary_weight
   exact he
 
 #print axioms balanced_five_unitary_weight
+#print axioms unitary_complement_mem_small_iff
 #print axioms oddSmoothCompositePrice_rank_expansion
 #print axioms unitaryHalfWeight_rank_formula
 

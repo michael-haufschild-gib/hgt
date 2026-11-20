@@ -1,4 +1,5 @@
 import GaloisForLFunctions.RHTower.Sieve.TruncatedMoebius
+import Mathlib.Algebra.BigOperators.Group.Finset.Powerset
 import Mathlib.Data.Nat.GCD.BigOperators
 import Mathlib.Data.Nat.Choose.Sum
 
@@ -271,8 +272,14 @@ theorem small_unitary_pair_price (w : ℕ → ℤ) {p q a : ℕ}
     exact Nat.mul_lt_mul_of_pos_right hlt hq.pos
   have hqmem : q ∈ k.primeFactors := by simp [hP]
   change (∑ S ∈ smallUnitarySubsets k,w (primePowerSubset k S))=_
-  rw [small_unitary_subsets_of_dominant hk hqmem hbig,hP]
-  simp [Finset.powerset_insert,primePowerSubset,hpq.ne,hpq.ne.symm,hpexp,add_comm]
+  have remaining : ({p,q}:Finset ℕ).erase q={p} := by
+    ext t
+    simp only [mem_erase,mem_insert,mem_singleton]
+    exact ⟨fun h => h.2.resolve_right h.1,fun h => ⟨fun eq => hpq.ne (h.symm.trans eq),Or.inl h⟩⟩
+  rw [small_unitary_subsets_of_dominant hk hqmem hbig,hP,remaining]
+  simpa only [insert_empty_eq,powerset_empty,sum_singleton,primePowerSubset,prod_empty,
+    prod_singleton,hpexp] using
+    sum_powerset_insert (notMem_empty p) (fun S => w (primePowerSubset k S))
 
 /-- Any normalization assigning the unit weight one and killing all
 two-block products forces weight minus one on every prime-power block

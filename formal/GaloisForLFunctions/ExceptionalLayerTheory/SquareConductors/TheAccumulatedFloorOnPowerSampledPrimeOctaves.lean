@@ -45,9 +45,10 @@ private theorem octave_limit {F : ℕ → ℝ} {α A : ℝ} (hα : 0<α) (hA : 0
       have hs := abs_sub_le (F n) (F (2*m)) (F m)
       linarith only [hs,h1,h2,eqn]
   have bound {m n : ℕ} (hm : 1 ≤ m) (hmn : m ≤ n) : |F n-F m| ≤ B*(m:ℝ)^(-α) := by
-    exact all n hm hmn ((Nat.lt_two_pow_self n).le.trans (Nat.le_mul_of_pos_right _ hm))
+    have hn : n < 2^n := Nat.lt_two_pow_self
+    exact all n hm hmn (hn.le.trans (Nat.le_mul_of_pos_right _ hm))
   have hz : Tendsto (fun n : ℕ => B*(n:ℝ)^(-α)) atTop (𝓝 0) := by
-    simpa only [mul_zero] using (tendsto_const_nhds (x:=B)).mul
+    simpa only [Function.comp_def,mul_zero] using (tendsto_const_nhds (x:=B)).mul
       ((tendsto_rpow_neg_atTop hα).comp (tendsto_natCast_atTop_atTop (R:=ℝ)))
   have cauchy : CauchySeq F := by
     rw [Metric.cauchySeq_iff]
@@ -69,7 +70,9 @@ private def floorMass (primesOnly : Bool) (d : ℕ) : ℝ :=
 
 private theorem abs_floor_mass (b : Bool) (d : ℕ) : |floorMass b d| ≤ vonMangoldt d := by
   unfold floorMass
-  split_ifs <;> simp [vonMangoldt_nonneg]
+  split_ifs
+  · simpa only [abs_zero] using (vonMangoldt_nonneg : 0 ≤ vonMangoldt d)
+  · exact (abs_of_nonneg vonMangoldt_nonneg).le
 
 private def powerFloorPrice (s : ℕ) (b : Bool) (m : ℕ) : ℝ :=
   ((m:ℝ)^(s+2))⁻¹*∑ d ∈ Ioc (m^(s+1)) (2*m^(s+1)),floorMass b d*Int.fract ((m:ℝ)^(s+2)/d)
@@ -81,7 +84,7 @@ def powerGcdFloorPrice (r m : ℕ) : ℝ :=
 /-- The same lost mass for ordinary primes alone. -/
 def powerPrimeFloorPrice (r m : ℕ) : ℝ :=
   ∑ p ∈ (Ioc (m^r) (2*m^r)).filter Nat.Prime,
-    Real.log p/(p:ℝ)-((m^(r+1)/p:ℕ):ℝ)*Real.log p/(m:ℝ)^(r+1)
+    (Real.log p/(p:ℝ)-((m^(r+1)/p:ℕ):ℝ)*Real.log p/(m:ℝ)^(r+1))
 
 private theorem floor_log_price {m : ℕ} (hm : 1 ≤ m) (s : ℕ) (b : Bool) :
     powerFloorPrice s b m=(if b then powerPrimeFloorPrice (s+1) m else powerGcdFloorPrice (s+1) m) := by
@@ -98,7 +101,8 @@ private theorem floor_log_price {m : ℕ} (hm : 1 ≤ m) (s : ℕ) (b : Bool) :
     apply sum_congr rfl
     intro d _
     field_simp [hden] <;> ring
-  · simp only [ite_true,powerPrimeFloorPrice,powerFloorPrice,mul_sum,sum_filter,floorMass,true_and,frac]
+  · change powerFloorPrice s true m = powerPrimeFloorPrice (s+1) m
+    simp only [powerPrimeFloorPrice,powerFloorPrice,mul_sum,sum_filter,floorMass,true_and,frac]
     apply sum_congr rfl
     intro d _
     by_cases hp : d.Prime
@@ -181,11 +185,11 @@ private theorem centered_price_fragment (s : ℕ) (b : Bool) {D K : ℕ} (hD : 1
   have hm0 := (Nat.cast_pos (α:=ℝ)).mpr (hD.trans (mem_Ioc.mp hm).1.le)
   let S := Ioc (m^(s+1)) (2*m^(s+1))
   let v := fun d => Int.fract ((m:ℝ)^(s+2)/d)
-  have h : (∑ d ∈ S,floorMass b d*centeredQuotient s d m)=
+  have h : (∑ d ∈ S,floorMass b d*centeredPowerQuotient s d m)=
       (∑ d ∈ S,floorMass b d*v d)-(∑ d ∈ S,floorMass b d)*(1/2:ℝ) := by
-    simp only [centeredQuotient,v,mul_sub,sum_sub_distrib,sum_mul]
+    simp only [centeredPowerQuotient,v,mul_sub,sum_sub_distrib,sum_mul]
   change ((m:ℝ)^(s+2))⁻¹*(∑ d ∈ S,floorMass b d*v d)-1/(2*(m:ℝ))=
-    ((m:ℝ)^(s+2))⁻¹*(∑ d ∈ S,floorMass b d*centeredQuotient s d m)+
+    ((m:ℝ)^(s+2))⁻¹*(∑ d ∈ S,floorMass b d*centeredPowerQuotient s d m)+
       ((∑ d ∈ S,floorMass b d)-(m:ℝ)^(s+1))/(2*(m:ℝ)^(s+2))
   rw [h,pow_succ (m:ℝ) (s+1)]
   field_simp [hm0.ne'] <;> ring
@@ -217,7 +221,8 @@ private theorem accumulated_power_floor (s : ℕ) (b : Bool) :
                  intro m hm
                  have hDm := (mem_Ioc.mp hm).1.le
                  exact (hb b (hD.trans hDm)).trans (mul_le_mul_of_nonneg_left
-                   (Real.rpow_le_rpow_of_nonpos hD0 (Nat.cast_le.mpr hDm) (by linarith only [hr0])) hB)
+                   (Real.rpow_le_rpow_of_nonpos hD0 (Nat.cast_le.mpr hDm)
+                     (show -1-r ≤ 0 by linarith only [hr0])) hB)
            _ ≤ (D:ℝ)*(B*(D:ℝ)^(-1-r)) := by
                  rw [sum_const,nsmul_eq_mul,Nat.card_Ioc]
                  exact mul_le_mul_of_nonneg_right (Nat.cast_le.mpr (by omega : K-D ≤ D)) (by positivity)

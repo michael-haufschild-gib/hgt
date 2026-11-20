@@ -25,6 +25,7 @@ import GaloisForLFunctions.PrimeExponentialSums.PrincipalRamanujanTransferOnTheD
 import GaloisForLFunctions.PrimeExponentialSums.ExactDiskImageOfThePrincipalTransfer
 import GaloisForLFunctions.PrimeExponentialSums.ConductorShellOfTheLocalGaussTransfer
 import GaloisForLFunctions.PrimeExponentialSums.SharpGapBelowPrimitiveGaussTransfers
+import GaloisForLFunctions.PrimeExponentialSums.ReciprocalHarmonicsOnTheReflectedPrimeShell
 
 /-!
 # Exponential sums over primes

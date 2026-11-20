@@ -119,11 +119,12 @@ theorem subpolynomial_cutoff_iff_logarithmic_signed_saving (y : ℕ → ℕ)
       logY.eventually_ge_atTop K] with X cut hy hq large
     let p := y X
     let T := X/p
+    change K ≤ Real.log p at large
     have yp := hZ.trans_le ((le_max_left ..).trans hy)
     have two : 2 ≤ p := (le_max_right ..).trans hy
     have lp : 0<Real.log p := Real.log_pos (by exact_mod_cast (show 1<p by omega))
     have before : p^j ≤ T := (Nat.le_div_iff_mul_le yp).mpr (by simpa only [pow_succ] using cut.le)
-    have lg := Real.log_le_log (by exact_mod_cast Nat.pow_pos yp j)
+    have lg := Real.log_le_log (Nat.cast_pos.mpr (show 0<p^j from Nat.pow_pos yp))
       ((Nat.cast_le (α := ℝ)).mpr before)
     rw [Nat.cast_pow,Real.log_pow] at lg
     have top := upper p T yp

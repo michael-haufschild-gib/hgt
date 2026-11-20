@@ -250,12 +250,12 @@ theorem signed_freezing_error {θ : ℝ} (hθ : 0<θ) (X : ℕ) :
   by_cases fixed : ∀ p ∈ n.primeFactors,powerCutoff θ X<p
   · have own : ∀ p ∈ n.primeFactors,powerCutoff θ n<p := fun p hp => ne.trans_lt (fixed p hp)
     have no : ¬e n := fun ⟨_,p,hp,low⟩ => (fixed p hp).not_ge low
-    simp [fixed,own,no]
+    simp only [if_pos own,if_pos fixed,if_neg no,sub_self,abs_zero,le_refl]
   · by_cases own : ∀ p ∈ n.primeFactors,powerCutoff θ n<p
     · have paid : e n := ⟨own,by simpa only [not_forall,exists_prop,not_lt] using fixed⟩
-      simp only [fixed,own,if_true,if_false,sub_zero,paid]
+      simp only [if_pos own,if_neg fixed,if_pos paid,sub_zero]
       exact_mod_cast (abs_moebius_le_one (n := n))
     · have no : ¬e n := fun h => own h.1
-      simp [fixed,own,no]
+      simp only [if_neg own,if_neg fixed,if_neg no,sub_self,abs_zero,le_refl]
 
 end GaloisForLFunctions.RestrictedFactorizationCalculus

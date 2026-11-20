@@ -47,6 +47,7 @@ theorem integral_endpoint_lag_rpow {x : ℕ → ℝ} (hx : Monotone x) (n : ℕ)
   have local_eq (i : ℕ) (hi : i < n) :
       (fun y => (endpointLag x n y)^p) =ᵐ[volume.restrict (Set.uIoc (x i) (x (i+1)))]
         fun y => (y-x i)^p := by
+    change ∀ᵐ y ∂volume.restrict (Set.uIoc (x i) (x (i+1))), (endpointLag x n y)^p=(y-x i)^p
     rw [Set.uIoc_of_le (hx (Nat.le_succ i)),ae_restrict_iff' measurableSet_Ioc]
     filter_upwards [volume.ae_ne (x (i+1))] with y hy hmem
     rw [endpointLag_on_cell hx hi hmem.1.le (lt_of_le_of_ne hmem.2 hy)]

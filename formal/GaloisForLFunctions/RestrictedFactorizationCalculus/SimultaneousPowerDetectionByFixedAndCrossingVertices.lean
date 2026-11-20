@@ -129,7 +129,12 @@ private theorem marked_move {n Q d e : ℕ} (sq : Squarefree n) (hit : n.gcd Q=d
   have dn : d ∣ n := hit ▸ Nat.gcd_dvd_left n Q
   have dq : d ∣ Q := hit ▸ Nat.gcd_dvd_right n Q
   have ce : c*d=n := Nat.div_mul_cancel dn
-  have cQ : c.Coprime Q := hit ▸ coprime_without_gcd sq Q
+  have cQ : c.Coprime Q := by
+    change (n/d).Coprime Q
+    rw [←hit]
+    rcases Nat.eq_zero_or_pos Q with rfl | pos
+    · simp [Nat.div_self (Nat.pos_of_ne_zero sq.ne_zero)]
+    · exact Nat.coprime_div_gcd_of_squarefree sq pos.ne'
   have cp : 0<e := Nat.pos_of_ne_zero edge.2.1.ne_zero
   have sc := sq.squarefree_of_dvd (Nat.div_dvd_of_dvd dn)
   refine ⟨(Nat.Coprime.gcd_mul_left_cancel e cQ).trans (Nat.gcd_eq_left ed),?_,?_,?_⟩

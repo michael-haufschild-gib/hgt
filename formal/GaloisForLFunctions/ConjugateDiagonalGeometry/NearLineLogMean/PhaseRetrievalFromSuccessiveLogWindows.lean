@@ -29,10 +29,10 @@ def row (a : ℕ → ℂ) (N : ℕ) (d : ℝ) := energy a (N+1) d - energy a N d
 /-- Real Gram pairing of two complex coefficients. -/
 def gram (z w : ℂ) := (z*conj w).re
 
-private theorem gram_comm (z w : ℂ) : gram z w=gram w z := by
+theorem gram_comm (z w : ℂ) : gram z w=gram w z := by
   simp only [gram,Complex.mul_re,Complex.conj_re,Complex.conj_im]; ring
 
-private theorem gram_self (z : ℂ) : gram z z=‖z‖^2 := by
+theorem gram_self (z : ℂ) : gram z z=‖z‖^2 := by
   rw [gram,Complex.mul_conj,Complex.ofReal_re,Complex.normSq_eq_norm_sq]
 
 /-- Frequency of a cofactor relative to the newly admitted endpoint. -/
@@ -91,7 +91,8 @@ private theorem shifted_ramp (x g : ℝ) {h : ℝ} (hh : 0 ≤ h) :
   simpa only [second,tent,show x+h-g-h=x-g by ring,
     show x+h-g-2*h=x-h-g by ring,max_comm (0:ℝ)] using he
 
-private theorem second_row (a : ℕ → ℂ) (N : ℕ) (x : ℝ) {h : ℝ} (hh : 0 ≤ h) :
+/-- The bandwidth second difference weights each correlation with a triangular kernel. -/
+theorem row_second_difference (a : ℕ → ℂ) (N : ℕ) (x : ℝ) {h : ℝ} (hh : 0 ≤ h) :
     second (row a N) x h = ‖a (N+1)‖^2*max (h-|x|) 0 +
       2*∑ m ∈ Icc 1 N, gram (a (N+1)) (a m)*max (h-|x-gap N m|) 0 := by
   have hd := shifted_ramp x 0 hh
@@ -102,6 +103,17 @@ private theorem second_row (a : ℕ → ℂ) (N : ℕ) (x : ℝ) {h : ℝ} (hh :
   simp_rw [← he]
   simp only [second,row_spectrum,mul_add,mul_sub,sum_add_distrib,sum_sub_distrib,
     show ∀ a b : ℝ, a*(2*b)=2*(a*b) by intros; ring,← mul_sum]
+  ring
+
+/-- A second difference supported on one positive gap reads its Gram pairing. -/
+theorem read_gram_of_separation (a : ℕ → ℂ) {N m : ℕ} (hm : m ∈ Icc 1 N) {h : ℝ}
+    (hh : 0 < h) (hz : h ≤ gap N m)
+    (hsep : ∀ j ∈ Icc 1 N, j ≠ m → h ≤ |gap N m-gap N j|) :
+    second (row a N) (gap N m) h/(2*h)=gram (a (N+1)) (a m) := by
+  rw [row_second_difference a N _ hh.le,abs_of_pos (hh.trans_le hz),max_eq_right (sub_nonpos.mpr hz),mul_zero,zero_add,
+    sum_eq_single m (fun j hj hne => by rw [max_eq_right (sub_nonpos.mpr (hsep j hj hne)),mul_zero])
+      (fun hn => (hn hm).elim),sub_self,abs_zero,sub_zero,max_eq_left hh.le,
+    div_eq_iff (mul_ne_zero two_ne_zero hh.ne')]
   ring
 
 /-- Two cutoffs and three bandwidths recover any prescribed real Gram
@@ -115,11 +127,7 @@ theorem read_gram (a : ℕ → ℂ) {N m : ℕ} (hm : m ∈ Icc 1 N) {h : ℝ}
     rw [show gap N m-gap N j=Real.log j-Real.log m by dsimp [gap]; ring]
     exact hcut.trans (_root_.HTGeometry.inv_le_abs_log_sub_log_of_le (mem_Icc.mp hj).1
       (mem_Icc.mp hm).1 hne ((mem_Icc.mp hj).2.trans (Nat.le_succ _)) ((mem_Icc.mp hm).2.trans (Nat.le_succ _)))
-  rw [second_row a N _ hh.le,abs_of_pos (hh.trans_le hz),max_eq_right (sub_nonpos.mpr hz),mul_zero,zero_add,
-    sum_eq_single m (fun j hj hne => by rw [max_eq_right (sub_nonpos.mpr (hsep j hj hne)),mul_zero])
-      (fun hn => (hn hm).elim),sub_self,abs_zero,sub_zero,max_eq_left hh.le,
-    div_eq_iff (mul_ne_zero two_ne_zero hh.ne')]
-  ring
+  exact read_gram_of_separation a hm hh hz hsep
 
 /-- Equality of all measured energy curves is equivalent to equality of
 the real Gram matrices of all positive-index coefficients. -/

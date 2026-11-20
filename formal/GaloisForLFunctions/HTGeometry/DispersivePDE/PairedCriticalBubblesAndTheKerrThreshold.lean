@@ -45,7 +45,9 @@ private theorem paired_reduction {A B b x y z w : ℝ} (hA : 0 < A) (hB : 0 < B)
       linarith only [h₁]
     · apply mul_left_cancel₀ (sq_pos_of_pos hz).ne'
       linarith only [h₃]
-  · rintro ⟨hx,hz,rfl,rfl,h₁,h₂⟩
+  · rintro ⟨hx,hz,hy,hw,h₁,h₂⟩
+    subst y
+    subst w
     have hA' := congrArg (fun t : ℝ => x^2*t) h₁
     have hB' := congrArg (fun t : ℝ => z^2*t) h₂
     refine ⟨hx,hx,hz,hz,?_,?_,?_,?_⟩ <;> linarith only [hA',hB']
@@ -59,7 +61,9 @@ theorem paired_bubble_classification {A B b : ℝ} (hA : 0<A) (hB : 0<B) (hb : 0
         z=Real.sqrt ((A+b)/(A*B-b^2)) ∧ w=z := by
   rw [paired_reduction hA hB hb]
   constructor
-  · rintro ⟨hx,hz,rfl,rfl,h₁,h₂⟩
+  · rintro ⟨hx,hz,hy,hw,h₁,h₂⟩
+    subst y
+    subst w
     have ex : (A*B-b^2)*x^2=B+b := by
       linarith only [congrArg (B*·) h₁,congrArg (b*·) h₂]
     have ez : (A*B-b^2)*z^2=A+b := by
@@ -73,7 +77,8 @@ theorem paired_bubble_classification {A B b : ℝ} (hA : 0<A) (hB : 0<B) (hb : 0
     have hL := div_pos (add_pos hB hb) hd
     have hR := div_pos (add_pos hA hb) hd
     refine ⟨Real.sqrt_pos.mpr hL,Real.sqrt_pos.mpr hR,rfl,rfl,?_,?_⟩ <;>
-      rw [Real.sq_sqrt hL.le,Real.sq_sqrt hR.le] <;> field_simp [hd.ne'] <;> ring
+      rw [Real.sq_sqrt hL.le,Real.sq_sqrt hR.le,←mul_div_assoc,←mul_div_assoc,
+        ←sub_div,div_eq_iff hd.ne'] <;> ring
 
 /-- Crossing the threshold from below forces both squared amplitudes
 to diverge at a simple pole with explicit residues in the determinant. -/
@@ -132,7 +137,7 @@ theorem kerr_competitive_threshold (mass b : ℝ) (hm : 0 < mass) (hb : 0 ≤ b)
     have hn := mul_nonpos_of_nonpos_of_nonneg (show 2*(1-b) ≤ 0 by linarith only [hc]) (by positivity : 0≤t^4)
     linarith only [h,hn,neg_abs_le C]
   · intro h
-    refine ⟨-2*mass^2/(1-b),fun x y => ?_⟩
+    refine ⟨-(2*mass^2/(1-b)),fun x y => ?_⟩
     have hd := sub_pos.mpr h
     have id : coppoKerrEnergy mass (-b) x y + 2*mass^2/(1-b) =
         (1-b)/2*(x^2+y^2-2*mass/(1-b))^2 + (1+b)/2*(x^2-y^2)^2 := by
@@ -140,7 +145,7 @@ theorem kerr_competitive_threshold (mass b : ℝ) (hm : 0 < mass) (hb : 0 ≤ b)
       field_simp [hd.ne']
       ring
     have h₀ : 0 ≤ (1-b)/2*(x^2+y^2-2*mass/(1-b))^2+(1+b)/2*(x^2-y^2)^2 := by positivity
-    linarith only [id,h₀]
+    exact sub_nonneg.mp (by rw [sub_neg_eq_add,id]; exact h₀)
 
 #print axioms paired_bubble_classification
 #print axioms paired_bubble_residues

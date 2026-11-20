@@ -88,7 +88,7 @@ theorem roots (w d : ℝ) (G : ℝ≥0) (z : ℂ) :
       (z-((r-d:ℝ):ℂ))*(z-(((-d-r/2:ℝ):ℂ)+b*Complex.I))*
         (z-(((-d-r/2:ℝ):ℂ)-b*Complex.I)) := by
     rw [determinant]
-    push_cast
+    push_cast at hc hb ⊢
     linear_combination -4*hc + (z+d-r)*(hI-hb)
   rw [hf]
   simp only [mul_eq_zero,sub_eq_zero,or_assoc]
@@ -158,7 +158,8 @@ theorem critical_drift (w g k : ℝ) (K U S : ℝ) :
   have hr : 0 < r := by
     apply (strength_strictMono w).lt_iff_lt.mp
     rw [strength_growth]
-    simpa [strength,G] using Real.exp_pos g
+    change strength w 0 < Real.exp g
+    simpa [strength] using Real.exp_pos g
   have he := rate_projection w r (Real.exp k) G K U S
   change _ = (r-r)*_+_ at he
   rw [sub_self,zero_mul,zero_add] at he

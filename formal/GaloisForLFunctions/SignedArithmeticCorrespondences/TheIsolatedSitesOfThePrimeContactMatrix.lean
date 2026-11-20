@@ -1,4 +1,5 @@
 import GaloisForLFunctions.SignedArithmeticCorrespondences.DivisorIncidenceOnLateCombs
+import Mathlib.Data.Nat.Factorization.Induction
 import Mathlib.Data.Nat.Prime.Factorial
 import Mathlib.Data.Nat.Totient
 
@@ -37,7 +38,7 @@ private theorem prime_step {n p : ℕ} (hn : 0 < n) (hp : Nat.Prime p) :
   have hlt : n < n*p := by simpa only [Nat.mul_one] using
     (Nat.mul_lt_mul_of_pos_left hp.one_lt hn)
   rw [ordered_contact hn hlt, if_pos (dvd_mul_right n p), Nat.mul_div_cancel_left _ hn]
-  exact vonMangoldt_ne_zero_iff.mpr hp.prime.isPrimePow
+  exact vonMangoldt_ne_zero_iff.mpr hp.isPrimePow
 
 private theorem proper_dvd_le_last {m n : ℕ} (hm : 0 < m) (hmn : m < n) (hd : m ∣ n) :
     m ≤ lastDivisor n := by
@@ -271,6 +272,70 @@ theorem isolatedPrimeSites_fourfold_card (k : ℕ) :
   · omega
   · exact disjoint_left.mpr fun n h h' =>
       (not_lt_of_ge (mem_Ioc.mp (mem_filter.mp h).1).2) (mem_Ioc.mp (mem_filter.mp h').1).1
+
+/-- Ratio contacts for an arbitrary, possibly signed, arithmetic weight. -/
+def intervalContactMatrix (A U : ℕ) (w : ℕ → ℝ) : Matrix (Ioc A U) (Ioc A U) ℝ :=
+  fun i j => contactW w i.val j.val
+
+private theorem constant_multiples_of_prime_steps {A U : ℕ} {f : ℕ → ℝ}
+    (h : ∀ n ∈ Ioc A U, ∀ p : ℕ, p.Prime → n*p≤U → f n=f (n*p)) :
+    ∀ b n, n∈Ioc A U → n*b∈Ioc A U → f n=f (n*b) := by
+  apply induction_on_primes
+  · intro n _ hz
+    have := (mem_Ioc.mp hz).1
+    simp at this
+  · intro n _ _
+    rw [Nat.mul_one]
+  · intro p b hp ih n hn hlast
+    have hprod : n*(p*b)=(n*b)*p := by ac_rfl
+    rw [hprod] at hlast ⊢
+    have ha : 0<b := by
+      by_contra! hz
+      have := (mem_Ioc.mp hlast).1
+      simp [Nat.eq_zero_of_le_zero hz] at this
+    have hmid : n*b∈Ioc A U := mem_Ioc.mpr
+      ⟨(mem_Ioc.mp hn).1.trans_le (Nat.le_mul_of_pos_right n ha),
+        (Nat.le_mul_of_pos_right (n*b) hp.pos).trans (mem_Ioc.mp hlast).2⟩
+    exact (ih n hn hmid).trans (h (n*b) hmid p hp (mem_Ioc.mp hlast).2)
+
+/-- Commuting with the Mangoldt contact matrix forces equality of the
+diagonal at every prime step inside the interval. -/
+theorem commuting_diagonal_prime_steps (A U : ℕ) (f : ℕ → ℝ)
+    (h : Commute (Matrix.diagonal (fun i : Ioc A U => f i.val)) (primeContactMatrix A U)) :
+    ∀ n ∈ Ioc A U, ∀ p : ℕ, p.Prime → n*p≤U → f n=f (n*p) := by
+  intro n hn p hp hU
+  let i : Ioc A U := ⟨n,hn⟩
+  let j : Ioc A U := ⟨n*p,mem_Ioc.mpr
+    ⟨(mem_Ioc.mp hn).1.trans_le (Nat.le_mul_of_pos_right n hp.pos),hU⟩⟩
+  have he := congrArg (fun M : Matrix (Ioc A U) (Ioc A U) ℝ => M i j) h.eq
+  simp only [Matrix.diagonal_mul,Matrix.mul_diagonal,primeContactMatrix,i,j] at he
+  have hz : (f n-f (n*p))*contactW ArithmeticFunction.vonMangoldt n (n*p)=0 := by linear_combination he
+  exact sub_eq_zero.mp ((mul_eq_zero.mp hz).resolve_right (prime_step (Nat.zero_lt_of_lt (mem_Ioc.mp hn).1) hp))
+
+/-- On an integer interval, the diagonal commutant of a single Mangoldt
+matrix is the common diagonal commutant of every ratio weight. All
+intermediate vertices in a prime factorization remain in the interval. -/
+theorem prime_diagonal_commutes_iff_all_weights (A U : ℕ) (f : ℕ → ℝ) :
+    Commute (Matrix.diagonal (fun i : Ioc A U => f i.val)) (primeContactMatrix A U) ↔
+      ∀ w : ℕ → ℝ, Commute (Matrix.diagonal (fun i : Ioc A U => f i.val)) (intervalContactMatrix A U w) := by
+  constructor
+  · intro h w
+    have mult := constant_multiples_of_prime_steps (commuting_diagonal_prime_steps A U f h)
+    have comparable (a b : Ioc A U) (hab : a.val ∣ b.val) : f a.val=f b.val := by
+      obtain ⟨k,hk⟩ := hab
+      rw [hk]
+      exact mult k a.val a.property (hk ▸ b.property)
+    show _*_ = _*_
+    ext a b
+    rw [Matrix.diagonal_mul,Matrix.mul_diagonal]
+    by_cases hab : a.val∣b.val
+    · rw [comparable a b hab,mul_comm]
+    by_cases hba : b.val∣a.val
+    · rw [comparable b a hba,mul_comm]
+    · simp [intervalContactMatrix,contactW,hab,hba]
+  · exact fun h => h ArithmeticFunction.vonMangoldt
+
+#print axioms prime_diagonal_commutes_iff_all_weights
 
 #print axioms isolatedPrimeSites_fourfold_card
 #print axioms mem_isolatedPrimeSites_iff

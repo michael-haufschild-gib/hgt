@@ -217,7 +217,9 @@ private theorem sqrt_harmonic_discrepancy :
         nlinarith only [hr]
       have repr : A*(1+u*δ)/(u*(1+(u*δ)^2))*(M*Real.sqrt u) =
           (A*M/Real.sqrt u)*((1+u*δ)/(1+(u*δ)^2)) := by
-        calc _ = (A*M*((1+u*δ)/(1+(u*δ)^2)))*(Real.sqrt u/u) := by ring
+        calc _ = (A*M*((1+u*δ)/(1+(u*δ)^2)))*(Real.sqrt u/u) := by
+                   simp only [div_eq_mul_inv,mul_inv_rev]
+                   ring
              _ = _ := by rw [hsqr]; ring
       rw [repr]
       by_cases hj : h.natAbs ≤ H
@@ -232,7 +234,8 @@ private theorem sqrt_harmonic_discrepancy :
              _ = _ := by ring
   apply ht.trans ((add_le_add zbound (mul_le_mul_of_nonneg_left total (by positivity))).trans ?_)
   dsimp only [Z,δ]
-  linarith only [mul_nonneg hA (div_nonneg (Nat.cast_nonneg (α:=ℝ) N) hp.le)]
+  rw [div_eq_mul_inv]
+  linarith only [mul_nonneg (mul_nonneg hA (inv_nonneg.mpr hp.le)) (Nat.cast_nonneg (α:=ℝ) N)]
 
 private theorem power_quotient_harmonics (s : ℕ) :
     ∃ C : ℝ, 1 ≤ C ∧ ∀ {D d a : ℝ} {N : ℕ}, 0 < D → D^(s+1) ≤ d →
@@ -354,13 +357,13 @@ private theorem conductor_interval {s D K d : ℕ} (h : (eligibleConductors s D 
       (Nat.pow_le_pow_left hu _).trans_lt hbL,haR.trans (Nat.mul_le_mul_left _ (Nat.pow_le_pow_left hl _))⟩
 
 /-- Centered fractional part of the original multiplication horizon divided by d. -/
-def centeredQuotient (s d m : ℕ) : ℝ := Int.fract ((m:ℝ)^(s+2)/d)-1/2
+def centeredPowerQuotient (s d m : ℕ) : ℝ := Int.fract ((m:ℝ)^(s+2)/d)-1/2
 
 /-- At a fixed divisor the eligible power-sampled conductors form a
 single sharp interval, even on an incomplete octave. -/
 private theorem centered_conductors_at_divisor (s : ℕ) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ {D K d : ℕ}, 1 ≤ D → K ≤ 2*D →
-      |∑ m ∈ eligibleConductors s D K d,centeredQuotient s d m| ≤
+      |∑ m ∈ eligibleConductors s D K d,centeredPowerQuotient s d m| ≤
         C*(D:ℝ)^(2/3:ℝ) := by
   obtain ⟨C,hC,hs⟩ := sharp_power_quotient_fragment s
   refine ⟨C,hC,?_⟩
@@ -381,10 +384,10 @@ private theorem centered_conductors_at_divisor (s : ℕ) :
     exact_mod_cast (show a+(N-1) ≤ 2*D by dsimp only [N]; omega)
   have h := hs (Nat.one_le_cast.mpr hD) hdlo hdhi (Nat.cast_le.mpr ha.le) hend hN
   rw [he,←Ico_add_one_right_eq_Icc,sum_Ico_eq_sum_range]
-  simpa only [centeredQuotient,Nat.cast_add,N] using h
+  simpa only [centeredPowerQuotient,Nat.cast_add,N] using h
 
 private def signedFloorCoefficient (s d m : ℕ) : ℝ :=
-  if m^(s+1) < d ∧ d ≤ 2*m^(s+1) then centeredQuotient s d m else 0
+  if m^(s+1) < d ∧ d ≤ 2*m^(s+1) then centeredPowerQuotient s d m else 0
 
 /-- A decreasing conductor weight costs only its first value on each
 sharp fragment of the moving divisor interval. -/
@@ -417,7 +420,7 @@ private theorem weighted_conductors_at_divisor (s : ℕ) :
 on one arbitrary partial octave of conductors. -/
 def sparseFloorFragment (s D K : ℕ) (w : ℕ → ℝ) : ℝ :=
   ∑ m ∈ Ioc D K, ((m:ℝ)^(s+2))⁻¹*
-    ∑ d ∈ Ioc (m^(s+1)) (2*m^(s+1)), w d*centeredQuotient s d m
+    ∑ d ∈ Ioc (m^(s+1)) (2*m^(s+1)), w d*centeredPowerQuotient s d m
 
 private theorem transpose_floor_fragment (s D K : ℕ) (hK : K ≤ 2*D) (w : ℕ → ℝ) :
     sparseFloorFragment s D K w =
@@ -425,7 +428,7 @@ private theorem transpose_floor_fragment (s D K : ℕ) (hK : K ≤ 2*D) (w : ℕ
         ∑ m ∈ Ioc D K,((m:ℝ)^(s+2))⁻¹*signedFloorCoefficient s d m := by
   let U := 2*(2*D)^(s+1)
   have he (m : ℕ) (hm : m ∈ Ioc D K) :
-      (∑ d ∈ Ioc (m^(s+1)) (2*m^(s+1)), w d*centeredQuotient s d m)=
+      (∑ d ∈ Ioc (m^(s+1)) (2*m^(s+1)), w d*centeredPowerQuotient s d m)=
         ∑ d ∈ Icc 1 U, w d*signedFloorCoefficient s d m := by
     have hu : 2*m^(s+1) ≤ U := Nat.mul_le_mul_left _ (Nat.pow_le_pow_left ((mem_Ioc.mp hm).2.trans hK) _)
     have hset : (Icc 1 U).filter (fun d => m^(s+1) < d ∧ d ≤ 2*m^(s+1)) =
@@ -472,7 +475,6 @@ theorem sparse_floor_fragment_cubic_saving (s : ℕ) :
   dsimp only [V]
   rw [he,show (D:ℝ)^(s+2)=(D:ℝ)^(s+1)*D by rw [pow_succ]]
   field_simp
-  ring
 
 /-- The weaker quarter-power saving follows on the same partial octave. -/
 theorem sparse_floor_fragment_uniform (s : ℕ) :

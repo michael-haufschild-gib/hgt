@@ -80,33 +80,113 @@ theorem irreducible_charpoly_iff_nonsplit (A : Matrix (Fin 2) (Fin 2) K) :
   simp only [eval_add,eval_sub,eval_pow,eval_X,eval_mul,eval_C]
   constructor <;> intro h <;> linear_combination -h
 
+/-- Partitioning a family of matrices by its two coefficients preserves the
+whole trace–determinant fibre above each pair. -/
+private theorem rankTwo_over_constant_fibres (S : Finset (K×K)) (c : ℕ)
+    (hc : ∀ z ∈ S, Nat.card {A : Matrix (Fin 2) (Fin 2) K // A.trace=z.1 ∧ A.det=z.2}=c) :
+    Nat.card {A : Matrix (Fin 2) (Fin 2) K // (A.trace,A.det)∈S} = S.card*c := by
+  let F (z : S) := {A : Matrix (Fin 2) (Fin 2) K // A.trace=z.val.1 ∧ A.det=z.val.2}
+  let e : {A : Matrix (Fin 2) (Fin 2) K // (A.trace,A.det)∈S} ≃ (z : S) × F z :=
+    { toFun := fun A => ⟨⟨(A.val.trace,A.val.det),A.property⟩,⟨A.val,rfl,rfl⟩⟩
+      invFun := fun ⟨z,A⟩ => ⟨A.val,by rw [A.property.1,A.property.2]; exact z.property⟩
+      left_inv := fun _ => rfl
+      right_inv := by
+        rintro ⟨⟨⟨t,d⟩,ht⟩,⟨A,ha,hd⟩⟩
+        change A.trace=t at ha
+        change A.det=d at hd
+        subst t
+        subst d
+        rfl }
+  rw [Nat.card_congr e,Nat.card_sigma]
+  have h (z : S) : Nat.card (F z)=c := hc z z.property
+  simp only [h,sum_const,card_univ,Fintype.card_coe,nsmul_eq_mul,Nat.cast_id]
+
 /-- Number of matrices with irreducible characteristic polynomial. In Haar
 probability it contributes (q-1)²/(2q²) before ramified lifts are counted. -/
 theorem card_irreducible_rankTwo :
     Nat.card {A : Matrix (Fin 2) (Fin 2) K // Irreducible A.charpoly} =
       (Fintype.card K).choose 2 * (Fintype.card K * (Fintype.card K-1)) := by
-  let U := nonsplitQuadraticPairs K
-  let F (t : U) := {A : Matrix (Fin 2) (Fin 2) K // A.trace=t.val.1 ∧ A.det=t.val.2}
-  let e : {A : Matrix (Fin 2) (Fin 2) K // Irreducible A.charpoly} ≃ (t : U) × F t :=
-    { toFun := fun A => ⟨⟨(A.val.trace,A.val.det),(irreducible_charpoly_iff_nonsplit K A.val).mp A.property⟩,
-          ⟨A.val,rfl,rfl⟩⟩
-      invFun := fun ⟨t,A⟩ => ⟨A.val,(irreducible_charpoly_iff_nonsplit K A.val).mpr
-          (by rw [A.property.1,A.property.2]; exact t.property)⟩
-      left_inv := fun _ => rfl
-      right_inv := by
-        rintro ⟨⟨⟨t,d⟩,ht⟩,⟨A,ha,hd⟩⟩
-        subst t
-        subst d
-        rfl }
-  have hcard (t : U) : Fintype.card (F t) = Fintype.card K * (Fintype.card K-1) := by
-    letI : IsEmpty (traceDetRoot t.val.1 t.val.2) :=
-      ⟨fun x => (mem_nonsplitQuadraticPairs K ..).mp t.property x.val x.property⟩
-    rw [← Nat.card_eq_fintype_card]
-    change Nat.card {A : Matrix (Fin 2) (Fin 2) K // A.trace=t.val.1 ∧ A.det=t.val.2} = _
-    rw [card_traceDetFibre,Nat.card_of_isEmpty,add_zero,Nat.card_eq_fintype_card]
-  rw [Nat.card_eq_fintype_card,Fintype.card_congr e,Fintype.card_sigma]
-  simp only [hcard,sum_const,card_univ,Fintype.card_coe,nsmul_eq_mul,U,card_nonsplitQuadraticPairs]
+  simp_rw [irreducible_charpoly_iff_nonsplit K]
+  rw [← card_nonsplitQuadraticPairs K]
+  apply rankTwo_over_constant_fibres
+  rintro ⟨t,d⟩ h
+  letI : IsEmpty (traceDetRoot t d) :=
+    ⟨fun x => (mem_nonsplitQuadraticPairs K t d).mp h x.val x.property⟩
+  rw [card_traceDetFibre,Nat.card_of_isEmpty (α := traceDetRoot t d),add_zero,Nat.card_eq_fintype_card]
 
+/-- Coefficients of quadratics with two distinct roots. -/
+def distinctSplitPairs : Finset (K×K) :=
+  univ.map ((Function.Embedding.subtype (fun s : Sym2 K => ¬s.IsDiag)).trans (quadraticCoefficients K))
+
+theorem mem_distinctSplitPairs (t d : K) :
+    (t,d)∈distinctSplitPairs K ↔ ∃ u v : K, u≠v ∧ (t,d)=(u+v,u*v) := by
+  simp only [distinctSplitPairs,mem_map,mem_univ,true_and]
+  constructor
+  · rintro ⟨⟨s,hs⟩,he⟩
+    induction s using Sym2.inductionOn with | _ u v =>
+      exact ⟨u,v,fun h => hs (Sym2.mk_isDiag_iff.mpr h),he.symm⟩
+  · rintro ⟨u,v,hne,he⟩
+    exact ⟨⟨Sym2.mk u v,fun hh => hne (Sym2.mk_isDiag_iff.mp hh)⟩,he.symm⟩
+
+/-- The same number of monic quadratics lie in the split-distinct and the
+irreducible branches. Matrix fibres weight the two branches differently. -/
+theorem card_distinctSplitPairs : (distinctSplitPairs K).card = (Fintype.card K).choose 2 := by
+  rw [distinctSplitPairs,card_map,card_univ,Sym2.card_subtype_not_diag]
+
+theorem card_split_distinct_rankTwo :
+    Nat.card {A : Matrix (Fin 2) (Fin 2) K // ∃ u v : K, u≠v ∧ (A.trace,A.det)=(u+v,u*v)} =
+      (Fintype.card K).choose 2 * (Fintype.card K * (Fintype.card K+1)) := by
+  simp_rw [← mem_distinctSplitPairs K]
+  rw [← card_distinctSplitPairs K]
+  apply rankTwo_over_constant_fibres
+  rintro ⟨t,d⟩ h
+  obtain ⟨u,v,hne,he⟩ := (mem_distinctSplitPairs K t d).mp h
+  have ht := congrArg Prod.fst he
+  have hd := congrArg Prod.snd he
+  change t=u+v at ht
+  change d=u*v at hd
+  subst t
+  subst d
+  simpa only [Nat.card_eq_fintype_card] using card_traceDetFibre_distinct hne
+
+/-- Coefficients of quadratics with one repeated root. -/
+def repeatedQuadraticPairs : Finset (K×K) :=
+  univ.map ((⟨Sym2.diag,Sym2.diag_injective⟩ : K ↪ Sym2 K).trans (quadraticCoefficients K))
+
+theorem mem_repeatedQuadraticPairs (t d : K) :
+    (t,d)∈repeatedQuadraticPairs K ↔ ∃ u : K, (t,d)=(2*u,u^2) := by
+  simp only [repeatedQuadraticPairs,mem_map,mem_univ,true_and]
+  constructor
+  · rintro ⟨u,hu⟩
+    change (u+u,u*u)=(t,d) at hu
+    exact ⟨u,by simpa only [two_mul,sq] using hu.symm⟩
+  · rintro ⟨u,he⟩
+    refine ⟨u,?_⟩
+    change (u+u,u*u)=(t,d)
+    simpa only [two_mul,sq] using he.symm
+
+/-- Exactly q³ rank-two matrices have a repeated characteristic root,
+including the scalars. This branch is insensitive to residue characteristic. -/
+theorem card_repeated_rankTwo :
+    Nat.card {A : Matrix (Fin 2) (Fin 2) K // ∃ u : K, (A.trace,A.det)=(2*u,u^2)} =
+      (Fintype.card K)^3 := by
+  have hc : (repeatedQuadraticPairs K).card=Fintype.card K := by
+    rw [repeatedQuadraticPairs,card_map,card_univ]
+  simp_rw [← mem_repeatedQuadraticPairs K]
+  rw [show (Fintype.card K)^3=(repeatedQuadraticPairs K).card*(Fintype.card K)^2 by rw [hc]; ring]
+  apply rankTwo_over_constant_fibres
+  rintro ⟨t,d⟩ h
+  obtain ⟨u,he⟩ := (mem_repeatedQuadraticPairs K t d).mp h
+  have ht := congrArg Prod.fst he
+  have hd := congrArg Prod.snd he
+  change t=2*u at ht
+  change d=u^2 at hd
+  subst t
+  subst d
+  simpa only [Nat.card_eq_fintype_card] using card_traceDetFibre_repeated u
+
+#print axioms card_split_distinct_rankTwo
+#print axioms card_repeated_rankTwo
 #print axioms card_nonsplitQuadraticPairs
 #print axioms irreducible_charpoly_iff_nonsplit
 #print axioms card_irreducible_rankTwo

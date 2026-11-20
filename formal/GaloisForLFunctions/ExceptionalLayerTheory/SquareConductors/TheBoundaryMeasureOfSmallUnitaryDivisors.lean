@@ -46,11 +46,10 @@ theorem unitaryPivot_flux {A : Type*} [AddCommGroup A] {k p : ℕ}
 
 /-- Summing all directions turns a radial edge weight into the difference
 between the available birth rate and the occupied death rate at each rank. -/
-theorem unitaryPivots_rank_flux (k : ℕ) (w : ℕ → ℤ) :
+theorem unitaryPivots_radial_flux {A : Type*} [AddCommGroup A] (k : ℕ) (w : ℕ → A) :
     ∑ p ∈ k.primeFactors, ∑ S ∈ unitaryPivots k p, w S.card =
       ∑ S ∈ smallUnitarySubsets k,
-        (((k.primeFactors.card - S.card : ℕ) : ℤ) * w S.card -
-          (S.card : ℤ) * w (S.card - 1)) := by
+        ((k.primeFactors.card - S.card) • w S.card - S.card • w (S.card-1)) := by
   calc
     _ = ∑ p ∈ k.primeFactors, ∑ S ∈ smallUnitarySubsets k,
         if p ∈ S then -w (S.erase p).card else w S.card :=
@@ -62,14 +61,21 @@ theorem unitaryPivots_rank_flux (k : ℕ) (w : ℕ → ℤ) :
       rw [← sum_sdiff hs]
       have out : (∑ p ∈ k.primeFactors \ S,
           if p ∈ S then -w (S.erase p).card else w S.card) =
-          ((k.primeFactors.card - S.card : ℕ) : ℤ) * w S.card := by
-        rw [← card_sdiff_of_subset hs, ← nsmul_eq_mul, ← sum_const]
+          (k.primeFactors.card - S.card) • w S.card := by
+        rw [← card_sdiff_of_subset hs, ← sum_const]
         exact sum_congr rfl fun p hp => if_neg (mem_sdiff.mp hp).2
       have inn : (∑ p ∈ S, if p ∈ S then -w (S.erase p).card else w S.card) =
-          (S.card : ℤ) * (-w (S.card - 1)) := by
-        rw [← nsmul_eq_mul, ← sum_const]
+          S.card • (-w (S.card - 1)) := by
+        rw [← sum_const]
         exact sum_congr rfl fun p hp => by rw [if_pos hp, card_erase_of_mem hp]
-      rw [out, inn, mul_neg, sub_eq_add_neg]
+      rw [out,inn,smul_neg,sub_eq_add_neg]
+
+/-- Integer-valued rank prices in the radial flux formula. -/
+theorem unitaryPivots_rank_flux (k : ℕ) (w : ℕ → ℤ) :
+    ∑ p ∈ k.primeFactors, ∑ S ∈ unitaryPivots k p, w S.card =
+      ∑ S ∈ smallUnitarySubsets k,
+        (((k.primeFactors.card-S.card : ℕ):ℤ)*w S.card - (S.card:ℤ)*w (S.card-1)) := by
+  simpa only [nsmul_eq_mul] using unitaryPivots_radial_flux k w
 
 /-- Number of oriented crossing edges from subsets of rank `j`. -/
 def unitaryCrossingsAtRank (k j : ℕ) : ℕ :=
@@ -143,6 +149,7 @@ theorem unitaryPivots_factorial_mass {k : ℕ} (hk : 1 < k) :
   exact_mod_cast flux
 
 #print axioms unitaryPivot_flux
+#print axioms unitaryPivots_radial_flux
 #print axioms unitaryPivots_rank_flux
 #print axioms unitaryCrossings_rank_balance
 #print axioms unitaryPivots_factorial_mass

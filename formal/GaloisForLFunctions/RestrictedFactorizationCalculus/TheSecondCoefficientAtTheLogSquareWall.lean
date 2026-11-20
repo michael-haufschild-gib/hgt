@@ -52,7 +52,7 @@ private theorem normalized_log_losses :
   have lp : (0:ℝ)<1/2 := by norm_num
   have t := (isLittleO_log_rpow_atTop lp).tendsto_div_nhds_zero.comp ln_infty
   refine ⟨?_,?_⟩
-  · simpa only [Real.rpow_one,Function.comp_apply] using
+  · simpa only [Real.rpow_one,Function.comp_def,M] using
       (isLittleO_log_rpow_atTop zero_lt_one).tendsto_div_nhds_zero.comp ln_infty
   · have h := t.mul t
     rw [zero_mul] at h
@@ -68,7 +68,7 @@ private theorem change_wall_units {f h : ℕ → ℝ} {A : ℝ}
   rw [show A*(1/2)=A/2 by ring] at result
   apply result.congr'
   filter_upwards [logSquareCutoff_tendsto_atTop.eventually_ge_atTop 2] with n yn
-  have root : 0<R n := Real.sqrt_pos.mpr (Nat.cast_pos.mpr (by omega))
+  have root : 0<R n := Real.sqrt_pos.mpr (Nat.cast_pos.mpr (Nat.zero_lt_two.trans_le yn))
   have logn : 0<l n := Real.log_pos (Nat.one_lt_cast.mpr yn)
   change (f n-h n)*l n/R n*(R n/L n*(M n/l n))=_
   dsimp only [second]; field_simp [root.ne',logn.ne']
@@ -101,8 +101,8 @@ private theorem smooth_sign_as_squarefree (b : Bool) (y : ℕ) (H : ℝ) :
   · rintro ⟨⟨h,_⟩,sign⟩; exact ⟨h,sign⟩
 
 private theorem growth_of_the_prime_octave {γ : ℝ} (gp : 0<γ) (g1 : γ ≤ 1) :
-    ∀ᶠ X in atTop,let V := (X:ℝ)^γ
-      let P := (windowPrimes (V/2) (2*(V/2))).card
+    ∀ᶠ X : ℕ in atTop,let V := (X:ℝ)^γ
+      let P := (RHTower.windowPrimes (V/2) (2*(V/2))).card
       0<P ∧ γ*L X-M X-Real.log 4 ≤ Real.log P := by
   have grows : Tendsto (fun X : ℕ => (X:ℝ)^γ/2) atTop atTop :=
     tendsto_atTop.mpr (fun k => (((tendsto_rpow_atTop gp).comp tendsto_natCast_atTop_atTop).eventually_ge_atTop (2*k)).mono
@@ -113,7 +113,7 @@ private theorem growth_of_the_prime_octave {γ : ℝ} (gp : 0<γ) (g1 : γ ≤ 1
   filter_upwards [grows eventually_dyadic_prime_lower,ln_infty.eventually_gt_atTop 0,
     eventually_ge_atTop (2:ℕ)] with X supply lp xp
   let V := (X:ℝ)^γ
-  let P := (windowPrimes (V/2) (2*(V/2))).card
+  let P := (RHTower.windowPrimes (V/2) (2*(V/2))).card
   have x0 : (0:ℝ)<X := Nat.cast_pos.mpr (by omega)
   have v0 : 0<V := Real.rpow_pos_of_pos x0 _
   have eq : 2*(V/2)=V := by ring
@@ -123,7 +123,11 @@ private theorem growth_of_the_prime_octave {γ : ℝ} (gp : 0<γ) (g1 : γ ≤ 1
   have compare : V/(4*L X) ≤ P := by
     apply le_trans _ norm
     apply (div_le_div_iff₀ (by positivity) (mul_pos gp lp)).mpr
-    nlinarith only [mul_le_of_le_one_right (mul_nonneg v0.le lp.le) g1]
+    have nonneg := mul_nonneg v0.le lp.le
+    calc V*(γ*L X) = (V*L X)*γ := by ring
+         _ ≤ V*L X := mul_le_of_le_one_right nonneg g1
+         _ ≤ (198/100)*(V*L X) := le_mul_of_one_le_left nonneg (by norm_num)
+         _ = _ := by ring
   have small := div_pos v0 (mul_pos (by norm_num : (0:ℝ)<4) lp)
   have h := Real.log_le_log small compare
   rw [Real.log_div v0.ne' (by positivity),Real.log_mul (by norm_num) lp.ne',gl] at h
@@ -139,7 +143,7 @@ theorem second_coefficient_of_the_smooth_quotient_center :
   have logs : Tendsto (fun X => l X/R X) atTop (𝓝 0) := by
     have h := (isLittleO_log_rpow_atTop (by norm_num : (0:ℝ)<1/2)).tendsto_div_nhds_zero.comp
       (tendsto_natCast_atTop_atTop.comp grow)
-    simpa only [Function.comp_apply,Real.sqrt_eq_rpow] using h
+    simpa only [Function.comp_def,l,R,W,Real.sqrt_eq_rpow] using h
   have ratio := scaled_height 1
   simp only [one_mul] at ratio
   have h : Tendsto (fun X => H X/R X) atTop (𝓝 1) := by
@@ -155,7 +159,7 @@ theorem second_coefficient_of_the_smooth_quotient_center :
   filter_upwards [grow.eventually_ge_atTop 2,ln_infty.eventually_gt_atTop 1,
     h.eventually_const_lt (by norm_num : (0:ℝ)<1),eventually_ge_atTop (1:ℕ)] with X yp large high xp
   have x0 : (0:ℝ)<X := Nat.cast_pos.mpr xp
-  have y0 : (0:ℝ)<W X := Nat.cast_pos.mpr (by omega)
+  have y0 : (0:ℝ)<W X := Nat.cast_pos.mpr (Nat.zero_lt_two.trans_le yp)
   have mh : M X ≠ 0 := (Real.log_pos large).ne'
   have pos : 0<H X := (div_pos_iff_of_pos_right (Real.sqrt_pos.mpr y0)).mp high
   have floor : ⌊Real.exp (H X)⌋₊=X/W X := by
@@ -163,7 +167,7 @@ theorem second_coefficient_of_the_smooth_quotient_center :
       Nat.floor_div_natCast,Nat.floor_natCast]
   let A := smoothUpTo (Nat.primesLE (W X)) (X/W X)
   have one : 1∈A := mem_smoothUpTo.mpr ⟨⟨le_rfl,floor ▸ Nat.le_floor
-    (by simpa only [Real.exp_zero] using Real.exp_le_exp.mpr pos.le)⟩,by simp⟩
+    (by simpa only [Nat.cast_one,Real.exp_zero] using Real.exp_le_exp.mpr pos.le)⟩,by simp⟩
   have nonzero := (Nat.cast_pos.mpr (card_pos.mpr ⟨_,one⟩) : (0:ℝ)<A.card).ne'
   change second X (H X/2) (Real.log (smoothUpTo _ ⌊Real.exp (H X)⌋₊).card)+
     (l X/M X*(M X*M X/L X))/2=_
@@ -196,7 +200,7 @@ private theorem signed_rough_sandwich {γ : ℝ} (gp : 0<γ) (g1 : γ<1) (b : Bo
   let y := W X
   let H := a*L X
   let T := (X:ℝ)^γ
-  let P := (windowPrimes (T/2) (2*(T/2))).card
+  let P := (RHTower.windowPrimes (T/2) (2*(T/2))).card
   let A := (signedSmoothSector (!b) y H).card
   let N := polynomialRoughSignCount γ b X
   let E := deletionPrice (s X) y
@@ -205,7 +209,19 @@ private theorem signed_rough_sandwich {γ : ℝ} (gp : 0<γ) (g1 : γ<1) (b : Bo
   have x0 : (0:ℝ)<X := Nat.cast_pos.mpr (by omega)
   have t0 : 0<T := Real.rpow_pos_of_pos x0 _
   have h2 : Real.log 2 ≤ H := ((div_le_iff₀ ap).mp high).trans_eq (mul_comm ..)
-  have apos : 0<A := card_pos.mpr (signed_sector_nonempty yp h2 (!b))
+  have fits : 2 ≤ ⌊Real.exp H⌋₊ := Nat.le_floor (by
+    simpa only [Nat.cast_ofNat,Real.exp_log (by norm_num : (0:ℝ)<2)] using Real.exp_le_exp.mpr h2)
+  -- The unit and the prime two witness the two signs at this height.
+  have apos : 0<A := by
+    apply card_pos.mpr
+    cases b with
+    | false =>
+      exact ⟨1,mem_filter.mpr ⟨mem_smoothUpTo.mpr ⟨⟨le_rfl,(by decide : 1 ≤ (2:ℕ)).trans fits⟩,by simp⟩,by simp⟩⟩
+    | true =>
+      refine ⟨2,mem_filter.mpr ⟨mem_smoothUpTo.mpr ⟨⟨by decide,fits⟩,?_⟩,
+        ArithmeticFunction.moebius_apply_prime Nat.prime_two⟩⟩
+      rw [Nat.prime_two.primeFactors,singleton_subset_iff]
+      exact Nat.mem_primesLE.mpr ⟨yp,Nat.prime_two⟩
   have product : Real.exp H*T=X := by
     dsimp only [H,T,a,L]
     rw [mul_comm _ (Real.log _),Real.exp_mul,Real.exp_log x0,←Real.rpow_add x0,sub_add_cancel,Real.rpow_one]
@@ -213,6 +229,7 @@ private theorem signed_rough_sandwich {γ : ℝ} (gp : 0<γ) (g1 : γ<1) (b : Bo
   have wall : (⌊Real.exp H⌋₊:ℝ)*(2*(T/2)) ≤ X := by
     rw [tap,←product]
     exact mul_le_mul_of_nonneg_right (Nat.floor_le (Real.exp_pos _).le) t0.le
+  change 2*(y:ℝ) ≤ T at room
   have lim : (y:ℝ) ≤ T/2 := by linarith only [room]
   have inc : A*P ≤ N := by
     dsimp only [A]; rw [smooth_sign_as_squarefree,sign]
@@ -222,7 +239,8 @@ private theorem signed_rough_sandwich {γ : ℝ} (gp : 0<γ) (g1 : γ<1) (b : Bo
   have np := (Nat.mul_pos apos pp).trans_le inc
   have count := Real.log_le_log (Nat.cast_pos.mpr (Nat.mul_pos apos pp) : (0:ℝ)<((A*P:ℕ):ℝ)) (Nat.cast_le.mpr inc)
   rw [Nat.cast_mul,Real.log_mul (Nat.cast_pos.mpr apos).ne' (Nat.cast_pos.mpr pp).ne'] at count
-  refine ⟨by change Real.log A+γ*L X-M X-Real.log 4 ≤ Real.log N; linarith only [count,supply.2],?_⟩
+  have lowerP : γ*L X-M X-Real.log 4 ≤ Real.log P := supply.2
+  refine ⟨by change Real.log A+γ*L X-M X-Real.log 4 ≤ Real.log N; linarith only [count,lowerP],?_⟩
   have small : s X<1 := up.trans (by norm_num)
   have den := sub_pos.mpr small
   have e0 : 0<E := zero_lt_one.trans_le (deletionPrice_one_le sp y)
@@ -251,7 +269,8 @@ theorem second_coefficient_with_a_polynomial_rough_cutoff {γ : ℝ} (gp : 0<γ)
   let c := Real.log (2/a)
   let s := fun X => criticalWallTilt c (W X)
   have ap : 0<a := sub_pos.mpr g1
-  have ll := Real.tendsto_log_atTop.comp (tendsto_natCast_atTop_atTop.comp logSquareCutoff_tendsto_atTop)
+  have ll : Tendsto (fun X : ℕ => Real.log (W X:ℝ)) atTop atTop :=
+    Real.tendsto_log_atTop.comp (tendsto_natCast_atTop_atTop.comp logSquareCutoff_tendsto_atTop)
   have top : Tendsto s atTop (𝓝 (1/2)) := by
     simpa only [s,criticalWallTilt,add_zero] using (ll.const_div_atTop c).const_add (1/2:ℝ)
   let A := fun X => Real.log (signedSmoothSector (!b) (W X) (a*L X)).card
@@ -291,7 +310,6 @@ theorem second_coefficient_with_a_polynomial_rough_cutoff {γ : ℝ} (gp : 0<γ)
   · apply (mono _ bracket.2).trans
     change _ ≤ c*a*(M X/l X)+E X*M X/L X+Real.log 4*(M X/L X)
     rw [eq]; dsimp only [second,s,criticalWallTilt]
-    change _ ≤ c*a*(M X/l X)+E X*M X/L X+Real.log 4*(M X/L X)
     apply le_of_eq
     field_simp [llp.ne',lp.ne']; ring
 

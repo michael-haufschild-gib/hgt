@@ -51,7 +51,7 @@ private theorem edge_power {d : ℝ} {s : ℂ} (hd : 0 ≤ d) (hs : d ≤ s.re) 
 /-- A zero gives a power lower bound at every cutoff. Taking the right
 edge farther away makes the interpolation slope arbitrarily close to one. -/
 theorem mertens_cost_at_a_zero {ρ : ℂ} (hz : riemannZeta ρ = 0)
-    {d r : ℝ} (hd : 0<d) (hdρ : d < ρ.re) (hr : 0<r) (hr1 : r<1) :
+    {d r : ℝ} (hd : 0<d) (hdρ : d < ρ.re) (hr : 0 < r) (hr1 : r<1) :
     ∃ A : ℝ, 0<A ∧ ∀ {N : ℕ}, 1≤N →
       (N:ℝ)^(r*(ρ.re-d)) ≤ A*(1+mertensAbelCost N) := by
   let R := 3+3/(1-r)
@@ -95,8 +95,9 @@ theorem mertens_cost_at_a_zero {ρ : ℂ} (hz : riemannZeta ρ = 0)
     have H := vertical_linear_bound (hd.le.trans hds) hsR
     have h1 : ‖s-1‖ ≤ (R+1)*t :=
       (norm_sub_le _ _).trans (by rw [norm_one,add_comm]; exact H)
-    have hpoly := (norm_mertens_section_from_abel_cost hN (hd.trans_le hds)).trans
-      (mul_le_mul H (by dsimp only [B]; linarith only [hcost]) hcost (mul_nonneg hR0 t0))
+    have hpoly : ‖edPoly mobCoeff (Icc 1 N) s‖ ≤ (R+1)*t*B :=
+      (norm_mertens_section_from_abel_cost hN (hd.trans_le hds)).trans
+        (mul_le_mul H (le_add_of_nonneg_left zero_le_one) hcost (mul_nonneg hR0 t0))
     have hZ := hζ s (by linarith only [hd,hds]) hsR
     have hp : ‖zetaEntire s‖ * ‖edPoly mobCoeff (Icc 1 N) s‖ ≤ (C*t^k)*((R+1)*t*B) :=
       mul_le_mul hZ hpoly (norm_nonneg _) (mul_nonneg hC (pow_nonneg t0 _))

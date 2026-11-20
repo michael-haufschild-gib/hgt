@@ -127,24 +127,67 @@ theorem hermQuad_ofReal_matrix {m : ℕ} (G : Fin m → Fin m → ℝ) (z : Fin 
     Complex.ofReal_re, Complex.ofReal_im]
   ring
 
+private theorem sum_quad_change_basis {ι κ R : Type*} [Fintype ι] [Fintype κ] [CommRing R]
+    (G : κ → κ → R) (A : ι → κ → R) (x y : ι → R) :
+    (∑ i : κ, ∑ j : κ, G i j * (∑ r : ι, A r i * x r) * (∑ s : ι, A s j * y s)) =
+      ∑ r : ι, ∑ s : ι, (∑ i : κ, ∑ j : κ, G i j * A r i * A s j) * x r * y s := by
+  have hexp (i j : κ) :
+      G i j * (∑ r : ι, A r i * x r) * (∑ s : ι, A s j * y s) =
+        ∑ r : ι, ∑ s : ι, (G i j * A r i * A s j) * x r * y s := by
+    have hl : G i j * (∑ r : ι, A r i * x r) = ∑ r : ι, G i j * (A r i * x r) :=
+      Finset.mul_sum _ _ _
+    rw [hl, Finset.sum_mul]
+    refine Finset.sum_congr rfl fun r _ => ?_
+    rw [Finset.mul_sum]
+    exact Finset.sum_congr rfl fun s _ => by ring
+  simp_rw [hexp]
+  have h1 : (∑ i : κ, ∑ j : κ, ∑ r : ι, ∑ s : ι, (G i j * A r i * A s j) * x r * y s) =
+      ∑ i : κ, ∑ r : ι, ∑ j : κ, ∑ s : ι, (G i j * A r i * A s j) * x r * y s :=
+    Finset.sum_congr rfl fun _ _ => Finset.sum_comm
+  have h2 : (∑ i : κ, ∑ r : ι, ∑ j : κ, ∑ s : ι, (G i j * A r i * A s j) * x r * y s) =
+      ∑ r : ι, ∑ i : κ, ∑ j : κ, ∑ s : ι, (G i j * A r i * A s j) * x r * y s :=
+    Finset.sum_comm
+  have h3 : (∑ r : ι, ∑ i : κ, ∑ j : κ, ∑ s : ι, (G i j * A r i * A s j) * x r * y s) =
+      ∑ r : ι, ∑ i : κ, ∑ s : ι, ∑ j : κ, (G i j * A r i * A s j) * x r * y s :=
+    Finset.sum_congr rfl fun _ _ => Finset.sum_congr rfl fun _ _ => Finset.sum_comm
+  have h4 : (∑ r : ι, ∑ i : κ, ∑ s : ι, ∑ j : κ, (G i j * A r i * A s j) * x r * y s) =
+      ∑ r : ι, ∑ s : ι, ∑ i : κ, ∑ j : κ, (G i j * A r i * A s j) * x r * y s :=
+    Finset.sum_congr rfl fun _ _ => Finset.sum_comm
+  rw [h1, h2, h3, h4]
+  refine Finset.sum_congr rfl fun r _ => Finset.sum_congr rfl fun s _ => ?_
+  simp_rw [Finset.sum_mul]
+
 theorem hermQuad_probeGramMatrix_eq_atomGram {m : ℕ} (N : ℕ) (a : Fin m → (Fin N → ℤ))
     (z : Fin m → ℂ) :
     hermQuad (probeGramMatrix N a) z =
       hermQuad (atomGram N) (fun i => ∑ r : Fin m, (a r i : ℂ) * z r) := by
   have hreal (i j : Fin N) : atomGram N i j = ((atomGram N i j).re : ℂ) :=
     Complex.ext rfl (by simpa using atomGram_im N i j)
-  unfold hermQuad probeGramMatrix probePairing
+  unfold hermQuad probeGramMatrix
   congr 1
   simp only [dotProduct, Matrix.mulVec, Matrix.of_apply, Pi.star_apply, Complex.star_def,
-    map_sum, map_mul, map_intCast, Complex.ofReal_sum, Complex.ofReal_mul, Complex.ofReal_intCast,
-    Finset.mul_sum, Finset.sum_mul]
-  rw [Finset.sum_comm]
+    map_sum, map_mul, map_intCast]
+  have hrhs :
+      (∑ i : Fin N, (∑ r : Fin m, (a r i : ℂ) * conj (z r)) *
+        ∑ j : Fin N, atomGram N i j * ∑ s : Fin m, (a s j : ℂ) * z s) =
+      ∑ i : Fin N, ∑ j : Fin N,
+        atomGram N i j * (∑ r : Fin m, (a r i : ℂ) * conj (z r)) *
+          (∑ s : Fin m, (a s j : ℂ) * z s) := by
+    refine Finset.sum_congr rfl fun i _ => ?_
+    rw [Finset.mul_sum]
+    exact Finset.sum_congr rfl fun j _ => by ring
+  rw [hrhs, sum_quad_change_basis (fun i j => atomGram N i j) (fun r i => (a r i : ℂ))
+    (fun r => conj (z r)) z]
   refine Finset.sum_congr rfl fun r _ => ?_
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun s _ => Finset.sum_congr rfl fun j _ => ?_
-  nth_rw 2 [hreal i j]
+  rw [Finset.mul_sum]
+  refine Finset.sum_congr rfl fun s _ => ?_
+  have hpair : (probePairing N (a r) (a s) : ℂ) =
+      ∑ i : Fin N, ∑ j : Fin N, atomGram N i j * (a r i : ℂ) * (a s j : ℂ) := by
+    unfold probePairing
+    simp only [Complex.ofReal_sum, Complex.ofReal_mul, Complex.ofReal_intCast]
+    exact Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by
+      rw [← hreal i j]
+  rw [← hpair]
   ring
 
 /-- Evaluating `probeGramMatrix` on an integer coefficient vector computes `integerProbe` on the
@@ -746,7 +789,8 @@ theorem seenRightZeros_twoAtomDiffTest (Z : ZeroConfig) :
       have hI : I * gammaOf ρ = ρ - 1 / 2 := by
         rw [gammaOf, mul_div_cancel₀ _ I_ne_zero]
       have hn := congrArg norm heq.symm
-      rw [norm_one, hI, Complex.norm_exp, Complex.re_ofReal_mul, Complex.sub_re] at hn
+      have h12 : (1 / 2 : ℂ).re = 1 / 2 := by norm_num
+      rw [norm_one, hI, Complex.norm_exp, Complex.re_ofReal_mul, Complex.sub_re, h12] at hn
       have hgt : 1 < Real.exp (Real.log 2 * (ρ.re - 1 / 2)) :=
         Real.one_lt_exp_iff.mpr (mul_pos hlog2 (by linarith))
       linarith
@@ -754,12 +798,56 @@ theorem seenRightZeros_twoAtomDiffTest (Z : ZeroConfig) :
       refine mul_ne_zero (sub_ne_zero.mpr fun heq => ?_) hB2
       have hI : I * conj (gammaOf ρ) = 1 / 2 - conj ρ := by
         rw [← gammaOf_reflect, gammaOf, mul_div_cancel₀ _ I_ne_zero, reflect]
+        ring
       have hn := congrArg norm heq.symm
+      have h12 : (1 / 2 : ℂ).re = 1 / 2 := by norm_num
       rw [norm_one, hI, Complex.norm_exp, Complex.re_ofReal_mul, Complex.sub_re,
-        Complex.conj_re] at hn
+        Complex.conj_re, h12] at hn
       have hlt : Real.exp (Real.log 2 * ((1 / 2 : ℝ) - ρ.re)) < 1 :=
         Real.exp_lt_one_iff.mpr (mul_neg_of_pos_of_neg hlog2 (by linarith))
       linarith
+
+private theorem sum_single_sub_single {L : ℕ} (B : Fin L → Fin L → ℝ) (i₁ i₂ j₁ j₂ : Fin L) :
+    (∑ i : Fin L, ∑ j : Fin L,
+      B i j * (((Pi.single i₁ (1 : ℤ) - Pi.single i₂ (1 : ℤ) : Fin L → ℤ) i : ℤ) : ℝ) *
+        (((Pi.single j₁ (1 : ℤ) - Pi.single j₂ (1 : ℤ) : Fin L → ℤ) j : ℤ) : ℝ)) =
+      B i₁ j₁ - B i₁ j₂ - B i₂ j₁ + B i₂ j₂ := by
+  have hrow (c : Fin L → ℝ) (a b : Fin L) :
+      (∑ i : Fin L, c i * (((Pi.single a (1 : ℤ) - Pi.single b (1 : ℤ) : Fin L → ℤ) i : ℤ) : ℝ)) =
+        c a - c b := by
+    simp only [Pi.sub_apply, Int.cast_sub, mul_sub, Finset.sum_sub_distrib]
+    congr 1 <;>
+    · rw [Finset.sum_eq_single _
+        (fun i _ hi => by rw [Pi.single_eq_of_ne hi, Int.cast_zero, mul_zero])
+        (fun h => False.elim (h (Finset.mem_univ _)))]
+      rw [Pi.single_eq_same, Int.cast_one, mul_one]
+  have h1 (i : Fin L) :
+      (∑ j : Fin L, B i j * (((Pi.single i₁ (1 : ℤ) - Pi.single i₂ (1 : ℤ) : Fin L → ℤ) i : ℤ) : ℝ) *
+        (((Pi.single j₁ (1 : ℤ) - Pi.single j₂ (1 : ℤ) : Fin L → ℤ) j : ℤ) : ℝ)) =
+      (B i j₁ - B i j₂) * (((Pi.single i₁ (1 : ℤ) - Pi.single i₂ (1 : ℤ) : Fin L → ℤ) i : ℤ) : ℝ) := by
+    rw [← hrow (fun j => B i j) j₁ j₂, Finset.sum_mul]
+    exact Finset.sum_congr rfl fun j _ => by ring
+  simp_rw [h1]
+  rw [hrow (fun i => B i j₁ - B i j₂) i₁ i₂]
+  ring
+
+private theorem ratVec_common_denom {K : ℕ} (v : Fin K → ℚ) :
+    ∃ (D : ℕ) (z : Fin K → ℤ), 0 < D ∧ ∀ i : Fin K, ((v i : ℚ) : ℝ) * (D : ℝ) = (z i : ℝ) := by
+  let D : ℕ := ∏ i : Fin K, (v i).den
+  have hD : 0 < D := Finset.prod_pos fun i _ => (v i).den_pos
+  let z : Fin K → ℤ := fun i => (v i).num * ((D / (v i).den : ℕ) : ℤ)
+  refine ⟨D, z, hD, fun i => ?_⟩
+  have hrat : (v i : ℚ) * (D : ℚ) = (z i : ℚ) := by
+    obtain ⟨c, hc⟩ : (v i).den ∣ D := Finset.dvd_prod_of_mem _ (Finset.mem_univ i)
+    change (v i : ℚ) * (D : ℚ) = (((v i).num * ((D / (v i).den : ℕ) : ℤ) : ℤ) : ℚ)
+    rw [hc, Nat.mul_div_cancel_left _ (v i).den_pos]
+    have hvd : v i * ((v i).den : ℚ) = ((v i).num : ℚ) := by
+      nth_rw 1 [← Rat.num_div_den (v i)]
+      exact div_mul_cancel₀ _ (Nat.cast_ne_zero.mpr (v i).den_ne_zero)
+    push_cast
+    calc v i * ((v i).den * (c : ℚ)) = (v i * (v i).den) * (c : ℚ) := by ring
+      _ = ((v i).num : ℚ) * (c : ℚ) := by rw [hvd]
+  exact_mod_cast hrat
 
 /-- Standard zero-sum two-atom integer basis vector `e_k - e_{2k+1}` on `Fin (2 * K)`. -/
 def dyadicDiffAtom (K : ℕ) (k : Fin K) : Fin (2 * K) → ℤ :=
@@ -809,27 +897,40 @@ theorem gram_twoAtomDiffTest_eq_probeGramMatrix (K : ℕ) :
       ArithmeticCastelnuovoSeveri.translate (Real.log (((c : ℕ) : ℝ) + 1)) (cx cubicSpline))
       (fun c => hcB _) (fun c => hsB _)
     exact (congr_fun (congr_fun hw a) b).symm
+  let g₁ (r : Fin K) : ℝ → ℂ :=
+    ArithmeticCastelnuovoSeveri.translate (Real.log (((i₁ r : ℕ) : ℝ) + 1)) (cx cubicSpline)
+  let g₂ (r : Fin K) : ℝ → ℂ :=
+    ArithmeticCastelnuovoSeveri.translate (Real.log (((i₂ r : ℕ) : ℝ) + 1)) (cx cubicSpline)
+  have hg₁_cd (r : Fin K) : ContDiff ℝ 2 (g₁ r) := hcB _
+  have hg₁_cs (r : Fin K) : HasCompactSupport (g₁ r) := hsB _
+  have hg₂_cd (r : Fin K) : ContDiff ℝ 2 ((-1 : ℂ) • g₂ r) := (hcB _).const_smul (-1 : ℂ)
+  have hg₂_cs (r : Fin K) : HasCompactSupport ((-1 : ℂ) • g₂ r) := (hsB _).smul_left
+  have hsum_cd (r : Fin K) : ContDiff ℝ 2 (g₁ r + (-1 : ℂ) • g₂ r) := (hg₁_cd r).add (hg₂_cd r)
+  have hsum_cs (r : Fin K) : HasCompactSupport (g₁ r + (-1 : ℂ) • g₂ r) := (hg₁_cs r).add (hg₂_cs r)
   rw [gram_orbitKernel]
-  dsimp only [zeroGram]
-  rw [hsh_eq k, hsh_eq k',
-    W_add_left zetaZeroConfig temperedConfig_zetaZeroConfig (hcB _) (hsB _)
-      ((hcB _).const_smul (-1 : ℂ)) ((hsB _).smul_left)
-      ((hcB _).add ((hcB _).const_smul (-1 : ℂ))) ((hsB _).add ((hsB _).smul_left)),
-    W_add_right zetaZeroConfig temperedConfig_zetaZeroConfig (hcB _) (hsB _)
-      (hcB _) (hsB _) ((hcB _).const_smul (-1 : ℂ)) ((hsB _).smul_left),
-    W_add_right zetaZeroConfig temperedConfig_zetaZeroConfig
-      ((hcB _).const_smul (-1 : ℂ)) ((hsB _).smul_left)
-      (hcB _) (hsB _) ((hcB _).const_smul (-1 : ℂ)) ((hsB _).smul_left),
-    W_smul_left, W_smul_left, W_smul_right, W_smul_right,
-    hW_atom, hW_atom, hW_atom, hW_atom]
+  change zetaZeroConfig.W
+      (ArithmeticCastelnuovoSeveri.translate (scale heckeLogScale (intWindow K k))
+        (cx twoAtomDiffTest))
+      (ArithmeticCastelnuovoSeveri.translate (scale heckeLogScale (intWindow K k'))
+        (cx twoAtomDiffTest)) =
+    (probePairing (2 * K) (dyadicDiffAtom K k) (dyadicDiffAtom K k') : ℂ)
+  rw [hsh_eq k, hsh_eq k']
+  change zetaZeroConfig.W (g₁ k + (-1 : ℂ) • g₂ k) (g₁ k' + (-1 : ℂ) • g₂ k') = _
+  rw [W_add_left zetaZeroConfig temperedConfig_zetaZeroConfig (hg₁_cd k) (hg₁_cs k)
+      (hg₂_cd k) (hg₂_cs k) (hsum_cd k') (hsum_cs k'),
+    W_add_right zetaZeroConfig temperedConfig_zetaZeroConfig (hg₁_cd k) (hg₁_cs k)
+      (hg₁_cd k') (hg₁_cs k') (hg₂_cd k') (hg₂_cs k'),
+    W_add_right zetaZeroConfig temperedConfig_zetaZeroConfig (hg₂_cd k) (hg₂_cs k)
+      (hg₁_cd k') (hg₁_cs k') (hg₂_cd k') (hg₂_cs k'),
+    W_smul_left, W_smul_left, W_smul_right, W_smul_right]
+  dsimp only [g₁, g₂]
+  rw [hW_atom, hW_atom, hW_atom, hW_atom]
   have hreal (a b : Fin (2 * K)) : atomGram (2 * K) a b = ((atomGram (2 * K) a b).re : ℂ) :=
     Complex.ext rfl (by simpa using atomGram_im (2 * K) a b)
-  rw [hreal, hreal, hreal, hreal]
-  simp only [probeGramMatrix, Matrix.of_apply, probePairing, dyadicDiffAtom, Pi.sub_apply,
-    Pi.single_apply, Int.cast_sub, Int.cast_ite, Int.cast_one, Int.cast_zero,
-    mul_sub, sub_mul, Finset.sum_sub_distrib, mul_ite, ite_mul, mul_one, mul_zero, zero_mul,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true, map_neg, map_one]
-  push_cast
+  rw [hreal (i₁ k) (i₁ k'), hreal (i₁ k) (i₂ k'), hreal (i₂ k) (i₁ k'), hreal (i₂ k) (i₂ k')]
+  unfold probePairing dyadicDiffAtom
+  rw [sum_single_sub_single (fun a b => (atomGram (2 * K) a b).re) (i₁ k) (i₂ k) (i₁ k') (i₂ k')]
+  simp only [map_neg, map_one, Complex.ofReal_add, Complex.ofReal_sub]
   ring
 
 /-- Spectral diagonalization over `ℝ` + rational approximation + denominator clearing: if a real
@@ -858,7 +959,8 @@ private theorem exists_intVectors_near_orthogonal_neg {m K : ℕ}
     exact h
   have hVV1 : V * Vᵀ = 1 := by
     have h := Unitary.coe_mul_star_self hAH.eigenvectorUnitary
-    rwa [Matrix.star_eq_conjTranspose, Matrix.conjTranspose_eq_transpose_of_trivial] at h
+    rwa [Unitary.coe_star, Matrix.star_eq_conjTranspose,
+      Matrix.conjTranspose_eq_transpose_of_trivial] at h
   have hVT1 : Vᵀ * V = 1 := by
     have h := Unitary.coe_star_mul_self hAH.eigenvectorUnitary
     rwa [Matrix.star_eq_conjTranspose, Matrix.conjTranspose_eq_transpose_of_trivial] at h
@@ -866,33 +968,38 @@ private theorem exists_intVectors_near_orthogonal_neg {m K : ℕ}
   have hVC_unit : IsUnit VC' := by
     refine ⟨⟨VC', VC'ᴴ, ?_, ?_⟩, rfl⟩
     · ext i j
-      have hij := congr_fun (congr_fun hVV1 i) j
-      simp only [VC', Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.of_apply,
-        Complex.star_def, Complex.conj_ofReal, Matrix.one_apply] at hij ⊢
-      exact_mod_cast hij
+      have hij := congrArg Complex.ofReal (congr_fun (congr_fun hVV1 i) j)
+      simp only [VC', Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.transpose_apply,
+        Matrix.of_apply, Complex.star_def, Complex.conj_ofReal, Matrix.one_apply,
+        Complex.ofReal_sum, Complex.ofReal_mul, apply_ite Complex.ofReal,
+        Complex.ofReal_one, Complex.ofReal_zero] at hij ⊢
+      exact hij
     · ext i j
-      have hij := congr_fun (congr_fun hVT1 i) j
-      simp only [VC', Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.of_apply,
-        Complex.star_def, Complex.conj_ofReal, Matrix.one_apply] at hij ⊢
-      exact_mod_cast hij
+      have hij := congrArg Complex.ofReal (congr_fun (congr_fun hVT1 i) j)
+      simp only [VC', Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.transpose_apply,
+        Matrix.of_apply, Complex.star_def, Complex.conj_ofReal, Matrix.one_apply,
+        Complex.ofReal_sum, Complex.ofReal_mul, apply_ite Complex.ofReal,
+        Complex.ofReal_one, Complex.ofReal_zero] at hij ⊢
+      exact hij
   have hdiag_cx :
       VC'ᴴ * (Matrix.of fun i j => (A i j : ℂ)) * VC' =
         diagonal (fun i => (hAH.eigenvalues i : ℂ)) := by
     ext i j
-    have hij := congr_fun (congr_fun hdiag_real i) j
-    simp only [VC', Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.of_apply,
-      Complex.star_def, Complex.conj_ofReal, Matrix.diagonal_apply] at hij ⊢
-    simp_rw [Finset.sum_mul] at hij ⊢
-    exact_mod_cast hij
+    have hij := congrArg Complex.ofReal (congr_fun (congr_fun hdiag_real i) j)
+    simp only [VC', Matrix.mul_apply, Matrix.conjTranspose_apply, Matrix.transpose_apply,
+      Matrix.of_apply, Complex.star_def, Complex.conj_ofReal, Matrix.diagonal_apply,
+      Complex.ofReal_sum, Complex.ofReal_mul, apply_ite Complex.ofReal,
+      Complex.ofReal_zero] at hij ⊢
+    exact hij
   have hcard_eq : hermNegIndex (Matrix.of fun i j => (A i j : ℂ)) =
       ({i : Fin K | hAH.eigenvalues i < 0} : Finset (Fin K)).card := by
     rw [← negIndex_conjugate _ hVC_unit, hdiag_cx, negIndex_diagonal]
   rw [hcard_eq] at hm
   obtain ⟨S, hS_sub, hS_card⟩ := Finset.exists_subset_card_eq hm
-  let emb : Fin m ↪ Fin K :=
-    (S.equivFin.symm.toEmbedding).trans ⟨Subtype.val, Subtype.val_injective⟩
+  let eS : Fin m ≃ ↥S := (finCongr hS_card.symm).trans S.equivFin.symm
+  let emb : Fin m ↪ Fin K := eS.toEmbedding.trans ⟨Subtype.val, Subtype.val_injective⟩
   have hemb_neg (r : Fin m) : hAH.eigenvalues (emb r) < 0 := by
-    have hmem : emb r ∈ S := (S.equivFin.symm r).2
+    have hmem : emb r ∈ S := (eS r).2
     exact (Finset.mem_filter.mp (hS_sub hmem)).2
   let v : Fin m → (Fin K → ℝ) := fun r i => V i (emb r)
   have hBv (r s : Fin m) :
@@ -915,11 +1022,26 @@ private theorem exists_intVectors_near_orthogonal_neg {m K : ℕ}
     {w | (∀ r : Fin m, B (w r) (w r) < 0) ∧
       (∀ r s : Fin m, r ≠ s → |B (w r) (w s)| < η * Real.sqrt (B (w r) (w r) * B (w s) (w s)))}
   have hU_open : IsOpen Uset := by
+    have hU_eq : Uset = (⋂ r : Fin m, {w | B (w r) (w r) < 0}) ∩
+        (⋂ r : Fin m, ⋂ s : Fin m,
+          {w | r ≠ s → |B (w r) (w s)| < η * Real.sqrt (B (w r) (w r) * B (w s) (w s))}) := by
+      ext w; simp [Uset]
+    rw [hU_eq]
     refine (isOpen_iInter_of_finite fun r => isOpen_lt (hB_cont r r) continuous_const).inter ?_
     refine isOpen_iInter_of_finite fun r => isOpen_iInter_of_finite fun s => ?_
     by_cases hrs : r = s
-    · subst hrs; simp
-    · simp only [hrs, not_false_eq_true, Set.setOf_true, true_implies]
+    · subst hrs
+      have huniv :
+          {w : Fin m → Fin K → ℝ |
+            r ≠ r → |B (w r) (w r)| < η * Real.sqrt (B (w r) (w r) * B (w r) (w r))} = Set.univ := by
+        ext w; simp
+      rw [huniv]; exact isOpen_univ
+    · have hrm :
+          {w : Fin m → Fin K → ℝ |
+            r ≠ s → |B (w r) (w s)| < η * Real.sqrt (B (w r) (w r) * B (w s) (w s))} =
+          {w | |B (w r) (w s)| < η * Real.sqrt (B (w r) (w r) * B (w s) (w s))} := by
+        ext w; simp [hrs]
+      rw [hrm]
       exact isOpen_lt (continuous_abs.comp (hB_cont r s))
         (continuous_const.mul (Real.continuous_sqrt.comp ((hB_cont r r).mul (hB_cont s s))))
   have hv_mem : v ∈ Uset := by
@@ -927,7 +1049,7 @@ private theorem exists_intVectors_near_orthogonal_neg {m K : ℕ}
     rw [hBv r s, if_neg hrs, abs_zero, hBv r r, if_pos rfl, hBv s s, if_pos rfl]
     exact mul_pos hη (Real.sqrt_pos.mpr (mul_pos_of_neg_of_neg (hemb_neg r) (hemb_neg s)))
   obtain ⟨q, hq_mem⟩ := hdense.exists_mem_open hU_open ⟨v, hv_mem⟩
-  choose D z hD_pos hz_eq using fun r => exists_common_denominator (q r)
+  choose D z hD_pos hz_eq using fun r => ratVec_common_denom (q r)
   have hBz (r s : Fin m) :
       B (fun i => (z r i : ℝ)) (fun i => (z s i : ℝ)) =
         (D r : ℝ) * (D s : ℝ) * B (fun i => ((q r i : ℚ) : ℝ)) (fun i => ((q s i : ℚ) : ℝ)) := by
@@ -1025,20 +1147,20 @@ theorem disjoint_signedPrimeProbes_gershgorin_iff_rightZeros_ge (m P₀ : ℕ) {
     obtain ⟨z, hz_diag, hz_off⟩ := exists_intVectors_near_orthogonal_neg A hAsym hK hη
     let u : Fin m → (Fin (2 * K) → ℤ) := fun r => ∑ k : Fin K, z r k • dyadicDiffAtom K k
     have hu_cast (r : Fin m) (i : Fin (2 * K)) :
-        (u r i : ℝ) = ∑ k : Fin K, (z r k : ℝ) * (dyadicDiffAtom K k i : ℝ) := by
-      simp [u, Finset.sum_apply, zsmul_eq_mul]
+        (u r i : ℝ) = ∑ k : Fin K, (dyadicDiffAtom K k i : ℝ) * (z r k : ℝ) := by
+      dsimp [u]
+      rw [Finset.sum_apply, Int.cast_sum]
+      refine Finset.sum_congr rfl fun k _ => ?_
+      rw [Pi.smul_apply, zsmul_eq_mul, Int.cast_mul, Int.cast_id, mul_comm]
     have hu_pair (r s : Fin m) :
         probePairing (2 * K) (u r) (u s) =
           ∑ k : Fin K, ∑ k' : Fin K, A k k' * (z r k : ℝ) * (z s k' : ℝ) := by
       unfold probePairing A
       simp only [Matrix.of_apply, hu_cast]
-      simp_rw [Finset.mul_sum, Finset.sum_mul]
-      rw [Finset.sum_comm]
-      refine Finset.sum_congr rfl fun i _ => ?_
-      rw [Finset.sum_comm]
-      refine Finset.sum_congr rfl fun k _ => ?_
-      rw [Finset.sum_comm]
-      exact Finset.sum_congr rfl fun j _ => Finset.sum_congr rfl fun k' _ => by ring
+      rw [sum_quad_change_basis (fun i j => (atomGram (2 * K) i j).re)
+        (fun k i => (dyadicDiffAtom K k i : ℝ)) (fun k => (z r k : ℝ)) (fun k' => (z s k' : ℝ))]
+      refine Finset.sum_congr rfl fun k _ => Finset.sum_congr rfl fun k' _ => ?_
+      rfl
     have hu_neg (r : Fin m) : probePairing (2 * K) (u r) (u r) < 0 := by
       rw [hu_pair]; exact hz_diag r
     have hu_ne (r : Fin m) : u r ≠ 0 := by
@@ -1212,11 +1334,9 @@ theorem twoProbe_gershgorin_and_det_of_neg_integerProbe {N₀ : ℕ} {a₀ : Fin
         (Real.sqrt (probePairing N a₁ a₁ * probePairing N a₂ a₂)) ^ 2 :=
       pow_lt_pow_left₀ habs_lt1 (abs_nonneg _) two_ne_zero
     rwa [sq_abs, Real.sq_sqrt (mul_pos_of_neg_of_neg (hdiag 0) (hdiag 1)).le] at h1
-  have heq_vec : (![a₁, a₂] : Fin 2 → (Fin N → ℤ)) = a := by
-    funext r; fin_cases r <;> rfl
   exact ⟨N, a₁, a₂, hN, hsig 0, hsig 1, hgt 0, hgt 1, hdisj 0 1 Fin.zero_ne_one,
     hdiag 0, hdiag 1, habs_lt, hsq_lt,
-    heq_vec ▸ (twoProbe_negDef_iff_det a₁ a₂).mpr ⟨hdiag 0, hdiag 1, hsq_lt⟩⟩
+    (twoProbe_negDef_iff_det a₁ a₂).mpr ⟨hdiag 0, hdiag 1, hsq_lt⟩⟩
 
 /-- **Sharp model calibration:** on an abstract functional-equation-symmetric tempered zero
 configuration with a single real right zero (`isolatedPairConfig` at `γ₀ = 0`, `L = 10`,
@@ -1321,7 +1441,13 @@ theorem singleRealRightZero_no_twoProbe_det :
       Matrix.of ![![(((Z.W (cx g₁) (cx g₁)).re : ℝ) : ℂ), (((Z.W (cx g₁) (cx g₂)).re : ℝ) : ℂ)],
         ![(((Z.W (cx g₁) (cx g₂)).re : ℝ) : ℂ), (((Z.W (cx g₂) (cx g₂)).re : ℝ) : ℂ)]] := by
     ext i j
-    fin_cases i <;> fin_cases j <;> simp [zeroGram, g, hreal_W, hsym_W]
+    fin_cases i <;> fin_cases j <;>
+      simp only [zeroGram, g, Matrix.of_apply, Fin.zero_eta, Fin.mk_one,
+        Matrix.cons_val_zero, Matrix.cons_val_one]
+    · exact hreal_W g₁ g₁
+    · exact hreal_W g₁ g₂
+    · rw [hreal_W g₂ g₁, hsym_W]
+    · exact hreal_W g₂ g₂
   have heq2 : hermNegIndex (zeroGram Z g) = 2 := by
     rw [hmat]
     exact (hermNegIndex_two_ofReal_iff _ _ _).mpr ⟨h11, h22, hdet⟩
@@ -1466,7 +1592,7 @@ private theorem orbitCorr_probePacket_eq {M : ℕ} (u : Fin M → ℤ) (Δ : ℝ
     tsum_congr fun ρ => by push_cast; rfl
   rw [← htsum]
   simp only [map_intCast, Complex.mul_re, Complex.intCast_re, Complex.intCast_im, zero_mul,
-    sub_zero, mul_zero, add_zero]
+    sub_zero]
   ring
 
 /-- **Exponential unboundedness of the cross-scale autocorrelation of any negative witness.**
@@ -1656,7 +1782,7 @@ theorem exists_scaleSeparated_primeCopies_violating_det {M : ℕ} {u : Fin M →
     have hk_up := (hι_props n 0 k).2.2.1
     have hk'_lo := (hι_props n 1 k').2.2.2
     rw [hmax] at hk_up hk'_lo
-    simp only [Δ_vec, Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.head_cons, add_zero]
+    simp only [Δ_vec, Matrix.cons_val_zero, Matrix.cons_val_one, add_zero]
       at hk_up hk'_lo
     have hk_le_M : ((k : ℝ) + 1) ≤ (M : ℝ) + 1 := by
       have := k.isLt
@@ -1921,7 +2047,7 @@ private theorem exists_prime_235_separating_pair {ρ ρ_star : ℂ}
       push_cast
       field_simp at him_q ⊢
       linarith
-    exact RHTower.irrational_log_ratio hq hp hpq.symm ⟨(n : ℚ) / (m : ℚ), hrat.symm⟩
+    exact RHTower.irrational_log_ratio hp hq hpq ⟨(n : ℚ) / (m : ℚ), hrat.symm⟩
   have hz1 : ρ_star - ρ ≠ 0 := sub_ne_zero.mpr hne1
   have hz2 : ρ_star - conj ρ ≠ 0 := sub_ne_zero.mpr hne2
   by_cases h2 : cexp ((Real.log (2 : ℕ) : ℂ) * (ρ_star - ρ)) ≠ 1 ∧
@@ -2033,10 +2159,10 @@ private theorem exists_realProbePacket_annihilating_step {M : ℕ} (hM2 : 2 ≤ 
           ‖w‖ ^ 2 * realProbePacket (dilateVec (q ^ 2) (by nlinarith) le_rfl v) u := by
       simp only [realProbePacket, Finset.sum_apply, Pi.smul_apply, smul_eq_mul, v',
         Pi.add_apply, Pi.sub_apply]
-      simp_rw [Finset.mul_sum, ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
+      rw [Finset.mul_sum, Finset.mul_sum, ← Finset.sum_sub_distrib, ← Finset.sum_add_distrib]
       exact Finset.sum_congr rfl fun i _ => by ring
     rw [hlin, hd1.2, hdq.2, hdq2.2, hlog1, scaleShift_zero, hlogq2]
-    simp [Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]
+    simp only [Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]
   have hft (z : ℂ) : paperFT (cx (realProbePacket v')) z =
       (1 - w * cexp ((Real.log q : ℂ) * (I * z))) *
         (1 - conj w * cexp ((Real.log q : ℂ) * (I * z))) *
@@ -2047,7 +2173,11 @@ private theorem exists_realProbePacket_annihilating_step {M : ℕ} (hM2 : 2 ≤ 
     have hcx : cx (realProbePacket v') =
         (cx (realProbePacket v) + ((-2 * w.re : ℝ) : ℂ) • cx (scaleShift (Real.log q) (realProbePacket v))) +
           ((‖w‖ ^ 2 : ℝ) : ℂ) • cx (scaleShift (2 * Real.log q) (realProbePacket v)) := by
-      funext u; rw [hpkt]; simp [cx]; ring
+      funext u
+      rw [hpkt]
+      simp only [cx, Pi.add_apply, Pi.sub_apply, Pi.smul_apply, smul_eq_mul]
+      push_cast
+      ring
     rw [hcx,
       paperFT_add
         ((cx_contDiff hf.1).continuous.add
@@ -2063,7 +2193,7 @@ private theorem exists_realProbePacket_annihilating_step {M : ℕ} (hM2 : 2 ≤ 
     have hX2 : cexp (((2 * Real.log q : ℝ) : ℂ) * (I * z)) = X ^ 2 := by
       dsimp [X]; rw [← Complex.exp_nat_mul]; push_cast; ring_nf
     have hw_neg : ((-2 * w.re : ℝ) : ℂ) = -(w + conj w) := by
-      apply Complex.ext <;> simp [two_mul] <;> ring
+      apply Complex.ext <;> simp [two_mul]
     have hw_norm : w * conj w = ((‖w‖ ^ 2 : ℝ) : ℂ) := by
       rw [Complex.mul_conj, Complex.normSq_eq_norm_sq]
     rw [hX2, hw_neg, ← hw_norm]
@@ -2076,11 +2206,13 @@ private theorem exists_realProbePacket_annihilating_step {M : ℕ} (hM2 : 2 ≤ 
     have hcw : conj w = cexp (-(Real.log q : ℂ) * (conj ρ - 1 / 2)) := by
       dsimp [w]
       rw [← Complex.exp_conj]
-      simp [Complex.conj_ofReal]
-    rw [hI, hcw, ← Complex.exp_add]
-    have h0 : -(Real.log q : ℂ) * (conj ρ - 1 / 2) + (Real.log q : ℂ) * (conj ρ - 1 / 2) = 0 := by
-      ring
-    rw [h0, Complex.exp_zero, sub_self, mul_zero, zero_mul]
+      simp only [map_mul, map_neg, Complex.conj_ofReal, map_sub, map_div₀, map_one, map_ofNat]
+    have hkill : 1 - conj w * cexp ((Real.log q : ℂ) * (I * gammaOf (conj ρ))) = 0 := by
+      rw [hI, hcw, ← Complex.exp_add]
+      have h0 : -(Real.log q : ℂ) * (conj ρ - 1 / 2) + (Real.log q : ℂ) * (conj ρ - 1 / 2) = 0 := by
+        ring
+      rw [h0, Complex.exp_zero, sub_self]
+    rw [hkill, mul_zero, zero_mul]
   · obtain ⟨hs1, hs2⟩ := hsees
     have hlogq : 0 < Real.log q := Real.log_pos (by exact_mod_cast (by omega : 1 < q))
     refine ⟨?_, ?_⟩
@@ -2100,15 +2232,18 @@ private theorem exists_realProbePacket_annihilating_step {M : ℕ} (hM2 : 2 ≤ 
     · rw [hft]
       have hI : I * conj (gammaOf ρ_star) = 1 / 2 - conj ρ_star := by
         rw [← gammaOf_reflect, gammaOf, mul_div_cancel₀ _ I_ne_zero, reflect]
+        ring
+      have h12 : (1 / 2 : ℂ).re = 1 / 2 := by norm_num
       have hnorm_w : ‖w‖ < 1 := by
         dsimp [w]
         rw [Complex.norm_exp]
         have hre : (-(Real.log q : ℂ) * (ρ - 1 / 2)).re = -Real.log q * (ρ.re - 1 / 2) := by
-          simp
+          rw [neg_mul, Complex.neg_re, Complex.re_ofReal_mul, Complex.sub_re, h12]
+          ring
         rw [hre]
         exact Real.exp_lt_one_iff.mpr (mul_neg_of_neg_of_pos (neg_neg_of_pos hlogq) (by linarith))
       have hnorm_X : ‖cexp ((Real.log q : ℂ) * (I * conj (gammaOf ρ_star)))‖ < 1 := by
-        rw [hI, Complex.norm_exp, Complex.re_ofReal_mul, Complex.sub_re, Complex.conj_re]
+        rw [hI, Complex.norm_exp, Complex.re_ofReal_mul, Complex.sub_re, Complex.conj_re, h12]
         exact Real.exp_lt_one_iff.mpr (mul_neg_of_pos_of_neg hlogq (by linarith))
       have hf1 : 1 - w * cexp ((Real.log q : ℂ) * (I * conj (gammaOf ρ_star))) ≠ 0 := by
         refine sub_ne_zero.mpr fun heq => ?_
@@ -2215,7 +2350,13 @@ theorem exists_signedPrimeProbe_nearAnnihilating_of_not_mem_pair {S₀ : Finset 
             (atomGram M i j).re * shiftV k i * shiftV k' j : ℝ) : ℂ) := by
     ext k k'
     rw [gram_orbitKernel]
-    change zetaZeroConfig.W _ _ = _
+    change zetaZeroConfig.W
+        (ArithmeticCastelnuovoSeveri.translate (scale heckeLogScale (intWindow K k))
+          (cx (realProbePacket v₁)))
+        (ArithmeticCastelnuovoSeveri.translate (scale heckeLogScale (intWindow K k'))
+          (cx (realProbePacket v₁))) =
+      ((∑ i : Fin M, ∑ j : Fin M,
+        (atomGram M i j).re * shiftV k i * shiftV k' j : ℝ) : ℂ)
     have hdk := dilateVec_properties (k.val + 1) (by omega) (hkM k) v₁
     have hdk' := dilateVec_properties (k'.val + 1) (by omega) (hkM k') v₁
     have htr (r : Fin K) (hd : realProbePacket (shiftV r) =
@@ -2223,7 +2364,7 @@ theorem exists_signedPrimeProbe_nearAnnihilating_of_not_mem_pair {S₀ : Finset 
         ArithmeticCastelnuovoSeveri.translate (scale heckeLogScale (intWindow K r))
           (cx (realProbePacket v₁)) =
         ∑ i : Fin M, (shiftV r i : ℂ) •
-          ArithmeticCastelnuovoSeveri.translate (Real.log ((i : ℝ) + 1)) (cx cubicSpline) := by
+          ArithmeticCastelnuovoSeveri.translate (Real.log (((i : ℕ) : ℝ) + 1)) (cx cubicSpline) := by
       rw [scale_intWindow, ← cx_scaleShift_eq_translate]
       have hcast : ((r : ℝ) + 1) = ((r.val + 1 : ℕ) : ℝ) := by push_cast; rfl
       rw [hcast, ← hd]
@@ -2231,32 +2372,45 @@ theorem exists_signedPrimeProbe_nearAnnihilating_of_not_mem_pair {S₀ : Finset 
       simp [cx, realProbePacket, scaleShift, ArithmeticCastelnuovoSeveri.translate,
         Finset.sum_apply, Complex.ofReal_sum, Complex.ofReal_mul]
     have hcB (i : Fin M) : ContDiff ℝ 2
-        (ArithmeticCastelnuovoSeveri.translate (Real.log ((i : ℝ) + 1)) (cx cubicSpline)) :=
+        (ArithmeticCastelnuovoSeveri.translate (Real.log (((i : ℕ) : ℝ) + 1)) (cx cubicSpline)) :=
       translate_contDiff (cx_contDiff contDiff_cubicSpline) _
     have hsB (i : Fin M) : HasCompactSupport
-        (ArithmeticCastelnuovoSeveri.translate (Real.log ((i : ℝ) + 1)) (cx cubicSpline)) :=
+        (ArithmeticCastelnuovoSeveri.translate (Real.log (((i : ℕ) : ℝ) + 1)) (cx cubicSpline)) :=
       translate_hasCompactSupport (cx_hasCompactSupport hasCompactSupport_cubicSpline) _
     have hW_atom (i j : Fin M) :
         zetaZeroConfig.W
-          (ArithmeticCastelnuovoSeveri.translate (Real.log ((i : ℝ) + 1)) (cx cubicSpline))
-          (ArithmeticCastelnuovoSeveri.translate (Real.log ((j : ℝ) + 1)) (cx cubicSpline)) =
+          (ArithmeticCastelnuovoSeveri.translate (Real.log (((i : ℕ) : ℝ) + 1)) (cx cubicSpline))
+          (ArithmeticCastelnuovoSeveri.translate (Real.log (((j : ℕ) : ℝ) + 1)) (cx cubicSpline)) =
         ((atomGram M i j).re : ℂ) := by
-      have hw := weilGram_eq_zeroGram (f := fun c : Fin M =>
-        ArithmeticCastelnuovoSeveri.translate (Real.log ((c : ℝ) + 1)) (cx cubicSpline))
-        hcB hsB
-      exact (congr_fun (congr_fun hw i) j).symm.trans
-        (Complex.ext rfl (by simpa using atomGram_im M i j))
-    rw [htr k hdk.2, htr k' hdk'.2,
-      W_sum_left_zeta Finset.univ _ _
-        (fun i _ => (hcB i).const_smul (shiftV k i : ℂ)) (fun i _ => (hsB i).smul_left)
-        (contDiff_sum_pi Finset.univ _ fun j _ => (hcB j).const_smul (shiftV k' j : ℂ))
-        (hasCompactSupport_sum_pi Finset.univ _ fun j _ => (hsB j).smul_left)]
-    simp only [Matrix.of_apply, Complex.ofReal_sum, Complex.ofReal_mul]
+      have hw : zetaZeroConfig.W
+          (ArithmeticCastelnuovoSeveri.translate (Real.log (((i : ℕ) : ℝ) + 1)) (cx cubicSpline))
+          (ArithmeticCastelnuovoSeveri.translate (Real.log (((j : ℕ) : ℝ) + 1)) (cx cubicSpline)) =
+          atomGram M i j :=
+        (congr_fun (congr_fun (weilGram_eq_zeroGram (f := fun c : Fin M =>
+          ArithmeticCastelnuovoSeveri.translate (Real.log (((c : ℕ) : ℝ) + 1)) (cx cubicSpline))
+          hcB hsB) i) j).symm
+      rw [hw]
+      exact Complex.ext rfl (by simpa using atomGram_im M i j)
+    let fk (r : Fin K) (i : Fin M) : ℝ → ℂ :=
+      (shiftV r i : ℂ) •
+        ArithmeticCastelnuovoSeveri.translate (Real.log (((i : ℕ) : ℝ) + 1)) (cx cubicSpline)
+    have hfk_cd (r : Fin K) (i : Fin M) : ContDiff ℝ 2 (fk r i) :=
+      (hcB i).const_smul (shiftV r i : ℂ)
+    have hfk_cs (r : Fin K) (i : Fin M) : HasCompactSupport (fk r i) :=
+      (hsB i).smul_left
+    rw [htr k hdk.2, htr k' hdk'.2]
+    change zetaZeroConfig.W (∑ i : Fin M, fk k i) (∑ j : Fin M, fk k' j) = _
+    rw [W_sum_left_zeta Finset.univ (fk k) (∑ j : Fin M, fk k' j)
+        (fun i _ => hfk_cd k i) (fun i _ => hfk_cs k i)
+        (contDiff_sum_pi Finset.univ (fk k') fun j _ => hfk_cd k' j)
+        (hasCompactSupport_sum_pi Finset.univ (fk k') fun j _ => hfk_cs k' j)]
+    simp only [Complex.ofReal_sum, Complex.ofReal_mul]
     refine Finset.sum_congr rfl fun i _ => ?_
-    rw [W_sum_right_zeta Finset.univ _ _
-      ((hcB i).const_smul (shiftV k i : ℂ)) ((hsB i).smul_left)
-      (fun j _ => (hcB j).const_smul (shiftV k' j : ℂ)) (fun j _ => (hsB j).smul_left)]
+    rw [W_sum_right_zeta Finset.univ (fk k i) (fk k')
+      (hfk_cd k i) (hfk_cs k i)
+      (fun j _ => hfk_cd k' j) (fun j _ => hfk_cs k' j)]
     refine Finset.sum_congr rfl fun j _ => ?_
+    dsimp only [fk]
     rw [W_smul_left, W_smul_right, hW_atom]
     simp only [Complex.conj_ofReal]
     ring
@@ -2268,7 +2422,7 @@ theorem exists_signedPrimeProbe_nearAnnihilating_of_not_mem_pair {S₀ : Finset 
   obtain ⟨y_c, hy_mem, hy_ne⟩ : ∃ y ∈ W_sub, y ≠ 0 := by
     by_contra! hall
     have hbot : W_sub = ⊥ := (Submodule.eq_bot_iff _).mpr hall
-    rw [hbot, Submodule.finrank_bot] at hK_pos; omega
+    rw [hbot, finrank_bot] at hK_pos; omega
   have hy_quad : hermQuad (gram (orbitKernel zetaZeroConfig (realProbePacket v₁)) (intWindow K)) y_c < 0 := by
     have hp := hW_pos y_c hy_mem hy_ne
     rw [hermQuad_neg] at hp; linarith
@@ -2279,26 +2433,20 @@ theorem exists_signedPrimeProbe_nearAnnihilating_of_not_mem_pair {S₀ : Finset 
           w_k < 0 := by
     by_contra! hall_nn
     linarith [hall_nn (fun k => (y_c k).re), hall_nn (fun k => (y_c k).im), hy_quad]
-  let v : Fin M → ℝ := fun i => ∑ k : Fin K, w_k k * shiftV k i
+  let v : Fin M → ℝ := fun i => ∑ k : Fin K, shiftV k i * w_k k
   have hv_sum : (∑ i : Fin M, v i) = 0 := by
     dsimp [v]
     rw [Finset.sum_comm]
     refine Finset.sum_eq_zero fun k _ => ?_
-    rw [← Finset.mul_sum, (dilateVec_properties (k.val + 1) (by omega) (hkM k) v₁).1,
-      hv₁_sum, mul_zero]
+    rw [← Finset.sum_mul, (dilateVec_properties (k.val + 1) (by omega) (hkM k) v₁).1,
+      hv₁_sum, zero_mul]
   have hv_quad : realQuad (fun i j => (atomGram M i j).re) v < 0 := by
     have heq : realQuad (fun i j => (atomGram M i j).re) v =
         realQuad (fun k k' => ∑ i : Fin M, ∑ j : Fin M, (atomGram M i j).re * shiftV k i * shiftV k' j)
           w_k := by
       unfold realQuad
       dsimp [v]
-      simp_rw [Finset.mul_sum, Finset.sum_mul]
-      rw [Finset.sum_comm]
-      refine Finset.sum_congr rfl fun k _ => ?_
-      rw [Finset.sum_comm]
-      refine Finset.sum_congr rfl fun i _ => ?_
-      rw [Finset.sum_comm]
-      exact Finset.sum_congr rfl fun k' _ => Finset.sum_congr rfl fun j _ => by ring
+      exact sum_quad_change_basis (fun i j => (atomGram M i j).re) shiftV w_k w_k
     rwa [heq]
   have hv_mode_zero (ρ : ℂ) (hρ : ρ ∈ S₀) :
       modePairProduct ρ M (fun i => (v i : ℂ)) = 0 := by
@@ -2335,7 +2483,7 @@ theorem exists_signedPrimeProbe_nearAnnihilating_of_not_mem_pair {S₀ : Finset 
             paperFT_add (cx_contDiff hmem_k.1).continuous (cx_hasCompactSupport hmem_k.2)
               (cx_contDiff hmem_s.1).continuous (cx_hasCompactSupport hmem_s.2),
             ih, add_zero, cx_smul, paperFT_smul, paperFT_cx_scaleShift_apply, hv₁_van ρ hρ,
-            mul_zero, smul_zero]
+            mul_zero, mul_zero]
       rw [hpkt_v]; exact hind_K Finset.univ
     rw [paperFT_realProbePacket_gammaOf_conj] at hft_zero
     have hB_ne : paperFT (cx cubicSpline) (gammaOf (conj ρ)) ≠ 0 :=
@@ -2353,7 +2501,7 @@ theorem exists_signedPrimeProbe_nearAnnihilating_of_not_mem_pair {S₀ : Finset 
     refine continuous_pi fun i => ?_
     dsimp [projZero]
     split_ifs
-    · exact (continuous_finset_sum _ fun j _ => continuous_apply j).neg
+    · exact (continuous_finsetSum _ fun j _ => continuous_apply j).neg
     · exact continuous_apply i
   have hproj_v : projZero v = v := by
     funext i
@@ -2405,7 +2553,7 @@ theorem exists_signedPrimeProbe_nearAnnihilating_of_not_mem_pair {S₀ : Finset 
     have hrest : ∑ j ∈ Finset.univ.erase i_zero, q j = ∑ j ∈ Finset.univ.erase i_zero, q₀ j :=
       Finset.sum_congr rfl fun j hj => if_neg (Finset.mem_erase.mp hj).1
     rw [hi0, hrest, neg_add_cancel]
-  obtain ⟨D, u, hD_pos, hu_eq⟩ := exists_common_denominator q
+  obtain ⟨D, u, hD_pos, hu_eq⟩ := ratVec_common_denom q
   have hD_r : (0 : ℝ) < D := Nat.cast_pos.mpr hD_pos
   have hu_sum : (∑ i : Fin M, u i) = 0 := by
     have hreal : (∑ i : Fin M, (u i : ℝ)) = 0 := by
@@ -2448,6 +2596,7 @@ theorem exists_signedPrimeProbe_nearAnnihilating_of_not_mem_pair {S₀ : Finset 
         have hi : (u i : ℂ) = (((q i : ℚ) : ℝ) : ℂ) * (D : ℂ) := by exact_mod_cast (hu_eq i).symm
         rw [hi]; ring
       rw [hc1, hc2, norm_mul, norm_mul, Complex.norm_natCast]
+      simp only [Complex.ofReal_ratCast]
       ring
     rw [hmp_scale, hu_probe]
     have hlt := hMP_lt_q ρ hρ
@@ -2505,7 +2654,14 @@ theorem exists_signedPrimeProbe_nearAnnihilating_of_not_mem_pair {S₀ : Finset 
         atTop (𝓝 (Real.log ((i : ℝ) + 1) - Real.log ((j : ℝ) + 1))) := by
       have hd := (herr_zero i).sub (herr_zero j)
       simp only [sub_zero] at hd
-      refine (tendsto_const_nhds.add hd).congr' ?_
+      have hconst : Tendsto
+          (fun n : ℕ => (Real.log ((i : ℝ) + 1) - Real.log ((j : ℝ) + 1)) +
+            ((Real.log (((ιseq n 0 i).val : ℝ) + 1) - (max U (n : ℝ) + Real.log ((i : ℝ) + 1))) -
+              (Real.log (((ιseq n 0 j).val : ℝ) + 1) - (max U (n : ℝ) + Real.log ((j : ℝ) + 1)))))
+          atTop (𝓝 (Real.log ((i : ℝ) + 1) - Real.log ((j : ℝ) + 1))) := by
+        simpa only [add_zero] using
+          (tendsto_const_nhds (x := Real.log ((i : ℝ) + 1) - Real.log ((j : ℝ) + 1))).add hd
+      refine hconst.congr' ?_
       filter_upwards with n; ring
     rw [atomGram_eq_splineSeries M i j]
     have hsp := ((Complex.continuous_re.comp continuous_splineSeries).tendsto _).comp harg
@@ -2585,9 +2741,15 @@ theorem exists_signedPrimeProbe_nearAnnihilating_of_not_mem_pair {S₀ : Finset 
         have hre0 : (s_exp * (Tn : ℂ)).re + ((-conj s_exp) * (Tn : ℂ)).re = 0 := by
           simp
         rw [hre0, Real.exp_zero]
-      calc (‖cexp (s_exp * (Tn : ℂ))‖ * _) * (‖cexp ((-conj s_exp) * (Tn : ℂ))‖ * _)
-          = (‖cexp (s_exp * (Tn : ℂ))‖ * ‖cexp ((-conj s_exp) * (Tn : ℂ))‖) * (_ * _) := by ring
-        _ = _ := by rw [hnorm_cancel, one_mul]
+      set S₁ : ℂ := ∑ i : Fin M, (u i : ℂ) *
+        cexp (s_exp * ((Real.log ((i : ℝ) + 1) +
+          (Real.log (((ιseq n 0 i).val : ℝ) + 1) - (Tn + Real.log ((i : ℝ) + 1))) : ℝ) : ℂ))
+      set S₂ : ℂ := ∑ i : Fin M, (u i : ℂ) *
+        cexp ((-conj s_exp) * ((Real.log ((i : ℝ) + 1) +
+          (Real.log (((ιseq n 0 i).val : ℝ) + 1) - (Tn + Real.log ((i : ℝ) + 1))) : ℝ) : ℂ))
+      calc (‖cexp (s_exp * (Tn : ℂ))‖ * ‖S₁‖) * (‖cexp ((-conj s_exp) * (Tn : ℂ))‖ * ‖S₂‖)
+          = (‖cexp (s_exp * (Tn : ℂ))‖ * ‖cexp ((-conj s_exp) * (Tn : ℂ))‖) * (‖S₁‖ * ‖S₂‖) := by ring
+        _ = ‖S₁‖ * ‖S₂‖ := by rw [hnorm_cancel, one_mul]
     have hlim1 :
         Tendsto (fun n : ℕ =>
           ‖∑ i : Fin M, (u i : ℂ) *
@@ -2611,7 +2773,7 @@ theorem exists_signedPrimeProbe_nearAnnihilating_of_not_mem_pair {S₀ : Finset 
             atTop (𝓝 (s_exp * (Real.log ((i.val + 1 : ℕ) : ℝ) : ℂ))) := by
           have hc : ((i : ℝ) + 1) = ((i.val + 1 : ℕ) : ℝ) := by push_cast; rfl
           rw [← hc]
-          have hr := tendsto_const_nhds.add (herr_zero i)
+          have hr := (tendsto_const_nhds (x := Real.log ((i : ℝ) + 1))).add (herr_zero i)
           rw [add_zero] at hr
           exact ((Complex.continuous_ofReal.tendsto _).comp hr).const_mul s_exp
         have h2 := (Complex.continuous_exp.tendsto _).comp h1
@@ -2646,7 +2808,7 @@ theorem exists_signedPrimeProbe_nearAnnihilating_of_not_mem_pair {S₀ : Finset 
             atTop (𝓝 ((-conj s_exp) * (Real.log ((i.val + 1 : ℕ) : ℝ) : ℂ))) := by
           have hc : ((i : ℝ) + 1) = ((i.val + 1 : ℕ) : ℝ) := by push_cast; rfl
           rw [← hc]
-          have hr := tendsto_const_nhds.add (herr_zero i)
+          have hr := (tendsto_const_nhds (x := Real.log ((i : ℝ) + 1))).add (herr_zero i)
           rw [add_zero] at hr
           exact ((Complex.continuous_ofReal.tendsto _).comp hr).const_mul (-conj s_exp)
         have h2 := (Complex.continuous_exp.tendsto _).comp h1
@@ -2678,8 +2840,10 @@ theorem exists_signedPrimeProbe_nearAnnihilating_of_not_mem_pair {S₀ : Finset 
         have h2 : (δ / 2) * (-integerProbe M u) < δ * (-integerProbe M u) :=
           mul_lt_mul_of_pos_right (half_lt_self hδ) (neg_pos.mpr hu_neg)
         linarith only [h1, h2]
-      have hev_ρ := ((tendsto_order.mp hlim_sub).1 0 hpos_lim).mono fun n hn => by
-        linarith only [hn]
+      have hev_ρ : ∀ᶠ n : ℕ in atTop,
+          modePairProduct ρ (Nseq n) (fun ℓ => (aseq n ℓ : ℂ)) <
+            δ * (-integerProbe (Nseq n) (aseq n)) :=
+        ((tendsto_order.mp hlim_sub).1 0 hpos_lim).mono fun n hn => by linarith only [hn]
       exact (hev_ρ.and (ih (Finset.Subset.trans (Finset.subset_insert ρ T) hsubT))).mono
         fun n hn τ hτ => by
           rcases Finset.mem_insert.mp hτ with rfl | hτT

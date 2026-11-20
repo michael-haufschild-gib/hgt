@@ -1,5 +1,5 @@
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.OppositePrimeExcursionsOnOneFixedBand
-import Mathlib.NumberTheory.Harmonic.Bounds
+import GaloisForLFunctions.ArithmeticContinuationAndCriticalEnergy.FiniteWeakMomentComparison
 
 /-!
 # One superlevel of the joint opposite-prime moment
@@ -14,51 +14,92 @@ open Finset Filter
 noncomputable section
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 
-private def upperReading {ι : Type*} (S : Finset ι) (f : ι → ℝ) (i : ι) : ℝ :=
-  f i * ((S.filter (fun j => f i ≤ f j)).card:ℝ)
-
-private theorem harmonic_majorant {ι : Type*} [DecidableEq ι] (S : Finset ι) (f : ι → ℝ) (C : ℝ)
-    (hf : ∀ i ∈ S, 0 ≤ f i) (hb : ∀ i ∈ S, upperReading S f i ≤ C) :
-    (∑ i ∈ S, f i) ≤ (harmonic S.card:ℝ)*C := by
-  classical
-  induction S using Finset.strongInductionOn with
-  | H S ih =>
-    rcases S.eq_empty_or_nonempty with rfl|hn
-    · simp
-    obtain ⟨i,hi,hmin⟩ := S.exists_min_image f hn
-    let T := S.erase i
-    have ht := erase_subset i S
-    have hsub (j : ι) : T.filter (fun q => f j ≤ f q) ⊆ S.filter (fun q => f j ≤ f q) :=
-      filter_subset_filter _ ht
-    have hT := ih T (erase_ssubset hi) (fun j hj => hf j (ht hj)) (fun j hj =>
-      (mul_le_mul_of_nonneg_left (Nat.cast_le.mpr (card_le_card (hsub j))) (hf j (ht hj))).trans
-        (hb j (ht hj)))
-    have hstep : T.card+1=S.card := card_erase_add_one hi
-    have hcard : 0 < (S.card:ℝ) := Nat.cast_pos.mpr (card_pos.mpr hn)
-    have low := hb i hi
-    rw [upperReading,filter_true_of_mem hmin] at low
-    have hlead := (le_div_iff₀ hcard).mpr low
-    have hh : (harmonic S.card:ℝ) = (harmonic T.card:ℝ)+(S.card:ℝ)⁻¹ := by
-      rw [←hstep,harmonic_succ]
-      push_cast
-      rfl
-    rw [←sum_erase_add S f hi,hh,add_mul]
-    exact add_le_add hT (by simpa only [div_eq_mul_inv,mul_comm C] using hlead)
+open GaloisForLFunctions.FiniteWeakMoment
 
 /-- A realized threshold captures at least the reciprocal harmonic
-fraction of any finite nonnegative sum. Ties are counted together. -/
+fraction of any finite nonnegative sum. -/
 theorem exists_harmonic_superlevel {ι : Type*} (S : Finset ι) (f : ι → ℝ)
     (hn : S.Nonempty) (hf : ∀ i ∈ S, 0 ≤ f i) :
     ∃ i ∈ S, (∑ j ∈ S, f j) ≤ (harmonic S.card:ℝ)*(f i*((S.filter (fun j => f i ≤ f j)).card:ℝ)) := by
-  classical
-  obtain ⟨i,hi,hmax⟩ := S.exists_max_image (upperReading S f) hn
-  exact ⟨i,hi,harmonic_majorant S f _ hf hmax⟩
+  obtain ⟨i,hi,h,_⟩ := exists_capturing_level hn f hf
+  exact ⟨i,hi,h⟩
+
+/-- Reciprocal rank counting all ties at the same observed height. -/
+def reciprocalSuperlevelRank {ι : Type*} (S : Finset ι) (f : ι → ℝ) (i : ι) : ℝ :=
+  ((S.filter (fun j => f i ≤ f j)).card:ℝ)⁻¹
+
+private theorem reciprocal_rank_pos {ι : Type*} {S : Finset ι} (f : ι → ℝ) {i : ι} (hi : i ∈ S) :
+    0 < ((S.filter (fun j => f i ≤ f j)).card:ℝ) :=
+  Nat.cast_pos.mpr (card_pos.mpr ⟨i,mem_filter.mpr ⟨hi,le_rfl⟩⟩)
+
+/-- Reciprocal superlevel ranks preserve both strict order and ties.
+In particular each height of the new sample has weak first moment one. -/
+theorem reciprocal_rank_order {ι : Type*} {S : Finset ι} (f : ι → ℝ) {i j : ι}
+    (hi : i ∈ S) (hj : j ∈ S) :
+    reciprocalSuperlevelRank S f i ≤ reciprocalSuperlevelRank S f j ↔ f i ≤ f j := by
+  let U (k : ι) := S.filter fun l => f k ≤ f l
+  have nest {u v : ι} (h : f u ≤ f v) : U v ⊆ U u := fun l hl =>
+    mem_filter.mpr ⟨(mem_filter.mp hl).1,h.trans (mem_filter.mp hl).2⟩
+  rw [reciprocalSuperlevelRank,reciprocalSuperlevelRank,
+    inv_le_inv₀ (reciprocal_rank_pos f hi) (reciprocal_rank_pos f hj),Nat.cast_le]
+  constructor
+  · intro hc
+    by_contra! h
+    have proper : U i ⊂ U j := by
+      refine ⟨nest h.le,fun sub => ?_⟩
+      exact h.not_ge (mem_filter.mp (sub (show j ∈ U j from mem_filter.mpr ⟨hj,le_rfl⟩))).2
+    exact (card_lt_card proper).not_ge hc
+  · exact fun h => card_le_card (nest h)
+
+theorem unit_weak_moment_of_reciprocal_ranks {ι : Type*} {S : Finset ι} (f : ι → ℝ)
+    {i : ι} (hi : i ∈ S) : levelMass S (reciprocalSuperlevelRank S f) i=1 := by
+  have eq : S.filter (fun j => reciprocalSuperlevelRank S f i ≤ reciprocalSuperlevelRank S f j) =
+      S.filter (fun j => f i ≤ f j) := by
+    ext j
+    by_cases hj : j ∈ S
+    · simp only [mem_filter,hj,true_and,reciprocal_rank_order f hi hj]
+    · simp [hj]
+  rw [levelMass,eq,reciprocalSuperlevelRank,inv_mul_cancel₀ (reciprocal_rank_pos f hi).ne']
+
+/-- Once the weak order of the observed heights is known, its exact
+weak-to-strong constant is the sum of reciprocal ranks. The reciprocal
+rank profile realizes it and the harmonic number always bounds it. -/
+theorem weak_moment_cost_of_tied_heights {ι : Type*} (S : Finset ι) (f : ι → ℝ) (C : ℝ)
+    (cap : ∀ i ∈ S, levelMass S f i ≤ C) :
+    (∑ i ∈ S, f i) ≤ (∑ i ∈ S, reciprocalSuperlevelRank S f i)*C ∧
+    (∑ i ∈ S, reciprocalSuperlevelRank S f i) ≤ (harmonic S.card:ℝ) := by
+  constructor
+  · rw [sum_mul]
+    apply sum_le_sum
+    intro i hi
+    have bound := (le_div_iff₀ (reciprocal_rank_pos f hi)).mpr (cap i hi)
+    simpa only [reciprocalSuperlevelRank,div_eq_inv_mul] using bound
+  · have h := sum_le_harmonic S (reciprocalSuperlevelRank S f) 1
+      (fun i hi => (inv_pos.mpr (reciprocal_rank_pos f hi)).le)
+      (fun i hi => (unit_weak_moment_of_reciprocal_ranks f hi).le)
+    simpa only [mul_one] using h
 
 /-- Eligible numerators whose positive-part product reaches the value at
 the selected numerator. The orientation and flank stay fixed. -/
 def oppositePrimeSuperlevel (left : Bool) (s a g d T : ℝ) (k L H : ℕ) : Finset ℕ :=
   (largeOppositePrimeNumerators left s a g d T k L).filter fun J =>
     oppositePrimeProduct left s k L H ≤ oppositePrimeProduct left s k L J
+
+/-- The cutoff selected by the actual prime products pays only the sum
+of reciprocal superlevel counts. Equal observations are grouped at their
+full upper rank. -/
+theorem opposite_prime_tied_height_level (left : Bool) (s a g d T : ℝ) (k L : ℕ) :
+    let S := largeOppositePrimeNumerators left s a g d T k L
+    let f := oppositePrimeProduct left s k L
+    S.Nonempty → ∃ H ∈ S, (L:ℝ)*(∑ J ∈ S, f J) ≤
+      (∑ J ∈ S, reciprocalSuperlevelRank S f J)*((L:ℝ)*f H)*
+        (oppositePrimeSuperlevel left s a g d T k L H).card := by
+  intro S f hn
+  obtain ⟨i,hi,cap⟩ := S.exists_max_image (levelMass S f) hn
+  refine ⟨i,hi,?_⟩
+  have h := mul_le_mul_of_nonneg_left
+    (weak_moment_cost_of_tied_heights S f (levelMass S f i) cap).1 (Nat.cast_nonneg (α:=ℝ) L)
+  exact h.trans_eq (by unfold levelMass; dsimp only [oppositePrimeSuperlevel,S,f]; ring)
 
 /-- The joint moment reduces to a single product threshold with loss at
 most one plus twice the logarithm of the denominator endpoint. -/
@@ -87,7 +128,7 @@ theorem opposite_prime_single_superlevel (left : Bool) (s a g d T : ℝ) (k L : 
 
 /-- A failure of RH forces a single, arithmetically defined product
 superlevel at each sufficiently late test. The original scales and both
-sign thresholds survive, with only logarithmic loss. -/
+sign thresholds survive, with the loss computed from the observed ties. -/
 theorem rh_or_one_opposite_prime_superlevel : RiemannHypothesis ∨
     ∃ a c g d r : ℝ, 0<a ∧ 0<c ∧ 0<g ∧ 0<d ∧ d≤1/4 ∧ 0<r ∧
       ∀ η : ℝ, 0<η → η≤r → ∃ (T : ℕ → ℝ) (k : ℕ → ℕ), Tendsto T atTop atTop ∧
@@ -97,7 +138,9 @@ theorem rh_or_one_opposite_prime_superlevel : RiemannHypothesis ∨
           ∃ (s : ℝ) (left : Bool) (H : ℕ), (s=1 ∨ s= -1) ∧
             H ∈ largeOppositePrimeNumerators left s a g d (T i) (k i) L ∧
             c*a^2*Real.exp ((1/2+3*g)*T i) <
-              (1+2*Real.log L)*((L:ℝ)*oppositePrimeProduct left s (k i) L H)*
+              (∑ J ∈ largeOppositePrimeNumerators left s a g d (T i) (k i) L,
+                reciprocalSuperlevelRank (largeOppositePrimeNumerators left s a g d (T i) (k i) L)
+                  (oppositePrimeProduct left s (k i) L) J)*((L:ℝ)*oppositePrimeProduct left s (k i) L H)*
                 (oppositePrimeSuperlevel left s a g d (T i) (k i) L H).card := by
   rcases riemannHypothesis_or_fixed_band_opposite_prime_moment with hh |
     ⟨_,_,_,a,c,g,d,r,_,_,_,_,_,ha,hc,hg,hd,hd',hr,seq⟩
@@ -114,9 +157,13 @@ theorem rh_or_one_opposite_prime_superlevel : RiemannHypothesis ∨
     change c*a^2*Real.exp ((1/2+3*g)*T i) < (L:ℝ)*∑ j ∈ S, _ at hlarge
     rw [he,sum_empty,mul_zero] at hlarge
     exact hlarge.not_ge (by positivity)
-  obtain ⟨H,hH,hu⟩ := opposite_prime_single_superlevel left s a g d (T i) (k i) L hn
+  obtain ⟨H,hH,hu⟩ := opposite_prime_tied_height_level left s a g d (T i) (k i) L hn
   exact ⟨s,left,H,hs,hH,hlarge.trans_le hu⟩
 
+#print axioms weak_moment_cost_of_tied_heights
+#print axioms unit_weak_moment_of_reciprocal_ranks
+#print axioms reciprocal_rank_order
+#print axioms opposite_prime_tied_height_level
 #print axioms exists_harmonic_superlevel
 #print axioms opposite_prime_single_superlevel
 #print axioms rh_or_one_opposite_prime_superlevel

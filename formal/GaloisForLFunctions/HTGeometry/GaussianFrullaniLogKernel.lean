@@ -371,24 +371,28 @@ theorem exp_neg_four_le_gaussianGram {s : ℝ} (hs : 0 ≤ s) {ν μ : Measure �
     nlinarith)
   rwa [MeasureTheory.integral_const, probReal_univ, one_smul] at h
 
-/-- **The equality case of positive-definiteness**: if `E(ν,ν) + E(μ,μ) ≤ 2 E(ν,μ)` with finite
-energies, the Gaussian moments of `ν` and `μ` agree at some `s > 0`. -/
-theorem exists_gaussianMoment_eq_of_energy_le {ν μ : Measure ℝ} [IsProbabilityMeasure ν]
-    [IsProbabilityMeasure μ] (hν : ∀ᵐ x ∂ν, |x| ≤ 1) (hμ : ∀ᵐ y ∂μ, |y| ≤ 1)
-    (hfin : frullaniEnergy ν ν + frullaniEnergy μ μ ≠ ⊤)
-    (hle : frullaniEnergy ν ν + frullaniEnergy μ μ ≤ 2 * frullaniEnergy ν μ) :
-    ∃ s > 0, ∀ n, gaussianMoment s ν n = gaussianMoment s μ n := by
+/-- Gaussian scale density of the logarithmic energy of a signed difference. -/
+def gaussianEnergyDefectDensity (ν μ : Measure ℝ) (s : ℝ) : ℝ≥0∞ :=
+  ENNReal.ofReal ((gaussianGram s ν ν + gaussianGram s μ μ - 2 * gaussianGram s ν μ) / (2*s))
+
+theorem measurable_gaussianEnergyDefectDensity (ν μ : Measure ℝ) [SFinite ν] [SFinite μ] :
+    Measurable (gaussianEnergyDefectDensity ν μ) :=
+  Measurable.ennreal_ofReal ((((measurable_gaussianGram ν ν).add (measurable_gaussianGram μ μ)).sub
+    ((measurable_gaussianGram ν μ).const_mul 2)).div (by fun_prop))
+
+/-- Exact polarization at all energies, including infinite self-energy. -/
+theorem frullaniEnergy_polarization {ν μ : Measure ℝ} [IsProbabilityMeasure ν]
+    [IsProbabilityMeasure μ] (hν : ∀ᵐ x ∂ν, |x| ≤ 1) (hμ : ∀ᵐ y ∂μ, |y| ≤ 1) :
+    frullaniEnergy ν ν + frullaniEnergy μ μ = 2*frullaniEnergy ν μ +
+      ∫⁻ s in Ioi 0, gaussianEnergyDefectDensity ν μ s := by
   set Φ : ℝ → Measure ℝ → Measure ℝ → ℝ := fun s ρ₁ ρ₂ =>
     (gaussianGram s ρ₁ ρ₂ - Real.exp (-(4 * s))) / (2 * s) with hΦ
-  set D : ℝ → ℝ≥0∞ := fun s => ENNReal.ofReal
-    ((gaussianGram s ν ν + gaussianGram s μ μ - 2 * gaussianGram s ν μ) / (2 * s)) with hD
+  let D := gaussianEnergyDefectDensity ν μ
   have hmΦ : ∀ ρ₁ ρ₂ : Measure ℝ, [SFinite ρ₁] → [SFinite ρ₂] →
       Measurable fun s => ENNReal.ofReal (Φ s ρ₁ ρ₂) := fun ρ₁ ρ₂ _ _ =>
     Measurable.ennreal_ofReal (((measurable_gaussianGram ρ₁ ρ₂).sub (by fun_prop)).div
       (by fun_prop))
-  have hmD : Measurable D := Measurable.ennreal_ofReal
-    ((((measurable_gaussianGram ν ν).add (measurable_gaussianGram μ μ)).sub
-      ((measurable_gaussianGram ν μ).const_mul 2)).div (by fun_prop))
+  have hmD : Measurable D := measurable_gaussianEnergyDefectDensity ν μ
   have hpt : ∀ s ∈ Ioi (0 : ℝ), ENNReal.ofReal (Φ s ν ν) + ENNReal.ofReal (Φ s μ μ) =
       2 * ENNReal.ofReal (Φ s ν μ) + D s := fun s hs => by
     have hs' : (0 : ℝ) < s := hs
@@ -402,17 +406,26 @@ theorem exists_gaussianMoment_eq_of_energy_le {ν μ : Measure ℝ} [IsProbabili
     have hΦμμ : 0 ≤ Φ s μ μ := div_nonneg (by linarith [exp_neg_four_le_gaussianGram hs'.le hμ hμ])
       (by positivity)
     rw [← ENNReal.ofReal_add hΦνν hΦμμ, ← ENNReal.ofReal_ofNat 2,
-      ← ENNReal.ofReal_mul (by norm_num), hD, ← ENNReal.ofReal_add (by positivity) hD0]
+      ← ENNReal.ofReal_mul (by norm_num), D, gaussianEnergyDefectDensity, ← ENNReal.ofReal_add (by positivity) hD0]
     congr 1
     simp only [hΦ]
     field_simp
     ring
-  have hsum : frullaniEnergy ν ν + frullaniEnergy μ μ = 2 * frullaniEnergy ν μ +
-      ∫⁻ s in Ioi 0, D s := by
-    rw [frullaniEnergy_eq_lintegral_gram hν hν, frullaniEnergy_eq_lintegral_gram hμ hμ,
+  rw [frullaniEnergy_eq_lintegral_gram hν hν, frullaniEnergy_eq_lintegral_gram hμ hμ,
       frullaniEnergy_eq_lintegral_gram hν hμ, ← lintegral_add_left (hmΦ ν ν),
       setLIntegral_congr_fun measurableSet_Ioi hpt, lintegral_add_right _ hmD,
       lintegral_const_mul' _ _ ENNReal.ofNat_ne_top]
+
+/-- **The equality case of positive-definiteness**: if `E(ν,ν) + E(μ,μ) ≤ 2 E(ν,μ)` with finite
+energies, the Gaussian moments of `ν` and `μ` agree at some `s > 0`. -/
+theorem exists_gaussianMoment_eq_of_energy_le {ν μ : Measure ℝ} [IsProbabilityMeasure ν]
+    [IsProbabilityMeasure μ] (hν : ∀ᵐ x ∂ν, |x| ≤ 1) (hμ : ∀ᵐ y ∂μ, |y| ≤ 1)
+    (hfin : frullaniEnergy ν ν + frullaniEnergy μ μ ≠ ⊤)
+    (hle : frullaniEnergy ν ν + frullaniEnergy μ μ ≤ 2 * frullaniEnergy ν μ) :
+    ∃ s > 0, ∀ n, gaussianMoment s ν n = gaussianMoment s μ n := by
+  let D := gaussianEnergyDefectDensity ν μ
+  have hmD : Measurable D := measurable_gaussianEnergyDefectDensity ν μ
+  have hsum := frullaniEnergy_polarization hν hμ
   have htop : 2 * frullaniEnergy ν μ ≠ ⊤ :=
     ne_top_of_le_ne_top hfin (hsum ▸ le_self_add)
   have hD0 : ∫⁻ s in Ioi 0, D s = 0 := by
@@ -427,7 +440,7 @@ theorem exists_gaussianMoment_eq_of_energy_le {ν μ : Measure ℝ} [IsProbabili
   obtain ⟨s, hs, hDs⟩ := ((ae_restrict_mem measurableSet_Ioi).and hD0).exists
   refine ⟨s, hs, fun n => gaussianMoment_eq_of_defect_nonpos hs hν hμ ?_ n⟩
   have := hDs
-  simp only [hD, Pi.zero_apply, ENNReal.ofReal_eq_zero] at this
+  simp only [D, gaussianEnergyDefectDensity, Pi.zero_apply, ENNReal.ofReal_eq_zero] at this
   have hs' : (0 : ℝ) < s := hs
   rw [div_nonpos_iff] at this
   rcases this with ⟨-, h2⟩ | ⟨h1, -⟩

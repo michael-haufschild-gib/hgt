@@ -50,7 +50,7 @@ private theorem cubic_chords (𝔪 : Modulus K) (η : HeckeCharacter 𝔪) (S : 
     ‖((v.asIdeal.absNorm : ℂ) ^ (-(2 : ℂ)))‖))
   have lp : 0 < L := Real.exp_pos _
   obtain ⟨M,hM⟩ := exists_norm_continuedProbeCorrection_le 𝔪 η S
-  let C := Real.exp 4*|M|/L
+  let C := Real.exp 4 * |M|/L
   have c0 : 0 ≤ C := div_nonneg (mul_nonneg (Real.exp_pos _).le (abs_nonneg _)) lp.le
   have gauss (y : ℝ) : ‖G (linePoint y)‖ ≤ C*Real.exp (-y^2) := by
     let s := linePoint y
@@ -122,7 +122,7 @@ theorem cubic_probe_three_halves_sampling (𝔪 : Modulus K) (η : HeckeCharacte
   rintro ⟨C,hC⟩
   obtain ⟨N,hN⟩ := eventually_atTop.mp hC
   obtain ⟨B,B0,chord⟩ := cubic_chords 𝔪 η S hS
-  let D := |C|*(4:ℝ)^b
+  let D := |C| * (4:ℝ)^b
   have D0 : 0 ≤ D := mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (by norm_num) _)
   refine ⟨8*B+D,?_⟩
   filter_upwards [(tendsto_rpow_atTop (by norm_num : 0<(2/3:ℝ))).eventually_ge_atTop (max (N:ℝ) 1),

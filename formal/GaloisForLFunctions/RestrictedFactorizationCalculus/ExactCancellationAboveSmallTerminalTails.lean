@@ -30,9 +30,10 @@ def hasSmallOddTail (Y m : ℕ) : Prop :=
 
 private theorem logHeight_mono : Monotone logHeight := by
   intro m n h
-  have hm : 1 ≤ (m:ℝ)+1 := by positivity
-  exact add_le_add_left (pow_le_pow_left₀ (Real.log_nonneg hm)
-    (Real.log_le_log (by positivity) (add_le_add_right (Nat.cast_le.mpr h) 1)) 2) 1
+  have hm : 1 ≤ (m:ℝ)+1 := by linarith only [Nat.cast_nonneg (α:=ℝ) m]
+  have hl := Real.log_le_log (zero_lt_one.trans_le hm)
+    (add_le_add (Nat.cast_le.mpr h : (m:ℝ) ≤ n) (le_refl (1:ℝ)))
+  exact add_le_add (le_refl (1:ℝ)) (pow_le_pow_left₀ (Real.log_nonneg hm) hl 2)
 
 private theorem prime_above_tail_bound :
     ∃ C : ℝ,1 ≤ C ∧ ∀ p r,TerminalPrimeTail logSquareCutoff p r → (p:ℝ) ≤ C*logHeight r := by
@@ -43,18 +44,20 @@ private theorem prime_above_tail_bound :
       abs_of_nonneg (Real.rpow_nonneg (zero_le_one.trans hx) _),←Real.sqrt_eq_rpow] at h
   obtain ⟨N,hN⟩ := eventually_atTop.mp (tendsto_natCast_atTop_atTop.eventually he)
   let C := (N:ℝ)+4
-  have hC : 4 ≤ C := by dsimp only [C]; linarith only [Nat.cast_nonneg N]
+  have hC : 4 ≤ C := by dsimp only [C]; linarith only [Nat.cast_nonneg (α:=ℝ) N]
   refine ⟨C,by linarith only [hC],?_⟩
   intro p r tail
   let L := Real.log ((r:ℝ)+1)
-  have hL : 0 ≤ L := Real.log_nonneg (by positivity)
+  have hL : 0 ≤ L := Real.log_nonneg (by linarith only [Nat.cast_nonneg (α:=ℝ) r])
   have hheight : 1 ≤ logHeight r := by dsimp only [logHeight]; linarith only [sq_nonneg L]
   by_cases big : N ≤ p
   · have small := hN p big
+    change Real.log (p:ℝ) ≤ (1/2:ℝ)*Real.sqrt p at small
     have pp : 1 ≤ (p:ℝ) := by exact_mod_cast tail.prime.pos
     have hs : (p:ℝ) ≤ (⌊Real.log ((p:ℝ)*r+1)⌋₊:ℝ)^2 := by
       simpa only [logSquareCutoff,Nat.cast_mul,Nat.cast_pow] using (Nat.cast_le (α := ℝ)).mpr tail.removed
-    have nonneg : 0 ≤ Real.log ((p:ℝ)*r+1) := Real.log_nonneg (by positivity)
+    have nonneg : 0 ≤ Real.log ((p:ℝ)*r+1) := Real.log_nonneg
+      (by linarith only [mul_nonneg (Nat.cast_nonneg (α:=ℝ) p) (Nat.cast_nonneg (α:=ℝ) r)])
     have hs' := hs.trans (pow_le_pow_left₀ (Nat.cast_nonneg _) (Nat.floor_le nonneg) 2)
     have root := (Real.sqrt_le_iff).2 ⟨nonneg,hs'⟩
     have room : (p:ℝ)*r+1 ≤ p*((r:ℝ)+1) := by linarith only [pp]

@@ -123,6 +123,24 @@ private theorem midpoint_upper_transfer (V : ℝ → ℝ) {a b A C : ℝ}
 #print axioms adjacent_gcd_price_eq_prime_midpoint
 #print axioms midpoint_upper_transfer
 
+/-- A sublinear upper power bound for a price can be sharpened to the
+power of its signed dilation midpoint. Both exponents lie in (0,1). -/
+theorem upper_power_from_dilation_midpoint {F : ℝ → ℝ} {a b : ℝ}
+    (ha : a∈Set.Ioo (0:ℝ) 1) (hb : b∈Set.Ioo (0:ℝ) 1)
+    (hF : ∃ C : ℝ, ∀ x : ℝ, 0<x → F x≤C*x^a)
+    (hD : ∃ A : ℝ, ∀ x : ℝ, 0<x → 2*F (3*x)-F (2*x)-F (4*x)≤A*x^b) :
+    ∃ K : ℝ, ∀ x : ℝ, 0<x → F x≤K*x^b := by
+  obtain ⟨C,hC⟩ := hF
+  obtain ⟨A,hA⟩ := hD
+  refine ⟨_,midpoint_upper_transfer F ha.1 ha.2 hb.1 hb.2 (abs_nonneg A) hC ?_⟩
+  intro x hx
+  have h := hA (x/3) (by positivity)
+  rw [show 3*(x/3)=x by ring,show 2*(x/3)=(2/3)*x by ring,
+    show 4*(x/3)=(4/3)*x by ring] at h
+  exact h.trans (mul_le_mul (le_abs_self A)
+    (Real.rpow_le_rpow (by positivity) (by linarith only [hx]) hb.1.le)
+    (Real.rpow_nonneg (by positivity) _) (abs_nonneg A))
+
 private def midpointSignal (y : ℝ) :=
   2*Chebyshev.psi y-Chebyshev.psi ((2/3)*y)-Chebyshev.psi ((4/3)*y)
 
@@ -236,6 +254,23 @@ private theorem width_of_prime_surplus {b : ℝ} (hb : 1/2 ≤ b)
   rw [mul_assoc,←Real.rpow_add hr,show -(ρ.re-b)+ρ.re=b by ring] at ht
   linarith only [ht,hA n hr,hlarge]
 
+/-- An upper estimate for the ordinary-prime surplus excludes zeta zeros
+to its right as soon as the exponent covers the square-root prime powers. -/
+theorem zero_abscissa_of_ordinary_prime_surplus {b : ℝ} (hb : 1/2≤b)
+    (h : ∃ B : ℝ, ∀ x : ℝ, 1≤x → Chebyshev.theta x-x≤B*x^b) :
+    _root_.RHTower.zetaZeroAbscissa≤b := by
+  obtain ⟨B,hB⟩ := h
+  obtain ⟨D,hD⟩ := Chebyshev.psi_sub_theta_le_mul_sqrt
+  refine width_of_prime_surplus hb ⟨|B|+|D|,fun x hx => ?_⟩
+  by_cases hx₁ : 1≤x
+  · have htheta := (hB x hx₁).trans (mul_le_mul_of_nonneg_right (le_abs_self B) (Real.rpow_nonneg hx.le _))
+    have hsqrt := Real.rpow_le_rpow_of_exponent_le hx₁ hb
+    rw [←Real.sqrt_eq_rpow] at hsqrt
+    have he := (hD x).trans (mul_le_mul (le_abs_self D) hsqrt (Real.sqrt_nonneg x) (abs_nonneg D))
+    linarith only [htheta,he]
+  · rw [Chebyshev.psi_eq_zero_of_le_one (le_of_not_ge hx₁),zero_sub]
+    exact (neg_nonpos.mpr hx.le).trans (mul_nonneg (add_nonneg (abs_nonneg _) (abs_nonneg _)) (Real.rpow_nonneg hx.le _))
+
 /-- One signed rational product price has exactly the ordinary zeta zero
 abscissa as its power threshold. -/
 theorem adjacent_gcd_upper_spectrum_iff {b : ℝ} (hb : 1/2 ≤ b) :
@@ -274,6 +309,8 @@ theorem adjacent_gcd_upper_spectrum_iff {b : ℝ} (hb : 1/2 ≤ b) :
 
 #print axioms prime_surplus_of_adjacent_gcd_price
 #print axioms adjacent_gcd_upper_spectrum_iff
+#print axioms upper_power_from_dilation_midpoint
+#print axioms zero_abscissa_of_ordinary_prime_surplus
 
 
 /-- The ordinary-prime log product on (2n,3n] divided by that on (3n,4n]. -/

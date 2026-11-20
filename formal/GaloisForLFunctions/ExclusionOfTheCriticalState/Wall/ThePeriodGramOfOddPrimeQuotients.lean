@@ -19,7 +19,8 @@ open scoped Classical
 /-- The centered binary quotient digit with values +1 and -1. -/
 def quotientSign (n H : ℕ) : ℝ := (-1) ^ (H / n)
 
-private theorem sign_translate {n : ℕ} (hn : 0 < n) (H k : ℕ) :
+/-- Translation by k denominator steps multiplies the sign by its parity character. -/
+theorem quotientSign_add_multiple {n : ℕ} (hn : 0 < n) (H k : ℕ) :
     quotientSign n (H + n*k) = quotientSign n H * (-1)^k := by
   rw [quotientSign, Nat.add_mul_div_left _ _ hn, pow_add]
   rfl
@@ -85,7 +86,7 @@ theorem coprime_quotientSign_gram {a b : ℕ} (ha : 0 < a) (hb : 0 < b) (hc : a.
   let f (H : ℕ) := quotientSign a H * quotientSign b H
   have hshift (H : ℕ) : f (a*b+H) = f H * ((-1:ℝ)^a * (-1)^b) := by
     dsimp only [f]
-    rw [Nat.add_comm (a*b), sign_translate ha, Nat.mul_comm a b, sign_translate hb]
+    rw [Nat.add_comm (a*b), quotientSign_add_multiple ha, Nat.mul_comm a b, quotientSign_add_multiple hb]
     ring
   change ∑ H ∈ range _, f H = _
   rw [two_mul, sum_range_add, sum_congr rfl (fun H _ => hshift H), ← sum_mul]
@@ -168,13 +169,16 @@ theorem centeredQuotientReading_eq (S : Finset ℕ) (H : ℕ) :
   unfold quotientSign
   rw [neg_one_pow_eq_pow_mod_two]
   have hb := Nat.mod_lt (H/n) (by decide : 0 < 2)
-  rcases (show H/n%2=0 ∨ H/n%2=1 by omega) with h|h <;> (simp [h]; ring)
+  rcases (show H/n%2=0 ∨ H/n%2=1 by omega) with h|h
+  · simp [h]
+  · simp [h]
+    ring
 
 private theorem quotientSign_period (n : ℕ) : Function.Periodic (quotientSign n) (2*n) := by
   rcases n with _|n
   · simp only [Nat.mul_zero]; exact fun h => by rw [Nat.add_zero]
   · intro H
-    rw [Nat.mul_comm 2, sign_translate (Nat.succ_pos n)]
+    rw [Nat.mul_comm 2, quotientSign_add_multiple (Nat.succ_pos n)]
     ring
 
 private theorem pair_period (n m : ℕ) :
@@ -220,15 +224,99 @@ theorem centeredQuotientReading_prefix_product (S T : Finset ℕ) (X : ℕ) :
       ∑ n ∈ S, ∑ m ∈ T, ordinaryPrimeExcessCoeff n * ordinaryPrimeExcessCoeff m *
         (((X / (2*n.lcm m) : ℕ) : ℝ) * quotientGramMass n m +
           ∑ H ∈ range (X % (2*n.lcm m)), quotientSign n H * quotientSign m H) := by
-  conv_lhs => simp only [centeredQuotientReading_eq, sum_mul, mul_sum]
+  have expand (H : ℕ) :
+      centeredQuotientReading S H * centeredQuotientReading T H =
+        ∑ n ∈ S, ∑ m ∈ T, (ordinaryPrimeExcessCoeff n*ordinaryPrimeExcessCoeff m) *
+          (quotientSign n H*quotientSign m H) := by
+    rw [centeredQuotientReading_eq,centeredQuotientReading_eq,sum_mul]
+    refine sum_congr rfl fun n _ => ?_
+    rw [mul_sum]
+    exact sum_congr rfl fun m _ => by ring
+  rw [sum_congr rfl (fun H _ => expand H),sum_comm]
+  refine sum_congr rfl fun n _ => ?_
   rw [sum_comm]
-  apply sum_congr rfl
-  intro n _
-  rw [sum_comm]
-  apply sum_congr rfl
-  intro m _
-  rw [← quotientSign_prefix_gram, mul_sum]
-  exact sum_congr rfl fun H _ => by ring
+  refine sum_congr rfl fun m _ => ?_
+  rw [← mul_sum,quotientSign_prefix_gram]
+
+
+/-- Normalized complete-period correlation of the two quotient digits. -/
+def quotientGramMean (n m : ℕ) : ℝ :=
+  quotientGramMass n m / ((2*n.lcm m : ℕ) : ℝ)
+
+/-- The normalized kernel is the Franel gcd-square kernel on equal
+two-adic orders; one even reduced denominator kills it entirely. -/
+theorem quotientGramMean_gcd {n m : ℕ} (hn : 0 < n) (hm : 0 < m) :
+    quotientGramMean n m =
+      if (n/n.gcd m)%2=1 ∧ (m/n.gcd m)%2=1 then
+        (n.gcd m : ℝ)^2/((n:ℝ)*m) else 0 := by
+  have hl : 0 < n.lcm m := Nat.lcm_pos hn hm
+  have hg : (n.gcd m : ℝ)*(n.lcm m : ℝ) = (n:ℝ)*m := by
+    exact_mod_cast Nat.gcd_mul_lcm n m
+  rw [quotientGramMean,quotientGramMass,Nat.cast_mul,Nat.cast_ofNat]
+  split_ifs
+  · rw [← hg]
+    have hg' : (n.gcd m : ℝ)≠0 := Nat.cast_ne_zero.mpr (Nat.gcd_pos_of_pos_left m hn).ne'
+    have hl' : (n.lcm m : ℝ)≠0 := Nat.cast_ne_zero.mpr hl.ne'
+    field_simp [hg',hl']
+  · rw [zero_div]
+
+/-- Distance to either end of the last complete period controls the signed
+Gram error. In particular it vanishes at every complete period. -/
+theorem quotientSign_terminal_error {n m : ℕ} (hn : 0 < n) (hm : 0 < m) (X : ℕ) :
+    let P := 2*n.lcm m
+    let r := X%P
+    let μ := quotientGramMean n m
+    |(∑ H ∈ range X, quotientSign n H*quotientSign m H) - X*μ| ≤
+      min r (P-r) * (1+|μ|) := by
+  let P := 2*n.lcm m
+  let r := X%P
+  let μ := quotientGramMean n m
+  let f (H : ℕ) := quotientSign n H*quotientSign m H
+  let v (H : ℕ) := f H-μ
+  have hp : 0<P := Nat.mul_pos (by decide) (Nat.lcm_pos hn hm)
+  have hr : r<P := Nat.mod_lt X hp
+  have hpR : (P:ℝ)≠0 := Nat.cast_ne_zero.mpr hp.ne'
+  have hpμ : (P:ℝ)*μ = quotientGramMass n m := by
+    change (P:ℝ)*(quotientGramMass n m/(P:ℝ)) = _
+    field_simp
+  have decomposition : ((X/P : ℕ) : ℝ)*P + r = (X:ℝ) := by
+    have hd : (X/P)*P+r=X := by rw [Nat.mul_comm (X/P) P]; exact Nat.div_add_mod X P
+    exact_mod_cast hd
+  have hblock : ∑ H ∈ range P, v H = 0 := by
+    simp only [v,sum_sub_distrib,sum_const,card_range,nsmul_eq_mul,hpμ]
+    exact sub_eq_zero.mpr (quotientSign_gram n m)
+  have hprefix : (∑ H ∈ range X, f H) - X*μ = ∑ H ∈ range r, v H := by
+    have he := quotientSign_prefix_gram n m X
+    change (∑ H ∈ range X, f H) = ((X/P : ℕ) : ℝ)*quotientGramMass n m + ∑ H ∈ range r, f H at he
+    rw [he,← hpμ]
+    simp only [v,sum_sub_distrib,sum_const,card_range,nsmul_eq_mul]
+    linear_combination μ*decomposition
+  have bound (j q : ℕ) : |∑ i ∈ range q, v (j+i)| ≤ (q:ℝ)*(1+|μ|) := by
+    calc
+      _ ≤ ∑ i ∈ range q, |v (j+i)| := abs_sum_le_sum_abs _ _
+      _ ≤ ∑ _i ∈ range q, (1+|μ|) := sum_le_sum fun i _ => by
+        change |f (j+i)-μ| ≤ _
+        rw [sub_eq_add_neg]
+        simpa only [f,quotientSign,abs_mul,abs_pow,abs_neg,abs_one,one_pow,one_mul] using
+          abs_add_le (f (j+i)) (-μ)
+      _ = _ := by rw [sum_const,card_range,nsmul_eq_mul]
+  have hpair : (∑ i ∈ range r, v i) + ∑ i ∈ range (P-r), v (r+i) = 0 := by
+    rw [← sum_range_add, show r+(P-r)=P by omega]
+    exact hblock
+  have hright : |∑ i ∈ range r, v i| ≤ (P-r : ℕ)*(1+|μ|) := by
+    have he : (∑ i ∈ range r, v i) = -(∑ i ∈ range (P-r), v (r+i)) := by linarith only [hpair]
+    rw [he,abs_neg]
+    exact bound r (P-r)
+  change |(∑ H ∈ range X, f H) - X*μ| ≤ ((min r (P-r):ℕ):ℝ)*(1+|μ|)
+  rw [hprefix]
+  by_cases h : r≤P-r
+  · rw [min_eq_left h]
+    simpa only [Nat.zero_add] using bound 0 r
+  · rw [min_eq_right (le_of_not_ge h)]
+    exact hright
+
+#print axioms quotientGramMean_gcd
+#print axioms quotientSign_terminal_error
 
 #print axioms quotientSign_gram
 #print axioms quotientSign_prefix_gram

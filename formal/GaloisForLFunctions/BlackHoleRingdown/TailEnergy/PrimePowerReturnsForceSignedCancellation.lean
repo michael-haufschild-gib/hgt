@@ -92,7 +92,7 @@ theorem prime_power_cancellation_rate (h : CompactPulse) {σ : ℝ} (hσ : 0 < �
   obtain ⟨hd,hw⟩ := echoDelay_and_weight_prime_pow hp hk
   rw [← hw, erase_one_return h hS hs u (pow_pos hp.pos _)]
   refine (hfield _ ht).trans_eq ?_
-  rw [hd, ← Real.exp_nat_mul, mul_assoc, ← Real.exp_add]
+  rw [hd, ← Real.exp_nat_mul, mul_assoc C, ← Real.exp_add]
   congr 2
   ring
 
@@ -120,12 +120,13 @@ theorem prime_power_cancellation_limit (h : CompactPulse) {S : ℝ} (hS : 0 ≤ 
   have hlog : 0 < Real.log p := Real.log_pos (by exact_mod_cast hp.one_lt)
   let a := Real.exp (-2*σ*Real.log p)
   have ha : a < 1 := Real.exp_lt_one_iff.mpr (by nlinarith only [mul_pos hσ hlog])
-  have hpow := tendsto_pow_atTop_nhds_zero_of_lt_one (Real.exp_pos _).le ha
+  have hpow : Tendsto (fun k : ℕ => a^k) atTop (𝓝 0) :=
+    tendsto_pow_atTop_nhds_zero_of_lt_one (Real.exp_pos _).le ha
   have htime : Tendsto (fun k : ℕ => (k : ℝ)*(2*Real.log p)+u) atTop atTop :=
     tendsto_atTop_add_const_right _ _ ((tendsto_mul_const_atTop_of_pos (by positivity)).mpr
       tendsto_natCast_atTop_atTop)
   have hb : Tendsto (fun k : ℕ => C*Real.exp (-σ*u)*a^k) atTop (𝓝 0) := by
-    simpa using hpow.const_mul (C*Real.exp (-σ*u))
+    simpa only [mul_zero] using hpow.const_mul (C*Real.exp (-σ*u))
   rw [Metric.tendsto_nhds]
   intro ε hε
   filter_upwards [hb.eventually_lt_const hε, eventually_ge_atTop 1,
@@ -157,7 +158,8 @@ private theorem path_finite (h : CompactPulse) {S : ℝ} (hs : ∀ s : ℝ, S < 
 private theorem path_hasSum (h : CompactPulse) (t : ℝ) :
     HasSum (fun c => path h c t) (pulseEcho h t) := by
   obtain ⟨S,_,hs⟩ := h.exists_support_bound
-  have he := hasSum_sum_of_ne_finset_zero (path_finite h hs t)
+  have he : HasSum (fun c => path h c t) (∑ c ∈ Finset.Icc 1 (pathReturnCutoff (t+S)), path h c t) :=
+    hasSum_sum_of_ne_finset_zero (path_finite h hs t)
   rwa [finite_return_sum h hs (le_refl t), ← h.pulseEcho_eq] at he
 
 /-- The part of the echo carried by denominators divisible by q. -/
@@ -174,7 +176,7 @@ private theorem echoWeight_prime_mul {p : ℕ} (hp : p.Prime) (a : ℕ) :
   · rw [Nat.totient_mul_of_prime_of_not_dvd hp hd, Nat.cast_mul, Nat.cast_sub hp.one_le, Nat.cast_one]
     by_cases ha : a = 0
     · subst a; simp
-    field_simp [hp0, (by exact_mod_cast ha : (a:ℝ) ≠ 0)] <;> ring
+    field_simp [hp0, (by exact_mod_cast ha : (a:ℝ) ≠ 0)]
 
 private theorem echoDelay_mul {a b : ℕ} (ha : 0 < a) (hb : 0 < b) :
     echoDelay (a*b) = echoDelay a+echoDelay b := by
@@ -235,12 +237,15 @@ theorem prime_sector_delay (h : CompactPulse) {p : ℕ} (hp : p.Prime) (u : ℝ)
       (by simpa using path_prime_tower h hp 0 a u :
         path h (p*a) (echoDelay p+u) = (echoWeight (p*a):ℂ)*bounce h (u-echoDelay a)),
       echoWeight_prime_mul hp]
-    by_cases hd : p ∣ a <;> simp only [B,A,path, if_pos, if_neg, hd, ↓reduceIte,
+    by_cases hd : p ∣ a <;> simp only [B,A,path, if_pos, hd, ↓reduceIte,
       Complex.ofReal_mul, Complex.ofReal_sub, Complex.ofReal_div, Complex.ofReal_one,
       Complex.ofReal_natCast] <;> ring
-  conv_lhs => rw [multipleEcho]; simp_rw [term]
-  rw [(hA.mul_left _).tsum_add (hB.mul_left _), tsum_mul_left, tsum_mul_left,
-    (path_hasSum h u).tsum_eq, tsum_on_multiples h hp.pos u]
+  calc
+    _ = ∑' a, ((1-1/(p:ℂ))*A a+(1/(p:ℂ))*B a) := tsum_congr term
+    _ = _ := by
+      rw [(hA.mul_left _).tsum_add (hB.mul_left _),tsum_mul_left,tsum_mul_left,
+        show (∑' a, A a)=pulseEcho h u from (path_hasSum h u).tsum_eq,
+        show (∑' a, B a)=multipleEcho h p u from tsum_on_multiples h hp.pos u]
 
 /-- Subtracting the exact prime-sector mean gives the same scalar recurrence
 forced by the decaying reflected field. The mean weight is p/(p+1). -/
@@ -260,7 +265,8 @@ theorem centered_sector_delay (h : CompactPulse) {p : ℕ} (hp : p.Prime) (u : �
       ← Complex.ofReal_exp, Real.exp_log (Nat.cast_pos.mpr hp.pos), Complex.ofReal_natCast]
   unfold centeredPrimeSector
   rw [prime_sector_delay h hp u, h.pulseEcho_eq, show echoDelay p+(u-echoDelay p)=u by ring, hshift]
-  field_simp [hp0,hp1] <;> ring
+  field_simp [hp0,hp1]
+  ring
 
 /-- A bounded exponential envelope on the physical time axis. -/
 def weightedBound (σ : ℝ) (F : ℝ → ℂ) : Prop :=
@@ -332,7 +338,9 @@ theorem prime_sector_weightedBound_iff (h : CompactPulse) {p : ℕ} (hp : p.Prim
     nlinarith only [mul_pos (sub_pos.mpr hhalf) hlog]
   have ha : a ≠ 0 := by
     have hr : 0 < 1-1/(p:ℝ) := sub_pos.mpr ((div_lt_one hp0).mpr hp1)
-    exact_mod_cast hr.ne'
+    change 1-1/(p:ℂ) ≠ 0
+    simpa only [Complex.ofReal_sub,Complex.ofReal_div,Complex.ofReal_one,Complex.ofReal_natCast]
+      using (Complex.ofReal_ne_zero.mpr hr.ne')
   have hrec (u : ℝ) : Y u = a*F u+(b:ℂ)*Y (u-d) := by
     have hE : (Real.exp (σ*d):ℂ)*(Real.exp (σ*(u-d)):ℂ)=(Real.exp (σ*u):ℂ) := by
       rw [← Complex.ofReal_mul, ← Real.exp_add, show σ*d+σ*(u-d)=σ*u by ring]
@@ -364,6 +372,30 @@ private theorem reflected_uniform (h : CompactPulse) (u : ℝ) :
   unfold pulseReflected
   refine (norm_integral_le_integral_norm _).trans_eq ?_
   simp only [norm_mul,norm_scatteringPhase_line,norm_exp_I_mul,mul_one]
+
+/-- Every nonzero compact pulse produces a nonzero one-bounce field.
+A vanishing bounce would leave only a growing exponential in the
+reflected field, whose uniform bound forces its coefficient to vanish. -/
+theorem nonzero_bounce_of_nonzero_pulse (h : CompactPulse) (hne : ∃ s : ℝ, h s ≠ 0) :
+    ∃ u : ℝ, bounce h u ≠ 0 := by
+  by_contra! hzero
+  obtain ⟨S,_,hs⟩ := h.exists_support_bound
+  have hall (t : ℝ) : pulseReflected h t = -(meanCoefficient h*cexp ((t:ℂ)/2)) := by
+    have he := finite_return_sum (B:=t) h hs le_rfl
+    simp only [path,hzero,mul_zero,Finset.sum_const_zero] at he
+    linear_combination -he
+  have hm : meanCoefficient h=0 := by
+    by_contra hn
+    let M := ∫ ξ : ℝ, ‖pulseAmplitude h (ξ:ℂ)‖
+    obtain ⟨r,hr⟩ := (Real.tendsto_exp_atTop.eventually_gt_atTop (M/‖meanCoefficient h‖)).exists
+    have hh := reflected_uniform h (2*r)
+    rw [hall,norm_neg,norm_mul,Complex.norm_exp,Complex.div_ofNat_re,Complex.ofReal_re,
+      show 2*r/2=r by ring] at hh
+    exact ((div_lt_iff₀ (norm_pos_iff.mpr hn)).mp hr).not_ge (by simpa only [mul_comm] using hh)
+  obtain ⟨u,hu⟩ := exists_nonzero_bounce h hm hne
+  exact hu (hzero u)
+
+#print axioms nonzero_bounce_of_nonzero_pulse
 
 private theorem reflected_weighted_iff (h : CompactPulse) {σ : ℝ} (hσ : 0 ≤ σ) :
     weightedBound σ (pulseReflected h) ↔
@@ -452,7 +484,7 @@ theorem sector_jackson_remainder (h : CompactPulse) {p : ℕ} (hp : p.Prime) (u 
   induction n with
   | zero => simp
   | succ n ih =>
-    rw [sum_range_succ, ← sub_sub, ih, centered_sector_delay h hp (u-n*echoDelay p),
+    rw [Finset.sum_range_succ, ← sub_sub, ih, centered_sector_delay h hp (u-n*echoDelay p),
       pow_succ,Nat.cast_succ,show u-(n:ℝ)*echoDelay p-echoDelay p = u-((n:ℝ)+1)*echoDelay p by ring]
     dsimp only [q]
     ring
@@ -522,8 +554,8 @@ theorem sector_residual_bound (h : CompactPulse) {p : ℕ} (hp : p.Prime)
       simp only [pow_zero,one_mul]
       exact ((norm_sub_le _ _).trans (add_le_add (hA v) (hB v))).trans (le_add_of_nonneg_left hL0)
     | succ n ih =>
-      refine (hstep v).trans ((add_le_add_left
-        (mul_le_mul_of_nonneg_left (ih (v-echoDelay p)) (norm_nonneg b)) ε).trans_eq ?_)
+      refine (hstep v).trans ((add_le_add le_rfl
+        (mul_le_mul_of_nonneg_left (ih (v-echoDelay p)) (norm_nonneg b))).trans_eq ?_)
       rw [pow_succ]
       linear_combination -hL
   have hlim := ((tendsto_pow_atTop_nhds_zero_of_lt_one (norm_nonneg b) hb).mul_const (C+B)).const_add L

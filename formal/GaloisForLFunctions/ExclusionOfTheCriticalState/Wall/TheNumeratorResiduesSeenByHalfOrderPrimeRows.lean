@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ArithmeticPositiveDuality.TheDiagonalEnergyOfSignedHalfOrderRows
+import GaloisForLFunctions.ArithmeticPositiveDuality.TheCutoffEnergyOfSignedHalfOrderRows
 import GaloisForLFunctions.ExclusionOfTheCriticalState.Wall.HalfOrderInteractionsOfOddQuotientBands
 import Mathlib.Analysis.Complex.ExponentialBounds
 
@@ -118,5 +118,66 @@ theorem odd_rows_all_translates_integrable_iff (S : Finset ℕ) (T : ℕ) :
 #print axioms odd_rows_difference_integrable_iff
 #print axioms dyadic_odd_rows_integrable_iff_congruent
 #print axioms odd_rows_all_translates_integrable_iff
+
+/-- Weighted Hamming distance of the observed quotient digits. A changed
+digit pays the squared ordinary-prime excess at its denominator. -/
+def oddRowDistance (S : Finset ℕ) (H J : ℕ) :=
+  ∑ i ∈ S, if H/i%2=J/i%2 then 0 else (ordinaryPrimeExcessCoeff i)^2
+
+private theorem odd_row_residue (S : Finset ℕ) (H J : ℕ) :
+    halfRowResidue S (fun i => oddBandWeight H i-oddBandWeight J i)
+      (fun i => oddBandWeight H i-oddBandWeight J i) = oddRowDistance S H J := by
+  apply sum_congr rfl
+  intro i _
+  rcases Nat.eq_zero_or_pos i with rfl | hi
+  · simp
+  · rcases Nat.mod_two_eq_zero_or_one (H/i) with hh | hh <;>
+      rcases Nat.mod_two_eq_zero_or_one (J/i) with hj | hj <;>
+      simp [oddBandWeight,hi.ne',hh,hj,pow_two]
+
+/-- The measured cutoff energy divided by log(1/ε) converges exactly
+to the weighted Hamming distance, including its nonzero values. -/
+theorem odd_row_logarithmic_distance (S : Finset ℕ) (H J : ℕ) :
+    Filter.Tendsto (fun ε => (∫ t, (cutoffHalfRow ε S (oddBandWeight H) t-
+      cutoffHalfRow ε S (oddBandWeight J) t)^2)/Real.log (1/ε)) (nhdsWithin 0 (Set.Ioi 0))
+        (nhds (oddRowDistance S H J)) := by
+  let d := fun i => oddBandWeight H i-oddBandWeight J i
+  have he (ε t : ℝ) : cutoffHalfRow ε S d t=
+      cutoffHalfRow ε S (oddBandWeight H) t-cutoffHalfRow ε S (oddBandWeight J) t := by
+    simp only [cutoffHalfRow,d,sub_mul,sum_sub_distrib]
+  simpa only [he,←sq,show halfRowResidue S d d=oddRowDistance S H J from odd_row_residue S H J] using
+    cutoff_half_pairing_residue S d d
+
+theorem odd_row_distance_triangle (S : Finset ℕ) (A B C : ℕ) :
+    oddRowDistance S A C ≤ oddRowDistance S A B+oddRowDistance S B C := by
+  simp only [oddRowDistance,←sum_add_distrib]
+  apply sum_le_sum
+  intro i _
+  by_cases h : A/i%2=B/i%2
+  · simp [h]
+  · by_cases h' : B/i%2=C/i%2
+    · simp [h,h']
+    · by_cases h'' : A/i%2=C/i%2 <;> simp [h,h',h'',sq_nonneg]
+
+/-- Two numerator classes have zero distance exactly when their quotient
+digits agree at the observed sites. -/
+theorem odd_row_distance_eq_zero_iff (S : Finset ℕ) (H J : ℕ) :
+    oddRowDistance S H J=0 ↔ ∀ i∈S, 0<i → (H/i%2=1 ↔ J/i%2=1) := by
+  rw [oddRowDistance,sum_eq_zero_iff_of_nonneg (fun i _ => by split <;> positivity)]
+  apply forall_congr' fun i => forall_congr' fun _ => ?_
+  rcases Nat.eq_zero_or_pos i with rfl | hi
+  · simp
+  · rcases Nat.mod_two_eq_zero_or_one (H/i) with hh | hh <;>
+      rcases Nat.mod_two_eq_zero_or_one (J/i) with hj | hj <;>
+      simp [hi,hh,hj,centered_prime_atom_ne_zero]
+
+theorem dyadic_odd_row_distance_separates_residues (k H J : ℕ) :
+    oddRowDistance ((range k).image fun i => 2^i) H J=0 ↔ H%2^k=J%2^k := by
+  rw [odd_row_distance_eq_zero_iff,←odd_rows_difference_integrable_iff]
+  exact dyadic_odd_rows_integrable_iff_congruent k H J
+
+#print axioms odd_row_logarithmic_distance
+#print axioms odd_row_distance_triangle
+#print axioms dyadic_odd_row_distance_separates_residues
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState

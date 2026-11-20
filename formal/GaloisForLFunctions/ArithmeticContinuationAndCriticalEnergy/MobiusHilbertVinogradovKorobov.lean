@@ -106,13 +106,13 @@ private theorem sum_mertensCell_le {B : ℝ} {T : ℕ}
   have hsplit := sum_filter_add_sum_filter_not (Icc 1 T) (fun n => n * n ≤ T) mertensCell
   linarith
 
-/-- The actual undamped Hilbert form has a Vinogradov–Korobov saving, uniformly
-in every cutoff below the outer horizon. No monotonicity of the signed form is used. -/
-theorem exists_uniform_mobiusHilbert_le_vinogradovKorobov :
+/-- The terminal normalized Mertens square and the positive sum of
+prefix squares share one bound at all cutoffs below the outer horizon. -/
+theorem exists_uniform_mertens_square_envelope_vk :
     ∃ C : ℝ, 0 < C ∧ ∀ᶠ T : ℕ in atTop, ∀ N : ℕ, N ≤ T →
-      0 ≤ finiteMobiusGammaHankelEnergy N 1 ∧
-      finiteMobiusGammaHankelEnergy N 1 ≤
-        C * T * Real.exp (-(vkKappa * vkScale T / 27)) := by
+      (N : ℝ) * (shiftedMertensReal N ^ 2 / (N : ℝ) ^ 2) +
+        2 * ∑ n ∈ Icc 1 N, shiftedMertensReal n ^ 2 / (n : ℝ) ^ 2 ≤
+          C * T * Real.exp (-(vkKappa * vkScale T / 27)) := by
   obtain ⟨B, _, hev⟩ := exists_abs_mertensM_le_vk_rate
   obtain ⟨n₀, hn₀⟩ := eventually_atTop.mp hev
   have hκ := vkKappa_pos
@@ -156,13 +156,12 @@ theorem exists_uniform_mobiusHilbert_le_vinogradovKorobov :
     rw [hid] at h
     nlinarith only [h, hGroot]
   intro N hNT
-  refine ⟨finiteMobiusGammaHankelEnergy_nonneg N (by norm_num), ?_⟩
+  change (N : ℝ) * mertensCell N + 2 * ∑ n ∈ Icc 1 N, mertensCell n ≤ _
   by_cases hN : N = 0
   · subst N
-    simp only [finiteMobiusGammaHankelEnergy, finiteGammaHankelEnergy, sum_range_zero,
-      mul_zero]
+    simp only [Nat.cast_zero,zero_mul,Finset.Icc_eq_empty_of_lt (by decide : (0:ℕ) < 1),
+      sum_empty,mul_zero,add_zero]
     positivity
-  have hN1 : 1 ≤ N := by omega
   have hend : (N : ℝ) * mertensCell N ≤ (1 + B ^ 2) * G := by
     by_cases hsq : N * N ≤ T
     · have hroot : (N : ℝ) ≤ (T : ℝ) ^ (1 / 2 : ℝ) := by
@@ -184,13 +183,28 @@ theorem exists_uniform_mobiusHilbert_le_vinogradovKorobov :
     refine (sum_le_sum_of_subset_of_nonneg ?_ (fun n _ _ => mertensCell_nonneg n)).trans hsum
     intro n hn
     exact mem_Icc.mpr ⟨(mem_Icc.mp hn).1, (mem_Icc.mp hn).2.trans hNT⟩
-  have h := hilbert_le_mertens_cells hN1
-  change finiteMobiusGammaHankelEnergy N 1 ≤ (3 + 3 * B ^ 2) * _ * _
   calc
-    _ ≤ (N : ℝ) * mertensCell N + 2 * ∑ n ∈ Icc 1 N, mertensCell n := h
     _ ≤ (3 + 3 * B ^ 2) * G := by nlinarith only [hend, hsumN]
     _ = _ := by dsimp only [G]; ring
 
+/-- The actual undamped Hilbert form has a Vinogradov–Korobov saving, uniformly
+in every cutoff below the outer horizon. No monotonicity of the signed form is used. -/
+theorem exists_uniform_mobiusHilbert_le_vinogradovKorobov :
+    ∃ C : ℝ, 0 < C ∧ ∀ᶠ T : ℕ in atTop, ∀ N : ℕ, N ≤ T →
+      0 ≤ finiteMobiusGammaHankelEnergy N 1 ∧
+      finiteMobiusGammaHankelEnergy N 1 ≤
+        C * T * Real.exp (-(vkKappa * vkScale T / 27)) := by
+  obtain ⟨C,hC,h⟩ := exists_uniform_mertens_square_envelope_vk
+  refine ⟨C,hC,?_⟩
+  filter_upwards [h] with T hT N hNT
+  refine ⟨finiteMobiusGammaHankelEnergy_nonneg N (by norm_num), ?_⟩
+  by_cases hN : N = 0
+  · subst N
+    simp only [finiteMobiusGammaHankelEnergy,finiteGammaHankelEnergy,sum_range_zero,mul_zero]
+    positivity
+  exact (hilbert_le_mertens_cells (Nat.pos_of_ne_zero hN)).trans (hT N hNT)
+
+#print axioms exists_uniform_mertens_square_envelope_vk
 #print axioms exists_uniform_mobiusHilbert_le_vinogradovKorobov
 
 end

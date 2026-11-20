@@ -155,7 +155,7 @@ private theorem box_norm_realpart (z : ℂ) : ‖midpointBoxFactor z‖ ≤ Real
       rw [Complex.norm_exp,Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,mul_zero,sub_zero]
       exact Real.exp_le_exp.mpr ((le_abs_self _).trans
         (by rw [abs_mul]; exact mul_le_of_le_one_right (abs_nonneg _) (abs_le.mpr ⟨ht.1.le,ht.2⟩))))
-  norm_num only [sub_neg_eq_add,one_add_one_eq_two,abs_ofNat] at h
+  norm_num at h
   rw [midpoint_box_integral,norm_div,show ‖(2:ℂ)‖=2 by norm_num]
   linarith only [h]
 
@@ -171,10 +171,9 @@ private theorem multipliable_midpoint_boxes (z : ℂ) :
   have h := Complex.multipliable_one_add_of_summable (dyadic_midpoint_box_summable z).of_norm
   simpa only [show ∀ x : ℂ, 1+(x-1)=x from fun x => by ring] using h
 
-/-- The dyadic multiplier gains any fixed number of powers at vertical
-infinity. The exponential factor depends only on the real part. -/
-theorem dyadic_midpoint_vertical_decay (K : ℕ) (z : ℂ) :
-    ‖z‖^K*‖dyadicMidpointMultiplier z‖ ≤ (∏ j ∈ range K,(boxRadius j)⁻¹)*Real.exp |z.re| := by
+private theorem midpoint_finite_vertical_bound (K : ℕ) (z : ℂ) (N : ℕ) :
+    ‖z‖^K*‖∏ j ∈ range (K+N),midpointBoxFactor ((boxRadius j:ℂ)*z)‖ ≤
+      (∏ j ∈ range K,(boxRadius j)⁻¹)*Real.exp |z.re| := by
   let F := fun j : ℕ => midpointBoxFactor ((boxRadius j:ℂ)*z)
   let E := fun j : ℕ => Real.exp (boxRadius j*|z.re|)
   have hr (j : ℕ) : 0<boxRadius j := by dsimp only [boxRadius]; positivity
@@ -193,25 +192,30 @@ theorem dyadic_midpoint_vertical_decay (K : ℕ) (z : ℂ) :
     calc _ = (boxRadius j)⁻¹*‖Complex.sinh ((boxRadius j:ℂ)*z)‖ := by
                field_simp [(hr j).ne',norm_ne_zero_iff.mpr hz]
          _ ≤ _ := mul_le_mul_of_nonneg_left hh (inv_nonneg.mpr (hr j).le)
-  have hfinite (N : ℕ) : ‖z‖^K*‖∏ j ∈ range (K+N),F j‖ ≤
-      (∏ j ∈ range K,(boxRadius j)⁻¹)*Real.exp |z.re| := by
-    rw [norm_prod,prod_range_add,←mul_assoc]
-    have heq : ‖z‖^K*(∏ j ∈ range K,‖F j‖)=∏ j ∈ range K,(‖z‖*‖F j‖) := by
-      rw [prod_mul_distrib,prod_const,card_range]
-    rw [heq]
-    have head := Finset.prod_le_prod (s:=range K) (fun j _ => mul_nonneg (norm_nonneg _) (norm_nonneg _))
-      (fun j _ => hstrong j)
-    have tail := Finset.prod_le_prod (s:=range N) (fun j _ => norm_nonneg (F (K+j))) (fun j _ => hF (K+j))
-    apply (mul_le_mul head tail (prod_nonneg fun _ _ => norm_nonneg _) (prod_nonneg fun j _ =>
-      mul_nonneg (inv_nonneg.mpr (hr j).le) (Real.exp_pos _).le)).trans
-    rw [prod_mul_distrib,mul_assoc,←prod_range_add]
-    apply mul_le_mul_of_nonneg_left _ (prod_nonneg fun j _ => inv_nonneg.mpr (hr j).le)
-    change (∏ j ∈ range (K+N),Real.exp (boxRadius j*|z.re|))≤_
-    rw [←Real.exp_sum,←sum_mul,box_radius_sum]
-    exact Real.exp_le_exp.mpr (mul_le_of_le_one_left (abs_nonneg _) (sub_le_self _ (by positivity)))
-  have hlim := ((multipliable_midpoint_boxes z).tendsto_prod_tprod_nat.comp
-    (tendsto_atTop_add_const_left atTop K tendsto_id)).norm.const_mul (‖z‖^K)
-  exact le_of_tendsto' hlim hfinite
+  change ‖z‖^K*‖∏ j ∈ range (K+N),F j‖ ≤ _
+  rw [norm_prod,prod_range_add,←mul_assoc]
+  have heq : ‖z‖^K*(∏ j ∈ range K,‖F j‖)=∏ j ∈ range K,(‖z‖*‖F j‖) := by
+    rw [prod_mul_distrib,prod_const,card_range]
+  rw [heq]
+  have head := Finset.prod_le_prod (s:=range K) (fun j _ => mul_nonneg (norm_nonneg _) (norm_nonneg _))
+    (fun j _ => hstrong j)
+  have tail := Finset.prod_le_prod (s:=range N) (fun j _ => norm_nonneg (F (K+j))) (fun j _ => hF (K+j))
+  apply (mul_le_mul head tail (prod_nonneg fun _ _ => norm_nonneg _) (prod_nonneg fun j _ =>
+    mul_nonneg (inv_nonneg.mpr (hr j).le) (Real.exp_pos _).le)).trans
+  rw [prod_mul_distrib,mul_assoc,←prod_range_add]
+  apply mul_le_mul_of_nonneg_left _ (prod_nonneg fun j _ => inv_nonneg.mpr (hr j).le)
+  change (∏ j ∈ range (K+N),Real.exp (boxRadius j*|z.re|))≤_
+  rw [←Real.exp_sum,←sum_mul,box_radius_sum]
+  exact Real.exp_le_exp.mpr (mul_le_of_le_one_left (abs_nonneg _) (sub_le_self _ (by positivity)))
+
+/-- The dyadic multiplier gains any fixed number of powers at vertical
+infinity. The exponential factor depends only on the real part. -/
+theorem dyadic_midpoint_vertical_decay (K : ℕ) (z : ℂ) :
+    ‖z‖^K*‖dyadicMidpointMultiplier z‖ ≤ (∏ j ∈ range K,(boxRadius j)⁻¹)*Real.exp |z.re| := by
+  have hshift : Tendsto (fun N : ℕ => K+N) atTop atTop := by
+    simpa only [Nat.add_comm K] using tendsto_add_atTop_nat K
+  have hlim := ((multipliable_midpoint_boxes z).tendsto_prod_tprod_nat.comp hshift).norm.const_mul (‖z‖^K)
+  exact le_of_tendsto' hlim (midpoint_finite_vertical_bound K z)
 
 private def logBoxCoordinate (x : ℝ) : ℝ := 2*max 1 (min 2 x)-3
 
@@ -228,6 +232,10 @@ private instance : IsProbabilityMeasure logBoxLaw := by unfold logBoxLaw; infer_
 
 private def logBoxPartial (N : ℕ) (u : ℕ → ℝ) : ℝ :=
   ∑ j ∈ range N,boxRadius j*logBoxCoordinate (u j)
+
+private theorem log_box_partial_measurable (N : ℕ) : Measurable (logBoxPartial N) := by
+  unfold logBoxPartial logBoxCoordinate
+  fun_prop
 
 /-- The normalized random logarithmic displacement lies in [-1,1]. -/
 def midpointLogDisplacement (u : ℕ → ℝ) : ℝ :=
@@ -264,8 +272,7 @@ private theorem log_box_single_transform (z : ℂ) :
     rw [Set.uIcc_of_le (by norm_num : (1:ℝ)≤2)] at hx
     simp only [g,logBoxCoordinate,min_eq_right hx.2,max_eq_right hx.1,sub_eq_add_neg]
   rw [intervalIntegral.integral_comp_mul_add g (by norm_num : (2:ℝ)≠0),midpoint_box_integral]
-  norm_num only [mul_one,Real.reduceMul,Real.reduceNeg,Real.reduceAdd]
-  simp only [g,Complex.real_smul,Complex.ofReal_inv,Complex.ofReal_ofNat,div_eq_mul_inv,mul_comm]
+  norm_num [g,Complex.real_smul,div_eq_mul_inv,mul_comm]
 
 private theorem log_box_head_transform (N : ℕ) (z : ℂ) :
     (∫ u,Complex.exp (z*(logBoxPartial N u:ℂ)) ∂logBoxLaw)=
@@ -276,8 +283,10 @@ private theorem log_box_head_transform (N : ℕ) (z : ℂ) :
   have hpi : Measurable (HTGeometry.countableProductHead (α:=ℝ) N) :=
     measurable_pi_lambda _ (fun i => measurable_pi_apply (i:ℕ))
   have he (u : ℕ → ℝ) : Complex.exp (z*(logBoxPartial N u:ℂ))=F (HTGeometry.countableProductHead N u) := by
-    simp only [logBoxPartial,Nat.cast_ofNat,ofReal_sum,ofReal_mul,mul_sum,Complex.exp_sum,F,f,
-      HTGeometry.countableProductHead,Fin.prod_univ_eq_prod_range]
+    simp only [logBoxPartial,ofReal_sum,ofReal_mul,mul_sum,Complex.exp_sum,F,f,
+      HTGeometry.countableProductHead]
+    rw [Fin.prod_univ_eq_prod_range
+      (fun j : ℕ => Complex.exp ((boxRadius j:ℂ)*z*(logBoxCoordinate (u j):ℂ))) N]
     apply prod_congr rfl
     intro j _
     congr 1
@@ -287,7 +296,8 @@ private theorem log_box_head_transform (N : ℕ) (z : ℂ) :
     HTGeometry.map_countableProductHead_infinitePi]
   change (∫ x : Fin N → ℝ,∏ j,f j (x j) ∂(Measure.pi (fun _ : Fin N => intervalUnitProbability)))=_
   rw [integral_fintype_prod_eq_prod]
-  simp only [f,log_box_single_transform,Fin.prod_univ_eq_prod_range]
+  simp only [f,log_box_single_transform]
+  exact Fin.prod_univ_eq_prod_range (fun j : ℕ => midpointBoxFactor ((boxRadius j:ℂ)*z)) N
 
 /-- The transform of the actual infinite sum of uniform logarithmic dilations is
 the dyadic product. Finite heads use product measure and the limit is dominated. -/
@@ -296,7 +306,8 @@ theorem midpoint_log_displacement_transform (z : ℂ) :
   let F := fun (N : ℕ) (u : ℕ → ℝ) => Complex.exp (z*(logBoxPartial N u:ℂ))
   have hlim := tendsto_integral_of_dominated_convergence (μ:=logBoxLaw) (F:=F)
     (f:=fun u => Complex.exp (z*(midpointLogDisplacement u:ℂ))) (fun _ => Real.exp |z.re|)
-    (fun N => by dsimp [F,logBoxPartial,logBoxCoordinate]; fun_prop)
+    (fun N => (Complex.continuous_exp.measurable.comp (measurable_const.mul
+      (Complex.continuous_ofReal.measurable.comp (log_box_partial_measurable N)))).aestronglyMeasurable)
     (integrable_const _) (fun N => Eventually.of_forall (fun u => by
       dsimp only [F]
       rw [Complex.norm_exp,Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,mul_zero,sub_zero]
@@ -315,7 +326,7 @@ private def logDilation (u : ℕ → ℝ) : ℝ :=
 
 private theorem measurable_log_dilation : Measurable logDilation := by
   have h : Measurable midpointLogDisplacement :=
-    measurable_of_tendsto_metrizable (f:=logBoxPartial) (fun N => by dsimp [logBoxPartial,logBoxCoordinate]; fun_prop)
+    measurable_of_tendsto_metrizable log_box_partial_measurable
       (tendsto_pi_nhds.mpr fun u => (log_box_summable u).hasSum.tendsto_sum_nat)
   exact Real.measurable_exp.comp (measurable_const.mul h)
 
@@ -328,7 +339,8 @@ private theorem log_dilation_range (u : ℕ → ℝ) : 64/65 ≤ logDilation u �
     linarith only [mul_le_mul_of_nonneg_left hu.2 hh])
   rw [Real.exp_neg,Real.exp_log (by norm_num : (0:ℝ)<65/64)] at hlo
   rw [Real.exp_log (by norm_num : (0:ℝ)<65/64)] at hhi
-  exact ⟨by convert hlo using 1 <;> norm_num,hhi⟩
+  change 64/65 ≤ Real.exp _ ∧ Real.exp _ ≤ 65/64
+  exact ⟨by simpa only [show ((65/64:ℝ))⁻¹=64/65 by norm_num] using hlo,hhi⟩
 
 private def dilationBox (a b : ℝ) (u : ℕ → ℝ) (x : ℝ) : ℝ :=
   if x∈Set.Ioc (a*logDilation u) (b*logDilation u) then 1 else 0
@@ -392,62 +404,76 @@ private theorem dilated_box_integral {a b : ℝ} (ha : 9/4≤a) (hab : a≤b) (h
     Complex.mul_cpow_ofReal_nonneg (by linarith only [ha]) hd.le,hdz]
   ring
 
-/-- Mellin transform of the smooth signed weight on the actual two intervals. -/
-theorem mellin_smooth_prime_midpoint_weight {z : ℂ} (hz : z≠0) :
-    mellin (fun x => (smoothPrimeMidpointWeight x:ℂ)) z=smoothPrimeMidpointMultiplier z := by
-  let I := Set.Ioc (2:ℝ) 4
-  let μ : Measure ℝ := volume.restrict I
-  haveI : IsFiniteMeasure μ := isFiniteMeasure_restrict.mpr (by simp [I,Real.volume_Ioc])
-  let F := fun (x : ℝ) (u : ℕ → ℝ) => (x:ℂ)^(z-1)*(midpointWindowAt u x:ℂ)
+private def midpointMellinIntegrand (z : ℂ) (x : ℝ) (u : ℕ → ℝ) :=
+  (x:ℂ)^(z-1)*(midpointWindowAt u x:ℂ)
+
+private theorem midpoint_cpow_bound (z : ℂ) {x : ℝ} (hx : x∈Set.Ioc (2:ℝ) 4) :
+    ‖(x:ℂ)^(z-1)‖ ≤ Real.exp (Real.log 4*|(z-1).re|) := by
+  have hx0 : 0<x := (by norm_num : (0:ℝ)<2).trans hx.1
+  have hlog := Real.log_nonneg ((by norm_num : (1:ℝ)≤2).trans hx.1.le)
+  rw [Complex.norm_cpow_eq_rpow_re_of_pos hx0,Real.rpow_def_of_pos hx0]
+  apply Real.exp_le_exp.mpr
+  exact (mul_le_mul_of_nonneg_left (le_abs_self _) hlog).trans
+    (mul_le_mul_of_nonneg_right (Real.log_le_log hx0 hx.2) (abs_nonneg _))
+
+private theorem midpoint_mellin_integrable (z : ℂ) :
+    Integrable (Function.uncurry (midpointMellinIntegrand z))
+      ((volume.restrict (Set.Ioc (2:ℝ) 4)).prod logBoxLaw) := by
+  haveI : IsFiniteMeasure (volume.restrict (Set.Ioc (2:ℝ) 4)) :=
+    isFiniteMeasure_restrict.mpr (by simp [Real.volume_Ioc])
   have hw : Measurable (fun h : ℝ × (ℕ → ℝ) => midpointWindowAt h.2 h.1) :=
     (measurable_dilation_box _ _).sub (measurable_dilation_box _ _)
-  have hm : Measurable (Function.uncurry F) := by
-    dsimp only [Function.uncurry,F]
-    exact (by fun_prop : Measurable (fun h : ℝ × (ℕ → ℝ) => (h.1:ℂ)^(z-1))).mul
+  have hm : Measurable (Function.uncurry (midpointMellinIntegrand z)) :=
+    (by fun_prop : Measurable (fun h : ℝ × (ℕ → ℝ) => (h.1:ℂ)^(z-1))).mul
       (Complex.continuous_ofReal.measurable.comp hw)
-  let B := Real.exp (Real.log 4*|(z-1).re|)
-  have hpow {x : ℝ} (hx : x∈I) : ‖(x:ℂ)^(z-1)‖≤B := by
-    have hx0 : 0<x := (by norm_num : (0:ℝ)<2).trans hx.1
-    have hlog := Real.log_nonneg ((by norm_num : (1:ℝ)≤2).trans hx.1.le)
-    rw [Complex.norm_cpow_eq_rpow_re_of_pos hx0,Real.rpow_def_of_pos hx0]
-    apply Real.exp_le_exp.mpr
-    exact (mul_le_mul_of_nonneg_left (le_abs_self _) hlog).trans
-      (mul_le_mul_of_nonneg_right (Real.log_le_log hx0 hx.2) (abs_nonneg _))
-  have hi : Integrable (Function.uncurry F) (μ.prod logBoxLaw) := by
-    apply (integrable_const (B*2)).mono' hm.aestronglyMeasurable
-    apply Eventually.of_forall
-    rintro ⟨x,u⟩
-    by_cases hx : x∈I
-    · dsimp only [Function.uncurry,F]
-      rw [norm_mul,Complex.norm_real,Real.norm_eq_abs]
-      exact mul_le_mul (hpow hx) (midpoint_window_bound u x) (abs_nonneg _) (Real.exp_pos _).le
-    · simp only [Function.uncurry,F,midpoint_window_zero hx,Complex.ofReal_zero,mul_zero,norm_zero]
-      dsimp only [B]; positivity
-  have inner (u : ℕ → ℝ) : (∫ x,F x u ∂μ)=
+  apply (integrable_const (Real.exp (Real.log 4*|(z-1).re|)*2)).mono' hm.aestronglyMeasurable
+  apply Eventually.of_forall
+  rintro ⟨x,u⟩
+  by_cases hx : x∈Set.Ioc (2:ℝ) 4
+  · dsimp only [Function.uncurry,midpointMellinIntegrand]
+    rw [norm_mul,Complex.norm_real,Real.norm_eq_abs]
+    exact mul_le_mul (midpoint_cpow_bound z hx) (midpoint_window_bound u x) (abs_nonneg _) (Real.exp_pos _).le
+  · simp only [Function.uncurry,midpointMellinIntegrand,midpoint_window_zero hx,Complex.ofReal_zero,mul_zero,norm_zero]
+    positivity
+
+private theorem dilated_box_integrable (z : ℂ) (u : ℕ → ℝ) (a b : ℝ) :
+    IntegrableOn (fun x : ℝ => (x:ℂ)^(z-1)*(dilationBox a b u x:ℂ)) (Set.Ioc 2 4) := by
+  haveI : IsFiniteMeasure (volume.restrict (Set.Ioc (2:ℝ) 4)) :=
+    isFiniteMeasure_restrict.mpr (by simp [Real.volume_Ioc])
+  have hh : Measurable (fun x : ℝ => dilationBox a b u x) :=
+    Measurable.ite measurableSet_Ioc measurable_const measurable_const
+  have hm : Measurable (fun x : ℝ => (x:ℂ)^(z-1)*(dilationBox a b u x:ℂ)) :=
+    (by fun_prop : Measurable (fun x : ℝ => (x:ℂ)^(z-1))).mul
+      (Complex.continuous_ofReal.measurable.comp hh)
+  apply (integrable_const (Real.exp (Real.log 4*|(z-1).re|))).mono' hm.aestronglyMeasurable
+  filter_upwards [ae_restrict_mem (μ:=volume) (measurableSet_Ioc (a:=(2:ℝ)) (b:=4))] with x hx
+  unfold dilationBox
+  split_ifs
+  · simpa only [Complex.ofReal_one,mul_one] using midpoint_cpow_bound z hx
+  · simpa only [Complex.ofReal_zero,mul_zero,norm_zero] using (Real.exp_pos _).le
+
+private theorem dilated_window_mellin {z : ℂ} (hz : z≠0) (u : ℕ → ℝ) :
+    (∫ x : ℝ in Set.Ioc 2 4,midpointMellinIntegrand z x u) =
       ((((15/4:ℝ):ℂ)^z-2*(3:ℂ)^z+((9/4:ℝ):ℂ)^z)/z)*
         Complex.exp (((Real.log (65/64):ℂ)*z)*(midpointLogDisplacement u:ℂ)) := by
-    have hInt (a b : ℝ) : Integrable (fun x : ℝ => (x:ℂ)^(z-1)*(dilationBox a b u x:ℂ)) μ := by
-      have hh := (measurable_dilation_box a b).comp (measurable_id.prodMk measurable_const)
-      apply (integrable_const B).mono' ((by fun_prop : Measurable (fun x : ℝ => (x:ℂ)^(z-1))).mul
-        (Complex.continuous_ofReal.measurable.comp hh)).aestronglyMeasurable
-      filter_upwards [ae_restrict_mem (μ:=volume) (measurableSet_Ioc (a:=(2:ℝ)) (b:=4))] with x hx
-      unfold dilationBox
-      split_ifs
-      · simpa only [Complex.ofReal_one,mul_one] using hpow hx
-      · simpa only [Complex.ofReal_zero,mul_zero,norm_zero] using (Real.exp_pos _).le
-    simp only [F,midpointWindowAt,Complex.ofReal_sub,mul_sub,integral_sub (hInt _ _) (hInt _ _)]
-    rw [show μ=volume.restrict (Set.Ioc 2 4) by rfl,
-      dilated_box_integral (by norm_num) (by norm_num) le_rfl hz,
-      dilated_box_integral le_rfl (by norm_num) (by norm_num) hz]
-    push_cast
-    ring
+  simp only [midpointMellinIntegrand,midpointWindowAt,Complex.ofReal_sub,mul_sub]
+  rw [integral_sub (dilated_box_integrable z u 3 (15/4)) (dilated_box_integrable z u (9/4) 3),
+    dilated_box_integral (a:=3) (b:=15/4) (by norm_num) (by norm_num) le_rfl hz u,
+    dilated_box_integral (a:=9/4) (b:=3) le_rfl (by norm_num) (by norm_num) hz u]
+  push_cast
+  ring
+
+/-- Mellin transform of the smooth signed weight on the two intervals. -/
+theorem mellin_smooth_prime_midpoint_weight {z : ℂ} (hz : z≠0) :
+    mellin (fun x => (smoothPrimeMidpointWeight x:ℂ)) z=smoothPrimeMidpointMultiplier z := by
   rw [mellin,setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_Ioi
-    (s:=I) (fun _ h => (by norm_num : (0:ℝ)<2).trans h.1)
+    (s:=Set.Ioc (2:ℝ) 4) (fun _ h => (by norm_num : (0:ℝ)<2).trans h.1)
     (fun _ h => by rw [smooth_prime_midpoint_weight_support h.2,Complex.ofReal_zero,smul_zero])]
-  change (∫ x,(x:ℂ)^(z-1)*(smoothPrimeMidpointWeight x:ℂ) ∂μ)=_
+  change (∫ x : ℝ in Set.Ioc 2 4,(x:ℂ)^(z-1)*(smoothPrimeMidpointWeight x:ℂ))=_
   simp only [smoothPrimeMidpointWeight,←integral_complex_ofReal,←integral_const_mul]
-  rw [integral_integral_swap (f:=F) hi]
-  simp_rw [inner]
+  change (∫ x : ℝ in Set.Ioc 2 4,∫ u,midpointMellinIntegrand z x u ∂logBoxLaw)=_
+  rw [integral_integral_swap (midpoint_mellin_integrable z)]
+  simp_rw [dilated_window_mellin hz]
   rw [integral_const_mul,midpoint_log_displacement_transform]
   rfl
 

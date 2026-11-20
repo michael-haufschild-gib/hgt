@@ -165,6 +165,80 @@ theorem one_exchange_critical_energy {k p : ℕ} (hp : p ∈ k.primeFactors)
 
 #print axioms one_exchange_virial_closed_form
 #print axioms one_exchange_critical_energy
+
+private theorem triple_singleton_contrast {k p : ℕ} (hk : 1<k) (hr : k.primeFactors.card=3)
+    (hb : ∀ q ∈ k.primeFactors, (q^k.factorization q)^2<k) (hp : p ∈ k.primeFactors) :
+    unitaryWalshContrast k {p} = 4 := by
+  let P := k.primeFactors
+  let F := P.powerset.filter (fun T => p ∈ T)
+  have ht : unitaryWalshContrast k P = -4 := by
+    rw [unitaryWalshContrast_top (by rw [hr]; exact ⟨1,rfl⟩),unitary_half_weight_balanced_triple hk hr hb]
+    norm_num
+  have hd : ({p}:Finset ℕ) ≠ P := fun e => by
+    have := congrArg card e
+    simp only [card_singleton,P,hr] at this
+  have hsingle : ({p}:Finset ℕ) ∈ F := mem_filter.mpr
+    ⟨mem_powerset.mpr (singleton_subset_iff.mpr hp),mem_singleton_self _⟩
+  have hfull : P ∈ F := mem_filter.mpr ⟨mem_powerset.mpr Subset.rfl,hp⟩
+  have hsub : ({({p}:Finset ℕ),P} : Finset (Finset ℕ)) ⊆ F := by
+    intro T hT
+    rcases mem_insert.mp hT with rfl | h
+    · exact hsingle
+    · exact (mem_singleton.mp h) ▸ hfull
+  have hsum := sum_subset (f:=unitaryWalshContrast k) hsub (by
+    intro T hT hnot
+    obtain ⟨hT,hpT⟩ := mem_filter.mp hT
+    have hTP := mem_powerset.mp hT
+    have hne : T≠P := fun e => hnot (by simp [e])
+    have hlt := card_lt_card (ssubset_of_subset_of_ne hTP hne)
+    change T.card < k.primeFactors.card at hlt
+    rw [hr] at hlt
+    have hpos := card_pos.mpr (show T.Nonempty from ⟨p,hpT⟩)
+    have h1 : T.card ≠ 1 := by
+      intro he
+      obtain ⟨a,rfl⟩ := card_eq_one.mp he
+      obtain rfl := mem_singleton.mp hpT
+      exact hnot (mem_insert_self _ _)
+    exact unitaryWalshContrast_even hTP ⟨1,by omega⟩)
+  change _ = ∑ T ∈ k.primeFactors.powerset.filter (fun T => p ∈ T), _ at hsum
+  rw [unitaryWalshContrast_through_prime hp (hb _ hp)] at hsum
+  rw [sum_insert (by simpa only [mem_singleton] using hd),sum_singleton,ht] at hsum
+  omega
+
+/-- Every balanced triple has the same four nonzero Walsh amplitudes,
+irrespective of how far the three blocks are from the midpoint. -/
+theorem balanced_triple_virial_energy {k : ℕ} (hk : 1<k) (hr : k.primeFactors.card=3)
+    (hb : ∀ p ∈ k.primeFactors, (p^k.factorization p)^2<k) (γ : ℝ) :
+    unitaryVirialEnergy γ k = 7488*γ-704 := by
+  let P := k.primeFactors
+  let f (j : ℕ) : ℝ := if Odd j then 16*blockVirialSymbol γ (2*j) else 0
+  have hpt (T : Finset ℕ) (hT : T ∈ P.powerset) :
+      blockVirialSymbol γ (2*T.card)*(unitaryWalshContrast k T:ℝ)^2 = f T.card := by
+    have hsub := mem_powerset.mp hT
+    rcases Nat.even_or_odd T.card with he|he
+    · simp [f,he.not_odd,unitaryWalshContrast_even hsub he]
+    have hc := card_le_card hsub
+    change T.card ≤ k.primeFactors.card at hc
+    rw [hr] at hc
+    have hc' : T.card=1 ∨ T.card=3 := by obtain ⟨j,hj⟩ := he; omega
+    have hs : unitaryWalshContrast k T = 4 ∨ unitaryWalshContrast k T = -4 := by
+      rcases hc' with h|h
+      · obtain ⟨p,rfl⟩ := card_eq_one.mp h
+        exact Or.inl (triple_singleton_contrast hk hr hb (singleton_subset_iff.mp hsub))
+      · have eq : T=P := eq_of_subset_of_card_le hsub (by change k.primeFactors.card≤_; omega)
+        subst T
+        right
+        rw [unitaryWalshContrast_top he,unitary_half_weight_balanced_triple hk hr hb]
+        norm_num
+    rcases hs with h|h <;> simp [f,he,h] <;> ring
+  unfold unitaryVirialEnergy
+  rw [sum_congr rfl hpt,sum_powerset_apply_card]
+  change (∑ j ∈ range (k.primeFactors.card+1), k.primeFactors.card.choose j • f j) = _
+  rw [hr]
+  norm_num [sum_range_succ,Nat.choose,f,blockVirialSymbol,nsmul_eq_mul]
+  <;> ring
+
+#print axioms balanced_triple_virial_energy
 #print axioms unitaryWalshContrast_one_exchange
 #print axioms one_exchange_virial_spectrum
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

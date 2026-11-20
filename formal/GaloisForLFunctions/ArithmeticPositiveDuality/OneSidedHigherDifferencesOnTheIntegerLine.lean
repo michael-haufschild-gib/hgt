@@ -36,7 +36,7 @@ private theorem bounded_convex_steps {f : ℤ → ℝ} {M : ℝ} (hb : ∀ z, |f
       have hs : d z ≤ d (z+n) := hm (by omega)
       have ht : d (z+n) ≤ d (z+(n+1:ℕ)) := hm (by omega)
       have he : f (z+(n+1:ℕ))=f (z+n)+d (z+n) := by
-        simp [d,fwdDiff,Int.natCast_succ,add_assoc]
+        simp [d,fwdDiff,add_assoc]
       rw [he,Nat.cast_succ]
       constructor
       · linarith only [ih.1,hs]
@@ -83,12 +83,13 @@ theorem higher_difference_nonneg_of_derivative (n : ℕ) {h : ℝ} (hh : 0 ≤ h
   | zero => simpa only [iteratedDeriv_zero,Function.iterate_zero, id_eq] using hs
   | succ n ih =>
     have hshift : ContDiff ℝ ∞ (fun x => f (x+h)) := hf.comp (contDiff_id.add contDiff_const)
-    have hm := monotone_of_deriv_nonneg (hf.differentiable_iteratedDeriv n (by simp))
+    have hn : (n : ℕ∞ω) < ∞ := WithTop.coe_lt_coe.mpr (ENat.coe_lt_top n)
+    have hm := monotone_of_deriv_nonneg (hf.differentiable_iteratedDeriv n hn)
       (fun x => by simpa only [iteratedDeriv_succ] using hs x)
     apply ih (fwdDiff h f) (hshift.sub hf)
     intro x
     change 0 ≤ iteratedDeriv n ((fun y => f (y+h))-f) x
-    rw [iteratedDeriv_sub (hshift.of_le (by simp)).contDiffAt (hf.of_le (by simp)).contDiffAt,
+    rw [iteratedDeriv_sub (contDiff_infty.mp hshift n).contDiffAt (contDiff_infty.mp hf n).contDiffAt,
       iteratedDeriv_comp_add_const]
     exact sub_nonneg.mpr (hm (by linarith))
 

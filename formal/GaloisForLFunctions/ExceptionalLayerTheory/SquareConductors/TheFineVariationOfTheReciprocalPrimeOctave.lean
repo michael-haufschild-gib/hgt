@@ -28,7 +28,7 @@ private theorem prefix_atom {n : ℕ} (hn : 0<n) :
 
 private theorem jump_eq_atom {n : ℕ} (hn : 1<n) : octaveEndpointJump n = reciprocalOctaveAtom n/n := by
   obtain ⟨m,rfl⟩ := Nat.exists_eq_succ_of_ne_zero (by omega : n≠0)
-  rw [octaveEndpointJump,Nat.succ_sub_one,←prefix_atom (Nat.succ_pos _),←prefix_atom (by omega : 0<m)]
+  rw [octaveEndpointJump,Nat.succ_sub_one,←prefix_atom (Nat.succ_pos _),←prefix_atom (by omega : 0 < m)]
   have h := sum_Ioc_consecutive (fun j : ℕ => reciprocalOctaveAtom j/j) (Nat.zero_le m) (Nat.le_succ m)
   simpa using (sub_eq_iff_eq_add.mpr ((add_comm ..).trans h).symm :
     (∑ j ∈ Ioc 0 (m+1), reciprocalOctaveAtom j/j) - ∑ j ∈ Ioc 0 m, reciprocalOctaveAtom j/j =
@@ -89,7 +89,7 @@ private theorem positive_jump {n : ℕ} (hn : 1<n) :
     · subst m
       norm_num [octave_even_endpoint (n:=1) (by decide),octaveMangoldtMass,vonMangoldt_apply_prime Nat.prime_two,
         max_eq_left (by positivity : 0≤Real.log 2/2)]
-    · rw [max_eq_right (octave_even_endpoint_nonpositive (by omega : 1<m))]
+    · rw [max_eq_right (octave_even_endpoint_nonpositive (by omega : 1 < m))]
       simp [show 2*m≠2 by omega]
   · rw [octave_odd_endpoint hn h,max_eq_left (div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg _))]
     simp [h,show n≠2 by rintro rfl; exact h (dvd_refl _),octaveMangoldtMass]

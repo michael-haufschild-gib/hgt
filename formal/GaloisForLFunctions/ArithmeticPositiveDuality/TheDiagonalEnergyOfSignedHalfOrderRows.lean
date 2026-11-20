@@ -13,12 +13,12 @@ noncomputable section
 open Finset MeasureTheory Set Filter
 namespace GaloisForLFunctions.ArithmeticPositiveDuality.FractionalDiscrepancy
 
-private theorem halfAtom_zero_site (t : ℝ) : halfAtom 0 t=0 := by
+theorem halfAtom_zero_site (t : ℝ) : halfAtom 0 t=0 := by
   by_cases h : 0 < t
   · simp [halfAtom,cutPower,h,h.not_gt]
   · simp [halfAtom,h]
 
-private theorem measurable_halfAtom (p : ℝ) : Measurable (halfAtom p) := by
+theorem measurable_halfAtom (p : ℝ) : Measurable (halfAtom p) := by
   unfold halfAtom cutPower
   apply Measurable.ite (measurableSet_lt measurable_const measurable_id)
   · apply Measurable.ite (measurableSet_lt measurable_const (measurable_const.sub measurable_id))
@@ -44,7 +44,7 @@ theorem halfAtom_square_not_integrable {p : ℝ} (hp : 0 < p) :
   rw [div_div_eq_mul_div, mul_div_cancel_left₀ _ hp.ne',Real.log_exp] at hu
   linarith only [hu]
 
-private theorem mixed_integrable {i j : ℕ} (hne : i ≠ j) :
+theorem halfAtom_mixed_integrable {i j : ℕ} (hne : i ≠ j) :
     Integrable (fun t => halfAtom i t * halfAtom j t) := by
   by_cases hi : i=0
   · simp [hi,halfAtom_zero_site]
@@ -60,7 +60,7 @@ def offDiagonalKernel (i j : ℕ) : ℝ :=
   if i=0 ∨ j=0 then 0 else
     2*Real.log ((Real.sqrt i + Real.sqrt j)/Real.sqrt |(i:ℝ)-j|)
 
-private theorem mixed_integral {i j : ℕ} (hne : i ≠ j) :
+theorem halfAtom_mixed_integral {i j : ℕ} (hne : i ≠ j) :
     (∫ t, halfAtom i t * halfAtom j t) = offDiagonalKernel i j := by
   by_cases hi : i=0
   · simp [hi,halfAtom_zero_site,offDiagonalKernel]
@@ -91,7 +91,7 @@ private theorem expand_offDiagonal (S : Finset ℕ) (w : ℕ → ℝ) (t : ℝ) 
 
 private theorem weighted_mixed_integrable (w : ℕ → ℝ) (i j : ℕ) (hne : j ≠ i) :
     Integrable (fun t => (w i*w j)*(halfAtom i t*halfAtom j t)) :=
-  (mixed_integrable hne.symm).const_mul _
+  (halfAtom_mixed_integrable hne.symm).const_mul _
 
 /-- Signed interactions at all distinct sites form an absolutely integrable
 remainder, even when neighboring site weights have opposite signs. -/
@@ -112,7 +112,7 @@ theorem integral_offDiagonalDensity (S : Finset ℕ) (w : ℕ → ℝ) :
   apply sum_congr rfl
   intro i _
   rw [integral_finsetSum _ (fun j hj => weighted_mixed_integrable w i j (mem_erase.mp hj).1)]
-  exact sum_congr rfl fun j hj => by rw [integral_const_mul,mixed_integral (mem_erase.mp hj).1.symm]
+  exact sum_congr rfl fun j hj => by rw [integral_const_mul,halfAtom_mixed_integral (mem_erase.mp hj).1.symm]
 
 /-- Signs at distinct sites cannot cancel the logarithmic divergences.
 Zero is an invisible site because the observation half-line is positive. -/
@@ -121,7 +121,7 @@ theorem halfRow_square_integrable_iff (S : Finset ℕ) (w : ℕ → ℝ) :
   constructor
   · intro h i hi hpos
     have hd : Integrable (fun t => ∑ j ∈ S, (w j*halfAtom j t)^2) := by
-      simpa only [offDiagonalDensity,sub_sub_cancel] using h.sub (integrable_offDiagonalDensity S w)
+      simpa only [offDiagonalDensity,sub_sub_cancel] using h.sub' (integrable_offDiagonalDensity S w)
     by_contra hn
     have hsingle : Integrable (fun t => (w i)^2*(halfAtom i t)^2) := by
       apply hd.mono' ((measurable_const.mul ((measurable_halfAtom i).pow_const 2)).aestronglyMeasurable)

@@ -52,8 +52,8 @@ theorem opposite_moment_at_one_level (left : Bool) (s a g d T : ℝ) (k L : ℕ)
 /-- A failure of RH forces a large single-level count for every sufficiently
 small band width. The level and orientation may vary with the scale. -/
 theorem rh_or_large_joint_prime_level : RiemannHypothesis ∨
-    ∃ a c g d r : ℝ, 0<a ∧ 0<c ∧ 0<g ∧ 0<d ∧ d≤1/4 ∧ 0<r ∧
-      ∀ η : ℝ, 0<η → η≤r → ∃ (T : ℕ → ℝ) (k : ℕ → ℕ), Tendsto T atTop atTop ∧
+    ∃ a c g d r : ℝ, 0<a ∧ 0<c ∧ 0<g ∧ 0<d ∧ d≤1/4 ∧ 0 < r ∧
+      ∀ η : ℝ, 0<η → η ≤ r → ∃ (T : ℕ → ℝ) (k : ℕ → ℕ), Tendsto T atTop atTop ∧
         (∀ i, T i/(1+η)≤Real.log (k i) ∧ Real.log (k i)≤T i) ∧
         let L := fun i => ⌈Real.exp ((1+η)*T i)⌉₊
         ∀ᶠ i in atTop, ∃ (s : ℝ) (left : Bool) (H : ℕ), (s=1 ∨ s= -1) ∧

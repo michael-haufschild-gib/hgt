@@ -128,7 +128,7 @@ theorem eventually_many_mertens_excursions {b d : ℝ} (hb : 0<b) (hw : b < zeta
     have hconst := Real.one_le_rpow hx hd.le
     have hsize : m ≤ K*X^d := hN.1
     linarith only [hsize,hconst]
-  have high := Real.rpow_le_rpow (by dsimp only [m]; positivity : 0≤m+1) hm (by positivity : 0≤2*a)
+  have high := Real.rpow_le_rpow (by dsimp only [m]; positivity : 0 ≤ m+1) hm (by positivity : 0≤2*a)
   rw [Real.mul_rpow (by positivity : 0≤K+1) (Real.rpow_nonneg xp.le _),←Real.rpow_mul xp.le] at high
   have hh' := Real.rpow_le_rpow_of_exponent_le hx (by linarith only [le_max_right b (d*a)] : d*(2*a) ≤ 2*e)
   have low := Real.rpow_le_rpow_of_exponent_le hx (by linarith only [le_max_left b (d*a)] : 2*b ≤ 2*e)

@@ -33,18 +33,17 @@ private theorem band_as_difference {F : ℝ → ℝ} (hs : Summable (fun q : onL
     {T U : ℝ} (hTU : T ≤ U) :
     ordinateBandMass F T U = ordinateTailMass F T-ordinateTailMass F U := by
   classical
-  let f (q : onLineCopies) := if T < |(centredZero q).im| then zeroValueMass F q else 0
-  let g (q : onLineCopies) := if U < |(centredZero q).im| then zeroValueMass F q else 0
   have summ (V : ℝ) : Summable (fun q : onLineCopies =>
       if V < |(centredZero q).im| then zeroValueMass F q else 0) :=
-    hs.of_nonneg_of_le (fun q => ite_zero_nonneg (zeroValueMass_nonneg F q))
-      (fun q => ite_zero_le (zeroValueMass_nonneg F q))
-  change _ = (∑' q, f q) - ∑' q, g q
+    hs.of_nonneg_of_le (fun q => by split <;> first | exact le_rfl | exact zeroValueMass_nonneg F q)
+      (fun q => by split <;> first | exact le_rfl | exact zeroValueMass_nonneg F q)
+  unfold ordinateBandMass ordinateTailMass
   rw [←(summ T).tsum_sub (summ U)]
   apply tsum_congr
   intro q
-  dsimp only [f,g]
-  split_ifs <;> first | ring | exfalso; grind
+  by_cases hU : U < |(centredZero q).im|
+  · simp [hU,hTU.trans_lt hU,hU.not_ge]
+  · by_cases hT : T < |(centredZero q).im| <;> simp [hT,hU,le_of_not_gt hU]
 
 private theorem constant_pos {W : ℝ} (hW : 0<W)
     (ht : (⨅ (A : ℝ) (_ : 0≤A), windowThreshold A)=(W:EReal))
@@ -143,7 +142,8 @@ theorem finite_layer_iff_one_vanishing_band :
     obtain ⟨b,hb,T,hT,hzero⟩ := h hf W F hW ht hF
     have lim := (critical_ordinate_band_law hW ht hF hf (a:=1) zero_lt_one hb.le).comp hT
     simp only [Function.comp_def,one_mul,div_one] at lim
-    have hc := mul_pos (constant_pos hW ht hF) (sub_pos.mpr (one_div_lt_one_of_one_lt₀ hb))
+    have hfrac : 1/b < 1 := by simpa only [one_div] using inv_lt_one_of_one_lt₀ hb
+    have hc := mul_pos (constant_pos hW ht hF) (sub_pos.mpr hfrac)
     exact hc.ne' (tendsto_nhds_unique lim hzero)
 
 #print axioms critical_ordinate_band_law

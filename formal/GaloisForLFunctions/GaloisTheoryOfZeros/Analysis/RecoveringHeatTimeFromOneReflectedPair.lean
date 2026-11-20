@@ -1,6 +1,5 @@
 import GaloisForLFunctions.GaloisTheoryOfZeros.TheHermiteMonodromyOfACollision
 import GaloisForLFunctions.Bottcher.EvenHoloExtension
-import GaloisForLFunctions.HTGeometry.AnalyticSlopeFactor
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.Analytic
 
 /-!
@@ -27,10 +26,11 @@ private theorem descend_even_germ {f : ℂ → ℂ} (ha : AnalyticAt ℂ f 0)
   obtain ⟨V,hV,h⟩ := Bottcher.exists_analytic_factor_of_even hr
     (fun s hm => (hs hm).1.differentiableAt.differentiableWithinAt) (fun s hm => (hs hm).2)
   exact ⟨V,hV.analyticAt (isOpen_ball.mem_nhds (mem_ball_self (sq_pos_of_pos hr))),
-    by simpa using h 0 (mem_ball_self hr), Filter.mem_of_superset (ball_mem_nhds 0 hr) h⟩
+    by simpa using h 0 (mem_ball_self hr),
+    Filter.mem_of_superset (ball_mem_nhds 0 hr) fun s hs => h s hs⟩
 
-/-- The two zeros have an analytic midpoint and a signed half-gap
-equal to s times an analytic unit in physical time s². -/
+/-- The two zeros have an analytic midpoint. Their signed half-gap is
+s times an analytic factor with constant term ρ in physical time s². -/
 theorem IsCollision.reflected_pair_coordinates {τ z ρ : ℂ} {m : ℕ}
     (hc : IsCollision τ z m) (hr : heatModelFwd m ρ = 0) :
     ∃ C U : ℂ → ℂ, AnalyticAt ℂ C 0 ∧ AnalyticAt ℂ U 0 ∧ C 0=z ∧ U 0=ρ ∧
@@ -75,18 +75,23 @@ theorem IsCollision.time_and_midpoint_of_squared_gap {τ z ρ : ℂ} {m : ℕ}
   have hD₀ : D 0=0 := zero_mul _
   have hd : deriv D 0 = 4*ρ^2 := by
     have h := ((hasDerivAt_id (0:ℂ)).mul ((hU.differentiableAt.hasDerivAt.pow 2).const_mul 4)).deriv
-    simpa only [D,id_eq,one_mul,zero_mul,add_zero,hU₀] using h
+    have hf : id * (fun w : ℂ => 4 * (U^2) w) = D := by funext w; rfl
+    rw [hf] at h
+    simpa only [Pi.pow_apply,id_eq,one_mul,zero_mul,add_zero,hU₀] using h
   have hne : deriv D 0≠0 := hd ▸ mul_ne_zero (by norm_num) (pow_ne_zero 2 hn)
   let T := hD.hasStrictDerivAt.localInverse _ _ _ hne
-  have hTa : AnalyticAt ℂ T 0 := hD₀ ▸ hD.analyticAt_localInverse hne
+  have hTa : AnalyticAt ℂ T 0 := by
+    simpa only [hD₀] using (hD.analyticAt_localInverse hne : AnalyticAt ℂ T (D 0))
   have hleft : ∀ᶠ w in 𝓝 0, T (D w)=w := hD.hasStrictDerivAt.eventually_left_inverse hne
   have hT₀ : T 0=0 := by simpa only [hD₀] using hleft.self_of_nhds
-  have hP : AnalyticAt ℂ (fun w => C (T w)) 0 := (hT₀.symm ▸ hC).comp hTa
-  have hTd := (hD.hasStrictDerivAt.to_localInverse hne).hasDerivAt.deriv
+  have hCT : AnalyticAt ℂ C (T 0) := by rwa [hT₀]
+  have hP : AnalyticAt ℂ (fun w => C (T w)) 0 := hCT.comp hTa
+  have hTd : deriv T (D 0)=(deriv D 0)⁻¹ := (hD.hasStrictDerivAt.to_localInverse hne).hasDerivAt.deriv
   have hsq : Tendsto (fun s : ℂ => s^2) (𝓝 0) (𝓝 0) := by
-    simpa only [zero_pow (by decide : 2≠0)] using ((continuous_id.pow 2).tendsto (0:ℂ))
+    have hc : Continuous (fun s : ℂ => s^2) := by fun_prop
+    simpa only [zero_pow (by decide : 2≠0)] using hc.tendsto (0:ℂ)
   refine ⟨T,fun w => C (T w),hTa,hP,hT₀,by simpa only [hT₀] using hC₀,
-    by simpa only [T,hD₀,hd] using hTd,?_⟩
+    by simpa only [hD₀,hd] using hTd,?_⟩
   filter_upwards [hs,hsq.eventually hleft] with s hp hinv
   dsimp only
   rw [hp.1,hp.2]
@@ -104,7 +109,9 @@ theorem IsCollision.double_gap_inverse {τ z : ℂ} (hc : IsCollision τ z 2) :
   let r : ℂ := (Real.sqrt 2:ℝ)
   have hr : heatModelFwd 2 r=0 := heatModelFwd_profileRoot
     (by rw [profileRoots_two]; exact Finset.mem_insert_self ..)
-  have hsq : r^2=2 := by exact_mod_cast Real.sq_sqrt (by norm_num : (0:ℝ)≤2)
+  have hsq : r^2=2 := by
+    dsimp only [r]
+    exact_mod_cast Real.sq_sqrt (by norm_num : (0:ℝ)≤2)
   have hn : r≠0 := by intro h; rw [h] at hsq; norm_num at hsq
   obtain ⟨T,_,ha,_,h0,_,hd,h⟩ := hc.time_and_midpoint_of_squared_gap hr hn
   refine ⟨T,ha,h0,by rw [hd,hsq]; norm_num,h.mono fun _ hh => hh.1⟩

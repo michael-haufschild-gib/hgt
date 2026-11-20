@@ -64,9 +64,9 @@ theorem mertens_abel_mass_two_population {a b C A : ℝ} (hb : 0<b) (hb1 : b≤1
     simpa [S,Nat.card_Icc] using (card_le_card (sdiff_subset : S \ T ⊆ S))
   have he : T.card ≤ E.card := card_le_card inter_subset_right
   have hg := Real.rpow_le_rpow (by positivity : 0≤((S \ T).card:ℝ)+1)
-    (add_le_add_right (Nat.cast_le.mpr hc) 1) hb.le
+    (add_le_add (Nat.cast_le.mpr hc) (le_refl (1:ℝ))) hb.le
   have hi := Real.rpow_le_rpow (by positivity : 0≤(T.card:ℝ)+1)
-    (add_le_add_right (Nat.cast_le.mpr he) 1) ha.le
+    (add_le_add (Nat.cast_le.mpr he) (le_refl (1:ℝ))) ha.le
   rw [mertens_abel_mass_eq]
   change (∑ k ∈ S, _) ≤ (P+Q)*(((N:ℝ)+1)^b+((E.card:ℝ)+1)^a)
   rw [←sum_sdiff ht]
@@ -121,7 +121,7 @@ theorem all_cutoffs_many_mertens_excursions {b d : ℝ} (hb : b<zetaZeroAbscissa
       (Real.rpow_nonneg (by positivity) _) (abs_nonneg C)
   by_contra! hsmall
   have hm := (Nat.cast_le (α:=ℝ)).mpr (card_le_card hs)
-  have htiny : (E.card:ℝ) ≤ |K|*X^v := (hm.trans hsmall).trans (mul_le_mul (le_abs_self K)
+  have htiny : (E.card:ℝ) ≤ |K| * X^v := (hm.trans hsmall).trans (mul_le_mul (le_abs_self K)
     (Real.rpow_le_rpow_of_exponent_le hX ((le_max_right 0 d).trans hv.le)) (Real.rpow_nonneg xp.le _) (abs_nonneg K))
   have hcount : (E.card:ℝ)+1 ≤ (|K|+1)*X^v := by linarith only [htiny,Real.one_le_rpow hX hv0.le]
   have hpow := Real.rpow_le_rpow (by positivity : 0≤(E.card:ℝ)+1) hcount ha.le
