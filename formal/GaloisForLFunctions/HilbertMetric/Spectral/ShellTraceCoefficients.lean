@@ -133,7 +133,6 @@ theorem angularGain_eq_level_gap (a : Radius) (n : ℕ) :
   congr 1
   rw [level_zero, level, gapNumerator]
   field_simp [h₁.ne', h₂.ne']
-  ring
 
 /-- Explicit positive constants sandwich the trace gain at every angular degree. -/
 theorem angularGain_bounds (a : Radius) (n : ℕ) :
@@ -184,7 +183,7 @@ theorem angularGain_tendsto_zero (a : Radius) :
     (fun n => (angularGain_bounds a n).2) ?_
   have hp := (tendsto_pow_atTop_nhds_zero_of_lt_one a.2.1.le a.2.2).comp
     (tendsto_add_atTop_nat 1)
-  simpa only [mul_zero] using hp.const_mul
+  simpa only [Function.comp_apply, mul_zero] using hp.const_mul
     (3 / (Real.sqrt (4 * Real.pi) * (1 - (a : ℝ)) ^ 3))
 
 end
