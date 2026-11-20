@@ -50,7 +50,9 @@ private theorem remainder_zero : Tendsto remainder atTop (𝓝 0) := by
   have h₂ : Tendsto (fun k => 1/(4*(evenIndex k:ℝ)^2)) atTop (𝓝 0) :=
     tendsto_const_nhds.div_atTop (((tendsto_pow_atTop (by norm_num : (2:ℕ) ≠ 0)).comp ht).const_mul_atTop
       (by norm_num))
-  simpa only [remainder,correction,sub_zero] using hc.sub (h₁.sub h₂)
+  have hlim := hc.sub (h₁.sub h₂)
+  rw [sub_zero, sub_zero] at hlim
+  exact hlim.congr fun _ => rfl
 
 private theorem remainder_difference (k : ℕ) :
     remainder k - remainder (k+1) =
@@ -117,9 +119,13 @@ theorem even_cofactor_fourth_bracket (k : ℕ) :
     rw [even_succ,Nat.cast_add,Nat.cast_ofNat]
     linarith only [he,hb]
   have hL : Tendsto low atTop (𝓝 0) := by
-    simpa only [sub_zero] using remainder_zero.sub (hfour (tendsto_atTop_add_const_right _ 2 ht))
+    have h' := remainder_zero.sub (hfour (tendsto_atTop_add_const_right _ 2 ht))
+    rw [sub_zero] at h'
+    exact h'.congr fun _ => rfl
   have hU : Tendsto up atTop (𝓝 0) := by
-    simpa only [sub_zero] using remainder_zero.sub (hfour ht)
+    have h' := remainder_zero.sub (hfour ht)
+    rw [sub_zero] at h'
+    exact h'.congr fun _ => rfl
   have h := And.intro (sub_nonneg.mp (hl.le_of_tendsto hL k)) (sub_nonpos.mp (hu.ge_of_tendsto hU k))
   simpa only [fourth,remainder,correction,evenIndex,Nat.cast_mul,Nat.cast_ofNat,Nat.cast_succ] using h
 
@@ -155,7 +161,7 @@ theorem even_gcd_fourth_coefficient (M : ℕ → ℕ)
       change _ ≤ (evenIndex k:ℝ)^4*remainder k
       refine le_trans ?_ hh
       rw [div_pow]
-      exact (by ring : _ = _).le
+      exact le_of_eq (by rw [mul_one_div, div_div, mul_comm (((evenIndex k:ℝ)+2)^4) 8])
     · have hh := mul_le_mul_of_nonneg_left h.2 (pow_nonneg hm.le 4)
       exact hh.trans_eq (by field_simp)
   obtain ⟨C,hC,h⟩ := horizon_density_precision (r:=32) (s:=4+1/3000) (by norm_num) (by norm_num) (by
@@ -164,7 +170,7 @@ theorem even_gcd_fourth_coefficient (M : ℕ → ℕ)
   let err := fun k => (evenIndex k:ℝ)^4*(horizonShortfall (evenIndex k) (M k)-
     (Real.log 2-cofactorIntervalDensity (evenIndex k)))
   have hsmall : Tendsto (fun k => C*(evenIndex k:ℝ)^(-(1/3000):ℝ)) atTop (𝓝 0) := by
-    simpa only [mul_zero] using ((tendsto_rpow_neg_atTop (by norm_num : 0 < (1/3000:ℝ))).comp ht).const_mul C
+    simpa only [mul_zero,Function.comp_apply] using ((tendsto_rpow_neg_atTop (by norm_num : 0 < (1/3000:ℝ))).comp ht).const_mul C
   have he : Tendsto err atTop (𝓝 0) := by
     apply squeeze_zero_norm' _ hsmall
     filter_upwards [hM] with k hk
@@ -173,7 +179,7 @@ theorem even_gcd_fourth_coefficient (M : ℕ → ℕ)
       (pow_nonneg hp.le 4)
     rw [mul_left_comm _ C,←Real.rpow_natCast (evenIndex k:ℝ) 4,←Real.rpow_add hp,
       show ((4:ℕ):ℝ) + -(4+1/3000:ℝ) = -(1/3000:ℝ) by norm_num] at hh
-    simpa only [err,Real.norm_eq_abs,abs_mul,abs_of_nonneg (pow_nonneg hp.le 4)] using hh
+    simpa only [err,Real.norm_eq_abs,abs_mul,abs_of_nonneg (pow_nonneg hp.le 4),Real.rpow_natCast] using hh
   have hall := he.add hbase
   rw [zero_add] at hall
   exact hall.congr fun k => by dsimp only [err,remainder,correction,evenIndex]; ring
