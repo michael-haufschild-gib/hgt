@@ -15072,6 +15072,7 @@ import GaloisForLFunctions.HTGeometry.CPVTwoModeFock
 import GaloisForLFunctions.HTGeometry.CPVBargmannRepresentation
 import GaloisForLFunctions.HTGeometry.Thermofield.FinitePurification
 import GaloisForLFunctions.HTGeometry.Thermofield.TwoCopyDynamics
+import GaloisForLFunctions.HTGeometry.Thermofield.FragmentCoherence
 import GaloisForLFunctions.HTGeometry.Thermofield.OperatorMirrors
 import GaloisForLFunctions.HTGeometry.Thermofield.MeasurementApplications
 import GaloisForLFunctions.HTGeometry.Thermofield.OscillatorVacuum

@@ -63,8 +63,8 @@ private theorem log_separation {n j : ℕ} (hj : j<n) :
   let m := 2*n+1+j
   have hm0 : 0<(m:ℝ) := Nat.cast_pos.mpr (by dsimp [m];omega)
   have hmax : (m:ℝ)≤3*(n:ℝ) := by exact_mod_cast (show m≤3*n by dsimp [m];omega)
-  have hmin : (2:ℝ)≤m := by exact_mod_cast (show 2≤m by dsimp [m];omega)
-  have hmn : (0:ℝ)<(m+n:ℕ) := by exact_mod_cast (show 0<m+n by dsimp [m];omega)
+  have hmin : (2:ℝ)≤ m := by exact_mod_cast (show 2≤ m by dsimp [m];omega)
+  have hmn : (0:ℝ)<(m+n:ℕ) := by exact_mod_cast (show 0< m+n by dsimp [m];omega)
   change logGap≤Real.log (m:ℝ) ∧ logGap≤Real.log ((m+n:ℕ):ℝ)-Real.log (m:ℝ)
   unfold logGap
   constructor
@@ -86,7 +86,7 @@ theorem identify_binary_log_window (n : ℕ) (P Q : ℕ → Bool)
     have hNext : abs (midpointReading n P (j+1)-midpointReading n Q (j+1))<logGap := by
       rcases lt_or_eq_of_le (Nat.succ_le_of_lt hj) with hlt|heq
       · exact h _ hlt
-      · rw [heq,reading_antipode,reading_antipode,neg_sub_neg,abs_sub_comm]
+      · rw [show j+1 = n from heq,reading_antipode,reading_antipode,neg_sub_neg,abs_sub_comm]
         exact h 0 (by omega)
     have h₁ := abs_lt.mp hNext
     have hs := log_separation hj
@@ -132,10 +132,10 @@ private theorem upper_log_separation {n j : ℕ} (hj : j<n) :
     Real.log 2+logGap≤Real.log (2*n+1+j+n:ℕ) ∧
       Real.log (2*n+1+j+n:ℕ)-Real.log (2*n+1+j:ℕ)≤Real.log 2-logGap := by
   let m := 2*n+1+j
-  have hm : (0:ℝ)<m := Nat.cast_pos.mpr (by dsimp [m];omega)
+  have hm : (0:ℝ)< m := Nat.cast_pos.mpr (by dsimp [m];omega)
   have hm' : (0:ℝ)<(m+n:ℕ) := Nat.cast_pos.mpr (by dsimp [m];omega)
-  have ha : 2*(n:ℝ)≤m := by exact_mod_cast (show 2*n≤m by dsimp [m];omega)
-  have hb : (3:ℝ)≤(m+n:ℕ) := by exact_mod_cast (show 3≤m+n by dsimp [m];omega)
+  have ha : 2*(n:ℝ)≤ m := by exact_mod_cast (show 2*n≤ m by dsimp [m];omega)
+  have hb : (3:ℝ)≤(m+n:ℕ) := by exact_mod_cast (show 3≤ m+n by dsimp [m];omega)
   change Real.log 2+logGap≤Real.log (m+n:ℕ) ∧ Real.log (m+n:ℕ)-Real.log (m:ℕ)≤Real.log 2-logGap
   unfold logGap
   constructor
@@ -212,19 +212,20 @@ private theorem endpoint_readings {n : ℕ} (hn : 0<n) : ∀ j<n,
     have hstep := logarithmic_midpoint_step (show j<n by omega) P
     have hlow : ¬(2*n+1+j=3*n ∨ 2*n+1+j=4*n) := by omega
     have hupp : ¬(2*n+1+j+n=3*n ∨ 2*n+1+j+n=4*n) := by omega
-    simp [P,selectedLog,endpoints,hlow,hupp] at hstep
+    simp [P,selectedLog,endpoints,hlow,hupp,sub_eq_zero] at hstep
     exact hstep
   have hc (j : ℕ) (hj : j<n) : midpointReading n P j=midpointReading n P 0 := by
     induction j with
     | zero => rfl
     | succ j ih => exact (hey j hj).trans (ih (by omega))
   have hel := logarithmic_midpoint_step (show n-1<n by omega) P
-  rw [show n-1+1=n by omega,reading_antipode,hc _ (by omega),
+  rw [show n-1+1=n by omega,reading_antipode,hc (n-1) (by omega),
     show 2*n+1+(n-1)=3*n by omega,show 3*n+n=4*n by omega] at hel
   have hlog := log_ratio_endpoints hn
   simp only [P,selectedLog,endpoints,eq_self,or_true,true_or,decide_true,if_true] at hel
   intro j hj
   rw [hc j hj]
+  show midpointReading n (endpoints n) 0 = -logGap
   linarith only [hlog,hel]
 
 private theorem empty_readings (n j : ℕ) : midpointReading n (fun _ => false) j=0 := by

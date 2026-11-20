@@ -21,7 +21,7 @@ private theorem diagonalTestKernel_integrable {N : ℕ} (hN : 0 < N) (φ : TestW
   let s := mellinLine a
   let V := fun t => mellinMultiplier N φ (s t)
   let w := fun p : ℝ × ℝ => s p.1 + conj (s p.2)
-  have hline : Continuous s := by dsimp [s,mellinLine]; fun_prop
+  have hline : Continuous (mellinLine a) := by unfold mellinLine; fun_prop
   have hw : Continuous w := (hline.comp continuous_fst).add (continuous_conj.comp (hline.comp continuous_snd))
   have hre (p : ℝ × ℝ) : (w p).re=2*a := by simp [w,s,mellinLine,two_mul]
   have hD' : Continuous (fun p => diagonalSeries N (w p)) := by
@@ -61,15 +61,21 @@ theorem residual_contour_integral {k : ℕ} (hN : 4 ≤ k+2) (φ : TestWeight) (
       C (x,y)-D (x,y)-B (x,y) := by
     dsimp [residualKernel,C,D,B,characterTestKernel,diagonalTestKernel,modelTestKernel]
     ring
+  change Integrable C at hC
+  change Integrable D at hD
+  change Integrable B at hB
+  change c^2 * (∫ p, C p) = _ at hCE
+  change c^2 * (∫ p, B p) = _ at hBE
   have hCD : Integrable (fun p => C p-D p) := hC.sub hD
   have hCDB : Integrable (fun p => C p-D p-B p) := hCD.sub hB
-  change c^2 * _ = _
+  have hpair : (∫ p : ℝ × ℝ, C p-D p-B p) = ∫ x : ℝ, ∫ y : ℝ, C (x,y)-D (x,y)-B (x,y) :=
+    integral_prod _ hCDB
+  change c^2 * (∫ x : ℝ, ∫ y : ℝ, (mellinMultiplier N φ (mellinLine a x) *
+    conj (mellinMultiplier N φ (mellinLine a y))) * residualKernel N (mellinLine a x) (mellinLine a y)) = _
   simp_rw [hrs]
-  rw [← integral_prod (fun p : ℝ × ℝ => C p-D p-B p) hCDB,
-    integral_sub hCD hB,integral_sub hC hD,mul_sub,mul_sub,hDE]
-  change c^2 * (∫ p, characterTestKernel (k+2) φ a p) - (diagonal φ (k+2):ℂ) -
-    c^2 * (∫ p, modelTestKernel (k+2) φ a p) = _
-  rw [hCE,hBE,correlation_eq_diagonal_sub_oddMoment]
+  rw [← hpair,integral_sub hCD hB,integral_sub hC hD,mul_sub,mul_sub,hCE,hDE,hBE]
+  dsimp only [N]
+  rw [correlation_eq_diagonal_sub_oddMoment]
   push_cast
   ring
 

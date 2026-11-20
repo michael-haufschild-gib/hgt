@@ -2,7 +2,7 @@ import GaloisForLFunctions.HTGeometry.Thermofield.ThermalReturnPlateau
 import GaloisForLFunctions.HTGeometry.FiniteWindowOneKnobUniformity
 
 /-!
-# Inverse-time splitting of thermofield collisions
+# Time scales of thermofield collisions
 
 In the finite spectral counterpart of scale separation in arXiv:2611.25720,
 fixed nonzero replica gaps dephase. A splitting proportional to the inverse
@@ -10,6 +10,8 @@ observation time keeps a finite phase within each resonant block. The limit
 retains the Gibbs weights of the unsplit spectrum and resolves the internal
 gaps by the symmetric-window sinc kernel. The affine exceptional set identifies
 the same joint collision mass in the limit of fixed nonzero perturbations.
+For power-law splittings, the inverse-time rate separates the coarse and
+joint collision limits.
 -/
 
 open Filter Topology
@@ -399,9 +401,10 @@ theorem affinePartitionReturnPlateau_discontinuousAt_iff (β : ℝ) (E F : α �
     exact ⟨fun h => tendsto_nhds_unique hlim h, fun h => h ▸ hlim⟩
   obtain ⟨hle, hlt⟩ := gibbsJointCollision_le_and_lt_iff β E F 1
   change J ≤ returnPlateau β E at hle
-  rw [hcont, ← hle.lt_iff_ne]
-  change J < returnPlateau β E ↔ _
-  rw [returnPlateau, hlt]
+  refine (not_congr hcont).trans (hle.lt_iff_ne.symm.trans ?_)
+  change jointReplicaCollisionMass (finiteGibbsStateWeight β E) E F 1 <
+    fidelityReplicaCollisionMass (finiteGibbsStateWeight β E) E 1 ↔ _
+  rw [hlt]
   simp only [piAntidiag_one_eq_image_single, Finset.mem_image, Finset.mem_univ, true_and]
   constructor
   · rintro ⟨p, ⟨i, rfl⟩, q, ⟨j, rfl⟩, h⟩
@@ -410,6 +413,140 @@ theorem affinePartitionReturnPlateau_discontinuousAt_iff (β : ℝ) (E F : α �
     exact ⟨(fun k => if k = i then 1 else 0), ⟨i, rfl⟩,
       (fun k => if k = j then 1 else 0), ⟨j, rfl⟩, by
       simpa [replicaMultiplicityEnergy] using h⟩
+
+/-- A diagonal splitting with amplitude `τ` and decay exponent `γ`. -/
+def powerTimeSpectrum (E F : α → ℝ) (τ : ℝ) (γ : Set.Ioi (0 : ℝ)) (T : ℝ) : α → ℝ :=
+  affineSpectrum E F (τ * T ^ (-(γ : ℝ)))
+
+/-- The power-law plateau is the coarse mass at fast decay, the sinc profile
+at the inverse-time rate, and the joint mass at slow nonzero splitting. -/
+def powerTimeReplicaLimit (β τ : ℝ) (E F : α → ℝ) (γ : Set.Ioi (0 : ℝ)) (n : ℕ) : ℂ :=
+  if (γ : ℝ) = 1 then thermalReplicaCrossover β E F n τ
+  else if (γ : ℝ) < 1 ∧ τ ≠ 0 then
+    (jointReplicaCollisionMass (finiteGibbsStateWeight β E) E F n : ℂ)
+  else (fidelityReplicaCollisionMass (finiteGibbsStateWeight β E) E n : ℂ)
+
+private def powerFineFactor (c γ : ℝ) : ℝ :=
+  if γ = 1 then Real.sinc c else if γ < 1 ∧ c ≠ 0 then 0 else 1
+
+private theorem tendsto_sinc_power (c γ : ℝ) :
+    Tendsto (fun T : ℝ => Real.sinc (c * T ^ (1 - γ))) atTop (𝓝 (powerFineFactor c γ)) := by
+  rcases lt_trichotomy γ 1 with hg | rfl | hg
+  · by_cases hc : c = 0
+    · simp [powerFineFactor, hg.ne, hc]
+    · simpa only [powerFineFactor, hg.ne, hg, hc, true_and, if_true, if_false,
+        Function.comp_apply, add_zero, mul_comm] using
+        (tendsto_sinc_affine_nonzero c 0 hc).comp (tendsto_rpow_atTop (sub_pos.mpr hg))
+  · simp [powerFineFactor]
+  · have hneg : 1 - γ = -(γ - 1) := by ring
+    have harg : Tendsto (fun T : ℝ => c * T ^ (1 - γ)) atTop (𝓝 0) := by
+      simpa only [hneg, mul_zero] using (tendsto_rpow_neg_atTop (sub_pos.mpr hg)).const_mul c
+    simpa only [powerFineFactor, hg.ne', not_lt_of_ge hg.le, false_and, if_false,
+      Function.comp_apply, Real.sinc_zero] using Real.continuous_sinc.continuousAt.tendsto.comp harg
+
+private theorem tendsto_powerSplitting_zero (τ : ℝ) (γ : Set.Ioi (0 : ℝ)) :
+    Tendsto (fun T : ℝ => τ * T ^ (-(γ : ℝ))) atTop (𝓝 0) := by
+  simpa only [mul_zero] using (tendsto_rpow_neg_atTop γ.2).const_mul τ
+
+private theorem tendsto_sinc_mul_of_tendsto_nonzero {f : ℝ → ℝ} {a : ℝ}
+    (hf : Tendsto f atTop (𝓝 a)) (ha : a ≠ 0) :
+    Tendsto (fun T => Real.sinc (T * f T)) atTop (𝓝 0) := by
+  have hi : Tendsto (id : ℝ → ℝ) atTop atTop := tendsto_id
+  have htop : Tendsto (fun T => |T * f T|) atTop atTop := by
+    apply (hf.abs.pos_mul_atTop (abs_pos.mpr ha) hi).congr'
+    filter_upwards [eventually_ge_atTop (0 : ℝ)] with T hT
+    simp only [id_eq, abs_mul, abs_of_nonneg hT, mul_comm]
+  refine (tendsto_real_sinc_atTop_zero.comp htop).congr' (Eventually.of_forall fun T => ?_)
+  change Real.sinc |T * f T| = Real.sinc (T * f T)
+  by_cases h : 0 ≤ T * f T
+  · rw [abs_of_nonneg h]
+  · rw [abs_of_neg (lt_of_not_ge h), Real.sinc_neg]
+
+private theorem tendsto_symmetricPhaseAverage_power (a b τ : ℝ) (γ : Set.Ioi (0 : ℝ)) :
+    Tendsto (fun T : ℝ => symmetricPhaseAverage T (a + (τ * T ^ (-(γ : ℝ))) * b)) atTop
+      (𝓝 (((if a = 0 then powerFineFactor (τ * b) γ else 0) : ℝ) : ℂ)) := by
+  have hreal : Tendsto (fun T : ℝ => Real.sinc (T * (a + (τ * T ^ (-(γ : ℝ))) * b))) atTop
+      (𝓝 (if a = 0 then powerFineFactor (τ * b) γ else 0)) := by
+    by_cases ha : a = 0
+    · subst a
+      simp only [if_true]
+      refine (tendsto_sinc_power (τ * b) γ).congr' ?_
+      filter_upwards [eventually_gt_atTop (0 : ℝ)] with T hT
+      congr 1
+      rw [sub_eq_add_neg, Real.rpow_add hT, Real.rpow_one, zero_add]
+      ring
+    · simp only [if_neg ha]
+      have hgap : Tendsto (fun T : ℝ => a + (τ * T ^ (-(γ : ℝ))) * b) atTop (𝓝 a) := by
+        simpa only [zero_mul, add_zero] using tendsto_const_nhds.add ((tendsto_powerSplitting_zero τ γ).mul_const b)
+      exact tendsto_sinc_mul_of_tendsto_nonzero hgap ha
+  refine (Complex.continuous_ofReal.continuousAt.tendsto.comp hreal).congr' ?_
+  filter_upwards [eventually_ne_atTop (0 : ℝ)] with T hT
+  exact (symmetricPhaseAverage_eq_sinc _ _ hT).symm
+
+omit [Fintype α] [DecidableEq α] [Nonempty α] in
+private theorem tendsto_powerTimeSpectrum (E F : α → ℝ) (τ : ℝ) (γ : Set.Ioi (0 : ℝ)) :
+    Tendsto (powerTimeSpectrum E F τ γ) atTop (𝓝 E) := by
+  refine tendsto_pi_nhds.mpr fun i => ?_
+  simpa only [powerTimeSpectrum, affineSpectrum, zero_mul, add_zero] using
+    tendsto_const_nhds.add ((tendsto_powerSplitting_zero τ γ).mul_const (F i))
+
+omit [Nonempty α] in
+private theorem powerTimeReplicaLimit_eq_sum (β τ : ℝ) (E F : α → ℝ)
+    (γ : Set.Ioi (0 : ℝ)) (n : ℕ) :
+    powerTimeReplicaLimit β τ E F γ n =
+      ∑ p ∈ Finset.univ.piAntidiag n, ∑ q ∈ Finset.univ.piAntidiag n,
+        if replicaMultiplicityEnergy E p = replicaMultiplicityEnergy E q then
+          (fidelityReplicaMultiplicityWeight (finiteGibbsStateWeight β E) p q : ℂ) *
+            (powerFineFactor (τ * (replicaMultiplicityEnergy F p - replicaMultiplicityEnergy F q)) γ : ℂ)
+        else 0 := by
+  by_cases heq : (γ : ℝ) = 1
+  · simp only [powerTimeReplicaLimit, heq, if_true, thermalReplicaCrossover, powerFineFactor]
+  · by_cases hslow : (γ : ℝ) < 1 ∧ τ ≠ 0
+    · simp only [powerTimeReplicaLimit, heq, hslow, if_false, if_true, jointReplicaCollisionMass,
+        Complex.ofReal_sum, apply_ite, Complex.ofReal_zero]
+      refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => ?_
+      by_cases hE : replicaMultiplicityEnergy E p = replicaMultiplicityEnergy E q
+      · by_cases hF : replicaMultiplicityEnergy F p = replicaMultiplicityEnergy F q
+        · simp [hE, hF, powerFineFactor, heq]
+        · simp [hE, hF, powerFineFactor, heq, hslow.1, hslow.2, sub_ne_zero.mpr hF]
+      · simp [hE]
+    · have hnever (b : ℝ) : ¬ ((γ : ℝ) < 1 ∧ τ * b ≠ 0) :=
+        fun h => hslow ⟨h.1, fun hz => h.2 (by rw [hz, zero_mul])⟩
+      simp only [powerTimeReplicaLimit, heq, hslow, if_false, powerFineFactor, hnever,
+        Complex.ofReal_one, mul_one, ← fidelityReplicaResonantMass_eq_collisionMass,
+        fidelityReplicaResonantMass, Complex.ofReal_sum, apply_ite, Complex.ofReal_zero]
+
+/-- Every finite Gibbs replica moment has the power-law plateau, with the
+transition exactly at inverse observation time. -/
+theorem thermalReplicaMean_tendsto_powerTimeSpectrum (β τ : ℝ) (E F : α → ℝ)
+    (γ : Set.Ioi (0 : ℝ)) (n : ℕ) :
+    Tendsto (fun T => finiteSpectralSurvivalFidelityMean
+      (finiteGibbsStateWeight β (powerTimeSpectrum E F τ γ T))
+      (powerTimeSpectrum E F τ γ T) n T) atTop (𝓝 (powerTimeReplicaLimit β τ E F γ n)) := by
+  simp only [finiteSpectralSurvivalFidelityMean_eq_replicaPhaseAverage, powerTimeReplicaLimit_eq_sum]
+  refine tendsto_finsetSum _ fun p _ => tendsto_finsetSum _ fun q _ => ?_
+  have hw := Complex.continuous_ofReal.continuousAt.tendsto.comp
+    ((continuous_replicaMultiplicityWeight p q).continuousAt.tendsto.comp
+      ((continuousAt_gibbsWeight β E).tendsto.comp (tendsto_powerTimeSpectrum E F τ γ)))
+  have hphase := tendsto_symmetricPhaseAverage_power
+    (replicaMultiplicityEnergy E p - replicaMultiplicityEnergy E q)
+    (replicaMultiplicityEnergy F p - replicaMultiplicityEnergy F q) τ γ
+  have hgap (T : ℝ) : replicaMultiplicityEnergy (powerTimeSpectrum E F τ γ T) p -
+      replicaMultiplicityEnergy (powerTimeSpectrum E F τ γ T) q =
+        (replicaMultiplicityEnergy E p - replicaMultiplicityEnergy E q) +
+          (τ * T ^ (-(γ : ℝ))) * (replicaMultiplicityEnergy F p - replicaMultiplicityEnergy F q) :=
+    affine_gap E F _ p q
+  simpa only [Function.comp_apply, sub_eq_zero, apply_ite, Complex.ofReal_zero, mul_ite,
+    mul_zero, hgap] using hw.mul hphase
+
+/-- The two-copy partition return exhibits the same three power-law regimes. -/
+theorem partitionReturnMean_tendsto_powerTimeSpectrum (β τ : ℝ) (E F : α → ℝ)
+    (γ : Set.Ioi (0 : ℝ)) :
+    Tendsto (fun T => partitionReturnMean β (powerTimeSpectrum E F τ γ T) T)
+      atTop (𝓝 (powerTimeReplicaLimit β τ E F γ 1)) := by
+  simpa only [partitionReturnMean, finiteSpectralSurvivalFidelityMean,
+    finiteSpectralSurvivalFidelity, survival_eq_partition_ratio, pow_one] using
+    thermalReplicaMean_tendsto_powerTimeSpectrum β τ E F γ 1
 
 #print axioms thermalReplicaMean_tendsto_inverseTimeSpectrum
 #print axioms thermalReplicaCrossover_tendsto_jointCollision
@@ -421,6 +558,8 @@ theorem affinePartitionReturnPlateau_discontinuousAt_iff (β : ℝ) (E F : α �
 #print axioms collisionMass_sub_jointReplicaCollisionMass
 #print axioms gibbsJointCollision_le_and_lt_iff
 #print axioms affinePartitionReturnPlateau_discontinuousAt_iff
+#print axioms thermalReplicaMean_tendsto_powerTimeSpectrum
+#print axioms partitionReturnMean_tendsto_powerTimeSpectrum
 
 end
 
