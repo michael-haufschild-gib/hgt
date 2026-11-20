@@ -47,7 +47,9 @@ theorem opposite_moment_at_one_level (left : Bool) (s a g d T : ℝ) (k L : ℕ)
   refine ⟨H,hH,?_⟩
   have h := mul_le_mul_of_nonneg_left
     (hh.trans (mul_le_mul_of_nonneg_right hconst hp)) (Nat.cast_nonneg L : 0 ≤ (L:ℝ))
-  exact h.trans_eq (by ring)
+  exact h.trans_eq (by
+    change _ = (1+2*Real.log L)*((L:ℝ)*levelMass (largeOppositePrimeNumerators left s a g d T k L) f H)
+    ring)
 
 /-- A failure of RH forces a large single-level count for every sufficiently
 small band width. The level and orientation may vary with the scale. -/

@@ -21,20 +21,27 @@ private def curve'' (x : ℝ) := (3/4:ℝ)*x^(-(5/2:ℝ))
 
 private theorem curve_deriv (x : ℝ) (hx : x ∈ Set.Icc (1/2:ℝ) 1) :
     HasDerivAt curve (curve' x) x := by
-  dsimp only [curve,curve']
-  convert (Real.hasDerivAt_rpow_const (x:=x) (p:= -(1/2:ℝ)) (Or.inl
-    (by linarith only [hx.1] : x ≠ 0))).sub_const 1 using 1 <;> norm_num
+  have h := (Real.hasDerivAt_rpow_const (x:=x) (p:= -(1/2:ℝ)) (Or.inl
+    (by linarith only [hx.1] : x ≠ 0))).sub_const 1
+  have e : curve' x = -(1/2:ℝ) * x^(-(1/2:ℝ)-1) := by
+    rw [curve', show -(1/2:ℝ)-1 = -(3/2:ℝ) by norm_num]
+  rw [e]
+  exact h
 
 private theorem curve_second (x : ℝ) (hx : x ∈ Set.Icc (1/2:ℝ) 1) :
     HasDerivAt curve' (curve'' x) x := by
-  dsimp only [curve',curve'']
-  convert (Real.hasDerivAt_rpow_const (x:=x) (p:= -(3/2:ℝ)) (Or.inl
-    (by linarith only [hx.1] : x ≠ 0))).const_mul (-(1/2:ℝ)) using 1 <;> norm_num <;> ring
+  have h := (Real.hasDerivAt_rpow_const (x:=x) (p:= -(3/2:ℝ)) (Or.inl
+    (by linarith only [hx.1] : x ≠ 0))).const_mul (-(1/2:ℝ))
+  have e : curve'' x = -(1/2:ℝ) * (-(3/2:ℝ) * x^(-(3/2:ℝ)-1)) := by
+    rw [curve'', show -(3/2:ℝ)-1 = -(5/2:ℝ) by norm_num]
+    ring
+  rw [e]
+  exact h
 
 private theorem curve_smooth : ContinuousOn curve'' (Set.Icc (1/2:ℝ) 1) := by
   intro x hx
   apply ContinuousAt.continuousWithinAt
-  dsimp only [curve'']
+  show ContinuousAt (fun x : ℝ => (3/4:ℝ)*x^(-(5/2:ℝ))) x
   apply continuousAt_const.mul
   exact (Real.hasDerivAt_rpow_const (Or.inl (by linarith only [hx.1] : x ≠ 0))).continuousAt
 
@@ -47,7 +54,7 @@ private theorem curve_endpoints : curve 1=0 ∧ curve (1/2)=Real.sqrt 2-1 := by
 private theorem int_sum_nat (a b : ℕ) (f : ℝ → ℝ) :
     ∑ z ∈ Ioc (a:ℤ) (b:ℤ), f z = ∑ j ∈ Ioc a b, f j := by
   symm
-  apply sum_bij (fun j _ => (j:ℤ))
+  apply sum_bij (fun (j : ℕ) _ => (j:ℤ))
   · intro j hj
     have := mem_Ioc.mp hj
     exact mem_Ioc.mpr ⟨by omega,by omega⟩
@@ -64,7 +71,10 @@ private theorem reading_is_profile {t : ℝ} (ht : 0<t) :
   have hu : t≤(n:ℝ)+1 := (Nat.lt_floor_add_one t).le
   rw [proper_profile_on_unit_cell n hn hu,reading,curve_endpoints.2,
     ←Int.natCast_floor_eq_floor (by positivity : 0≤t/2),←Int.natCast_floor_eq_floor ht.le,
-    Int.cast_natCast,show ⌊t/2⌋₊=n/2 from Nat.floor_div_natCast (a:=t) (n:=2),int_sum_nat]
+    Int.cast_natCast,show ⌊t/2⌋₊=n/2 from Nat.floor_div_natCast (a:=t) (n:=2)]
+  have hs : ∑ z ∈ Ioc ((n/2:ℕ):ℤ) ((⌊t⌋₊:ℕ):ℤ), curve ((z:ℝ)/t) =
+      ∑ j ∈ Ioc (n/2) ⌊t⌋₊, curve ((j:ℝ)/t) := int_sum_nat (n/2) ⌊t⌋₊ (fun x => curve (x/t))
+  rw [hs]
   have row (j : ℕ) (_ : j∈Ioc (n/2) n) : curve ((j:ℝ)/t) = Real.sqrt t*(Real.sqrt j)⁻¹-1 := by
     rw [curve,Real.rpow_neg (by positivity : 0≤(j:ℝ)/t),←Real.sqrt_eq_rpow,
       Real.sqrt_div (Nat.cast_nonneg j),inv_div,div_eq_mul_inv]

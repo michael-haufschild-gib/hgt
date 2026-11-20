@@ -218,7 +218,7 @@ theorem physical_dyadic_capture_limsup_le {n d : ℕ} (e : (Fin n → Bool) ≃ 
   apply (oneSided_closedTarget_limsup_le_volume ω
     (RHTower.maximallyProjectiveEnergy_zeroProjectiveFrequency_independent E hmax) hc).trans
   have h := ENNReal.ofReal_le_ofReal (volume_dyadicCircuitCapture_le e V s k)
-  rwa [measureReal_def,ENNReal.ofReal_toReal (measure_ne_top _ _)] at h
+  simpa only [measureReal_def, ENNReal.ofReal_toReal (measure_ne_top _ _)] using h
 
 /-- Spectral histories with k hard doublings followed by a prescribed event. -/
 def dyadicHardPrehistory {n d : ℕ} (e : (Fin n → Bool) ≃ Fin (d+1))
