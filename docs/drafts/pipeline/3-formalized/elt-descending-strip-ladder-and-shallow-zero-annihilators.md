@@ -1,9 +1,9 @@
 # Descending strip-gap ladder, shallow-preserving Dirichlet zero annihilators, and Lehmer-quartet moment obstruction
 
 - **ID:** elt-descending-strip-ladder-and-shallow-zero-annihilators
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Source:** `docs/reports/review-1911/todo.md` #17 · `formal/GaloisForLFunctions/ExceptionalLayerTheory/`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
+- **Source:** `docs/reports/review-1911/todo.md` #17 · `formal/GaloisForLFunctions/ExceptionalLayerTheory/TheDescendingStripLadderAndShallowZeroAnnihilators.lean`
 - **Statement:** On any `ZeroConfig` violating `LandingLaw`, the off-line real parts right of `1 / 2` form a strictly decreasing sequence `1 / 2 + δ_n → 1 / 2` separated by open all-height zero-free vertical strips `(1 / 2 + δ_{n+1}, 1 / 2 + δ_n)` on each of which `topRightOrdinate` is constant; under `ZerosApproachLine`, finite Dirichlet polynomials `∏_{ρ ∈ L} (1 - 2^{ρ - s})` clear all zeros with `Re ρ ≥ 1 / 2 + ε / 2` while bounded away from zero on `Re s ≤ 1 / 2 + ε / 4`; the Ki–Kim–Lee saddle stays strictly inside `(1 / 2, 1)` on the healing window; and any off-line quartet `(±γ ± iδ)` (`δ ≠ 0`) matching the quadratic moment of a real Lehmer pair `(±(γ̄ ± η))` has root-product residual `+4 (γ̄^2 + δ^2)(η^2 + δ^2) > 0` and fourth-moment residual `-16 (γ̄^2 + δ^2)(η^2 + δ^2) < 0`.
 
 ## Goal
@@ -12,7 +12,7 @@ Establish the discrete strip-gap geometry of `¬ LandingLaw`, construct entire D
 ## Gates
 - [x] 0 → 1  in-progress: exact configuration, Hadamard-threshold, and Dirichlet-multiplier interfaces isolated
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean module `TheDescendingStripLadderAndShallowZeroAnnihilators.lean`, `lake --old env lean` green, standard axioms only
+- [x] 2 → 3  formalized: Lean module `TheDescendingStripLadderAndShallowZeroAnnihilators.lean`, `lake --old env lean` green, standard axioms only
 
 ## Paper Proof (`[PROVED HERE]`)
 

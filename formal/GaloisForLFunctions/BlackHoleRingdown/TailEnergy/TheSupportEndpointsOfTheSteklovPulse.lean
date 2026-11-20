@@ -53,7 +53,7 @@ private theorem bound_from_one_end {s A : ℝ} (hs : s=1 ∨ s= -1)
       change ‖(sincProfile x:ℂ)*Complex.exp (-(I*w*(x:ℂ)))‖ ≤ _
       rw [norm_mul,Complex.norm_real,Real.norm_of_nonneg (sincProfile_nonneg _),Complex.norm_exp]
       by_cases hx : A<s*x
-      · simp only [hvan x hx,zero_mul]
+      · simp only [hvan x hx,zero_mul,le_refl]
       · apply mul_le_mul_of_nonneg_left _ (sincProfile_nonneg x)
         apply Real.exp_le_exp.mpr
         have he : (-(I*w*(x:ℂ))).re=s*x*y := by
@@ -85,7 +85,7 @@ theorem steklov_both_ends_are_sharp {A : ℝ} (hA : A < steklovSupportRadius)
 theorem steklov_support_least_upper_bounds :
     IsLUB (Function.support sincProfile) steklovSupportRadius ∧
       IsGLB (Function.support sincProfile) (-steklovSupportRadius) := by
-  have hg {x : ℝ} (hx : x∈Function.support sincProfile) : |x|≤steklovSupportRadius := by
+  have hg {x : ℝ} (hx : x∈Function.support sincProfile) : |x| ≤ steklovSupportRadius := by
     by_contra! h; exact hx (steklov_profile_supported x h)
   constructor
   · refine ⟨fun x hx => (le_abs_self x).trans (hg hx),?_⟩

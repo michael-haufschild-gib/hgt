@@ -290,8 +290,9 @@ theorem differentiableAt_epsteinRem (α : ℝ) {k : ℝ} (hk : 0 < k) {s₀ : �
           (mul_nonneg (mul_nonneg hM0 hcσ) (Real.rpow_nonneg (mul_nonneg hk.le (abs_nonneg _)) _))
           (mul_nonneg (mul_nonneg hM0 hcσ) (Real.rpow_nonneg (mul_nonneg hk.le (abs_nonneg _)) _))
       · have hT : 0 < k * |(y : ℝ)| := mul_pos hk (abs_pos.mpr (by exact_mod_cast hy))
+        have hs1 : σ₁ < s.re := hs.1
         have hr := rpow_le_add hT (lo := -(2 * M)) (a := -(2 * s.re)) (hi := -(2 * σ₁))
-          (by linarith) (by linarith [hs.1])
+          (by linarith) (by linarith)
         refine (norm_rowRem_le α hk y hsσ).trans ?_
         calc ‖s‖ * cst s.re * (k * |(y : ℝ)|) ^ (-(2 * s.re))
             ≤ M * cst σ₁ * (k * |(y : ℝ)|) ^ (-(2 * s.re)) :=
@@ -322,23 +323,24 @@ theorem hasSum_int_abs_cpow {w : ℂ} (hw : 1 < w.re) :
     intro n
     have habs : |(((n : ℤ) + 1 : ℤ) : ℝ)| = (n : ℝ) + 1 := by
       push_cast; exact abs_of_nonneg (by positivity)
-    rw [habs, Complex.cpow_neg, one_div]
-    push_cast
-    rfl
+    rw [habs, Complex.cpow_neg, one_div, Complex.ofReal_add, Complex.ofReal_natCast,
+      Complex.ofReal_one]
   have e2 : ∀ n : ℕ, ((|((-((n : ℤ) + 1) : ℤ) : ℝ)| : ℝ) : ℂ) ^ (-w) = 1 / ((n : ℂ) + 1) ^ w := by
     intro n
     have habs : |((-((n : ℤ) + 1) : ℤ) : ℝ)| = (n : ℝ) + 1 := by
       push_cast; rw [abs_neg]; exact abs_of_nonneg (by positivity)
-    rw [habs, Complex.cpow_neg, one_div]
-    push_cast
-    rfl
-  have h1 : HasSum (fun n : ℕ => (fun m : ℤ => ((|(m : ℝ)| : ℝ) : ℂ) ^ (-w)) ((n : ℤ) + 1))
-      (riemannZeta w) := by simpa only [e1] using hnat
-  have h2 : HasSum (fun n : ℕ => (fun m : ℤ => ((|(m : ℝ)| : ℝ) : ℂ) ^ (-w)) (-((n : ℤ) + 1)))
-      (riemannZeta w) := by simpa only [e2] using hnat
+    rw [habs, Complex.cpow_neg, one_div, Complex.ofReal_add, Complex.ofReal_natCast,
+      Complex.ofReal_one]
+  have h1 : HasSum (fun n : ℕ => ((|(((n : ℤ) + 1 : ℤ) : ℝ)| : ℝ) : ℂ) ^ (-w))
+      (riemannZeta w) := by
+    simp only [e1]; exact hnat
+  have h2 : HasSum (fun n : ℕ => ((|((-((n : ℤ) + 1) : ℤ) : ℝ)| : ℝ) : ℂ) ^ (-w))
+      (riemannZeta w) := by
+    simp only [e2]; exact hnat
   have h0 : ((|((0 : ℤ) : ℝ)| : ℝ) : ℂ) ^ (-w) = 0 := by
-    simp [Complex.zero_cpow hw0]
-  have h := h1.of_add_one_of_neg_add_one h2
+    rw [Int.cast_zero, abs_zero, Complex.ofReal_zero, Complex.zero_cpow hw0]
+  have h := HasSum.of_add_one_of_neg_add_one
+    (f := fun m : ℤ => ((|(m : ℝ)| : ℝ) : ℂ) ^ (-w)) h1 h2
   simp only [h0, add_zero] at h
   rwa [← two_mul] at h
 
@@ -418,7 +420,7 @@ theorem epsteinZeta_eq_epsteinCont (α : ℝ) {k : ℝ} (hk : 0 < k) {s : ℂ} (
     intro y
     rcases eq_or_ne y 0 with rfl | hy
     · have hz : ((|((0 : ℤ) : ℝ)| : ℝ) : ℂ) ^ (-(2 * s - 1)) = 0 := by
-        simp [Complex.zero_cpow hw0]
+        rw [Int.cast_zero, abs_zero, Complex.ofReal_zero, Complex.zero_cpow hw0]
       rw [if_pos rfl, hz, zero_mul, rowRem, if_pos rfl, add_zero, add_zero]
       simp_rw [epForm_zero_cpow α k _ hs0]
       exact (hasSum_int_abs_cpow hw2).tsum_eq

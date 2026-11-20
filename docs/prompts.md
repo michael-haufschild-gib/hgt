@@ -35,7 +35,9 @@ proofs must be unconditional without hypotheses or otherwise unproven premises.
 /goal
 
 formalize UNCONDITIONALLY in lean all proven theorem for every single card in: 
-- docs/drafts/pipeline/2-fully-proven/ecs
+- docs/drafts/pipeline/2-fully-proven/trans-metzler-weil-positivity.md
+- docs/drafts/pipeline/2-fully-proven/arithmetic-counting-positive-density-exact-cutoff-gap.md
+- docs/drafts/pipeline/2-fully-proven/arithmetic-hawking-page-phase-and-ads-modular-horizon-resolution.md
 
 add missing infrastructure, lean proofs, everything needed to mark a card as fully done and move it to stage 3 of the pipeline - no simplifications. 
 
@@ -278,7 +280,7 @@ The goal is met when route QIC is fully closed and formalized unconditionally in
 
 27 Mertens
 
-28 Stepanov
+28 Bombieri–Stepanov
 
 29 Vinogradov–Korobov
 
@@ -291,6 +293,12 @@ The goal is met when route QIC is fully closed and formalized unconditionally in
 33 Kaczorowski-Perelli
 
 34 Voronoï
+
+35 Estermann
+
+36 Hurwitz/Lerch
+
+37  Fejér 
 
 ## apply external paper to corpus experiment
 
@@ -583,10 +591,10 @@ goal is met when 250 discharges could be made.
 
 ## update obstacles
 a while ago we did create these documents:
-- docs/reports/review-1911/walls-ledger.md
-- docs/reports/review-1911/route-obstacles.md
-- docs/reports/review-1911/route-unification-ledger.md
-- docs/reports/review-1911/obstacles-summary.md
+- docs/reports/review-2011/walls-ledger.md
+- docs/reports/review-2011/route-obstacles.md
+- docs/reports/review-2011/route-unification-ledger.md
+- docs/reports/review-2011/obstacles-summary.md
   
 read also but do not edit:
 - docs/reports/rh-current-frontier-map.md

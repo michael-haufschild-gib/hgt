@@ -81,8 +81,8 @@ theorem mertens_mass_two_population_bound {a b : ℝ} (hb : 0<b) (hb1 : b ≤ 1/
     have hh := card_le_card (sdiff_subset : S \ T ⊆ S)
     simpa [S,Nat.card_Icc] using hh
   have cb : T.card ≤ E.card := card_le_card inter_subset_right
-  have g := Real.rpow_le_rpow (by positivity : 0 ≤ ((S \ T).card:ℝ)+1) (add_le_add_right (Nat.cast_le.mpr cg) 1) (by positivity : 0≤2*b)
-  have d := Real.rpow_le_rpow (by positivity : 0 ≤ (T.card:ℝ)+1) (add_le_add_right (Nat.cast_le.mpr cb) 1) (by positivity : 0≤2*a)
+  have g := Real.rpow_le_rpow (by positivity : 0 ≤ ((S \ T).card:ℝ)+1) (by exact_mod_cast Nat.add_le_add_right cg 1 : ((S \ T).card:ℝ)+1 ≤ (N:ℝ)+1) (by positivity : 0≤2*b)
+  have d := Real.rpow_le_rpow (by positivity : 0 ≤ (T.card:ℝ)+1) (by exact_mod_cast Nat.add_le_add_right cb 1 : (T.card:ℝ)+1 ≤ (E.card:ℝ)+1) (by positivity : 0≤2*a)
   change (∑ k ∈ S, _) ≤ _
   rw [←sum_sdiff hTS]
   change _ ≤ B*_ at hgood

@@ -817,71 +817,13 @@ private theorem five_pow_dominates_for_five_le :
   induction d, hd using Nat.le_induction with
   | base => norm_num
   | succ d hd ih =>
-    have hdiv : (d + 1) / 2 ≤ d / 2 + 1 := by omega
-    have hpow_div : (5 : ℤ) ^ ((d + 1) / 2) ≤ 5 * (5 : ℤ) ^ (d / 2) := by
-      calc (5 : ℤ) ^ ((d + 1) / 2) ≤ (5 : ℤ) ^ (d / 2 + 1) :=
-            pow_le_pow_right₀ (by norm_num) hdiv
-        _ = 5 * (5 : ℤ) ^ (d / 2) := by ring
-    have hd_pos : (5 : ℤ) ≤ d := by exact_mod_cast hd
-    have hpow5_pos : 0 < (5 : ℤ) ^ (d / 2) := pow_pos (by norm_num) _
-    have hpow3_pos : 0 < (3 : ℤ) ^ d := pow_pos (by norm_num) _
-    -- Compare `4 * 3^{d+1} + 3 * (d+1) * 5^{(d+1)/2}` against `5 * (4 * 3^d + 3 * d * 5^{d/2})`:
-    -- Wait: at `d = 5`, `3 * 6 * 5^3 = 2250` vs `15 * 5 * 5^2 = 1875`, so instead compare `5^{d/2}` with `3^d`!
-    -- For `d ≥ 5`, `d / 2 ≤ d - 3`, so `5^{d/2} ≤ 5^{d - 3}`, and `3 * (d + 1) * 5^{d - 2} ≤ 2 * 5^d`!
-    have hd2_le : (d + 1) / 2 ≤ d - 1 := by omega
-    have h5_half : (5 : ℤ) ^ ((d + 1) / 2) ≤ (5 : ℤ) ^ (d - 1) :=
-      pow_le_pow_right₀ (by norm_num) hd2_le
-    have hlin_5 : (d : ℤ) + 1 ≤ 2 * (5 : ℤ) ^ 1 + (d - 5) := by omega
-    -- Even cleaner: `3 * (d + 1) ≤ 5 ^ 2 = 25` for `d ≤ 7`, and for `d ≥ 7`, `(d + 1) / 2 ≤ d - 3`!
     by_cases hd7 : d ≤ 7
     · interval_cases d <;> norm_num
-    · have hd8 : 8 ≤ d := by omega
-      have hhalf_le : (d + 1) / 2 ≤ d - 3 := by omega
-      have h5_sub : (5 : ℤ) ^ ((d + 1) / 2) ≤ (5 : ℤ) ^ (d - 3) :=
-        pow_le_pow_right₀ (by norm_num) hhalf_le
-      -- Also `d + 1 ≤ 3 ^ (d - 3)`? Even simpler: `d + 1 ≤ 5 ^ 3 = 125`? No, `d + 1 ≤ 2 ^ d`?
-      -- Wait: from `ih`, `4 * 3^d + 3 * d * 5^{d/2} < 5^d`, AND `5^{(d+1)/2} ≤ 5 * 5^{d/2}`:
-      -- `3 * (d + 1) * 5^{(d+1)/2} ≤ 3 * (d + 1) * 5 * 5^{d/2} = 15 * ((d + 1) / d) * d * 5^{d/2}`
-      -- Wait: `15 * (d + 1) ≤ 18 * d`, wait `18 > 15` (`5 * 3 = 15`)! Why did `5` fail? Because `5^{(d+1)/2}` only jumps by `5` on EVEN `d`, and by `1` on ODD `d`!
-      -- Better: bound `3 * (d + 1) * 5^{(d+1)/2} < 2 * 5^{d+1}` directly by `d + 1 ≤ 5 ^ 2 * 5^{d - 2 - (d+1)/2}`!
-      have hexp_gap : 2 + (d + 1) / 2 ≤ d := by omega
-      have h1_le_pow : (d : ℤ) + 1 ≤ 25 * (5 : ℤ) ^ (d - 2 - (d + 1) / 2) := by
-        -- Prove `k + 9 ≤ 25 * 5 ^ (k / 2)` for `k = d - 8 ≥ 0`? Even simpler: `m + 1 ≤ 5 ^ m` for all `m`!
-        have hm_pow : ∀ m : ℕ, (m : ℤ) + 1 ≤ (5 : ℤ) ^ m := by
-          intro m; induction m with
-          | zero => norm_num
-          | succ m ihm =>
-            have : (1 : ℤ) ≤ (5 : ℤ) ^ m := one_le_pow₀ (by norm_num)
-            calc ((m + 1 : ℕ) : ℤ) + 1 = (m : ℤ) + 1 + 1 := by push_cast; ring
-              _ ≤ (5 : ℤ) ^ m + (5 : ℤ) ^ m := by linarith
-              _ ≤ 5 * (5 : ℤ) ^ m := by linarith
-              _ = (5 : ℤ) ^ (m + 1) := by ring
-        have hgap2 : d + 1 ≤ 9 + 3 * (d - 2 - (d + 1) / 2) := by omega
-        have hm := hm_pow (d - 2 - (d + 1) / 2)
-        have hpos_m : 1 ≤ (5 : ℤ) ^ (d - 2 - (d + 1) / 2) := one_le_pow₀ (by norm_num)
-        nlinarith
+    · have hexp_gap : 2 + (d + 1) / 2 ≤ d := by omega
       have hmul_5 : 25 * (5 : ℤ) ^ (d - 2 - (d + 1) / 2) * (5 : ℤ) ^ ((d + 1) / 2) = (5 : ℤ) ^ d := by
         rw [show (25 : ℤ) = 5 ^ 2 by norm_num, ← pow_add, ← pow_add]
         congr 1; omega
-      have hterm2 : 3 * ((d : ℤ) + 1) * (5 : ℤ) ^ ((d + 1) / 2) ≤ 3 * (5 : ℤ) ^ d := by
-        calc 3 * ((d : ℤ) + 1) * (5 : ℤ) ^ ((d + 1) / 2)
-            ≤ 3 * (25 * (5 : ℤ) ^ (d - 2 - (d + 1) / 2)) * (5 : ℤ) ^ ((d + 1) / 2) := by
-              nlinarith [pow_pos (by norm_num : (0 : ℤ) < 5) ((d + 1) / 2)]
-          _ = 3 * (25 * (5 : ℤ) ^ (d - 2 - (d + 1) / 2) * (5 : ℤ) ^ ((d + 1) / 2)) := by ring
-          _ = 3 * (5 : ℤ) ^ d := by rw [hmul_5]
-      have hterm1 : 4 * (3 : ℤ) ^ (d + 1) < 2 * (5 : ℤ) ^ d := by
-        have h3d : 4 * (3 : ℤ) ^ d < (5 : ℤ) ^ d := by
-          have : 0 ≤ 3 * (d : ℤ) * (5 : ℤ) ^ (d / 2) := by positivity
-          linarith
-        -- `12 * 3^d < 3 * 5^d`? Wait: `4 * 3^{d+1} = 12 * 3^d`, we want `< 2 * 5^{d+1} - 3 * 5^d = 7 * 5^d`!
-        calc 4 * (3 : ℤ) ^ (d + 1) = 3 * (4 * (3 : ℤ) ^ d) := by ring
-          _ < 3 * (5 : ℤ) ^ d := by linarith
-          _ < 7 * (5 : ℤ) ^ d := by nlinarith [pow_pos (by norm_num : (0 : ℤ) < 5) d]
-      --Wait: we want `< 5^{d+1} = 5 * 5^d`! Notice `3 * 5^d + 3 * 5^d = 6 * 5^d`, slightly above `5 * 5^d`!
-      -- Just note `3 * (d + 1) ≤ 25 * 5^{d - 2 - (d+1)/2}`: actually `d + 1 ≤ 10 * 5^{d - 2 - (d+1)/2}` since for `d ≥ 8`, `d - 2 - (d+1)/2 ≥ 2`, `10 * 5^m ≥ 10 * (m + 1) ≥ 3 * (d + 1)`!
-      have hm_ge2 : 2 ≤ d - 2 - (d + 1) / 2 := by omega
       have h1_le_10 : (d : ℤ) + 1 ≤ 5 * (5 : ℤ) ^ (d - 2 - (d + 1) / 2) := by
-        -- For `m = d - 2 - (d + 1) / 2 ≥ 2`, `d + 1 ≤ 3 * m + 4 ≤ 5 * (m + 1) ≤ 5 * 5^m`!
         have hm_pow : ∀ m : ℕ, (m : ℤ) + 1 ≤ (5 : ℤ) ^ m := by
           intro m; induction m with
           | zero => norm_num
@@ -959,7 +901,7 @@ theorem primeFiveQuartet_complete_twin :
     have habs := abs_le.mp (htr_int m)
     unfold fiveQuartetPointCount
     exact ⟨by linarith, by linarith⟩
-  -- Explicit values `π 1 = 4`, `π 2 = 21`, `π 3 = 52`, `π 4 = 164` and positivity `1 ≤ π d` for all `d ≥ 1`.
+  -- Explicit values `π 1 = 4`, `π 2 = 21`, `π 3 = 52`, `π 4 = 122` and positivity `1 ≤ π d` for all `d ≥ 1`.
   have hπ1 : π 1 = 4 := by
     have h1 := hN_sum 1 le_rfl
     simp [fiveQuartetPointCount, fiveQuartetTrace] at h1
@@ -978,10 +920,10 @@ theorem primeFiveQuartet_complete_twin :
     simp only [Finset.sum_pair (by decide : (1 : ℕ) ≠ 3), Nat.cast_one, one_mul, Nat.cast_ofNat,
       hπ1, fiveQuartetPointCount, fiveQuartetTrace] at h3
     linarith
-  have hπ4 : π 4 = 164 := by
+  have hπ4 : π 4 = 122 := by
     have h4 := hN_sum 4 (by decide)
     have hdiv4 : (4 : ℕ).divisors = {1, 2, 4} := by decide
-    have htr4 : fiveQuartetTrace 4 = -76 := by decide
+    have htr4 : fiveQuartetTrace 4 = 92 := by decide
     rw [hdiv4] at h4
     simp only [Finset.sum_insert (by decide : (1 : ℕ) ∉ ({2, 4} : Finset ℕ)),
       Finset.sum_pair (by decide : (2 : ℕ) ≠ 4), Nat.cast_one, one_mul, Nat.cast_ofNat,

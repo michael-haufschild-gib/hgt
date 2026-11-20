@@ -1,4 +1,4 @@
-import GaloisForLFunctions.ExceptionalLayerTheory.TheHeightErrorOfTheHadamardThreshold
+import GaloisForLFunctions.ExceptionalLayerTheory.TheLandingLawForZeta
 
 /-!
 # The descending strip-gap ladder, shallow-preserving zero annihilators, and quartet moment obstructions
@@ -9,11 +9,12 @@ zero-free strips, while finite Dirichlet polynomials isolate shallow off-line la
 
 * **Strict descending strip-gap ladder (`exists_max_depth_below_and_zero_free_strip`,
   `exists_descending_strip_ladder_of_not_landing`, `zeta_descending_strip_ladder_of_not_landing`,
-  `topRightOrdinate_eq_on_zero_free_strip`).** Under `¬ LandingLaw Z`, there exist `δ : ℕ → ℝ` and
+  `rightOrdinateSup_eq_on_zero_free_strip`).** Under `¬ LandingLaw Z`, there exist `δ : ℕ → ℝ` and
   `ρ : ℕ → ℂ` with `StrictAnti δ`, `0 < δ n`, `Tendsto δ atTop (𝓝 0)`, `ρ n ∈ rightOf Z 0`,
   `Re (ρ n) = 1 / 2 + δ n`, `Re z ≤ 1 / 2 + δ 0` for all `z ∈ Z`, and **no** zeros of `Z` at any
   height in `(1 / 2 + δ (n + 1), 1 / 2 + δ n)` — exhausting all off-line real parts right of `1 / 2`.
-  For `ζ`, `topRightOrdinate` is constant across each strip `[1 / 2 + δ (n + 1), 1 / 2 + δ n)`.
+  For `ζ`, the supremum of right-zero ordinates is constant across each strip
+  `[1 / 2 + δ (n + 1), 1 / 2 + δ n)`.
 * **Shallow-preserving Dirichlet-polynomial zero annihilators (`dirichletZeroAnnihilator`,
   `exists_deep_zero_annihilator_of_zerosApproachLine`).** Under `ZerosApproachLine`, for every
   `ε > 0` a finite product `∏_{ρ ∈ L} (1 - 2^{ρ - s})` is entire, vanishes at every zero of `ζ` in
@@ -51,7 +52,7 @@ theorem exists_max_depth_below_and_zero_free_strip {Z : ZeroConfig}
     by_contra hS
     rw [not_nonempty_iff_eq_empty] at hS
     apply hInf ((hA (δ / 2) (half_pos hδ)).subset fun z hz => ?_)
-    have hnot : z ∉ S := by rw [hS]; exact not_mem_empty z
+    have hnot : z ∉ S := by simp [hS]
     refine ⟨hz.1, ?_⟩
     by_contra hle
     exact hnot ⟨hz, by linarith⟩
@@ -103,7 +104,7 @@ theorem exists_descending_strip_ladder_of_not_landing {Z : ZeroConfig} (hNL : ¬
       (∀ n, ∀ z ∈ Z.carrier, ¬ (1 / 2 + δ (n + 1) < z.re ∧ z.re < 1 / 2 + δ n)) ∧
       (∀ z ∈ rightOf Z 0, ∃ n, z.re = 1 / 2 + δ n) := by
   classical
-  rw [LandingLaw, not_imp] at hNL
+  rw [LandingLaw, Classical.not_imp] at hNL
   obtain ⟨hA, hInf⟩ := hNL
   let seq : ℕ → ℝ × ℂ := fun n => Nat.rec (stripLadderStep Z hA hInf 1)
     (fun _ prev => stripLadderStep Z hA hInf prev.1) n
@@ -129,6 +130,7 @@ theorem exists_descending_strip_ladder_of_not_landing {Z : ZeroConfig} (hNL : ¬
     intro z hz
     have hs := (stripLadderStep_spec hA hInf one_pos).2.2.2.2 z hz
     have hz1 : z.re ≤ 1 := (Z.strip z hz).2
+    change z.re ≤ 1 / 2 + (stripLadderStep Z hA hInf 1).1
     by_contra hgt
     exact hs ⟨by linarith, by linarith⟩
   have hgap : ∀ n, ∀ z ∈ Z.carrier, ¬ (1 / 2 + δ (n + 1) < z.re ∧ z.re < 1 / 2 + δ n) :=
@@ -164,7 +166,7 @@ theorem exists_descending_strip_ladder_of_not_landing {Z : ZeroConfig} (hNL : ¬
     have hk_lt : δ k < z.re - 1 / 2 := Nat.find_spec hex
     rcases Nat.eq_zero_or_pos k with hkz | hkpos
     · exfalso
-      have h0 : δ 0 < z.re - 1 / 2 := hkz ▸ hk_lt
+      have h0 : δ 0 < z.re - 1 / 2 := by rwa [hkz] at hk_lt
       linarith [htop z hz.1]
     · refine ⟨k - 1, ?_⟩
       have hmin : ¬ δ (k - 1) < z.re - 1 / 2 := Nat.find_min hex (by omega)
@@ -189,14 +191,14 @@ theorem zeta_descending_strip_ladder_of_not_landing (hNL : ¬ ZetaLandingLaw) :
       (∀ z ∈ rightOf zetaZeroConfig 0, ∃ n, z.re = 1 / 2 + δ n) :=
   exists_descending_strip_ladder_of_not_landing (mt zetaLandingLaw_iff_landingLaw.mpr hNL)
 
-/-- On any all-height zero-free open vertical strip `(a, b)` of `ζ`, `topRightOrdinate` is
-identically constant across the half-open interval `[a, b)`. -/
-theorem topRightOrdinate_eq_on_zero_free_strip {a b σ₁ σ₂ : ℝ}
+/-- On any all-height zero-free open vertical strip `(a, b)` of `ζ`, the supremum of `|Im ρ|` over
+zeros strictly right of `σ` is identically constant across the half-open interval `[a, b)`. -/
+theorem rightOrdinateSup_eq_on_zero_free_strip {a b σ₁ σ₂ : ℝ}
     (hstrip : ∀ z ∈ zetaZeroConfig.carrier, ¬ (a < z.re ∧ z.re < b))
     (ha₁ : a ≤ σ₁) (hb₁ : σ₁ < b) (ha₂ : a ≤ σ₂) (hb₂ : σ₂ < b) :
-    topRightOrdinate σ₁ = topRightOrdinate σ₂ := by
-  unfold topRightOrdinate
-  congr 2
+    sSup (insert 0 ((fun q : XiZeroCopy => |(q.1 : ℂ).im|) '' {q | σ₁ < (q.1 : ℂ).re})) =
+      sSup (insert 0 ((fun q : XiZeroCopy => |(q.1 : ℂ).im|) '' {q | σ₂ < (q.1 : ℂ).re})) := by
+  congr 3
   ext q
   simp only [mem_setOf_eq]
   have hq : (q.1 : ℂ) ∈ zetaZeroConfig.carrier :=
@@ -229,7 +231,7 @@ theorem differentiable_dirichletZeroAnnihilator (L : List ℂ) :
   induction L with
   | nil =>
     unfold dirichletZeroAnnihilator
-    simpa using differentiable_const (1 : ℂ)
+    exact differentiable_const (1 : ℂ)
   | cons ρ tail ih =>
     have hcons : dirichletZeroAnnihilator (ρ :: tail) =
         fun s => (1 - Complex.exp ((Real.log 2 : ℂ) * (ρ - s))) * dirichletZeroAnnihilator tail s := by
@@ -251,7 +253,8 @@ private lemma norm_exp_log_two_mul_sub (ρ s : ℂ) :
     ‖Complex.exp ((Real.log 2 : ℂ) * (ρ - s))‖ = (2 : ℝ) ^ (ρ.re - s.re) := by
   rw [Complex.norm_exp]
   have hre : ((Real.log 2 : ℂ) * (ρ - s)).re = Real.log 2 * (ρ.re - s.re) := by
-    simp [Complex.mul_re]
+    simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, Complex.sub_re,
+      zero_mul, sub_zero]
   rw [hre, Real.rpow_def_of_pos (by norm_num : (0 : ℝ) < 2)]
 
 /-- Uniform upper bound for `dirichletZeroAnnihilator L` on any closed right half-plane `Re s ≥ σ₀`. -/
@@ -376,10 +379,12 @@ theorem lehmer_quartet_moment_obstruction {γ δ γbar η : ℝ}
   have hγ2 : γ ^ 2 = γbar ^ 2 + η ^ 2 + δ ^ 2 := by linarith
   have he4 : (γ ^ 2 + δ ^ 2) ^ 2 - (γbar + η) ^ 2 * (γbar - η) ^ 2 =
       4 * (γbar ^ 2 + δ ^ 2) * (η ^ 2 + δ ^ 2) := by
-    linear_combination (2 * γ ^ 2 + 2 * γbar ^ 2 + 2 * η ^ 2 + 6 * δ ^ 2) * hγ2
+    rw [hγ2]
+    ring
   have hp4 : 4 * (γ ^ 4 - 6 * γ ^ 2 * δ ^ 2 + δ ^ 4) - 2 * ((γbar + η) ^ 4 + (γbar - η) ^ 4) =
       -16 * (γbar ^ 2 + δ ^ 2) * (η ^ 2 + δ ^ 2) := by
-    linear_combination 4 * (γ ^ 2 + γbar ^ 2 + η ^ 2 - 5 * δ ^ 2) * hγ2
+    rw [show γ ^ 4 = (γ ^ 2) ^ 2 by ring, hγ2]
+    ring
   refine ⟨he4, hp4, fun hδ => ?_⟩
   have hδ2 : 0 < δ ^ 2 := sq_pos_of_ne_zero hδ
   have hpos : 0 < (γbar ^ 2 + δ ^ 2) * (η ^ 2 + δ ^ 2) :=

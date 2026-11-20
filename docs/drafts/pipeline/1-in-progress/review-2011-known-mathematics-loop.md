@@ -22,9 +22,9 @@ Each package removes an obstacle without a new inequality. Order of work: 5/6 fa
 | 3 | Green transfer D ↔ E(H)−E(H/2) | ExclusionOfTheCriticalState/Wall/TheMidpointAndTheHalvingIncrementShareOneSidedExponents (`error_le_of_terminalOddHalf_le`: coefficient 1/(1−2^(−b)), `midpoint_halving_joint_spectra`) | formalized |
 | 4 | Pilot baselines (i)–(iii) | (i) ExceptionalLayerTheory/SquareConductors/TheIndependentEndpointPriceOfTheFirstCofactorOctave (`abs_firstCofactorOctave_le`: exponent 1/3+2b/3 for b>Θ; unconditional above 32999/36000; 8/9 under Θ≤5/6) · (ii) SignedArithmeticCorrespondences/TheOddEvenCouplingOfTheWeilCombSeesOnlyThePrimeTwo (`contact_odd_even`, `combSiteRow_of_odd`, `combSiteRow_twoBlock`) · (iii) CountingHolography/Sections/TheGramOfTwoPrimeShellCopiesOfOneWitness (`tendsto_gram_primeShellCopies`, `eventually_negDef_primeShellCopies`, `eventually_not_negDef_primeShellCopies`) | formalized |
 | 5 | Λ_X pincer constant | ZeroConfigurationGeometry/HeatScaleRepulsion/TheLocalNewmanPincerCannotSeeTheStrip (`im_eq_zero_of_pairModelHeat_critical_eq_zero`, `pairModel_persistence_misses_pincer_threshold`) | formalized |
-| 6 | Verified height beyond 67 | — | open |
-| 7 | Twin test suite | — | open |
-| 8 | Adversary bookkeeping | — | open |
+| 6 | Verified height beyond 67 | — | not started (stopped by user 2026-11-20) |
+| 7 | Twin test suite | ScaleSignedIncidenceCriticality/TheTwinTestSuite (`twin_stepanov_oneOff`, `twin_stepanov_realOneOff`, `twin_comb_liouville`, `twin_eulerSymmetric_floor`, `twin_fixedAperture`, `twin_primeTwo_schur`) | formalized |
+| 8 | Adversary bookkeeping | — | not started (stopped by user 2026-11-20) |
 
 ## Findings
 - WD module `ConjugateDiagonalGeometry/NearLineLogMean/SuperpolynomialMobiusOrder` did not compile against current Mathlib; repaired (5 API fixes) and wired.
@@ -36,4 +36,5 @@ Each package removes an obstacle without a new inequality. Order of work: 5/6 fa
 - Verified height: the height-67 proof is phase-free (Fejér budget, band L = 3). Phase-free bounds peak near L = 3 (left side 2(2 − 4(1−e^{−L/2})/L) grows slower than the worst-case prime polynomial), so going beyond 67 needs phase-dependent (zero-locating or γ-local) certified evaluation.
 
 ## Log
+- 2026-11-20 — packages 1–5 and 7 formalized and wired; loop stopped by user before 6 and 8.
 - 2026-11-20 — created; Θ ≤ 20999/24000 is a Lean theorem (`ZeroForcingCalculus.zetaZeroWidth_le_sub_three_eighths`), so every face also has an unconditional reading.
