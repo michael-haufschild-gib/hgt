@@ -61,12 +61,14 @@ theorem characterMoment_integral {n : ℕ} (φ : TestWeight) (h : modulusGRH (n+
       exact Eventually.of_forall fun _ => (RCLike.norm_conj _).le
     exact hF.mul_prod hconj
   have hK (p : ℝ × ℝ) : characterTestKernel N φ a p = (2/(N.totient : ℂ)) * ∑ χ ∈ X, G χ p := by
-    simp only [characterTestKernel,characterKernel,G,F,characterIntegrand,mellinMultiplier,
-      RCLike.star_def,map_mul,X,← mul_assoc]
-    rw [mul_right_comm _ (2/(N.totient:ℂ)),mul_assoc,Finset.mul_sum]
+    let P := fun (χ : DirichletCharacter ℂ N) =>
+      characterFeature χ (mellinLine a p.1) * conj (characterFeature χ (mellinLine a p.2))
+    change (V p.1 * conj (V p.2)) * ((2/(N.totient:ℂ)) * ∑ χ ∈ X, P χ) = _
+    rw [mul_left_comm,Finset.mul_sum]
     congr 1
     apply sum_congr rfl
     intro χ hχ
+    simp only [G,F,V,P,characterIntegrand,mellinMultiplier,map_mul]
     ring
   simp only [hK]
   refine ⟨(integrable_finsetSum X hi).const_mul _,?_⟩

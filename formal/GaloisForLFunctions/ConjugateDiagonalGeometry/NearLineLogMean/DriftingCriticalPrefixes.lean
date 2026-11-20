@@ -26,11 +26,11 @@ private abbrev untwist (u : ℝ) (k : ℕ) := (k:ℂ)^(linePoint u)
 private theorem section_succ (u : ℝ) (k : ℕ) :
     sectionAt u (k+1)=sectionAt u k+mobCoeff (k+1)*((k+1:ℕ):ℂ)^(-linePoint u) := by
   unfold sectionAt moebiusPoly edPoly
-  rw [sum_Icc_succ_top (by omega)]
+  rw [sum_Icc_succ_top (by omega), Complex.ofReal_natCast]
 
 private theorem mertens_succ (k : ℕ) :
     mobiusMertensPartialSum (k+1)=mobiusMertensPartialSum k+mobCoeff (k+1) := by
-  rw [mobiusMertensPartialSum,sum_range_succ]
+  rw [mobiusMertensPartialSum,Finset.sum_range_succ]
   rfl
 
 private theorem inverse_abel (u : ℝ) (k : ℕ) :
@@ -42,7 +42,7 @@ private theorem inverse_abel (u : ℝ) (k : ℕ) :
     have hn : ((k+1:ℕ):ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (Nat.succ_ne_zero k)
     have hcancel : untwist u (k+1)*((k+1:ℕ):ℂ)^(-linePoint u) = 1 := by
       rw [untwist,←Complex.cpow_add _ _ hn,add_neg_cancel,Complex.cpow_zero]
-    rw [mertens_succ,ih,section_succ,sum_range_succ]
+    rw [mertens_succ,ih,section_succ,Finset.sum_range_succ]
     linear_combination -(mobCoeff (k+1))*hcancel
 
 private theorem untwist_step (u : ℝ) {j : ℕ} (hj : 0 < j) :
@@ -112,12 +112,16 @@ theorem mertens_mass_from_vertical_prefixes (u : ℝ) (N : ℕ) :
     refine (div_le_div_of_nonneg_right (mertens_via_prefix_mass u hk) hp.le).trans_eq ?_
     have hx : (k:ℝ)^(1/2:ℝ)*(k:ℝ)⁻¹=(k:ℝ)^(-(1/2:ℝ)) := by
       rw [← Real.rpow_neg_one,←Real.rpow_add hp]; norm_num
-    rw [add_div,div_eq_mul_inv,div_eq_mul_inv,show ∀ a b c : ℝ, a*b*c=b*(a*c) by intros; ring,hx]
+    rw [add_div,mul_comm ((k:ℝ)^(1/2:ℝ)),mul_div_assoc,div_eq_mul_inv ((k:ℝ)^(1/2:ℝ)),hx,
+      div_eq_mul_inv (‖linePoint u‖*verticalPrefixMass u N)]
   have hs := sum_le_sum hrow
   rw [←mertens_abel_mass_eq,sum_add_distrib,←mul_sum] at hs
   change mertensAbelMass N ≤ verticalPrefixMass u N+_ at hs
-  have hh' := mul_le_mul_of_nonneg_left hh (mul_nonneg (norm_nonneg _) hm)
-  linarith only [hs,hh']
+  have hh' := mul_le_mul_of_nonneg_left hh (mul_nonneg (norm_nonneg (linePoint u)) hm)
+  calc mertensAbelMass N ≤ _ := hs
+    _ ≤ verticalPrefixMass u N+‖linePoint u‖*verticalPrefixMass u N*(1+Real.log N) := by
+      linarith only [hh']
+    _ = _ := by ring
 
 /-- Indices with critical-prefix amplitude above a common threshold. -/
 def largeVerticalPrefixes (u H : ℝ) (N : ℕ) :=
@@ -131,8 +135,9 @@ private theorem mass_on_subset (u H : ℝ) (S : Finset ℕ) (hs : ∀ j∈S, 1 �
   have hn := sum_le_sum (s:=S) (fun j hj => mul_le_mul_of_nonneg_right (hb j hj)
     (Real.rpow_nonneg (Nat.cast_nonneg j) (-(1/2:ℝ))))
   rw [←mul_sum] at hn
-  refine hn.trans ((mul_le_mul_of_nonneg_left ?_ hH).trans_eq (by ring))
-  convert h using 1 <;> norm_num
+  calc _ ≤ H * ∑ i ∈ S, (i:ℝ)^(-(1/2:ℝ)) := hn
+    _ ≤ H * (3*((S.card:ℝ)+1)^(1/2:ℝ)) := mul_le_mul_of_nonneg_left h hH
+    _ = 3*H*((S.card:ℝ)+1)^(1/2:ℝ) := by ring
 
 /-- Finite two-population inequality: arbitrary heights, arbitrary cutoffs,
 and the number of large sections at the very same height and cutoff. -/
@@ -146,7 +151,8 @@ theorem vertical_prefix_two_population (u : ℝ) {H U : ℝ} (hH : 0 ≤ H) (hU 
   have hc := card_le_card (sdiff_subset (s:=S) (t:=E))
   have hc' : (((S \ E).card:ℝ)+1) ≤ (N:ℝ)+1 := by
     have he : S.card=N := by simp [S,Nat.card_Icc]
-    exact add_le_add_right (Nat.cast_le.mpr (hc.trans_eq he)) _
+    have := (Nat.cast_le (α := ℝ)).mpr (hc.trans_eq he)
+    linarith
   have h₁ := mass_on_subset u H (S \ E) (fun _ hj => (mem_Icc.mp (mem_sdiff.mp hj).1).1) hH
     (fun j hj => le_of_not_gt (fun h => (mem_sdiff.mp hj).2 (mem_filter.mpr ⟨(mem_sdiff.mp hj).1,h⟩)))
   have h₂ := mass_on_subset u U E (fun _ hj => (mem_Icc.mp (hsub hj)).1) hU (fun j hj => hb j (hsub hj))
@@ -176,12 +182,14 @@ private theorem small_height_cost {e : ℝ} (he : 0 < e) (N : ℕ) {u : ℝ}
   rw [Real.log_rpow hp] at hex
   have hfrac : Real.log X ≤ X^e/e := (le_div_iff₀ he).mpr (by linarith only [hex])
   have hs : ‖linePoint u‖ ≤ 2*X^e := (line_norm_le u).trans (by linarith only [hu,hpow])
-  have hL : 1+Real.log N ≤ (1+1/e)*X^e := by linarith only [hlog,hfrac,hpow]
+  have hL : 1+Real.log N ≤ (1+1/e)*X^e := by
+    rw [show (1+1/e)*X^e = X^e+X^e/e by ring]
+    linarith only [hlog,hfrac,hpow]
   have hb := mul_le_mul hs hL (add_nonneg zero_le_one (Real.log_natCast_nonneg N)) (by positivity)
   have hsq : X^e*X^e = X^(2*e) := by rw [←Real.rpow_add hp,two_mul]
   have hh : 1 ≤ X^(2*e) := Real.one_le_rpow hx (by positivity)
   change _ ≤ (1+2*(1+1/e))*X^(2*e)
-  calc _ ≤ 1+(2*X^e)*((1+1/e)*X^e) := add_le_add_left hb 1
+  calc _ ≤ 1+(2*X^e)*((1+1/e)*X^e) := add_le_add_right hb 1
        _ = 1+2*(1+1/e)*X^(2*e) := by rw [←hsq];ring
        _ ≤ _ := by linarith only [hh]
 
@@ -222,7 +230,7 @@ theorem many_critical_prefixes_on_a_height_band {b d : ℝ} (hb : b < zetaZeroWi
   have hM : 0 ≤ M := mul_nonneg hU (Real.rpow_nonneg hp.le _)
   have hbnd (k : ℕ) (hk : k∈Icc 1 N) : ‖sectionAt u k‖ ≤ M := by
     have hku := hpoint k u
-    have hkX : (k:ℝ)+1 ≤ X := add_le_add_right (Nat.cast_le.mpr (mem_Icc.mp hk).2) _
+    have hkX : (k:ℝ)+1 ≤ X := add_le_add_left ((Nat.cast_le (α := ℝ)).mpr (mem_Icc.mp hk).2) _
     have hlen := Real.rpow_le_rpow (by positivity) hkX (add_nonneg zetaZeroWidth_nonneg ha.le)
     have hxe := Real.rpow_le_rpow_of_exponent_le hx (by linarith only [he1] : e ≤ 1)
     rw [Real.rpow_one] at hxe
@@ -319,7 +327,7 @@ theorem cutoff_moment_power_squeeze {p ε : ℝ} (hp : 0 < p) (hε : 0 < ε) :
     rw [Real.mul_rpow (by norm_num) hXpos.le] at hy
     have hU : ∀ k∈Icc 1 N, ‖sectionAt u k‖ ≤ B*X^(zetaZeroWidth+2*a) := by
       intro k hk
-      have hh : (k:ℝ)+1 ≤ X := add_le_add_right (Nat.cast_le.mpr (mem_Icc.mp hk).2) _
+      have hh : (k:ℝ)+1 ≤ X := add_le_add_left ((Nat.cast_le (α := ℝ)).mpr (mem_Icc.mp hk).2) _
       have hs := Real.rpow_le_rpow (by positivity) hh (add_nonneg zetaZeroWidth_nonneg ha.le)
       refine (hsec k u).trans ((mul_le_mul (mul_le_mul_of_nonneg_left hs hC) hy (by positivity) (by positivity)).trans_eq ?_)
       rw [show zetaZeroWidth+2*a=(zetaZeroWidth+a)+a by ring,Real.rpow_add hXpos]
@@ -338,8 +346,8 @@ theorem cutoff_moment_power_squeeze {p ε : ℝ} (hp : 0 < p) (hε : 0 < ε) :
     calc X*(B^p*X^(p*zetaZeroWidth+ε/2)) ≤ X*(X^(ε/2)*X^(p*zetaZeroWidth+ε/2)) :=
            mul_le_mul_of_nonneg_left hk hXpos.le
          _ = X^(1+p*zetaZeroWidth+ε) := by
-           rw [←Real.rpow_add hXpos,←Real.rpow_one X,←Real.rpow_add hXpos]
-           congr 1;ring
+           rw [show (1:ℝ)+p*zetaZeroWidth+ε = 1+(ε/2+(p*zetaZeroWidth+ε/2)) by ring,
+             Real.rpow_add hXpos 1,Real.rpow_one,←Real.rpow_add hXpos (ε/2)]
 
 /-- Along every subpolynomially drifting height the ordinary logarithmic
 growth order exists for every positive moment across the prefixes. -/

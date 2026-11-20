@@ -122,14 +122,16 @@ theorem squarefree_cutoff_remainder {X : ℝ} (hX : 1≤X) {s : ℂ} (hs : 1/2<s
         Set.Ioc_subset_Icc_self |>.const_mul d)]
     apply setIntegral_congr_fun measurableSet_Ioc
     intro t ht
+    beta_reduce
     rw [hc,add_mul,mul_assoc,power_step _ (zero_lt_one.trans ht.1),
       show (1:ℂ)+-(s+1) = -s by ring]
     rfl
   have heq := setIntegral_union (μ:=volume) (s:=Set.Ioc 1 X) (t:=Set.Ioi X)
     (Set.disjoint_left.mpr (fun _ h h' => h'.not_ge h.2)) measurableSet_Ioi
     (herr.mono_set Set.Ioc_subset_Ioi_self) (herr.mono_set (Set.Ioi_subset_Ioi hX))
-  rw [Set.Ioc_union_Ioi_eq_Ioi hX,←_root_.RHTower.SquarefreeDiscrepancy.moment_eq_integral] at heq
-  change moment s = (∫ t in Set.Ioc 1 X,weightedCountError s t) + ∫ t in Set.Ioi X,weightedCountError s t at heq
+  rw [Set.Ioc_union_Ioi_eq_Ioi hX] at heq
+  replace heq : moment s = (∫ t in Set.Ioc 1 X,weightedCountError s t) + ∫ t in Set.Ioi X,weightedCountError s t :=
+    (_root_.RHTower.SquarefreeDiscrepancy.moment_eq_integral s).trans heq
   rw [abel_counting hX hs,hu,hc,squarefreeRegularPart,heq]
   have hp := power_step (-s) hx
   rw [show (1:ℂ)+ -s = 1-s by ring] at hp
@@ -160,7 +162,7 @@ theorem squarefree_section_regular_part_error {X : ℝ} (hX : 1≤X) {s : ℂ} (
       measurableSet_Ioi (fun t ht => ?_)).trans_eq
     · rw [integral_const_mul,integral_Ioi_rpow_of_lt hlt hp,show 1/2-(s.re+1)+1=1/2-s.re by ring]
       field_simp [sub_ne_zero.mpr hs.ne',sub_ne_zero.mpr hs.ne]
-      <;> ring
+      rw [show (2:ℝ)*s.re - 1 = -(1 - 2*s.re) by ring, one_div_neg_eq_neg_one_div]
     · simpa only [weightedCountError,Complex.add_re,Complex.one_re] using
         point_envelope (s:=s+1) (hX.trans (Set.mem_Ioi.mp ht).le)
   rw [squarefree_cutoff_remainder hX hs]

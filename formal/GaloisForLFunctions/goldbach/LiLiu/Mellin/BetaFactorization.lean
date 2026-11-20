@@ -27,8 +27,12 @@ private theorem inverse_reflected_gamma {u : ℂ} (hu : 0 < u.re) (hu' : u.re < 
     exact mul_ne_zero (Gamma_ne_zero_of_re_pos hu) h1 hG
   have hp : (Real.pi : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
   have h := (eq_div_iff hs).mp hG
-  field_simp [h1,hp]
-  linear_combination -h
+  apply (eq_div_iff hp).mpr
+  calc
+    _ = (Gamma (1-u))⁻¹ * (Gamma u * Gamma (1-u) * sin (Real.pi*u)) :=
+      congrArg (fun p : ℂ => (Gamma (1-u))⁻¹*p) h.symm
+    _ = (Gamma (1-u))⁻¹ * Gamma (1-u) * (Gamma u * sin (Real.pi*u)) := by ring
+    _ = _ := by rw [inv_mul_cancel₀ h1,one_mul]
 
 private theorem beta_reflection {u v t : ℂ} (hu : 0 < u.re) (hv : 0 < v.re)
     (ht : 0 < t.re) (he : u+v+t=1) :
@@ -45,7 +49,6 @@ private theorem gamma_half_factor (r : ℂ) (hr : 0 < r.re) (hr' : r.re < 1) :
       Gamma r * (2:ℂ) ^ (1-r) * sin (Real.pi*r/2) / (Real.sqrt Real.pi : ℂ) := by
   have hh : (Real.sqrt Real.pi : ℂ) ^ 2 = (Real.pi : ℂ) := by
     exact_mod_cast Real.sq_sqrt Real.pi_pos.le
-  have hp : (Real.pi : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr Real.pi_ne_zero
   have hq : (Real.sqrt Real.pi : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (Real.sqrt_pos.mpr Real.pi_pos).ne'
   have hu : 0 < (r/2).re := by simpa using half_pos hr
   have hu' : (r/2).re < 1 := by norm_num; linarith only [hr']
@@ -56,7 +59,13 @@ private theorem gamma_half_factor (r : ℂ) (hr : 0 < r.re) (hr' : r.re < 1) :
     inverse_reflected_gamma hu hu', show (Real.pi : ℂ)*(r/2) = Real.pi*r/2 by ring]
   calc
     _ = (Gamma (r/2) * Gamma (r/2+1/2)) * sin (Real.pi*r/2) / Real.pi := by ring
-    _ = _ := by rw [hd]; field_simp [hp,hq]; linear_combination (Gamma r * (2:ℂ)^(1-r) * sin (Real.pi*r/2))*hh
+    _ = _ := by
+      rw [hd]
+      have cancel (A B v p : ℂ) (hv : v ≠ 0) (e : v^2=p) :
+          A*v*B/p=A*B/v := by
+        rw [← e]
+        field_simp [hv]
+      exact cancel _ _ _ _ hq hh
 
 /-- Equation (4.4) on the common domain of the three Euler integrals. -/
 theorem signedBeta_factorization {s z : ℂ} (hs : 0 < s.re) (hs' : s.re < 1/2)
@@ -107,7 +116,8 @@ theorem signedBeta_factorization {s z : ℂ} (hs : 0 < s.re) (hs' : s.re < 1/2)
       dsimp only [a,b]
       field_simp [hp,hq]
       ring_nf at hpi ⊢
-      first | assumption | simp only [hpi] | ring
+      rw [hpi]
+      ring
 
 #print axioms signedBeta_factorization
 end

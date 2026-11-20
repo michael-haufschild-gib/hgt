@@ -53,20 +53,35 @@ private theorem endpoint_bound (a : ℕ → ℂ) (f δ : ℕ → ℝ) (S : Finse
     by_contra h
     have h' : (n:ℕ) ≠ m := fun hh => h (Subtype.ext hh)
     have := hgap n n.2 m m.2 h'
-    rw [he, sub_self, abs_zero] at this
+    have he' : f (n:ℕ) = f m := he
+    rw [he', sub_self, abs_zero] at this
     exact (hp n n.2).not_ge this
   have hb := RiemannGaussian.MontgomeryVaughan.mvDiag_thirteen S (fun n => f n) (fun n => δ n)
     (fun n => phased a f t n) hinj (fun n => hp n n.2)
     (fun n m h => hgap n n.2 m m.2 (fun h' => h (Subtype.ext h')))
-  rw [Finset.sum_comm] at hb
-  simp only [phased_norm, Finset.sum_coe_sort] at hb
-  refine le_trans ?_ hb
-  apply le_of_eq; congr 1
-  unfold endpointForm
-  refine sum_congr rfl fun n hn => ?_
-  rw [← sum_erase_add (s := S) (a := n) _ hn]
-  simp only [ite_true, add_zero]
-  exact sum_congr rfl fun m hm => (if_neg (mem_erase.mp hm).1).symm
+  -- The (m,n) term of the endpoint form; it vanishes on the diagonal.
+  let g : ℕ → ℕ → ℂ := fun m n => phased a f t m * conj (phased a f t n) / ((f m - f n : ℝ) : ℂ)
+  have hdiag (n : ℕ) : g n n = 0 := by simp [g]
+  have hz (r s : S) : (if r = s then (0:ℂ) else
+      phased a f t r * conj (phased a f t s) / ((f r - f s : ℝ) : ℂ)) = g r s := by
+    split_ifs with he
+    · subst he; exact (hdiag _).symm
+    · rfl
+  have hL : (∑ r : S, ∑ s : S, g r s) = ∑ m ∈ S, ∑ n ∈ S, g m n := by
+    have h1 : ∀ r : S, (∑ s : S, g r s) = ∑ n ∈ S, g r n := fun r =>
+      (Finset.sum_subtype S (fun _ => Iff.rfl) (g r)).symm
+    rw [Fintype.sum_congr _ _ h1]
+    exact (Finset.sum_subtype S (fun _ => Iff.rfl) (fun m => ∑ n ∈ S, g m n)).symm
+  have hR : (∑ r : S, ‖phased a f t r‖ ^ 2 / δ r) = ∑ n ∈ S, ‖a n‖^2/δ n := by
+    simp only [phased_norm]
+    exact (Finset.sum_subtype S (fun _ => Iff.rfl) (fun n => ‖a n‖^2/δ n)).symm
+  have hE : endpointForm a f S t = ∑ m ∈ S, ∑ n ∈ S, g m n := by
+    rw [Finset.sum_comm (s := S) (t := S)]
+    exact sum_congr rfl fun n _ => Finset.sum_erase S (f := fun m => g m n) (hdiag n)
+  simp only [hz] at hb
+  rw [hL, hR] at hb
+  rw [hE]
+  exact hb
 
 /-- Signed interval error controlled by the weighted coefficient energy
 with the local, rather than global, separation of each frequency. -/
@@ -96,8 +111,9 @@ theorem interval_gram_error_by_individual_gaps (a : ℕ → ℂ) (f δ : ℕ →
   rw [hsig, add_sub_cancel_left]
   refine (Complex.abs_re_le_norm _).trans ?_
   rw [norm_mul, norm_inv, Complex.norm_I, inv_one, one_mul]
-  exact (norm_sub_le _ _).trans (by linarith only [endpoint_bound a f δ S hp hgap A,
-    endpoint_bound a f δ S hp hgap B])
+  have h1 := endpoint_bound a f δ S hp hgap A
+  have h2 := endpoint_bound a f δ S hp hgap B
+  exact (norm_sub_le _ _).trans (by linarith only [h1, h2])
 
 /-- The initial value of an arbitrary Dirichlet polynomial identifies the
 coefficient of each logarithmic frequency on a vertical translate. -/
@@ -124,7 +140,8 @@ theorem criticalMoebiusAmplitude_sq {n : ℕ} (hn : 0 < n) :
 
 theorem critical_moebius_frequency_section (N : ℕ) (t : ℝ) :
     moebiusPoly N (linePoint t) = genPoly criticalMoebiusAmplitude (fun n => -Real.log n) (Icc 1 N) t := by
-  simpa [moebiusPoly, linePoint, criticalMoebiusAmplitude] using dirichlet_section_as_log_polynomial mobCoeff N (1/2) t
+  rw [show criticalMoebiusAmplitude = fun n => mobCoeff n * ((n:ℝ)^(-(1/2:ℝ)):ℝ) from rfl]
+  simpa [moebiusPoly, linePoint] using dirichlet_section_as_log_polynomial mobCoeff N (1/2) t
 
 theorem critical_moebius_frequency_diagonal (N : ℕ) :
     (∑ n ∈ Icc 1 N, ‖criticalMoebiusAmplitude n‖^2) = harmonicMoebiusDiagonal N := by
@@ -142,7 +159,9 @@ theorem critical_moebius_gap_energy (N : ℕ) :
     have hp : (1:ℝ) ≤ n := by exact_mod_cast hpos
     have hμ : ((ArithmeticFunction.moebius n : ℤ) : ℝ)^2 ≤ 1 := by
       rcases ArithmeticFunction.moebius_eq_or n with h|h|h <;> simp [h]
-    rw [criticalMoebiusAmplitude_sq hpos, δ, div_inv_eq_mul, div_mul_eq_mul_div, div_le_iff₀ (zero_lt_one.trans_le hp)]
+    rw [criticalMoebiusAmplitude_sq hpos]
+    dsimp only [δ]
+    rw [div_inv_eq_mul, div_mul_eq_mul_div, div_le_iff₀ (zero_lt_one.trans_le hp)]
     exact (mul_le_mul_of_nonneg_right hμ (by positivity)).trans (by linarith)
   have hsum := sum_le_sum hterm
   have hcard : S.card=N := by simp [S,Nat.card_Icc]
@@ -158,12 +177,14 @@ theorem sharp_moebius_diagonal_error (N : ℕ) (A L : ℝ) :
   have hgap (n : ℕ) (hn : n ∈ S) (m : ℕ) (hm : m ∈ S) (hne : n ≠ m) :
       δ n ≤ |(-Real.log n)-(-Real.log m)| := by
     simpa only [neg_sub_neg] using local_log_spacing (mem_Icc.mp hn).1 (mem_Icc.mp hm).1 hne.symm
-  have he := critical_moebius_frequency_section N
-  have hD := critical_moebius_frequency_diagonal N
-  have hsum := critical_moebius_gap_energy N
-  have ht := interval_gram_error_by_individual_gaps criticalMoebiusAmplitude _ δ S (fun _ _ => inv_pos.mpr (by positivity)) hgap A L
-  simp only [he,hD] at *
-  exact ht.trans (by linarith only [hsum])
+  have hsum : (∑ n ∈ Icc 1 N, ‖criticalMoebiusAmplitude n‖^2 / δ n) ≤ 2*N :=
+    critical_moebius_gap_energy N
+  have ht := interval_gram_error_by_individual_gaps criticalMoebiusAmplitude (fun n => -Real.log n) δ
+    (Icc 1 N) (fun _ _ => inv_pos.mpr (by positivity)) hgap A L
+  rw [critical_moebius_frequency_diagonal N] at ht
+  simp only [critical_moebius_frequency_section N]
+  refine ht.trans ?_
+  linarith only [hsum]
 
 /-- Uniform in the starting height, the entire local mean equals the
 squarefree density times log X plus the squarefree Laurent constant,

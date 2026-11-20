@@ -99,11 +99,18 @@ theorem arithmetic_test_form {n : ℕ} (φ : TestWeight) (hN : 4 ≤ n+1) (hg : 
     extendedKernel (n+1) a (mellinLine a x) (mellinLine a y) * conj (boundaryTest φ (n+1) y) = _
   rw [extendedKernel,clippedPoint_eq (hedge x),clippedPoint_eq (hedge y)]
   have hn := one_add_line_ne_zero ha x
-  have hz := map_ne_zero_of_injective conj conj.injective (one_add_line_ne_zero ha y)
-  simp only [map_add,map_one] at hz
-  simp only [boundaryKernel,boundaryTest,mellinMultiplier,mellinLine,a,map_mul,map_add,map_one,
-    RingHomCompTriple.comp_apply, RCLike.conj_conj]
-  field_simp [hn,hz]
+  have hz : 1+conj (mellinLine a y) ≠ 0 := by
+    intro he
+    have h := congrArg conj he
+    apply one_add_line_ne_zero ha y
+    simpa only [map_add,map_one,Complex.conj_conj,map_zero] using h
+  change conj (conj (mellinMultiplier (n+1) φ (mellinLine a x)*(1+mellinLine a x))) *
+    (residualKernel (n+1) (mellinLine a x) (mellinLine a y) /
+      ((1+mellinLine a x)*(1+conj (mellinLine a y)))) *
+    conj (mellinMultiplier (n+1) φ (mellinLine a y)*(1+mellinLine a y)) = _
+  rw [Complex.conj_conj,map_mul,map_add,map_one]
+  field_simp only [hn,hz,mul_ne_zero hn hz]
+  <;> ring
 
 #print axioms arithmetic_test_form
 end

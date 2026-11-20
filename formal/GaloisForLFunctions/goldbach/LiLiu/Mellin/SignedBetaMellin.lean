@@ -61,12 +61,13 @@ theorem signedBeta_mellin_identity (φ : TestWeight) {σ : ℝ} (hσ : 0 < σ) (
   have he (t : ℝ) : F (-1) t + F (-1) (w.im-t) - F 1 t =
       M (s t)*M (w-s t)*signedBeta (s t) (w-s t) := by
     have hR : s (w.im-t) = w-s t := mellinLine_reflect hw t
-    simp only [F,hR,sub_sub_cancel,signedBeta,shapeBeta,if_pos rfl,if_neg (by norm_num : (-1:ℝ) ≠ 1),
+    simp only [F,hR,sub_sub_cancel,signedBeta,shapeBeta,eq_self,ite_true,if_neg (by norm_num : (-1:ℝ) ≠ 1),
       show s t+(w-s t)=w by ring, show 1/2+s t-w = 1/2-(w-s t) by ring]
     ring
   change profileMellin φ w = _ * ∫ t, M (s t)*M (w-s t)*signedBeta (s t) (w-s t)
   simp_rw [← he]
-  rw [integral_sub (hC.add (hC.comp_sub_left w.im)) hJ,integral_add hC (hC.comp_sub_left w.im),
+  have hboth : Integrable (fun t => F (-1) t + F (-1) (w.im-t)) := hC.add (hC.comp_sub_left w.im)
+  rw [integral_sub hboth hJ,integral_add hC (hC.comp_sub_left w.im),
     integral_sub_left_eq_self,profileMellin_orientations φ hw0,eC,eJ]
   ring
 

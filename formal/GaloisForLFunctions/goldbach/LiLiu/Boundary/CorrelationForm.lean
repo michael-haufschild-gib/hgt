@@ -58,10 +58,12 @@ theorem residual_contour_integral {k : ℕ} (hN : 4 ≤ k+2) (φ : TestWeight) (
       C (x,y)-D (x,y)-B (x,y) := by
     dsimp [residualKernel,C,D,B,characterTestKernel,diagonalTestKernel,modelTestKernel]
     ring
+  have hCD : Integrable (fun p => C p-D p) := hC.sub hD
+  have hCDB : Integrable (fun p => C p-D p-B p) := hCD.sub hB
   change c^2 * _ = _
   simp_rw [hrs]
-  rw [← integral_prod (fun p : ℝ × ℝ => C p-D p-B p) ((hC.sub hD).sub hB),
-    integral_sub (hC.sub hD) hB,integral_sub hC hD,mul_sub,mul_sub,hDE]
+  rw [← integral_prod (fun p : ℝ × ℝ => C p-D p-B p) hCDB,
+    integral_sub hCD hB,integral_sub hC hD,mul_sub,mul_sub,hDE]
   change c^2 * (∫ p, characterTestKernel (k+2) φ a p) - (diagonal φ (k+2):ℂ) -
     c^2 * (∫ p, modelTestKernel (k+2) φ a p) = _
   rw [hCE,hBE,correlation_eq_diagonal_sub_oddMoment]
