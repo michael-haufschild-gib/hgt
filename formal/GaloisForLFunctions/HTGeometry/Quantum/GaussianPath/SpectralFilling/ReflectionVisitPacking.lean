@@ -1,7 +1,8 @@
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.PrefixPhaseHorizon
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.TimedReflection
 
 /-! # How many distinct spectral reflections can a bounded-time orbit visit? -/
-open Matrix Set
+open Matrix Set MeasureTheory Filter
 open scoped Matrix.Norms.L2Operator
 namespace GaloisForLFunctions.HTGeometry
 noncomputable section
@@ -73,6 +74,30 @@ theorem phase_filling_requires_spectral_length {n d : ℕ} (e : (Fin n → Bool)
   rw [show (1-2*(1/80:ℝ)) = 39/40 by norm_num] at hh hf
   exact (le_div_iff₀ (by norm_num : (0:ℝ)<39/40)).mp ((sub_le_iff_le_add.mpr hh).trans hf)
 
+/-- Almost surely, filling all phases on a sufficiently long Gaussian Pauli
+prefix costs at least a fixed multiple of (2^(2^N−1)−1)/N in physical time. -/
+theorem gaussian_pauli_phase_cover_time_lower :
+    ∃ C : ℝ, 0 < C ∧ ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ k : ℕ in Filter.atTop,
+      let N := k+3
+      let e := (qubitConfigFin N).trans (prefixPhaseEnergyEquiv k)
+      let H : selfAdjoint (Reg N) := ⟨pathHamiltonian (pathPauliDisorderShell ω (k+1)),isSelfAdjoint_pathHamiltonian _⟩
+      ∀ a T : ℝ, 0 ≤ T → (∀ c : Fin (2^N-1) → ℝ, ∃ t ∈ Icc a (a+T), ∀ j,
+        turnDist (t*RHTower.zeroProjectiveFrequency (fun i => H.2.isHermitian.eigenvalues (e.symm i)) j-c j) < 1/80) →
+          ((2:ℝ)^(2^N-1)-1)*(39/40) ≤ C*(N:ℝ)*T := by
+  obtain ⟨_,b,_,hb,hw⟩ := gaussian_path_eventual_coefficient_mass
+  refine ⟨12+b,by positivity,?_⟩
+  filter_upwards [hw] with ω hω
+  filter_upwards [(tendsto_add_atTop_nat 1).eventually hω] with k hmass
+  intro N e H a T hT hfill
+  let u := pathPauliDisorderShell ω (k+1)
+  have hn : ‖pathHamiltonian u‖ ≤ ∑ l, |u l| := by
+    rw [pathHamiltonian_eq_sum]
+    exact (norm_sum_le _ _).trans_eq (Finset.sum_congr rfl fun l _ => by
+      rw [norm_smul,norm_finitePauliMatrix,Complex.norm_real,Real.norm_eq_abs,mul_one])
+  exact (phase_filling_requires_spectral_length e H a T hT hfill).trans
+    (mul_le_mul_of_nonneg_right (hn.trans (path_pauli_coefficient_mass_le u b hmass.2)) hT)
+
+#print axioms gaussian_pauli_phase_cover_time_lower
 #print axioms spectral_reflection_visit_count
 #print axioms phase_filling_requires_spectral_length
 end

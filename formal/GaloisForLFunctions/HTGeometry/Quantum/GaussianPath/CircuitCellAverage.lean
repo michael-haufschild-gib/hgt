@@ -165,7 +165,8 @@ theorem unitaryEvolution_eq_phase_smul_scalarCentered {n : ℕ}
   have hsplit : t • ((-Complex.I) • (H : Reg n)) = z • 1 + B := by
     have hscalar : t • ((-Complex.I) • ((c : ℂ) • (1 : Reg n))) = z • 1 := by
       ext i j
-      simp [z, Matrix.smul_apply, Complex.real_smul] <;> ring
+      simp [z, Matrix.smul_apply, Complex.real_smul]
+      ring
     dsimp only [B, scalarCenteredHamiltonian]
     rw [smul_sub, smul_sub, hscalar]
     abel
@@ -233,7 +234,7 @@ private theorem norm_scalarCenteredHamiltonian {n : ℕ} (H : selfAdjoint (Reg n
   change ‖(H : Reg n) - (c : ℂ) • (1 : Reg n)‖ = _
   conv_lhs => rw [isHermitian_eq_conj_diagonal hH, hone]
   rw [← Matrix.sub_mul, ← Matrix.mul_sub, Matrix.diagonal_sub,
-    l2_opNorm_unitary_conj_eq hV, Matrix.l2_opNorm_diagonal] <;> rfl
+    l2_opNorm_unitary_conj_eq hV, Matrix.l2_opNorm_diagonal]
 
 /-- The midpoint of the extreme eigenvalues minimizes shifted operator norm.
 The optimum is exactly half the spectral diameter. -/

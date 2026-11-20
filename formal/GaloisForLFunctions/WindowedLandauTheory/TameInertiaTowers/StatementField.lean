@@ -99,5 +99,3 @@ def LayerEFGTwo : Prop :=
 
 end TwoAdicCyclotomicDecomposition
 
-
-end WindowedLandauTheory
