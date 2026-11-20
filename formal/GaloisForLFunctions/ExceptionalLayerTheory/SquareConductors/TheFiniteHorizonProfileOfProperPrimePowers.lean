@@ -61,15 +61,17 @@ private theorem price_transposed {M X K : ℕ} (hm : 0<M) (hK : X≤K*M) :
   have hMe := (Nat.le_floor_iff e0).mpr ej
   have sets : (Ioc M (2*M)).filter (fun d => j*d≤X) = Ioc M ⌊horizonEdge M X j⌋₊ := by
     ext d
-    simp only [mem_filter,mem_Ioc,Nat.le_floor_iff e0,horizonEdge,le_max_iff,le_min_iff,
-      le_div_iff₀ (Nat.cast_pos.mpr jp : 0<(j:ℝ))]
+    simp only [mem_filter,mem_Ioc]
+    rw [Nat.le_floor_iff e0,horizonEdge,le_max_iff,le_min_iff,le_div_iff₀ (Nat.cast_pos.mpr jp : 0<(j:ℝ))]
     have hm' : (d:ℝ)≤M ↔ d≤M := Nat.cast_le
     have h2 : (d:ℝ)≤2*M ↔ d≤2*M := by exact_mod_cast Iff.rfl
     have hmul : (d:ℝ)*j≤X ↔ j*d≤X := by rw [mul_comm]; exact_mod_cast Iff.rfl
     rw [hm',h2,hmul]; omega
   have hset : Icc 1 ⌊horizonEdge M X j⌋₊ \ Icc 1 M = Ioc M ⌊horizonEdge M X j⌋₊ := by
-    ext d; simp only [mem_sdiff,mem_Icc,mem_Ioc]; omega
-  rw [←sum_filter,sets,←hset,sum_sdiff_eq_sub (Icc_subset_Icc_right hMe),←floor_prefix,←proper_octave_prefix_eq]
+    ext d; simp only [Finset.mem_sdiff,Finset.mem_Icc,Finset.mem_Ioc]; omega
+  rw [←sum_filter,sets,←hset,sum_sdiff_eq_sub (Icc_subset_Icc_right hMe),←floor_prefix,
+    show body (M:ℝ) = properOctavePrefix M from (proper_octave_prefix_eq M).symm]
+  try rfl
 
 private theorem edge_factor {M : ℕ} (hm : 0<M) (X j : ℕ) :
     horizonEdge M X j = (M:ℝ)*properHorizonClip ((X:ℝ)/M) j := by
@@ -102,6 +104,7 @@ theorem proper_gcd_finite_ratio {ι : Type*} {l : Filter ι} {M X : ι → ℕ} 
     have mrp := (Nat.cast_pos (α:=ℝ)).mpr hp
     have cr : 0<properHorizonClip ((X i:ℝ)/(M i)) j := zero_lt_one.trans_le (le_max_left _ _)
     change body _ /Real.sqrt _ * Real.sqrt (properHorizonClip _ j) - body _/Real.sqrt _ = _
+    simp only [Function.comp_apply]
     rw [edge_factor hp,Real.sqrt_mul mrp.le]
     field_simp [(Real.sqrt_pos.mpr mrp).ne',(Real.sqrt_pos.mpr cr).ne']
     <;> ring

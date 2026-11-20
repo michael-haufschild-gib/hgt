@@ -58,21 +58,21 @@ Procedure: topological order over the listed modules plus the three unlisted dep
 | `BlackHoleRingdown/TailEnergy/TheSteklovPulseSeesEveryScatteringPole` | olean built |
 | `BlackHoleRingdown/TailEnergy/TheSupportEndpointsOfTheSteklovPulse` | checked, wired |
 | `ConjugateDiagonalGeometry/NearLineLogMean/MertensExcursionsAtEveryLargeCutoff` | checked, wired |
-| `ExceptionalLayerTheory/CountingEachMultiplicityWithoutLocatingTheZeros` | pending |
-| `ExceptionalLayerTheory/CountingEveryZeroOrderByChangingTheAperture` | pending |
-| `ExceptionalLayerTheory/SquareConductors/DilationsOfTheEighthPowerGcdDeficit` | pending |
-| `ExceptionalLayerTheory/FiniteDerivativeSchedulesAdmitDisjointMultiplicityHistograms` | pending |
-| `ExceptionalLayerTheory/SquareConductors/FirstPassageOfTheEighthPowerGcdShortfall` | pending |
-| `ExceptionalLayerTheory/SquareConductors/HarmonicPhasesOfTheEighthPowerShortfall` | pending |
-| `ExceptionalLayerTheory/OneLogarithmicDerivativeOrderReadsTheXiHistogram` | pending |
-| `ExceptionalLayerTheory/SquareConductors/PowerDiscountsOfTheGcdShortfall` | pending |
-| `ExceptionalLayerTheory/RecoveringAPoleByBarycentricInterpolation` | pending |
-| `ExceptionalLayerTheory/SquareConductors/TheCountWithSmallProductOfSimplePrimeFactors` | pending |
-| `ExceptionalLayerTheory/SquareConductors/TheCountingExponentOfDeletedPrimePowers` | pending |
-| `ExceptionalLayerTheory/SquareConductors/TheDirichletPoleOfTheEighthPowerShortfall` | pending |
-| `ExceptionalLayerTheory/SquareConductors/TheDistributionOfAccumulatedGcdShortfall` | pending |
-| `ExceptionalLayerTheory/TheExactBadHeightsOfHorizontalHadamardTests` | pending |
-| `ExceptionalLayerTheory/SquareConductors/TheFiniteHorizonProfileOfProperPrimePowers` | pending |
+| `ExceptionalLayerTheory/CountingEachMultiplicityWithoutLocatingTheZeros` | checked, wired |
+| `ExceptionalLayerTheory/CountingEveryZeroOrderByChangingTheAperture` | checked, wired |
+| `ExceptionalLayerTheory/SquareConductors/DilationsOfTheEighthPowerGcdDeficit` | checked, wired |
+| `ExceptionalLayerTheory/FiniteDerivativeSchedulesAdmitDisjointMultiplicityHistograms` | checked, wired |
+| `ExceptionalLayerTheory/SquareConductors/FirstPassageOfTheEighthPowerGcdShortfall` | olean built |
+| `ExceptionalLayerTheory/SquareConductors/HarmonicPhasesOfTheEighthPowerShortfall` | checked, wired |
+| `ExceptionalLayerTheory/OneLogarithmicDerivativeOrderReadsTheXiHistogram` | olean built |
+| `ExceptionalLayerTheory/SquareConductors/PowerDiscountsOfTheGcdShortfall` | checked, wired |
+| `ExceptionalLayerTheory/RecoveringAPoleByBarycentricInterpolation` | olean built |
+| `ExceptionalLayerTheory/SquareConductors/TheCountWithSmallProductOfSimplePrimeFactors` | olean built |
+| `ExceptionalLayerTheory/SquareConductors/TheCountingExponentOfDeletedPrimePowers` | checked, wired |
+| `ExceptionalLayerTheory/SquareConductors/TheDirichletPoleOfTheEighthPowerShortfall` | checked, wired |
+| `ExceptionalLayerTheory/SquareConductors/TheDistributionOfAccumulatedGcdShortfall` | checked, wired |
+| `ExceptionalLayerTheory/TheExactBadHeightsOfHorizontalHadamardTests` | checked, wired |
+| `ExceptionalLayerTheory/SquareConductors/TheFiniteHorizonProfileOfProperPrimePowers` | fails: Tactic `rewrite` failed: Did not find an occurrence of the pattern |
 | `ExceptionalLayerTheory/SquareConductors/TheFourthOrderEvenHorizonShortfall` | pending |
 | `ExceptionalLayerTheory/TheHeightErrorOfTheHadamardThreshold` | pending |
 | `ExceptionalLayerTheory/TheOptimalSpacingOfFourHadamardReadings` | pending |
