@@ -106,7 +106,7 @@ theorem eighth_proper_power_dirichlet_correction :
     have diff : eighthShortfallCoeff true n-eighthShortfallCoeff false n = (((Q-P)/(n:ℝ)^9:ℝ):ℂ) := by
       dsimp only [eighthShortfallCoeff,eighthReading,Bool.true_eq_false,if_false,if_true,Q,P]
       push_cast
-      rw [if_pos trivial]
+      rw [if_pos rfl]
       ring
     rw [diff,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (div_nonneg hp.1 (by positivity))]
     exact (div_le_div_of_nonneg_right h (pow_nonneg nr.le _)).trans_eq (by field_simp)

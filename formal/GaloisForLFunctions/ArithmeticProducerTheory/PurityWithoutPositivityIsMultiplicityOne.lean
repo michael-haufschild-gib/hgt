@@ -20,11 +20,18 @@ pairing couples the `χ`-eigenspace only with the `χ⁻¹`-eigenspace
   `μ_m × μ_m` occurs once in `H¹` of a Kummer curve, conjugation and duality both send the
   line of `χ` to the line of `χ⁻¹`, and so they agree on the eigenvalue.
 * `exists_frobenius_not_pure`: on a two-dimensional eigenspace the same axioms hold for the
-  Frobenius `diag(r, r⁻¹)`, for every real `r ≠ 0`. The functional equation and the real
-  structure force purity at multiplicity one and not beyond.
+  Frobenius `diag(r, r⁻¹)`, for every real `r ≠ 0`.
+* `exists_frobenius_not_pure_of_scaling`: with the non-compact group `ℝˣ` acting by
+  `diag(t, t⁻¹)` every eigenspace is a line and the same Frobenius is not pure. The character
+  `t ↦ t` is not unitary: conjugation fixes its line, while the pairing couples it with the
+  other line.
+
+Both hypotheses of the purity theorem, a compact symmetry and multiplicity one, are needed.
 
 For the zeros of `ζ` the two structures are `ρ ↦ ρ̄` and `ρ ↦ 1 − ρ`; they agree on a zero iff
-it lies on the critical line.
+it lies on the critical line. The compact symmetry, the Dirichlet characters, has infinite
+multiplicity; the scaling group acts on the line of a zero `ρ` by `t ↦ t^(ρ − 1/2)`, which is
+unitary iff `Re ρ = 1/2`.
 -/
 
 open scoped ComplexConjugate
@@ -203,6 +210,17 @@ theorem splitTwin_nondegenerate (r : ℝ) (hr : r ≠ 0) {a : ℂ × ℂ} (ha : 
   · refine ⟨(0, 1), ?_⟩
     simpa only [splitTwin, LinearMap.mk₂_apply, mul_zero, mul_one, add_zero] using h1
 
+private theorem ofReal_mul_conj_ne_one {r : ℝ} (hr1 : r ^ 2 ≠ 1) :
+    (r : ℂ) * conj (r : ℂ) ≠ 1 := by
+  intro h'
+  apply hr1
+  rw [Complex.conj_ofReal] at h'
+  have h'' : ((r ^ 2 : ℝ) : ℂ) = ((1 : ℝ) : ℂ) := by
+    push_cast
+    rw [← h']
+    ring
+  exact Complex.ofReal_injective h''
+
 /-- **The axioms do not force purity at multiplicity two.** A Frobenius with a functional
 equation and a real structure on a nondegenerate two-dimensional space can have an eigenvalue of
 any real modulus. -/
@@ -213,14 +231,85 @@ theorem exists_frobenius_not_pure (r : ℝ) (hr : r ≠ 0) (hr1 : r ^ 2 ≠ 1) :
     ?_, splitTwin_frob r hr, ?_⟩
   · intro h
     exact one_ne_zero (congrArg Prod.fst h)
-  · intro h
-    apply hr1
-    have h' : (r : ℂ) * conj (r : ℂ) = 1 := h
-    rw [Complex.conj_ofReal] at h'
-    have h'' : ((r ^ 2 : ℝ) : ℂ) = ((1 : ℝ) : ℂ) := by
-      push_cast
-      rw [← h']
-      ring
-    exact Complex.ofReal_injective h''
+  · exact ofReal_mul_conj_ne_one hr1
+
+/-! ### The twin with a non-compact symmetry -/
+
+/-- `diag(t, t⁻¹)` on `ℂ²`. -/
+def scalingMap (t : ℂ) : Module.End ℂ (ℂ × ℂ) :=
+  LinearMap.prodMap (t • LinearMap.id) (t⁻¹ • LinearMap.id)
+
+theorem scalingMap_apply (t : ℂ) (a : ℂ × ℂ) : scalingMap t a = (t * a.1, t⁻¹ * a.2) := rfl
+
+/-- The scaling action `t ↦ diag(t, t⁻¹)` of `ℝˣ` on `ℂ²`. -/
+def scalingAct : ℝˣ →* Module.End ℂ (ℂ × ℂ) where
+  toFun t := scalingMap ((t : ℝ) : ℂ)
+  map_one' := LinearMap.ext fun a => by
+    simp only [scalingMap_apply, Units.val_one, Complex.ofReal_one, inv_one, one_mul,
+      Module.End.one_apply, Prod.mk.eta]
+  map_mul' s t := LinearMap.ext fun a => by
+    simp only [Module.End.mul_apply, scalingMap_apply, Units.val_mul, Complex.ofReal_mul,
+      Prod.mk.injEq]
+    exact ⟨by ring, by ring⟩
+
+theorem scalingAct_apply (t : ℝˣ) (a : ℂ × ℂ) :
+    scalingAct t a = (((t : ℝ) : ℂ) * a.1, ((t : ℝ) : ℂ)⁻¹ * a.2) := rfl
+
+/-- The character `t ↦ t` of `ℝˣ`; it is not unitary. -/
+def scalingChar : ℝˣ →* ℂ where
+  toFun t := ((t : ℝ) : ℂ)
+  map_one' := by simp only [Units.val_one, Complex.ofReal_one]
+  map_mul' s t := by simp only [Units.val_mul, Complex.ofReal_mul]
+
+theorem scalingChar_apply (t : ℝˣ) : scalingChar t = ((t : ℝ) : ℂ) := rfl
+
+/-- The split datum with the symmetry `ℝˣ` acting by `diag(t, t⁻¹)`. -/
+def scalingTwin (r : ℝ) (hr : r ≠ 0) : SymmetricFrobenius ℝˣ (ℂ × ℂ) where
+  frob := (splitTwin r hr).frob
+  pair := (splitTwin r hr).pair
+  bar := (splitTwin r hr).bar
+  act := scalingAct
+  q := (splitTwin r hr).q
+  pair_frob := (splitTwin r hr).pair_frob
+  bar_add := (splitTwin r hr).bar_add
+  bar_smul := (splitTwin r hr).bar_smul
+  bar_bar := (splitTwin r hr).bar_bar
+  bar_frob := (splitTwin r hr).bar_frob
+  act_frob := fun t x => by
+    simp only [scalingAct_apply, splitTwin, LinearMap.prodMap_apply, LinearMap.smul_apply,
+      LinearMap.id_apply, smul_eq_mul, Prod.mk.injEq]
+    exact ⟨by ring, by ring⟩
+  act_bar := fun t x => by
+    simp only [scalingAct_apply, splitTwin, map_mul, map_inv₀, Complex.conj_ofReal]
+  pair_act := fun t x y => by
+    have ht : ((t : ℝ) : ℂ) * ((t : ℝ) : ℂ)⁻¹ = 1 :=
+      mul_inv_cancel₀ (Complex.ofReal_ne_zero.mpr t.ne_zero)
+    simp only [scalingAct_apply, splitTwin, LinearMap.mk₂_apply]
+    linear_combination (x.1 * y.2 + x.2 * y.1) * ht
+
+/-- **The axioms do not force purity under a non-compact symmetry.** With `ℝˣ` acting by
+`diag(t, t⁻¹)` the eigenspace of the character `t ↦ t` is the line of `(1, 0)`, the pairing does
+not vanish on it, and the Frobenius `diag(r, r⁻¹)` commutes with the pairing, the conjugation and
+the symmetry; its eigenvalue `r` is not pure. -/
+theorem exists_frobenius_not_pure_of_scaling (r : ℝ) (hr : r ≠ 0) (hr1 : r ^ 2 ≠ 1) :
+    ∃ (D : SymmetricFrobenius ℝˣ (ℂ × ℂ)) (χ : ℝˣ →* ℂ) (v : ℂ × ℂ),
+      D.q = 1 ∧ D.IsEigen χ v ∧ (∀ w, D.IsEigen χ w → ∃ c : ℂ, w = c • v) ∧
+        (∃ w, D.pair v w ≠ 0) ∧ ∃ α : ℂ, D.frob v = α • v ∧ α * conj α ≠ D.q := by
+  refine ⟨scalingTwin r hr, scalingChar, (1, 0), rfl, ?_, ?_, ?_, (r : ℂ), splitTwin_frob r hr,
+    ofReal_mul_conj_ne_one hr1⟩
+  · intro t
+    show scalingAct t (1, 0) = scalingChar t • ((1, 0) : ℂ × ℂ)
+    rw [scalingAct_apply, scalingChar_apply]
+    simp only [Prod.smul_mk, smul_eq_mul, mul_one, mul_zero]
+  · intro w hw
+    -- the element `2` of the group separates the two lines
+    have h2 : scalingAct (Units.mk0 (2 : ℝ) two_ne_zero) w =
+        scalingChar (Units.mk0 (2 : ℝ) two_ne_zero) • w := hw _
+    rw [scalingAct_apply, scalingChar_apply] at h2
+    have h3 := congrArg Prod.snd h2
+    simp only [Units.val_mk0, Complex.ofReal_ofNat, Prod.smul_snd, smul_eq_mul] at h3
+    have hw2 : w.2 = 0 := by linear_combination (-2 / 3 : ℂ) * h3
+    exact ⟨w.1, Prod.ext (by simp) (by simp [hw2])⟩
+  · exact splitTwin_nondegenerate r hr fun h => one_ne_zero (congrArg Prod.fst h)
 
 end GaloisForLFunctions.ArithmeticProducerTheory

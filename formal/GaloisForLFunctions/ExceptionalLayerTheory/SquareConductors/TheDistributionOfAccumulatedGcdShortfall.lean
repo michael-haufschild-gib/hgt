@@ -23,13 +23,14 @@ def gcdMassBelow (r N : ℕ) (t : ℝ) : ℝ :=
 private theorem zero_mass (r : ℕ) : powerGridGcdDeficit r 0 = 0 := by simp [powerGridGcdDeficit]
 
 theorem first_gcd_shortfall (r : ℕ) : powerGridGcdDeficit r 1 = Real.log 2 := by
-  simp [powerGridGcdDeficit, octaveGcdProduct, max_eq_left (Real.log_nonneg (by norm_num : (1:ℝ) ≤ 2))]
+  have h : Finset.Ioc 0 1 = {1} := by decide
+  simp [powerGridGcdDeficit, octaveGcdProduct, h, max_eq_left (Real.log_nonneg (by norm_num : (1:ℝ) ≤ 2))]
 
 private theorem mass_below_succ (r N : ℕ) (t : ℝ) :
     gcdMassBelow r (N+1) t = gcdMassBelow r N t +
       if powerGridGcdDeficit r (N+1) ≤ t then powerGridGcdDeficit r (N+1) - powerGridGcdDeficit r N else 0 := by
   by_cases h : powerGridGcdDeficit r (N+1) ≤ t <;>
-    simp only [gcdMassBelow, rightSum, sum_range_succ, h, if_true, if_false, mul_one, mul_zero]
+    simp only [gcdMassBelow, rightSum, Finset.sum_range_succ, h, if_true, if_false, mul_one, mul_zero]
 
 private theorem mass_below_terminal {r N : ℕ} {t : ℝ} (h : powerGridGcdDeficit r N ≤ t) :
     gcdMassBelow r N t = powerGridGcdDeficit r N := by
@@ -72,7 +73,8 @@ theorem gcd_mass_below_uniform_bound_iff (r N : ℕ) (B : ℝ) :
       rw [←first_gcd_shortfall r]
       exact monotone_gcd_deficit r (Nat.succ_le_succ (Nat.zero_le i))
     have hempty : gcdMassBelow r (N+1) t = 0 := by
-      apply sum_eq_zero
+      unfold gcdMassBelow rightSum
+      apply Finset.sum_eq_zero
       intro i _
       change _ * (if powerGridGcdDeficit r (i+1) ≤ t then 1 else 0) = 0
       rw [if_neg (not_le_of_gt (hl.trans_le (hfirst i))),mul_zero]
@@ -90,9 +92,9 @@ theorem gcd_right_endpoint_moment_bias (r N : ℕ) :
   induction N with
   | zero => simp [rightSum, zero_mass]
   | succ N ih =>
-    rw [rightSum, sum_range_succ] at ⊢
+    rw [rightSum, Finset.sum_range_succ] at ⊢
     rw [rightSum] at ih
-    rw [sum_range_succ (fun i => (powerGridGcdDeficit r (i+1)-powerGridGcdDeficit r i)^2),←ih]
+    rw [Finset.sum_range_succ (fun i => (powerGridGcdDeficit r (i+1)-powerGridGcdDeficit r i)^2),←ih]
     simp only [id_eq]
     ring
 
