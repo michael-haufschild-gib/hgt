@@ -220,6 +220,92 @@ theorem physical_dyadic_capture_limsup_le {n d : ℕ} (e : (Fin n → Bool) ≃ 
   have h := ENNReal.ofReal_le_ofReal (volume_dyadicCircuitCapture_le e V s k)
   rwa [measureReal_def,ENNReal.ofReal_toReal (measure_ne_top _ _)] at h
 
+/-- Spectral histories with k hard doublings followed by a prescribed event. -/
+def dyadicHardPrehistory {n d : ℕ} (e : (Fin n → Bool) ≃ Fin (d+1))
+    (V : Matrix.unitaryGroup (Fin n → Bool) ℂ) (s : ℕ) (F : Set (Tor d)) : ℕ → Set (Tor d)
+  | 0 => F
+  | k+1 => (projectiveContinuousCircuitCaptureTarget e V s (1/10:ℝ))ᶜ ∩
+      doubleSpectralPhase ⁻¹' dyadicHardPrehistory e V s F k
+
+private theorem measurable_hard_prehistory {n d : ℕ} (e : (Fin n → Bool) ≃ Fin (d+1))
+    (V : Matrix.unitaryGroup (Fin n → Bool) ℂ) (s : ℕ) (F : Set (Tor d)) (hF : MeasurableSet F)
+    (k : ℕ) : MeasurableSet (dyadicHardPrehistory e V s F k) := by
+  induction k with
+  | zero => exact hF
+  | succ k ih =>
+    exact (isClosed_projectiveContinuousCircuitCaptureTarget e V s _).measurableSet.compl.inter
+      (ih.preimage double_preserves.measurable)
+
+/-- Conditioning on any final event, including a recurrence, leaves
+a quantitative fraction of histories hard at every preceding doubling. -/
+theorem volume_dyadicHardPrehistory_ge {n d : ℕ} (e : (Fin n → Bool) ≃ Fin (d+1))
+    (V : Matrix.unitaryGroup (Fin n → Bool) ℂ) (s : ℕ) (F : Set (Tor d)) (hF : MeasurableSet F) (k : ℕ) :
+    (max 0 (1-((atMostQuarterCircuitNet n s).card : ℝ)/(2:ℝ)^d))^k * volume.real F ≤
+      volume.real (dyadicHardPrehistory e V s F k) := by
+  let A := projectiveContinuousCircuitCaptureTarget e V s (1/10:ℝ)
+  let α := ((atMostQuarterCircuitNet n s).card : ℝ)/(2:ℝ)^d
+  let p := max 0 (1-α)
+  have hp : 0 ≤ p := le_max_left _ _
+  change p^k * volume.real F ≤ _
+  induction k with
+  | zero => simp [dyadicHardPrehistory]
+  | succ k ih =>
+    let G := dyadicHardPrehistory e V s F k
+    let E := doubleSpectralPhase ⁻¹' G
+    have hm := measurable_hard_prehistory e V s F hF k
+    have hE : volume.real E = volume.real G := double_preserves.measureReal_preimage hm.nullMeasurableSet
+    have hpart : E ⊆ (A ∩ E) ∪ (Aᶜ ∩ E) := by
+      intro x hx
+      by_cases h : x ∈ A
+      · exact Or.inl ⟨h,hx⟩
+      · exact Or.inr ⟨h,hx⟩
+    have hsum := (measureReal_mono (μ := volume) hpart).trans (measureReal_union_le _ _)
+    rw [hE] at hsum
+    have hcap : volume.real (A ∩ E) ≤ α * volume.real G := by
+      dsimp only [α]
+      rw [div_mul_eq_mul_div]
+      apply (le_div_iff₀ (by positivity : 0 < (2:ℝ)^d)).mpr
+      rw [mul_comm]
+      exact conditional_doubled_phase_circuit_capture e V s G hm
+    have hgood : p * volume.real G ≤ volume.real (Aᶜ ∩ E) := by
+      rcases le_total 0 (1-α) with h | h
+      · rw [show p = 1-α from max_eq_right h,sub_mul,one_mul]
+        linarith only [hsum,hcap]
+      · rw [show p = 0 from max_eq_left h,zero_mul]
+        exact ENNReal.toReal_nonneg
+    rw [pow_succ',mul_assoc]
+    exact (mul_le_mul_of_nonneg_left ih hp).trans hgood
+
+/-- A stationary one-sided physical clock sees the same lower bound for
+every open terminal spectral event. -/
+theorem physical_hard_prehistory_liminf {n d : ℕ} (e : (Fin n → Bool) ≃ Fin (d+1))
+    (H : selfAdjoint (Reg n))
+    (hmax : MaximallyProjectiveEnergy (fun i => H.2.isHermitian.eigenvalues (e.symm i)))
+    (s k : ℕ) (F : Set (Tor d)) (hF : IsOpen F) :
+    let E := fun i => H.2.isHermitian.eigenvalues (e.symm i)
+    let V := hermitianEigenbasisUnitary H.2.isHermitian
+    ENNReal.ofReal ((max 0 (1-((atMostQuarterCircuitNet n s).card : ℝ)/(2:ℝ)^d))^k * volume.real F) ≤
+      atTop.liminf (fun T => (clockPhaseWindowLaw (RHTower.zeroProjectiveFrequency E) T : Measure (Tor d))
+        (dyadicHardPrehistory e V s F k)) := by
+  let E := fun i => H.2.isHermitian.eigenvalues (e.symm i)
+  let V := hermitianEigenbasisUnitary H.2.isHermitian
+  have ho (j : ℕ) : IsOpen (dyadicHardPrehistory e V s F j) := by
+    induction j with
+    | zero => exact hF
+    | succ j ih =>
+      exact (isClosed_projectiveContinuousCircuitCaptureTarget e V s _).isOpen_compl.inter
+        (ih.preimage (by unfold doubleSpectralPhase; fun_prop))
+  have hlim := ProbabilityMeasure.le_liminf_measure_open_of_tendsto
+    (clockPhaseWindowLaw_tendsto_haar _ (RHTower.maximallyProjectiveEnergy_zeroProjectiveFrequency_independent E hmax))
+    (ho k)
+  rw [finiteTorusHaarProbabilityMeasure_toMeasure_eq_volume] at hlim
+  refine le_trans ?_ hlim
+  have h := ENNReal.ofReal_le_ofReal (volume_dyadicHardPrehistory_ge e V s F hF.measurableSet k)
+  rwa [measureReal_def,ENNReal.ofReal_toReal (measure_ne_top _ _)] at h
+
+#print axioms volume_dyadicHardPrehistory_ge
+#print axioms physical_hard_prehistory_liminf
+
 /-- In an ordinary static Gaussian chain, k consecutive affordable
 observations on the doubling clock have upper time fraction at most
 (r+1)^(−2rk), with the same H, error, and gate budget at every observation. -/

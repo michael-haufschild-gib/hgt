@@ -27,7 +27,7 @@ private theorem spectralSign_square {n d : ℕ} (e : (Fin n → Bool) ≃ Fin (d
   have hAI : A*I = 1 := congrArg Subtype.val (mul_inv_cancel V)
   have hD : D*D = 1 := by
     rw [show D*D = Matrix.diagonal ((anchoredBooleanPacket b ∘ e) * (anchoredBooleanPacket b ∘ e)) from
-      Matrix.diagonal_mul_diagonal]
+      Matrix.diagonal_mul_diagonal _ _]
     rw [← Matrix.diagonal_one]
     congr 1
     funext i
