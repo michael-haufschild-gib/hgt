@@ -24,6 +24,7 @@ private theorem mass_top : Tendsto D atTop atTop := by
   filter_upwards [logtop.eventually_ge_atTop (2*(B-c+1)),
     h.eventually_const_lt (sub_one_lt c)] with n hn hh
   change c-1 < D n-(1/2)*Real.log n at hh
+  change 2*(B-c+1) ≤ Real.log n at hn
   linarith only [hn,hh]
 
 private theorem reached (h : ℝ) : ∃ k : ℕ, h ≤ D (k+1) :=
@@ -101,7 +102,8 @@ theorem eighth_passage_exponential_law :
   intro h
   change Real.exp (2*((D (eighthPassage h)-h)-(D (eighthPassage h)-(1/2)*Real.log (eighthPassage h))))=_
   rw [show 2*((D (eighthPassage h)-h)-(D (eighthPassage h)-(1/2)*Real.log (eighthPassage h))) =
-    Real.log (eighthPassage h)-2*h by ring,Real.exp_sub,Real.exp_log (Nat.cast_pos.mpr (Nat.succ_pos _))]
+    Real.log (eighthPassage h)-2*h by ring,Real.exp_sub,
+    Real.exp_log (Nat.cast_pos.mpr (Nat.succ_pos (prev h)) : (0:ℝ) < eighthPassage h)]
 
 /-- The scaled first-passage error has exactly [0,1/2] as its set of
 subsequential limits. The upper endpoint uses targets approaching a

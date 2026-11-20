@@ -23,7 +23,7 @@ theorem prime_order_weight {p : ℕ} (hp : 0<p) (k : ℕ) :
   have he : 2*p-1+1=2*p := by omega
   rw [orderAreaWeight,he,Nat.cast_mul,Nat.cast_ofNat]
   congr 1
-  field_simp [Nat.cast_ne_zero.mpr hp.ne' : (p:ℝ)≠0]
+  field_simp [(Nat.cast_ne_zero.mpr hp.ne' : (p:ℝ)≠0)]
 
 /-- Rational histogram coefficients of any size are distinguished
 by this single order whenever all candidate multiplicities are below 2^p. -/
@@ -33,7 +33,8 @@ theorem prime_derivative_area_injective {W p : ℕ} (hp : p.Prime) (hW : W<2^p) 
   unfold divisorAreaMoment at he
   rw [←sub_eq_zero,←Finset.sum_sub_distrib] at he
   have hr : ∑ i : Fin W, (a i-b i) • (((i.val+1:ℕ):ℝ)^((p:ℝ)⁻¹))=0 := by
-    simpa only [prime_order_weight hp.pos,←mul_sub,Rat.smul_def,Rat.cast_sub,mul_comm] using he
+    simp only [prime_order_weight hp.pos] at he
+    simpa only [←mul_sub,Rat.smul_def,Rat.cast_sub,mul_comm] using he
   funext i
   exact sub_eq_zero.mp (linearIndependent_iff'.mp (independent_prime_radical_weights hp hW)
     Finset.univ (fun k => a k-b k) hr i (Finset.mem_univ _))
@@ -70,7 +71,7 @@ theorem logarithmic_order_decodes_the_xi_divisor (c : ℂ) {R : ℝ} (hR : 0<R)
   have hinj : Function.Injective (boundedOrderMoment (W:=W) (2*p-1)) := by
     intro b e h
     have hq : (fun i => ((b i).val:ℚ))=(fun i => ((e i).val:ℚ)) :=
-      prime_derivative_area_injective hp hW (by simpa only [Rat.cast_natCast] using h)
+      prime_derivative_area_injective hp hW (by simpa only [boundedOrderMoment,Rat.cast_natCast] using h)
     funext i
     exact Fin.ext (by exact_mod_cast congrFun hq i)
   refine ⟨p,hp,hW,hj,t,ht,?_⟩

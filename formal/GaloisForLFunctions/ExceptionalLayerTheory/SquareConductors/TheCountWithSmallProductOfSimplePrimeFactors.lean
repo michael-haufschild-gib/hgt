@@ -29,7 +29,7 @@ private theorem split_block (p e : ℕ) (hp : 0 < p) :
     ∃ a b : ℕ, 0 < a ∧ 0 < b ∧ p^e=(if e=1 then p else 1)*a^2*b^3 := by
   by_cases h : e=1
   · exact ⟨1,1,by decide,by decide,by simp [h]⟩
-  rw [if_neg h,one_mul]
+  simp only [if_neg h,one_mul]
   by_cases he : e%2=0
   · exact ⟨p^(e/2),1,pow_pos hp _,by decide,by rw [one_pow,mul_one,←pow_mul,show e/2*2=e by omega]⟩
   exact ⟨p^((e-3)/2),p,pow_pos hp _,hp,by rw [←pow_mul,←pow_add,show (e-3)/2*2+3=e by omega]⟩
@@ -50,7 +50,7 @@ theorem simple_square_cube_factorization {n : ℕ} (hn : 0 < n) :
       exact ⟨u*a,v*b,Nat.mul_pos hu ha,Nat.mul_pos hv hb,by rw [prod_insert hp,prod_insert hp,he,hs]; ring⟩
   obtain ⟨a,b,ha,hb,h⟩ := split n.primeFactors (Subset.refl _)
   rw [←Nat.prod_primeFactors_pow_factorization hn.ne'] at h
-  exact ⟨a-1,b-1,by simpa only [Nat.sub_add_cancel ha,Nat.sub_add_cancel hb] using h⟩
+  exact ⟨a-1,b-1,by simpa only [simplePrimeProduct,Nat.sub_add_cancel ha,Nat.sub_add_cancel hb] using h⟩
 
 /-- Uniform count at a fixed value of the simple product. -/
 theorem fixed_simple_product_count {X m : ℕ} (hm : 0 < m) :
@@ -66,7 +66,7 @@ theorem fixed_simple_product_count {X m : ℕ} (hm : 0 < m) :
     simpa only [φ,dif_pos hn] using (rep n hn).choose_spec
   have inj : Set.InjOn φ ↑S := fun i hi j hj e =>
     (eq i hi).trans ((congrArg (fun q : ℕ×ℕ => m*(q.2+1)^2*(q.1+1)^3) e).trans (eq j hj).symm)
-  let J := 1+∑ n ∈ S, (φ n).1+(φ n).2
+  let J := 1+∑ n ∈ S, ((φ n).1+(φ n).2)
   have into (n : ℕ) (hn : n ∈ S) : φ n ∈ range J ×ˢ range J := by
     have h := single_le_sum (fun i (_ : i∈S) => Nat.zero_le ((φ i).1+(φ i).2)) hn
     exact mem_product.mpr ⟨mem_range.mpr (by dsimp only [J]; omega),mem_range.mpr (by dsimp only [J]; omega)⟩

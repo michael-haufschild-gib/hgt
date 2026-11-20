@@ -48,13 +48,14 @@ theorem barycentric_cauchy_sum {g : ℂ → ℂ} {p : ℂ} {R : ℝ} (hR : 0<R)
     exact (mem_ball.mp (hsites x hx)).ne (mem_sphere.mp hz)
   have hi (x : ℂ) (hx : x∈t) : CircleIntegrable (K x) p R := by
     apply ContinuousOn.circleIntegrable hR.le
-    exact continuousOn_const.smul (((continuous_id.sub continuous_const).continuousOn.inv₀
+    exact (continuousOn_const (c := w x)).smul (((continuous_id.sub continuous_const).continuousOn.inv₀
       (fun z hz => sub_ne_zero.mpr (hdis hx hz))).smul
       (hg.continuousOn.mono sphere_subset_closedBall))
   calc _ = ∮ z in C(p,R), ∑ x ∈ t, K x z := by
              apply circleIntegral.integral_congr hR.le
              intro z hz
              have hn : z∉t := fun h => hdis h hz rfl
+             dsimp only
              rw [←kernel_identity ht hn,Finset.sum_mul]
              exact Finset.sum_congr rfl fun x _ => by simp only [K,w,smul_eq_mul,mul_assoc]
        _ = ∑ x ∈ t, ∮ z in C(p,R), K x z := circleIntegral.integral_fun_sum hi
@@ -115,8 +116,10 @@ theorem barycentric_pole_error {g : ℂ → ℂ} (m p : ℂ) {R d M : ℝ}
     have hnorm : ‖2*(Real.pi:ℂ)*I‖=2*Real.pi := by
       rw [norm_mul,norm_mul,Complex.norm_two,Complex.norm_I,mul_one,
         Complex.norm_real,Real.norm_of_nonneg Real.pi_pos.le]
-    rw [hnorm,mul_assoc] at h
-    exact (mul_le_mul_iff_right₀ Real.two_pi_pos).mp h
+    rw [hnorm] at h
+    have h2 : 2*Real.pi*‖S‖ ≤ 2*Real.pi*(R*(M/(R-d)^t.card)) := by
+      rw [← mul_assoc]; exact h
+    exact (mul_le_mul_iff_right₀ Real.two_pi_pos).mp h2
   rw [err,norm_mul,norm_neg]
   exact (mul_le_mul hpn hS (norm_nonneg _) (pow_nonneg hd _)).trans_eq (by
     rw [div_pow]; ring)
@@ -135,7 +138,7 @@ theorem barycentric_polynomial_drift (t : Finset ℂ) (p : ℂ) (f : ℂ → ℂ
     calc _ = ∑ i ∈ t, P.eval i / ∏ j ∈ t.erase i, (i-j) := by
                apply Finset.sum_congr rfl
                intro i _
-               rw [Lagrange.nodalWeight,←Finset.prod_inv_distrib,div_eq_mul_inv,mul_comm]
+               rw [Lagrange.nodalWeight,Finset.prod_inv_distrib,div_eq_mul_inv,mul_comm]
                rfl
          _ = _ := hc.symm
   unfold barycentricResidue

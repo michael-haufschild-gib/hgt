@@ -14,6 +14,7 @@ the uniform limit `steklovDCProfile` is nonnegative with
 noncomputable section
 
 open MeasureTheory Filter Topology Set
+open scoped ContDiff
 
 namespace GaloisForLFunctions.TransMetzlerWeilPositivity
 
@@ -79,7 +80,7 @@ theorem integral_abs_steklovAvg_le {g : ℝ → ℝ} {R a : ℝ} (hg : Continuou
     continuous_iff_continuousAt.mpr fun x => (hasDerivAt_steklovAvg hg.abs ha x).continuousAt
   have hSs := supportedIn_steklovAvg ha hs
   calc ∫ x, |steklovAvg a g x| ≤ ∫ x, steklovAvg a (fun y => |g y|) x :=
-        integral_mono (integrable_of_supportedIn hcontS.abs (fun u hu => by simp [hSs u hu]))
+        integral_mono (integrable_of_supportedIn (R := R + a) hcontS.abs (fun u hu => by simp [hSs u hu]))
           (integrable_of_supportedIn hcontA (supportedIn_steklovAvg ha habs_s)) hpt
     _ = ∫ x, |g x| := integral_steklovAvg hg.abs habs_s hR ha
 
@@ -189,7 +190,6 @@ theorem integral_abs_iteratedDeriv_steklovDCProfile_le_prod (q : ℕ) :
     refine integral_mono (integrable_of_supportedIn hφc hφs).abs (hint1.add hint2) fun x => ?_
     have h := abs_sub_abs_le_abs_sub (iteratedDeriv q steklovDCProfile x)
       (iteratedDeriv q (steklovSeq m) x)
-    simp only [Pi.add_apply]
     linarith only [h]
   linarith only [htri, hdiff, hψ]
 

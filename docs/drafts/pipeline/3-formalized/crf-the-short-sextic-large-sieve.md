@@ -1,9 +1,9 @@
 # Unrestricted fifth-power conjugation and the smooth short sextic large sieve over ℤ[ω]
 
 - **ID:** crf-the-short-sextic-large-sieve
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Source:** `docs/reports/review-1911/todo.md` #12 · `formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
+- **Source:** `docs/reports/review-1911/todo.md` #12 · `formal/GaloisForLFunctions/CoherenceTheoryOfReciprocityFamilies/TheShortSexticLargeSieve.lean`
 - **Statement:** For every finite set `s` of primary primes `π ∤ 6` in `O = ℤ[ω]` and **every** `x ∈ O` (coprime or not), `\overline{χ_{∏_s π}(x)} = χ_{∏_s π}(x)^5` and `‖χ_{∏_s π}(x)‖ ≤ 1`; for any real-valued Schwartz weight `f`, `sexticGramEntry f B u₁ u₂` is Hermitian (`\overline{G(u₁, u₂)} = G(u₂, u₁)`), and when `f ≥ 0` any finite family `(s_i)_{i ∈ F}` with coefficients `c_i ∈ ℂ` satisfies the smooth Schur sextic large-sieve inequality `∑_{n ∈ ℤ²} f(Bn) ‖∑_{i ∈ F} c_i χ_{u_i}(n)‖^2 ≤ ∑_{i ∈ F} ‖c_i‖^2 (∑_{n ∈ ℤ²} f(Bn) + ∑_{j ∈ F \setminus \{i\}} ‖G(u_i, u_j)‖)`, where each off-diagonal `‖G(u_i, u_j)‖` is governed by `norm_gramEntry_le`.
 
 ## Goal
@@ -12,7 +12,7 @@ Extend `\overline{χ_c(x)} = χ_c(x)^5` from coprime residues to all `x ∈ ℤ[
 ## Gates
 - [x] 0 → 1  in-progress: exact interfaces in `TheShortSexticGramIsDiagonal.lean` and `TheReflectedGramIsTwistedByTheRowRootNumbers.lean` verified
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean module `TheShortSexticLargeSieve.lean`, `lake --old env lean` green, standard axioms only
+- [x] 2 → 3  formalized: Lean module `TheShortSexticLargeSieve.lean`, `lake --old env lean` green, standard axioms only
 
 ## Paper Proof (`[PROVED HERE]`)
 

@@ -33,7 +33,7 @@ private theorem remainder_abscissa (b : Bool) :
     LSeries.abscissaOfAbsConv (remainder b) ≤ ((-(1/3000):ℝ):EReal) := by
   apply power_majorant
   intro y hy
-  obtain ⟨δ,hyδ,hδ⟩ := exists_between (neg_lt_comm.mp hy : -y < (1/3000:ℝ))
+  obtain ⟨δ,hyδ,hδ⟩ := exists_between (by linarith only [hy] : -y < (1/3000:ℝ))
   have point : ∃ A : ℝ, 0 ≤ A ∧ ∀ {m : ℕ}, 2 ≤ m →
       |eighthReading b m - 1/(2*(m:ℝ))| ≤ A*(m:ℝ)^(-1-δ) := by
     cases b
@@ -44,7 +44,7 @@ private theorem remainder_abscissa (b : Bool) :
   filter_upwards [eventually_ge_atTop (2:ℕ)] with n hn
   rw [remainder,Complex.norm_real,Real.norm_eq_abs]
   apply (div_le_div_of_nonneg_right (ha hn) (Real.rpow_nonneg (Nat.cast_nonneg _) _)).trans_eq
-  rw [Real.rpow_sub (Nat.cast_pos.mpr (by omega : 0<n))]
+  rw [Real.rpow_sub (Nat.cast_pos.mpr (by omega : 0<n)) (-1-δ) y]
   ring
 
 /-- Removing the half-shifted zeta term leaves an analytic Dirichlet
@@ -106,6 +106,7 @@ theorem eighth_proper_power_dirichlet_correction :
     have diff : eighthShortfallCoeff true n-eighthShortfallCoeff false n = (((Q-P)/(n:ℝ)^9:ℝ):ℂ) := by
       dsimp only [eighthShortfallCoeff,eighthReading,Bool.true_eq_false,if_false,if_true,Q,P]
       push_cast
+      rw [if_pos trivial]
       ring
     rw [diff,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (div_nonneg hp.1 (by positivity))]
     exact (div_le_div_of_nonneg_right h (pow_nonneg nr.le _)).trans_eq (by field_simp)

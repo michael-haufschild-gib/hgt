@@ -76,8 +76,9 @@ theorem primitiveProjectedFactorial_prime_one {p : ℕ} (hp : p.Prime) :
   have hI : Icc (1 : ℕ) 1 = {1} := rfl
   rw [hI, sum_singleton, ArithmeticFunction.moebius_apply_one, Int.cast_one, one_mul,
     hp.divisors, sum_pair hp.one_lt.ne, ArithmeticFunction.moebius_apply_one,
-    ArithmeticFunction.moebius_apply_prime hp, Nat.one_lcm, Nat.one_lcm,
-    divisibleCofactorFactorial_self hp.pos]
+    ArithmeticFunction.moebius_apply_prime hp]
+  simp only [Nat.lcm_one_left]
+  rw [divisibleCofactorFactorial_self hp.pos]
   have h1 : divisibleCofactorFactorial p 1 = completeMidpointFactorial p := by
     simp [divisibleCofactorFactorial, completeMidpointFactorial]
   rw [h1]
@@ -179,8 +180,9 @@ theorem remainingPrimitivePrimePrice_prime_one {p Q : ℕ} (hp : p.Prime) (hQ3 :
     have hI : Icc (1 : ℕ) 1 = {1} := rfl
     rw [hI, sum_singleton, ArithmeticFunction.moebius_apply_one, Int.cast_one, one_mul,
       hp.divisors, sum_pair hp.one_lt.ne, ArithmeticFunction.moebius_apply_one,
-      ArithmeticFunction.moebius_apply_prime hp, Nat.one_lcm, Nat.one_lcm,
-      divisibleCofactorPrimePrice_self hp.pos hQ3, divisibleCofactorPrimePrice_prime_one hp hQ2]
+      ArithmeticFunction.moebius_apply_prime hp]
+    simp only [Nat.lcm_one_left]
+    rw [divisibleCofactorPrimePrice_self hp.pos hQ3, divisibleCofactorPrimePrice_prime_one hp hQ2]
     push_cast
     ring
   linarith only [hproj, hlhs, hrhs]
@@ -271,17 +273,14 @@ theorem cofactorThetaSlice_eq_chebyshev_theta {n Q v : ℕ} (hv : 2 ≤ v) (hvQ 
   have h4_le : 4 * n / v ≤ 2 * n := by
     have : 4 * n / v ≤ 4 * n / 2 := Nat.div_le_div_left hv (by decide)
     omega
-  have hend : ∀ {T : ℕ}, Q ≤ T / v → T / v ≤ 2 * n →
+  have hend : ∀ {T : ℕ}, 2 * n ≤ T → Q ≤ T / v → T / v ≤ 2 * n →
       (∑ q ∈ (Ioc Q (2 * n)).filter Nat.Prime,
         (Real.log q * if q * v ≤ T then (1 : ℝ) else 0)) -
       (∑ q ∈ (Ioc Q (2 * n)).filter Nat.Prime,
         (Real.log q * if q * v ≤ 2 * n then (1 : ℝ) else 0)) =
         Chebyshev.theta ((T / v : ℕ) : ℝ) - Chebyshev.theta ((2 * n / v : ℕ) : ℝ) := by
-    intro T hQT hT2
-    have h2T : 2 * n / v ≤ T / v := by
-      by_cases hle : 2 * n ≤ T
-      · exact Nat.div_le_div_right hle
-      · omega
+    intro T h2T_raw hQT hT2
+    have h2T : 2 * n / v ≤ T / v := Nat.div_le_div_right h2T_raw
     rw [← sum_sub_distrib]
     have hterm : ∀ q ∈ (Ioc Q (2 * n)).filter Nat.Prime,
         Real.log q * (if q * v ≤ T then (1 : ℝ) else 0) -
@@ -290,7 +289,7 @@ theorem cofactorThetaSlice_eq_chebyshev_theta {n Q v : ℕ} (hv : 2 ≤ v) (hvQ 
       intro q _
       have hqvT : q * v ≤ T ↔ q ≤ T / v := (Nat.le_div_iff_mul_le hv_pos).symm
       have hqv2 : q * v ≤ 2 * n ↔ q ≤ 2 * n / v := (Nat.le_div_iff_mul_le hv_pos).symm
-      rw [hqvT, hqv2]
+      simp only [hqvT, hqv2]
       by_cases h1 : q ≤ 2 * n / v
       · rw [if_pos (h1.trans h2T), if_pos h1, if_neg (by omega)]
         ring
@@ -310,9 +309,9 @@ theorem cofactorThetaSlice_eq_chebyshev_theta {n Q v : ℕ} (hv : 2 ≤ v) (hvQ 
     simp only [Chebyshev.theta, Nat.floor_natCast, sum_filter]
     linarith only [sum_Ioc_consecutive (fun q : ℕ => if q.Prime then Real.log q else 0)
       (Nat.zero_le (2 * n / v)) h2T]
-  have h4 := hend (T := 4 * n)
+  have h4 := hend (T := 4 * n) (by omega)
     (hQ_le.trans (Nat.div_le_div_right (by omega : 2 * n ≤ 4 * n))) h4_le
-  have h3 := hend (T := 3 * n)
+  have h3 := hend (T := 3 * n) (by omega)
     (hQ_le.trans (Nat.div_le_div_right (by omega : 2 * n ≤ 3 * n)))
     ((Nat.div_le_div_right (by omega : 3 * n ≤ 4 * n)).trans h4_le)
   have hslice : cofactorThetaSlice n Q v =
@@ -321,7 +320,7 @@ theorem cofactorThetaSlice_eq_chebyshev_theta {n Q v : ℕ} (hv : 2 ≤ v) (hvQ 
       2 * ((∑ q ∈ (Ioc Q (2 * n)).filter Nat.Prime, Real.log q * if q * v ≤ 3 * n then (1 : ℝ) else 0) -
         (∑ q ∈ (Ioc Q (2 * n)).filter Nat.Prime, Real.log q * if q * v ≤ 2 * n then (1 : ℝ) else 0)) := by
     unfold cofactorThetaSlice
-    simp only [← mul_sum, ← sum_sub_distrib]
+    rw [← sum_sub_distrib, ← sum_sub_distrib, mul_sum, ← sum_sub_distrib]
     exact sum_congr rfl fun q _ => by ring
   rw [hslice, h4, h3]
   ring
@@ -365,7 +364,8 @@ theorem prime_centers_shell_eight_ninths_iff_five_sixths :
       (by norm_num : (1 / 2 : ℝ) ≤ 5 / 6) (by norm_num : (5 / 6 : ℝ) < 1) (sub_pos.mpr ht)
     refine ⟨C + A, fun p hp => ?_⟩
     have herr := (abs_le.mp (hA hp.one_le (by rw [h89]))).2
-    rw [h89, show (5 / 6 : ℝ) + (t - 5 / 6) = t by ring] at herr
+    rw [show (5 / 6 : ℝ) + (t - 5 / 6) = t by ring] at herr
+    rw [add_mul]
     linarith only [herr, hC p hp]
   · intro h t ht ht1
     obtain ⟨C, hC⟩ := h t ht ht1
@@ -373,7 +373,8 @@ theorem prime_centers_shell_eight_ninths_iff_five_sixths :
       (by norm_num : (1 / 2 : ℝ) ≤ 5 / 6) (by norm_num : (5 / 6 : ℝ) < 1) (sub_pos.mpr ht)
     refine ⟨C + A, fun p hp => ?_⟩
     have herr := (abs_le.mp (hA hp.one_le (by rw [h89]))).1
-    rw [h89, show (5 / 6 : ℝ) + (t - 5 / 6) = t by ring] at herr
+    rw [show (5 / 6 : ℝ) + (t - 5 / 6) = t by ring] at herr
+    rw [add_mul]
     linarith only [herr, hC p hp]
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

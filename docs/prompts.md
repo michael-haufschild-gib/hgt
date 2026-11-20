@@ -281,6 +281,16 @@ The goal is met when route QIC is fully closed and formalized unconditionally in
 27 Mertens
 
 28 Bombieri–Stepanov
+- https://arxiv.org/abs/2611.16007
+- https://arxiv.org/abs/2610.38025
+- https://arxiv.org/abs/2609.23109
+- https://arxiv.org/abs/2608.08233
+- https://arxiv.org/abs/2611.21341
+- https://arxiv.org/abs/2611.18323
+- https://arxiv.org/abs/2611.13381
+- https://arxiv.org/abs/2610.37423
+- https://arxiv.org/abs/2610.35030
+- https://arxiv.org/abs/2610.26841
 
 29 Vinogradov–Korobov
 

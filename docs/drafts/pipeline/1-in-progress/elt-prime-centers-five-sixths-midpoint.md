@@ -28,7 +28,13 @@ Improve the unconditional zero-free half-plane for `ζ(s)` from `Re s > 20999 / 
    - For `x = 4p` and `b = 5 / 6`, `ordinary_prime_bands_measure_midpoint` shows that every `a ∈ [1/6, 5/6]` (in particular the five disjoint bands `a_j = j / 6`, `j ∈ {1, 2, 3, 4, 5}`, supported on `x^{j/6} < q < x^{(j+1)/6}` with cofactor cut `V_j = ⌊x^{(5-j)/6}⌋`) satisfies `|ordinaryPrimeBandPrice (5/6) a p - primeMidpointPrice p| ≤ C_ε p^{5/6 + ε}`.
    - `first_projected_cofactor_octave` identifies the projected weight `truncMoebiusDivisorSum V v = -μ(v)` on `V < v ≤ 2V`.
 
-3. **`[OPEN CORE]`:**
+3. **Formalized reductions, sieves, column identities, and obstructions.**
+   - `SquareConductors/TheTopPrimeBandAndReflectedShellBarrier.lean`: exact `V = 1` (`a = b`) algebraic collapse (`remainingPrimitivePrimePrice p Q 1 = unrestrictedLargePrimePrice p Q`, `ordinaryPrimeBandPrice b b p` identity), Chebyshev-`θ` cofactor-slice self-duality (`cofactorThetaSlice_eq_chebyshev_theta`, `cofactorThetaSlice_mul_eq_neg_primeMidpointPrice`), and `prime_centers_shell_eight_ninths_iff_five_sixths`.
+   - `CoherenceTheoryOfReciprocityFamilies/TheShortSexticLargeSieve.lean`: unrestricted fifth-power conjugation `\overline{χ_u(x)} = χ_u(x)^5` across all `x ∈ ℤ[ω]` and smooth Schur sextic large sieve (`short_sextic_large_sieve`).
+   - `OrderSixMetaplecticTheory/CubeTwistedColumnsAndCrossPhaseCollapse.lean`: phase-free column Hasse–Davenport (`rowRoot_column_hasseDavenport_clean`), cube-multiplied column shift (`sexticGauss_mul_cube`, `orderB_coupled_column_collapse`), and purely cubic cross-phase factorization (`sexticGauss_mul_quadGauss_prod_cubic_cross`).
+   - `FamilyContinuationTheory/CyclotomicParityAndTwistCouplingObstructions.lean`: cyclotomic Gauss-monomial index `n / 6` conservation (`unique_low_cover_quadratic_order`), $L^{2r}$ Hölder-reflection duality gap, planted conjugate-character multilinear saturation, twist-coupling Cauchy–Schwarz and off-diagonal noise bounds, double obstruction at `(1/3, 1/3, 1/3)`, outer-CS `11/12` floor, and direct vs. reflected `w`-contour identity.
+
+4. **`[OPEN CORE]`:**
    Obtain an unconditional upper bound `≤ C_t p^t` (`5 / 6 < t < 1`) either directly on `min_{1 ≤ j ≤ 5} ordinaryPrimeBandPrice (5/6) (j/6) p` / recombined cofactor octaves / cube-root composite decomposition at prime centers `p`, or analytically on `zetaZeroAbscissa ≤ 5 / 6`.
 
 ## Log

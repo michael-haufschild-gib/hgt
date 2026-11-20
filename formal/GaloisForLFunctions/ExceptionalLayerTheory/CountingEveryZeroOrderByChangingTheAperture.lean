@@ -47,7 +47,7 @@ private theorem card_by_ones (t : Finset ℂ) (P : ℂ → Prop) [DecidablePred 
 private theorem clipped_step (n m : ℕ) :
     ((min (n+1) m:ℕ):ℝ)-(min n m:ℕ) = if n < m then 1 else 0 := by
   by_cases h : n < m
-  · rw [if_pos h,min_eq_left (Nat.succ_le_of_lt h),min_eq_left h.le,Nat.cast_add,Nat.cast_one]
+  · rw [if_pos h,min_eq_left (Nat.succ_le_of_lt h),min_eq_left h.le,Nat.cast_succ]
     ring
   · rw [if_neg h,min_eq_right ((le_of_not_gt h).trans (Nat.le_succ n)),
       min_eq_right (le_of_not_gt h),sub_self]

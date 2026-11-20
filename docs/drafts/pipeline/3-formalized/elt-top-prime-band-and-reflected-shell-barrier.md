@@ -1,9 +1,9 @@
 # Exact top-band collapse at prime centers, cofactor slice self-duality, and the eight-ninths prime-center shell criterion
 
 - **ID:** elt-top-prime-band-and-reflected-shell-barrier
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Source:** `docs/reports/review-1911/todo.md` #12 · `formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
+- **Source:** `docs/reports/review-1911/todo.md` #12 · `formal/GaloisForLFunctions/ExceptionalLayerTheory/SquareConductors/TheTopPrimeBandAndReflectedShellBarrier.lean`
 - **Statement:** At every prime center `p` and cutoff `3 ≤ Q ≤ 2p`, the `V = 1` primitive cofactor projection collapses identically to `remainingPrimitivePrimePrice p Q 1 = unrestrictedLargePrimePrice p Q` and `primitiveProjectedFactorial p 1 = completeMidpointFactorial p - (log 4 - log 3)` (hence `ordinaryPrimeBandPrice b b p = unrestrictedLargePrimePrice p (min (2p) ⌊(4p)^b⌋₊) - completeMidpointFactorial p + (log 4 - log 3)` for `b ≥ 1 / 2`, `p ≥ 3`); `unrestrictedLargePrimePrice n Q` decomposes into cofactor slices `v ∈ [2, 4n]` whose short slices (`v Q ≤ 2n`) equal `θ(⌊4n/v⌋) - 2θ(⌊3n/v⌋) + θ(⌊2n/v⌋)` (`= -primeMidpointPrice m` when `n = mv`); and `Θ_ζ ≤ 5 / 6` holds if and only if `unrestrictedLargePrimePrice p ⌊p^{8/9}⌋₊ - reflectedDensity · p ≤ C p^t` across prime centers `p` for every `t ∈ (5/6, 1)`.
 
 ## Goal
@@ -12,7 +12,7 @@ Prove the exact algebraic collapse of the top ordinary-prime band `a = b` (`V = 
 ## Gates
 - [x] 0 → 1  in-progress: exact `SquareConductors` interfaces (`ordinaryPrimeBandPrice`, `remainingPrimitivePrimePrice`, `unrestrictedLargePrimePrice`, `reflectedPrimeShellExponent`) isolated
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean module `SquareConductors/TheTopPrimeBandAndReflectedShellBarrier.lean`, `lake --old env lean` green, standard axioms only
+- [x] 2 → 3  formalized: Lean module `SquareConductors/TheTopPrimeBandAndReflectedShellBarrier.lean`, `lake --old env lean` green, standard axioms only
 
 ## Paper Proof (`[PROVED HERE]`)
 

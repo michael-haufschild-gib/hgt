@@ -51,13 +51,13 @@ Procedure: topological order over the listed modules plus the three unlisted dep
 | `BlackHoleRingdown/TailEnergy/AZeroSetForTheDyadicSincPulse` | olean built |
 | `BlackHoleRingdown/TailEnergy/AllMomentsOfARapidReceiverSweep` | checked, wired |
 | `BlackHoleRingdown/TailEnergy/ExponentialTypeOfCascadedTimeWindows` | olean built |
-| `BlackHoleRingdown/TailEnergy/AccumulatingCarriersForceTheScatteringStrip` | fails: GaloisForLFunctions/BlackHoleRingdown/TailEnergy/AccumulatingCarriersForceTheScatteringStrip.lean:74:30: error(lean.unkn |
-| `BlackHoleRingdown/TailEnergy/FourExplicitPulsesDetectEveryScatteringStrip` | pending |
-| `BlackHoleRingdown/TailEnergy/OnePulseEnergyForcesItsOwnBlindFrequencies` | pending |
-| `BlackHoleRingdown/TailEnergy/TheExactTypeOfAWindowSpectrum` | pending |
-| `BlackHoleRingdown/TailEnergy/TheSteklovPulseSeesEveryScatteringPole` | pending |
-| `BlackHoleRingdown/TailEnergy/TheSupportEndpointsOfTheSteklovPulse` | pending |
-| `ConjugateDiagonalGeometry/NearLineLogMean/MertensExcursionsAtEveryLargeCutoff` | pending |
+| `BlackHoleRingdown/TailEnergy/AccumulatingCarriersForceTheScatteringStrip` | checked, wired |
+| `BlackHoleRingdown/TailEnergy/FourExplicitPulsesDetectEveryScatteringStrip` | checked, wired |
+| `BlackHoleRingdown/TailEnergy/OnePulseEnergyForcesItsOwnBlindFrequencies` | olean built |
+| `BlackHoleRingdown/TailEnergy/TheExactTypeOfAWindowSpectrum` | olean built |
+| `BlackHoleRingdown/TailEnergy/TheSteklovPulseSeesEveryScatteringPole` | olean built |
+| `BlackHoleRingdown/TailEnergy/TheSupportEndpointsOfTheSteklovPulse` | checked, wired |
+| `ConjugateDiagonalGeometry/NearLineLogMean/MertensExcursionsAtEveryLargeCutoff` | checked, wired |
 | `ExceptionalLayerTheory/CountingEachMultiplicityWithoutLocatingTheZeros` | pending |
 | `ExceptionalLayerTheory/CountingEveryZeroOrderByChangingTheAperture` | pending |
 | `ExceptionalLayerTheory/SquareConductors/DilationsOfTheEighthPowerGcdDeficit` | pending |

@@ -1,8 +1,8 @@
 # Deuring's theorem: an off-line zero of ζ bounds the class-number-one imaginary quadratic fields
 
 - **ID:** deuring-class-number-one-and-off-line-zeros
-- **Stage:** 1-in-progress
-- **Type:** THEOREM (paper)
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
 - **Source:** user question on Deuring (1933) and the class-number-one problem, 2026-11-20
 - **Statement:** If `ζ(ρ) = 0` with `β = Re ρ > 1/2`, then every quadratic field `K` with `disc K < 0` and class number one has `|disc K| ≤ D(ρ) := 4·max(1, A(ρ)/|ζ(2ρ)|)^{2/(2β−1)}`, where `A(ρ) = |C(ρ)||ζ(2ρ−1)| + |ρ| C(β) Z(2β)/2`, `C(s) = √π Γ(s−1/2)/Γ(s)`, `Z(x) = ∑_{n∈ℤ} |n|^{−x}`. Consequently: unboundedly many such fields ⇒ RH.
 
@@ -12,7 +12,7 @@ The true direction of Deuring's 1933 theorem, with the genuine `NumberField.clas
 ## Gates
 - [x] 0 → 1  in-progress: well-posed, source-pure, attack idea
 - [x] 1 → 2  fully-proven: complete paper proof below, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean theorems in `RHTower/Deuring/`, `lake --old env lean` green
+- [x] 2 → 3  formalized: Lean theorems `abs_discr_le_of_classNumber_eq_one`, `riemannHypothesis_of_unbounded_classNumber_one` in `RHTower/Deuring/`, `lake --old env lean` green, standard axioms only
 
 ## Approach
 Class number one makes the norm form's Epstein zeta function equal to `w ζ(s) L(s)` with `L` holomorphic off `s = 1`; the two-term expansion of the Epstein zeta function is `2ζ(2s) + 2k^{1−2s}C(s)ζ(2s−1) + R` with `k = √|d|/2` and `R = O(k^{−2σ})`. At an off-line zero the first term is a fixed nonzero number and the other two are `O(k^{1−2β})`.
@@ -54,6 +54,29 @@ On `Re s > 1`: `(1 − ε₂2^{−s})(2ζ(2s) + 2k^{1−2s}C(s)ζ(2s−1) + R(s)
 ### Corollary
 If RH fails there is a zero with `β > 1/2`, so the discriminants of class-number-one quadratic fields with `disc < 0` are bounded. Contrapositive: unbounded ⇒ RH.
 
+## Lean
+Folder `formal/GaloisForLFunctions/RHTower/Deuring/`, namespace `GaloisForLFunctions.RHTower.Deuring`, imported by `RHTower.lean`.
+
+| Paper | Module | Declarations |
+|---|---|---|
+| §1 | `TheRingOfIntegersOfAQuadraticFieldAsAQuadraticOrder` | `trace_quadraticAlgebra`, `discr_quadraticAlgebra`, `exists_bezout_of_one_eq`, `exists_algEquiv_quadraticAlgebra`, `exists_quadraticAlgebra_equiv` |
+| §1, §2 | `RepresentationNumbersOfAPrincipalQuadraticOrder` | `four_mul_qnorm`, `isUnit_iff_qnorm_eq_one`, `prime_of_qnorm_eq_prime`, `prime_intCast_of_forall_qnorm_ne`, `splitSym`, `repCount`, `repCount_prime_mul`, `chi`, `divSum`, `repCount_eq`, `splitSym_eq_legendreSym` |
+| §3 | `TheNormFormLSeriesOfAPrincipalQuadraticOrder` | `LSeries_repCount`, `one_sub_mul_LSeries_chiC`, `chi_eq_jacobiSym_of_odd`, `chiOdd_eq_jacobiFun`, `exists_LFunction_repCount` |
+| §4 | `TheTwoTermExpansionOfAnEpsteinZetaFunction` | `summable_norm_shift_and_bound`, `tsum_row_eq`, `norm_rowRem_le`, `epsteinZeta`, `epsteinCont`, `epsteinZeta_eq_epsteinCont`, `differentiableOn_epsteinCont`, `deuringConst`, `deuringBound`, `four_mul_sq_le_deuringBound` |
+| §5, Corollary | `DeuringsBoundForClassNumberOne` | `epsteinZeta_eq_LSeries`, `abs_disc_le_deuringBound`, `abs_discr_le_of_classNumber_eq_one`, `riemannHypothesis_of_unbounded_classNumber_one` |
+
+```lean
+theorem abs_discr_le_of_classNumber_eq_one {ρ : ℂ} (hζ : riemannZeta ρ = 0) (hρ : 1 / 2 < ρ.re)
+    (K : Type*) [Field K] [NumberField K] (h2 : Module.finrank ℚ K = 2) (hd : discr K < 0)
+    (hcl : classNumber K = 1) : ((|discr K| : ℤ) : ℝ) ≤ deuringBound ρ
+
+theorem riemannHypothesis_of_unbounded_classNumber_one
+    (h : ∀ B : ℝ, ∃ (K : Type) (_ : Field K) (_ : NumberField K), Module.finrank ℚ K = 2 ∧
+      discr K < 0 ∧ classNumber K = 1 ∧ B < ((|discr K| : ℤ) : ℝ)) : RiemannHypothesis
+```
+
+Both depend only on `propext`, `Classical.choice`, `Quot.sound`.
+
 ## Not formalized, by decision
 - "Finitely many `h = 1` fields ⇒ RH" is not a theorem (it is the converse of the corollary; as an implication from a true statement it is equivalent to RH).
 - Baker–Heegner–Stark (exactly nine fields) and the numerical remark about `π√163 ≈ 40.1`.
@@ -61,3 +84,4 @@ If RH fails there is a zero with `β > 1/2`, so the discriminants of class-numbe
 
 ## Log
 - 2026-11-20 — created in 1-in-progress with the paper proof; Lean formalization started in `formal/GaloisForLFunctions/RHTower/Deuring/`
+- 2026-11-20 — five modules compile clean; moved to 3-formalized

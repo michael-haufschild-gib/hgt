@@ -57,20 +57,19 @@ private theorem coeff_pow_step {A : PowerSeries ℤ} {j : ℕ} (hj : 1 ≤ j) {s
       PowerSeries.coeff j (A ^ r) = (r : ℤ) * s := by
   induction r with
   | zero =>
-    refine ⟨by simp, fun m hm _ => ?_, by simp⟩
-    have hm0 : m ≠ 0 := by omega
-    simp [PowerSeries.coeff_one, hm0]
+    refine ⟨by simp, fun m hm _ => by simp [PowerSeries.coeff_one, show m ≠ 0 by omega],
+      by simp [PowerSeries.coeff_one, show j ≠ 0 by omega]⟩
   | succ r ih =>
     obtain ⟨ih0, ihmid, ihj⟩ := ih
     rw [pow_succ]
     refine ⟨?_, ?_, ?_⟩
-    · rw [PowerSeries.coeff_zero_eq_constantCoeff, map_mul,
-        ← PowerSeries.coeff_zero_eq_constantCoeff, ← PowerSeries.coeff_zero_eq_constantCoeff,
-        ih0, h0, mul_one]
+    · rw [PowerSeries.coeff_zero_eq_constantCoeff_apply, map_mul,
+        ← PowerSeries.coeff_zero_eq_constantCoeff_apply,
+        ← PowerSeries.coeff_zero_eq_constantCoeff_apply, ih0, h0, mul_one]
     · intro m hm1 hmj
       rw [PowerSeries.coeff_mul]
       refine Finset.sum_eq_zero fun p hp => ?_
-      have hp_eq := Finset.mem_antidiagonal.mp hp
+      have hp_eq := Finset.HasAntidiagonal.mem_antidiagonal.mp hp
       rcases eq_or_ne p.1 0 with hp1 | hp1
       · have hp2_ge : 1 ≤ p.2 := by omega
         have hp2_lt : p.2 < j := by omega
@@ -79,26 +78,24 @@ private theorem coeff_pow_step {A : PowerSeries ℤ} {j : ℕ} (hj : 1 ≤ j) {s
         have hp1_lt : p.1 < j := by omega
         rw [ihmid p.1 hp1_ge hp1_lt, zero_mul]
     · rw [PowerSeries.coeff_mul]
-      have hsub : ∀ p ∈ Finset.antidiagonal j, p ≠ (0, j) → p ≠ (j, 0) →
+      have hsub : ∀ p ∈ Finset.HasAntidiagonal.antidiagonal j, p ≠ (0, j) → p ≠ (j, 0) →
           PowerSeries.coeff p.1 (A ^ r) * PowerSeries.coeff p.2 A = 0 := by
         intro p hp hne1 hne2
-        have hp_eq := Finset.mem_antidiagonal.mp hp
+        have hp_eq := Finset.HasAntidiagonal.mem_antidiagonal.mp hp
         have hp1_pos : 1 ≤ p.1 := by
           rcases eq_or_ne p.1 0 with h0' | hpos
-          · exfalso; apply hne1; ext <;> simp [h0'] <;> omega
+          · exfalso; exact hne1 (Prod.ext h0' (by omega))
           · omega
         have hp1_lt : p.1 < j := by
           rcases eq_or_ne p.2 0 with h0' | hpos
-          · exfalso; apply hne2; ext <;> simp [h0'] <;> omega
+          · exfalso; exact hne2 (Prod.ext (by omega) h0')
           · omega
         rw [ihmid p.1 hp1_pos hp1_lt, zero_mul]
-      have h0j : (0, j) ∈ Finset.antidiagonal j := by simp
-      have hj0 : (j, 0) ∈ (Finset.antidiagonal j).erase (0, j) := by
-        simp only [Finset.mem_erase, Finset.mem_antidiagonal]
-        refine ⟨fun h => ?_, Nat.add_zero j⟩
-        have := Prod.mk.inj h; omega
+      have h0j : (0, j) ∈ Finset.HasAntidiagonal.antidiagonal j := by simp
+      have hj0 : (j, 0) ∈ (Finset.HasAntidiagonal.antidiagonal j).erase (0, j) := by
+        simp [show j ≠ 0 by omega]
       rw [← Finset.add_sum_erase _ _ h0j, ← Finset.add_sum_erase _ _ hj0]
-      have hrest : ∑ x ∈ ((Finset.antidiagonal j).erase (0, j)).erase (j, 0),
+      have hrest : ∑ x ∈ ((Finset.HasAntidiagonal.antidiagonal j).erase (0, j)).erase (j, 0),
           PowerSeries.coeff x.1 (A ^ r) * PowerSeries.coeff x.2 A = 0 := by
         refine Finset.sum_eq_zero fun x hx => ?_
         have hx1 := Finset.mem_erase.mp hx
@@ -161,29 +158,31 @@ private theorem hasGhost_one_sub_X_pow {j : ℕ} (hj : 1 ≤ j) :
           exact dvd_mul_right j _
         simp [hjle, dvd_mul_right j q, hdvd_sub]
       · rw [if_neg hjn, zero_sub, neg_eq_zero]
-        split_ifs with hjle
-        · rw [if_neg]
-          intro hdvd
-          exact hjn (by rw [← Nat.sub_add_cancel hjle]; exact dvd_add hdvd dvd_rfl)
+        split_ifs with hjle hdvd
+        · exact absurd (by rw [← Nat.sub_add_cancel hjle]; exact dvd_add hdvd dvd_rfl) hjn
+        · rfl
         · rfl
   -- Compute `X * d/dX (1 - X^j) = -j X^j`.
   have hderiv : PowerSeries.X * d⁄dX ℂ (1 - (PowerSeries.X : ℂ⟦X⟧) ^ j) =
       -PowerSeries.C (j : ℂ) * PowerSeries.X ^ j := by
     ext n
-    rw [PowerSeries.coeff_X_mul_derivative, map_sub, PowerSeries.coeff_one,
-      PowerSeries.coeff_X_pow, neg_mul, map_neg, PowerSeries.coeff_C_mul, PowerSeries.coeff_X_pow]
-    rcases eq_or_ne n 0 with rfl | hn0
-    · simp [show 0 ≠ j by omega]
-    · rw [if_neg hn0, zero_sub]
+    rcases n with _ | m
+    · rw [PowerSeries.coeff_zero_X_mul, neg_mul (PowerSeries.C (j : ℂ)) (PowerSeries.X ^ j),
+        map_neg, PowerSeries.coeff_C_mul, PowerSeries.coeff_X_pow,
+        if_neg (show 0 ≠ j by omega), mul_zero, neg_zero]
+    · rw [PowerSeries.coeff_succ_X_mul, PowerSeries.coeff_derivative, map_sub,
+        PowerSeries.coeff_one, if_neg (Nat.succ_ne_zero m), PowerSeries.coeff_X_pow, zero_sub,
+        neg_mul (PowerSeries.C (j : ℂ)) (PowerSeries.X ^ j), map_neg, PowerSeries.coeff_C_mul,
+        PowerSeries.coeff_X_pow]
       split_ifs with hnj
-      · subst hnj; ring
+      · subst hnj; push_cast; ring
       · ring
   have htail : -PowerSeries.C (j : ℂ) * PowerSeries.X ^ j * G =
       PowerSeries.mk fun n => if n = 0 then 0 else if j ∣ n then -(j : ℂ) else 0 := by
     ext n
-    rw [neg_mul, mul_assoc, map_neg, PowerSeries.coeff_C_mul, PowerSeries.coeff_X_pow_mul',
-      PowerSeries.coeff_mk]
-    simp only [G, PowerSeries.coeff_mk]
+    rw [neg_mul, neg_mul, map_neg, mul_assoc, PowerSeries.coeff_C_mul,
+      PowerSeries.coeff_X_pow_mul', PowerSeries.coeff_mk]
+    simp only [PowerSeries.coeff_mk]
     rcases eq_or_ne n 0 with rfl | hn0
     · simp [show ¬ j ≤ 0 by omega]
     · rw [if_neg hn0]
@@ -196,14 +195,16 @@ private theorem hasGhost_one_sub_X_pow {j : ℕ} (hj : 1 ≤ j) :
           exact dvd_mul_right j _
         simp [hjle, dvd_mul_right j q, hdvd_sub]
       · rw [if_neg hjn]
-        split_ifs with hjle
-        · rw [if_neg]
-          · ring
-          · intro hdvd
-            exact hjn (by rw [← Nat.sub_add_cancel hjle]; exact dvd_add hdvd dvd_rfl)
+        split_ifs with hjle hdvd
+        · exact absurd (by rw [← Nat.sub_add_cancel hjle]; exact dvd_add hdvd dvd_rfl) hjn
+        · ring
         · ring
   rw [hderiv, ← htail]
-  linear_combination (-PowerSeries.C (j : ℂ) * PowerSeries.X ^ j * G) * hinv
+  calc -PowerSeries.C (j : ℂ) * PowerSeries.X ^ j
+      = -PowerSeries.C (j : ℂ) * PowerSeries.X ^ j * ((1 - (PowerSeries.X : ℂ⟦X⟧) ^ j) * G) := by
+        rw [hinv, mul_one]
+    _ = (1 - (PowerSeries.X : ℂ⟦X⟧) ^ j) * (-PowerSeries.C (j : ℂ) * PowerSeries.X ^ j * G) := by
+        ring
 
 private theorem hasGhost_geom_pow {j : ℕ} (hj : 1 ≤ j) :
     HasGhost (PowerSeries.mk fun n => if j ∣ n then (1 : ℂ) else 0)
@@ -230,10 +231,9 @@ private theorem hasGhost_geom_pow {j : ℕ} (hj : 1 ≤ j) :
           exact dvd_mul_right j _
         simp [hjle, dvd_mul_right j q, hdvd_sub]
       · rw [if_neg hjn, zero_sub, neg_eq_zero]
-        split_ifs with hjle
-        · rw [if_neg]
-          intro hdvd
-          exact hjn (by rw [← Nat.sub_add_cancel hjle]; exact dvd_add hdvd dvd_rfl)
+        split_ifs with hjle hdvd
+        · exact absurd (by rw [← Nat.sub_add_cancel hjle]; exact dvd_add hdvd dvd_rfl) hjn
+        · rfl
         · rfl
   unfold HasGhost at hF ⊢
   have hd : d⁄dX ℂ (F * G) = 0 := by rw [hinv, Derivation.map_one_eq_zero]
@@ -261,13 +261,14 @@ private theorem hasGhost_eulerFactorInt {j : ℕ} (hj : 1 ≤ j) (e : ℤ) :
     simp only [PowerSeries.coeff_mk, map_smul, smul_eq_mul]
     split_ifs with hn0 hjn
     · simp
-    · rw [Int.toNat_of_nonneg he]; push_cast; ring
+    · have he_eq : (e.toNat : ℂ) = (e : ℂ) := by exact_mod_cast Int.toNat_of_nonneg he
+      rw [he_eq]; push_cast; ring
     · simp
   · have he_neg : 0 ≤ -e := by omega
     rw [map_pow]
     have hmap : PowerSeries.map (Int.castRingHom ℂ) (PowerSeries.mk fun n => if j ∣ n then (1 : ℤ) else 0) =
         PowerSeries.mk fun n => if j ∣ n then (1 : ℂ) else 0 := by
-      ext n; simp; split_ifs <;> simp
+      ext n; simp
     rw [hmap]
     have hp := hasGhost_pow_nat (hasGhost_geom_pow hj) (-e).toNat
     convert hp using 1
@@ -275,7 +276,8 @@ private theorem hasGhost_eulerFactorInt {j : ℕ} (hj : 1 ≤ j) (e : ℤ) :
     simp only [PowerSeries.coeff_mk, map_smul, smul_eq_mul]
     split_ifs with hn0 hjn
     · simp
-    · rw [Int.toNat_of_nonneg he_neg]; push_cast; ring
+    · have he_eq : ((-e).toNat : ℂ) = -(e : ℂ) := by exact_mod_cast Int.toNat_of_nonneg he_neg
+      rw [he_eq]; push_cast; ring
     · simp
 
 /-- Recursive remainder and integer necklace coordinates extracted from `Zℤ ∈ 1 + X ℤ⟦X⟧`. -/
@@ -312,90 +314,102 @@ theorem exists_int_necklace_of_integral_hasGhost (Zℤ : PowerSeries ℤ)
     induction d with
     | zero =>
       refine ⟨by simpa [R, wittEulerStep] using h0, fun m hm1 hm0 => by omega, ?_⟩
-      convert hghost using 1
-      ext k
-      simp only [PowerSeries.coeff_mk]
-      split_ifs with hk0
-      · rfl
-      · have hemp : (Finset.Icc 1 0).filter (· ∣ k) = ∅ := by
-          ext j; simp; omega
-        rw [hemp, Finset.sum_empty, sub_zero]
+      have heq_g : (PowerSeries.mk fun k => if k = 0 then 0 else
+          ((N k - ∑ j ∈ (Finset.Icc 1 0).filter (· ∣ k), (j : ℤ) * π j : ℤ) : ℂ)) =
+          (PowerSeries.mk fun k => if k = 0 then 0 else (N k : ℂ)) := by
+        ext k
+        rw [PowerSeries.coeff_mk, PowerSeries.coeff_mk]
+        split_ifs with hk0
+        · rfl
+        · have hemp : (Finset.Icc 1 0).filter (· ∣ k) = ∅ := by ext j; simp
+          rw [hemp, Finset.sum_empty, sub_zero]
+      dsimp [R, wittEulerStep]
+      rw [heq_g]
+      exact hghost
     | succ d ih =>
       obtain ⟨ih0, ihz, ihg⟩ := ih
       have hR_succ : R (d + 1) = R d * eulerFactorInt (d + 1) (π (d + 1)) := rfl
       have hπ_succ : π (d + 1) = PowerSeries.coeff (d + 1) (R d) := rfl
-      obtain ⟨ef0, efmid, efj⟩ := coeff_eulerFactorInt (Nat.succ_pos d) (π (d + 1))
+      obtain ⟨ef0, efmid, efj⟩ := coeff_eulerFactorInt (show 1 ≤ d + 1 by omega) (π (d + 1))
       refine ⟨?_, ?_, ?_⟩
-      · rw [hR_succ, PowerSeries.coeff_zero_eq_constantCoeff, map_mul,
-          ← PowerSeries.coeff_zero_eq_constantCoeff, ← PowerSeries.coeff_zero_eq_constantCoeff,
-          ih0, ef0, mul_one]
+      · rw [hR_succ, PowerSeries.coeff_zero_eq_constantCoeff_apply, map_mul,
+          ← PowerSeries.coeff_zero_eq_constantCoeff_apply,
+          ← PowerSeries.coeff_zero_eq_constantCoeff_apply, ih0, ef0, mul_one]
       · intro m hm1 hmd1
         rw [hR_succ, PowerSeries.coeff_mul]
         rcases lt_or_eq_of_le hmd1 with hlt | rfl
         · refine Finset.sum_eq_zero fun p hp => ?_
-          have hp_eq := Finset.mem_antidiagonal.mp hp
+          have hp_eq := Finset.HasAntidiagonal.mem_antidiagonal.mp hp
           rcases eq_or_ne p.1 0 with hp1 | hp1
           · rw [efmid p.2 (by omega) (by omega), mul_zero]
           · rw [ihz p.1 (by omega) (by omega), zero_mul]
-        · -- `m = d + 1`: only `(0, d+1)` and `(d+1, 0)` survive, cancelling `π (d+1) - π (d+1) = 0`!
-          have h0m : (0, d + 1) ∈ Finset.antidiagonal (d + 1) := by simp
-          have hm0 : (d + 1, 0) ∈ (Finset.antidiagonal (d + 1)).erase (0, d + 1) := by
-            simp only [Finset.mem_erase, Finset.mem_antidiagonal]
-            exact ⟨fun h => by have := Prod.mk.inj h; omega, Nat.add_zero _⟩
+        · have h0m : (0, d + 1) ∈ Finset.HasAntidiagonal.antidiagonal (d + 1) := by simp
+          have hm0 : (d + 1, 0) ∈ (Finset.HasAntidiagonal.antidiagonal (d + 1)).erase (0, d + 1) := by
+            simp
           rw [← Finset.add_sum_erase _ _ h0m, ← Finset.add_sum_erase _ _ hm0]
-          have hrest : ∑ p ∈ ((Finset.antidiagonal (d + 1)).erase (0, d + 1)).erase (d + 1, 0),
+          have hrest : ∑ p ∈ ((Finset.HasAntidiagonal.antidiagonal (d + 1)).erase (0, d + 1)).erase (d + 1, 0),
               PowerSeries.coeff p.1 (R d) * PowerSeries.coeff p.2 (eulerFactorInt (d + 1) (π (d + 1))) = 0 := by
             refine Finset.sum_eq_zero fun p hp => ?_
             have hp1 := Finset.mem_erase.mp hp
             have hp2 := Finset.mem_erase.mp hp1.2
-            have hp_sum := Finset.mem_antidiagonal.mp hp2.2
+            have hp_sum := Finset.HasAntidiagonal.mem_antidiagonal.mp hp2.2
             have hp1_pos : 1 ≤ p.1 := by
               rcases eq_or_ne p.1 0 with h0' | _
-              · exfalso; apply hp2.1; ext <;> simp [h0'] <;> omega
+              · exfalso; exact hp2.1 (Prod.ext h0' (by omega))
               · omega
             have hp1_le : p.1 ≤ d := by
               rcases eq_or_ne p.2 0 with h0' | _
-              · exfalso; apply hp1.1; ext <;> simp [h0'] <;> omega
+              · exfalso; exact hp1.1 (Prod.ext (by omega) h0')
               · omega
             rw [ihz p.1 hp1_pos hp1_le, zero_mul]
           rw [hrest, add_zero, ih0, efj, ← hπ_succ, ef0]
           ring
       · rw [hR_succ, map_mul]
-        have hg_mul := hasGhost_mul ihg (hasGhost_eulerFactorInt (Nat.succ_pos d) (π (d + 1)))
-        convert hg_mul using 1
-        ext k
-        simp only [PowerSeries.coeff_mk, map_add]
-        split_ifs with hk0
-        · simp
-        · have hIcc : Finset.Icc 1 (d + 1) = insert (d + 1) (Finset.Icc 1 d) := by
-            ext j; simp only [Finset.mem_Icc, Finset.mem_insert]; omega
-          rw [hIcc, Finset.filter_insert]
-          split_ifs with hdvd
-          · rw [Finset.sum_insert (by simp; omega)]
+        have hg_mul := hasGhost_mul ihg (hasGhost_eulerFactorInt (show 1 ≤ d + 1 by omega) (π (d + 1)))
+        have heq_step : (PowerSeries.mk fun k => if k = 0 then 0 else
+            ((N k - ∑ j ∈ (Finset.Icc 1 (d + 1)).filter (· ∣ k), (j : ℤ) * π j : ℤ) : ℂ)) =
+            (PowerSeries.mk fun k => if k = 0 then 0 else
+              ((N k - ∑ j ∈ (Finset.Icc 1 d).filter (· ∣ k), (j : ℤ) * π j : ℤ) : ℂ)) +
+            (PowerSeries.mk fun n => if n = 0 then 0 else
+              if d + 1 ∣ n then -((((d + 1 : ℕ) : ℤ) * π (d + 1) : ℤ) : ℂ) else 0) := by
+          ext k
+          rw [map_add, PowerSeries.coeff_mk, PowerSeries.coeff_mk, PowerSeries.coeff_mk]
+          split_ifs with hk0 hdvd
+          · simp
+          · have hIcc : Finset.Icc 1 (d + 1) = insert (d + 1) (Finset.Icc 1 d) := by
+              ext j; simp only [Finset.mem_Icc, Finset.mem_insert]; omega
+            rw [hIcc, Finset.filter_insert, if_pos hdvd, Finset.sum_insert (by simp)]
             push_cast; ring
-          · push_cast; ring
+          · have hIcc : Finset.Icc 1 (d + 1) = insert (d + 1) (Finset.Icc 1 d) := by
+              ext j; simp only [Finset.mem_Icc, Finset.mem_insert]; omega
+            rw [hIcc, Finset.filter_insert, if_neg hdvd]
+            push_cast; ring
+        rw [heq_step]
+        exact hg_mul
   have hN_eq : ∀ k : ℕ, 1 ≤ k → N k = ∑ d ∈ k.divisors, (d : ℤ) * π d := by
     intro k hk
     obtain ⟨hR0, hRz, hRg⟩ := hR_inv k
     unfold HasGhost at hRg
     have hc := congrArg (PowerSeries.coeff k) hRg
     obtain ⟨m, rfl⟩ : ∃ m : ℕ, k = m + 1 := ⟨k - 1, by omega⟩
-    rw [PowerSeries.coeff_X_mul_derivative, PowerSeries.coeff_map, hRz (m + 1) (by omega) le_rfl,
-      Int.cast_zero, mul_zero, PowerSeries.coeff_mul] at hc
-    have h0k : (0, m + 1) ∈ Finset.antidiagonal (m + 1) := by simp
+    rw [PowerSeries.coeff_succ_X_mul, PowerSeries.coeff_derivative, PowerSeries.coeff_map,
+      hRz (m + 1) (by omega) le_rfl, map_zero, zero_mul, PowerSeries.coeff_mul] at hc
+    have h0k : (0, m + 1) ∈ Finset.HasAntidiagonal.antidiagonal (m + 1) := by simp
     rw [← Finset.add_sum_erase _ _ h0k] at hc
-    have hrest : ∑ p ∈ (Finset.antidiagonal (m + 1)).erase (0, m + 1),
+    set Gm : ℂ⟦X⟧ := PowerSeries.mk fun k => if k = 0 then 0 else
+      ((N k - ∑ j ∈ (Finset.Icc 1 (m + 1)).filter (· ∣ k), (j : ℤ) * π j : ℤ) : ℂ)
+    have hrest : ∑ p ∈ (Finset.HasAntidiagonal.antidiagonal (m + 1)).erase (0, m + 1),
         PowerSeries.coeff p.1 (PowerSeries.map (Int.castRingHom ℂ) (R (m + 1))) *
-          PowerSeries.coeff p.2 _ = 0 := by
+          PowerSeries.coeff p.2 Gm = 0 := by
       refine Finset.sum_eq_zero fun p hp => ?_
       have hp1 := Finset.mem_erase.mp hp
-      have hp_sum := Finset.mem_antidiagonal.mp hp1.2
+      have hp_sum := Finset.HasAntidiagonal.mem_antidiagonal.mp hp1.2
       have hp1_pos : 1 ≤ p.1 := by
         rcases eq_or_ne p.1 0 with h0' | _
-        · exfalso; apply hp1.1; ext <;> simp [h0'] <;> omega
+        · exfalso; exact hp1.1 (Prod.ext h0' (by omega))
         · omega
-      rw [PowerSeries.coeff_map, hRz p.1 hp1_pos (by omega), Int.cast_zero, zero_mul]
-    rw [hrest, add_zero, PowerSeries.coeff_map, hR0, Int.cast_one, one_mul,
+      rw [PowerSeries.coeff_map, hRz p.1 hp1_pos (by omega), map_zero, zero_mul]
+    rw [hrest, add_zero, PowerSeries.coeff_map, hR0, map_one, one_mul,
       PowerSeries.coeff_mk, if_neg (Nat.succ_ne_zero m)] at hc
     have hsub0 : N (m + 1) - ∑ j ∈ (Finset.Icc 1 (m + 1)).filter (· ∣ m + 1), (j : ℤ) * π j = 0 := by
       exact_mod_cast hc.symm
@@ -471,13 +485,9 @@ theorem fiveQuartetAlpha_add_and_mul :
     have hv := fiveQuartetV_sq
     have huv := fiveQuartetU_mul_V
     apply Complex.ext
-    · simp only [Complex.mul_re, Complex.add_re, Complex.ofReal_re, Complex.ofReal_im,
-        Complex.I_re, Complex.I_im, mul_zero, sub_zero, mul_one, zero_add, Complex.add_im,
-        Complex.mul_im, Complex.ofNat_re]
+    · simp
       nlinarith
-    · simp only [Complex.mul_im, Complex.add_re, Complex.ofReal_re, Complex.ofReal_im,
-        Complex.I_re, Complex.I_im, mul_zero, sub_zero, mul_one, zero_add, Complex.add_im,
-        Complex.ofNat_im]
+    · simp
       nlinarith
 
 theorem fiveQuartetAlpha_norms :
@@ -569,26 +579,26 @@ theorem primeFiveQuartetDatum_im_ne_zero (i : Fin 4) :
     rw [show (4 : ℝ) = Real.sqrt (4 ^ 2) by rw [Real.sqrt_sq (by norm_num)]]
     exact Real.sqrt_lt_sqrt (by norm_num) (by linarith [ten_lt_sqrt_101])
   have hs5 : 0 < Real.sqrt 5 := Real.sqrt_pos.mpr (by norm_num)
-  have him0 : fiveQuartetAlpha0.im = (1 + fiveQuartetV) / 2 := by simp [fiveQuartetAlpha0]
-  have him2 : fiveQuartetAlpha2.im = (1 - fiveQuartetV) / 2 := by simp [fiveQuartetAlpha2]
-  fin_cases i <;>
-    simp only [primeFiveQuartetDatum, Matrix.cons_val_zero, Matrix.cons_val_one,
-      Matrix.cons_val_two, Matrix.cons_val_three, div_ofReal_im, Complex.conj_im, him0, him2]
-  · exact div_ne_zero (by linarith) hs5.ne'
-  · exact div_ne_zero (by linarith) hs5.ne'
-  · exact div_ne_zero (by linarith) hs5.ne'
-  · exact div_ne_zero (by linarith) hs5.ne'
+  fin_cases i
+  · simp [primeFiveQuartetDatum, fiveQuartetAlpha0, div_ofReal_im]
+    linarith
+  · simp [primeFiveQuartetDatum, fiveQuartetAlpha0, div_ofReal_im, map_ofNat]
+    linarith
+  · simp [primeFiveQuartetDatum, fiveQuartetAlpha2, div_ofReal_im, map_ofNat]
+    linarith
+  · simp [primeFiveQuartetDatum, fiveQuartetAlpha2, div_ofReal_im]
+    linarith
 
 theorem primeFiveQuartetDatum_not_unitary :
     ¬ ∀ i : Fin 4, ‖primeFiveQuartetDatum.β i‖ = 1 := by
   intro hall
+  have h5_pos : 0 < Real.sqrt 5 := Real.sqrt_pos.mpr (by norm_num)
   have h0 := hall 0
   simp only [primeFiveQuartetDatum, Matrix.cons_val_zero, norm_div, Complex.norm_real,
-    Real.norm_eq_abs, abs_of_pos (Real.sqrt_pos.mpr (by norm_num))] at h0
+    Real.norm_eq_abs, abs_of_pos h5_pos] at h0
   have hsq5 : Real.sqrt 5 < ‖fiveQuartetAlpha0‖ := by
     rw [Complex.norm_def]
     exact Real.sqrt_lt_sqrt (by norm_num) fiveQuartetAlpha_norms.1
-  have h5_pos : 0 < Real.sqrt 5 := Real.sqrt_pos.mpr (by norm_num)
   rw [div_eq_one_iff_eq h5_pos.ne'] at h0
   linarith
 
@@ -597,7 +607,8 @@ theorem primeFiveQuartetDatum_hOnePoly :
     primeFiveQuartetDatum.hOnePoly =
       1 - C 2 * X + C 12 * X ^ 2 - C 10 * X ^ 3 + C 25 * X ^ 4 := by
   rw [CurveDatum.hOnePoly, Fin.prod_univ_four, primeFiveQuartetDatum_alpha]
-  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two, Matrix.cons_val_three]
+  simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Matrix.cons_val_two,
+    Matrix.cons_val_three, Matrix.head_cons, Matrix.tail_cons]
   obtain ⟨hadd, hmul⟩ := fiveQuartetAlpha_add_and_mul
   have hcadd : conj fiveQuartetAlpha0 + conj fiveQuartetAlpha2 = 1 - I := by
     rw [← map_add, hadd, map_add, map_one, Complex.conj_I]; ring
@@ -609,14 +620,14 @@ theorem primeFiveQuartetDatum_hOnePoly :
         = 1 - C (fiveQuartetAlpha0 + fiveQuartetAlpha2) * X +
             C (fiveQuartetAlpha0 * fiveQuartetAlpha2) * X ^ 2 := by
           simp only [map_add, map_mul]; ring
-      _ = 1 - C (1 + I) * X + C 5 * X ^ 2 := by rw [hadd, hmul]; norm_num
+      _ = 1 - C (1 + I) * X + C 5 * X ^ 2 := by rw [hadd, hmul]
   have hf2 : (1 - C (conj fiveQuartetAlpha0) * X) * (1 - C (conj fiveQuartetAlpha2) * X) =
       1 - C (1 - I) * X + C 5 * X ^ 2 := by
     calc (1 - C (conj fiveQuartetAlpha0) * X) * (1 - C (conj fiveQuartetAlpha2) * X)
         = 1 - C (conj fiveQuartetAlpha0 + conj fiveQuartetAlpha2) * X +
             C (conj fiveQuartetAlpha0 * conj fiveQuartetAlpha2) * X ^ 2 := by
           simp only [map_add, map_mul]; ring
-      _ = 1 - C (1 - I) * X + C 5 * X ^ 2 := by rw [hcadd, hcmul]; norm_num
+      _ = 1 - C (1 - I) * X + C 5 * X ^ 2 := by rw [hcadd, hcmul]
   have hpair : (1 - C fiveQuartetAlpha0 * X) * (1 - C (conj fiveQuartetAlpha0) * X) *
       (1 - C (conj fiveQuartetAlpha2) * X) * (1 - C fiveQuartetAlpha2 * X) =
       ((1 - C fiveQuartetAlpha0 * X) * (1 - C fiveQuartetAlpha2 * X)) *
@@ -629,13 +640,15 @@ theorem primeFiveQuartetDatum_hOnePoly :
   have hIsum : C (1 + I) + C (1 - I) = (C 2 : ℂ⟦X⟧) := by
     rw [← map_add]; congr 1; ring
   calc (1 - C (1 + I) * X + C 5 * X ^ 2) * (1 - C (1 - I) * X + C 5 * X ^ 2)
-      = 1 - (C (1 + I) + C (1 - I)) * X + (C 10 + C (1 + I) * C (1 - I)) * X ^ 2 -
-          C 5 * (C (1 + I) + C (1 - I)) * X ^ 3 + C 25 * X ^ 4 := by
-        simp only [← map_mul, ← map_add]; ring_nf; norm_num
+      = 1 - (C (1 + I) + C (1 - I)) * X + (2 * C 5 + C (1 + I) * C (1 - I)) * X ^ 2 -
+          C 5 * (C (1 + I) + C (1 - I)) * X ^ 3 + (C 5) ^ 2 * X ^ 4 := by ring
     _ = 1 - C 2 * X + C 12 * X ^ 2 - C 10 * X ^ 3 + C 25 * X ^ 4 := by
         rw [hIsum, hI2]
-        simp only [← map_add, ← map_mul]
-        norm_num
+        have h12 : 2 * (C 5 : ℂ⟦X⟧) + C 2 = C 12 := by
+          rw [← map_ofNat C 2, ← map_mul, ← map_add]; norm_num
+        have h10 : (C 5 : ℂ⟦X⟧) * C 2 = C 10 := by rw [← map_mul]; norm_num
+        have h25 : (C 5 : ℂ⟦X⟧) ^ 2 = C 25 := by rw [sq, ← map_mul]; norm_num
+        rw [h12, h10, h25]
 
 /-- Newton's integer trace sequence of `P_4(X) = 1 - 2X + 12X² - 10X³ + 25X⁴`. -/
 def fiveQuartetTrace : ℕ → ℤ
@@ -653,12 +666,13 @@ theorem primeFiveQuartetDatum_powerSum_eq_trace (n : ℕ) :
       fiveQuartetAlpha0 ^ k + conj fiveQuartetAlpha0 ^ k +
         conj fiveQuartetAlpha2 ^ k + fiveQuartetAlpha2 ^ k := by
     intro k
-    rw [← primeFiveQuartetDatum.powerSum_eq_trace, CurveDatum.powerSum, Fin.sum_univ_four]
-    have hmul : ∀ i : Fin 4, (primeFiveQuartetDatum.sqrtq : ℂ) * primeFiveQuartetDatum.β i =
-        primeFiveQuartetDatum.alpha i := fun _ => rfl
     push_cast
-    rw [Finset.mul_sum]
-    simp_rw [← mul_pow, hmul, primeFiveQuartetDatum_alpha]
+    rw [← primeFiveQuartetDatum.powerSum_eq_trace, CurveDatum.powerSum, Finset.mul_sum,
+      Fin.sum_univ_four]
+    simp_rw [← mul_pow]
+    change primeFiveQuartetDatum.alpha 0 ^ k + primeFiveQuartetDatum.alpha 1 ^ k +
+        primeFiveQuartetDatum.alpha 2 ^ k + primeFiveQuartetDatum.alpha 3 ^ k = _
+    rw [primeFiveQuartetDatum_alpha]
     simp [add_assoc]
   -- Each root satisfies `α^4 = 2 α^3 - 12 α^2 + 10 α - 25`.
   obtain ⟨hadd, hmul⟩ := fiveQuartetAlpha_add_and_mul
@@ -686,10 +700,10 @@ theorem primeFiveQuartetDatum_powerSum_eq_trace (n : ℕ) :
     rw [← hadd, ← hmul]; ring
   have hcz0 : conj fiveQuartetAlpha0 ^ 2 - (1 - I) * conj fiveQuartetAlpha0 + 5 = 0 := by
     have hc := congrArg conj hz0
-    simpa [Complex.conj_I, sub_eq_add_neg] using hc
+    simpa [Complex.conj_I, map_ofNat, sub_eq_add_neg] using hc
   have hcz2 : conj fiveQuartetAlpha2 ^ 2 - (1 - I) * conj fiveQuartetAlpha2 + 5 = 0 := by
     have hc := congrArg conj hz2
-    simpa [Complex.conj_I, sub_eq_add_neg] using hc
+    simpa [Complex.conj_I, map_ofNat, sub_eq_add_neg] using hc
   -- Prove the identity in `ℂ` by strong induction on `n`.
   suffices hC : ∀ m : ℕ,
       fiveQuartetAlpha0 ^ m + conj fiveQuartetAlpha0 ^ m +
@@ -717,7 +731,7 @@ theorem primeFiveQuartetDatum_powerSum_eq_trace (n : ℕ) :
         rw [this, hadd, hmul]; ring_nf; simp [Complex.I_sq]; ring
       have hsq2 : conj fiveQuartetAlpha0 ^ 2 + conj fiveQuartetAlpha2 ^ 2 = -10 - 2 * I := by
         have hc := congrArg conj hsq1
-        simpa [Complex.conj_I, sub_eq_add_neg] using hc
+        simpa [Complex.conj_I, map_ofNat, sub_eq_add_neg] using hc
       calc fiveQuartetAlpha0 ^ 2 + conj fiveQuartetAlpha0 ^ 2 + conj fiveQuartetAlpha2 ^ 2 + fiveQuartetAlpha2 ^ 2
           = (fiveQuartetAlpha0 ^ 2 + fiveQuartetAlpha2 ^ 2) +
               (conj fiveQuartetAlpha0 ^ 2 + conj fiveQuartetAlpha2 ^ 2) := by ring
@@ -732,7 +746,7 @@ theorem primeFiveQuartetDatum_powerSum_eq_trace (n : ℕ) :
         rw [this, hadd, hmul]; ring_nf; simp [Complex.I_sq]; ring
       have hcub2 : conj fiveQuartetAlpha0 ^ 3 + conj fiveQuartetAlpha2 ^ 3 = -17 + 13 * I := by
         have hc := congrArg conj hcub1
-        simpa [Complex.conj_I, sub_eq_add_neg] using hc
+        simpa [Complex.conj_I, map_ofNat, sub_eq_add_neg] using hc
       calc fiveQuartetAlpha0 ^ 3 + conj fiveQuartetAlpha0 ^ 3 + conj fiveQuartetAlpha2 ^ 3 + fiveQuartetAlpha2 ^ 3
           = (fiveQuartetAlpha0 ^ 3 + fiveQuartetAlpha2 ^ 3) +
               (conj fiveQuartetAlpha0 ^ 3 + conj fiveQuartetAlpha2 ^ 3) := by ring
@@ -788,8 +802,8 @@ private theorem abs_fiveQuartetTrace_le (n : ℕ) :
   rw [← primeFiveQuartetDatum_powerSum_eq_trace, ← Real.norm_eq_abs, ← Complex.norm_real]
   have heq : ((primeFiveQuartetDatum.sqrtq ^ n * primeFiveQuartetDatum.trace n : ℝ) : ℂ) =
       ∑ i : Fin 4, primeFiveQuartetDatum.alpha i ^ n := by
-    rw [← primeFiveQuartetDatum.powerSum_eq_trace, CurveDatum.powerSum]
     push_cast
+    rw [← primeFiveQuartetDatum.powerSum_eq_trace, CurveDatum.powerSum]
     rw [Finset.mul_sum]
     exact Finset.sum_congr rfl fun i _ => by rw [← mul_pow]; rfl
   rw [heq]
@@ -802,7 +816,7 @@ private theorem abs_fiveQuartetTrace_le (n : ℕ) :
   calc ∑ i : Fin 4, ‖primeFiveQuartetDatum.alpha i ^ n‖
       ≤ ∑ _i : Fin 4, (3 : ℝ) ^ n := by
         refine Finset.sum_le_sum fun i _ => ?_
-        rw [norm_pow]
+        rw [_root_.norm_pow]
         exact pow_le_pow_left₀ (norm_nonneg _) (hlt3 i) n
     _ = 4 * (3 : ℝ) ^ n := by simp
 
@@ -830,12 +844,12 @@ private theorem five_pow_dominates_for_five_le :
         have hlin : (d : ℤ) + 1 ≤ 5 * (((d - 2 - (d + 1) / 2 : ℕ) : ℤ) + 1) := by omega
         exact hlin.trans (Int.mul_le_mul_of_nonneg_left (hm_pow _) (by norm_num))
       have hterm2_sharp : 3 * ((d : ℤ) + 1) * (5 : ℤ) ^ ((d + 1) / 2) ≤ (5 : ℤ) ^ d := by
-        calc 3 * ((d : ℤ) + 1) * (5 : ℤ) ^ ((d + 1) / 2)
-            ≤ 25 * (5 : ℤ) ^ (d - 2 - (d + 1) / 2) * (5 : ℤ) ^ ((d + 1) / 2) := by
-              have := Int.mul_le_mul_of_nonneg_right h1_le_10
-                (le_of_lt (pow_pos (by norm_num : (0 : ℤ) < 5) ((d + 1) / 2)))
-              linarith
-          _ = (5 : ℤ) ^ d := hmul_5
+        have hmul1 := Int.mul_le_mul_of_nonneg_right h1_le_10
+          (le_of_lt (pow_pos (by norm_num : (0 : ℤ) < 5) ((d + 1) / 2)))
+        have hmul3 := Int.mul_le_mul_of_nonneg_left hmul1 (by norm_num : (0 : ℤ) ≤ 3)
+        have hpos_prod : 0 ≤ (5 : ℤ) ^ (d - 2 - (d + 1) / 2) * (5 : ℤ) ^ ((d + 1) / 2) :=
+          Int.mul_nonneg (le_of_lt (pow_pos (by norm_num) _)) (le_of_lt (pow_pos (by norm_num) _))
+        linarith [hmul_5]
       have h3d : 4 * (3 : ℤ) ^ (d + 1) < 3 * (5 : ℤ) ^ d := by
         have : 4 * (3 : ℤ) ^ d < (5 : ℤ) ^ d := by
           have : 0 ≤ 3 * (d : ℤ) * (5 : ℤ) ^ (d / 2) := by positivity
@@ -844,6 +858,7 @@ private theorem five_pow_dominates_for_five_le :
           _ < 3 * (5 : ℤ) ^ d := by linarith
       have h5_succ : (5 : ℤ) ^ (d + 1) = 5 * (5 : ℤ) ^ d := by ring
       have h5d_pos : 0 < (5 : ℤ) ^ d := pow_pos (by norm_num) d
+      push_cast
       linarith
 
 /-- **Complete Beurling Euler-product and count-law profile of `primeFiveQuartetDatum`.**
@@ -987,7 +1002,8 @@ theorem primeFiveQuartet_complete_twin :
                         _ = (5 : ℤ) ^ (m + 1) := by ring
                   linarith [h35 e he3]
               have hmu_le : -(ArithmeticFunction.moebius (d / e) : ℤ) ≤ 1 := by
-                have habs := ArithmeticFunction.abs_moebius_le_one (d / e)
+                have habs : |ArithmeticFunction.moebius (d / e)| ≤ 1 :=
+                  @ArithmeticFunction.abs_moebius_le_one (d / e)
                 linarith [(abs_le.mp habs).1]
               calc -(ArithmeticFunction.moebius (d / e) : ℤ) * fiveQuartetPointCount e
                   ≤ 1 * fiveQuartetPointCount e :=
@@ -1055,8 +1071,8 @@ theorem primeFiveQuartet_complete_twin :
       have h5n : (0 : ℝ) < (5 : ℝ) ^ n := by positivity
       have htr_sq : primeFiveQuartetDatum.trace n ^ 2 ≤ 16 :=
         le_of_mul_le_mul_left (by linarith : (5 : ℝ) ^ n * primeFiveQuartetDatum.trace n ^ 2 ≤ (5 : ℝ) ^ n * 16) h5n
-      rw [Fintype.card_fin, abs_le]
-      constructor <;> nlinarith
+      rw [Fintype.card_fin, Nat.cast_ofNat, abs_le]
+      constructor <;> nlinarith [htr_sq]
     exact primeFiveQuartetDatum_not_unitary hunit
   exact ⟨⟨Zℤ, hZ0, hZmap⟩, primeFiveQuartetDatum_im_ne_zero, primeFiveQuartetDatum_not_unitary,
     ⟨x, heff_x, hcoord_x 1 le_rfl ▸ hπ1, hcoord_x 2 (by decide) ▸ hπ2,

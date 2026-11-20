@@ -12,9 +12,11 @@ as `a → 1`; their generator there is the derivation `D(x) = x log x`, which is
 
 * `entropyCarry_nonneg`, `entropyCarry_le`: the carry lies in `[0, (x+y) log 2]`; every power carry
   is nonnegative (`pow_add_pow_le_add_pow`).
-* `log_choose_le_entropyCarry`: `log C(m+n, m) ≤` entropy carry. By Kummer's theorem the left side
-  is `Σ_p (carries of m + n in base p) · log p`: the carries at the finite places are dominated by
-  the carry at the real place. This is the comparison behind Chebyshev's bound.
+* `log_choose_le_entropyCarry`, `entropyCarry_sub_log_le_log_choose` (**the balance of carries**):
+  `E(m, n) − log(m + n + 1) ≤ log C(m+n, m) ≤ E(m, n)`. By Kummer's theorem the middle term is
+  `Σ_p (carries of m + n in base p) · log p`: the carries at the finite places add up to the carry
+  at the real place, up to a logarithm. This is the comparison behind Chebyshev's bound, and its
+  slack is logarithmic.
 * `eq_mul_log_of_carry_ge` (**rigidity**): let `L` be completely additive. If the carry of
   `n ↦ n · L(n)` is bounded below by `−K (m+n)`, then `L = c · log`.
 * `carry_bddBelow_iff`, `exists_carry_lt_and_gt`: a linear lower bound on the carry characterizes
@@ -128,6 +130,140 @@ theorem sum_factorization_choose_le_entropyCarry {m n : ℕ} (hm : 1 ≤ m) (hn 
     (((m + n).choose m).factorization.sum fun p t => (t : ℝ) * Real.log p) ≤ entropyCarry m n := by
   rw [← Real.log_nat_eq_sum_factorization]
   exact log_choose_le_entropyCarry hm hn
+
+/-! ### The central term of the binomial expansion is the largest -/
+
+section LargestTerm
+
+variable {m n : ℕ}
+
+private theorem term_le_succ {k : ℕ} (hk : k < m) :
+    (m + n).choose k * m ^ k * n ^ (m + n - k) ≤
+      (m + n).choose (k + 1) * m ^ (k + 1) * n ^ (m + n - (k + 1)) := by
+  have h1 := Nat.choose_succ_right_eq (m + n) k
+  have e : m + n - k = (m + n - (k + 1)) + 1 := by omega
+  have h2 : n * (k + 1) ≤ (m + n - k) * m :=
+    (Nat.mul_le_mul_left n (by omega : k + 1 ≤ m)).trans
+      (Nat.mul_le_mul_right m (by omega : n ≤ m + n - k))
+  have h3 : (m + n).choose k * n * (k + 1) ≤ (m + n).choose (k + 1) * m * (k + 1) := by
+    calc (m + n).choose k * n * (k + 1) = (m + n).choose k * (n * (k + 1)) := by ring
+      _ ≤ (m + n).choose k * ((m + n - k) * m) := Nat.mul_le_mul_left _ h2
+      _ = (m + n).choose k * (m + n - k) * m := by ring
+      _ = (m + n).choose (k + 1) * (k + 1) * m := by rw [h1]
+      _ = (m + n).choose (k + 1) * m * (k + 1) := by ring
+  have h4 := Nat.le_of_mul_le_mul_right h3 (Nat.succ_pos k)
+  rw [e, pow_succ, pow_succ]
+  calc (m + n).choose k * m ^ k * (n ^ (m + n - (k + 1)) * n)
+      = (m + n).choose k * n * (m ^ k * n ^ (m + n - (k + 1))) := by ring
+    _ ≤ (m + n).choose (k + 1) * m * (m ^ k * n ^ (m + n - (k + 1))) :=
+        Nat.mul_le_mul_right _ h4
+    _ = (m + n).choose (k + 1) * (m ^ k * m) * n ^ (m + n - (k + 1)) := by ring
+
+private theorem succ_term_le {k : ℕ} (hk : m ≤ k) (hkN : k < m + n) :
+    (m + n).choose (k + 1) * m ^ (k + 1) * n ^ (m + n - (k + 1)) ≤
+      (m + n).choose k * m ^ k * n ^ (m + n - k) := by
+  have h1 := Nat.choose_succ_right_eq (m + n) k
+  have e : m + n - k = (m + n - (k + 1)) + 1 := by omega
+  have h2 : (m + n - k) * m ≤ n * (k + 1) :=
+    (Nat.mul_le_mul_right m (by omega : m + n - k ≤ n)).trans
+      (Nat.mul_le_mul_left n (by omega : m ≤ k + 1))
+  have h3 : (m + n).choose (k + 1) * m * (k + 1) ≤ (m + n).choose k * n * (k + 1) := by
+    calc (m + n).choose (k + 1) * m * (k + 1) = (m + n).choose (k + 1) * (k + 1) * m := by ring
+      _ = (m + n).choose k * (m + n - k) * m := by rw [h1]
+      _ = (m + n).choose k * ((m + n - k) * m) := by ring
+      _ ≤ (m + n).choose k * (n * (k + 1)) := Nat.mul_le_mul_left _ h2
+      _ = (m + n).choose k * n * (k + 1) := by ring
+  have h4 := Nat.le_of_mul_le_mul_right h3 (Nat.succ_pos k)
+  rw [e, pow_succ, pow_succ]
+  calc (m + n).choose (k + 1) * (m ^ k * m) * n ^ (m + n - (k + 1))
+      = (m + n).choose (k + 1) * m * (m ^ k * n ^ (m + n - (k + 1))) := by ring
+    _ ≤ (m + n).choose k * n * (m ^ k * n ^ (m + n - (k + 1))) := Nat.mul_le_mul_right _ h4
+    _ = (m + n).choose k * m ^ k * (n ^ (m + n - (k + 1)) * n) := by ring
+
+/-- Every term of the binomial expansion of `(m + n)^(m + n)` is at most the term `k = m`. -/
+private theorem term_le_central {k : ℕ} (hk : k ≤ m + n) :
+    (m + n).choose k * m ^ k * n ^ (m + n - k) ≤ (m + n).choose m * m ^ m * n ^ n := by
+  have hmid : (m + n).choose m * m ^ m * n ^ (m + n - m) = (m + n).choose m * m ^ m * n ^ n := by
+    rw [Nat.add_sub_cancel_left]
+  rw [← hmid]
+  rcases Nat.le_total k m with h | h
+  · have key : ∀ j : ℕ, j ≤ m → (m + n).choose (m - j) * m ^ (m - j) * n ^ (m + n - (m - j)) ≤
+        (m + n).choose m * m ^ m * n ^ (m + n - m) := by
+      intro j
+      induction j with
+      | zero => intro _; exact le_rfl
+      | succ j ih =>
+        intro hj
+        have hstep := term_le_succ (m := m) (n := n) (k := m - (j + 1)) (by omega)
+        have e : m - (j + 1) + 1 = m - j := by omega
+        rw [e] at hstep
+        exact hstep.trans (ih (by omega))
+    have h' := key (m - k) (Nat.sub_le m k)
+    rwa [Nat.sub_sub_self h] at h'
+  · have key : ∀ j : ℕ, m + j ≤ m + n → (m + n).choose (m + j) * m ^ (m + j) *
+        n ^ (m + n - (m + j)) ≤ (m + n).choose m * m ^ m * n ^ (m + n - m) := by
+      intro j
+      induction j with
+      | zero => intro _; exact le_rfl
+      | succ j ih =>
+        intro hj
+        have hstep := succ_term_le (m := m) (n := n) (k := m + j) (Nat.le_add_right m j)
+          (by omega)
+        exact hstep.trans (ih (by omega))
+    have h' := key (k - m) (by omega)
+    rwa [Nat.add_sub_cancel' h] at h'
+
+theorem add_pow_self_le_succ_mul_central (m n : ℕ) :
+    (m + n) ^ (m + n) ≤ (m + n + 1) * ((m + n).choose m * m ^ m * n ^ n) := by
+  rw [add_pow]
+  calc ∑ k ∈ Finset.range (m + n + 1), m ^ k * n ^ (m + n - k) * (m + n).choose k
+      ≤ ∑ _k ∈ Finset.range (m + n + 1), (m + n).choose m * m ^ m * n ^ n := by
+        refine Finset.sum_le_sum fun k hk => ?_
+        have h := term_le_central (m := m) (n := n)
+          (Nat.lt_succ_iff.mp (Finset.mem_range.mp hk))
+        calc m ^ k * n ^ (m + n - k) * (m + n).choose k
+            = (m + n).choose k * m ^ k * n ^ (m + n - k) := by ring
+          _ ≤ _ := h
+    _ = (m + n + 1) * ((m + n).choose m * m ^ m * n ^ n) := by
+        rw [Finset.sum_const, Finset.card_range, smul_eq_mul]
+
+end LargestTerm
+
+/-- **The archimedean carry is dominated by the finite carries, up to a logarithm.** The central
+term of the binomial expansion of `(m + n)^(m + n)` is the largest of its `m + n + 1` terms. -/
+theorem entropyCarry_sub_log_le_log_choose {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n) :
+    entropyCarry m n - Real.log ((m : ℝ) + n + 1) ≤ Real.log ((m + n).choose m) := by
+  have hreal : ((m : ℝ) + n) ^ (m + n) ≤
+      ((m : ℝ) + n + 1) * (((m + n).choose m : ℝ) * (m : ℝ) ^ m * (n : ℝ) ^ n) := by
+    exact_mod_cast add_pow_self_le_succ_mul_central m n
+  have hc : (0 : ℝ) < (m + n).choose m := by
+    exact_mod_cast Nat.choose_pos (Nat.le_add_right m n)
+  have hm0 : (0 : ℝ) < m := by exact_mod_cast hm
+  have hn0 : (0 : ℝ) < n := by exact_mod_cast hn
+  have hmm := pow_pos hm0 m
+  have hnn := pow_pos hn0 n
+  have hN : (0 : ℝ) < (m : ℝ) + n := by linarith
+  have hN1 : (0 : ℝ) < (m : ℝ) + n + 1 := by linarith
+  have hlog := Real.log_le_log (pow_pos hN (m + n)) hreal
+  rw [Real.log_mul hN1.ne' (mul_pos (mul_pos hc hmm) hnn).ne',
+    Real.log_mul (mul_pos hc hmm).ne' hnn.ne', Real.log_mul hc.ne' hmm.ne', Real.log_pow,
+    Real.log_pow, Real.log_pow] at hlog
+  rw [entropyCarry]
+  push_cast at hlog
+  linarith
+
+/-- **The balance of carries.** The carries of `m + n` at the finite places, weighted by `log p`,
+differ from the entropy carry by at most `log(m + n + 1)`. -/
+theorem abs_sum_factorization_choose_sub_entropyCarry_le {m n : ℕ} (hm : 1 ≤ m) (hn : 1 ≤ n) :
+    |(((m + n).choose m).factorization.sum fun p t => (t : ℝ) * Real.log p) - entropyCarry m n| ≤
+      Real.log ((m : ℝ) + n + 1) := by
+  rw [← Real.log_nat_eq_sum_factorization]
+  have h1 := log_choose_le_entropyCarry hm hn
+  have h2 := entropyCarry_sub_log_le_log_choose hm hn
+  have h3 : 0 ≤ Real.log ((m : ℝ) + n + 1) :=
+    Real.log_nonneg (by linarith [(Nat.cast_nonneg m : (0 : ℝ) ≤ m), (Nat.cast_nonneg n : (0 : ℝ) ≤ n)])
+  rw [abs_le]
+  constructor <;> linarith
 
 /-! ### Rigidity -/
 

@@ -132,7 +132,7 @@ theorem diagRealBudget_addShift_sub_le {S : Finset ℕ} {N : ℕ} (hN : 1 ≤ N)
       (∑ n ∈ S, c n ^ 2 * (counterterm (n + h) - counterterm n)) -
       (∑ n ∈ S, ∑ m ∈ S.erase n, c m * c n * (jetKernel (m + h) (n + h) - jetKernel m n)) := by
     unfold diagRealBudget
-    rw [hdiag_shift, hjet_shift, ← Finset.sum_sub_distrib]
+    rw [hdiag_shift, hjet_shift, sub_sub_sub_comm, ← Finset.sum_sub_distrib]
     congr 1
     · exact Finset.sum_congr rfl fun n _ => by ring
     · rw [← Finset.sum_sub_distrib]
@@ -147,7 +147,8 @@ theorem diagRealBudget_addShift_sub_le {S : Finset ℕ} {N : ℕ} (hN : 1 ≤ N)
     refine Finset.sum_le_sum fun n hn => ?_
     have hnN : (N : ℝ) ≤ n := by exact_mod_cast hS n hn
     have hn_pos : (0 : ℝ) < n := hN_pos.trans_le hnN
-    have hnh_pos : (0 : ℝ) < ((n + h : ℕ) : ℝ) := by positivity
+    have hnh_pos : (0 : ℝ) < ((n + h : ℕ) : ℝ) := by
+      push_cast; linarith [Nat.cast_nonneg (α := ℝ) h]
     have hct_diff : counterterm (n + h) - counterterm n = Real.log (((n + h : ℕ) : ℝ) / n) := by
       unfold counterterm
       rw [← Real.log_div (div_pos hnh_pos Real.two_pi_pos).ne' (div_pos hn_pos Real.two_pi_pos).ne',
@@ -176,10 +177,13 @@ theorem diagRealBudget_addShift_sub_le {S : Finset ℕ} {N : ℕ} (hN : 1 ≤ N)
       have hmN : (N : ℝ) ≤ m := by exact_mod_cast hS m hmS
       have hnN : (N : ℝ) ≤ n := by exact_mod_cast hS n hn
       have hpos_mn : 0 < m + n := by have := hS n hn; omega
+      have hmn_pos : 0 < (m : ℝ) + n := by linarith
+      have hmnh_pos : 0 < (m : ℝ) + n + 2 * h := by linarith [Nat.cast_nonneg (α := ℝ) h]
       rw [jetKernel_add_sub_jetKernel hpos_mn h, abs_mul, abs_mul, abs_neg,
-        abs_of_nonneg (by positivity)]
-      refine mul_le_mul_of_nonneg_left ?_ (by positivity)
-      refine div_le_div_of_nonneg_left (Nat.cast_nonneg h) (by positivity) ?_
+        abs_of_nonneg (div_nonneg (Nat.cast_nonneg (α := ℝ) h) (mul_pos hmn_pos hmnh_pos).le)]
+      refine mul_le_mul_of_nonneg_left ?_ (mul_nonneg (abs_nonneg _) (abs_nonneg _))
+      refine div_le_div_of_nonneg_left (Nat.cast_nonneg (α := ℝ) h)
+        (by positivity : 0 < 4 * (N : ℝ) ^ 2) ?_
       have hmn2N : 2 * (N : ℝ) ≤ (m : ℝ) + n := by linarith
       have hmnh2N : 2 * (N : ℝ) ≤ (m : ℝ) + n + 2 * h := by linarith [Nat.cast_nonneg (α := ℝ) h]
       calc 4 * (N : ℝ) ^ 2 = (2 * N) * (2 * N) := by ring
@@ -191,7 +195,7 @@ theorem diagRealBudget_addShift_sub_le {S : Finset ℕ} {N : ℕ} (hN : 1 ≤ N)
         ≤ ∑ n ∈ S, ∑ m ∈ S, |c m| * |c n| * ((h : ℝ) / (4 * (N : ℝ) ^ 2)) :=
           Finset.sum_le_sum hrow
       _ = ((h : ℝ) / (4 * (N : ℝ) ^ 2)) * (∑ n ∈ S, |c n|) ^ 2 := by
-          rw [sq, Finset.sum_mul_sum, Finset.mul_sum]
+          rw [sq (∑ n ∈ S, |c n|), Finset.sum_mul_sum, Finset.mul_sum]
           refine Finset.sum_congr rfl fun m _ => ?_
           rw [Finset.mul_sum]
           refine Finset.sum_congr rfl fun n _ => by ring
@@ -223,7 +227,8 @@ theorem poleProduct_addShift_sub_le {S : Finset ℕ} {N : ℕ} (hN : 1 ≤ N)
     refine Finset.sum_le_sum fun n hn => ?_
     have hnN : (N : ℝ) ≤ n := by exact_mod_cast hS n hn
     have hn_pos : (0 : ℝ) < n := hN_pos.trans_le hnN
-    have hnh_pos : (0 : ℝ) < ((n + h : ℕ) : ℝ) := by positivity
+    have hnh_pos : (0 : ℝ) < ((n + h : ℕ) : ℝ) := by
+      push_cast; linarith [Nat.cast_nonneg (α := ℝ) h]
     have hinv_diff : |1 / ((n + h : ℕ) : ℝ) - 1 / (n : ℝ)| ≤ (h : ℝ) / (N : ℝ) ^ 2 := by
       have heq : 1 / ((n + h : ℕ) : ℝ) - 1 / (n : ℝ) = -((h : ℝ) / (((n + h : ℕ) : ℝ) * n)) := by
         push_cast; field_simp [hn_pos.ne', hnh_pos.ne']; ring
@@ -273,14 +278,15 @@ additive shift `h ∈ ℕ` satisfies `n + h = r * (m + h)`. -/
 theorem eq_of_add_eq_mul_add {m n r h₁ h₂ : ℕ} (hr : 2 ≤ r)
     (h1 : n + h₁ = r * (m + h₁)) (h2 : n + h₂ = r * (m + h₂)) :
     h₁ = h₂ := by
-  omega
+  by_contra hne
+  rcases lt_or_gt_of_ne hne with hlt | hgt <;> nlinarith
 
 /-- **Single-step `+1` divisibility destruction:** if `m < n ≤ Q * m` and `Q ≤ m`, then
 `m ∣ n → ¬ (m + 1 ∣ n + 1)`. -/
 theorem not_dvd_add_one_of_dvd_of_le {m n Q : ℕ} (hmn : m < n) (hnQ : n ≤ Q * m) (hQm : Q ≤ m)
     (hdvd : m ∣ n) : ¬ (m + 1 ∣ n + 1) := by
   obtain ⟨r, rfl⟩ := hdvd
-  have hm_pos : 0 < m := by omega
+  have hm_pos : 0 < m := Nat.pos_of_ne_zero fun h0 => by simp [h0] at hmn
   have hr2 : 2 ≤ r := by
     by_contra hlt
     have hr1 : r ≤ 1 := by omega
@@ -296,8 +302,9 @@ theorem not_dvd_add_one_of_dvd_of_le {m n Q : ℕ} (hmn : m < n) (hnQ : n ≤ Q 
   · have hq_le : q ≤ r - 1 := by omega
     have hmul : (m + 1) * q ≤ (m + 1) * (r - 1) := Nat.mul_le_mul_left (m + 1) hq_le
     have hexp : (m + 1) * (r - 1) + (m + 1 - r) = m * r := by
+      have hr1 : 1 ≤ r := by omega
       have hrm1 : r ≤ m + 1 := by omega
-      zify [hr2, hrm1]
+      zify [hr1, hrm1]
       ring
     omega
 

@@ -69,7 +69,7 @@ private lemma sexticSymbol_eq_zero_of_not_isCoprime_prime (π : O) [NeZero π]
     have hdvd : π ∣ x * y - 1 := Ideal.mem_span_singleton.mp (Ideal.Quotient.eq.mp hmul)
     obtain ⟨z, hz⟩ := hdvd
     refine hnot ⟨y, -z, ?_⟩
-    linear_combination -hz
+    linear_combination hz
   rw [sexticSymbol_prime π hlam h2 hprim, hmk0, MulChar.map_nonunit _ not_isUnit_zero]
 
 private lemma conj_and_norm_sexticSymbol_prime (π : O) [NeZero π]
@@ -149,7 +149,7 @@ theorem conj_sexticGramEntry (f : SchwartzMap E ℂ) (B : E ≃L[ℝ] E)
     conj (sexticGramEntry f B (∏ π ∈ s₁, π) (∏ π ∈ s₂, π)) =
       sexticGramEntry f B (∏ π ∈ s₂, π) (∏ π ∈ s₁, π) := by
   unfold sexticGramEntry
-  rw [← Complex.conjCLE_apply, ← Complex.conjCLE.map_tsum]
+  rw [← Complex.conjCLE_apply, Complex.conjCLE.map_tsum]
   congr 1
   funext n
   rw [Complex.conjCLE_apply, map_mul, map_mul,
@@ -331,9 +331,8 @@ theorem short_sextic_large_sieve_rowwise {I : Type*} [DecidableEq I]
               ‖sexticGramEntry f B (∏ π ∈ s i, π) (∏ π ∈ s j, π)‖) := by
       simp_rw [add_div, add_mul, Finset.sum_add_distrib, Finset.mul_sum]
       congr 1 <;> refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => by ring
-    rw [hexp, hsym_sum]
-    simp_rw [Finset.mul_sum]
-    ring
+    rw [hexp, hsym_sum, ← add_mul, show (1 / 2 : ℝ) + 1 / 2 = 1 by norm_num, one_mul]
+    exact Finset.sum_congr rfl fun i _ => (Finset.mul_sum _ _ _).symm
   have hrhs_eq :
       (∑ i ∈ F, ‖c i‖ ^ 2 * (∑' n : Z, (f (B (euclideanIntegerPoint n))).re)) +
           (∑ i ∈ F, ‖c i‖ ^ 2 *
@@ -360,6 +359,6 @@ theorem short_sextic_large_sieve {I : Type*} [DecidableEq I]
   rw [Finset.mul_sum]
   refine Finset.sum_le_sum fun i hi => ?_
   rw [mul_comm (_ + Δ)]
-  exact mul_le_mul_of_nonneg_left (add_le_add_left (hΔ i hi) _) (sq_nonneg _)
+  exact mul_le_mul_of_nonneg_left (by linarith [hΔ i hi]) (sq_nonneg _)
 
 end GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies

@@ -72,6 +72,7 @@ private theorem coefficient_comparison (s : ℂ) :
     apply h.congr'
     filter_upwards [eventually_ge_atTop (1:ℕ)] with n hn
     have nr := (Nat.cast_pos (α:=ℝ)).mpr hn
+    simp only [Pi.div_apply]
     rw [LSeries.norm_term_eq,if_neg (Nat.ne_of_gt hn),Complex.norm_real,Real.norm_eq_abs,
       abs_of_nonneg (nn n),Real.rpow_sub nr,Real.rpow_neg nr.le,
       show (4:ℝ)=((4:ℕ):ℝ) by norm_num,Real.rpow_natCast]

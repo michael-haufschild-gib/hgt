@@ -372,4 +372,14 @@ theorem tendsto_primeSetCutoff_greatestGap (P : Set ℕ)
     le_antisymm ((isGreatest_primeSetFlip_hyperplaneGap P).2 hgap) (le_ciInf hle)
   simpa only [heq] using tendsto_atTop_ciInf hanti hb
 
+#print axioms summable_primeSetSecularTail
+#print axioms primeSetConductorResolvent_eq
+#print axioms primeSetSecular_strictMonoOn
+#print axioms primeSetFlip_hasHyperplaneGap_iff_secular
+#print axioms isGreatest_primeSetFlip_hyperplaneGap
+#print axioms primeSetFlip_hasHyperplaneGap_iff_le_greatestGap
+#print axioms primeSetGreatestGap_bounds
+#print axioms primeSetFlip_hasHyperplaneGap_iff_cutoffs
+#print axioms tendsto_primeSetCutoff_greatestGap
+
 end GaloisForLFunctions.ArithmeticCountingPositivity

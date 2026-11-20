@@ -25,7 +25,12 @@ Eliminate infinite sequences of off-line zeros of `ζ(s)` whose real parts conve
    - *Stickelberger–Gauss completion barrier (`MoebiusSignedGaussPairingsEndAtThreeFifths`):* Rank-one Möbius-signed Gauss-sum completions over cyclotomic fields pay Stickelberger defect `c ≥ k/2` and theta-completion cost `c ≥ (2/3)k - 1`, terminating at abscissa `3/5 > 1/2` and missing `δ_k → 0⁺`.
    - *Lehmer-pair and `t → 0⁺` heat-saddle indistinguishability:* Relocating pairs of critical-line zeros `1/2 + i(γ_k ± η_k)` to `1/2 ± δ_k + i γ_k` with `δ_k, η_k ≪ exp(-exp(γ_k))` changes `ζ(s)` outside `|s - (1/2 + i γ_k)| < γ_k^{-A}` by `O(exp(-exp(γ_k)))`, while in Ki–Kim–Lee's Gaussian saddle `u = y + t log(X / 2π)` (`KiKimLeeLargeHeightReality`), healing a depth-`δ_k` quartet occurs at `t_k ≍ δ_k^2`, where `t_k log(γ_k / 2π) ≪ δ_k` lies deep inside the critical strip rather than in the Euler half-plane `Re s > 1`. Any height-local approximate functional equation, Riemann–Siegel expansion, or positive-time heat-flow argument cannot separate a close on-line Lehmer pair (`Z(t_k^*) Z''(t_k^*) ≤ 0`) from an off-line pair (`Z(t_k^*) Z''(t_k^*) > 0`).
 
-3. **`[OPEN CORE]`:**
+3. **Formalized partial structural theorems (`TheDescendingStripLadderAndShallowZeroAnnihilators.lean`).**
+   - `exists_descending_strip_ladder_of_not_landing`, `zeta_descending_strip_ladder_of_not_landing`, `rightOrdinateSup_eq_on_zero_free_strip`: under `¬ LandingLaw`, off-line real parts discretize into a strictly decreasing sequence `1/2 + δ_n → 1/2` separated by all-height zero-free open vertical strips `(1/2 + δ_{n+1}, 1/2 + δ_n)`.
+   - `exists_deep_zero_annihilator_of_zerosApproachLine`: under `ZerosApproachLine`, finite entire Dirichlet polynomials `∏_{ρ ∈ L} (1 - 2^{ρ - s})` clear all zeros in `Re s ≥ 1/2 + ε/2` with uniform positive lower bound `(2^{ε/4} - 1)^{|L|}` on `Re s ≤ 1/2 + ε/4`.
+   - `kiKimLee_saddle_in_strip_of_healing_time`, `lehmer_quartet_moment_obstruction`: Gaussian saddle strip confinement and exact quartic Newton residuals `±4(γ̄^2 + δ^2)(η^2 + δ^2)` (`-16` on fourth moments).
+
+4. **`[OPEN CORE]`:**
    Prove an unconditional coupling on actual `ζ(s)` that simultaneously uses `ξ(1 - s) = ξ(s)`, exact unit Dirichlet coefficients `a_n = 1` (`∑_{n ≥ 1} n^{-s}`), and `ZerosApproachLine` (`LindelofCriticalLine` and `Θ_∞ = 1/2`) either at unbounded multiplicative scales `log x ≫ 1/δ_k` (bounding the negative index of `zetaKernel` on `⟨2, 3⟩` under `Θ_∞ = 1/2`) or via an exact global sign invariant of `(Z')^2 - Z Z''` at large heights (`EventualSlicePositivity`).
 
 ## Log

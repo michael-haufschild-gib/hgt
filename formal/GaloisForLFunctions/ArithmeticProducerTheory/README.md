@@ -2,208 +2,262 @@
 
 Namespace `GaloisForLFunctions.ArithmeticProducerTheory`; umbrella `ArithmeticProducerTheory.lean`.
 Specification: §2.9 of the [review-2011 obstacles summary](../../../docs/reports/review-2011/obstacles-summary.md).
-Every theorem of the programme is unconditional; RH and zero-free strips appear only inside
-implications and equivalences.
-
-> First draft. Sections 5–7 list the pillar theorems as targets; the status column records what is
-> proved in Lean.
+Every statement with a Lean name is a theorem, of this folder unless a neighbour is named. Every
+theorem is unconditional; RH and zero-free strips appear only inside implications and equivalences.
+Statements under "Open" are not theorems.
 
 ## 1. Motivation
 
 The corpus has turned almost every route to RH into an exact statement about `Θ`, the supremum of
-the real parts of the zeros of `ζ`. A quantity that reads `Θ` exactly is a **meter**. A meter has no
-slack: a bound for it is as hard as the statement it reads. What a proof needs is a **producer**: a
-construction built from integers and primes, without reference to zeros, together with a comparison of
-two sizes of that construction which forces a one-sided bound for a signed remainder, at an exponent
+the real parts of the zeros of `ζ`. A quantity that reads `Θ` exactly is a **meter**. A meter has
+no slack: a bound for it is as hard as the statement it reads. A proof needs a **producer**: a
+construction made from integers and primes without reference to zeros, and a comparison of two
+sizes of that construction which forces a one-sided bound for a signed remainder, at an exponent
 that a proved one-sided ⇒ strip implication converts into a zero-free region.
 
-Producers exist in two places only:
+Producers are known in few places.
 
-| Where | Producer | Comparison | Output |
+| Where | Construction | Comparison | What pays |
 |---|---|---|---|
-| Classical analysis | zero-free regions, convexity, mean values | Hadamard, Jensen, Phragmén–Lindelöf | stops at a strip |
-| Curves over `𝔽_q` | Stepanov–Bombieri | degree of an auxiliary ≥ multiplicity × number of fixed points | `N ≤ q + O(g√q)` |
-| Curves over `𝔽_q` | Weil | Castelnuovo positivity of an intersection pairing | `|a_n| ≤ 2g q^{n/2}` |
-| CM curves over `𝔽_q` | Jacobi | conjugation pairing = polarization pairing (an identity in `ℤ[ζ_m]`) | `|J| = √q` |
+| Curves over `𝔽_q` (Stepanov, Bombieri) | auxiliary `Σ f_i g_i^q` | degree ≥ multiplicity × number of fixed points | inseparability: `d(g^q) = 0` |
+| Curves over `𝔽_q` (Weil) | Frobenius correspondence | Castelnuovo positivity | the Hodge index of the surface |
+| Kummer and Fermat curves (Jacobi) | Jacobi sums | conjugation pairing = polarization pairing | complex conjugation of `ℚ(ζ_m)` |
+| `ℤ` (Chebyshev) | binomial coefficients | carries at the primes ≤ entropy | the real place |
+| `ℤ` (Hadamard, de la Vallée Poussin, mean values) | `ζ` on `Re s ≥ 1` | positivity of a trigonometric polynomial | stops at a strip of width zero |
 
-Over `ℤ` the integer analogues of the comparisons are known and all of them are exact or lossy:
-Chebyshev's size-versus-divisibility comparison loses a constant factor, Nair's integrality floor
-reads `ψ` from below with a constant, the Selberg quadratic identity reaches the prime number theorem
-but no power saving, and Stepanov's auxiliary on the prime torus has degree `ψ(N)` exactly. TAP is the
-theory of these comparisons over `ℤ`: which exist, what they cost, at which place the cost is paid,
-and which twins they separate. Its aim is a producer that meets the four criteria of §11, or the proof
-that a named class of constructions cannot contain one, together with the strongest positive survivor.
+TAP is the theory of such comparisons over `ℤ`: which exist, what they cost, at which place the
+cost is paid, and which twins they separate. Its aim is a producer that meets the four criteria of
+§11, or the proof that a named class of constructions contains none, together with the strongest
+positive statement the obstruction leaves.
 
 ## 2. Objects
 
-| Object | Meaning | Lean (corpus or TAP) |
+| Object | Lean | Meaning |
 |---|---|---|
-| Signed remainder | `E(x) = θ(x) − x`, `ψ(x) − x`, the Mertens function `M(x)` | `Chebyshev.theta`, `Chebyshev.psi` |
-| Halving increment | `E(H) − E(H/2)`: the terminal odd-quotient half | ECS `terminalOddHalf`, `terminal_odd_half_eq` |
-| Prime midpoint price | `D(n) = 2θ(3n) − θ(2n) − θ(4n)` | ELT `primeMidpointPrice` |
-| Stepanov degree | `log lcm(1,…,N) = ψ(N)`, the log length of the fixed-point auxiliary | ALST `log_length_fixedPointAux_eq_sum_lefschetz` |
-| Construction | an integer, an integer polynomial, an integer Dirichlet polynomial on the prime torus, a section of a conductor bundle | — |
-| Reading | the arithmetic size of a construction (valuations weighted by `log p`, vanishing orders weighted by degree); by unique factorization a linear functional of `Λ` | — |
-| Price | a second size computed by a different mechanism (closed form, integral, dimension count) | — |
-| Slack | price − reading | — |
-| Stencil | a balanced integer combination `c` with the factorial ratio `∏ ⌊n/k⌋!^{c(k)}` | AAD `IsProducer` |
-| Twin | an object sharing a named list of properties with `ζ` and violating the target bound | see §2.1 |
-| Transfer kernel | a positive operator moving a one-sided bound from one remainder to another | ECS, ELT Green kernel |
-
-### 2.1 The twin suite
-
-| Twin | Shares with `ζ` | Violates | Lean |
-|---|---|---|---|
-| Integer-norm one-off | Euler product over integer norms, pole at `1`, continuation to `Re s > ½` | prime error `≍ x^{3/5}`; the Stepanov degree bound | APD `integer_norm_one_off_with_prime_oscillation`; ALST `one_off_violates_stepanov_bound` |
-| Real one-off | same, with a real zero `3/5` | the lower side only | ALST `real_one_off_satisfies_stepanov_bound` |
-| Liouville twin `λΛ` | contact sizes `|λΛ| = Λ`, every error law after the pole correction | comb positivity at macroscopic cost | SAC `eventually_exists_liouville_centeredMultiple_neg`; APR `count_poleCorrectedTwin_iff` |
-| Prime-2 Schur twin | causality, Euler product, functional equation, passivity, unitarity | the quarter ringdown law | BHR `CausalIdentitiesCannotForceQuarterRingdown` |
-| Euler-symmetric finite layers | Euler divisor, functional-equation symmetry | AAL at depth `b` | FFA `eulerDivisor_layerConfig` |
-| Tempered configurations at fixed aperture | every fixed-aperture positivity | the zero width | SRT `TheZeroWidthIsAnUnboundedApertureProperty` |
-| Golden datum | integral zeta function, functional equation, positive counts | purity | ACS `goldenDatum_beurling_not_pure` |
+| Prime torus and Adams operations | `MvPolynomial.expand a` on `R[X_σ]` | coordinates `X_p`; `ψ_a : X_p ↦ X_p^a`; on a Dirichlet polynomial `[n] ↦ [n^a]`; in characteristic `p`, `ψ_p` is the Frobenius |
+| Order of an operator | `HasOrderLE k D` | Grothendieck order: iterated commutators with multiplications vanish |
+| Local operator | `IsLocal D` | `(Df)(c)` vanishes when `f` vanishes to high order at `c` |
+| Diagonal operator | `diag s` | `X^n ↦ s(n) X^n`; the Euler derivation `X∂` is `s(n) = n` |
+| Digit operators | `digitOp a i k`, `quotOp a i K` | `s(n) =` the `k`-th digit of `n_i` in base `a`; the quotient by `a^K` |
+| Hasse–Euler operator | `hasseEuler i m` | `X^m ∂^m/m!`, symbol `binom(n, m)` |
+| Compatible derivation | `IsCompatible a c D` | `D ∘ ψ_a = c · ψ_a ∘ D`; `c` is the **Frobenius scalar** |
+| Point and fibre ideals | `pointIdeal c`, `fibreIdeal a c` | functions vanishing at `c`; functions vanishing on the fibre `{w : w^a = c^a}` of `ψ_a` |
+| Carry of a derivation | `derivationCarry L m n` | `(m+n)L(m+n) − mL(m) − nL(n)` for completely additive `L` |
+| Entropy carry | `entropyCarry x y` | the carry of `x ↦ x log x`: `(x+y)log(x+y) − x log x − y log y` |
+| Sections of degree `≤ d` on `k` primes | `simplexPoints k w d` | exponent vectors with `Σ α_i w_i ≤ d`; for `w_i = log p_i` the integers `Π p_i^{α_i} ≤ e^d` |
+| Dilation kernel, gain | `dilationGain t a λ s` | `K f(x) = Σ_j a_j f(λ_j x)`, `ρ(s) = Σ_j a_j λ_j^s` |
+| Barycentric stencil | `IsBarycentric t a λ` | positive weights of sum `1`, barycentre `1`, at least two scales |
+| Gap of the prime error | `primeErrorGap t a λ x` | `V(x) − Σ_j a_j V(λ_j x)`, `V = θ − x` |
+| Zero abscissa | `RHTower.zetaZeroAbscissa` | `Θ` |
+| Kummer points, Jacobi sums | `puncturedKummerPoints`, `jacobiSum` | `z^{n+1} = c · x(1−x)^a` over a finite field |
 
 ## 3. Language
 
-- **Producer.** A construction `C(N)`, a reading `ρ(C)`, a price `π(C)` with `ρ ≤ π`, and the one-sided
-  bound for a remainder that follows. **Output exponent** `b`: the bound is `≤ K N^b`.
-- **Meter.** A remainder whose growth exponent is an exact function of `Θ`. A producer whose output is a
-  meter at exponent `b` proves `Θ ≤ b` through its **landing** (a proved one-sided ⇒ strip theorem).
-- **Zero-blind price.** A price computed in closed form (Stirling, binomial theorem, an integral) whose
-  Dirichlet generating function has no pole at a zero of `ζ`.
-- **Transfer.** A producer whose price is zero-blind turns an upper bound on a target into a lower bound
-  on the complement; it moves the problem and produces nothing.
-- **Free multiplicity.** Vanishing order obtained at a cost below the order times the cost of a simple
-  zero. Over `𝔽_q` it comes from inseparability; over `ℤ` it is the open question Q1.
-- **Selective.** An argument is selective for a twin if one of its steps is false for the twin.
-- **Circular.** A price is circular if it is computed from `ψ` (or from `M`, or from the zeros).
-- **Axiom level.** The list of properties of `ζ` an argument uses; its twin is the strongest twin at that
-  level, and its output exponent is at most the twin's.
-- **Inseparability ledger.** The record, place by place, of the size of the derivative of a Frobenius:
-  over `ℚ` the degree-`n` Frobenius has derivative `n`, and `∏_v |n|_v = 1`.
+- **Producer.** A *construction* (an integer, a polynomial, a section), a *reading* (its arithmetic
+  size, linear in `Λ` by unique factorization), a *price* (a second size computed by another
+  mechanism), a *comparison* (reading ≤ price), and a *landing* (a proved one-sided ⇒ strip
+  implication applied to the resulting bound).
+- **Slack.** Price minus reading. *Comparison slack* is lost in the inequality between the two sizes;
+  *reading slack* is lost when the reading is replaced by the remainder one wants.
+- **Meter.** A remainder whose one-sided growth exponents are exactly `Θ`.
+- **Gain, contraction, neutral exponent.** A kernel contracts at `s` if `ρ(s) < 1`; `s` is neutral
+  if `ρ(s) = 1`. A one-sided bound passes through a kernel exactly at contracting exponents.
+- **Priced.** A reading is priced if its value is known in closed form to `O(log)`.
+- **Circular.** A price is circular if it is computed from `ψ`, from `M`, or from the zeros.
+- **Free multiplicity.** Vanishing order obtained below the cost of that many simple zeros.
+- **Fat point, fibre.** In characteristic `p` the fibre of the Frobenius over a point is the point
+  with multiplicity `p`. Where `a` is invertible the fibre of `ψ_a` is `a` distinct points.
+- **Carry.** The failure of a multiplicative derivation to be additive.
+- **Axiom level, twin.** The list of properties of `ζ` an argument uses; a twin shares the list and
+  violates the conclusion. An argument is **selective** if one of its steps fails for the twin.
 
 ## 4. Mechanisms
 
-1. **Reading by unique factorization.** `log A = Σ_{d | A} Λ(d)` for every positive integer `A`; for a
-   factorial ratio the reading is `Σ_n Λ(n) g(⌊N/n⌋)` with the stencil weight `g`. Every divisibility
-   producer is linear in `Λ`.
-2. **Zero-blindness of closed-form prices.** For a stencil `c` the price `Σ_k c(k) log⌊N/k⌋!` has
-   generating function `−ζ′(s) D_c(s)`: the zeros of `ζ` cancel. The output on a target window equals the
-   price minus the complementary reading, which carries the zeros with the opposite sign.
-3. **Multiplicity is linear over `ℤ`.** Raising a divisibility producer to the `m`-th power multiplies
-   price and reading by `m` (AGT `ghost_ledger`); exact order `J` at a point of the prime torus costs
-   length `2^J` (ALST). Over `𝔽_q`, `d(g^q) = 0` makes the conditions for order `m` the conditions for
-   order one on lower-degree data.
-4. **Product-formula ledger.** A Frobenius over `ℤ` is contracting exactly at the primes dividing its
-   degree and expanding at the real place by the same total amount. What `ℓ`-adic inseparability gains
-   (ALST, the amplifier threshold `ℓ^{φ(m)}`) is paid at `∞`.
-5. **Selection by axiom level.** A step valid for a twin cannot produce a bound the twin violates. The
-   twin suite fixes, for each list of properties, the best exponent any argument at that level can
-   output.
-6. **Landing.** One-sided bounds at exponent `b` on the halving increment, on `E`, on `D`, or on the
-   Stepanov degree give `Θ ≤ b` (ECS `terminal_odd_half_width_iff`, ELT
-   `prime_error_from_integer_midpoint`, ALST `riemannHypothesis_iff_log_length_fixedPointAux_le`).
-7. **Positive Neumann transfer.** A dilation stencil `T = c(I − K)` with `K` a positive combination of
-   dilations of spectral radius `< 1` on `x^b` inverts by a positive Green kernel, so one-sided bounds on
-   `T E` pass to `E` at the same exponent (halving: `K = V_{1/2}`; midpoint: the ternary gain).
-8. **Two pairings.** On Kummer and Fermat curves purity is the identity
-   `conj J(χ, φ) = J(χ⁻¹, φ⁻¹)` together with `J(χ, φ) J(χ⁻¹, φ⁻¹) = q` (TPP `norm_jacobiSum_sq`): the
-   archimedean place of `ℚ(ζ_m)` enters through complex conjugation, and no positivity is used. For the
-   zeros of `ζ` the same identity, `ρ̄ = 1 − ρ`, is RH.
+1. **Locality and Frobenius-linearity exclude each other.** Stepanov's method needs an operator that
+   measures vanishing at a point and is linear over the image of the Frobenius. A differential
+   operator of finite order on `R[X_σ]` which is linear over `ψ_a(R[X_σ])`, with `a` regular in `R`,
+   is a multiplication (`HasOrderLE.eq_mul_of_expand_linear`); `∂_i` is `ψ_a`-linear iff `a = 0` in `R`
+   (`pderiv_expand_linear_iff`). Over an infinite domain the pointwise-local operators are the
+   differential operators (`isLocal_iff_hasOrderLE`), so a local `ψ_a`-linear operator is a
+   multiplication (`IsLocal.eq_mul_of_expand_linear`).
+2. **The Frobenius scalar is the degree.** `D ∘ ψ_a = c · ψ_a ∘ D` holds iff `D` is an Euler
+   derivation `Σ r_i X_i ∂_i` with `c r_i = a r_i` (`isCompatible_iff`); over a domain `c = a`
+   (`IsCompatible.scalar_eq`). At a prime `p | a` the scalar is small; at the real place it is
+   `a > 1`. By the product formula the gain at the finite places equals the loss at `∞`.
+3. **The Frobenius-linear operators over `ℤ` are the digit operators.** `digitOp a i k` is
+   `ψ_{a^{k+1}}`-linear over every ring (`digitOp_expand_mul`), the Euler derivation is
+   `Σ_k a^k · digitOp_k + a^K · quotOp_K` (`euler_eq_sum_digitOp`), and in characteristic `p` the
+   digit operator is the Hasse–Euler operator `binom(X∂, p^k)` (`digitOp_eq_hasseEuler`, Lucas).
+   Where `a` is regular it has no finite order (`not_hasOrderLE_digitOp`).
+4. **The fibre replaces the fat point.** The `ψ_a`-periodic diagonal operators annihilate `f` at `c`
+   iff `f` lies in the fibre ideal `(X_i^a − c_i^a)` (`mem_fibreIdeal_iff`, `fibreIdeal_eq_span`); in
+   characteristic `p` this ideal is `((X_i − c_i)^p)` (`fibreIdeal_eq_span_pow_of_charP`). Over `𝔽_q`
+   one condition buys multiplicity `p`; over `ℤ` the same conditions buy `a` simple zeros at `a`
+   distinct points, and the count of zeros against degree gains nothing.
+5. **The balance of carries.** At `p` the Fermat quotient has an integral carry
+   (`prime_dvd_add_pow_sub`). At the real place the power maps `x ↦ x^a` approach the identity and
+   their generator is `x ↦ x log x`, whose carry is the entropy (`hasDerivAt_powerCarry`), between
+   `0` and `(x+y) log 2` (`entropyCarry_nonneg`, `entropyCarry_le`). The carries of `m + n` at the
+   finite places, weighted by `log p`, equal `log binom(m+n, m)` (Kummer) and
+   `E(m,n) − log(m+n+1) ≤ log binom(m+n, m) ≤ E(m,n)`
+   (`log_choose_le_entropyCarry`, `entropyCarry_sub_log_le_log_choose`). This is Chebyshev's
+   comparison; its slack is logarithmic.
+6. **Rigidity of the archimedean derivation.** A completely additive `L` whose carry is bounded
+   below by `−K(m+n)` is `c · log` (`eq_mul_log_of_carry_ge`, `carry_bddBelow_iff`); for every other
+   weighting of the primes the carry is unbounded in both directions on the linear scale
+   (`exists_carry_lt_and_gt`). With mechanism 2: among the derivations compatible with the Adams
+   operations, one free weight per prime, the only one with an entropy is `d/ds`.
+7. **Riemann–Roch on a finite prime torus.** The number `N(d)` of sections of degree `≤ d` on `k`
+   primes satisfies `d^k ≤ k! · Π w_i · N(d) ≤ (d + Σ w_i)^k` (`card_simplexPoints_bounds`): the
+   leading constant is `1/(Γ(k+1) Π log p_i)`. Sections with all coordinates positive are the
+   sections of degree `d − Σ w_i` (`card_filter_pos_simplexPoints`): the canonical degree is
+   `Σ log p_i`. On the graph of `ψ_a` product sections stay distinct while `d₁ < a · w_i`
+   (`graph_injOn`), and on the diagonal the product count exceeds the sum count as soon as
+   `k! Π w_i (d₁ + d₂ + Σ w_i)^k < (d₁ d₂)^k` (`card_image_add_lt_card_product`). The threshold
+   grows with `k` like the canonical degree. On the torus of all primes `N(d) = ⌊e^d⌋`, the product
+   of two counts never exceeds the count at the sum of the degrees, and the kernel of a restriction
+   is spanned by differences of two sections with the same restriction.
+8. **Two pairings.** For `z^{n+1} = c · x(1−x)^a` the Jacobi sums satisfy `conj J(χ,φ) = J(χ⁻¹,φ⁻¹)`
+   and `J(χ,φ) J(χ⁻¹,φ⁻¹) = q`, hence `|σ J|² = q` at every embedding `σ` of the value ring
+   (`norm_map_jacobiSum_sq`) and the Hasse–Weil bound (`abs_card_puncturedKummerPoints_sub_le`). No
+   positivity is used; the archimedean places of `ℚ(ζ_m)` enter through complex conjugation.
+9. **Purity as an equality case.** If `x_j y_j = q` for all `j` and `Σ (x_j² + y_j²) ≤ 2 q · #`, then
+   every `x_j² = q` (`sq_eq_of_mul_eq_of_sum_sq_le`). For Jacobi sums the product is the functional
+   equation and the sum is Parseval (`sum_norm_sq_jacobiSum`, `norm_jacobiSum_sq_of_meanValue`). The
+   comparison of a functional equation with a second moment has zero slack over `𝔽_q`; over `ℤ` its
+   slack is the error term of the mean value.
+10. **One-sided transfer along a positive kernel.** If `f ≤ g + K f`, `g ≤ A x^s` and `ρ(s) < 1`,
+    then `f ≤ A/(1 − ρ(s)) · x^s` (`le_rpow_of_le_add_dilate`); the constant is attained
+    (`transfer_constant_attained`). At a neutral exponent `x^s` solves the homogeneous equation
+    (`rpow_eq_sum_dilate_of_gain_eq_one`), and a neutral mode is removed only by an `o(·)` a priori
+    bound (`le_rpow_of_le_add_dilate_of_isLittleO`). A barycentric stencil contracts on all of
+    `(0, 1)` (`dilationGain_lt_one_of_barycentric`).
+11. **Every contracting stencil of the prime error is a meter.** For a positive stencil with
+    `ρ(1) ≤ 1` and `ρ < 1` on `(½, 1)`, and either sign `σ`, the bounds `σ · gap ≤ C x^s` hold for
+    all `s ∈ (b, 1)` iff `Θ ≤ b`, for every `b ≥ ½` (`primeErrorGap_upper_spectrum_iff`). The a priori input is the
+    prime number theorem alone. In particular every Jensen gap `θ(x) − Σ a_j θ(λ_j x)` on a
+    barycentric stencil reads `Θ` from either side (`thetaJensenGap_upper_spectrum_iff`).
 
-## 5. Questions
+## 5. The producers, with their slack
 
-The four questions of §2.9, and four that the programme adds.
+| Producer | Reading | Price | Comparison slack | Reading slack | Paid at |
+|---|---|---|---|---|---|
+| Stepanov over `𝔽_q` | zeros with multiplicity | degree of the auxiliary | `O(g√q)` | none | the finite place, by inseparability |
+| Stepanov on the prime torus (ALST) | vanishing at torsion | length `lcm(1,…,N) = e^{ψ(N)}` | none | circular | the real place |
+| Jacobi sums (mechanism 8) | `|J|²` | `q` | none | none | conjugation of `ℚ(ζ_m)` |
+| Second moment (mechanism 9) | `Σ |J|²` | Parseval | none over `𝔽_q` | none | the functional equation |
+| Chebyshev (mechanism 5) | carries `· log p` | entropy | `≤ log(m+n+1)` | linear: a `K`-term majorant overshoots by the mass at `K`-rough quotients (RHTower `ChebyshevMajorant.sum_mul_log_factorial_ge`) | the real place |
+| Positive stencil (mechanism 11) | gap of `θ` | none known | — | none: it is a meter | — |
 
-| # | Question |
-|---|---|
-| Q1 | What replaces inseparability at the real place? |
-| Q2 | What is the arithmetic analogue of a divisor of bounded degree on `Spec ℤ × Spec ℤ`, with a Riemann–Roch count whose constants include the `Γ` factor? |
-| Q3 | Which comparisons of sizes survive the product formula, which charges vanishing order at every place? |
-| Q4 | Is there a positivity-free proof of the curve case in which the archimedean place of a number field appears? |
-| Q5 | **Exactness.** Is every producer with a zero-blind price a transfer? Which producer classes have sublinear slack at all? |
-| Q6 | **Axiom ladder.** For each axiom level (integer norms; integer count to precision `x^θ`; functional equation; coefficients `1`), what is the best output exponent, and which twin attains it? |
-| Q7 | **Nonlinear producers.** The Selberg identity is a quadratic reading with a zero-blind price and reaches the prime number theorem. What is the axiom level and the reach of quadratic producers? |
-| Q8 | **Transfers.** Which one-sided transfers between the meters (halving increment, `E`, `D`, Stepanov degree, `M`) hold at the same exponent with explicit constants, and which directions are impossible? |
+The Chebyshev row locates the loss of every divisibility producer: the comparison is exact up to
+a logarithm, and all of the loss occurs when the alternating priced stencil is replaced by a
+positive one. A stencil on the powers of one base whose reading is known to a power saving has a
+symbol vanishing at every zero of `ζ` to the right of that power (ZeroConfigurationGeometry
+`dilationSymbol_eq_zero_of_zeta_eq_zero`). The symbol `1 − ρ(s)` of a positive contracting stencil
+has no zero there, since `|ρ(s)| ≤ ρ(Re s) < 1`, and its reading is a meter.
 
-## 6. Tools
+## 6. Questions
 
-| Tool | Content | Status |
+| # | Question | Answer |
 |---|---|---|
-| T1 Auxiliary sections with explicit heights | Siegel's lemma on smooth numbers and on conductor sections; counts with exact archimedean constants | corpus: ALST `exists_siegel_auxiliary`; TAP: Γ-constants (Q2) |
-| T2 `δ`-structure with an archimedean component | the ghost-ring `δ` at finite places (AGZ `frobenius_eq_pow_add_delta`) and the intertwining scalars of operators on auxiliaries at `∞` | TAP target (Q1) |
-| T3 Sieve-ordered Schur elimination | elimination of the comb by prime rays, multiples of `2`, then `3`, …, keeping each correction explicit | TAP target |
-| T4 Twin suite | §2.1 in one module, with each twin's value on each meter | TAP target |
-| T5 One-sided transfer kernels | positive Neumann transfer for dilation stencils, unifying the halving identity and the midpoint Green kernel | TAP target (Q8) |
+| Q1 | What replaces inseparability at the real place? | Nothing local (mechanism 1). The Frobenius-linear operators over `ℤ` are the digit operators; they see the fibre of `ψ_a`, `a` distinct points, in place of the fat point (mechanisms 3, 4). Infinitesimally the replacement is `d/ds`: it is the only compatible derivation with an entropy, and its Frobenius scalar is `a`, expanding (mechanisms 2, 6). |
+| Q2 | What is the analogue of a divisor of bounded degree on `Spec ℤ × Spec ℤ`, with a Riemann–Roch count whose constants include the `Γ` factor? | A weighted simplex of exponents; the count has leading constant `1/(Γ(k+1) Π log p_i)`, canonical degree `Σ log p_i` and a duality (mechanism 7). On all primes the count is marginal. Open: the second term on the full square. |
+| Q3 | Which comparisons of sizes survive the product formula? | Carries against entropy, with logarithmic slack, and only for the weights `c · log p` (mechanisms 5, 6). A functional equation against a second moment, with the slack of the mean value (mechanism 9). Degree against multiplicity does not: the Frobenius scalar is paid at `∞` (mechanism 2). |
+| Q4 | Is there a positivity-free proof of the curve case in which the archimedean place of a number field appears? | Yes, for the Kummer family (mechanism 8). Open: a family without complex multiplication. |
+| Q5 | Is every producer with a priced reading a transfer? Which classes have sublinear slack? | In the stencil class: priced stencils are blind at the zeros, positive stencils are meters, and the passage between them costs the rough mass (§5). |
+| Q6 | What does each axiom level reach? | An integer count with error tending to a constant is compatible with a zero at every depth in `(½, ⅔)` (RHTower `overRegular_integers_do_not_constrain_zeros`); integer norms with an Euler product allow the one-off (ALST). The level that excludes them is the balance `Λ ∗ 1 = log` (HodgeTheoryOfAFixedPart `sum_divisors_eq_log_iff`), equivalently the entropy of the weights (mechanism 6). |
+| Q7 | What do quadratic readings reach? | Selberg's formula is a quadratic priced reading (RHTower `selberg_symmetry_formula`), exact on `Λ` and off by a linear term on the Liouville twin (RigidArithmeticOfCuts, the Selberg ledger). Open: any saving for `Λ` itself. |
+| Q8 | Which one-sided transfers between meters hold at the same exponent? | All those along a positive kernel, exactly at its contracting exponents, with the constant `1/(1 − ρ(s))` (mechanisms 10, 11). |
 
-## 7. Pillar theorems (targets)
+## 7. Tools
 
-| # | Theorem | Answers | Status |
-|---|---|---|---|
-| 1 | **Abstract Stepanov producer.** A ring with a derivation `∂`, an endomorphism `F` with `∂ ∘ F = 0`, a fixed set and a zero count; the count theorem; the hyperelliptic instance recovers Hasse–Weil | criterion 1, Q1 | target |
-| 2 | **Separability in characteristic zero.** No nonzero derivation of a `ℚ`-algebra kills an Adams operation; every integral intertwiner of the Adams operations has integer scalars, so no archimedean contraction exists on integer auxiliaries | Q1, T2 | target |
-| 3 | **Zero-blind prices are transfers.** For every balanced stencil the output on a window and the reading of its complement have the same exponent | Q3, Q5 | target |
-| 4 | **Axiom ladder.** Integer norms with a square-root integer count do not produce any fixed power saving | Q6, criterion 2 | target |
-| 5 | **Twin suite** | criterion 2, T4 | target |
-| 6 | **Positive Neumann transfer** | Q8, T5 | target |
-| 7 | **Quadratic producers** | Q7 | target |
-| 8 | **Riemann–Roch count with `Γ` constants** | Q2, T1 | target |
+| Tool | Where it lives |
+|---|---|
+| T1 Auxiliary sections with explicit heights | counts and duality: `simplexPoints` (mechanism 7); Siegel auxiliaries on torsion: ALST `exists_siegel_auxiliary`; smooth populations at factorial price: RestrictedFactorizationCalculus |
+| T2 A `δ`-structure with an archimedean component | the carry calculus of mechanisms 5 and 6; the finite components are the Fermat quotients of the ghost ring (AbsoluteGeometryOfSpecZ) |
+| T3 Sieve-ordered Schur elimination | the cooperative reduction (inverse and Schur corrections of a form with nonpositive couplings are sign-definite, GreenCalculusOfThePrimeFreeWindow `inv_mulVec_nonneg_of_offDiag_nonpos`, `mul_inv_mul_transpose_apply_nonneg`), the pole plane (`withPoles`) and the overlap law `riemannHypothesis_iff_forall_weilSchur_nonneg`; elimination on a sublattice of the comb: SignedArithmeticCorrespondences |
+| T4 A twin suite | ScaleSignedIncidenceCriticality `TheTwinTestSuite`; for weights, `exists_carry_lt_and_gt` |
+| T5 One-sided transfer kernels | mechanisms 10 and 11 |
 
-## 8. Traps
+## 8. Pillar theorems
+
+| # | Theorem | Lean |
+|---|---|---|
+| 1 | A local Frobenius-linear operator is a multiplication | `HasOrderLE.eq_mul_of_expand_linear`, `IsLocal.eq_mul_of_expand_linear` |
+| 2 | The Frobenius scalar of a compatible derivation is the degree | `isCompatible_iff`, `IsCompatible.scalar_eq` |
+| 3 | The digit operators lift the Hasse derivatives; the fibre replaces the fat point | `digitOp_expand_mul`, `digitOp_eq_hasseEuler`, `mem_fibreIdeal_iff`, `fibreIdeal_eq_span_pow_of_charP` |
+| 4 | The balance of carries and the rigidity of `log` | `entropyCarry_sub_log_le_log_choose`, `log_choose_le_entropyCarry`, `carry_bddBelow_iff` |
+| 5 | Riemann–Roch and duality on a finite prime torus | `card_simplexPoints_bounds`, `card_filter_pos_simplexPoints` |
+| 6 | Hasse–Weil for the Kummer family from the two pairings | `abs_card_puncturedKummerPoints_sub_le`, `norm_map_jacobiSum_sq` |
+| 7 | Purity is the equality case of a mean-value comparison | `norm_jacobiSum_sq_of_meanValue` |
+| 8 | One-sided transfer with the exact constant and the exact range | `le_rpow_of_le_add_dilate`, `transfer_constant_attained`, `rpow_eq_sum_dilate_of_gain_eq_one` |
+| 9 | Every contracting stencil of the prime error is a one-sided meter | `primeErrorGap_upper_spectrum_iff`, `thetaJensenGap_upper_spectrum_iff` |
+
+## 9. Traps
 
 | Trap | Truth |
 |---|---|
-| A tight inequality is a producer | An identity read through `Λ` is a meter; slack is what a producer harvests |
-| Raising the multiplicity sharpens a divisibility producer | Price and reading scale together (AGT `ghost_ledger`) |
-| A closed-form price is information about the primes | Its generating function has no pole at a zero; it moves the problem to the complement |
-| Integrality is selective | Every integrality mechanism on the prime torus holds for every Euler product over the rational primes (ALST); the one-off has integer norms |
-| An integer count to square-root precision forces the primes | Beurling systems with good integer counts carry zeros near `Re s = 1` (Q6) |
-| `ℓ`-adic inseparability is free multiplicity | Its gain at `ℓ` is paid at `∞` by the product formula |
-| The Stepanov degree bound is a producer | Its price is `lcm(1,…,N) = e^{ψ(N)}`: it is circular |
-| Purity of Jacobi sums is a positivity argument | It is an identity between two pairings; its `ζ` analogue is RH |
-| Combining exact meters lowers `Θ` | Exact rows combine to exact rows |
-| A producer valid for all Euler products separates `ζ` | The one-off and the Schur twin are Euler products |
+| A tight inequality is a producer | An identity read through `Λ` is a meter; a producer needs slack that is not circular |
+| A derivative can be made Frobenius-linear over `ℤ` | Only multiplications are local and `ψ_a`-linear where `a` is regular |
+| The digit operators give multiplicity | They give `a` simple zeros on a fibre; the count against degree is unchanged |
+| `ℓ`-adic inseparability is free | The Frobenius scalar is `a` at every place; what is gained at `ℓ` is paid at `∞` |
+| Chebyshev's comparison is lossy | It is exact up to `log(m+n+1)`; the loss is in the reading |
+| The weights `log p` are a normalization | They are forced: no other weighting has a carry bounded on the linear scale |
+| A priced stencil can be made positive | Its symbol vanishes at the zeros; a positive contracting stencil has none |
+| A one-sided bound passes through any averaging | Only at contracting exponents; at a neutral exponent the kernel has a homogeneous solution |
+| Bombieri's count works on the arithmetic square | On `k` primes it starts at degree of the order of the canonical degree; on all primes product and sum of the counts agree |
+| Purity of Jacobi sums is a positivity argument | It is an identity between two pairings; its analogue for `ζ` is `ρ̄ = 1 − ρ` |
+| The Stepanov degree bound on the torus is a producer | Its price is `e^{ψ(N)}` (ALST) |
+| An integer count of high precision forces the zeros | Over-regular Beurling integers carry zeros off the line |
 
-## 9. Open research topics
+## 10. Open
 
-1. A comparison over `ℤ` with sublinear slack whose price is not computed from `ψ` (Q5).
-2. The reach of quadratic and higher-degree readings of `Λ` (Q7).
-3. An operator on integer auxiliaries that intertwines the Adams operations and contracts at the real
-   place up to an explicit integrality loss (Q1, T2).
-4. A Riemann–Roch count on the arithmetic square with the `Γ` factor in its constants (Q2).
-5. Sieve-ordered elimination of the comb that uses the sign of `Λ` along prime rays (T3).
+1. **A one-sided bound for one positive stencil.** For any barycentric stencil and either sign,
+   `σ · (θ(x) − Σ a_j θ(λ_j x)) ≤ C x^s` with `s < 1` gives `Θ ≤ s`. No comparison is known whose
+   reading is such a gap.
+2. **A joint `δ`-structure.** One operator on integer auxiliaries whose component at `p` is the
+   Fermat quotient and whose component at `∞` is `n log n`, with one comparison in which the
+   balance of carries is the product formula.
+3. **The second term on the arithmetic square.** On all primes the Riemann–Roch count is marginal;
+   the number of distinct products below the leading order is the analogue of the genus term.
+4. **Sieve order.** The cooperative reduction is proved for the dyadic middle of a window. In
+   the order of the small primes the stage floors are those of multiples of `d ≥ 2`
+   (SignedArithmeticCorrespondences); the transport of the degrees through the stages is open.
+5. **Quadratic readings.** A saving for `Λ` from a priced reading of `Λ ∗ Λ`.
+6. **Curves without complex multiplication.** A proof of the Hasse–Weil bound with no positivity
+   and no inseparability, in which the archimedean place enters.
 
-## 10. Context
+## 11. Context
 
-| Programme | Interface |
+| Programme | Relation |
 |---|---|
-| ArithmeticLefschetzStepanovTheory | Stepanov's method on the prime torus; Lefschetz = Stepanov; the one-off calibration |
-| ArithmeticProduction | mean-value producers: mollifiers, length laws, entry filters, mimic battery |
-| ArithmeticAuxiliaryDynamics | stencil producers; the rate is the Mertens level |
-| ArithmeticGaugeTheory | factorial ratios have Chebyshev precision |
-| ArithmeticEffectivityTheory | Nair's integrality floor |
-| ExclusionOfTheCriticalState, ExceptionalLayerTheory | the halving identity and the midpoint Green kernel (transfers) |
-| AbsoluteGeometryOfSpecZ, SurfaceOfSpecZ | ghost ring, `δ`-structure, Frobenius graphs, point counts |
-| TensorPowerProgramme | purity of Jacobi sums by the two pairings |
-| ArithmeticPositiveDuality, BlackHoleRingdown, FloorFreeArithmetic, ArithmeticCastelnuovoSeveri | the twins |
+| ArithmeticLefschetzStepanovTheory | Stepanov's method on the prime torus; the fixed-point auxiliary has length `e^{ψ(N)}`; TAP explains why no operator repairs it (mechanisms 1 to 4) |
+| AbsoluteGeometryOfSpecZ, SurfaceOfSpecZ | ghost ring, Frobenius graphs, contacts; TAP adds the archimedean component of the `δ`-structure |
+| GreenCalculusOfThePrimeFreeWindow, SignedArithmeticCorrespondences | positivity producers by elimination; they host T3 |
+| ScaleSignedIncidenceCriticality | the twin test suite |
+| ExclusionOfTheCriticalState, ExceptionalLayerTheory | halving and midpoint identities; instances of mechanism 10; the landing of mechanism 11 uses their both-signs theorem |
+| ZeroConfigurationGeometry, ArithmeticOfSquareRootPrecision, RHTower (Chebyshev majorants) | priced stencils: symbols vanish at the zeros, rough slack, Möbius inversion of the factorial |
+| ArithmeticCastelnuovoSeveri, CountingHolography | Hodge index and Stepanov over finite fields: the calibration targets |
+| TensorPowerProgramme | purity of Jacobi sums |
 
-TAP sits between the receiver programmes (which state what an input must deliver) and the meter
-programmes (which read `Θ` exactly). It does not add a route: it asks of every route whether its central
-inequality has slack, at which place the slack is paid, and which twin its axioms admit.
+TAP sits between the programmes that state what an input must deliver and the programmes that read
+`Θ` exactly. It adds no route. For a route it answers: where is the slack, at which place is it
+paid, and which twin do the axioms admit.
 
-## 11. Success criteria and contributions
+## 12. Success criteria and contributions
 
-**Criteria a producer must meet** (§2.9).
-1. **Calibration.** It reproves inside the theory the Riemann hypothesis for curves, starting with the
-   hyperelliptic case, and Riemann–Roch with exact constants.
-2. **Selection.** Its argument does not apply to any twin of §2.1.
-3. **Non-circularity.** Its price is not computed from `ψ`.
-4. **Output.** A one-sided bound for one meter at some exponent, landing in a proved implication.
+**A producer must meet** (§2.9):
+1. **Calibration.** Inside the theory it reproves the Riemann hypothesis for curves and Riemann–Roch
+   with exact constants.
+2. **Selection.** It does not apply to any twin.
+3. **Non-circularity.** Its price is not computed from `ψ`, `M` or the zeros.
+4. **Output.** A one-sided bound for one meter, landing in a proved implication.
 
-**The programme succeeds** when Q1–Q8 have theorem-level answers, T1–T5 exist in their strongest
-unconditional form, and each producer class in the corpus has its axiom level, its twin and its reach
-fixed by theorems.
+**The programme succeeds** when each producer class has its slack, its place and its twin fixed by
+theorems, and either a producer meeting the four criteria exists or the open items of §10 are
+closed in the negative with their positive survivors.
 
-**A contribution must** be unconditional; name its construction, reading and price; state its output
-exponent or prove that none below a named value exists; state its axiom level and the twin at that
-level; say at which place the slack is paid; and improve a pillar, answer a question, or add a tool used
-by another module. A restatement of a corpus equivalence is not a contribution.
+**A contribution must** be unconditional; name construction, reading, price and comparison; say
+whether its slack is comparison slack or reading slack and at which place it is paid; state the
+twin at its axiom level; and answer a question, sharpen a pillar, or add a tool that another module
+uses. A restatement of a corpus equivalence is not a contribution.

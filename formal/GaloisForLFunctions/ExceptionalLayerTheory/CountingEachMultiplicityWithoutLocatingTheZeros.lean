@@ -33,7 +33,7 @@ private theorem node_inj (W : ℕ) : Function.Injective (node W) := by
   exact Real.rpow_lt_rpow (Nat.cast_nonneg _) (by exact_mod_cast hab)
     (div_pos (by norm_num) (Nat.cast_pos.mpr (Nat.lcmUpto_pos W)))
 
-private theorem powers_at_levels (W n : ℕ) {i : ℕ} (hi : 0<i) (hiW : i≤W) :
+private theorem powers_at_levels (W n : ℕ) {i : ℕ} (hi : 0 < i) (hiW : i ≤ W) :
     (n:ℝ)^(2/((levelOrder W i+1:ℕ):ℝ))=(node W n)^i := by
   have hd : i ∣ Nat.lcmUpto W := Finset.dvd_lcm (s:=Finset.Icc 1 W) (f:=id) (Finset.mem_Icc.mpr ⟨hi,hiW⟩)
   have he := Nat.div_mul_cancel hd
@@ -60,7 +60,7 @@ private theorem select_multiplicity {W k : ℕ} (hk : 0<k) (hkW : k≤W)
   have hp : 0<(2:ℝ)/(Nat.lcmUpto W:ℝ) := div_pos (by norm_num) (Nat.cast_pos.mpr (Nat.lcmUpto_pos W))
   have hzero : P.coeff 0=0 := by
     have h := Lagrange.eval_basis_of_ne (v:=node W) hk.ne' (Finset.mem_range.mpr (by omega : 0<W+1))
-    simpa only [P,selector,node,Nat.cast_zero,Real.zero_rpow hp.ne',Polynomial.eval_zero] using h
+    simpa only [P,selector,node,Nat.cast_zero,Real.zero_rpow hp.ne',Polynomial.coeff_zero_eq_eval_zero] using h
   have hd : P.natDegree<W+1 := by
     change (Lagrange.basis _ _ _).natDegree<_
     rw [Lagrange.natDegree_basis (node_inj W).injOn hkin,Finset.card_range]

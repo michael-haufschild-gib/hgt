@@ -25,11 +25,12 @@ private theorem uniform_test_error {x y : ℕ → ℝ}
     (h : Tendsto (fun n => x n-y n) atTop (𝓝 0)) (f : C(Circle,ℂ)) :
     Tendsto (fun n => f (x n : Circle)-f (y n : Circle)) atTop (𝓝 0) := by
   have hcircle : Tendsto (fun n => (x n : Circle)-(y n : Circle)) atTop (𝓝 0) := by
-    simpa only [AddCircle.coe_sub,AddCircle.coe_zero] using
+    simpa only [Function.comp_def,QuotientAddGroup.mk'_apply,AddCircle.coe_sub,AddCircle.coe_zero] using
       (AddCircle.continuous_mk' (1:ℝ)).continuousAt.tendsto.comp h
   apply Metric.tendsto_nhds.mpr
   intro ε ep
-  obtain ⟨δ,dp,test⟩ := Metric.uniformContinuous_iff.mp f.continuous.uniformContinuous ε ep
+  obtain ⟨δ,dp,test⟩ := Metric.uniformContinuous_iff.mp
+    (CompactSpace.uniformContinuous_of_continuous f.continuous) ε ep
   filter_upwards [Metric.tendsto_nhds.mp hcircle δ dp] with n hn
   rw [dist_zero_right,←dist_eq_norm] at hn ⊢
   exact test hn

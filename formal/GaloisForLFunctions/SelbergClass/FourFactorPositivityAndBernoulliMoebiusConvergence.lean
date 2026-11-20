@@ -135,10 +135,10 @@ theorem twoSidedEdit_fourFactor_vanishes_on_real_axis {ρ₀ : ℂ}
     set F₄ : ℂ → ℂ := fun s => G s ^ 2 * G (s + (γ₀ : ℂ) * I) * G (s - (γ₀ : ℂ) * I)
     have hshift_pos : DifferentiableOn ℂ (fun s => G (s + (γ₀ : ℂ) * I)) {s : ℂ | 1 / 2 < s.re} :=
       hdiffG.comp (differentiableOn_id.add_const _) fun s hs => by
-        show 1 / 2 < (s + (γ₀ : ℂ) * I).re; simp [hs.out]
+        show 1 / 2 < (s + (γ₀ : ℂ) * I).re; simp; linarith [hs.out]
     have hshift_neg : DifferentiableOn ℂ (fun s => G (s - (γ₀ : ℂ) * I)) {s : ℂ | 1 / 2 < s.re} :=
       hdiffG.comp (differentiableOn_id.sub_const _) fun s hs => by
-        show 1 / 2 < (s - (γ₀ : ℂ) * I).re; simp [hs.out]
+        show 1 / 2 < (s - (γ₀ : ℂ) * I).re; simp; linarith [hs.out]
     refine ⟨F₄, ((hdiffG.pow 2).mul hshift_pos).mul hshift_neg, fun s hs => ?_, ?_⟩
     · have hs_p : 1 < (s + (γ₀ : ℂ) * I).re := by simp [hs]
       have hs_m : 1 < (s - (γ₀ : ℂ) * I).re := by simp [hs]
@@ -248,8 +248,11 @@ def bernoulliMoebiusMode (s : ℂ) (m : ℕ) : ℂ :=
 theorem bernoulliMoebiusMode_prime (s : ℂ) {p : ℕ} (hp : p.Prime) :
     bernoulliMoebiusMode s p = (p : ℂ) ^ (-s) * (1 - (p : ℂ) ^ (s - 2)) := by
   unfold bernoulliMoebiusMode
-  rw [if_neg hp.ne_zero, hp.divisors, Finset.sum_insert (by simp [hp.ne_one]), Finset.sum_singleton]
-  simp [ArithmeticFunction.moebius_apply_one, ArithmeticFunction.moebius_apply_prime hp]
+  rw [if_neg hp.ne_zero, hp.divisors, Finset.sum_insert (by simp [hp.ne_one.symm]),
+    Finset.sum_singleton, ArithmeticFunction.moebius_apply_one,
+    ArithmeticFunction.moebius_apply_prime hp]
+  push_cast
+  simp only [Complex.one_cpow]
   ring
 
 /-- **Uniform divisor-count bound:** for every `s ∈ ℂ` and `m ≥ 1`,
@@ -265,9 +268,11 @@ theorem norm_bernoulliMoebiusMode_le (s : ℂ) {m : ℕ} (hm : 1 ≤ m) :
     refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun d hd => ?_)
     have hd_pos : 0 < d := Nat.pos_of_mem_divisors hd
     rw [norm_mul, Complex.norm_intCast, Complex.norm_natCast_cpow_of_pos hd_pos,
-      Complex.sub_re, Complex.ofReal_re]
+      show (s - 2).re = s.re - 2 by simp]
     have hmu : |(ArithmeticFunction.moebius d : ℝ)| ≤ 1 := by
-      rcases ArithmeticFunction.moebius_trichotomy d with h | h | h <;> simp [h]
+      have habs : |ArithmeticFunction.moebius d| ≤ 1 :=
+        @ArithmeticFunction.abs_moebius_le_one d
+      exact_mod_cast habs
     exact mul_le_of_le_one_left (by positivity) hmu
   rcases le_total s.re 2 with hle | hge
   · rw [min_eq_left hle]
@@ -286,7 +291,8 @@ theorem norm_bernoulliMoebiusMode_le (s : ℂ) {m : ℕ} (hm : 1 ≤ m) :
       _ = (m.divisors.card : ℝ) * (m : ℝ) ^ (-s.re) := mul_comm _ _
   · rw [min_eq_right hge]
     have hd_lem : ∀ d ∈ m.divisors, (d : ℝ) ^ (s.re - 2) ≤ (m : ℝ) ^ (s.re - 2) := fun d hd => by
-      have hd_le : (d : ℝ) ≤ (m : ℝ) := by exact_mod_cast Nat.le_of_dvd hm hd.2
+      have hd_le : (d : ℝ) ≤ (m : ℝ) := by
+        exact_mod_cast Nat.le_of_dvd hm (Nat.mem_divisors.mp hd).1
       exact Real.rpow_le_rpow (Nat.cast_nonneg d) hd_le (by linarith)
     have hcard : (∑ d ∈ m.divisors, (d : ℝ) ^ (s.re - 2)) ≤
         (m.divisors.card : ℝ) * (m : ℝ) ^ (s.re - 2) := by
@@ -313,7 +319,9 @@ theorem summable_sq_norm_bernoulliMoebiusMode {s : ℂ} (hs : 1 / 2 < s.re) :
     (Real.summable_nat_rpow.mpr (by linarith : -(σ₀ + 1 / 2) < -1)).mul_left (C ^ 2)
   refine Summable.of_nonneg_of_le (fun _ => sq_nonneg _) (fun m => ?_) hmaj
   rcases Nat.eq_zero_or_pos m with rfl | hm
-  · simp [bernoulliMoebiusMode, Real.zero_rpow (show -(σ₀ + 1 / 2) ≠ 0 by linarith)]
+  · simp only [bernoulliMoebiusMode, ↓reduceIte, norm_zero, ne_eq, OfNat.ofNat_ne_zero,
+      not_false_eq_true, zero_pow, Nat.cast_zero]
+    positivity
   · have hm_pos : 0 < (m : ℝ) := by exact_mod_cast hm
     have h1 := norm_bernoulliMoebiusMode_le s hm
     have h2 := hdiv m hm
@@ -323,13 +331,13 @@ theorem summable_sq_norm_bernoulliMoebiusMode {s : ℂ} (hs : 1 / 2 < s.re) :
         _ ≤ (C * (m : ℝ) ^ ε) * (m : ℝ) ^ (-σ₀) :=
             mul_le_mul_of_nonneg_right h2 (by positivity)
         _ = C * ((m : ℝ) ^ ε * (m : ℝ) ^ (-σ₀)) := by ring
-        _ = C * (m : ℝ) ^ (ε - σ₀) := by rw [← Real.rpow_add hm_pos]; congr 2; ring
+        _ = C * (m : ℝ) ^ (ε - σ₀) := by rw [← Real.rpow_add hm_pos, ← sub_eq_add_neg]
     calc ‖bernoulliMoebiusMode s m‖ ^ 2
         ≤ (C * (m : ℝ) ^ (ε - σ₀)) ^ 2 := pow_le_pow_left₀ (norm_nonneg _) hpt 2
       _ = C ^ 2 * ((m : ℝ) ^ (ε - σ₀)) ^ 2 := by ring
       _ = C ^ 2 * (m : ℝ) ^ (-(σ₀ + 1 / 2)) := by
           rw [← Real.rpow_natCast ((m : ℝ) ^ (ε - σ₀)) 2, ← Real.rpow_mul hm_pos.le]
-          congr 2; dsimp [ε]; push_cast; ring
+          congr 2; dsimp [ε]; ring
 
 /-! ## 3. Composite-supported Dirichlet log-dipole with `O_ε(1)` tail and exact zero pair -/
 
@@ -391,7 +399,8 @@ theorem dipoleLogCoeff_uniform_bound (ρ₀ ρ₁ : ℂ) {ε : ℝ} (hε : 0 < �
       (4 / Real.log 2) * (k : ℝ) ^ (-(1 + ε)) := by
     intro k
     rcases Nat.eq_zero_or_pos k with rfl | hk_pos
-    · simp [Real.zero_rpow (show -(1 + ε) ≠ 0 by linarith)]
+    · simp only [LSeries.term_zero, norm_zero, Nat.cast_zero]
+      positivity
     · rw [LSeries.term_of_ne_zero hk_pos.ne', norm_div, Complex.norm_natCast_cpow_of_pos hk_pos]
       by_cases hk1 : k ≤ 1
       · have h0 := norm_dipoleLogCoeff_le ρ₀ ρ₁ k
@@ -459,7 +468,7 @@ theorem exists_exp_dipoleLogCoeff_continuation {ρ₀ ρ₁ : ℂ}
       · have hlog_ne : (Real.log k : ℂ) ≠ 0 :=
           Complex.ofReal_ne_zero.mpr (Real.log_pos (by exact_mod_cast (show 1 < k by omega))).ne'
         simp only [LSeries.logMul, dipoleLogCoeff, if_neg hk1, ← Complex.natCast_log]
-        exact div_mul_cancel₀ _ hlog_ne
+        exact mul_div_cancel₀ _ hlog_ne
   -- Derivative of `LSeries (dipoleLogCoeff ρ₀ ρ₁)` on `{Re s > 1}`.
   have habs_le1 : LSeries.abscissaOfAbsConv (dipoleLogCoeff ρ₀ ρ₁) ≤ 1 := by
     refine LSeries.abscissaOfAbsConv_le_of_le_const ⟨4 / Real.log 2, fun n hn => ?_⟩
@@ -467,7 +476,7 @@ theorem exists_exp_dipoleLogCoeff_continuation {ρ₀ ρ₁ : ℂ}
     have hlog2 : 0 < Real.log 2 := Real.log_pos one_lt_two
     split_ifs at h0 with hn1
     · linarith [div_pos (by norm_num : (0 : ℝ) < 4) hlog2]
-    · have hn_ge1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast hn
+    · have hn_ge1 : (1 : ℝ) ≤ (n : ℝ) := by exact_mod_cast Nat.one_le_iff_ne_zero.mpr hn
       have hrpow_le1 : (n : ℝ) ^ (max ρ₀.re ρ₁.re - 1) ≤ 1 := by
         calc (n : ℝ) ^ (max ρ₀.re ρ₁.re - 1) ≤ (n : ℝ) ^ (0 : ℝ) :=
               Real.rpow_le_rpow_of_exponent_le hn_ge1 (by linarith)
@@ -527,12 +536,10 @@ theorem exists_exp_dipoleLogCoeff_continuation {ρ₀ ρ₁ : ℂ}
     intro s hs
     have hs_ρ₁ : ρ₁.re < s.re := by linarith
     have hd_exp := ((hL_deriv s hs).sub (hK_deriv s hs_ρ₁)).cexp
-    have hd_D₁ : HasDerivAt D₁ ((s - conj ρ₁) + (s - ρ₁)) s := by
-      simpa [D₁, one_mul, mul_one] using
-        ((hasDerivAt_id s).sub_const ρ₁).mul ((hasDerivAt_id s).sub_const (conj ρ₁))
-    have hd_N₀ : HasDerivAt N₀ ((s - conj ρ₀) + (s - ρ₀)) s := by
-      simpa [N₀, one_mul, mul_one] using
-        ((hasDerivAt_id s).sub_const ρ₀).mul ((hasDerivAt_id s).sub_const (conj ρ₀))
+    have hd_D₁ : HasDerivAt D₁ (1 * (s - conj ρ₁) + (s - ρ₁) * 1) s :=
+      ((hasDerivAt_id s).sub_const ρ₁).fun_mul ((hasDerivAt_id s).sub_const (conj ρ₁))
+    have hd_N₀ : HasDerivAt N₀ (1 * (s - conj ρ₀) + (s - ρ₀) * 1) s :=
+      ((hasDerivAt_id s).sub_const ρ₀).fun_mul ((hasDerivAt_id s).sub_const (conj ρ₀))
     have hne_p0 : s - ρ₀ ≠ 0 := fun h => by have := congrArg Complex.re h; simp at this; linarith
     have hne_c0 : s - conj ρ₀ ≠ 0 := fun h => by have := congrArg Complex.re h; simp at this; linarith
     have hne_p1 : s - ρ₁ ≠ 0 := fun h => by have := congrArg Complex.re h; simp at this; linarith

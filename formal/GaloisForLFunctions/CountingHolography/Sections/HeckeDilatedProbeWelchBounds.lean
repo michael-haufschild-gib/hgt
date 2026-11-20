@@ -173,7 +173,8 @@ theorem probePairing_heckeDilateAt_mul_left {M d₁ d₂ N₀ k : ℕ}
     ← heckeDilateAt_comp hk hd₂ hM₂ le_rfl b,
     probePairing_eq_polar, probePairing_eq_polar,
     ← heckeDilateAt_add hk le_rfl,
-    integerProbe_heckeDilateAt, integerProbe_heckeDilateAt, integerProbe_heckeDilateAt]
+    integerProbe_heckeDilateAt, integerProbe_heckeDilateAt,
+    integerProbe_heckeDilateAt, integerProbe_heckeDilateAt]
 
 /-- Scale separation `d₁ * N₀ < d₂` makes the active conductors of `T_{d₁} a` and `T_{d₂} b`
 disjoint for arbitrary probes `a, b : Fin N₀ → ℤ`. -/
@@ -236,7 +237,7 @@ private theorem neg_trace_sq_le_hermNegIndex_mul_trace_sq {m : ℕ} {H : Matrix 
   have htr : ∑ i, e i = H.trace.re := by
     have h := (congrArg Complex.re hH.trace_eq_sum_eigenvalues).symm
     rw [Complex.re_sum] at h
-    simpa only [Complex.ofReal_re] using h
+    exact (Finset.sum_congr rfl fun i _ => by simp [e]).trans h
   have hpart := sum_filter_add_sum_filter_not univ (fun i => e i < 0) e
   have hrest : 0 ≤ ∑ i ∈ univ.filter (fun i => ¬ e i < 0), e i :=
     sum_nonneg fun i hi => le_of_not_gt (mem_filter.mp hi).2
@@ -281,9 +282,9 @@ theorem finite_right_support_heckeDilate_energy {r m M N₀ : ℕ}
   have hself : ∀ i : Fin m, probePairing M (fam i) (fam i) = integerProbe N₀ a₀ := fun i =>
     probePairing_heckeDilateAt_self (hd i) (hM i) a₀
   have htr : H.trace.re = (m : ℝ) * integerProbe N₀ a₀ := by
-    simp only [H, probeGramMatrix, Matrix.trace, Matrix.diag_apply, Matrix.of_apply,
-      Complex.re_sum, Complex.ofReal_re, hself, sum_const, card_univ, Fintype.card_fin,
-      nsmul_eq_mul]
+    unfold Matrix.trace
+    rw [Complex.re_sum]
+    simp [H, probeGramMatrix, fam, integerProbe_heckeDilateAt]
   have htr_le : H.trace.re ≤ 0 := by
     rw [htr]; exact mul_nonpos_of_nonneg_of_nonpos (Nat.cast_nonneg m) hneg.le
   have hrow : ∀ i : Fin m, ∑ j : Fin m, (probePairing M (fam i) (fam j)) ^ 2 =
@@ -293,8 +294,11 @@ theorem finite_right_support_heckeDilate_energy {r m M N₀ : ℕ}
   have htr2 : ((H ^ 2).trace).re =
       (m : ℝ) * (integerProbe N₀ a₀) ^ 2 +
         ∑ i : Fin m, ∑ j ∈ univ.erase i, (probePairing M (fam i) (fam j)) ^ 2 := by
-    simp only [H, probeGramMatrix, sq, Matrix.trace, Matrix.diag_apply, Matrix.mul_apply,
-      Matrix.of_apply, Complex.re_sum, ← Complex.ofReal_mul, Complex.ofReal_re]
+    rw [sq H]
+    unfold Matrix.trace
+    rw [Complex.re_sum]
+    simp only [H, probeGramMatrix, Matrix.diag_apply, Matrix.mul_apply, Matrix.of_apply,
+      Complex.re_sum, ← Complex.ofReal_mul, Complex.ofReal_re]
     calc (∑ i : Fin m, ∑ j : Fin m, probePairing M (fam i) (fam j) * probePairing M (fam j) (fam i))
         = ∑ i : Fin m, ∑ j : Fin m, (probePairing M (fam i) (fam j)) ^ 2 := by
           refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
@@ -369,7 +373,8 @@ private theorem rightZeros_encard_le_two_of_singleQuartet {ρ₀ : ℂ}
     · exfalso; simp at hz_re; linarith [hq.1]
   calc (rightZeros zetaZeroConfig).encard
       ≤ ({ρ₀, conj ρ₀} : Set ℂ).encard := Set.encard_le_encard hsub
-    _ ≤ 2 := Set.encard_pair_le ρ₀ (conj ρ₀)
+    _ ≤ ({conj ρ₀} : Set ℂ).encard + 1 := Set.encard_insert_le {conj ρ₀} ρ₀
+    _ = 2 := by rw [Set.encard_singleton]; norm_num
 
 /-- **Single-quartet Hecke-dilation Welch bound.**
 Under `HasSingleOffLineQuartet ρ₀`, any `m ≥ 2` Hecke dilations of a negative probe `a₀` satisfy
