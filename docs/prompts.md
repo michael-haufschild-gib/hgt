@@ -288,6 +288,10 @@ The goal is met when route QIC is fully closed and formalized unconditionally in
 
 32 Schur
 
+33 Kaczorowski-Perelli
+
+34 Voronoï
+
 ## apply external paper to corpus experiment
 
 task:
