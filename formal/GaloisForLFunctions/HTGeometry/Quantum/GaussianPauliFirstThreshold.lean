@@ -111,7 +111,7 @@ theorem gaussian_pauli_prefix_first_threshold_and_return :
   apply sparse_increment u q hq t
   have hbound : L*((N:ℝ)+1)*B ≤ (q:ℝ)/10 := by
     dsimp [B,K]
-    rw [mul_div_assoc',div_le_div_iff₀ (by positivity) (by norm_num)]
+    rw [← mul_div_assoc,div_le_div_iff₀ (by positivity) (by norm_num)]
     nlinarith only [mul_le_mul_of_nonneg_left hwidth' (show 0 ≤ 10*L*((N:ℝ)+1) by positivity)]
   calc
     _ ≤ (L*((N:ℝ)+1))*B :=

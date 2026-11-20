@@ -56,8 +56,8 @@ theorem IsCollision.all_branches_have_one_drift {τ z ρ : ℂ} {m : ℕ} (hc : 
   have hzero : G (0,ρ)=0 := by rw [show G (0,ρ)=_ from collisionBlowup_zero hc.vanish ρ,hr,mul_zero]
   have hq : q ρ=0 := (mul_eq_zero.mp ((hval ρ).symm.trans (by rw [hzero,mul_zero]))).resolve_right hA
   have hd := (analyticAt_collisionBlowup τ z m (0,ρ)).differentiableAt.hasFDerivAt
-  have hx : deriv (fun s : ℂ => G (s,ρ)) 0=D (1,0) :=
-    (hd.comp_hasDerivAt (0:ℂ) ((hasDerivAt_id' (0:ℂ)).prodMk (hasDerivAt_const (0:ℂ) ρ))).deriv
+  have h0 := hd.comp_hasDerivAt (0:ℂ) ((hasDerivAt_id' (0:ℂ)).prodMk (hasDerivAt_const (0:ℂ) ρ))
+  have hx : deriv (fun s : ℂ => G (s,ρ)) 0=D (1,0) := h0.deriv
   have hz := hd.comp_hasDerivAt ρ ((hasDerivAt_const ρ (0:ℂ)).prodMk (hasDerivAt_id ρ))
   have hp : HasDerivAt q (deriv q ρ) ρ := ((heatShiftPoly (1/4) m).hasDerivAt_aeval ρ).differentiableAt.hasDerivAt
   have hspace : F*D (0,1)=deriv q ρ*A :=
@@ -70,8 +70,8 @@ theorem IsCollision.all_branches_have_one_drift {τ z ρ : ℂ} {m : ℕ} (hc : 
   change (((m:ℂ)+1)*F)*D (1,0)= -(2*deriv q ρ)*B at htime
   obtain ⟨hY,hY0,hYZ,_⟩ := collisionBranch_spec hc hr
   have hD' : HasFDerivAt G D (0,Y 0) := by rw [show Y 0=ρ from hY0]; exact hd
-  have hzero' := (hD'.comp_hasDerivAt (0:ℂ) ((hasDerivAt_id' (0:ℂ)).prodMk hY.differentiableAt.hasDerivAt)).unique
-    ((hasDerivAt_const (0:ℂ) (0:ℂ)).congr_of_eventuallyEq hYZ)
+  have hc0 := hD'.comp_hasDerivAt (0:ℂ) ((hasDerivAt_id' (0:ℂ)).prodMk hY.differentiableAt.hasDerivAt)
+  have hzero' := hc0.unique ((hasDerivAt_const (0:ℂ) (0:ℂ)).congr_of_eventuallyEq hYZ)
   change D (1,deriv Y 0)=0 at hzero'
   rw [show ((1:ℂ),deriv Y 0) = ((1,0):ℂ × ℂ) + deriv Y 0 • ((0,1):ℂ × ℂ) by ext <;> simp,
     map_add,map_smul,smul_eq_mul] at hzero'

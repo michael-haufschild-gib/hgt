@@ -39,8 +39,10 @@ theorem IsCollision.contour_minor_area_laws {τ z : ℂ} {m : ℕ} (hc : IsColli
       have he : (q.choose 2:ℕ∞)=0 := hord.symm.trans (analyticOrderAt_of_not_analyticAt hn)
       exact (Nat.choose_pos hq).ne' (by exact_mod_cast he)
     have hn : analyticOrderAt F 0≠⊤ := by rw [show analyticOrderAt F 0=_ from hord]; exact ENat.coe_ne_top _
-    simpa only [heatMinorArea,if_pos hm,hord,ENat.toNat_coe,F] using
-      analytic_germ_derivative_disk_area ha hn j
+    obtain ⟨r,hr,h⟩ := analytic_germ_derivative_disk_area ha hn j
+    refine ⟨r,hr,fun s hs hsr => ?_⟩
+    rw [if_pos hm]
+    simpa only [hord,ENat.toNat_coe] using h s hs hsr
   · obtain ⟨r,hr,he⟩ := zero_germ_derivative_disk_area ((hd q).2 (lt_of_not_ge hm)) j
     refine ⟨r,hr,fun s _ hs => ?_⟩
     rw [if_neg hm]
@@ -88,7 +90,7 @@ theorem rh_iff_vanishing_three_moment_areas (j : ℕ) :
       (heat_three_moment_area_at_place (t:ℂ) z)).exists
     obtain ⟨r,hr,hs⟩ := hzero j
     have hsmall : ∀ᶠ s in 𝓝[>] (0:ℝ), 0<s ∧ s<r :=
-      self_mem_nhdsWithin.and ((eventually_lt_nhds hr).filter_mono nhdsWithin_le_nhds)
+      eventually_mem_nhdsWithin.and ((eventually_lt_nhds hr).filter_mono nhdsWithin_le_nhds)
     obtain ⟨s,hs0,hpos,hsr⟩ := (hd.and_eventually hsmall).exists
     have h₁ := hs s hpos hsr.le
     rw [if_pos hp] at h₁

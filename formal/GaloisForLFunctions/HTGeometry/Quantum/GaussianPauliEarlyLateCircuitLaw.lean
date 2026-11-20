@@ -15,12 +15,15 @@ noncomputable section
 private abbrev Reg (n : ℕ) := Matrix (Fin n → Bool) (Fin n → Bool) ℂ
 
 /-- For a fixed physical generator, a uniformly bounded wait leads to a
-hard interval of the specified length. Every affordable budget has a
+hard interval of the specified length. Window starts containing an
+affordable time have upper time density at most 1/(r+1)^r. Each budget has a
 first subsequent hit beyond the interval, with a dimensional deadline. -/
 def PhysicalExcursionAndReturns {n : ℕ} (H : selfAdjoint (Reg n)) : Prop :=
   let r := excursionGateBudget n
   let W := translatedExcursionWidth n ‖(H : Reg n)‖
   let U := unitaryEvolution (H : Reg n)
+  (∃ S : ℝ, 0 ≤ S ∧ ∀ A T : ℝ, 0 ≤ T →
+    (r+1:ℝ)^r * volume.real (circuitWindowHits H.val r W ∩ Icc A (A+T)) ≤ T+S) ∧
   ∃ G : ℝ, 0 ≤ G ∧ ∀ A : ℝ, ∃ u ∈ Icc A (A+G),
     (∀ t ∈ Icc u (u+W), ProjectiveCircuitSeparated n (1/10:ℝ) r (U t)) ∧
     ∀ s ≤ r, ∃ v ∈ Ioc (u+W) ((|u|+1)*(100:ℝ)^(2^n-1)),
@@ -53,6 +56,33 @@ private theorem excursion_of_projective_spectrum {n : ℕ} (hn : 1 ≤ n)
     exact (Nat.mul_le_mul_right _ (Nat.pow_le_pow_right (by omega : 0 < r+1)
       (by omega : r ≤ 2*r))).trans_lt (translated_excursion_square_card hn hent)
   obtain ⟨G,hG,hwin⟩ := translatedNet_physical_hard_window e H (hH.comp_equiv e.symm) W m hm hs hc
+  constructor
+  · obtain ⟨S,hS,hobs⟩ := spectral_sign_window_occupation e H (hH.comp_equiv e.symm)
+    refine ⟨S,hS,?_⟩
+    intro A T hT
+    let M := (r+1)^r
+    let Q := (atMostQuarterCircuitNet n r).card
+    let V := volume.real (circuitWindowHits H.val r W ∩ Icc A (A+T))
+    have hQ : 0 < Q := by
+      obtain ⟨x,hx,_⟩ := atMostQuarterCircuitNet_cover (TwoQubitCircuit.one n)
+        (show (TwoQubitCircuit.one n).gateCount ≤ r from Nat.zero_le _)
+      exact Finset.card_pos.mpr ⟨x,hx⟩
+    have hM : 0 < M := by dsimp [M]; positivity
+    have hsq : M*M*Q < 2^d := by
+      rw [show M*M = (r+1)^(2*r) by rw [two_mul,pow_add]]
+      exact translated_excursion_square_card hn hent
+    have hsq' : (M:ℝ)*M*Q ≤ (2:ℝ)^d := by exact_mod_cast hsq.le
+    have hvol := hobs r W m hm hs A T hT
+    rw [hcount] at hvol
+    change (2:ℝ)^d*V ≤ (M:ℝ)*Q*(T+S) at hvol
+    have hv : 0 ≤ V := ENNReal.toReal_nonneg
+    have hgoal : (M:ℝ)*V ≤ T+S := by
+      apply le_of_mul_le_mul_left _ (show 0 < (M:ℝ)*Q by positivity)
+      calc
+        _ = ((M:ℝ)*M*Q)*V := by ring
+        _ ≤ (2:ℝ)^d*V := mul_le_mul_of_nonneg_right hsq' hv
+        _ ≤ _ := hvol
+    simpa only [M,Nat.cast_pow,Nat.cast_add,Nat.cast_one] using hgoal
   refine ⟨G,hG,?_⟩
   intro A
   obtain ⟨u,hu,hh⟩ := hwin A

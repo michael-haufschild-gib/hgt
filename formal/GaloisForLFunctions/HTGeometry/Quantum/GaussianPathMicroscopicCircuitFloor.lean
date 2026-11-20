@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPathCoefficientMass
 import GaloisForLFunctions.HTGeometry.Quantum.PathPauliSpectralWidth
+import GaloisForLFunctions.HTGeometry.Quantum.PhysicalCircuitInversion
 import GaloisForLFunctions.HTGeometry.Quantum.PhysicalCircuitDeletionBound
 import GaloisForLFunctions.HTGeometry.AveragedCentralizerProjectionFloor
 
@@ -30,10 +31,10 @@ private theorem path_norm_le_mass_bound {n : ℕ} (u : PathShell n) {b : ℝ}
   nlinarith only [hs,ht,sq_nonneg (Real.sqrt D - ‖u‖),hm,hD]
 
 /-- Almost surely, all sufficiently long segments have a positive-width
-interval on the inverse-system-size time scale on which every one-tenth
-accurate physical circuit needs at least a fixed fraction of the sites in
+interval on the inverse-system-size time scale on which every physical circuit accurate
+to within one quarter needs at least a fixed fraction of the sites in
 gates. The interval is centered at half the period of the spectral diameter. -/
-theorem gaussian_path_microscopic_circuit_floor :
+theorem gaussian_path_microscopic_quarter_error_floor :
     ∃ A B W c : ℝ, 0 < A ∧ 0 < B ∧ 0 < W ∧ 0 < c ∧
       ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop,
         let u := pathPauliDisorderShell ω n
@@ -43,7 +44,7 @@ theorem gaussian_path_microscopic_circuit_floor :
           let t := Real.pi/(E i - E j)
           A ≤ N*t ∧ N*t ≤ B ∧ ∀ τ : ℝ, N * |t-τ| ≤ W →
             ∀ (C : TwoQubitCircuit (n+2)) (z : ℂ),
-              ‖unitaryEvolution (pathHamiltonian u) τ - z • (C.eval : Reg (n+2))‖ ≤ 1/10 →
+              ‖unitaryEvolution (pathHamiltonian u) τ - z • (C.eval : Reg (n+2))‖ ≤ 1/4 →
                 c*N ≤ C.gateCount := by
   obtain ⟨a,b,ha,hb,hall⟩ := gaussian_path_eventual_coefficient_mass
   let K := 12+b
@@ -91,7 +92,7 @@ theorem gaussian_path_microscopic_circuit_floor :
       (unitaryEvolution H τ) (z • (C.eval : Reg (n+2)))
     have hy := norm_unitaryEvolution_time_sub_le (isSelfAdjoint_pathHamiltonian u) t τ
     change ‖unitaryEvolution H t - unitaryEvolution H τ‖ ≤ ‖H‖*|t-τ| at hy
-    change ‖unitaryEvolution H τ - z • (C.eval : Reg (n+2))‖ ≤ 1/10 at herr
+    change ‖unitaryEvolution H τ - z • (C.eval : Reg (n+2))‖ ≤ 1/4 at herr
     change e ≤ _ at hx
     linarith only [hx,hy,hspeed,herr]
   have hdef : 1/2 ≤ max 0 (1-e) := le_trans (by linarith only [he]) (le_max_right _ _)
@@ -107,6 +108,67 @@ theorem gaussian_path_microscopic_circuit_floor :
   apply (mul_le_mul_iff_left₀ hnpos).mp
   linarith only [hx]
 
+/-- Almost surely, all sufficiently long segments have a positive-width
+interval on the inverse-system-size time scale on which every one-tenth
+accurate physical circuit needs at least a fixed fraction of the sites in
+gates. The interval is centered at half the period of the spectral diameter. -/
+theorem gaussian_path_microscopic_circuit_floor :
+    ∃ A B W c : ℝ, 0 < A ∧ 0 < B ∧ 0 < W ∧ 0 < c ∧
+      ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop,
+        let u := pathPauliDisorderShell ω n
+        let N : ℝ := n+2
+        let E := (isSelfAdjoint_pathHamiltonian u).isHermitian.eigenvalues
+        ∃ i j, (∀ k l, E k - E l ≤ E i - E j) ∧
+          let t := Real.pi/(E i - E j)
+          A ≤ N*t ∧ N*t ≤ B ∧ ∀ τ : ℝ, N * |t-τ| ≤ W →
+            ∀ (C : TwoQubitCircuit (n+2)) (z : ℂ),
+              ‖unitaryEvolution (pathHamiltonian u) τ - z • (C.eval : Reg (n+2))‖ ≤ 1/10 →
+                c*N ≤ C.gateCount := by
+  obtain ⟨A,B,W,c,hA,hB,hW,hc,h⟩ := gaussian_path_microscopic_quarter_error_floor
+  refine ⟨A,B,W,c,hA,hB,hW,hc,?_⟩
+  filter_upwards [h] with ω hω
+  filter_upwards [hω] with n hn
+  obtain ⟨i,j,hmax,hlo,hhi,hw⟩ := hn
+  exact ⟨i,j,hmax,hlo,hhi,fun τ ht C z he => hw τ ht C z (he.trans (by norm_num))⟩
+
+/-- For every time origin, circuits at the two ends of an inverse-bandwidth
+lag pay an extensive total cost. A subextensive dip consequently has
+extensive circuit cost in windows on both sides, at the same accuracy. -/
+theorem gaussian_pauli_rebound_at_every_circuit_dip :
+    ∃ A B W c : ℝ, 0 < A ∧ 0 < B ∧ 0 < W ∧ 0 < c ∧
+      ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop,
+        let u := pathPauliDisorderShell ω n
+        let N : ℝ := n+2
+        let E := (isSelfAdjoint_pathHamiltonian u).isHermitian.eigenvalues
+        ∃ i j, (∀ k l, E k-E l ≤ E i-E j) ∧
+          let t := Real.pi/(E i-E j)
+          A ≤ N*t ∧ N*t ≤ B ∧ ∀ τ : ℝ, N*|t-τ| ≤ W → ∀ v : ℝ, ∀ s r : ℕ,
+            HasProjectiveCircuitApproximation (n+2) (1/10:ℝ) s (unitaryEvolution (pathHamiltonian u) v) →
+            HasProjectiveCircuitApproximation (n+2) (1/10:ℝ) r (unitaryEvolution (pathHamiltonian u) (v+τ)) →
+            c*N ≤ (s:ℝ)+r := by
+  obtain ⟨A,B,W,c,hA,hB,hW,hc,h⟩ := gaussian_path_microscopic_quarter_error_floor
+  refine ⟨A,B,W,c,hA,hB,hW,hc,?_⟩
+  filter_upwards [h] with ω hω
+  filter_upwards [hω] with n hn
+  obtain ⟨i,j,hmax,hlo,hhi,hw⟩ := hn
+  refine ⟨i,j,hmax,hlo,hhi,?_⟩
+  intro τ ht v s r hv he
+  let u := pathPauliDisorderShell ω n
+  let H : selfAdjoint (Reg (n+2)) := ⟨pathHamiltonian u,isSelfAdjoint_pathHamiltonian u⟩
+  by_contra! hsmall
+  have hh : ProjectiveCircuitSeparated (n+2) (1/4:ℝ) (r+s) (unitaryEvolution H.val τ) := by
+    intro z _ C hC
+    by_contra! happrox
+    have hfloor := hw τ ht C z happrox
+    have hcost : (C.gateCount:ℝ) ≤ (r:ℝ)+s := by exact_mod_cast hC
+    linarith only [hfloor,hcost,hsmall]
+  have hc' := projectiveCircuitSeparated_unitaryEvolution_backward_cone H
+    (by omega : s ≤ r+s) hh (hv.neg_time H) (by norm_num : (1/10:ℝ)+1/10 ≤ 1/4)
+  rw [show τ-(-v) = v+τ by ring,Nat.add_sub_cancel] at hc'
+  obtain ⟨z,hz,C,hC,heC⟩ := he
+  exact (not_lt_of_ge heC) (hc' z hz C hC)
+
 #print axioms gaussian_path_microscopic_circuit_floor
+#print axioms gaussian_pauli_rebound_at_every_circuit_dip
 end
 end GaloisForLFunctions.HTGeometry
