@@ -29,7 +29,7 @@ private theorem vectorSpan_energySum_le {A B I : Type*}
   apply Submodule.mem_sup.mpr
   refine ⟨f (a i) - f (a j), vsub_mem_vectorSpan ℚ ⟨_, rfl⟩ ⟨_, rfl⟩,
     g (b i) - g (b j), vsub_mem_vectorSpan ℚ ⟨_, rfl⟩ ⟨_, rfl⟩, ?_⟩
-  change _ = (_ + _) - (_ + _)
+  simp only [vsub_eq_sub]
   ring
 
 /-- The rational affine dimension of any family of detuning matches is
@@ -104,7 +104,7 @@ theorem selectedEchoWeight_le_covered {I A B : Type*}
       · have hno (j : I) : ¬ ∃ b, E i = F (g j) + v b :=
           fun ⟨b, hb⟩ => h ⟨g j,b,hb⟩
         simp only [if_neg h, if_neg (hno _), Finset.sum_const_zero, le_refl]
-    _ = _ := by rw [Finset.sum_boole, Fintype.card_subtype]; rfl
+    _ = _ := by rw [Finset.sum_boole, Fintype.card_subtype]
 
 /-- For the commuting model retaining one representative per sector, every
 nonrepresentative level contributes its own distinct nonzero echo frequency.
@@ -141,6 +141,7 @@ theorem chainShell_detuningCoverage_ae (n : ℕ) :
   intro k q F v
   have h := maximallyProjective_detuningCoverage _ hθ F v
   simp only [Fintype.card_fin] at h
+  simp only [← Nat.card_eq_fintype_card] at h ⊢
   omega
 
 /-- All choices of model eigenbasis, energy labels, and selected echo
@@ -154,7 +155,10 @@ theorem chainShell_selectedEchoWeight_ae (n : ℕ) :
           V g F v ≤ ((k + q + 1 : ℕ) : ℝ) := by
   filter_upwards [chainShell_detuningCoverage_ae n] with θ hθ
   intro k q V g F v
-  exact (selectedEchoWeight_le_covered _ V g F v).trans (by exact_mod_cast hθ k q F v)
+  apply (selectedEchoWeight_le_covered _ V g F v).trans
+  have hc := hθ k q F v
+  rw [← Nat.card_eq_fintype_card] at hc ⊢
+  exact_mod_cast hc
 
 #print axioms chainShell_selectedEchoWeight_ae
 

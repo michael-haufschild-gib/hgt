@@ -44,7 +44,7 @@ theorem nonneg_of_growth {g : ℝ → ℝ} {C₀ b : ℝ}
     (hgC : ∀ u, 0 < u → |g u| ≤ C₀ * Real.exp (b * u)) : 0 ≤ C₀ := by
   have h := (abs_nonneg (g 1)).trans (hgC 1 one_pos)
   by_contra hneg
-  push_neg at hneg
+  push Not at hneg
   have := mul_neg_of_neg_of_pos hneg (Real.exp_pos (b * 1))
   linarith
 
@@ -159,8 +159,8 @@ theorem re_laplaceCoeff_add_re_mul_le {g : ℝ → ℝ}
     calc ∫ u in Ioi (0 : ℝ) ∩ Icc U V, g u * taylorKernel k σ u * (1 + phaseWeight ω γ u)
         ≤ ∫ u in Ioi (0 : ℝ) ∩ Icc U V, 2 * C * taylorKernel k (σ - θ) u := by
           refine setIntegral_mono_on (hhint.mono_set inter_subset_left)
-            (((integrableOn_taylorKernel k (sub_pos.mpr hσθ)).const_mul (2 * C)).mono_set
-              inter_subset_left) (measurableSet_Ioi.inter measurableSet_Icc) (fun u hu => ?_)
+            (IntegrableOn.mono_set
+              ((integrableOn_taylorKernel k (sub_pos.mpr hσθ)).const_mul (2 * C)) inter_subset_left) (measurableSet_Ioi.inter measurableSet_Icc) (fun u hu => ?_)
           have hu0 : (0 : ℝ) < u := hu.1
           rw [taylorKernel_sub]
           exact kernel_pointwise_le (hwin u hu.2) hC (Real.exp_pos _).le
@@ -177,8 +177,8 @@ theorem re_laplaceCoeff_add_re_mul_le {g : ℝ → ℝ}
     calc ∫ u in Ioi (0 : ℝ) \ Icc U V, g u * taylorKernel k σ u * (1 + phaseWeight ω γ u)
         ≤ ∫ u in Ioi (0 : ℝ) \ Icc U V, 2 * C₀ * taylorKernel k (σ - b) u := by
           refine setIntegral_mono_on (hhint.mono_set fun _ h => h.1)
-            (((integrableOn_taylorKernel k (sub_pos.mpr hσb)).const_mul (2 * C₀)).mono_set
-              fun _ h => h.1) (measurableSet_Ioi.diff measurableSet_Icc) (fun u hu => ?_)
+            (IntegrableOn.mono_set
+              ((integrableOn_taylorKernel k (sub_pos.mpr hσb)).const_mul (2 * C₀)) fun _ h => h.1) (measurableSet_Ioi.diff measurableSet_Icc) (fun u hu => ?_)
           have hu0 : (0 : ℝ) < u := hu.1
           rw [taylorKernel_sub]
           exact kernel_pointwise_le ((le_abs_self _).trans (hgC u hu0)) hC₀ (Real.exp_pos _).le
@@ -229,9 +229,12 @@ theorem exists_window_coeff_bound {g : ℝ → ℝ}
     calc _ ≤ 2 * C * ((a + b - θ) ^ (k + 1))⁻¹ +
           2 * C₀ * ∫ u in Ioi (0 : ℝ) \ Icc U ((1 + δ) * U), taylorKernel k a u := h1
       _ ≤ 2 * C * ((a + b - θ) ^ (k + 1))⁻¹ + 2 * C₀ * (max C' 0 / (a + b - θ) ^ k) :=
-          add_le_add_left (mul_le_mul_of_nonneg_left (htail.trans h2)
-            (mul_nonneg zero_le_two hC₀)) _
-      _ = (2 * C / (a + b - θ) + 2 * C₀ * max C' 0) / (a + b - θ) ^ k := by ring
+          add_le_add le_rfl (mul_le_mul_of_nonneg_left (htail.trans h2)
+            (mul_nonneg zero_le_two hC₀))
+      _ = (2 * C / (a + b - θ) + 2 * C₀ * max C' 0) / (a + b - θ) ^ k := by
+          have e : ∀ y : ℝ, 2 * C * (y ^ (k + 1))⁻¹ + 2 * C₀ * (max C' 0 / y ^ k) =
+              (2 * C / y + 2 * C₀ * max C' 0) / y ^ k := fun y => by ring
+          exact e _
 
 /-! ## Geometry of the poles -/
 
@@ -337,7 +340,7 @@ theorem re_le_of_simple_pole {g : ℝ → ℂ}
     (hc : c ≠ 0) (hp : ∃ h : ℂ → ℂ, AnalyticAt ℂ h ρ ∧ ∀ᶠ s in 𝓝[≠] ρ, Φ s = c / (s - ρ) + h s) :
     ρ.re ≤ b := by
   by_contra hlt
-  push_neg at hlt
+  push Not at hlt
   obtain ⟨h, hh, hp⟩ := hp
   apply not_continuousAt_of_simple_pole hc hh.continuousAt hp
   have heq : (fun z : ℂ => ∫ u in Ioi (0 : ℝ), g u * (-(u : ℂ)) ^ 0 * cexp (-z * u)) =ᶠ[𝓝 ρ] Φ := by
@@ -452,7 +455,7 @@ theorem eq_empty_of_window_bound_of_nonneg {g : ℝ → ℝ}
     have hdσ : DifferentiableOn ℂ Φ (ball (σ : ℂ) q) := by
       have := hdiffOn (σ : ℂ) q ∅ (by rw [Complex.ofReal_re]; linarith)
         (fun s hs hsd => absurd (hqZ s hs) (not_le.mpr hsd))
-      rwa [diff_empty] at this
+      exact this.mono fun s hs => ⟨hs, id⟩
     obtain ⟨M₀, hM₀⟩ := exists_taylorCoeff_le hdσ (r' := (dist ρ z + r) / 2) (by linarith)
       (by linarith)
     refine false_of_frequently_le (norm_pos_iff.mpr hc) hd0 (q := (dist ρ z + r) / 2)
@@ -475,7 +478,7 @@ theorem eq_empty_of_window_bound_of_nonneg {g : ℝ → ℝ}
     rw [add_div, add_div]
     linarith
   · -- otherwise the pole nearest to `σ` is real, with positive residue
-    push_neg at hcase
+    push Not at hcase
     have hρ₁σ := hZσ ρ₁ hρ₁
     have hρ₁θ := hZθ ρ₁ hρ₁
     obtain ⟨R, hR1, hRθ⟩ : ∃ R : ℝ, σ - ρ₁.re < R ∧ R < σ - θ :=
@@ -490,7 +493,7 @@ theorem eq_empty_of_window_bound_of_nonneg {g : ℝ → ℝ}
     -- every nearby pole lies at least `dist β σ` to the left of the line
     have hleft : ∀ ρ ∈ Z ∩ closedBall (σ : ℂ) R, dist β (σ : ℂ) ≤ σ - ρ.re := fun ρ hρ => by
       by_contra hlt
-      push_neg at hlt
+      push Not at hlt
       obtain ⟨ρ'', hρ''Z, hρ''d⟩ := hcase ρ hρ.1 _ hlt
       have hmem : ρ'' ∈ Z ∩ closedBall (σ : ℂ) R :=
         ⟨hρ''Z, mem_closedBall.mpr (hρ''d.le.trans (mem_closedBall.mp hβF.2))⟩
@@ -601,7 +604,7 @@ theorem re_le_of_window_bound {g : ℝ → ℝ}
     (fun ρ hρ => hpole ρ hρ.1 hρ.2)
   intro ρ hρ
   by_contra hlt
-  push_neg at hlt
+  push Not at hlt
   have hmem : ρ ∈ Z ∩ {s | θ < s.re} := ⟨hρ, hlt⟩
   rw [hempty] at hmem
   exact hmem

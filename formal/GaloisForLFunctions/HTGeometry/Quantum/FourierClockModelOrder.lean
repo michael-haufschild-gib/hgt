@@ -105,5 +105,7 @@ theorem fourierClock_sectorTrace_energy_le
         (Finset.sum_le_sum fun x _ => hrow x) (Nat.cast_nonneg _)) (Nat.cast_nonneg _)
     _ = _ := by simp [sq]
 
+#print axioms fourierClock_sectorTrace_energy_le
+
 end
 end GaloisForLFunctions.HTGeometry
