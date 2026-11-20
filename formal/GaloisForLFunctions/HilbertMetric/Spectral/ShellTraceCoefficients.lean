@@ -6,9 +6,10 @@ import Mathlib.Algebra.BigOperators.Intervals
 /-!
 # Concentric shell trace coefficients
 
-For the mixed boundary problem, the degree-zero datum comes from the eigenvalue,
-while the higher degrees come from the trace. Pairing complementary powers of the
-inner radius gives positive factors in the denominator and explicit attenuation bounds.
+For the mixed boundary problem in Hong (arXiv:2611.16596, §5), the degree-zero
+datum comes from the eigenvalue, while the higher degrees come from the trace.
+Pairing complementary powers of the inner radius gives positive factors in the
+denominator and explicit attenuation bounds.
 -/
 
 open Filter

@@ -5,10 +5,10 @@ import Mathlib.Tactic.LinearCombination
 /-!
 # Angular crossings of the planar concentric shell
 
-The two boundary conditions give a product of reflection factors. The product
-increases with spectral parameter and decreases with angular degree. The first
-angular crossing is the smaller root of a quadratic, written in a form that
-stays regular as the inner radius approaches one.
+The two boundary conditions give the reflection product of Diao and Zhang
+(arXiv:2611.15063, Eq. 6.49). The product increases with spectral parameter and
+decreases with angular degree. The first angular crossing is the smaller root
+of a quadratic, in a form that stays regular as the inner radius approaches one.
 -/
 
 namespace GaloisForLFunctions.HilbertMetric.PlanarShell

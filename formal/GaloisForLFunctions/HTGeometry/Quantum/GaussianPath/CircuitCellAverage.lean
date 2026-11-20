@@ -4,9 +4,10 @@ import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 /-!
 # Circuit certificates from symmetric time averages
 
-The phase-saturated circuit distance is Lipschitz in Hamiltonian time. Integrating
-that bound over a cell gives a smaller error at the midpoint and a uniform margin
-which certifies affordability or exclusion throughout the cell.
+Apply symmetric Steklov averaging as in Angeloni, Costarelli and Kolomoitsev
+(arXiv:2611.23326, §2.4) to the phase-saturated circuit distance. Its Lipschitz
+bound gives a smaller error at the midpoint and a uniform margin which certifies
+affordability or exclusion throughout the cell.
 -/
 
 open Set MeasureTheory

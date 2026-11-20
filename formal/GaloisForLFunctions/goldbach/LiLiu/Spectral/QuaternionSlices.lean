@@ -21,7 +21,7 @@ theorem quaternion_mem_complex_slice (q : ℍ) : ∃ (f : ℂ →ₐ[ℝ] ℍ) (
       simpa only [← sq,Quaternion.normSq_eq_norm_mul_self,r] using Quaternion.im_sq q
     rw [show J*J=(r⁻¹*r⁻¹) • (q.im*q.im) by exact smul_mul_smul_comm ..,hsq,smul_neg,
       Algebra.algebraMap_eq_smul_one (r*r),smul_smul]
-    simp [hr,mul_mul_mul_comm]
+    rw [show (r⁻¹*r⁻¹)*(r*r)=1 by field_simp [hr],one_smul]
   refine ⟨Complex.liftAux J hJ,⟨q.re,r⟩,?_⟩
   change (q.re : ℍ) + r • (r⁻¹ • q.im)=q
   rw [smul_smul,mul_inv_cancel₀ hr,one_smul,Quaternion.re_add_im]

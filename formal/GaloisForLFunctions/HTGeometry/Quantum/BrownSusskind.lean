@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.AbsoluteDetuning
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PersistentCircuitFloor
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.CircuitCellAverage
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPauliFirstThreshold
 import GaloisForLFunctions.HTGeometry.Quantum.PrescribedClockCircuitOccupation
 import GaloisForLFunctions.HTGeometry.Quantum.SpectralSignReturnClock

@@ -4,9 +4,10 @@ import Mathlib.Analysis.Real.Sqrt
 /-!
 # Resolvent estimation of the thermofield vacuum
 
-The squared thermal resolvent has a vacuum pole with residue given by its Gibbs
-weight. Every excited level is at least `log 2` away. This gives a uniform upper
-bound on the regular part and a cubic error for a calibrated vacuum estimator.
+The squared-resolvent pole mechanism of Han, Lee and Lim (arXiv:2611.04410,
+§§3 and 5) gives the vacuum pole with coefficient equal to its Gibbs weight.
+Every excited level is at least `log 2` away. This bounds the regular part
+and gives a cubic error for a calibrated vacuum estimator.
 -/
 
 open scoped BigOperators

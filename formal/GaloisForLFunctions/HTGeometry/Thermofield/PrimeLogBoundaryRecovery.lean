@@ -6,8 +6,9 @@ import Mathlib.Data.Nat.Prime.Infinite
 # Vacuum-column recovery from imaginary time
 
 Imaginary time gives a positive diagonal observation of the vacuum-to-prime
-transitions. Cutoff inversion separates amplified noise from missing spectral
-energy. The inverse loses uniform stability as the prime energies grow.
+transitions. The cutoff argument of Hong (arXiv:2611.16596, Theorem 5.2)
+separates amplified noise from missing spectral energy. The inverse loses
+uniform stability as the prime energies grow.
 -/
 
 open scoped BigOperators NNReal
