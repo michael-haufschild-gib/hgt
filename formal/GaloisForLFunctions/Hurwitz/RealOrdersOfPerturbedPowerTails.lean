@@ -33,7 +33,7 @@ theorem scaled_power_tail_bounds {p x : ℝ} (hp : 0<p) (hx : 0<x) :
     rw [tr,integral_Ioi_rpow_of_lt (by linarith only [hp]) hx,
       show -(p+1)+1 = -p by ring,neg_div_neg_eq]
   have hanti : AntitoneOn f (Ici 0) := fun a ha b _ hab =>
-    Real.rpow_le_rpow_of_nonpos (by change 0 ≤ a at ha; linarith) (add_le_add_right hab _) (by linarith)
+    Real.rpow_le_rpow_of_nonpos (by change 0 ≤ a at ha; linarith) (by linarith only [hab] : a + x ≤ b + x) (by linarith)
   have hnn : ∀ t ∈ Ici (0:ℝ), 0 ≤ f t := fun t ht => Real.rpow_nonneg (add_nonneg ht hx.le) _
   have h := HTGeometry.realMesh_antitone_Ioi_bounds hanti hnn hi (i:=1) zero_lt_one
   simp only [one_div_one,one_mul,div_one,hval,f,zero_add] at h
@@ -77,7 +77,7 @@ theorem perturbed_power_tail {a : ℕ → ℝ} {c p : ℝ} (hp : 0<p)
   refine ⟨sa,?_⟩
   let H := fun N : ℕ => (N:ℝ)^p*(∑' k : ℕ, weight p (k+N))
   have base : Tendsto H atTop (𝓝 (1/p)) := by
-    simpa only [H,Function.comp_apply,weight,Nat.cast_add,powerTail] using
+    simpa only [H,Function.comp_def,weight,Nat.cast_add,powerTail] using
       (tendsto_scaled_power_tail hp).comp (tendsto_natCast_atTop_atTop (R:=ℝ))
   have diff : Tendsto (fun N : ℕ => (N:ℝ)^p*(∑' k : ℕ, a (k+N)*weight p (k+N))-c*H N)
       atTop (𝓝 0) := by

@@ -66,7 +66,8 @@ theorem eighth_lag_moment_with_tail {p : ℝ} (hp : 0<p) :
   have hden : 0 < p+1 := by linarith only [hp]
   refine ⟨(∑' n,j p n)/(p+1),div_pos ?_ hden,?_,?_⟩
   · have first : d 0 = Real.log 2 := by
-      simp [d,D,powerGridGcdDeficit,octaveGcdProduct,
+      have h01 : Finset.Ioc 0 1 = {1} := by decide
+      simp [d,D,powerGridGcdDeficit,octaveGcdProduct,h01,
         max_eq_left (Real.log_nonneg (by norm_num : (1:ℝ) ≤ 2))]
     have hj : 0 < j p 0 := by
       dsimp only [j]; rw [first]; exact Real.rpow_pos_of_pos (Real.log_pos (by norm_num)) _

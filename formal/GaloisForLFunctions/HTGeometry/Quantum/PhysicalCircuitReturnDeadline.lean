@@ -76,29 +76,31 @@ theorem projective_operator_zero_gate_return_after {n d : ℕ}
     rw [hz]
     simpa only [Nat.cast_succ] using h
 
+/-- The exact closed circuit tube is the sublevel set of distance to the
+compact image of the allowed architectures and global phases. -/
+theorem hasProjectiveCircuitApproximation_iff_infDist (X : Reg n) (s : ℕ) (ε : ℝ) :
+    HasProjectiveCircuitApproximation n ε s X ↔ Metric.infDist X (phaseCircuitMatrixImageAtMost n s) ≤ ε := by
+  constructor
+  · rintro ⟨c,hc,C,hC,h⟩
+    have hmem : c • (C.eval : Reg n) ∈ phaseCircuitMatrixImageAtMost n s :=
+      mem_phaseCircuitMatrixImageAtMost_iff.mpr ⟨c,hc,C,hC,rfl⟩
+    exact (Metric.infDist_le_dist_of_mem hmem).trans (by simpa only [dist_eq_norm] using h)
+  · intro h
+    obtain ⟨U,hU,hd⟩ := exists_compactTarget_minDist (isCompact_phaseCircuitMatrixImageAtMost n s)
+      (phaseCircuitMatrixImageAtMost_nonempty n s) X
+    obtain ⟨c,hc,C,hC,rfl⟩ := mem_phaseCircuitMatrixImageAtMost_iff.mp hU
+    exact ⟨c,hc,C,hC,by rwa [← hd,dist_eq_norm] at h⟩
+
 private theorem closed_physical_circuit_hits {n : ℕ} (H : selfAdjoint (Reg n)) (s : ℕ) (ε : ℝ) :
     IsClosed {t | HasProjectiveCircuitApproximation n ε s (unitaryEvolution (H : Reg n) t)} := by
-  let K := phaseCircuitMatrixImageAtMost n s
-  have hK := isCompact_phaseCircuitMatrixImageAtMost n s
-  have hne := phaseCircuitMatrixImageAtMost_nonempty n s
   have hL : LipschitzWith ⟨‖(H : Reg n)‖,norm_nonneg _⟩ (unitaryEvolution (H : Reg n)) := by
     apply LipschitzWith.of_dist_le_mul
     intro u v
     change dist (unitaryEvolution (H : Reg n) u) (unitaryEvolution H v) ≤ ‖(H : Reg n)‖ * dist u v
     rw [dist_eq_norm, Real.dist_eq]
     exact norm_unitaryEvolution_time_sub_le H.2 u v
-  have heq (t : ℝ) : HasProjectiveCircuitApproximation n ε s (unitaryEvolution (H : Reg n) t) ↔
-      Metric.infDist (unitaryEvolution (H : Reg n) t) K ≤ ε := by
-    constructor
-    · rintro ⟨c,hc,C,hC,h⟩
-      have hmem : c • (C.eval : Reg n) ∈ K := mem_phaseCircuitMatrixImageAtMost_iff.mpr ⟨c,hc,C,hC,rfl⟩
-      exact (Metric.infDist_le_dist_of_mem hmem).trans (by simpa only [dist_eq_norm] using h)
-    · intro h
-      obtain ⟨U,hU,hd⟩ := exists_compactTarget_minDist hK hne (unitaryEvolution (H : Reg n) t)
-      obtain ⟨c,hc,C,hC,rfl⟩ := mem_phaseCircuitMatrixImageAtMost_iff.mp hU
-      exact ⟨c,hc,C,hC,by rwa [← hd,dist_eq_norm] at h⟩
-  simp only [heq]
-  exact isClosed_compactTargetCaptureTimeSet _ hL.continuous K ε
+  simp only [hasProjectiveCircuitApproximation_iff_infDist]
+  exact isClosed_compactTargetCaptureTimeSet _ hL.continuous _ ε
 
 /-- The first visit at or after A to the complete s-gate set at error 1/10
 is attained and has an explicit upper deadline, including for A determined
@@ -275,11 +277,10 @@ theorem zero_gate_prefix_occupation (H : selfAdjoint (Reg n)) (T : ℝ) (hT : 0 
   obtain ⟨j,rfl⟩ := e.symm.surjective i
   refine Fin.cases ?_ (fun j => ?_) j
   · refine ⟨0,?_⟩
-    simp [a]
+    norm_num [a]
   · have hb := abs_fract_sub_lt_of_boxIndex_eq (Q := 100) (by norm_num)
       (congrArg Fin.val (congrFun huv j))
     refine ⟨⌊z u j.succ⌋ - ⌊z v j.succ⌋,?_⟩
-    change |t*(E (e.symm j.succ)-E a)/(2*Real.pi) - _| < _
     rw [show t*(E (e.symm j.succ)-E a)/(2*Real.pi) = z u j.succ - z v j.succ by dsimp [z,t]; ring]
     rw [Int.cast_sub]
     have hz (s : ℝ) := Int.floor_add_fract (z s j.succ)

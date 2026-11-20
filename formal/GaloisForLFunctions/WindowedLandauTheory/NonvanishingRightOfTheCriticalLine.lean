@@ -86,7 +86,11 @@ theorem familyCesaroFunctional_extended {ι : Type*} [Fintype ι] {N₀ : ℕ} [
     (χ : (i : ι) → DirichletCharacter ℂ (N i)) (w₀ : ℝ) (w : ι → ℝ) (y : ℝ) :
     familyCesaroFunctional (extendedFamily χ₀ χ) (extendedWeight w₀ w) y =
       familyCesaroFunctional χ w y + w₀ * (charCesaroFunctional χ₀ y).re := by
-  simp only [familyCesaroFunctional, Fintype.sum_option, extendedWeight, extendedFamily]
+  have e0 : charCesaroFunctional (extendedFamily χ₀ χ none) y = charCesaroFunctional χ₀ y := rfl
+  have e1 : ∀ i, charCesaroFunctional (extendedFamily χ₀ χ (some i)) y =
+      charCesaroFunctional (χ i) y := fun i => rfl
+  rw [familyCesaroFunctional, familyCesaroFunctional, Fintype.sum_option, e0]
+  simp only [extendedWeight, e1]
   ring
 
 /-- `χ₀` admits windowed families at exponent `θ`: some family of nonprincipal characters with
@@ -166,13 +170,13 @@ theorem LFunction_ne_zero_of_primitive {θ : ℝ} (hθ : 0 ≤ θ)
     rw [map_one, DirichletCharacter.LFunction_modOne_eq] at e
     rw [e]
     exact mul_ne_zero (hζ s hs) (heuler 1 1)
-  · haveI : NeZero χ.conductor := ⟨χ.conductor_ne_zero (NeZero.ne N)⟩
+  · haveI : NeZero χ.conductor := ⟨χ.conductor_ne_zero⟩
     have hψ1 : χ.primitiveCharacter ≠ 1 := by
       intro h
       apply hχ1
       rw [← χ.changeLevel_primitiveCharacter, h, map_one]
     have e := DirichletCharacter.LFunction_changeLevel χ.conductor_dvd_level χ.primitiveCharacter
-      (Or.inl hψ1)
+      (s := s) (Or.inl hψ1)
     rw [DirichletCharacter.changeLevel_primitiveCharacter] at e
     rw [e]
     exact mul_ne_zero (hprim _ χ.primitiveCharacter χ.primitiveCharacter_isPrimitive hψ1 s hs)

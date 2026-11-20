@@ -30,14 +30,14 @@ theorem multiplicity_power_free_decomposition {p n : ℕ} (hp : 0<p) (hn : 0<n) 
   let D := multiplicityPowerFreePart p n
   have h₁ : (1:ℕ)^p ∣ n := by simp
   have hA : 0<A := Nat.le_findGreatest hn h₁
-  have hdiv : A^p ∣ n := Nat.findGreatest_spec hn h₁
+  have hdiv : A^p ∣ n := Nat.findGreatest_spec (P := fun a => a^p ∣ n) hn h₁
   have he : A^p*D=n := (Nat.mul_comm ..).trans (Nat.div_mul_cancel hdiv)
   have hD : 0<D := Nat.pos_of_ne_zero fun hz => by rw [hz,mul_zero] at he; exact hn.ne' he.symm
   refine ⟨hA,hD,he,?_⟩
   intro d hd
   by_contra! htwo
   obtain ⟨k,hk⟩ := hd
-  have hnew : (A*d)^p ∣ n := ⟨k,by rw [←he,hk,mul_pow,mul_assoc]⟩
+  have hnew : (A*d)^p ∣ n := ⟨k,by rw [←he,show D = d^p*k from hk,mul_pow,mul_assoc]⟩
   have had : 1≤A*d := Nat.mul_pos hA (by omega)
   have hbound : A*d≤n := (le_self_pow had hp.ne').trans (Nat.le_of_dvd hn hnew)
   have hmax : A*d≤A := Nat.le_findGreatest hbound hnew
@@ -108,7 +108,8 @@ theorem prime_area_equal_iff_class_charges {p W : ℕ} (hp : p.Prime) (a b : Fin
       ∀ d ∈ Finset.univ.image (fun i : Fin W => multiplicityPowerFreePart p (i.val+1)),
         powerFreeClassCharge p Finset.univ (fun i : Fin W => i.val+1) (fun i => (a i:ℤ)-(b i:ℤ)) d=0 := by
   rw [←sub_eq_zero,divisorAreaMoment,divisorAreaMoment,←Finset.sum_sub_distrib]
-  simpa only [prime_order_weight hp.pos,←mul_sub,Int.cast_sub,Int.cast_natCast,mul_comm] using
+  simp only [prime_order_weight hp.pos]
+  simpa only [←mul_sub,←sub_mul,Int.cast_sub,Int.cast_natCast,mul_comm] using
     radical_sum_zero_iff_class_charges hp Finset.univ (fun i : Fin W => i.val+1)
       (fun i _ => Nat.succ_pos _) (fun i => (a i:ℤ)-(b i:ℤ))
 

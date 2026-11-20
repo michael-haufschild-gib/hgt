@@ -18060,3 +18060,4 @@ import GaloisForLFunctions.HTGeometry.Quantum.TranslatedCircuitExcursion
 import GaloisForLFunctions.HTGeometry.Quantum.TranslatedCircuitOccupation
 import GaloisForLFunctions.HTGeometry.Quantum.PhysicalCircuitReturnDeadline
 import GaloisForLFunctions.HTGeometry.Quantum.InverseBandwidthCircuitCost
+import GaloisForLFunctions.HTGeometry.Quantum.AttainedOrbitCircuitMaximum

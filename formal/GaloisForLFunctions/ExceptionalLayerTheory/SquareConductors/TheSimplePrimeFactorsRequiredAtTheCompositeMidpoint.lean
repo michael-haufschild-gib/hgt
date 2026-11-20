@@ -37,7 +37,7 @@ private theorem log_price_bound {a : ℝ} (ha : 0 < a) {X k : ℕ} (hk : 1 ≤ k
     Real.rpow_add (Nat.cast_pos.mpr (hk.trans hX))]
   have hh := mul_le_mul (hw.trans (mul_le_mul_of_nonneg_left hx hd)) hlog
     (Real.log_natCast_nonneg k) (mul_nonneg hd (Real.rpow_nonneg (Nat.cast_nonneg X) a))
-  exact hh.trans_eq (by dsimp only [D]; ring)
+  exact hh.trans_eq (by ring)
 
 private abbrev activeTerm (n k : ℕ) : ℝ :=
   if n.Coprime k ∧ oddSmoothSupport k then unitaryLog k else 0
