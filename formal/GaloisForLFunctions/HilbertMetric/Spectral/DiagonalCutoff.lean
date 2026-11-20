@@ -27,7 +27,8 @@ theorem measure_injective (gain : ι → Set.Ioi (0 : ℝ)) :
   funext i
   have hi := congrFun h i
   have he := congrArg (fun v : E => (gain i : ℝ)⁻¹ • v) hi
-  simpa only [inv_smul_smul₀ (gain i).2.ne'] using he
+  have hpos : 0 < (gain i : ℝ) := (gain i).2
+  simpa only [inv_smul_smul₀ hpos.ne'] using he
 
 /-- The retained error depends only on measurement noise. -/
 theorem recover_sub [DecidableEq ι] (kept : Finset ι) (gain : ι → Set.Ioi (0 : ℝ))
@@ -35,7 +36,8 @@ theorem recover_sub [DecidableEq ι] (kept : Finset ι) (gain : ι → Set.Ioi (
     recover kept gain (fun j => (gain j : ℝ) • signal j + noise j) i - signal i =
       if i ∈ kept then (gain i : ℝ)⁻¹ • noise i else -signal i := by
   by_cases hi : i ∈ kept
-  · simp only [recover, if_pos hi, smul_add, inv_smul_smul₀ (gain i).2.ne', add_sub_cancel_left]
+  · have hpos : 0 < (gain i : ℝ) := (gain i).2
+    simp only [recover, if_pos hi, smul_add, inv_smul_smul₀ hpos.ne', add_sub_cancel_left]
   · simp only [recover, if_neg hi, zero_sub]
 
 /-- Exact split into amplified retained noise and discarded signal energy. -/
@@ -49,8 +51,9 @@ theorem squared_error [DecidableEq ι] (modes kept : Finset ι)
   congr 1
   · refine Finset.sum_congr rfl fun i hi => ?_
     have hki := (Finset.mem_filter.mp hi).2
+    have hpos : 0 < (gain i : ℝ) := (gain i).2
     simp only [recover_sub, if_pos hki, norm_smul, Real.norm_eq_abs,
-      abs_of_nonneg (inv_nonneg.mpr (gain i).2.le), mul_pow]
+      abs_of_nonneg (inv_nonneg.mpr hpos.le), mul_pow]
   · refine Finset.sum_congr rfl fun i hi => ?_
     have hki := (Finset.mem_filter.mp hi).2
     simp only [recover_sub, if_neg hki, norm_neg]

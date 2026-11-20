@@ -85,10 +85,9 @@ theorem gaussian_pauli_finite_mode_absolute_detuning (k : ℕ) (S : Finset (Fin 
     (Measure.pi fun _ : Fin (Fintype.card (ChainLabel (k+3))) => gaussianReal 0 1)
       {x | let E := (isHermitian_spectralEnsembleMatrix (chainPauliFin_isHermitian (k+3)) x).eigenvalues
            (∀ i, |E i| ≤ R) ∧ ∃ m ∈ S, ∃ σ : Equiv.Perm (Fin D),
-             |∑ i, (m i:ℝ)*E (σ i)|*((∑ i, |(m i:ℝ)|)*R)^(D.factorial-1) < r^D.factorial} ≤
+             |∑ i, (m i:ℝ)*E (σ i)| *((∑ i, |(m i:ℝ)|)*R)^(D.factorial-1) < r^D.factorial} ≤
       S.card * ENNReal.ofReal (2*((D.factorial:ℕ):ℝ)*r) := by
-  let D := 2^(k+3)
-  intro _
+  intro D
   refine (measure_mono (t := ⋃ m ∈ S, pauliModeNearResonance k m R r) ?_).trans
     ((gaussian_pauli_finite_mode_detuning_sublevel k S hS hr hr' R).trans_eq ?_)
   · rintro x ⟨hE,m,hm,σ,hs⟩
@@ -97,7 +96,8 @@ theorem gaussian_pauli_finite_mode_absolute_detuning (k : ℕ) (S : Finset (Fin 
     exact le_mul_of_one_le_left (pow_nonneg hr.le _) (one_le_pauliSpectralModePolynomial_lexHead k m (hS m hm).1 (hS m hm).2)
   · rw [Finset.sum_congr rfl (fun m hm => congrArg (fun d : ℕ => ENNReal.ofReal (2*(d:ℝ)*r))
         (pauliSpectralModePolynomial_totalDegree k m (hS m hm).1 (hS m hm).2))]
-    simp
+    simp [D]
+
 #print axioms gaussian_pauli_finite_mode_absolute_detuning
 
 end

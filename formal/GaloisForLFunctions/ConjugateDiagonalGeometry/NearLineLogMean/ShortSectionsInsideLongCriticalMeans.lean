@@ -129,7 +129,7 @@ theorem rectangular_log_gram_error {g : ℝ → ℝ} (hg : ContDiff ℝ ∞ g)
     calc
       _ ≤ 1 * ‖𝓕 f (freq n m)‖ := mul_le_mul_of_nonneg_right hh (norm_nonneg _)
       _ ≤ C / (T/(2*Real.pi*((H:ℝ)+1)))^k := by simpa only [one_mul] using hb
-      _ = R := by dsimp only [R, B]; rw [div_pow, div_div_eq_mul_div]; ring
+      _ = R := by dsimp only [R, B]; rw [div_pow, div_div_eq_mul_div, mul_pow (2*Real.pi) ((H:ℝ)+1) k]; ring
   have hdel (m : ℕ) (hm : m ∈ Icc 1 H) : m ∈ Icc 1 N :=
     mem_Icc.mpr ⟨(mem_Icc.mp hm).1, (mem_Icc.mp hm).2.trans hHN⟩
   have hsplit : logWindowCross g a N H T - (((∫ x, g x)*logSectionDiagonal a H : ℝ) : ℂ) =

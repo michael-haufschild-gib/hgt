@@ -4,7 +4,6 @@ import GaloisForLFunctions.goldbach.LiLiu.ArithmeticKernel
 import GaloisForLFunctions.goldbach.LiLiu.MellinWeight
 import GaloisForLFunctions.goldbach.LiLiu.Mellin.DirichletInversion
 import GaloisForLFunctions.goldbach.LiLiu.Mellin.HalfLineBeta
-import GaloisForLFunctions.goldbach.LiLiu.Mellin.ModelEvaluation
-import GaloisForLFunctions.goldbach.LiLiu.Mellin.SignedBetaMellin
+import GaloisForLFunctions.goldbach.LiLiu.Mellin.DoubleModel
 import GaloisForLFunctions.goldbach.LiLiu.RepresentationBound
 import GaloisForLFunctions.goldbach.LiLiu.Spectral.SpectralScales

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.ModeDegree
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.AbsoluteDetuning
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PersistentCircuitFloor
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPauliFirstThreshold
 import GaloisForLFunctions.HTGeometry.Quantum.PrescribedClockCircuitOccupation

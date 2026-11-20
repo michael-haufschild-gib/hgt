@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HilbertMetric.Spectral.ClippedScalar
 import GaloisForLFunctions.HilbertMetric.Spectral.CompactPermutation
+import GaloisForLFunctions.HilbertMetric.Spectral.DiagonalCutoff
+import GaloisForLFunctions.HilbertMetric.Spectral.ShellTraceCoefficients
 import GaloisForLFunctions.HilbertMetric.Geometry.TrigonometricHessianSeed
 import GaloisForLFunctions.HilbertMetric.Geometry.TrigonometricHessianSharpGap
 import GaloisForLFunctions.HilbertMetric.Observation.JointCommutantRecovery

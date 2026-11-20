@@ -21,7 +21,7 @@ theorem signedBetaGammaFactor_vertical {s : ℂ} (hs : 0 ≤ s.re) (hu : s.re < 
   have hn : (3/2-s)/2 = conj ((a : ℂ)+t*I) := by
     apply Complex.ext <;> norm_num [a,t,Complex.div_re,Complex.div_im] <;> ring
   have hd : (3/2+s)/2 = ((b : ℂ)+t*I) := by
-    apply Complex.ext <;> norm_num [b,t,Complex.div_re,Complex.div_im] <;> ring
+    apply Complex.ext <;> norm_num [b,t,Complex.div_re,Complex.div_im]
   rw [signedBetaGammaFactor, hn, hd, Gamma_conj, norm_div, RCLike.norm_conj]
   exact _root_.HTGeometry.norm_Gamma_div_le ha hab t
 
@@ -37,8 +37,8 @@ theorem signedBetaGammaFactor_strip_bound :
     intro x hx
     have hn : 0 < (3/2-x)/2 := by linarith only [hx.2]
     have hd : 0 < (3/2+x)/2 := by linarith only [hx.1]
-    exact (((realGamma_continuous hn).comp (by fun_prop)).div
-      ((realGamma_continuous hd).comp (by fun_prop)) (Real.Gamma_pos_of_pos hd).ne').continuousWithinAt
+    exact (((realGamma_continuous hn).comp (f := fun y : ℝ => (3/2-y)/2) (by fun_prop)).div
+      ((realGamma_continuous hd).comp (f := fun y : ℝ => (3/2+y)/2) (by fun_prop)) (Real.Gamma_pos_of_pos hd).ne').continuousWithinAt
   obtain ⟨B,hB⟩ := isCompact_Icc.exists_bound_of_continuousOn hF
   refine ⟨max 0 B, le_max_left .., fun s hs hs' => ?_⟩
   exact (signedBetaGammaFactor_vertical hs (by linarith only [hs'])).trans
@@ -58,12 +58,13 @@ theorem modelZeta_strip_bound {a : ℝ} (ha : 0 < a) :
       simp only [Complex.add_re, Complex.ofReal_re, Complex.mul_I_re, Complex.ofReal_im,
         neg_zero, add_zero, Complex.one_re] at hr
       linarith only [hp.1.2,hr,ha]
-    exact ((differentiableAt_riemannZeta hne).continuousAt.comp (by fun_prop)).continuousWithinAt
+    exact ((differentiableAt_riemannZeta hne).continuousAt.comp
+      (f := fun q : ℝ × ℝ => (q.1:ℂ)+q.2*I) (by fun_prop)).continuousWithinAt
   obtain ⟨D,hD⟩ := (isCompact_Icc.prod isCompact_Icc).exists_bound_of_continuousOn hc
   refine ⟨max 26 D, (by norm_num : (0:ℝ)≤26).trans (le_max_left ..), ?_⟩
   intro w hlo hhi
   let z : ℂ := 1-w
-  have hz : 3/4 ≤ z.re := by dsimp [z]; simp; linarith only [hhi]
+  have hz : 3/4 ≤ z.re := by change 3/4 ≤ (1-w).re; rw [Complex.sub_re,Complex.one_re]; linarith only [hhi]
   have hz' : z.re ≤ 1-2*a := by simpa [z] using sub_le_sub_left hlo 1
   have him : |z.im| = |w.im| := by simp [z]
   have hpow : 1 ≤ (1+|w.im|)^(1/4:ℝ) := Real.one_le_rpow (by linarith only [abs_nonneg w.im]) (by norm_num)
@@ -110,7 +111,7 @@ theorem betaModel_strip_bound {N : ℕ} (hN : 4 ≤ N) {a : ℝ} (ha : 0 < a) :
       have hS := (singularSeries_pos N).le
       gcongr <;> first | exact hp | exact he N _ hlo | exact hZ'
                        | exact hg s (ha.le.trans hs.1) hs.2 | exact hg z (ha.le.trans hz.1) hz.2
-                       | positivity
+
     _ = _ := by ring
 
 #print axioms betaModel_strip_bound

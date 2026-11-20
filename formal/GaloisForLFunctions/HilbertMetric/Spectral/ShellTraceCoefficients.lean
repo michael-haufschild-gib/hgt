@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HilbertMetric.Spectral.DiagonalCutoff
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.Algebra.Ring.GeomSum
 import Mathlib.Algebra.BigOperators.Intervals
@@ -11,7 +12,7 @@ inner radius gives positive factors in the denominator and explicit attenuation 
 -/
 
 open Filter
-open scoped Topology
+open scoped NNReal Topology
 
 namespace GaloisForLFunctions.HilbertMetric.ShellTrace
 
@@ -185,6 +186,107 @@ theorem angularGain_tendsto_zero (a : Radius) :
     (tendsto_add_atTop_nat 1)
   simpa only [Function.comp_apply, mul_zero] using hp.const_mul
     (3 / (Real.sqrt (4 * Real.pi) * (1 - (a : ℝ)) ^ 3))
+
+/-- A single unit harmonic defeats any proposed uniform inverse bound. -/
+theorem no_uniform_angular_inverse_bound (a : Radius) :
+    ¬ ∃ C : ℝ, ∀ n, 1 ≤ C * angularGain a n := by
+  rintro ⟨C, hC⟩
+  have hz : Tendsto (fun n => C * angularGain a n) atTop (𝓝 0) := by
+    simpa only [mul_zero] using (angularGain_tendsto_zero a).const_mul C
+  obtain ⟨n, hn⟩ := (hz.eventually_lt_const zero_lt_one).exists
+  exact (not_lt_of_ge (hC n)) hn
+
+/-- The radial eigenvalue datum and the angular trace data are measured together. -/
+def gain (a : Radius) : ℕ → Set.Ioi (0 : ℝ)
+  | 0 => ⟨radialGain a, by
+      change 0 < radialGain a
+      have : 0 < 1 - (a : ℝ) := sub_pos.mpr a.2.2
+      unfold radialGain
+      positivity⟩
+  | n + 1 => ⟨angularGain a n, angularGain_pos a n⟩
+
+/-- A positive common prefactor for radial and angular gains. -/
+def gainFloor (a : Radius) : ℝ :=
+  min (radialGain a) (2 / (Real.sqrt (4 * Real.pi) * (1 - (a : ℝ))))
+
+private theorem gainFloor_pos (a : Radius) : 0 < gainFloor a := by
+  have : 0 < 1 - (a : ℝ) := sub_pos.mpr a.2.2
+  exact lt_min (show 0 < (gain a 0 : ℝ) from (gain a 0).2) (by positivity)
+
+private theorem gainFloor_mul_pow_le (a : Radius) (l : ℕ) :
+    gainFloor a * (a : ℝ) ^ l ≤ (gain a l : ℝ) := by
+  cases l with
+  | zero =>
+    rw [pow_zero, mul_one]
+    change min (radialGain a) _ ≤ radialGain a
+    exact min_le_left _ _
+  | succ n =>
+    exact (mul_le_mul_of_nonneg_right (min_le_right _ _)
+      (pow_nonneg a.2.1.le _)).trans (angularGain_bounds a n).1
+
+/-- At every resolution threshold the data determine the retained modes, including
+the mean displacement from the eigenvalue. -/
+theorem modal_measure_injective {ι E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    (a : Radius) (degree : ι → ℕ) :
+    Function.Injective (fun signal : ι → E => fun i => (gain a (degree i) : ℝ) • signal i) :=
+  DiagonalCutoff.measure_injective fun i => gain a (degree i)
+
+/-- The multiplier defining the squared modal Sobolev norm. -/
+def sobolevWeight (s : ℝ≥0) (l : ℕ) : ℝ :=
+  (1 + (l : ℝ) * (l + 1 : ℝ)) ^ (s : ℝ)
+
+/-- The shell cutoff pays exponential noise amplification and an inverse Sobolev
+factor for the discarded signal. The sum permits arbitrary harmonic multiplicities. -/
+theorem cutoff_squared_error {ι E : Type*} [Fintype ι] [DecidableEq ι]
+    [NormedAddCommGroup E] [NormedSpace ℝ E] (a : Radius)
+    (degree : ι → ℕ) (L : ℕ) (s : ℝ≥0) (signal noise : ι → E) :
+    (∑ i, ‖DiagonalCutoff.recover (Finset.univ.filter fun j => degree j ≤ L)
+      (fun j => gain a (degree j))
+      (fun j => (gain a (degree j) : ℝ) • signal j + noise j) i - signal i‖ ^ 2) ≤
+      ((gainFloor a * (a : ℝ) ^ L) ^ 2)⁻¹ * (∑ i, ‖noise i‖ ^ 2) +
+      (sobolevWeight s (L + 1))⁻¹ * (∑ i, sobolevWeight s (degree i) * ‖signal i‖ ^ 2) := by
+  rw [DiagonalCutoff.squared_error]
+  simp only [Finset.mem_filter, Finset.mem_univ, true_and, not_le]
+  apply add_le_add
+  · rw [Finset.mul_sum]
+    have hc : 0 < gainFloor a * (a : ℝ) ^ L := mul_pos (gainFloor_pos a) (pow_pos a.2.1 _)
+    calc
+      _ ≤ ∑ i with degree i ≤ L, ((gainFloor a * (a : ℝ) ^ L) ^ 2)⁻¹ * ‖noise i‖ ^ 2 := by
+        refine Finset.sum_le_sum fun i hi => mul_le_mul_of_nonneg_right ?_ (sq_nonneg _)
+        have hg : 0 < (gain a (degree i) : ℝ) := (gain a (degree i)).2
+        have hle : gainFloor a * (a : ℝ) ^ L ≤ (gain a (degree i) : ℝ) :=
+          (mul_le_mul_of_nonneg_left
+            (pow_le_pow_of_le_one a.2.1.le a.2.2.le (Finset.mem_filter.mp hi).2)
+            (gainFloor_pos a).le).trans (gainFloor_mul_pow_le a _)
+        rw [inv_pow]
+        exact (inv_le_inv₀ (sq_pos_of_pos hg) (sq_pos_of_pos hc)).mpr
+          ((sq_le_sq₀ hc.le hg.le).mpr hle)
+      _ ≤ _ := Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _) (by
+        intro i _ _
+        positivity)
+  · rw [Finset.mul_sum]
+    have hw : 0 < sobolevWeight s (L + 1) := by unfold sobolevWeight; positivity
+    calc
+      _ ≤ ∑ i with L < degree i,
+          (sobolevWeight s (L + 1))⁻¹ * (sobolevWeight s (degree i) * ‖signal i‖ ^ 2) := by
+        refine Finset.sum_le_sum fun i hi => ?_
+        have hdeg : ((L + 1 : ℕ) : ℝ) ≤ (degree i : ℝ) := by
+          exact_mod_cast (Finset.mem_filter.mp hi).2
+        have hle : sobolevWeight s (L + 1) ≤ sobolevWeight s (degree i) := by
+          unfold sobolevWeight
+          refine Real.rpow_le_rpow (by positivity) (add_le_add le_rfl ?_) s.2
+          exact mul_le_mul hdeg (add_le_add hdeg le_rfl) (by positivity) (by positivity)
+        rw [inv_mul_eq_div, le_div_iff₀ hw, mul_comm (‖signal i‖ ^ 2)]
+        exact mul_le_mul_of_nonneg_right hle (sq_nonneg _)
+      _ ≤ _ := Finset.sum_le_sum_of_subset_of_nonneg (Finset.filter_subset _ _) (by
+        intro i _ _
+        unfold sobolevWeight
+        positivity)
+
+#print axioms angularGain_eq_level_gap
+#print axioms no_uniform_angular_inverse_bound
+#print axioms modal_measure_injective
+#print axioms cutoff_squared_error
 
 end
 

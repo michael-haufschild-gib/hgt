@@ -16,8 +16,10 @@ private theorem product_integral_sub (f : ℝ × ℝ → ℂ) (hm : Measurable f
   have h := (integrable_prod_iff hm.aestronglyMeasurable).mp hi
   let g (p : ℝ × ℝ) := f (p.1,p.1-p.2)
   have hg : Measurable g := hm.comp (measurable_fst.prodMk (measurable_fst.sub measurable_snd))
+  have hnorm (x : ℝ) : (∫ y : ℝ, ‖f (x,x-y)‖) = ∫ y : ℝ, ‖f (x,y)‖ :=
+    integral_sub_left_eq_self (fun y : ℝ => ‖f (x,y)‖) volume x
   have hG : Integrable g := (integrable_prod_iff hg.aestronglyMeasurable).mpr ⟨
-    h.1.mono (fun x hx => hx.comp_sub_left x), by simpa only [g,integral_sub_left_eq_self] using h.2⟩
+    h.1.mono (fun x hx => hx.comp_sub_left x), by simpa only [g,hnorm] using h.2⟩
   calc
     _ = ∫ x : ℝ, ∫ y : ℝ, f (x,y) := integral_prod _ hi
     _ = ∫ x : ℝ, ∫ v : ℝ, f (x,x-v) := integral_congr_ae (Eventually.of_forall
@@ -33,12 +35,14 @@ theorem modelTestKernel_continuous {N : ℕ} (hN : 0 < N) (φ : TestWeight) {σ 
     (hs : σ ∈ Ioo (0:ℝ) (3/2)) : Continuous (modelTestKernel N φ σ) := by
   have hc : Continuous (mellinLine σ) := by unfold mellinLine; fun_prop
   have hV := (mellinMultiplier_continuous N hN φ).comp hc
-  have hcoords := (hc.comp continuous_fst).prodMk (continuous_conj.comp (hc.comp continuous_snd))
+  have hcoords : Continuous (fun p : ℝ × ℝ => (mellinLine σ p.1,conj (mellinLine σ p.2))) :=
+    (hc.comp continuous_fst).prodMk (continuous_conj.comp (hc.comp continuous_snd))
   apply ((hV.comp continuous_fst).mul (continuous_conj.comp (hV.comp continuous_snd))).mul
   apply continuous_iff_continuousAt.mpr
   intro p
   exact (betaModel_differentiableAt hN (p := (mellinLine σ p.1,conj (mellinLine σ p.2)))
-    (by simpa [mellinLine] using hs) (by simpa [mellinLine] using hs)).continuousAt.comp hcoords.continuousAt
+    (by simpa [mellinLine] using hs) (by simpa [mellinLine] using hs)).continuousAt.comp
+      (f := fun q : ℝ × ℝ => (mellinLine σ q.1,conj (mellinLine σ q.2))) hcoords.continuousAt
 
 theorem modelTestKernel_integrable {N : ℕ} (hN : 4 ≤ N) (φ : TestWeight) {σ : ℝ}
     (hσ : 0 < σ) (ht : σ ≤ 1/8) : Integrable (modelTestKernel N φ σ) := by
@@ -50,7 +54,8 @@ theorem modelTestKernel_integrable {N : ℕ} (hN : 4 ≤ N) (φ : TestWeight) {�
   filter_upwards with p
   let s := mellinLine σ p.1
   let z := mellinLine σ p.2
-  have hk := hb s (conj z) (by simp [s,mellinLine,ht]) (by simp [z,mellinLine,ht])
+  have hab : σ ∈ Icc σ (1/8) := ⟨le_rfl,ht⟩
+  have hk := hb s (conj z) (by simpa [s,mellinLine] using hab) (by simpa [z,mellinLine] using hab)
   simp only [Complex.conj_im,abs_neg] at hk
   change ‖(_ * conj _) * betaModel N s (conj z)‖ ≤ _
   rw [norm_mul,norm_mul,RCLike.norm_conj]
@@ -75,11 +80,14 @@ theorem doubleModel_integral {N : ℕ} (hN : 4 ≤ N) (φ : TestWeight) {σ : �
   have he (x v : ℝ) : modelTestKernel N φ σ (x,x-v) =
       D v * (M (s x) * M (w v-s x) * signedBeta (s x) (w v-s x)) := by
     let z := w v - s x
-    have hZ : conj (s (x-v)) = z := by apply Complex.ext <;> simp [s,w,z,mellinLine] <;> ring
+    have hZ : conj (s (x-v)) = z := by
+      apply Complex.ext <;> simp [s,w,z,mellinLine]
+      all_goals ring
     have hsz : s x+z = w v := by dsimp [z]; ring
     have hr : (s x).re=σ := by simp [s,mellinLine]
     have hz : z.re=σ := by simp [z,hre,hr]; ring
-    have hK := scaled_betaModel hp (s := s x) (z := z) (hr ▸ hσ) (hr ▸ hhalf) (hz ▸ hσ) (hz ▸ hhalf)
+    have hK := scaled_betaModel hp (s := s x) (z := z) (by simpa only [hr] using hσ)
+      (by simpa only [hr] using hhalf) (by simpa only [hz] using hσ) (by simpa only [hz] using hhalf)
     change (mellinMultiplier N φ (s x) * conj (mellinMultiplier N φ (s (x-v)))) * _ = _
     rw [← mellinMultiplier_conj N hp φ, hZ]
     calc

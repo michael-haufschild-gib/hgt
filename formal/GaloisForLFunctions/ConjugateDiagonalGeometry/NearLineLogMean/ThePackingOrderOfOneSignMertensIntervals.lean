@@ -30,8 +30,9 @@ private theorem mertens_index_distance (i k : ℕ) :
   · rw [abs_sub_comm,abs_sub_comm (i:ℝ)]
     exact this k i (le_of_not_ge h)
   obtain ⟨r,rfl⟩ := Nat.exists_eq_add_of_le h
-  simpa only [Nat.cast_add,add_sub_cancel_left,abs_of_nonneg (Nat.cast_nonneg r)] using mertens_add_diff k r
+  simpa only [Nat.cast_add,add_sub_cancel_left,abs_of_nonneg (Nat.cast_nonneg r : (0:ℝ) ≤ r)] using mertens_add_diff k r
 
+open scoped Classical in
 /-- Full aligned blocks inside [0,N] on which the signed threshold H
 holds throughout, with either sign allowed for each block. -/
 def signedMertensBlocks (L N : ℕ) (H : ℝ) : Finset ℕ :=
@@ -167,8 +168,8 @@ theorem contiguous_mertens_counting_order {a : ℝ} (ha : 0 < a) (hθ : a < zeta
     let L := ⌈X^a⌉₊
     have hL := Nat.le_ceil (X^a)
     have hh : (C N)*L ≤ X := by
-      have hb := card_le_card (filter_subset (fun j => _) (range ((N+1)/L)))
-      change (signedMertensBlocks L N (A*X^a)).card ≤ _ at hb
+      have hb : (signedMertensBlocks L N (A*X^a)).card ≤ (range ((N+1)/L)).card :=
+        card_le_card (filter_subset _ _)
       rw [card_range] at hb
       exact_mod_cast (Nat.mul_le_mul_right L hb).trans (Nat.div_mul_le_self (N+1) L)
     have hq : (C N) ≤ X^(1-a) := by
