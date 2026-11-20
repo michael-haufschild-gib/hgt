@@ -169,7 +169,8 @@ theorem every_omitted_power_fraction_at_its_exact_cost {J : ℕ} (hJ : 2≤J) {t
   filter_upwards [eventually_gt_atTop (0:ℝ)] with x hx
   have hu := Nat.floor_mono (mul_le_of_le_one_left (Real.rpow_nonneg hx.le r) ht.2)
   have hd : n x ∣ primorial ⌊x^r⌋₊ := primorial_dvd_primorial hu
-  simp only [id_eq,clippedPrimeRadical,Nat.gcd_eq_left hd]
+  change Real.log (n x)/x^r = Real.log ((n x).gcd (primorial ⌊x^r⌋₊))/x^r
+  rw [Nat.gcd_eq_left hd]
 
 /-- Among all positive varying centers suppressing a fraction t of the
 first omitted coefficient, the least limiting logarithmic cost is t. -/

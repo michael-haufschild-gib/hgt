@@ -281,7 +281,8 @@ theorem IsCollision.small_square_sheet_moments {τ z : ℂ} {m : ℕ} (hc : IsCo
     with s hs hinj hclose hzero'
   by_cases hs0 : s = 0
   · subst s
-    simpa only [zero_pow two_ne_zero, add_zero] using And.intro hwb hbase
+    simp only [zero_pow two_ne_zero, add_zero]
+    exact ⟨hwb, hbase⟩
   have hc' := hs (by simpa using hs0)
   have hlab {w : ℂ} (hw : w ∈ ball z r) (hz : complexHeat (τ+s^2) w = 0) :
       ∃ i, w = v s i := by

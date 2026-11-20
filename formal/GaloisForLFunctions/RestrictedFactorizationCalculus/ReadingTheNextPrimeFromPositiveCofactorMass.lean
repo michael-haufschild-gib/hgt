@@ -69,7 +69,7 @@ theorem prime_interval_power_cost_above_the_abscissa {s : ℝ} (hs : _root_.RHTo
     intro q h
     obtain ⟨hi,hp⟩ := mem_filter.mp h
     exact mem_filter.mpr ⟨mem_Icc.mpr ⟨(Nat.zero_le K).trans_lt (mem_Ioc.mp hi).1,(mem_Ioc.mp hi).2⟩,hp⟩
-  have cost := (abs_sum_le_sum_abs I f).trans (sum_le_sum point)
+  have cost := (abs_sum_le_sum_abs f I).trans (sum_le_sum point)
   rw [←sum_filter,←mul_sum] at cost
   have subcost := (sum_le_sum_of_subset_of_nonneg (f:=fun q : ℕ => vonMangoldt q)
     sub (fun _ _ _ => vonMangoldt_nonneg)).trans (nonprime_cost sh hu X)
@@ -112,7 +112,7 @@ private theorem recover_reciprocal {p X : ℕ} {M E : ℝ} (hp : 0 < p) (he : 0 
   have ep2 := le_mul_of_one_le_right ep p1
   have err : |(X:ℝ)-d*p| ≤ E*p := by
     have eq : (X:ℝ)-d*p = (M-((X:ℝ)-(X:ℝ)/p))*p := by
-      dsimp only [d]; field_simp [pp.ne'] <;> ring
+      dsimp only [d]; field_simp [pp.ne']; ring
     rw [eq,abs_mul,abs_of_pos pp]
     exact mul_le_mul_of_nonneg_right reading pp.le
   have gap : 2*(E*p) < d := by

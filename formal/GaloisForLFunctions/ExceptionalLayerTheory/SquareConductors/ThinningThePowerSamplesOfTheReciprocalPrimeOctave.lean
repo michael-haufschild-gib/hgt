@@ -106,7 +106,8 @@ theorem power_sample_recovery {K H : ℕ} {S : Finset ℕ} (hS : coversPowerSamp
     · exact add_nonneg (le_max_right ..) (sub_nonneg.mpr (hV hmn)))
   apply h.trans
   apply mul_le_mul_of_nonneg_left _ (by positivity)
-  exact add_le_add_left (sub_le_self _ (sum_nonneg fun _ _ => abs_nonneg _)) _
+  have first : 0 ≤ V 1 := sum_nonneg fun _ _ => abs_nonneg _
+  exact add_le_add le_rfl (sub_le_self (V (K+1)) first)
 
 private theorem variation_log_bound (r K : ℕ) :
     octaveFineVariation (2*(K+1)^r) ≤
@@ -117,7 +118,8 @@ private theorem variation_log_bound (r K : ℕ) :
   have h := (abs_le.mp (RHTower.Mertens.mertens_first n (by omega))).2
   have he : -Real.log 2 ≤ reciprocalOctaveError n := by
     unfold reciprocalOctaveError
-    linarith only [sum_nonneg (s:=Ioc (n/2) n) (fun j _ => div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg j))]
+    linarith only [sum_nonneg (s:=Ioc (n/2) n) (f:=fun j => vonMangoldt j / (j:ℝ))
+      (fun j _ => div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg j))]
   have hp : 0≤octaveEvenMangoldtPrefix n := sum_nonneg fun j _ => div_nonneg vonMangoldt_nonneg (Nat.cast_nonneg _)
   have hl : Real.log n = Real.log 2+r*Real.log (K+1) := by
     simp only [n,Nat.cast_mul,Nat.cast_pow,Nat.cast_ofNat,Nat.cast_add,Nat.cast_one,
@@ -200,7 +202,7 @@ private theorem reciprocal_deficit_le_gcd (m r : ℕ) (hm : 0 < m) :
     max ((-1:ℝ)*reciprocalOctaveError (2*m^r)) 0 ≤
       max (Real.log 2-Real.log (octaveGcdProduct (m^r) (m^(r+1)))/(m:ℝ)^(r+1)) 0 := by
   apply max_le_max_right
-  have h := (octave_gcd_product_rounding (Nat.pow_pos hm r) (m^(r+1))).1
+  have h := (octave_gcd_product_rounding (show 0<m^r from pow_pos hm r) (m^(r+1))).1
   have hp : 0<(m:ℝ)^(r+1) := pow_pos (Nat.cast_pos.mpr hm) _
   let A := ∑ j ∈ Ioc (m^r) (2*m^r), vonMangoldt j/j
   change 0≤((m^(r+1):ℕ):ℝ)*A-Real.log (octaveGcdProduct (m^r) (m^(r+1))) at h
@@ -300,8 +302,12 @@ theorem binary_power_sample_density :
     Tendsto (fun K : ℕ => ((powerSampleStride K (Nat.log 2 K+1)).card:ℝ)/K) atTop (𝓝 0) := by
   have hlog : Tendsto (Nat.log 2) atTop atTop := tendsto_atTop.mpr fun j =>
     (eventually_ge_atTop (2^j)).mono (fun _ h => Nat.le_log_of_pow_le (by decide) h)
+  have grow : Tendsto (fun K : ℕ => (Nat.log 2 K:ℝ)+1) atTop atTop :=
+    tendsto_atTop_mono' atTop (Eventually.of_forall fun K =>
+      (le_add_of_nonneg_right zero_le_one : (Nat.log 2 K:ℝ) ≤ (Nat.log 2 K:ℝ)+1))
+      ((tendsto_natCast_atTop_atTop (R:=ℝ)).comp hlog)
   have hh : Tendsto (fun K : ℕ => ((Nat.log 2 K:ℝ)+1)⁻¹) atTop (𝓝 0) :=
-    tendsto_inv_atTop_zero.comp ((tendsto_natCast_atTop_atTop.comp hlog).atTop_add_const_right 1)
+    tendsto_inv_atTop_zero.comp grow
   have hi : Tendsto (fun K : ℕ => (K:ℝ)⁻¹) atTop (𝓝 0) := tendsto_inv_atTop_zero.comp tendsto_natCast_atTop_atTop
   have hz := hh.add hi
   rw [zero_add] at hz
@@ -311,7 +317,8 @@ theorem binary_power_sample_density :
   have hk : 0<(K:ℝ) := Nat.cast_pos.mpr hK
   have hh' : 0<(h:ℝ) := Nat.cast_pos.mpr (Nat.succ_pos _)
   have he : (((K-1)/h:ℕ):ℝ) ≤ (K:ℝ)/h :=
-    (Nat.cast_div_le (R:=ℝ)).trans (div_le_div_of_nonneg_right (Nat.cast_le.mpr (Nat.sub_le K 1)) hh'.le)
+    (Nat.cast_div_le (α:=ℝ) (m:=K-1) (n:=h)).trans
+      (div_le_div_of_nonneg_right (Nat.cast_le.mpr (Nat.sub_le K 1)) hh'.le)
   rw [powerSampleStride_card K _ (Nat.succ_pos _),Nat.cast_add,Nat.cast_one]
   change _ ≤ ((Nat.log 2 K:ℝ)+1)⁻¹+(K:ℝ)⁻¹
   rw [show ((Nat.log 2 K:ℝ)+1)=(h:ℝ) by simp [h]]

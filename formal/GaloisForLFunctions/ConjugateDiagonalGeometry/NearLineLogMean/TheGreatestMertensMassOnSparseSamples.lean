@@ -103,7 +103,7 @@ theorem sparse_mertens_mass_log_order :
     refine ⟨C,hC,fun m => csSup_le ⟨0,sample_member m⟩ ?_⟩
     rintro _ ⟨S,hm,rfl⟩
     exact (h S).trans (mul_le_mul_of_nonneg_left (Real.rpow_le_rpow (by positivity)
-      (add_le_add_right (Nat.cast_le.mpr hm) 1)
+      (add_le_add (Nat.cast_le.mpr hm) (le_refl (1 : ℝ)))
       ((by norm_num : (0:ℝ) ≤ 1/2).trans (half_le_zetaZeroAbscissa.trans hv.le))) hC)
 
 /-- Square-root growth on arbitrary samples, measured purely by
