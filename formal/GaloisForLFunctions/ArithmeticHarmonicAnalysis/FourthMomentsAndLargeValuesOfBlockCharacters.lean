@@ -211,9 +211,4 @@ theorem unitary_truncated_contrast_large_fraction (k q : ℕ) :
   by_contra he
   exact h (if_neg he)
 
-#print axioms block_low_rank_large_fraction
-#print axioms unitary_truncated_contrast_large_fraction
-#print axioms block_fourth_rank_bound
-#print axioms block_second_exact
-#print axioms block_large_value_count
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis

@@ -89,7 +89,7 @@ theorem calibrated_adjacent_norm_limit {x : ℝ} (hx : 1 < x) :
       (.of_forall fun N => (hh N).1) (.of_forall fun N => (hh N).2)
   have hm : Tendsto (fun N : ℕ => adjacentMass (N+2) (d N)) atTop (𝓝 (adjacentMassProfile x)) := by
     have h := (adjacent_mass_at_scaled_bandwidth hx.le).comp (tendsto_add_atTop_nat 2)
-    simpa only [Function.comp_apply,Nat.cast_add,Nat.cast_ofNat,d] using h
+    simpa only [Function.comp_def,Nat.cast_add,Nat.cast_ofNat,d] using h
   have hmass (N : ℕ) : (∑ j ∈ range (N+1), w N j) = adjacentMass (N+2) (d N) := by
     rw [adjacentMass,sum_Ico_eq_sum_range,show N+2-1=N+1 by omega]
     exact sum_congr rfl fun j _ => by simp only [w,add_comm 1 j]
@@ -102,7 +102,9 @@ theorem calibrated_adjacent_norm_limit {x : ℝ} (hx : 1 < x) :
   ring
 
 private theorem hasDerivAt_share {x : ℝ} (hx : x≠0) : HasDerivAt endpointShare (1/x^2) x := by
-  simpa only [endpointShare,neg_neg,one_div] using (hasDerivAt_inv hx).const_sub 1
+  unfold endpointShare
+  simpa only [zero_sub,neg_neg,one_div] using!
+    (hasDerivAt_const (x:=x) (c:=(1:ℝ))).sub (hasDerivAt_inv hx)
 
 private theorem hasDerivAt_profile {x : ℝ} (hx : x≠0) :
     HasDerivAt adjacentMassProfile ((x-1)/x^2) x := by
@@ -133,7 +135,7 @@ theorem widest_adjacent_bandwidth_is_unique_minimum {x : ℝ} (hx : 1<x) (hu : x
     calibratedAdjacentNorm 2 ≤ calibratedAdjacentNorm x ∧
     (calibratedAdjacentNorm 2 = calibratedAdjacentNorm x ↔ x=2) := by
   rcases hu.lt_or_eq with h|rfl
-  · have hh := calibrated_adjacent_norm_strictAntiOn hx (by norm_num : (2:ℝ)∈Ioi 1) h
+  · have hh := calibrated_adjacent_norm_strictAntiOn hx (by norm_num [Set.mem_Ioi] : (2:ℝ)∈Set.Ioi 1) h
     exact ⟨hh.le,⟨fun he => (hh.ne he).elim,fun he => (h.ne he).elim⟩⟩
   · simp
 
@@ -159,7 +161,7 @@ theorem adjacent_mass_profile_quadratic_bounds {x : ℝ} (hx : 1 ≤ x) :
       have hn := (zero_lt_one.trans_le hy).ne'
       have h := ((hasDerivAt_profile hn).const_mul 2).sub ((hasDerivAt_share hn).pow 2)
       convert h using 1
-      <;> first | rfl | (dsimp only [endpointShare]; field_simp [hn]; ring)
+      <;> first | rfl | (norm_num [endpointShare]; field_simp [hn] <;> ring)
     · intro y hy
       exact div_nonneg (mul_nonneg (by norm_num) (sq_nonneg _)) (pow_nonneg (zero_le_one.trans hy) _)
   · apply sub_nonneg.mp
@@ -201,14 +203,10 @@ theorem calibrated_adjacent_norm_threshold :
   have hu := (tendsto_const_nhds (x:=(4:ℝ))).add (ht.const_mul 3)
   rw [sub_zero] at hl
   rw [mul_zero,add_zero] at hu
-  apply tendsto_of_tendsto_of_tendsto_of_le_of_le' hl hu
-  · exact self_mem_nhdsWithin.mono fun x hx => (bounds x hx).1
-  · exact self_mem_nhdsWithin.mono fun x hx => (bounds x hx).2
+  have hright : ∀ᶠ x : ℝ in 𝓝[>] 1, 1 < x := self_mem_nhdsWithin
+  exact tendsto_of_tendsto_of_tendsto_of_le_of_le' hl hu
+    (hright.mono fun x hx => (bounds x hx).1) (hright.mono fun x hx => (bounds x hx).2)
 
-#print axioms calibrated_adjacent_norm_threshold
 
-#print axioms calibrated_adjacent_norm_limit
-#print axioms calibrated_adjacent_norm_strictAntiOn
-#print axioms widest_adjacent_bandwidth_is_unique_minimum
 end
 end GaloisForLFunctions.ConjugateDiagonalGeometry.LogWindowRetrieval

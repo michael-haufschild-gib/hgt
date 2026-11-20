@@ -108,10 +108,6 @@ theorem riemannHypothesis_iff_locally_constant_prime_readings (L : ℕ) :
     obtain ⟨C,hC⟩ := h t ht ht'
     exact ⟨C,fun q => hC _ (by unfold primePlateauStart; omega) (half_order_prime_plateau L q).2⟩
 
-#print axioms midpoint_bound_from_mesh
-#print axioms zero_abscissa_iff_prime_plateau_starts
-#print axioms riemannHypothesis_iff_locally_constant_prime_readings
-
 /-- The integer part of log(n−2)/(16 log 4), less two endpoint steps. -/
 def intrinsicPrimePlateauLength (n : ℕ) := midpointSieveLevel (n-2)/4-2
 
@@ -140,7 +136,7 @@ theorem shifted_primorial_prime_plateau {m : ℕ} (hm : 0 < m)
 /-- Every large integer lies at most its fourth root past the start of
 a logarithmically long flat interval. -/
 theorem nearby_logarithmic_prime_plateau {n : ℕ} (hn : 3<n) :
-    ∃ s ≤ n, 0<s ∧ s∈logarithmicPrimePlateaus ∧ (n:ℝ)-s ≤ (n:ℝ)^(1/4:ℝ) := by
+    ∃ s ≤ n, 0 < s ∧ s∈logarithmicPrimePlateaus ∧ (n:ℝ)-s ≤ (n:ℝ)^(1/4:ℝ) := by
   obtain ⟨m,hm,hmn,hdiv,hgap⟩ := nearby_primorial_midpoint (by omega : 1<n-2)
   refine ⟨m+2,by omega,by omega,shifted_primorial_prime_plateau (by omega) hdiv,?_⟩
   have hmono := Real.rpow_le_rpow (Nat.cast_nonneg (n-2)) (Nat.cast_le.mpr (Nat.sub_le n 2))
@@ -173,9 +169,5 @@ theorem zero_abscissa_iff_logarithmic_prime_plateaus {b : ℝ} (hb : 1/2 ≤ b) 
         linarith only [h3,h1]
     intro h t ht ht'
     exact midpoint_bound_from_mesh hmesh (by linarith only [hb,ht]) (by linarith only [hb,ht]) (h t ht ht')
-
-#print axioms shifted_primorial_prime_plateau
-#print axioms nearby_logarithmic_prime_plateau
-#print axioms zero_abscissa_iff_logarithmic_prime_plateaus
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

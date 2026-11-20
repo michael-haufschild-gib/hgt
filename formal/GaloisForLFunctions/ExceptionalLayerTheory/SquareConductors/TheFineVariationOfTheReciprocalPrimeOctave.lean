@@ -215,9 +215,4 @@ theorem octave_fine_variation_second_term :
   rw [octave_fine_variation_identity hN]
   ring
 
-#print axioms octave_even_mass_geometric
-#print axioms octave_fine_variation_second_term
-#print axioms octave_odd_endpoint
-#print axioms octave_even_endpoint_nonpositive
-#print axioms octave_fine_variation_identity
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

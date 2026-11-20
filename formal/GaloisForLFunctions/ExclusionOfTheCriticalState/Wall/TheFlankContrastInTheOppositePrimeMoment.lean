@@ -26,7 +26,7 @@ def middleFlankContrastPrice (k L H : ℕ) : ℝ :=
   let w := oddQuotientPrimeExcess (middleTestFlank false k L H) H
   (u^2+|u| * |v-w|)/(H:ℝ)^2
 
-private theorem contrast_nonneg (k L H : ℕ) : 0≤middleFlankContrastPrice k L H :=
+private theorem contrast_nonneg (k L H : ℕ) : 0 ≤ middleFlankContrastPrice k L H :=
   div_nonneg (add_nonneg (sq_nonneg _) (mul_nonneg (abs_nonneg _) (abs_nonneg _))) (sq_nonneg _)
 
 private theorem two_signs (u v : ℝ) :
@@ -372,11 +372,4 @@ theorem rh_or_large_middle_contrast : RiemannHypothesis ∨
   exact big.trans_le (mul_le_mul_of_nonneg_left (payment a g d (T i) (k i) L left s ha high small hs)
     (Nat.cast_nonneg L))
 
-#print axioms largest_opposite_prime_price_exact
-#print axioms prime_price_contrast_error
-#print axioms middle_tail_contrast_comparison
-#print axioms signed_prime_moment_le_middle_contrast
-#print axioms winning_opposite_test_after_row_error
-#print axioms middle_contrast_le_four_opposite_tails
-#print axioms rh_or_large_middle_contrast
 end GaloisForLFunctions.ExclusionOfTheCriticalState

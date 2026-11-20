@@ -16,7 +16,8 @@ uniformly in its starting height.
 namespace GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.PrimeTwistedMoments
 open Finset Complex MeasureTheory
 open _root_.RHTower _root_.RHTower.Sieve
-open GaloisForLFunctions.ArithmeticLorentzianGeometry MoebiusGram
+open GaloisForLFunctions.ArithmeticLorentzianGeometry (inv_abs_log_sub_le)
+open MoebiusGram
 noncomputable section
 
 private def logLoss (N : ℕ) := 1+Real.log ((N:ℝ)+1)
@@ -28,7 +29,7 @@ private theorem harmonic_le_loss (N : ℕ) : ∑ n ∈ Icc 1 N, (n:ℝ)⁻¹ ≤
   rcases Nat.eq_zero_or_pos N with rfl|hp
   · norm_num [logLoss]
   have hh := harmonic_le_one_add_log N
-  simp only [harmonic_eq_sum_Icc,Rat.cast_sum,Rat.cast_inv,Rat.cast_natCast] at hh
+  simp only [_root_.RHTower.harmonic_eq_sum_Icc,one_div] at hh
   exact hh.trans (add_le_add (le_refl 1) (Real.log_le_log (Nat.cast_pos.mpr hp)
     (le_add_of_nonneg_right zero_le_one)))
 
@@ -71,7 +72,8 @@ theorem sharp_time_transform_sq_le {A B u : ℝ} (h : A ≤ B) (hu : u ≠ 0) :
     have hh := intervalIntegral.integral_add_adjacent_intervals
       (intervalIntegrable_exp_phase u 0 A) (intervalIntegrable_exp_phase u A B)
     rw [integral_exp_phase u hu A,integral_exp_phase u hu B] at hh
-    change (_-1)/((u:ℂ)*Complex.I)+(∫ t in A..B, timePhase u t)=(_-1)/((u:ℂ)*Complex.I) at hh
+    change (timePhase u A-1)/((u:ℂ)*Complex.I)+(∫ t in A..B, timePhase u t)=
+      (timePhase u B-1)/((u:ℂ)*Complex.I) at hh
     calc _ = (timePhase u B-1)/((u:ℂ)*Complex.I)-(timePhase u A-1)/((u:ℂ)*Complex.I) := by linear_combination hh
          _ = _ := by ring
   have hfreq : ‖∫ t in A..B, timePhase u t‖ ≤ 2/|u| := by
@@ -136,8 +138,16 @@ theorem sharp_interval_moebius_variance (N : ℕ) {A B : ℝ} (hAB : A ≤ B) :
     obtain ⟨hm,hn⟩ := mem_product.mp hin
     have hm' := (mem_Icc.mp hm).1
     have hn' := (mem_Icc.mp hn).1
-    have hu : ratioFrequency q.1 q.2 ≠ 0 := sub_ne_zero.mpr (fun eq => hne
-      (Nat.cast_injective (α:=ℝ) ((Real.log_injOn_pos (Nat.cast_pos.mpr hn') (Nat.cast_pos.mpr hm') eq).symm)))
+    have hu : ratioFrequency q.1 q.2 ≠ 0 := by
+      apply sub_ne_zero.mpr
+      intro he
+      have hp : (q.1:ℝ) ∈ Set.Ioi 0 := by
+        change 0 < (q.1 : ℝ)
+        exact Nat.cast_pos.mpr hm'
+      have hq' : (q.2:ℝ) ∈ Set.Ioi 0 := by
+        change 0 < (q.2 : ℝ)
+        exact Nat.cast_pos.mpr hn'
+      exact hne (Nat.cast_injective (R:=ℝ) (Real.log_injOn_pos hp hq' he.symm))
     have h := mul_le_mul (atom_sq_le N q.1 q.2) (sharp_time_transform_sq_le hAB hu) (sq_nonneg _)
       (by positivity : 0 ≤ (logLoss N)^2*((q.1:ℝ)⁻¹*(q.2:ℝ)⁻¹))
     refine h.trans (le_trans (le_of_eq ?_) (mul_le_mul_of_nonneg_left (cross_term hm' hn' hne) hC))
@@ -147,7 +157,5 @@ theorem sharp_interval_moebius_variance (N : ℕ) {A B : ℝ} (hAB : A ≤ B) :
   rw [←mul_sum]
   exact (mul_le_mul_of_nonneg_left (cross_sum N) hC).trans_eq (by dsimp only [C,logLoss]; ring)
 
-#print axioms sharp_time_transform_sq_le
-#print axioms sharp_interval_moebius_variance
 end
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.PrimeTwistedMoments

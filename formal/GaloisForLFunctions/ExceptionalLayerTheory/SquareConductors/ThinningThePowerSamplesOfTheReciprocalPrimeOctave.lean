@@ -319,10 +319,4 @@ theorem binary_power_sample_density :
   field_simp [hh'.ne',hk.ne'] at he ⊢
   linarith only [he]
 
-#print axioms rh_iff_binary_stride_square_gcd
-#print axioms binary_power_sample_density
-#print axioms sampled_octaves_iff_full
-#print axioms sampled_gcd_iff_zero_abscissa
-#print axioms rh_iff_sampled_square_gcd
-#print axioms power_sample_recovery
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

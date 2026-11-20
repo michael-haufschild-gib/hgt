@@ -243,8 +243,4 @@ theorem cubic_fine_cut_variation_iff {q : ℝ} (hq : 1≤q) :
     rw [←Real.rpow_add xp,show a+(3*q-a)=3*q by ring] at p
     exact cap.2.trans (mul_le_mul_of_nonneg_left p hC.le)
 
-#print axioms cubic_fine_cut_variation_iff
-#print axioms fine_cut_exceeds_cubic_budget
-#print axioms fine_cut_power_at_seventeen_ninths
-#print axioms fine_cut_power_bounds
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

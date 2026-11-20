@@ -31,7 +31,7 @@ private theorem logPoly_trivial (N : ℕ) (w : ℝ) :
       apply sum_le_sum
       intro n hn
       have h₁ : (1:ℝ)≤n := by exact_mod_cast (mem_Icc.mp hn).1
-      rw [linePoint_re]
+      rw [MultiscaleMollifiedZetaField.linePoint_re]
       exact mul_le_one₀ (_root_.RHTower.norm_mobCoeff_le _) (by positivity)
         (Real.rpow_le_one_of_one_le_of_nonpos h₁ (by norm_num))
     _ ≤ _ := by simp [Nat.card_Icc]
@@ -94,7 +94,7 @@ theorem normalized_short_ratio_bound {ε : ℝ} (hε : 0<ε) :
     one_le_mul_of_one_le_of_one_le (Real.one_le_rpow hD (by positivity)) (Real.one_le_rpow hT hε.le)
   calc
     _ ≤ T*(A^2*T⁻¹+D^2*(2/(Real.pi^2*W))) := mul_le_mul_of_nonneg_left hsplit ht.le
-    _ = A^2+2/Real.pi^2 := by dsimp only [W]; field_simp [ht.ne',hd.ne',Real.pi_ne_zero]; ring
+    _ = A^2+2/Real.pi^2 := by dsimp only [W]; field_simp [ht.ne',hd.ne',Real.pi_ne_zero]
     _ ≤ b^2*D^(2*zetaZeroWidth+ε)*T^ε+(2/Real.pi^2)*(D^(2*zetaZeroWidth+ε)*T^ε) :=
       add_le_add ha (le_mul_of_one_le_right (by positivity) hfac)
     _ = _ := by ring
@@ -128,7 +128,5 @@ theorem short_ratio_bound_with_bandwidth {θ ε : ℝ} (hθ : 0<θ) (hε : 0<ε)
     _ = (K*2^r)*(T^(θ*r)*T^e) := by ring
     _ = _ := by rw [←Real.rpow_add ht,hidx,Real.rpow_add ht,Real.rpow_one]; ring
 
-#print axioms normalized_short_ratio_bound
-#print axioms short_ratio_bound_with_bandwidth
 end
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.MoebiusGram

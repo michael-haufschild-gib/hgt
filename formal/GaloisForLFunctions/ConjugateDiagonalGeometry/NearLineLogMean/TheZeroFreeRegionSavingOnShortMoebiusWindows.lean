@@ -61,7 +61,7 @@ theorem mertens_section_strip_saving {σ : ℝ} (h0 : 0 < σ) (h1 : σ < 1) :
     have hk := bound (i+1) (by omega)
     rw [Nat.cast_succ] at hk
     rw [norm_mul,head]
-    refine (mul_le_mul hk diff (norm_nonneg _) (by positivity)).trans_eq ?_
+    refine (mul_le_mul hk diff (norm_nonneg _) ((norm_nonneg _).trans hk)).trans_eq ?_
     dsimp only [E]
     simp only [Nat.cast_succ]
     change B*x*mertensSaving x*(‖s‖*x^(-σ-1)) = B*‖s‖*(x^(-σ)*mertensSaving x)
@@ -127,7 +127,7 @@ theorem mertens_gram_zero_free_region_saving :
   have hn : 0 < (N:ℝ) := Nat.cast_pos.mpr hN
   have ht := div_le_div_of_nonneg_right (bound N hN) hn.le
   have hterm : ‖mobiusMertensPartialSum N‖^2/(N:ℝ) ≤ B^2*N*(mertensSaving N)^2 :=
-    ht.trans_eq (by field_simp; ring)
+    ht.trans_eq (by field_simp)
   have row (k : ℕ) (hk : k ∈ Icc 1 (N-1)) :
       ((k:ℝ)⁻¹-((k:ℝ)+1)⁻¹)*‖mobiusMertensPartialSum k‖^2 ≤ B^2*(mertensSaving k)^2 := by
     have hk' : 0 < (k:ℝ) := Nat.cast_pos.mpr (mem_Icc.mp hk).1
@@ -136,7 +136,7 @@ theorem mertens_gram_zero_free_region_saving :
       field_simp; ring
     rw [hw]
     refine (mul_le_mul_of_nonneg_left (bound k (mem_Icc.mp hk).1) (by positivity)).trans ?_
-    calc _ = (B^2*(mertensSaving k)^2)*((k:ℝ)/((k:ℝ)+1)) := by field_simp; ring
+    calc _ = (B^2*(mertensSaving k)^2)*((k:ℝ)/((k:ℝ)+1)) := by field_simp
          _ ≤ _ := mul_le_of_le_one_right (by positivity)
            ((div_le_one hk1).mpr (le_add_of_nonneg_right zero_le_one))
   have hs := sum_le_sum row
@@ -150,7 +150,7 @@ theorem mertens_gram_zero_free_region_saving :
 window. Its exact arithmetic energy supplies the squared saving. -/
 theorem signed_moebius_window_saving :
     ∃ D : ℝ, 0 < D ∧ ∀ (N : ℕ), 1 ≤ N → ∀ (T : ℝ), 1 ≤ T →
-      (∫ t in (1:ℝ)..T, ‖moebiusPoly N (linePoint t)‖^2) ≤
+      (∫ t in (1:ℝ)..T, ‖moebiusPoly N (MultiscaleMollifiedZetaField.linePoint t)‖^2) ≤
         D*T^2*N*(mertensSaving N)^2 := by
   obtain ⟨K,hK,h⟩ := mertens_gram_zero_free_region_saving
   refine ⟨4*Real.pi*K,by positivity,fun N hN T hT => ?_⟩
@@ -164,7 +164,7 @@ divided by the length N, tends to zero uniformly in the final height. -/
 theorem signed_moebius_sublinear_on_growing_windows {a : ℝ} (ha : a < 1) :
     ∀ ε : ℝ, 0 < ε → ∀ᶠ N : ℕ in atTop, ∀ T : ℝ, 1 ≤ T →
       T ≤ Real.exp (a*(Real.log N)^((1:ℝ)/3)/108) →
-      (∫ t in (1:ℝ)..T, ‖moebiusPoly N (linePoint t)‖^2) ≤ ε*N := by
+      (∫ t in (1:ℝ)..T, ‖moebiusPoly N (MultiscaleMollifiedZetaField.linePoint t)‖^2) ≤ ε*N := by
   obtain ⟨D,hD,h⟩ := signed_moebius_window_saving
   let u := fun N : ℕ => (Real.log N)^((1:ℝ)/3)/108
   have hu : Tendsto u atTop atTop := (Filter.Tendsto.atTop_div_const (by norm_num : (0:ℝ)<108)

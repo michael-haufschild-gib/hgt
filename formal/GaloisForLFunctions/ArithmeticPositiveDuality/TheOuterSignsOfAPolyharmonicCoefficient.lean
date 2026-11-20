@@ -33,7 +33,7 @@ theorem bounded_coefficient_zero_jet {u : ℝ → ℝ} {N : ℕ} (hN : 0<N)
     apply HasDerivAt.fun_sum
     intro j hj
     have h := (hu.differentiable_iteratedDeriv j (Nat.cast_lt.mpr (mem_range.mp hj)) x).hasDerivAt
-    simpa only [Y,iteratedDeriv_succ (n:=j),Nat.cast_ofNat,show 2-1=1 by decide,pow_one] using h.pow 2
+    simpa only [Y,iteratedDeriv_succ (n:=j),Nat.cast_ofNat,show 2-1=1 by decide,pow_one] using! h.fun_pow 2
   have hc' : E c=0 := sum_eq_zero fun j hj => by
     rw [show Y j c=0 from hc j (mem_range.mp hj),zero_pow (by decide : 2≠0)]
   have bound (a b : ℝ) (hab : a≤b) : ∃ K : ℝ, ∀ x ∈ Icc a b, |V x|≤K*E x := by
@@ -106,9 +106,6 @@ theorem nonlinear_polynomial_positive_on_each_interval {P : ℝ[X]} {u : ℝ →
   obtain ⟨y,hy⟩ := hne
   exact hy (heq y)
 
-#print axioms bounded_coefficient_zero_jet
-#print axioms nonlinear_polynomial_positive_on_each_interval
-
 /-- A nonzero solution has finitely many zeros on every compact set.
 Rolle propagation only uses the N derivatives in the equation. -/
 theorem nonlinear_polynomial_finite_zeros {P : ℝ[X]} {u : ℝ → ℝ} {N : ℕ}
@@ -156,9 +153,6 @@ theorem second_order_nonlinear_profile_positive {P : ℝ[X]} {u : ℝ → ℝ} {
   rcases (show j=0 ∨ j=1 by omega) with rfl | rfl
   · simpa only [iteratedDeriv_zero] using hx
   · simpa only [iteratedDeriv_one] using hmin.deriv_eq_zero
-
-#print axioms nonlinear_polynomial_finite_zeros
-#print axioms second_order_nonlinear_profile_positive
 
 /-- From any positive reading, an even derivative has a positive reading
 on both sides. On the right the orientation reverses at each successive
@@ -298,10 +292,5 @@ theorem realized_superlinear_degrees_are_even {m : ℕ} (hm : 0 < m) {p : ℝ} (
     {d : ℕ} (hd : d ∈ polyharmonicCoefficientDegrees m p) : Even d := by
   obtain ⟨P,u,hP,rfl,hu,hb,hpos,hne,he⟩ := hd
   exact (superlinear_coefficient_has_even_degree hP hm hp hu hb hpos hne he).2
-
-#print axioms exterior_derivative_readings
-#print axioms polynomial_wrong_outer_sign_forces_dead_tail
-#print axioms superlinear_coefficient_has_even_degree
-#print axioms realized_superlinear_degrees_are_even
 
 end GaloisForLFunctions.ArithmeticPositiveDuality

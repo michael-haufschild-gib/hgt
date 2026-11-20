@@ -173,6 +173,4 @@ theorem eventually_all_odd_quotient_intervals {ε : ℝ} (hε : 0<ε) :
   rw [←odd_quotient_interval_clip H x y]
   exact h _ _ (min_le_right ..)
 
-#print axioms eventually_all_odd_quotient_intervals
-#print axioms odd_quotient_tail_variation_bound
 end GaloisForLFunctions.ExclusionOfTheCriticalState

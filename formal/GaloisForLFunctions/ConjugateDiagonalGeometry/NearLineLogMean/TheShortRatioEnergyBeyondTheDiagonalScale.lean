@@ -13,6 +13,7 @@ uniformly through and beyond the scale where neighboring windows overlap.
 
 namespace GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.MoebiusGram
 open Finset Complex Filter MeasureTheory
+open scoped ComplexConjugate
 open _root_.RHTower
 open GaloisForLFunctions.ConjugateDiagonalGeometry.LogWindowRetrieval
 noncomputable section
@@ -73,11 +74,13 @@ private theorem gram_neighbor_bound (a : ℕ → ℂ) (h : ∀ n : ℕ, 1 ≤ n 
     _ = ‖a n‖*‖a m‖ := by rw [norm_mul,Complex.norm_conj]
     _ ≤ (1/Real.sqrt n)*(1/Real.sqrt m) :=
       mul_le_mul (h n (Nat.succ_pos _)) (h m hp) (norm_nonneg _) (by positivity)
-    _ ≤ _ := by
+    _ ≤ 2 / (n : ℝ) := by
       rw [div_mul_div_comm,one_mul,div_le_div_iff₀ (mul_pos (Real.sqrt_pos.mpr hn)
         (Real.sqrt_pos.mpr hm')) hn,one_mul]
-      have hh := mul_le_mul_of_nonneg_left hcomp (Real.sqrt_nonneg n)
-      nlinarith only [hh,Real.sq_sqrt hn.le]
+      calc (n : ℝ) = Real.sqrt n * Real.sqrt n := (Real.mul_self_sqrt hn.le).symm
+           _ ≤ Real.sqrt n * (2 * Real.sqrt m) :=
+             mul_le_mul_of_nonneg_left hcomp (Real.sqrt_nonneg n)
+           _ = 2 * (Real.sqrt n * Real.sqrt m) := by ring
 
 /-- The off-diagonal error of a single added coefficient is quadratic in
 bandwidth, regardless of how long the section already is. -/
@@ -98,7 +101,8 @@ theorem row_diagonal_error (a : ℕ → ℂ) (h : ∀ n : ℕ, 1 ≤ n → ‖a 
     have hright := (mem_Icc.mp hM).2.trans (Nat.le_succ N)
     have hg : 0 ≤ gap N m := sub_nonneg.mpr
       (Real.log_le_log (Nat.cast_pos.mpr hleft) (Nat.cast_le.mpr hright))
-    rw [f,abs_mul,max_eq_left (sub_nonneg.mpr hcut.le),abs_of_nonneg (sub_nonneg.mpr hcut.le)]
+    dsimp only [f]
+    rw [abs_mul,max_eq_left (sub_nonneg.mpr hcut.le),abs_of_nonneg (sub_nonneg.mpr hcut.le)]
     exact mul_le_mul (gram_neighbor_bound a h ht hm) (sub_le_self _ hg) (sub_nonneg.mpr hcut.le) (by positivity)
   have hh : |∑ m ∈ neighbors N δ, f m| ≤ 2*δ^2 := by
     calc
@@ -106,7 +110,7 @@ theorem row_diagonal_error (a : ℕ → ℂ) (h : ∀ n : ℕ, 1 ≤ n → ‖a 
       _ ≤ ∑ _m ∈ neighbors N δ, (2/(n : ℝ))*δ := sum_le_sum fun _ hm => hf hm
       _ = ((neighbors N δ).card : ℝ)*((2/(n : ℝ))*δ) := by simp
       _ ≤ ((n : ℝ)*δ)*((2/(n : ℝ))*δ) := mul_le_mul_of_nonneg_right (neighbor_count hd) (by positivity)
-      _ = _ := by field_simp [hn.ne']; ring
+      _ = _ := by field_simp [hn.ne']
   rw [row_spectrum,max_eq_left hd,add_sub_cancel_left]
   change |2*(∑ m ∈ Icc 1 N, f m)| ≤ _
   rw [←he,abs_mul,abs_of_nonneg (by norm_num : (0 : ℝ)≤2)]
@@ -120,7 +124,7 @@ theorem normalized_energy_diagonal_error (N : ℕ) {T : ℝ} (hT : 2 ≤ T) :
   have ha (n : ℕ) (hn : 1 ≤ n) : ‖a n‖ ≤ 1/Real.sqrt n := by
     have hμ : |mobiusRealCoefficient n| ≤ 1 := by
       unfold mobiusRealCoefficient
-      exact_mod_cast ArithmeticFunction.abs_moebius_le_one n
+      exact_mod_cast ArithmeticFunction.abs_moebius_le_one
     simpa only [a,Complex.norm_real,Real.norm_eq_abs,coeff,abs_div,abs_of_nonneg (Real.sqrt_nonneg n)] using
       (div_le_div_of_nonneg_right hμ (Real.sqrt_nonneg n))
   have ht : 0 < T := by linarith
@@ -145,9 +149,7 @@ theorem normalized_energy_diagonal_error (N : ℕ) {T : ℝ} (hT : 2 ≤ T) :
       T*(bandEnergy N T⁻¹-T⁻¹*∑ n ∈ Icc 1 N, mobiusRealCoefficient n^2/n) := by
     rw [mul_sub,←mul_assoc,mul_inv_cancel₀ ht.ne',one_mul]
   rw [he,abs_mul,abs_of_pos ht]
-  exact (mul_le_mul_of_nonneg_left (hs N) ht.le).trans_eq (by field_simp [ht.ne']; ring)
+  exact (mul_le_mul_of_nonneg_left (hs N) ht.le).trans_eq (by field_simp [ht.ne'])
 
-#print axioms row_diagonal_error
-#print axioms normalized_energy_diagonal_error
 end
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.MoebiusGram

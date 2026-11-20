@@ -50,7 +50,6 @@ theorem floorExcessTail_energy (c : ℕ →₀ ℤ) (m B M : ℕ) :
     ne_eq, OfNat.ofNat_ne_zero, not_false_eq_true, zero_pow, mul_zero, zero_div, add_zero] at H
   exact H
 
-#print axioms floorExcessTail_energy
 
 /-- For an admissible row the squared remaining excesses are paid for by
 the peak times the excess already accumulated through the terminal index. -/
@@ -178,11 +177,6 @@ theorem producer_infinite_energy_and_increments {c : ℕ →₀ ℤ} {m B : ℕ}
   apply le_trans _ (producer_tail_energy_and_increments hP M)
   exact sum_le_sum_of_subset_of_nonneg (range_mono hm) fun i _ _ => by positivity
 
-#print axioms floor_tail_capacity_identity
-#print axioms producer_tail_energy_and_increments
-#print axioms producer_infinite_energy_and_increments
-#print axioms producer_floorExcessTail_budget
-#print axioms producer_infinite_tail_budget
 
 end
 end GaloisForLFunctions.ArithmeticAuxiliaryDynamics.FloorSpectrum

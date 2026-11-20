@@ -62,7 +62,5 @@ theorem weightedXiJensen_splits (w : List ℕ) (d : Fin 31930) :
   rw [splits_iff_card_roots]
   omega
 
-#print axioms jensenNonrealCount_eq_zero_through_31929
-#print axioms weightedXiJensen_splits
 
 end GaloisForLFunctions.VerifiedHeightRungs

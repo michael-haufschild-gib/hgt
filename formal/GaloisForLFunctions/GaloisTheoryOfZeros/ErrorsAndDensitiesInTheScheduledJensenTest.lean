@@ -96,7 +96,4 @@ theorem rh_iff_approximate_height_defects_tend_to_zero (F : ℕ → ℝ)
     rw [hv] at hsmall
     linarith only [hbad,(abs_lt.mp hsmall).2,le_max_right (0:ℝ) (-(F d)),hgood]
 
-#print axioms not_rh_iff_positive_lower_density_reversals
-#print axioms rh_iff_arbitrarily_small_reversal_rates
-#print axioms rh_iff_approximate_height_defects_tend_to_zero
 end GaloisForLFunctions.GaloisTheoryOfZeros

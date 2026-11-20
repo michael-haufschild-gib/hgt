@@ -73,9 +73,6 @@ theorem weightedReceiver_hardy_bound (h : CompactPulse) (s : ℝ) {a b : ℝ} (h
       mul_nonneg (Real.exp_pos _).le (sq_nonneg _)
   linarith only [weightedReceiver_hardy_identity h s a b, hn]
 
-#print axioms weightedReceiver_hardy_identity
-#print axioms weightedReceiver_hardy_bound
-
 /-- Two receiver samples distinguish the field from its derivative. Thus,
 after each starting time, one finite window makes the Hardy bound strict
 simultaneously for every real exponential weight and every later endpoint. -/
@@ -111,7 +108,5 @@ theorem receiver_hardy_strict_after (h : CompactPulse) (hh : ∃ x : ℝ, h x �
     ⟨(t i : ℝ),⟨(t i).2.le,hiB.trans hb⟩,
       mul_pos (Real.exp_pos _) (sq_pos_of_pos (norm_pos_iff.mpr hi))⟩
   linarith only [weightedReceiver_hardy_identity h s a b,hp]
-
-#print axioms receiver_hardy_strict_after
 
 end GaloisForLFunctions.BlackHoleRingdown

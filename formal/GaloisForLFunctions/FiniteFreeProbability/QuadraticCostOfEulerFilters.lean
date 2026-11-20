@@ -132,8 +132,6 @@ theorem normalizedEulerWord_splits (w : List ℕ) (p : ℝ[X]) :
   apply (Polynomial.Splits.C _).mul
   exact hs.comp_of_natDegree_le_one ((natDegree_C_mul_le _ _).trans natDegree_X.le)
 
-#print axioms normalizedEulerWord_error
-#print axioms normalizedEulerWord_splits
 
 end
 

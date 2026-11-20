@@ -54,7 +54,11 @@ private theorem price_on_cofactor {p a n : ℕ} (hp : p.Prime) (ha : 0<a)
       Nat.factorization_eq_zero_of_not_dvd divides,add_zero]
   have cof := Nat.ordCompl_pow_mul_of_not_dvd a hp divides
   have pair := unitary_midpoint_sum_of_factor_signs prime (cof.symm ▸ more)
-  simp only [cof,fac] at pair
+  change unitaryHalfWeight (p^a*n)=∑ d ∈
+    (nearDiagonalUnitaryFactors (p^(p^a*n).factorization p) (ordCompl[p] (p^a*n))).filter
+      (fun d => d<ordCompl[p] (p^a*n)/d),
+      ((-1:ℤ)^d.primeFactors.card+(-1:ℤ)^(ordCompl[p] (p^a*n)/d).primeFactors.card) at pair
+  rw [cof,fac] at pair
   rw [if_pos ⟨more,divides⟩,pair,Int.cast_sum,mul_sum,ordered_strip_set pos,sum_filter]
   refine sum_congr rfl fun d hd => ?_
   have mult := Nat.mul_div_cancel' (Nat.dvd_of_mem_divisors hd)

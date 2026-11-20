@@ -157,7 +157,7 @@ theorem rightZeros_ge_iff_distinct_probe_energy (r P : ℕ) :
   · intro h
     let ε : ℝ := ((r:ℝ)+1)⁻¹
     have hε : 0 < ε := inv_pos.mpr (by positivity)
-    have hε₁ : ε ≤ 1 := inv_le_one_of_one_le₀ (by dsimp [ε]; linarith only [Nat.cast_nonneg (R := ℝ) r])
+    have hε₁ : ε ≤ 1 := inv_le_one_of_one_le₀ (by dsimp [ε]; linarith only [Nat.cast_nonneg (α := ℝ) r])
     obtain ⟨N,a,hN,hs,hgt,hdis,hd,hrow⟩ :=
       (disjoint_signedPrimeProbes_gershgorin_iff_rightZeros_ge (r+1) P hε hε₁).1.mp h
     refine ⟨N,a,hN,hs,hgt,hdis,hd,?_⟩
@@ -175,7 +175,7 @@ theorem rightZeros_ge_iff_distinct_probe_energy (r P : ℕ) :
     simp only [sum_const,card_univ,Fintype.card_fin,nsmul_eq_mul,Nat.cast_add_one] at ht
     change distinctProbeEnergy a ≤ ((r:ℝ)+1)*((r:ℝ)+1)⁻¹ at ht
     rw [mul_inv_cancel₀ (by positivity)] at ht
-    linarith only [mul_le_mul_of_nonneg_left ht (Nat.cast_nonneg (R := ℝ) r)]
+    linarith only [mul_le_mul_of_nonneg_left ht (Nat.cast_nonneg (α := ℝ) r)]
   · rintro ⟨N,a,_,_,_,_,hd,he⟩
     by_contra! hn
     have hc : (rightZeros zetaZeroConfig).encard ≤ r := Order.le_of_lt_succ hn
@@ -183,10 +183,6 @@ theorem rightZeros_ge_iff_distinct_probe_energy (r P : ℕ) :
     push_cast at h
     linarith only [h,he]
 
-#print axioms probe_negative_index_energy
-#print axioms finite_right_support_forces_probe_energy
-#print axioms exists_correlated_pair_of_finite_right_support
-#print axioms rightZeros_ge_iff_distinct_probe_energy
 
 end
 

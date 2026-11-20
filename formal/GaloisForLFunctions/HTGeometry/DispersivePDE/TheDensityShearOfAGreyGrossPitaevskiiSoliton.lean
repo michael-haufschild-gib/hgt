@@ -97,7 +97,7 @@ private theorem profile_variation (u v : ℝ) : |solitonQ u-solitonQ v|≤2*|u-v
   have bound (x : ℝ) : ‖deriv solitonQ x‖≤2 := by
     rw [(hasDerivAt_solitonQ x).deriv,Real.norm_eq_abs,solitonQ1,abs_mul,abs_mul]
     have h₁ : |solitonT x|≤1 := (Real.abs_tanh_lt_one x).le
-    have h₂ : 0≤solitonQ x := by rw [solitonQ_eq_inv_cosh_sq]; positivity
+    have h₂ : 0 ≤ solitonQ x := by rw [solitonQ_eq_inv_cosh_sq]; positivity
     have h₃ : solitonQ x≤1 := sub_le_self _ (sq_nonneg _)
     rw [abs_of_nonneg h₂]
     norm_num
@@ -170,9 +170,4 @@ theorem grey_fifth_power_observation (θ u : ℝ) (ha : Real.sin θ≠0) :
   change a^2*(solitonT (a*(1-s)^2*t))^2=_
   rw [phase]
 
-#print axioms grey_density_is_kdv_pulse
-#print axioms grey_gross_pitaevskii_equation
-#print axioms grey_current_density
-#print axioms grey_kdv_density_error
-#print axioms grey_fifth_power_observation
 end GaloisForLFunctions.HTGeometry.DispersivePDE

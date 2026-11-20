@@ -181,9 +181,6 @@ theorem riemannHypothesis_iff_sparseRadiationDifferences :
       exact (tailEnergy_anti h hT).trans (le_mul_of_one_le_right (tailEnergy_nonneg _ _)
         (Real.one_le_exp (mul_nonneg (neg_nonneg.mpr (le_of_not_gt hb)) hT)))
 
-#print axioms tail_le_twice_sparseDifference
-#print axioms sparse_difference_decay_iff_tail_decay
-#print axioms riemannHypothesis_iff_sparseRadiationDifferences
 
 end
 

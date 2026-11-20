@@ -89,11 +89,8 @@ theorem energy_log_asymptotic_beyond_resolution (T : ℕ → ℝ) (ht : ∀ᶠ n
       (T n*bandEnergy n (T n)⁻¹-squarefreeDensity*Real.log n)/Real.log n by
     rw [sub_div,mul_div_cancel_right₀ _ hp.ne'],abs_div,abs_of_pos hp]
   refine (div_le_div_of_nonneg_right hab hp.le).trans_eq ?_
+  dsimp only [Function.comp_apply]
   ring
 
-#print axioms resolved_prefix_finite_part_envelope
-#print axioms resolved_energy_finite_part
-#print axioms energy_finite_part_with_overlap
-#print axioms energy_log_asymptotic_beyond_resolution
 end
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.MoebiusGram

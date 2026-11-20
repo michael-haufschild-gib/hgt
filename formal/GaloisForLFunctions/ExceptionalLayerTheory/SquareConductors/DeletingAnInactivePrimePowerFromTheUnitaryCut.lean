@@ -109,12 +109,14 @@ theorem unitary_independent_cut_after_deletion {k p : ℕ} (hp : p∈k.primeFact
   rw [erase_insert fresh] at b
   have forget := unitary_pattern_mass_erase P (insert p S) p u
   rw [erase_insert fresh] at forget
-  dsimp only [f]
+  dsimp only [f,n]
   simp only [a,b]
-  by_cases hit : S∈smallUnitarySubsets n
+  by_cases hit : S∈smallUnitarySubsets (ordCompl[p] k)
   · simp only [hit,if_true]
     rw [unitary_pattern_mass_at_site hp u S,unitary_pattern_mass_at_site hp u (insert p S),
       if_neg fresh,if_pos (mem_insert_self ..),←forget]
+    change (1-u p)*unitaryBlockPatternMass B u S+u p*unitaryBlockPatternMass B u S=
+      unitaryBlockPatternMass B u S
     ring
   · simp only [hit,if_false,add_zero]
 
@@ -143,8 +145,4 @@ theorem unitary_probability_deletion_iff {k p : ℕ} (hp : p∈k.primeFactors) :
       zero_lt_one).mp probe
   · exact fun empty u => unitary_independent_cut_after_deletion hp empty u
 
-#print axioms unitary_independent_cut_after_deletion
-#print axioms unitary_probability_deletion_iff
-#print axioms unitary_pivot_free_iff_arithmetic_deletion
-#print axioms unitary_single_probe_detects_deletion
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

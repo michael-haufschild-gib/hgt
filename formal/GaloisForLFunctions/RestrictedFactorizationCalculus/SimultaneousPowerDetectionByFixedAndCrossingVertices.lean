@@ -14,7 +14,7 @@ bounded crossing charge. Three choices suffice at every exponent together.
 noncomputable section
 open Filter Finset ArithmeticFunction RHTower.CoprimeMobius
 open scoped Classical ArithmeticFunction.Moebius
-open GaloisForLFunctions.QuantitativeFactorizationMatching
+open GaloisForLFunctions.QuantitativeFactorizationMatching GaloisForLFunctions.BezoutValuationIncidence
 namespace GaloisForLFunctions.RestrictedFactorizationCalculus
 
 private abbrev Prefix := ℕ → ℝ
@@ -139,7 +139,9 @@ private theorem marked_move {n Q d e : ℕ} (sq : Squarefree n) (hit : n.gcd Q=d
   have sc := sq.squarefree_of_dvd (Nat.div_dvd_of_dvd dn)
   refine ⟨(Nat.Coprime.gcd_mul_left_cancel e cQ).trans (Nat.gcd_eq_left ed),?_,?_,?_⟩
   · rw [Nat.mul_div_cancel _ cp]; exact ce
-  · exact ce ▸ cofactor_edge edge sc (Nat.Coprime.coprime_dvd_right dq cQ) (Nat.Coprime.coprime_dvd_right ed cQ)
+  · have rel : GlobalDyadicOneTwoRel (c*d) (c*e) :=
+      cofactor_edge edge sc (Nat.Coprime.coprime_dvd_right dq cQ) (Nat.Coprime.coprime_dvd_right ed cQ)
+    rwa [ce] at rel
   · change |((c*e:ℕ):ℝ)-n| ≤ h*n
     conv_lhs => rw [←ce,Nat.cast_mul,Nat.cast_mul,←mul_sub,abs_mul,abs_of_nonneg (Nat.cast_nonneg _)]
     exact (mul_le_mul_of_nonneg_left short (Nat.cast_nonneg (α := ℝ) c)).trans_eq (by rw [←ce,Nat.cast_mul]; ring)
@@ -171,7 +173,7 @@ private theorem mark_law {F : ℕ → ℕ} {Q d e : ℕ} {h : ℝ} (different : 
     have same := back.symm.trans (old _ sq' hit)
     simpa only [←same] using hit)
   simp only [mark,if_neg d1,if_neg e1,if_neg (not_or.mp kept).1,if_neg (not_or.mp kept).2,back,true_and]
-  exact ⟨rel,near,iff_and_self.mpr (fun _ => outside)⟩
+  exact ⟨rel,near,⟨fun fixed => ⟨fixed,outside⟩,And.left⟩⟩
 
 private theorem marked_prefix {F : ℕ → ℕ} {Q d e : ℕ} (ne : d ≠ e) (md : d ∈ Q.divisors) (me : e ∈ Q.divisors)
     (signD : μ d=1) (signE : μ e= -1)
@@ -241,7 +243,7 @@ theorem simultaneous_mertens_powers_on_fixed_and_crossing_vertices {ε : ℝ} (e
   let B := P+5*(e.p+e.w)+5
   let Q := primorial B
   have sqQ : Squarefree Q := squarefree_primorial B
-  have extends : P ∣ Q := RHTower.Sieve.dvd_primorial_of_squarefree sqP (by dsimp only [B]; omega)
+  have period_dvd : P ∣ Q := RHTower.Sieve.dvd_primorial_of_squarefree sqP (by dsimp only [B]; omega)
   have bigCoprime {v : ℕ} (prime : v.Prime) (high : P+5<v) : v.Coprime P :=
     prime.coprime_iff_not_dvd.mpr (fun dvd => by have := Nat.le_of_dvd (Nat.pos_of_ne_zero sqP.ne_zero) dvd; omega)
   have cp := bigCoprime e.prime_p pHigh
@@ -276,12 +278,13 @@ theorem simultaneous_mertens_powers_on_fixed_and_crossing_vertices {ε : ℝ} (e
       Nat.mem_divisors.mpr ⟨RHTower.Sieve.dvd_primorial_of_squarefree sw (by dsimp only [w,B]; omega),sqQ.ne_zero⟩⟩
   have old (i : Fin 3) (n : ℕ) (_ : Squarefree n) (hit : n.gcd Q=d i ∨ n.gcd Q=w i) : F n=n := by
     rcases hit with hit | hit
-    · exact short_map_fixes_small_gcd sqP extends (tag_prime i).pos (tag_le_five i) cp hit scale hp.le (min_le_right ..) (fun x sx => (law x sx).2.2)
-    · exact short_map_fixes_small_gcd sqP extends (tag_prime i).pos (tag_le_five i) cw hit scale hp.le (min_le_right ..) (fun x sx => (law x sx).2.2)
+    · exact short_map_fixes_small_gcd sqP period_dvd (tag_prime i).pos (tag_le_five i) cp hit scale hp.le (min_le_right ..) (fun x sx => (law x sx).2.2)
+    · exact short_map_fixes_small_gcd sqP period_dvd (tag_prime i).pos (tag_le_five i) cw hit scale hp.le (min_le_right ..) (fun x sx => (law x sx).2.2)
   have times {x z : ℕ} (i : Fin 3) (near : |(z:ℝ)-x| ≤ (x:ℝ)/J) :
       |((tag i*z:ℕ):ℝ)-((tag i*x:ℕ):ℝ)| ≤ h*((tag i*x:ℕ):ℝ) := by
     have fit := mul_le_mul_of_nonneg_right pay (Nat.cast_nonneg (α := ℝ) x)
-    have price := near.trans (by simpa only [one_div,div_eq_mul_inv,mul_comm (J:ℝ)⁻¹] using fit)
+    have price : |(z:ℝ)-x| ≤ h*x := near.trans (by
+      rwa [one_div, mul_comm (J:ℝ)⁻¹, ←div_eq_mul_inv] at fit)
     rw [Nat.cast_mul,Nat.cast_mul,←mul_sub,abs_mul,abs_of_nonneg (Nat.cast_nonneg (tag i))]
     exact (mul_le_mul_of_nonneg_left price (Nat.cast_nonneg (tag i))).trans_eq (by ring)
   have refined (i : Fin 3) (n : ℕ) (sq : Squarefree n) :

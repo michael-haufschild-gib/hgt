@@ -117,7 +117,5 @@ theorem floor_window_holder {c : ℕ →₀ ℤ} {m B K : ℕ} (hP : IsProducer 
   field_simp
   <;> ring
 
-#print axioms floor_window_modulus
-#print axioms floor_window_holder
 
 end GaloisForLFunctions.ArithmeticAuxiliaryDynamics.FloorSpectrum

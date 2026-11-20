@@ -227,10 +227,5 @@ theorem zero_abscissa_iff_eventual_absence_of_mertens_blocks {b : ℝ} (hb : 0 �
     obtain ⟨N,hN,hE⟩ := (hpop.and (h a ha)).exists
     simpa only [one_mul,hE,card_empty,Nat.cast_zero,Real.rpow_zero,not_lt_of_ge zero_le_one] using hN
 
-#print axioms supercritical_mertens_blocks_empty
-#print axioms zero_abscissa_iff_eventual_absence_of_mertens_blocks
 
-#print axioms mertens_excursion_block_count
-#print axioms many_contiguous_mertens_excursions
-#print axioms contiguous_mertens_counting_order
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean

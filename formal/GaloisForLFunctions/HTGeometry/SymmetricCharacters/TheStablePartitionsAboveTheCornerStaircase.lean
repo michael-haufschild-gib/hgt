@@ -180,8 +180,5 @@ theorem stableCornerShell_card {k d : ℕ} (hd : d ≤ k) :
   rw [Nat.card_congr ((stableCornerShellEquiv hd).symm.trans (cornerBipartitionsBySize d))]
   simp only [Nat.card_eq_fintype_card,Fintype.card_sigma,Fintype.card_prod]
 
-#print axioms stableCornerShellEquiv
-#print axioms stableCornerShellChange
-#print axioms stableCornerShell_card
 end
 end GaloisForLFunctions.StaircasePacking

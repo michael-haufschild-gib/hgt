@@ -141,11 +141,5 @@ theorem primitive_shear_root_count_fourier (M : ℕ+) (j : (ZMod (M:ℕ))ˣ) :
   simpa only [Int.cast_zero,zero_sub,zeroTwist,cop.gcd_eq_one,Nat.divisors_one,
     sum_singleton,Nat.cast_one,one_mul,Nat.div_one] using h
 
-#print axioms primitive_shear_root_count_fourier
-#print axioms annihilator_fourier_count
-#print axioms fixedGapQuadraticTransform_linear_fibres
-#print axioms fixedGapQuadraticTransform_unit
-#print axioms arithmetic_quadratic_root_sum_fourier
-#print axioms arithmetic_quadratic_root_fourier_divisors
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis

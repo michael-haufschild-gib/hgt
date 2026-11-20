@@ -30,13 +30,14 @@ private theorem gram_le_prefix_envelope (N : ℕ) :
   have terminal : shiftedMertensReal N^2/(N:ℝ) =
       (N:ℝ)*(shiftedMertensReal N^2/(N:ℝ)^2) := by field_simp
   rw [terminal]
-  apply add_le_add_left
+  refine add_le_add le_rfl ?_
   let f := fun n : ℕ => shiftedMertensReal n^2/(n:ℝ)^2
   have hrow (k : ℕ) (hk : k ∈ Icc 1 (N-1)) :
       ((k:ℝ)⁻¹-((k:ℝ)+1)⁻¹)*shiftedMertensReal k^2 ≤ f k := by
     have hp : 0 < (k:ℝ) := Nat.cast_pos.mpr (mem_Icc.mp hk).1
     have hp1 : 0 < (k:ℝ)+1 := by positivity
-    have hw : (k:ℝ)⁻¹-((k:ℝ)+1)⁻¹ ≤ ((k:ℝ)^2)⁻¹ := by field_simp; nlinarith only [hp]
+    have hw : (k:ℝ)⁻¹-((k:ℝ)+1)⁻¹ ≤ ((k:ℝ)^2)⁻¹ := by
+      field_simp <;> nlinarith only [hp]
     exact (mul_le_mul_of_nonneg_right hw (sq_nonneg _)).trans_eq (by dsimp only [f]; ring)
   have hf (k : ℕ) : 0 ≤ f k := div_nonneg (sq_nonneg _) (sq_nonneg _)
   have hsub : Icc 1 (N-1) ⊆ Icc 1 N := Icc_subset_Icc_right (Nat.sub_le _ _)
@@ -59,7 +60,7 @@ theorem uniform_mertens_gram_vk_saving :
 by a constant times the squared ratio of height to the VK time scale. -/
 theorem signed_moebius_moment_vk_time_scale :
     ∃ D : ℝ, 0 < D ∧ ∀ᶠ X : ℕ in atTop, ∀ N ≤ X, ∀ T : ℝ, 1 ≤ T →
-      (∫ t in (1:ℝ)..T, ‖moebiusPoly N (linePoint t)‖^2) ≤
+      (∫ t in (1:ℝ)..T, ‖moebiusPoly N (MultiscaleMollifiedZetaField.linePoint t)‖^2) ≤
         D*X*(T/Real.exp (vkKappa*vkScale X/54))^2 := by
   obtain ⟨C,hC,h⟩ := uniform_mertens_gram_vk_saving
   refine ⟨4*Real.pi*C,by positivity,?_⟩
@@ -80,7 +81,7 @@ same growing time scale. -/
 theorem uniform_sublinear_moebius_vk_windows {ε : ℝ} (hε : 0 < ε) :
     ∃ δ : ℝ, 0 < δ ∧ ∀ᶠ X : ℕ in atTop, ∀ N ≤ X, ∀ T : ℝ, 1 ≤ T →
       T ≤ δ*Real.exp (vkKappa*vkScale X/54) →
-      (∫ t in (1:ℝ)..T, ‖moebiusPoly N (linePoint t)‖^2) ≤ ε*X := by
+      (∫ t in (1:ℝ)..T, ‖moebiusPoly N (MultiscaleMollifiedZetaField.linePoint t)‖^2) ≤ ε*X := by
   obtain ⟨D,hD,h⟩ := signed_moebius_moment_vk_time_scale
   refine ⟨Real.sqrt (ε/D),Real.sqrt_pos.mpr (div_pos hε hD),?_⟩
   filter_upwards [h] with X hX N hN T hT hscale

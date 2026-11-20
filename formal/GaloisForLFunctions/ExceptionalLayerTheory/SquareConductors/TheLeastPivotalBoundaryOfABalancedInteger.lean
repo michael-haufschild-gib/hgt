@@ -51,7 +51,7 @@ private theorem face_edge_price {k p : ℕ} (hp : p∈k.primeFactors) :
     dsimp only [w,edgePrice]
     rw [Nat.cast_sub (card_le_card sub),size,Nat.cast_sub one,Nat.cast_one]
     ring
-  rw [sum_add_distrib,rev,sum_const,card_powerset,nsmul_eq_mul,Nat.cast_pow,size] at pair
+  rw [sum_add_distrib,rev,sum_const,card_powerset,nsmul_eq_mul,Nat.cast_pow,Nat.cast_ofNat,size] at pair
   change (∑ S ∈ B.powerset,w S.card)=(2:ℝ)^(P.card-1)
   linarith only [pair]
 
@@ -89,7 +89,7 @@ theorem balanced_unitary_edge_count {k : ℕ} (hk : 1<k)
   have three : 3≤r := three_le_card_balanced_unitary_support hk bal
   have anti : Antitone (edgePrice r) := fun i j h => by
     dsimp only [edgePrice]
-    linarith only [Nat.cast_le.mpr h : (i:ℝ)≤j]
+    exact sub_le_sub_left (mul_le_mul_of_nonneg_left (Nat.cast_le.mpr h) (by norm_num)) _
   have paid := balanced_unitary_rank_price_gap hk hp bal anti
   have price : edgePrice r 1-edgePrice r (r-1)=2*((r-2:ℕ):ℝ) := by
     simp only [edgePrice,Nat.cast_sub (by omega : 1≤r),Nat.cast_sub (by omega : 2≤r),Nat.cast_one,Nat.cast_ofNat]
@@ -128,8 +128,4 @@ theorem one_exchange_attains_balanced_edge_floor {k p : ℕ} (hp : p∈k.primeFa
   change unitaryEdgeCount k=2^(r-1)-2+2*(r-1) at exactCount
   omega
 
-#print axioms unitary_edge_rank_expansion
-#print axioms balanced_unitary_edge_count
-#print axioms unitary_edge_face_equality_iff
-#print axioms one_exchange_attains_balanced_edge_floor
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

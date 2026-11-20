@@ -281,12 +281,5 @@ theorem first_mixed_cornerPartition {i k : ℕ} (hi : i ∈ Icc 1 k) :
   have := (mem_Icc.mp hi).2
   omega
 
-#print axioms cornerPartition_distinct
-#print axioms cornerRows_exhaust
-#print axioms cornerRows_coordinates
-#print axioms cornerPartition_area
-#print axioms area_of_mixed_cornerPartition
-#print axioms cornerPartition_low_degree
-#print axioms first_mixed_cornerPartition
 end
 end GaloisForLFunctions.StaircasePacking

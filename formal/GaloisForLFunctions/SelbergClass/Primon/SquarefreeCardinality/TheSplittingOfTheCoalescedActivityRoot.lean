@@ -150,9 +150,6 @@ theorem squarefreeCardinality_eventually_not_splits {P : Finset ℕ} (hP : ∀ p
   rw [←he,squarefreeActivity_rescaling] at hfull
   exact hβ ((splits_C_mul (pow_ne_zero _ ht.ne')).mp hfull)
 
-#print axioms squarefreeActivity_rescaling
-#print axioms squarefreeActivityBlowup_limit
-#print axioms squarefreeCardinality_eventually_not_splits
 
 end
 

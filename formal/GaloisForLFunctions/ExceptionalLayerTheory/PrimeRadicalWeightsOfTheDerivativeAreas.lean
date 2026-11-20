@@ -21,7 +21,7 @@ namespace GaloisForLFunctions.ExceptionalLayerTheory
 
 /-- Two positive p-th-power-free integers in the same rational power
 class coincide. The reduced numerator and denominator must both have magnitude one. -/
-theorem power_free_ratio_rigid {m n p : ℕ} (hp : 0<p) (hm : 0<m) (hn : 0<n)
+theorem power_free_ratio_rigid {m n p : ℕ} (hp : 0<p) (hm : 0 < m) (hn : 0<n)
     (hm' : ∀ a : ℕ, a^p ∣ m → a<2) (hn' : ∀ a : ℕ, a^p ∣ n → a<2)
     (q : ℚ) (hq : q^p=(m:ℚ)/n) : m=n := by
   have hqden : (q.num:ℚ)=q*(q.den:ℚ) :=
@@ -46,7 +46,7 @@ theorem power_free_ratio_rigid {m n p : ℕ} (hp : 0<p) (hm : 0<m) (hn : 0<n)
 
 /-- In lowest terms both numerator and denominator of a nontrivial
 rational p-th power cannot lie strictly below 2^p. -/
-theorem small_rational_power_ratio {m n p : ℕ} (hp : 0<p) (hm : 0<m) (hn : 0<n)
+theorem small_rational_power_ratio {m n p : ℕ} (hp : 0<p) (hm : 0 < m) (hn : 0<n)
     (hm' : m<2^p) (hn' : n<2^p) (q : ℚ) (hq : q^p=(m:ℚ)/n) : m=n := by
   have hb {a b : ℕ} (hpos : 0<b) (hsmall : b<2^p) (hd : a^p ∣ b) : a<2 := by
     by_contra! ha
@@ -126,7 +126,7 @@ private theorem independent_radical_values {K L ι : Type*} [Field K] [Field L] 
 /-- Distinct power classes over the cyclotomic field give independent
 real radical weights of any positive degree. -/
 theorem independent_cyclotomic_radical_weights {ι : Type*} {p : ℕ} (hp : 0<p)
-    (m : ι → ℕ) (hm : ∀ i, 0<m i)
+    (m : ι → ℕ) (hm : ∀ i, 0 < m i)
     (hclasses : ∀ i j, i≠j → ∀ v : CyclotomicField p ℚ, v^p≠(m i:CyclotomicField p ℚ)/m j) :
     LinearIndependent ℚ (fun i => (m i:ℝ)^((p:ℝ)⁻¹)) := by
   classical
@@ -167,7 +167,7 @@ theorem independent_cyclotomic_radical_weights {ι : Type*} {p : ℕ} (hp : 0<p)
 /-- Real roots from distinct rational p-th power classes are linearly
 independent, with no limit on the size or number of the radicands. -/
 theorem independent_prime_radical_classes {ι : Type*} {p : ℕ} (hp : p.Prime)
-    (m : ι → ℕ) (hm : ∀ i, 0<m i)
+    (m : ι → ℕ) (hm : ∀ i, 0 < m i)
     (hd : ∀ i j, i≠j → ∀ q : ℚ, q^p≠(m i:ℚ)/m j) :
     LinearIndependent ℚ (fun i => (m i:ℝ)^((p:ℝ)⁻¹)) := by
   apply independent_cyclotomic_radical_weights hp.pos m hm

@@ -111,10 +111,10 @@ theorem diagonal_deficit_bound (f g : ℕ → ℝ) (n : ℕ) :
   | zero => simp [pairedWidth,radialPrice]
   | succ n ih =>
     have hl : (∑ j ∈ range n, commonHeight f g n j) ≤ n*f n := by
-      simpa only [sum_const,card_range,nsmul_eq_mul] using
+      simpa only [commonHeight,sum_const,card_range,nsmul_eq_mul] using
         (sum_le_sum (s:=range n) (fun j _ => (min_le_left (depthHeight f n) (depthHeight g j)).trans (depth_le f n)))
     have hr : (∑ i ∈ range n, commonHeight f g i n) ≤ n*g n := by
-      simpa only [sum_const,card_range,nsmul_eq_mul] using
+      simpa only [commonHeight,sum_const,card_range,nsmul_eq_mul] using
         (sum_le_sum (s:=range n) (fun i _ => (min_le_right (depthHeight f i) (depthHeight g n)).trans (depth_le g n)))
     rw [width_succ,sum_range_succ]
     change _ ≤ (∑ j ∈ range (n+1), (2*(j:ℝ)+1)*(f j+g j))
@@ -199,6 +199,7 @@ theorem integral_levelWidth_product (f g : ℕ → ℝ) (n : ℕ)
   have he (τ : ℝ) : levelWidth f n τ*levelWidth g n τ =
       ∑ i ∈ range n, ∑ j ∈ range n, K i j τ := by
     simp only [levelWidth,Finset.sum_mul,Finset.mul_sum,level_atom_product,K,commonHeight]
+    exact sum_comm
   simp_rw [he]
   rw [integral_finsetSum _ (fun i _ => integrable_finsetSum _ fun j _ => hI i j)]
   apply sum_congr rfl
@@ -239,12 +240,13 @@ theorem radial_loss_decomposition (f g : ℕ → ℝ) (n : ℕ)
       (∫ τ, (levelWidth f n τ-levelWidth g n τ)^2)+
       ∑ j ∈ range n, (2*(j:ℝ)+1)*((f j-depthHeight f j)+(g j-depthHeight g j)) := by
   have hi := integrable_levelWidth_product f g n
+  have hdiag : Integrable (fun τ => levelWidth f n τ*levelWidth f n τ + levelWidth g n τ*levelWidth g n τ) :=
+    (integrable_levelWidth_product f f n).add (integrable_levelWidth_product g g n)
   have he (x : ℝ) : (levelWidth f n x-levelWidth g n x)^2 =
       (levelWidth f n x*levelWidth f n x+levelWidth g n x*levelWidth g n x)-
       2*(levelWidth f n x*levelWidth g n x) := by ring
   simp_rw [he]
-  rw [integral_sub ((integrable_levelWidth_product f f n).add (integrable_levelWidth_product g g n))
-    (hi.const_mul 2),integral_add (integrable_levelWidth_product f f n) (integrable_levelWidth_product g g n),
+  rw [integral_sub hdiag (hi.const_mul 2),integral_add (integrable_levelWidth_product f f n) (integrable_levelWidth_product g g n),
     integral_const_mul,integral_levelWidth_product f f n hf hf,integral_levelWidth_product g g n hg hg,
     integral_levelWidth_product f g n hf hg,self_width,self_width,radialPrice]
   have h (j : ℕ) : (2*(j:ℝ)+1)*(f j+g j) =
@@ -253,12 +255,5 @@ theorem radial_loss_decomposition (f g : ℕ → ℝ) (n : ℕ)
   simp_rw [h]
   rw [sum_add_distrib,sum_add_distrib]
   ring
-
-#print axioms diagonal_deficit_bound
-#print axioms pairedWidth_upper_perturbation
-#print axioms pairedWidth_shift
-#print axioms pairedWidth_extremizers
-#print axioms integral_levelWidth_product
-#print axioms radial_loss_decomposition
 
 end GaloisForLFunctions.ArithmeticPositiveDuality.ComponentWidths

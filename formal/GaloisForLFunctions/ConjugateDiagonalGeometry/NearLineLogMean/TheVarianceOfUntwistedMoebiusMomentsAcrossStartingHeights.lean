@@ -34,6 +34,8 @@ private theorem translated_power (a : ℕ → ℂ) (S : Finset ℕ) (s t : ℝ) 
   apply congrArg (fun z : ℂ => ‖z‖^2)
   apply sum_congr rfl
   intro n _
+  change verticalCoeff a t n * ArithmeticCorrelationGeometry.twist (verticalPoint s) n =
+    verticalCoeff a (t+s) n * ArithmeticCorrelationGeometry.twist 0 n
   rw [verticalPoint,twist_clockPhasePoint,twist_zero,mul_one]
   unfold verticalCoeff
   rw [mul_assoc,←Complex.exp_add]
@@ -52,7 +54,8 @@ private theorem excess_on_vertical_line (N : ℕ) {L : ℝ} (hL : 0 ≤ L) (s : 
   congr 1
   change _ = ∫ t in Set.Ioc 0 L, power a (Icc 1 N) (verticalPoint s) t
   rw [←intervalIntegral.integral_of_le hL,intervalIntegral.integral_congr (fun t _ => ht t),
-    intervalIntegral.integral_comp_add_right,zero_add,add_comm L s]
+    intervalIntegral.integral_comp_add_right (fun t : ℝ => ‖moebiusPoly N (linePoint t)‖^2) s
+      (a:=0) (b:=L),zero_add,add_comm L s]
 
 private abbrev freq (q : ℕ × ℕ) := ratioFrequency q.1 q.2/(2*Real.pi)
 
@@ -82,12 +85,15 @@ private theorem frequency_separation {N : ℕ} {q p : ℕ × ℕ}
     exact Prod.ext ha hb)
   have h := _root_.HTGeometry.inv_le_abs_log_sub_log_of_le (Nat.mul_pos qb pa) (Nat.mul_pos qa pb)
     hd (Nat.mul_le_mul qB pA) (Nat.mul_le_mul qA pB)
-  rw [Nat.cast_mul,Nat.cast_mul,Nat.cast_mul,Real.log_mul (Nat.cast_ne_zero.mpr qb.ne')
-    (Nat.cast_ne_zero.mpr pa.ne'),Real.log_mul (Nat.cast_ne_zero.mpr qa.ne') (Nat.cast_ne_zero.mpr pb.ne')] at h
-  rw [freq,freq,←sub_div,abs_div,abs_of_pos (mul_pos (by norm_num) Real.pi_pos)]
+  simp only [Nat.cast_mul,Real.log_mul (Nat.cast_ne_zero.mpr (Nat.ne_of_gt qb))
+    (Nat.cast_ne_zero.mpr (Nat.ne_of_gt pa)),Real.log_mul (Nat.cast_ne_zero.mpr (Nat.ne_of_gt qa))
+    (Nat.cast_ne_zero.mpr (Nat.ne_of_gt pb))] at h
+  simp only [freq,←sub_div,abs_div,abs_of_pos (mul_pos (by norm_num : (0:ℝ)<2) Real.pi_pos)]
   apply div_le_div_of_nonneg_right _ (by positivity)
-  simp only [sq,ratioFrequency]
-  convert h using 1 <;> ring_nf
+  calc
+    _ ≤ |(Real.log q.2 + Real.log p.1) - (Real.log q.1 + Real.log p.2)| := by
+      simpa only [sq] using h
+    _ = _ := congrArg abs (by unfold ratioFrequency; ring)
 
 /-- On every interval of starting heights the integrated squared error
 lies between (Y ± 52 N²) times the exact prime-twist variance. -/
@@ -119,7 +125,8 @@ theorem translated_variance_versus_haar {N : ℕ} (hN : 0 < N) {L : ℝ} (hL : 0
     rw [integral_centered_moment_sq]
     have ht := Finset.sum_attach P (fun q => ‖w q‖^2)
     refine ht.trans (sum_congr rfl (fun q _ => ?_))
-    rw [w,norm_mul,Complex.norm_real,Real.norm_eq_abs,mul_pow,sq_abs]
+    dsimp only [w]
+    rw [norm_mul,Complex.norm_real,Real.norm_eq_abs,mul_pow,sq_abs]
   have hlo := interval_integral_normSq_expSum_ge (fun q : P => freq q) (fun q : P => w q) (a:=S) (ℓ:=Y) hD hsep
   have hhi := interval_integral_normSq_expSum_le (fun q : P => freq q) (fun q : P => w q) (a:=S) (ℓ:=Y) hD hsep
   rw [cost,hmass] at hlo hhi
@@ -157,7 +164,7 @@ theorem measure_exceptional_starting_heights {N : ℕ} (hN : 0 < N) {L Y ε : �
     hint ((ε*L)^2)
   have he : {s | (ε*L)^2 ≤ F s} = {s | ε*L ≤ |translatedExcess N L s|} := by
     ext s
-    change (ε*L)^2 ≤ (translatedExcess N L s)^2 ↔ _
+    change (ε*L)^2 ≤ (translatedExcess N L s)^2 ↔ ε*L ≤ |translatedExcess N L s|
     rw [←sq_abs (translatedExcess N L s),sq_le_sq₀ (mul_nonneg hε.le hL.le) (abs_nonneg _)]
   change (ε*L)^2*μ.real {s | (ε*L)^2 ≤ F s} ≤ ∫ s, F s ∂μ at hm
   rw [he] at hm
@@ -168,8 +175,5 @@ theorem measure_exceptional_starting_heights {N : ℕ} (hN : 0 < N) {L Y ε : �
   apply le_of_mul_le_mul_left (a:=L) _ hL
   nlinarith only [hh]
 
-#print axioms measure_exceptional_starting_heights
-#print axioms translated_variance_versus_haar
-#print axioms translated_moebius_variance_bound
 end
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.PrimeTwistedMoments

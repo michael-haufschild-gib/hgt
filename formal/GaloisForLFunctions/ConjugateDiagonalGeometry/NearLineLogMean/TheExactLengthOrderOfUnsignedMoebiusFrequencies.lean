@@ -52,7 +52,11 @@ private theorem absolute_term_le {m n : ℕ} (hm : 0 < m) (hn : 0 < n) (he : m�
   have h := mul_le_mul_of_nonneg_right hcoeff (show 0 ≤ gapReciprocal m n by unfold gapReciprocal; positivity)
   unfold gapReciprocal at h ⊢
   rw [abs_sub_comm (Real.log (m:ℝ)) (Real.log (n:ℝ))]
-  linarith only [h]
+  calc
+    _ = 2*(|coeff m| * |coeff n|)*(1/|Real.log (n:ℝ)-Real.log (m:ℝ)|) := by
+      simp only [div_eq_mul_inv,one_mul]
+      ring
+    _ ≤ _ := h
 
 /-- Uniform upper bound for the absolute values of already integrated
 off-diagonal terms. Only one logarithm of the polynomial length is lost. -/
@@ -76,24 +80,25 @@ theorem absolute_moebius_frequency_cost_upper {N : ℕ} (hn : 1 ≤ N) (T : ℝ)
   have hcalc : (∑ m ∈ S,∑ n ∈ S,(w m+w n)*gapReciprocal m n) =
       2*∑ m ∈ S,w m*(∑ n ∈ S,gapReciprocal m n) := by
     simp_rw [add_mul,sum_add_distrib]
-    rw [hs]
-    simp only [mul_sum]
-    ring
+    rw [hs,←two_mul]
+    congr 1
+    exact sum_congr rfl fun m _ => by rw [mul_sum]
   have hsingle (m : ℕ) (hm : m ∈ S) :
       w m*(∑ n ∈ S,gapReciprocal m n) ≤ 2*B+(N:ℝ)*w m := by
     have hp : 0 < (m:ℝ) := Nat.cast_pos.mpr (mem_Icc.mp hm).1
     refine (mul_le_mul_of_nonneg_left (row_le hm) (wpos m)).trans_eq ?_
     change (1/(m:ℝ))*(2*m*B+N)=2*B+N*(1/(m:ℝ))
-    field_simp; ring
+    field_simp
   have hsub := sum_le_sum hsingle
   rw [sum_add_distrib,sum_const,nsmul_eq_mul,←mul_sum] at hsub
   have hc : S.card=N := by dsimp [S]; rw [Nat.card_Icc]; omega
   rw [hc] at hsub
   have hH : ∑ n ∈ S,w n ≤ B :=
-    (sum_Icc_one_div_le_one_add_log N).trans (add_le_add_left
-      (Real.log_le_log (Nat.cast_pos.mpr hn) (by linarith only [] : (N:ℝ) ≤ N+1)) 1)
+    (sum_Icc_one_div_le_one_add_log N).trans (add_le_add le_rfl
+      (Real.log_le_log (Nat.cast_pos.mpr hn) (by linarith only [] : (N:ℝ) ≤ N+1)))
   have h := sum_le_sum one_row
   rw [hcalc] at h
+  change absoluteMoebiusOffDiagonal N T ≤ 2*∑ m ∈ S,w m*(∑ n ∈ S,gapReciprocal m n) at h
   change absoluteMoebiusOffDiagonal N T ≤ 6*(N:ℝ)*B
   linarith only [h,hsub,mul_le_mul_of_nonneg_left hH (Nat.cast_nonneg N)]
 
@@ -111,7 +116,8 @@ theorem unsigned_cost_length_order {ι : Type*} {l : Filter ι} {n : ι → ℕ}
     tendsto_const_nhds.div_atTop hl
   have hlog := (GaloisForLFunctions.HTGeometry.tendsto_log_linear_div (c:=1) zero_lt_one 1).comp hl
   have hlog' : Tendsto (fun i => Real.log (1+Real.log (X i))/Real.log (X i)) l (𝓝 0) := by
-    simpa only [Function.comp_apply,one_mul,add_comm (Real.log _) 1] using hlog
+    change Tendsto (fun i => Real.log (1*Real.log (X i)+1)/Real.log (X i)) l (𝓝 0) at hlog
+    simpa only [one_mul,add_comm (Real.log _) 1] using hlog
   have hlo := (tendsto_const_nhds (x:=1) (f:=l)).sub (hconst (Real.log 331776))
   have hup := ((tendsto_const_nhds (x:=1) (f:=l)).add (hconst (Real.log 6))).add hlog'
   rw [sub_zero] at hlo

@@ -113,8 +113,6 @@ theorem weightedEuler_real_root_gain {a : ℝ} (ha : 0 < a) (p : ℝ[X]) :
   have h₀ := card_roots' p
   omega
 
-#print axioms weightedEuler_nonreal_le
-#print axioms weightedEuler_real_root_gain
 
 end
 

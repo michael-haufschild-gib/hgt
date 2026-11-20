@@ -138,9 +138,6 @@ theorem squarefree_cold_roots_of_log_three {β : ℝ} (hb : 2*Real.log 3 ≤ β)
   have h' := Real.exp_lt_exp.mpr (show -β < -β/2 by linarith only [hb₀])
   exact squarefree_cold_roots hb₀ (by linarith only [h,h']) P hp
 
-#print axioms distinct_activity_roots_above_population
-#print axioms uniform_activity_root_defect
-#print axioms squarefree_cold_roots_of_log_three
 
 end
 

@@ -183,9 +183,6 @@ theorem negative_balanced_five_iff_full_star
     rw [star_card,hfull,card_erase_of_mem hv,hc] at hl
     omega
 
-#print axioms overweight_subsets_intersect
-#print axioms heavyUnitaryPairs_geometry
-#print axioms negative_balanced_five_iff_full_star
 
 end
 

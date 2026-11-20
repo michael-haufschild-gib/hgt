@@ -133,8 +133,5 @@ theorem recovery_exterior_mass_cost (ν : Measure ℝ) [IsProbabilityMeasure ν]
   rw [recovery_energy_splitting ν hν,mul_assoc]
   exact add_le_add (le_self_add) (mul_le_mul_left' hmass 2)
 
-#print axioms recovery_energy_splitting
-#print axioms recovery_moment_cost
-#print axioms recovery_exterior_mass_cost
 
 end GaloisForLFunctions.HTGeometry.ChronologicalTensor

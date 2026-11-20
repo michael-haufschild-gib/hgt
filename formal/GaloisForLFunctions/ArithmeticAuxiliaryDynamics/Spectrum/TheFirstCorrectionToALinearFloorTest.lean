@@ -27,10 +27,9 @@ private theorem mean_from_letters {c : ℕ →₀ ℤ} (hc : c 0 = 0) (hb : IsBa
     (∑ k ∈ c.support, (c k:ℝ)*centeredModularMeanMagnitude k) = floorPrimitiveMean c := by
   have ht (k : ℕ) (hk : k ∈ c.support) :
       (c k:ℝ)*centeredModularMeanMagnitude k = ((k:ℝ)*(c k:ℝ)-(c k:ℝ)/k)/12 := by
-    have hk' : (k:ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (fun he => Finsupp.mem_support_iff.mp hk (he ▸ hc))
+    have hk' : (k:ℝ) ≠ 0 := Nat.cast_ne_zero.mpr (fun he => by subst k; exact Finsupp.mem_support_iff.mp hk hc)
     unfold centeredModularMeanMagnitude
     field_simp
-    ring
   rw [sum_congr rfl ht,←sum_div,sum_sub_distrib,show (∑ k ∈ c.support, (c k:ℝ)/k)=0 from hb,sub_zero]
   rfl
 
@@ -41,7 +40,7 @@ theorem cubic_floor_step {c : ℕ →₀ ℤ} (hc : c 0=0) (hb : IsBalanced c) (
     ←sum_sub_distrib,←sum_sub_distrib]
   apply sum_congr rfl
   intro k hk
-  have hk' : 0 < k := Nat.pos_of_ne_zero (fun he => Finsupp.mem_support_iff.mp hk (he ▸ hc))
+  have hk' : 0 < k := Nat.pos_of_ne_zero (fun he => by subst k; exact Finsupp.mem_support_iff.mp hk hc)
   rw [←mul_sub,centeredModularSecondPrimitive_succ hk',
     show centeredModularPrimitive k (n+1) = -residuePrimitive k (n+1) by
       unfold centeredModularPrimitive residuePrimitive; ring]
@@ -56,7 +55,8 @@ theorem affine_floor_window {c : ℕ →₀ ℤ} (hc : c 0=0) (hb : IsBalanced c
   induction L with
   | zero => simp
   | succ L ih =>
-    rw [sum_range_succ,ih,floor_row_primitive_step hc hb,Nat.cast_succ,Nat.add_succ]
+    rw [Finset.sum_range_succ,ih,floor_row_primitive_step hc hb,Nat.cast_succ]
+    simp only [← Nat.add_assoc]
     linarith only [cubic_floor_step hc hb (n+L)]
 
 /-- Error against the affine observable x at equally spaced mesh points
@@ -93,11 +93,8 @@ theorem two_translates_force_affine_error (c : ℕ →₀ ℤ) (m B : ℕ) (hP :
     · exact ⟨1,le_rfl,by linarith only [hd,(le_abs_self _).trans (abs_sub (d 0) (d 1)),h]⟩
   obtain ⟨n,hn,H⟩ := h
   refine ⟨n,hn,fun L hL hdiv => ?_⟩
-  simpa only [abs_mul,abs_of_nonneg (Nat.cast_nonneg L)] using
+  simpa only [abs_mul,abs_of_nonneg (Nat.cast_nonneg (α := ℝ) L)] using
     H.trans_eq (congrArg abs (affine_floor_error_at_period hP.zero hP.balanced n hL hdiv)).symm
 
-#print axioms cubic_floor_step
-#print axioms affine_floor_error_at_period
-#print axioms two_translates_force_affine_error
 
 end GaloisForLFunctions.ArithmeticAuxiliaryDynamics.FloorSpectrum

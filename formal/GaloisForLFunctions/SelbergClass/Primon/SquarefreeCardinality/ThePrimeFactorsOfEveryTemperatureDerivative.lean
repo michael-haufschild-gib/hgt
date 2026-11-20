@@ -44,8 +44,8 @@ theorem temperature_derivative_reads_support (P : Finset ℕ) {q n : ℕ} (hq : 
   have hq' : (q:ℂ)^n ≠ 0 := pow_ne_zero _ (Nat.cast_ne_zero.mpr hq.ne')
   have h (p : ℕ) : 1 + -((q:ℂ)^n)⁻¹*(p:ℂ)^n = 0 ↔ p=q := by
     rw [neg_mul,←sub_eq_add_neg,sub_eq_zero,eq_comm,←div_eq_inv_mul,div_eq_one_iff_eq hq']
-    exact_mod_cast (Nat.pow_left_inj hn.ne')
-  simp only [h,exists_prop,exists_eq_right]
+    exact_mod_cast ((Nat.pow_left_injective hn.ne').eq_iff : p^n = q^n ↔ p = q)
+  simp [h]
 
 /-- Equality of one derivative as a function of activity determines the entire
 finite prime ensemble, with no bound on the largest prime. -/
@@ -62,10 +62,6 @@ theorem one_temperature_derivative_identifies_primes {P Q : Finset ℕ} (hP : �
   · rintro rfl _
     rfl
 
-#print axioms squarefreeCardinality_aeval
-#print axioms temperature_derivative_factors
-#print axioms temperature_derivative_reads_support
-#print axioms one_temperature_derivative_identifies_primes
 
 end
 

@@ -186,9 +186,4 @@ theorem recover_tail_crossEnergy {n : ℕ} (f : Fin n → CompactPulse) (T : ℝ
       tailCrossEnergy (f i) (f j) T :=
   recover_reflected_window_gram f (Ioi T) hij
 
-#print axioms pulsePhaseMark_difference_unique
-#print axioms marked_window_energy_expansion
-#print axioms mean_marked_window_energy
-#print axioms recover_reflected_window_gram
-#print axioms recover_tail_crossEnergy
 end GaloisForLFunctions.BlackHoleRingdown

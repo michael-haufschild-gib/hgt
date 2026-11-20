@@ -109,8 +109,6 @@ theorem oppositePrimeProduct_innovations (left : Bool) (s a g d T : ℝ) (k L : 
   change (L:ℝ)*∑ H ∈ E, oppositePrimeProduct left s k L H = _
   rw [← hintegral,weighted_numerator_plancherel w f v hw,hdetail]
 
-#print axioms weighted_numerator_plancherel
-#print axioms oppositePrimeProduct_innovations
 
 end
 end GaloisForLFunctions.ExclusionOfTheCriticalState

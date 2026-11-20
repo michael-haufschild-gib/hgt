@@ -181,9 +181,6 @@ theorem thetaSaddleJensen_all_roots_collapse (d : ℕ) (ε : ℝ) (hε : 0 < ε)
   rw [he, norm_neg, norm_one] at hbound
   exact hsmall.not_ge hbound
 
-#print axioms thetaSaddleJensen_all_roots_collapse
-#print axioms thetaSaddleJensen_expansion
-#print axioms tendsto_thetaOddRootCoordinate
 
 end
 

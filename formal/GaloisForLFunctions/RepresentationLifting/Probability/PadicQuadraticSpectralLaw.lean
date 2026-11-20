@@ -86,9 +86,6 @@ theorem padicMatrixHaar_traceDet_mod_prime (t d : ZMod (p^1)) :
   simp only [he,Nat.cast_sub hp,Nat.cast_one,Nat.cast_pow]
   field_simp [hpR] <;> ring
 
-#print axioms unitEntryTraceDetEquiv
-#print axioms padicMatrixHaar_unitEntry_traceDet
-#print axioms padicMatrixHaar_traceDet_mod_prime
 
 end
 end GaloisForLFunctions.RepresentationLifting

@@ -211,7 +211,4 @@ theorem log_savings_at_every_head_exponent (p : ℕ) :
   filter_upwards [h,logSquareCutoff_tendsto_atTop.eventually_ge_atTop 1] with X hx hy
   exact fun α => hx _ hy le_rfl ⌊(X:ℝ)^α⌋₊
 
-#print axioms uniform_log_savings_for_rough_prefixes
-#print axioms uniform_log_savings_for_mangoldt_interiors
-#print axioms log_savings_at_every_head_exponent
 end GaloisForLFunctions.RestrictedFactorizationCalculus

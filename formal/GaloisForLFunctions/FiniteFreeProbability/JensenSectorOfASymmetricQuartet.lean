@@ -206,9 +206,6 @@ theorem splits_diffOp_expand_two_of_squared_sector (k : ℕ) (p : ℝ[X]) (hp : 
     · exact irreducible_expand_splits k hi fun w hw => hroot w (Or.inl hw)
     · exact ih ha0 fun w hw => hroot w (Or.inr hw)
 
-#print axioms splits_diffOp_expand_two_of_squared_sector
-#print axioms squaredPairSymbol_splits_iff
-#print axioms squaredJensenSector_square
 
 end
 

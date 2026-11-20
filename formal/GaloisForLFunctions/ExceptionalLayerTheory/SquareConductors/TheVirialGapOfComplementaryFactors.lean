@@ -43,6 +43,23 @@ theorem factor_virial_identity {d e : ℕ} (hd : 0<d) (he : 0<e) (hk : 1<d*e) :
   rw [scaledFactorVirial,critical_square]
   linear_combination (1+factorFrequency d e)*((d:ℝ)*e)/9*h
 
+/-- The two orientations have complementary frequencies. Adding their
+critical energies removes the frequency weight and leaves the squared
+logarithmic distance from the diagonal. -/
+theorem paired_factor_virial_identity {d e : ℕ} (hd : 0<d) (he : 0<e) (hk : 1<d*e) :
+    scaledFactorVirial d e+scaledFactorVirial e d=
+      8*((d:ℝ)*e)*(Real.log d-Real.log e)^2 := by
+  have dp : 0<(d:ℝ) := Nat.cast_pos.mpr hd
+  have ep : 0<(e:ℝ) := Nat.cast_pos.mpr he
+  have kp : 1<(d:ℝ)*e := by exact_mod_cast hk
+  have frequencies : factorFrequency d e+factorFrequency e d=6 := by
+    unfold factorFrequency
+    rw [mul_comm (e:ℝ) d,←add_div,←mul_add,←Real.log_mul dp.ne' ep.ne']
+    field_simp [(Real.log_pos kp).ne']
+  rw [factor_virial_identity hd he hk,factor_virial_identity he hd (by rwa [Nat.mul_comm]),
+    Real.log_div dp.ne' ep.ne',Real.log_div ep.ne' dp.ne']
+  linear_combination ((d:ℝ)*e)*(Real.log d-Real.log e)^2*frequencies
+
 /-- The squared integer gap, with the two possible endpoint ratios,
 brackets the logarithmic cost. The bounds coincide asymptotically for
 every fixed additive gap. -/
@@ -59,7 +76,7 @@ theorem factor_logarithmic_gap_sandwich {a b : ℕ} (ha : 0<a) (hab : a<b) :
   have pos := div_nonneg diff bp.le
   have below := mul_le_mul_of_nonneg_left (pow_le_pow_left₀ pos low 2) (mul_pos ap bp).le
   have above := mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (pos.trans low) top 2) (mul_pos ap bp).le
-  refine ⟨le_trans ?_ below,above.trans ?_⟩ <;> apply le_of_eq <;> field_simp [ap.ne',bp.ne'] <;> ring
+  refine ⟨le_trans ?_ below,above.trans ?_⟩ <;> apply le_of_eq <;> field_simp [ap.ne',bp.ne']
 
 private theorem integer_gap_floor {a b : ℕ} (ha : 0<a) (hab : a<b) :
     (1/2:ℝ)≤((a:ℝ)*b)*Real.log ((b:ℝ)/a)^2 := by
@@ -82,7 +99,7 @@ private theorem integer_gap_floor {a b : ℕ} (ha : 0<a) (hab : a<b) :
 /-- Any unequal pair of positive factors has critical virial price at
 least 1/(2k (log k)²), uniformly in the factorization. -/
 theorem factor_virial_integer_floor {d e : ℕ} (hd : 0<d) (he : 0<e) (different : d≠e) :
-    (1/2:ℝ)≤scaledFactorVirial d e := by
+    (1/2:ℝ) ≤ scaledFactorVirial d e := by
   have hk : 1<d*e := by
     rcases lt_or_gt_of_ne different with h|h
     · exact (show 1<e by omega).trans_le (Nat.le_mul_of_pos_left e hd)
@@ -102,7 +119,7 @@ theorem factor_virial_integer_floor {d e : ℕ} (hd : 0<d) (he : 0<e) (different
 
 /-- Every nontrivial unitary factorization misses the continuum zero. -/
 theorem unitary_factor_virial_floor {d e : ℕ} (cop : d.Coprime e) (hd : 0<d) (he : 0<e)
-    (hk : 1<d*e) : (1/2:ℝ)≤scaledFactorVirial d e := by
+    (hk : 1<d*e) : (1/2:ℝ) ≤ scaledFactorVirial d e := by
   apply factor_virial_integer_floor hd he
   rintro rfl
   change d.gcd d=1 at cop
@@ -126,7 +143,7 @@ theorem fixed_factor_gap_virial_limit {h : ℕ} (hh : 0<h) :
     exact le_mul_of_one_le_right (Nat.cast_nonneg n) (Nat.one_le_cast.mpr (by omega : 1≤n+h))
   have ratio : Tendsto (fun n : ℕ => v n/n) atTop (𝓝 1) := by
     have lim : Tendsto (fun n : ℕ => 1+(h:ℝ)*(n:ℝ)⁻¹) atTop (𝓝 1) := by
-      simpa only [mul_zero,add_zero] using ((grow.inv_tendsto_atTop.const_mul (h:ℝ)).const_add 1)
+      simpa only [Pi.inv_apply,mul_zero,add_zero] using ((grow.inv_tendsto_atTop.const_mul (h:ℝ)).const_add 1)
     apply lim.congr'
     filter_upwards [eventually_ge_atTop 1] with n hn
     have np : 0<(n:ℝ) := Nat.cast_pos.mpr hn
@@ -136,7 +153,7 @@ theorem fixed_factor_gap_virial_limit {h : ℕ} (hh : 0<h) :
     have lim := ratio.inv₀ one_ne_zero
     change Tendsto (fun n : ℕ => (v n/n)⁻¹) atTop (𝓝 (1:ℝ)⁻¹) at lim
     simpa only [inv_one,inv_div] using lim
-  have core : Tendsto (fun n : ℕ => ((n:ℝ)*v n)*Real.log (v n/n)^2) atTop (𝓝 (h:ℝ)^2) := by
+  have core : Tendsto (fun n : ℕ => ((n:ℝ)*v n)*Real.log (v n/n)^2) atTop (𝓝 ((h:ℝ)^2)) := by
     have lo := invratio.mul_const ((h:ℝ)^2)
     have hi := ratio.mul_const ((h:ℝ)^2)
     rw [one_mul] at lo hi
@@ -155,11 +172,11 @@ theorem fixed_factor_gap_virial_limit {h : ℕ} (hh : 0<h) :
       simpa only [Real.log_one] using ratio.log one_ne_zero
     have invlog := (Real.tendsto_log_atTop.comp prod).inv_tendsto_atTop
     have lim : Tendsto (fun n : ℕ => 3-3*Real.log (v n/n)*(Real.log ((n:ℝ)*v n))⁻¹) atTop (𝓝 3) := by
-      simpa only [Function.comp_def,mul_zero,zero_mul,sub_zero] using
+      simpa only [Pi.inv_apply,Function.comp_def,mul_zero,zero_mul,sub_zero] using
         (tendsto_const_nhds (x:=(3:ℝ))).sub ((logs.const_mul 3).mul invlog)
     apply lim.congr'
     filter_upwards [eventually_ge_atTop 1] with n hn
-    have K : 1<(n:ℝ)*v n := by exact_mod_cast large hn
+    have K : 1<(n:ℝ)*v n := by dsimp only [v]; exact_mod_cast large hn
     have id := frequency_distance hn (hn.trans (above n).le) (large hn)
     change (factorFrequency n (n+h)-3)*Real.log ((n:ℝ)*v n)=3*Real.log ((n:ℝ)/v n) at id
     rw [reverse] at id
@@ -176,9 +193,4 @@ theorem fixed_factor_gap_virial_limit {h : ℕ} (hh : 0<h) :
   rw [reverse,neg_sq,mul_assoc] at price
   exact price.symm
 
-#print axioms fixed_factor_gap_virial_limit
-#print axioms factor_virial_identity
-#print axioms factor_logarithmic_gap_sandwich
-#print axioms factor_virial_integer_floor
-#print axioms unitary_factor_virial_floor
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

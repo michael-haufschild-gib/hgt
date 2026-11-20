@@ -33,7 +33,7 @@ private theorem centered_prime_atom_ne_zero (n : ℕ) : ordinaryPrimeExcessCoeff
 when the two quotient digits agree at every positive denominator. -/
 theorem odd_rows_difference_integrable_iff (S : Finset ℕ) (H J : ℕ) :
     Integrable (fun t => (halfRow S (oddBandWeight H) t-halfRow S (oddBandWeight J) t)^2) ↔
-      ∀ i ∈ S, 0<i → (H/i%2=1 ↔ J/i%2=1) := by
+      ∀ i ∈ S, 0 < i → (H/i%2=1 ↔ J/i%2=1) := by
   have he (t : ℝ) : halfRow S (oddBandWeight H) t-halfRow S (oddBandWeight J) t =
       halfRow S (fun i => oddBandWeight H i-oddBandWeight J i) t := by
     simp only [halfRow,sub_mul,sum_sub_distrib]
@@ -47,7 +47,7 @@ theorem odd_rows_difference_integrable_iff (S : Finset ℕ) (H J : ℕ) :
 no active positive denominator in the observed set. -/
 theorem odd_row_square_integrable_iff (S : Finset ℕ) (H : ℕ) :
     Integrable (fun t => halfRow S (oddBandWeight H) t^2) ↔
-      ∀ i ∈ S, 0<i → H/i%2=0 := by
+      ∀ i ∈ S, 0 < i → H/i%2=0 := by
   rw [halfRow_square_integrable_iff]
   apply forall_congr' fun i => forall_congr' fun _ => forall_congr' fun _ => ?_
   rcases Nat.mod_two_eq_zero_or_one (H/i) with hh | hh <;>
@@ -73,7 +73,9 @@ theorem dyadic_odd_rows_integrable_iff_congruent (k H J : ℕ) :
   · intro h m hm _
     obtain ⟨i,hi,rfl⟩ := mem_image.mp hm
     have he := congrArg (fun x => Nat.testBit x i) h
-    simpa only [Nat.testBit_mod_two_pow,decide_eq_true (mem_range.mp hi),Bool.true_and,
+    change (H % 2^k).testBit i = (J % 2^k).testBit i at he
+    rw [Nat.testBit_mod_two_pow,Nat.testBit_mod_two_pow] at he
+    simpa only [decide_eq_true (mem_range.mp hi),Bool.true_and,
       Nat.testBit_eq_decide_div_mod_eq,decide_eq_decide] using he
 
 private theorem digit_shift_iff {n : ℕ} (hn : 0<n) (T : ℕ) :
@@ -115,10 +117,6 @@ theorem odd_rows_all_translates_integrable_iff (S : Finset ℕ) (T : ℕ) :
   · exact fun h n hn hp => (digit_shift_iff hp T).mp fun H => h H n hn hp
   · exact fun h H n hn hp => (digit_shift_iff hp T).mpr (h n hn hp) H
 
-#print axioms odd_rows_difference_integrable_iff
-#print axioms dyadic_odd_rows_integrable_iff_congruent
-#print axioms odd_rows_all_translates_integrable_iff
-
 /-- Weighted Hamming distance of the observed quotient digits. A changed
 digit pays the squared ordinary-prime excess at its denominator. -/
 def oddRowDistance (S : Finset ℕ) (H J : ℕ) :=
@@ -157,12 +155,12 @@ theorem odd_row_distance_triangle (S : Finset ℕ) (A B C : ℕ) :
   · simp [h]
   · by_cases h' : B/i%2=C/i%2
     · simp [h,h']
-    · by_cases h'' : A/i%2=C/i%2 <;> simp [h,h',h'',sq_nonneg]
+    · by_cases h'' : A/i%2=C/i%2 <;> simp [h,h',Ne.symm h',h'',sq_nonneg,add_nonneg]
 
 /-- Two numerator classes have zero distance exactly when their quotient
 digits agree at the observed sites. -/
 theorem odd_row_distance_eq_zero_iff (S : Finset ℕ) (H J : ℕ) :
-    oddRowDistance S H J=0 ↔ ∀ i∈S, 0<i → (H/i%2=1 ↔ J/i%2=1) := by
+    oddRowDistance S H J=0 ↔ ∀ i∈S, 0 < i → (H/i%2=1 ↔ J/i%2=1) := by
   rw [oddRowDistance,sum_eq_zero_iff_of_nonneg (fun i _ => by split <;> positivity)]
   apply forall_congr' fun i => forall_congr' fun _ => ?_
   rcases Nat.eq_zero_or_pos i with rfl | hi
@@ -175,9 +173,5 @@ theorem dyadic_odd_row_distance_separates_residues (k H J : ℕ) :
     oddRowDistance ((range k).image fun i => 2^i) H J=0 ↔ H%2^k=J%2^k := by
   rw [odd_row_distance_eq_zero_iff,←odd_rows_difference_integrable_iff]
   exact dyadic_odd_rows_integrable_iff_congruent k H J
-
-#print axioms odd_row_logarithmic_distance
-#print axioms odd_row_distance_triangle
-#print axioms dyadic_odd_row_distance_separates_residues
 
 end GaloisForLFunctions.ExclusionOfTheCriticalState

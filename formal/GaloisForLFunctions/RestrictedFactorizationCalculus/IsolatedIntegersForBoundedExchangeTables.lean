@@ -66,7 +66,8 @@ private theorem rows_tail {D : ℕ} {B : Finset ℕ} (hB : B ∈ divisorRows D)
              split_ifs
              · have hh := (mem_filter.mp (mem_filter.mp hb).1).2
                exact one_div_le_one_div_of_le (by positivity) (by exact_mod_cast hh.le)
-             · apply (div_le_div_iff₀ hbR (by positivity : (0:ℝ)<(q:ℝ)^2)).2
+             · have hqR : (0:ℝ) < q := Nat.cast_pos.mpr (mem_Icc.mp hq).1
+               apply (div_le_div_iff₀ hbR (sq_pos_of_pos hqR)).2
                simpa only [one_mul] using (show (q:ℝ)^2 ≤ 2*b by exact_mod_cast hb0.2)
          _ = (V.card:ℝ)*weight q := by simp
          _ ≤ _ := mul_le_mul_of_nonneg_right (Nat.cast_le.mpr hc) (hw q)
@@ -90,7 +91,8 @@ private theorem rows_tail {D : ℕ} {B : Finset ℕ} (hB : B ∈ divisorRows D)
   have hall := sum_filter_add_sum_filter_not I (· ≤ K) weight
   have hcost : ∑ q ∈ I,weight q ≤ 3/(K:ℝ) := by
     change (∑ q ∈ small, weight q)+(∑ q ∈ large,weight q)=_ at hall
-    linarith only [hs,hl,hall]
+    rw [← hall]
+    exact (add_le_add hs hl).trans_eq (by ring)
   change (∑ b ∈ B,1/(b:ℝ)) ≤ _
   rw [←sum_fiberwise_of_maps_to (fun b hb => (owns b hb).1) (fun b => 1/(b:ℝ))]
   calc _ ≤ ∑ q ∈ I,(D:ℝ)*weight q := sum_le_sum fibre

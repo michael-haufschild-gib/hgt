@@ -143,8 +143,6 @@ theorem cofinal_range_of_five_prime_midpoint {P : Finset ℕ} (h5 : P.card=5)
     obtain ⟨k,hk,hs,_,hw⟩ := realize_five_prime_star h5 hP hp hU B
     exact ⟨k,hk,hs,by rwa [hcard] at hw⟩
 
-#print axioms realize_five_prime_star
-#print axioms cofinal_range_of_five_prime_midpoint
 
 end
 

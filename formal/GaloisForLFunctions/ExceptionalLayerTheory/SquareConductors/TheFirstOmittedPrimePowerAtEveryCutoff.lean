@@ -176,10 +176,4 @@ theorem signed_first_omitted_power_of_the_midpoint {J : ℕ} (hJ : 2≤J) :
   intro n
   simp only [sub_div,mul_div_assoc]
 
-#print axioms largest_proper_power_remainder
-#print axioms first_omitted_coprime_power_row
-#print axioms first_omitted_power_coefficient
-#print axioms sharp_maximal_proper_power_remainder
-#print axioms signed_first_omitted_power_of_the_midpoint
-
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

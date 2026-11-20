@@ -162,6 +162,7 @@ theorem exists_uniform_mertens_square_envelope_vk :
     simp only [Nat.cast_zero,zero_mul,Finset.Icc_eq_empty_of_lt (by decide : (0:ℕ) < 1),
       sum_empty,mul_zero,add_zero]
     positivity
+  have hN1 : 1 ≤ N := Nat.pos_of_ne_zero hN
   have hend : (N : ℝ) * mertensCell N ≤ (1 + B ^ 2) * G := by
     by_cases hsq : N * N ≤ T
     · have hroot : (N : ℝ) ≤ (T : ℝ) ^ (1 / 2 : ℝ) := by

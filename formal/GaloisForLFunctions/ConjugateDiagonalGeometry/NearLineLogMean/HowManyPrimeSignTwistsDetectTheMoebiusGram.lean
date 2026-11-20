@@ -128,6 +128,4 @@ theorem many_prime_signs_at_bounded_rank (N q : ℕ) (K : ℝ → ℝ)
   simpa only [product_rank_energy,subset_synthesis_eq_reading] using
     block_low_rank_large_fraction P (moebiusBlockCoefficient N K) q degree
 
-#print axioms many_prime_signs_detect_gram
-#print axioms many_prime_signs_at_bounded_rank
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.MoebiusGram

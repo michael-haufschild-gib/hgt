@@ -20,7 +20,7 @@ individual integrated frequency coefficients. -/
 def relativeMoebiusImbalance (N : ℕ) (T : ℝ) :=
   |∑ q ∈ primitiveRatioPairs N,integratedRatio N T q| / absoluteMoebiusOffDiagonal N T
 
-private def energy (N : ℕ) (T : ℝ) := ∫ t in (1:ℝ)..T, ‖moebiusPoly N (linePoint t)‖^2
+private def energy (N : ℕ) (T : ℝ) := ∫ t in (1:ℝ)..T, ‖moebiusPoly N (MultiscaleMollifiedZetaField.linePoint t)‖^2
 
 private def diagonal (N : ℕ) (T : ℝ) := (T-1)*(∑ n ∈ Icc 1 N,mobiusRealCoefficient n^2/n)
 
@@ -100,7 +100,7 @@ theorem rh_iff_relative_primitive_moebius_balance :
       rw [mul_assoc,←Real.rpow_add hp,show K+3-θ+(θ-1)=K+2 by ring]
     rw [hfact] at hdiff
     have hw := mul_le_mul_of_nonneg_left hlo (mul_nonneg
-      (by linarith only [hC,hθ'] : 0 ≤ C+1+θ) (Real.rpow_nonneg hp.le _))
+      (by linarith only [hC,hθ'] : 0 ≤ C+1+θ) (Real.rpow_nonneg hp.le (K + 3 - θ)))
     exact le_of_mul_le_mul_right (((energy_balance N T hA).le.trans hdiff).trans hw) hA
   · rintro ⟨K,hK,hh⟩
     refine ⟨K+2,by linarith only [hK],fun θ₀ _ => ?_⟩

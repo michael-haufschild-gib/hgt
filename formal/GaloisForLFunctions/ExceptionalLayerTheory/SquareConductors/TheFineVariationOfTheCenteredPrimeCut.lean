@@ -300,10 +300,4 @@ theorem variation_at_the_seventeen_ninths_cut {ε : ℝ} (hε : 0<ε) :
     rw [mul_pow,q,Real.rpow_add xp]
     ring
 
-#print axioms variation_at_the_seventeen_ninths_cut
-#print axioms centered_fixed_cut_step
-#print axioms centered_fixed_cut_quadratic_variation
-#print axioms centered_fixed_cut_absolute_ceiling
-#print axioms centered_fixed_cut_fine_power
-#print axioms centered_fixed_cut_absolute_variation
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

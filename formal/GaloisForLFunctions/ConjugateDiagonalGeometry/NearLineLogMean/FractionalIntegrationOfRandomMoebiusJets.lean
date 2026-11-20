@@ -55,7 +55,9 @@ theorem moebiusJetPotential_fourier (N k : ℕ) {α : ℝ} (hα : 0 < α) (ω : 
     (Complex.ofRealCLM.integrable_comp (gamma_mode_integrable hα (hl hn))).const_mul _
   have hjet (t : ℝ) : ((t^(α-1):ℝ):ℂ)*iteratedDeriv k (centeredRandomMoebius N ω) t =
       ∑ n ∈ Finset.Icc 2 N, c n*(g n t:ℂ) := by
-    rw [centeredRandomMoebius,iteratedDeriv_fun_sum (fun i hi => by fun_prop),mul_sum]
+    have hrow : centeredRandomMoebius N ω = fun z : ℂ => ∑ n ∈ Finset.Icc 2 N,
+        ((amplitude n:ℂ)*X n ω)*Complex.exp (-(Real.log n:ℂ)*z) := rfl
+    rw [hrow,iteratedDeriv_fun_sum (fun i hi => by fun_prop),mul_sum]
     apply sum_congr rfl
     intro n _
     rw [iteratedDeriv_const_mul_field,iteratedDeriv_cexp_const_mul]
@@ -72,7 +74,6 @@ theorem moebiusJetPotential_fourier (N k : ℕ) {α : ℝ} (hα : 0 < α) (ω : 
     ←Real.rpow_neg (hl hn).le]
   simp only [c,moebiusJetAmplitude,Complex.ofReal_mul,Complex.ofReal_pow,Complex.ofReal_neg]
   field_simp [hΓ]
-  <;> ring
 
 /-- The logarithmic power left on each nonconstant mode after filtering. -/
 theorem moebiusJetAmplitude_sq (k : ℕ) (α : ℝ) {n : ℕ} (hn : 2 ≤ n) :
@@ -122,9 +123,10 @@ theorem uniform_random_jet_second_moment_iff (k : ℕ) {α : ℝ} (hα : 0 < α)
   · rintro ⟨C,hC⟩
     apply summable_of_sum_range_le hf (c:=f 0+f 1+C)
     intro K
-    have hsub : range K ⊆ insert 0 (insert 1 (Finset.Icc 2 K)) := by
+    have hsub : Finset.range K ⊆ (insert 0 (insert 1 (Finset.Icc 2 K)) : Finset ℕ) := by
       intro n hn
-      simp only [mem_insert,Finset.mem_Icc,mem_range] at *
+      have hK := Finset.mem_range.mp hn
+      rw [Finset.mem_insert,Finset.mem_insert,Finset.mem_Icc]
       omega
     have h := sum_le_sum_of_subset_of_nonneg (f:=f) hsub (fun n _ _ => hf n)
     simp only [sum_insert (by simp : 0 ∉ insert 1 (Finset.Icc 2 K)),
@@ -133,8 +135,5 @@ theorem uniform_random_jet_second_moment_iff (k : ℕ) {α : ℝ} (hα : 0 < α)
   · intro hs
     exact ⟨_,fun N => hs.sum_le_tsum _ (fun n _ => hf n)⟩
 
-#print axioms moebiusJetPotential_fourier
-#print axioms moebiusJetPotential_second_moment
-#print axioms uniform_random_jet_second_moment_iff
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean

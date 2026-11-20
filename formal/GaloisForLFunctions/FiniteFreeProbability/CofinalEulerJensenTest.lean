@@ -119,8 +119,6 @@ theorem riemannHypothesis_iff_cofinal_eulerFilter :
     · obtain ⟨n, ⟨s, hs⟩, hn⟩ := (h.and_eventually hbad).exists
       exact (hn s hs).elim
 
-#print axioms cofinal_filter_obstruction
-#print axioms riemannHypothesis_iff_cofinal_eulerFilter
 
 end
 

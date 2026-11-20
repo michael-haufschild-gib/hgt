@@ -254,7 +254,7 @@ theorem moved_power_bound {θ : ℝ} (hθ : 0<θ) (h : PrefixPower θ (coprimeMo
   have two (d : ℕ) : |coprimeMoebiusSum e.modulus (min B (X/d))-
       coprimeMoebiusSum e.modulus (min A (min B (X/d)))| ≤ 2*K*(X:ℝ)^θ := by
     apply (abs_sub ..).trans
-    linarith only [bound (hmin d),bound ((min_le_right ..).trans (hmin d))]
+    linarith only [bound (hmin d),bound ((min_le_right A (min B (X/d))).trans (hmin d))]
   rw [e.moved_prefix]
   apply (abs_sub ..).trans
   linarith only [two e.w,two e.p]
@@ -269,8 +269,9 @@ theorem act_rows (e : PrimitiveExchange) {A B c : ℕ} (hc : c ∈ e.cofactors A
   have hp : c*e.p ∈ e.row A B e.p := mem_image_of_mem _ hc
   have hw : c*e.w ∈ e.row A B e.w := mem_image_of_mem _ hc
   have hno : c*e.w ∉ e.row A B e.p := fun hn => disjoint_left.mp (e.rows_disjoint A B) hn hw
+  have wpos : 0 < e.w := Nat.mul_pos e.prime_q.pos e.prime_r.pos
   exact ⟨by rw [act,if_pos hp,Nat.mul_div_cancel _ e.prime_p.pos],
-    by rw [act,if_neg hno,if_pos hw,Nat.mul_div_cancel _ (Nat.mul_pos e.prime_q.pos e.prime_r.pos)]⟩
+    by rw [act,if_neg hno,if_pos hw,Nat.mul_div_cancel _ wpos]⟩
 
 theorem act_fixed_off (e : PrimitiveExchange) {A B n : ℕ} (h : n ∉ e.moved A B) : e.act A B n=n := by
   rw [act,if_neg (fun h' => h (mem_union_left _ h')),if_neg (fun h' => h (mem_union_right _ h'))]
@@ -317,12 +318,14 @@ theorem moved_count (e : PrimitiveExchange) (A B X : ℕ) :
       · intro n hn
         obtain ⟨h,hX⟩ := mem_filter.mp hn
         obtain ⟨c,hc,rfl⟩ := mem_image.mp h
+        change c*d/d ∈ Icc 1 (X/d)
         rw [Nat.mul_div_cancel _ hd]
         exact mem_Icc.mpr ⟨(Nat.zero_le A).trans_lt (mem_Ioc.mp (mem_filter.mp hc).1).1,
           (Nat.le_div_iff_mul_le hd).2 hX⟩
       · intro n hn m hm he
         obtain ⟨c,_,rfl⟩ := mem_image.mp (mem_filter.mp hn).1
         obtain ⟨t,_,rfl⟩ := mem_image.mp (mem_filter.mp hm).1
+        change c*d/d=t*d/d at he
         rw [Nat.mul_div_cancel _ hd,Nat.mul_div_cancel _ hd] at he
         rw [he]
     simpa only [Nat.card_Icc,Nat.add_sub_cancel] using hh

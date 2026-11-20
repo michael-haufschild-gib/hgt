@@ -153,8 +153,6 @@ theorem riemannHypothesis_iff_subquadratic_euler_words :
     exact riemannHypothesis_iff_vanishing_euler_cost.mpr ⟨n,w,hn,
       squeeze_zero (fun _ => cost_pos _) (fun _ => eulerCollisionCost_degree_bound _ _) hw,hs⟩
 
-#print axioms riemannHypothesis_iff_vanishing_euler_cost
-#print axioms riemannHypothesis_iff_subquadratic_euler_words
 
 end
 

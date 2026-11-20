@@ -65,7 +65,7 @@ private theorem geometric_area_weight {D j : ℕ} (hd : j+1 ∣ D) (i : ℕ) :
 when winding and the number of distinct sites are both observed. No
 positive multiplicity occurs on both sides. -/
 theorem finite_derivative_schedule_has_disjoint_histograms (J : Finset ℕ) :
-    ∃ (N : ℕ) (m a b : Fin N → ℕ), StrictMono m ∧ (∀ i, 0<m i) ∧ a≠b ∧
+    ∃ (N : ℕ) (m a b : Fin N → ℕ), StrictMono m ∧ (∀ i, 0 < m i) ∧ a≠b ∧
       (∀ i, a i=0 ∨ b i=0) ∧ (∑ i, a i)=(∑ i, b i) ∧
       (∑ i, a i*m i)=(∑ i, b i*m i) ∧
       ∀ j ∈ J, (∑ i, (a i:ℝ)*(m i:ℝ)^(2/((j+1:ℕ):ℝ)))=

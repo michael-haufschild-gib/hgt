@@ -30,7 +30,7 @@ theorem unit_decrements_have_sum (h : CompactPulse) (T : ℝ) :
         tailEnergy h (T+n) - tailEnergy h (T+((n+1:ℕ):ℝ)) := by
       rw [← tailEnergy_sub_step h _ zero_le_one, Nat.cast_succ, add_assoc]
     simp_rw [he]
-    simpa only [Nat.cast_zero, add_zero] using
+    simpa only [Function.comp_apply, Nat.cast_zero, add_zero] using
       (sum_range_sub' (fun n : ℕ => tailEnergy h (T+n)) k).symm
 
 /-- Interpolation of a unit-grid upper bound for a decreasing tail. -/
@@ -60,8 +60,7 @@ theorem tail_decay_iff_unit_decrement_decay (h : CompactPulse) {b : ℝ} (hb : 0
     have hq : 0 ≤ q := (Real.exp_pos _).le
     have hq₁ : q < 1 := Real.exp_lt_one_iff.mpr (neg_lt_zero.mpr hb)
     have hC₀ : 0 ≤ C := by
-      simpa only [Nat.cast_zero, mul_zero, Real.exp_zero, mul_one] using
-        (stepDecrement_nonneg h 0 1).trans (hC 0)
+      exact (stepDecrement_nonneg h 0 1).trans (by simpa using hC 0)
     let D := C*(1-q)⁻¹
     have hD : 0 ≤ D := mul_nonneg hC₀ (inv_nonneg.mpr (sub_nonneg.mpr hq₁.le))
     refine ⟨D*Real.exp b, tail_from_samples h hb.le hD (fun n => ?_)⟩
@@ -85,7 +84,7 @@ theorem summable_weighted_decrements_of_envelope (h : CompactPulse) {b c : ℝ}
     Summable (fun n : ℕ => Real.exp (c*n)*stepDecrement h n 1) := by
   obtain ⟨C,hC⟩ := henv
   apply ((Real.summable_exp_nat_mul_iff.mpr (sub_neg.mpr hcb)).mul_left C).of_nonneg_of_le
-    (fun n => mul_nonneg (Real.exp_pos _).le (stepDecrement_nonneg h n 1))
+    (fun n : ℕ => mul_nonneg (Real.exp_pos (c*n)).le (stepDecrement_nonneg h n 1))
   intro n
   calc _ ≤ Real.exp (c*n)*(C*Real.exp (-b*n)) := mul_le_mul_of_nonneg_left (hC n) (Real.exp_pos _).le
        _ = C*Real.exp ((n:ℝ)*(c-b)) := by
@@ -126,9 +125,5 @@ theorem rh_iff_unit_radiation_moments :
       apply (tailEnergy_anti h hT).trans
       apply le_mul_of_one_le_right (tailEnergy_nonneg _ _)
       exact Real.one_le_exp (mul_nonneg (neg_nonneg.mpr (le_of_not_gt hb)) hT)
-
-#print axioms unit_decrements_have_sum
-#print axioms tail_decay_iff_unit_decrement_decay
-#print axioms rh_iff_unit_radiation_moments
 
 end GaloisForLFunctions.BlackHoleRingdown

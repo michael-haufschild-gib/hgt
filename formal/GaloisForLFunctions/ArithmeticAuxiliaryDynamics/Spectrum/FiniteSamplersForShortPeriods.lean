@@ -266,13 +266,6 @@ theorem integral_sampler_mass_divisibility (K : ℕ) (p : ℤ[X])
   obtain ⟨q,hq⟩ := (Polynomial.map_dvd_map (Int.castRingHom ℂ) Int.cast_injective hm).mp hd
   exact ⟨q.eval 1,by rw [hq,Polynomial.eval_mul,integralShortSampler_mass]⟩
 
-#print axioms equidistributesThrough_iff_dvd
-#print axioms shortPeriodFilter_eq_cyclotomics
-#print axioms finite_sampler_minimum
-#print axioms shortPeriodFilter_quadratic
-#print axioms positiveShortSampler_uniform
-#print axioms integralShortSampler_mass
-#print axioms integral_sampler_mass_divisibility
 
 end
 

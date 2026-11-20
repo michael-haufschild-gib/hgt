@@ -157,6 +157,4 @@ theorem seventeen_ninths_cut_square_variation_constant :
   have triangle := abs_sub_le (v/((K N:ℝ)^3*Real.log (K N))) m (innerPrimeSlope^2/3)
   linarith only [triangle,near,close,err]
 
-#print axioms centered_cut_square_log_remainder
-#print axioms seventeen_ninths_cut_square_variation_constant
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

@@ -84,9 +84,11 @@ theorem displacementGauge_regular (Z : ZeroConfig) (h : ApproachesLine Z) :
     ((mul_nonneg (sub_nonneg.mpr hxy) (slope_mem Z x).1).trans (hinc hxy).1)
   refine ⟨by simp [displacementGauge],convexOn_of_slope_mono_adjacent convex_univ ?_,?_,?_⟩
   · intro x y z _ _ hxy hyz
-    refine ((div_le_iff₀ (sub_pos.mpr hxy)).mpr ?_).trans ((le_div_iff₀ (sub_pos.mpr hyz)).mpr ?_)
-    · simpa only [mul_comm (layerSlope Z y)] using (hinc hxy.le).2
-    · simpa only [mul_comm (layerSlope Z y)] using (hinc hyz.le).1
+    apply le_trans (b:=layerSlope Z y)
+    · apply (div_le_iff₀ (sub_pos.mpr hxy)).mpr
+      simpa only [mul_comm (layerSlope Z y)] using (hinc hxy.le).2
+    apply (le_div_iff₀ (sub_pos.mpr hyz)).mpr
+    simpa only [mul_comm (layerSlope Z y)] using (hinc hyz.le).1
   · intro x hx y _ hxy
     let m := (x+y)/2
     have hxm : x < m := by dsimp only [m]; linarith only [hxy]
@@ -134,8 +136,11 @@ theorem finite_sum_displacementGauge (Z : ZeroConfig) (h : ApproachesLine Z)
       linarith only [show (T.card:ℝ) ≤ (closedDepthLayer Z t).ncard by exact_mod_cast hn]
     · simp
   rw [hs]
+  have hInt : IntervalIntegrable (fun t => ∑ z ∈ S, f z t) volume 0 (1/2) := by
+    rw [show (fun t => ∑ z ∈ S, f z t) = ∑ z ∈ S, f z by funext t; exact (Finset.sum_apply t S f).symm]
+    exact IntervalIntegrable.sum S fun z _ => hi z
   have hd := intervalIntegral.integral_mono_on (μ:=volume) (by norm_num : (0:ℝ) ≤ 1/2)
-    (IntervalIntegrable.sum S fun z _ => hi z) intervalIntegrable_const (fun t _ => hpt t)
+    hInt intervalIntegrable_const (fun t _ => hpt t)
   simpa only [intervalIntegral.integral_const,sub_zero,smul_eq_mul,mul_one] using hd
 
 /-- A convex gauge of slope at most one, positive at every positive
@@ -164,7 +169,7 @@ theorem approach_iff_convex_gauge (Z : ZeroConfig) :
     have hz (z : ℂ) (hz : z ∈ S) := hU (hf.mem_toFinset.mp hz)
     have hu := hm S (fun z h => (hz z h).1)
     have hh := sum_le_sum (s:=S) (f:=fun _ => g t) fun z h =>
-      hs.monotoneOn ht.le (show rightDisplacement z ∈ Set.Ici 0 from le_max_right _ _)
+      hs.monotoneOn ht.le (Set.mem_Ici.mpr (show 0 ≤ rightDisplacement z from le_max_right _ _))
         ((show t < z.re-1/2 by linarith only [(hz z h).2]).le.trans (le_max_left _ _))
     simp only [sum_const,nsmul_eq_mul,hcS] at hh
     linarith only [hu,hh,(div_lt_iff₀ hgt).mp hk]
@@ -174,7 +179,5 @@ theorem actual_approach_iff_convex_gauge : _root_.RHTower.BacklundConverse.Zeros
   rw [←ZetaAbscissa.zetaZeroConfig_approachesLine_iff]
   exact approach_iff_convex_gauge _
 
-#print axioms finite_sum_displacementGauge
-#print axioms actual_approach_iff_convex_gauge
 
 end GaloisForLFunctions.ZeroConfigurationGeometry.ConfigAbscissa

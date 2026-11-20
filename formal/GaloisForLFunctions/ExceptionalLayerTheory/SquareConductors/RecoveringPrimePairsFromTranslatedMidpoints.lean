@@ -247,9 +247,4 @@ theorem binary_log_noise_threshold_attained {n : ℕ} (hn : 0<n) :
     rw [endpoint_readings hn j hj,show -logGap/2- -logGap=logGap/2 by ring,
       abs_of_nonneg (half_pos logGap_pos).le]
 
-#print axioms identify_binary_log_window
-#print axioms noisy_binary_log_identification
-#print axioms prime_pair_from_noisy_midpoint_step
-#print axioms recover_prime_sites_at_every_center
-#print axioms binary_log_noise_threshold_attained
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval.MidpointFourier

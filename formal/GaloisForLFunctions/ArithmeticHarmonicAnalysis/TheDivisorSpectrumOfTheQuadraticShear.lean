@@ -128,7 +128,5 @@ theorem quadratic_shear_full_divisor_spectrum (M : ℕ+) (j a : ZMod (M:ℕ)) :
   rw [gcd_stratum_ramanujan d.property m]
   split_ifs <;> simp only [zero_mul]
 
-#print axioms gcd_stratum_ramanujan
-#print axioms quadratic_shear_full_divisor_spectrum
 end
 end GaloisForLFunctions.ArithmeticHarmonicAnalysis

@@ -202,9 +202,4 @@ theorem opposite_null_pair_p_harmonic_iff (q : Fin d → ℝ) (hq : q≠0) (m : 
   simp only [hneq,or_false]
   norm_cast
 
-#print axioms null_wave_cleared_p_laplacian
-#print axioms null_pair_p_harmonic_iff
-#print axioms null_pair_p_harmonic_iff_radial_equality
-#print axioms opposite_null_pair_p_harmonic_iff
-
 end GaloisForLFunctions.RepresentationLifting.Spinor

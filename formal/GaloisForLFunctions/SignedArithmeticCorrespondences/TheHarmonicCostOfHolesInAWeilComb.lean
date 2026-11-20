@@ -204,11 +204,5 @@ theorem low_Weil_energy_forces_nonzero_runs {Q r : ℕ} (hQ : 0<Q) (hr : 0<r) (B
   rw [combForm_of_subset hsub hz,← hE] at hlow
   exact hlow.not_ge (hN T (hsub.trans hs) hgap c)
 
-#print axioms combForm_forward_holes_floor
-#print axioms combForm_no_run_floor
-#print axioms low_energy_no_run_scale_bound
-#print axioms harmonic_holes_of_no_run
-#print axioms eventually_comb_floor_of_no_run
-#print axioms low_Weil_energy_forces_nonzero_runs
 end
 end GaloisForLFunctions.SignedArithmeticCorrespondences

@@ -22,7 +22,7 @@ private def radicalWeight (p m : ℕ) := (m:ℝ)^((p:ℝ)⁻¹)
 with multiplicative dependencies. Only distinct sums are separated. -/
 theorem quantitative_radical_sum {W p : ℕ} (hp : 0<p) (m : Fin W → ℕ) (c : Fin W → ℤ)
     (hn : (∑ i, (c i:ℝ)*(m i:ℝ)^((p:ℝ)⁻¹))≠0) :
-    ((1+∑ i, |(c i:ℝ)|*(m i:ℝ)^((p:ℝ)⁻¹))^(p^W-1))⁻¹ ≤
+    ((1+∑ i, |(c i:ℝ)| * (m i:ℝ)^((p:ℝ)⁻¹))^(p^W-1))⁻¹ ≤
       |∑ i, (c i:ℝ)*(m i:ℝ)^((p:ℝ)⁻¹)| := by
   classical
   let x (i : Fin W) : ℂ := (radicalWeight p (m i):ℂ)
@@ -53,7 +53,7 @@ theorem quantitative_radical_sum {W p : ℕ} (hp : 0<p) (m : Fin W → ℕ) (c :
     rfl
   have hv : v≠0 := fun he => hn (Complex.ofReal_injective (by rw [←hreal,he,map_zero,Complex.ofReal_zero]))
   let β : 𝓞 K := ⟨v,IsIntegral.sum _ fun i _ => (isIntegral_intCast (c i)).mul (hint i)⟩
-  let B := 1+∑ i, |(c i:ℝ)|*radicalWeight p (m i)
+  let B := 1+∑ i, |(c i:ℝ)| * radicalWeight p (m i)
   have hB : 1≤B := le_add_of_nonneg_right (Finset.sum_nonneg (fun i _ =>
     mul_nonneg (abs_nonneg _) (Real.rpow_nonneg (Nat.cast_nonneg _) _)))
   have hc (σ : K →+* ℂ) (i : Fin W) : ‖σ (b i)‖=radicalWeight p (m i) := by
@@ -89,9 +89,9 @@ theorem prime_area_gap {W p : ℕ} (hp : p.Prime) (hW : W<2^p)
       ∑ i, (c i:ℝ)*(m i:ℝ)^((p:ℝ)⁻¹) := by
     simp only [boundedOrderMoment,divisorAreaMoment,←Finset.sum_sub_distrib,←mul_sub,
       prime_order_weight hp.pos,c,m,Int.cast_sub,Int.cast_natCast,mul_comm]
-  have hsum : 1+∑ i, |(c i:ℝ)|*(m i:ℝ)^((p:ℝ)⁻¹)≤1+2*(W:ℝ)^2 := by
-    apply add_le_add_left
-    have hbound (i : Fin W) : |(c i:ℝ)|*(m i:ℝ)^((p:ℝ)⁻¹) ≤ (W:ℝ)*2 := by
+  have hsum : 1+∑ i, |(c i:ℝ)| * (m i:ℝ)^((p:ℝ)⁻¹)≤1+2*(W:ℝ)^2 := by
+    refine add_le_add le_rfl ?_
+    have hbound (i : Fin W) : |(c i:ℝ)| * (m i:ℝ)^((p:ℝ)⁻¹) ≤ (W:ℝ)*2 := by
       have h₁ : |(c i:ℝ)|≤W := by
         have ha : ((a i).val:ℝ)≤W := by exact_mod_cast Nat.le_of_lt_succ (a i).isLt
         have hb : ((b i).val:ℝ)≤W := by exact_mod_cast Nat.le_of_lt_succ (b i).isLt

@@ -230,7 +230,4 @@ theorem asymptotic_number_of_distinct_prime_midpoints :
     change _ ≤ (primeMidpointClock N:ℝ)*Real.log N/N + Real.log N/N
     linarith only [hm]
 
-#print axioms distinct_midpoint_count_error
-#print axioms asymptotic_number_of_distinct_prime_midpoints
-
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

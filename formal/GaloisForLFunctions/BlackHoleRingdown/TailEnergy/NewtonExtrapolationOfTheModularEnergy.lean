@@ -205,7 +205,7 @@ theorem radiationRemainder_bounds (h : CompactPulse) (r k : ℕ) :
     apply pow_le_pow_left₀ (Real.exp_pos _).le
     apply Real.exp_le_exp.mpr
     push_cast
-    linarith only [Nat.cast_nonneg (R := ℝ) i]
+    linarith only [Nat.cast_nonneg (α := ℝ) i]
 
 /-- Every unit-time release can be recovered successively from arbitrarily high
 integer Laplace samples. -/
@@ -236,10 +236,6 @@ theorem radiationSample_identifies_releases (g h : CompactPulse) :
     funext k
     exact tsum_congr fun i => by rw [he i]
 
-#print axioms radiationSample_identifies_releases
-#print axioms radiationSample_signed_difference
-#print axioms radiationNewton_hasSum_iff
-#print axioms rh_iff_radiationNewton
 
 end
 

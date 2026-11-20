@@ -129,8 +129,5 @@ theorem rankTwo_pair_collision_probability :
   simp only [Nat.cast_add,Nat.cast_mul,Nat.cast_pow,Nat.cast_sub hq,Nat.cast_one,Nat.cast_choose_two]
   field_simp [hn] <;> ring
 
-#print axioms rankTwo_pair_collision_probability
-#print axioms rankTwo_spectral_power_sum
-#print axioms card_rankTwo_spectral_replicas
 end
 end GaloisForLFunctions.RepresentationLifting

@@ -130,6 +130,4 @@ theorem gcd_width_integer_enclosure (r m n J : ℕ) (hn : n ≤ m) (hJ : 0<J) :
   change E*_+(n:ℝ)*(n*E)=E*_+E*(n:ℝ)^2
   ring
 
-#print axioms gcd_width_integer_enclosure
-
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

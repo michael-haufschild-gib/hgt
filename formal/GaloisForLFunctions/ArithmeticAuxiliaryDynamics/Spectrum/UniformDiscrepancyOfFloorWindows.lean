@@ -199,9 +199,6 @@ theorem floor_primitive_displacement_le {c : ℕ →₀ ℤ} {m B K : ℕ} (hP :
   rw [← floor_row_window_primitive hP.zero hP.balanced]
   exact floor_window_discrepancy_le hP hK hA n L
 
-#print axioms abs_le_of_sinc_mean_zero
-#print axioms floor_window_discrepancy_le
-#print axioms floor_primitive_displacement_le
 
 end
 

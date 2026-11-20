@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheResponseOfTheUnitaryCutToBlockActivity
+import Mathlib.Algebra.BigOperators.Field
 
 /-!
 # Independent occupation probabilities on the unitary divisor cut
@@ -42,7 +43,12 @@ theorem unitary_pattern_mass_erase (P S : Finset ℕ) (p : ℕ) (u : ℕ → ℝ
     unitaryBlockPatternMass (P.erase p) u (S.erase p)=unitaryBlockPatternMass (P.erase p) u S := by
   apply prod_congr rfl
   intro q hq
-  simp only [mem_erase,(mem_erase.mp hq).1,true_and]
+  have same : q∈S.erase p ↔ q∈S := ⟨fun h => (mem_erase.mp h).2,
+    fun h => mem_erase.mpr ⟨(mem_erase.mp hq).1,h⟩⟩
+  change (if q∈S.erase p then u q else 1-u q) = (if q∈S then u q else 1-u q)
+  by_cases hit : q∈S
+  · rw [if_pos (same.mpr hit),if_pos hit]
+  · rw [if_neg (fun h => hit (same.mp h)),if_neg hit]
 
 /-- Separate a single Bernoulli factor from the full pattern mass. -/
 theorem unitary_pattern_mass_at_site {P : Finset ℕ} {p : ℕ} (hp : p∈P) (u : ℕ → ℝ) (S : Finset ℕ) :
@@ -93,6 +99,7 @@ theorem unitary_independent_cut_at_common_activity (k : ℕ) {z : ℝ} (hz : 0�
     split_ifs
     · rfl
     · field_simp [den]
+      ring
   have cap : P.filter (·∈S)=S := by
     ext q
     exact ⟨fun h => (mem_filter.mp h).2,fun h => mem_filter.mpr ⟨sub h,h⟩⟩
@@ -137,9 +144,4 @@ theorem unitary_cut_pattern_readout {k : ℕ} (T : Finset ℕ) (hT : T⊆k.prime
               sum_congr rfl fun _ hs => deterministic_pattern (mem_powerset.mp (mem_filter.mp hs).1) hT
        _ = _ := by simp
 
-#print axioms unitary_cut_single_block_response
-#print axioms unitary_block_strict_response_iff
-#print axioms unitary_independent_cut_at_common_activity
-#print axioms unitary_cut_pattern_readout
-#print axioms unitary_pivot_pattern_readout
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

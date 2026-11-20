@@ -53,8 +53,11 @@ private theorem continuum_at_finite_gain (M N : ℕ → ℕ) (s : ℕ → ℝ)
   dsimp only at he
   rw [modulation_response_integral (hs k) (hq k)] at he
   have hbase : 0 < 1+q k := add_pos zero_lt_one (hq k)
-  simpa only [moment,q,Real.norm_eq_abs,Pi.inv_apply,Function.comp_def,modulationLogGain,
-    fractionalModulationLoss,Real.rpow_def_of_pos hbase,div_eq_mul_inv,mul_comm (s k)] using he
+  have hr : fractionalModulationLoss (s k) (M k) (N k) = Real.exp (modulationLogGain (s k) (M k) (N k))-1 := by
+    change (1+q k)^(s k)-1=Real.exp (s k*Real.log (1+q k))-1
+    rw [Real.rpow_def_of_pos hbase,mul_comm (s k)]
+  rw [hr] at he
+  simpa only [moment,q,Real.norm_eq_abs,Pi.inv_apply,Function.comp_def,div_eq_mul_inv] using he
 
 /-- The exact mean-square reading at finite nonzero log gain and vanishing
 bandwidth. Fractional order may grow without bound. -/
@@ -93,8 +96,9 @@ theorem moebius_energy_at_collapsing_bandwidth (M N : ℕ → ℕ) (s : ℕ → 
     intro k
     rw [moment_rewrite (hp k)]
     change ((1+q k)*Real.exp (a*L k)-1)/(a*(q k*s k)+q k) = _
-    dsimp only [L,modulationLogGain]
-    congr 1 <;> ring_nf
+    rw [show a*L k=(a*s k)*Real.log (1+q k) from (mul_assoc _ _ _).symm]
+    congr 1
+    ring
   have hj := (((hm 2 zero_lt_two).sub ((hm 1 zero_lt_one).const_mul 2)).add_const 1)
   simp only [one_mul] at hj
   have h := (continuum_at_finite_gain M N s hM hN hs hcut hL).add hj
@@ -141,7 +145,5 @@ theorem moebius_energy_at_expanding_bandwidth (M N : ℕ → ℕ) (s : ℕ → �
   rw [show Real.exp (2*ℓ)-2*Real.exp ℓ+1=(Real.exp ℓ-1)^2 by rw [two_mul ℓ,Real.exp_add]; ring] at h
   simpa only [q,zero_add,sub_add_cancel] using h
 
-#print axioms moebius_energy_at_collapsing_bandwidth
-#print axioms moebius_energy_at_expanding_bandwidth
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField.RandomDirichletJets

@@ -60,7 +60,7 @@ def powerFreeClassCharge {ι : Type*} (p : ℕ) (S : Finset ι) (m : ι → ℕ)
 /-- A signed sum of p-th roots vanishes precisely when the integer
 charge vanishes separately in every occupied power-free class. -/
 theorem radical_sum_zero_iff_class_charges {ι : Type*} {p : ℕ} (hp : p.Prime)
-    (S : Finset ι) (m : ι → ℕ) (hm : ∀ i ∈ S, 0<m i) (a : ι → ℤ) :
+    (S : Finset ι) (m : ι → ℕ) (hm : ∀ i ∈ S, 0 < m i) (a : ι → ℤ) :
     (∑ i ∈ S, (a i:ℝ)*(m i:ℝ)^((p:ℝ)⁻¹))=0 ↔
       ∀ d ∈ S.image (fun i => multiplicityPowerFreePart p (m i)), powerFreeClassCharge p S m a d=0 := by
   classical

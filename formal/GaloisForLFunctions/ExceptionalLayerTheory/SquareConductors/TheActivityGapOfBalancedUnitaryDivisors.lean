@@ -25,21 +25,22 @@ theorem unitary_rank_card_partition (k j : ℕ) :
     simp only [mem_filter,mem_powersetCard]
     have sub (h : T∈S) : T⊆k.primeFactors := mem_powerset.mp (mem_filter.mp h).1
     tauto
-  have split := sum_filter_add_sum_filter_not (k.primeFactors.powersetCard j) (·∈S) (fun _ => (1:ℕ))
+  have split := card_filter_add_card_filter_not (s:=k.primeFactors.powersetCard j) (·∈S)
   rw [filter_eq] at split
-  simpa only [smallUnitaryRankCount,unitaryDefectLayer,S,sum_const,nsmul_eq_mul,mul_one,card_powersetCard] using split
+  simpa only [smallUnitaryRankCount,unitaryDefectLayer,S,card_powersetCard] using split
 
 /-- At every rank through the middle, the smaller side has at least
 the rank mass of a full face. -/
 theorem unitary_cut_low_rank_dominates_face {k j : ℕ} (hk : 1<k) (hj : j≤k.primeFactors.card/2) :
-    (k.primeFactors.card-1).choose j≤smallUnitaryRankCount k j := by
+    (k.primeFactors.card-1).choose j ≤ smallUnitaryRankCount k j := by
   cases j with
   | zero =>
     have small : ∅∈smallUnitarySubsets k := by
       refine mem_filter.mpr ⟨mem_powerset.mpr (empty_subset _),?_⟩
       rw [unitarySubset_small_iff_square (by omega) (empty_subset _)]
       simpa only [primePowerSubset,prod_empty,one_pow] using hk.le
-    simpa only [Nat.choose_zero_right] using (show 0<smallUnitaryRankCount k 0 from
+    rw [Nat.choose_zero_right]
+    exact Nat.succ_le_of_lt (show 0 < smallUnitaryRankCount k 0 from
       card_pos.mpr ⟨∅,mem_filter.mpr ⟨small,card_empty⟩⟩)
   | succ j =>
     have split := unitary_rank_card_partition k (j+1)
@@ -48,6 +49,10 @@ theorem unitary_cut_low_rank_dominates_face {k j : ℕ} (hk : 1<k) (hj : j≤k.p
     rw [hm,Nat.choose_succ_succ] at split
     rw [hm,Nat.succ_sub_one,Nat.succ_sub_one] at cap
     rw [hm,Nat.succ_sub_one]
+    change m.choose j.succ ≤ smallUnitaryRankCount k j.succ
+    change smallUnitaryRankCount k j.succ+(unitaryDefectLayer k j.succ).card =
+      m.choose j + m.choose j.succ at split
+    change (unitaryDefectLayer k j.succ).card ≤ m.choose j at cap
     omega
 
 private theorem sum_by_rank (F : Finset (Finset ℕ)) (r : ℕ) (le : ∀ S∈F, S.card≤r) (w : ℕ → ℝ) :
@@ -96,12 +101,13 @@ theorem unitary_cut_rank_price_gap {k p : ℕ} (hk : 1<k) (hp : p∈k.primeFacto
     rwa [eq] at h
   have aflip {S : Finset ℕ} (hs : S⊆P) : P \ S∈A ↔ S∉A := by
     rw [face sdiff_subset,face hs,mem_sdiff]
-    simp only [hp,true_and,not_not]
+    simp only [show p∈P from hp,true_and,not_not]
   have small := sym_price F (fun h => subF h) (fun h => unitary_complement_mem_small_iff hk h)
   have other := sym_price A (fun h => subA h) (fun h => aflip h)
   have cancel : (∑ S ∈ F,u S.card)=∑ S ∈ A,u S.card := by linarith only [small,other]
   have gain (T : Finset (Finset ℕ)) : (∑ S ∈ T,(w S.card-u S.card))=
-      (∑ S ∈ T,w S.card)-∑ S ∈ T,u S.card := sum_sub_distrib
+      (∑ S ∈ T,w S.card)-∑ S ∈ T,u S.card :=
+    sum_sub_distrib (fun S : Finset ℕ => w S.card) (fun S : Finset ℕ => u S.card)
   have ac : B.card=r-1 := card_erase_of_mem hp
   have count (j : ℕ) : (A.filter (fun S => S.card=j)).card=(r-1).choose j := by
     have eq : A.filter (fun S => S.card=j)=B.powersetCard j := by
@@ -115,8 +121,7 @@ theorem unitary_cut_rank_price_gap {k p : ℕ} (hk : 1<k) (hp : p∈k.primeFacto
     ring
   rw [lhs,expand F (fun _ hs => card_le_card (subF hs)),expand A (fun _ hs => card_le_card (subA hs)),←sum_sub_distrib]
   refine sum_congr rfl fun j _ => ?_
-  rw [count,sub_mul]
-  rfl
+  simp only [count,sub_mul,smallUnitaryRankCount,F,u]
 
 /-- Exact rank expansion of the activity excess over a full face,
 before dividing by the total partition function. -/
@@ -244,11 +249,4 @@ theorem unitary_cut_face_equality_iff {k : ℕ} (hk : 1<k) {z : ℝ} (hz : 0<z) 
     simpa only [prod_const,card_erase_of_mem hp] using
       (prod_one_add (f:=fun _ : ℕ => z) (k.primeFactors.erase p)).symm
 
-#print axioms balanced_unitary_activity_gap
-#print axioms balanced_unitary_rank_price_gap
-#print axioms unitary_cut_face_equality_iff
-#print axioms unitary_cut_low_rank_dominates_face
-#print axioms unitary_cut_rank_price_gap
-#print axioms unitary_cut_activity_gap_expansion
-#print axioms unitary_cut_probability_dominates_face
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

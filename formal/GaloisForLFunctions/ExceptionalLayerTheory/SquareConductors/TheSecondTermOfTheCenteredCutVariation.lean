@@ -172,7 +172,4 @@ theorem seventeen_ninths_cut_variation_second_term :
   rw [Real.dist_eq]
   exact hj _ (((le_max_right 1 j).trans late).trans geo.1) N ((le_max_left 1 j).trans late) geo.2
 
-#print axioms seventeen_ninths_cut_variation_second_term
-#print axioms centered_cut_variation_decomposition
-#print axioms centered_cut_variation_second_term
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

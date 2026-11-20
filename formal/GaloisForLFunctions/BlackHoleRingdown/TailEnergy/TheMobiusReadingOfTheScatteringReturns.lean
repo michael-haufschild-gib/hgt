@@ -119,8 +119,6 @@ theorem finite_mobius_scattering_returns (h : CompactPulse) (B : ℝ) :
     _ = _ := hconv.trans (sum_congr rfl fun n hn =>
       congrArg (· * bounce h (t-echoDelay n)) (hinv n (mem_Icc.mp hn).1))
 
-#print axioms finiteDelayReading_convolution
-#print axioms finite_mobius_scattering_returns
 
 end
 end GaloisForLFunctions.BlackHoleRingdown.ReturnCancellation

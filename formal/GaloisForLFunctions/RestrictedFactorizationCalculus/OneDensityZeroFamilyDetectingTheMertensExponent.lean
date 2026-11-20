@@ -99,7 +99,7 @@ private theorem stage_witness_exists (j Z : ℕ) {θ : ℝ} (hθ : 0<θ)
 private def buildStages (s : ℕ → ℝ) (hs : ∀ j,0<s j ∧ ¬PrefixPower (s j) (coprimeMoebiusSum 1)) :
     ℕ → ExchangeStage
   | 0 => (stage_witness_exists 0 0 (hs 0).1 (hs 0).2).choose
-  | j+1 => (stage_witness_exists (j+1) (buildStages s hs j).right (hs _).1 (hs _).2).choose
+  | j+1 => (stage_witness_exists (j+1) (buildStages s hs j).right (hs (j+1)).1 (hs (j+1)).2).choose
 
 private theorem stages_spec (s : ℕ → ℝ) (hs : ∀ j,0<s j ∧ ¬PrefixPower (s j) (coprimeMoebiusSum 1)) (j : ℕ) :
     StageWitness (buildStages s hs j) j (if j=0 then 0 else (buildStages s hs (j-1)).right) (s j) := by
@@ -107,7 +107,7 @@ private theorem stages_spec (s : ℕ → ℝ) (hs : ∀ j,0<s j ∧ ¬PrefixPowe
   | zero => exact (stage_witness_exists 0 0 (hs 0).1 (hs 0).2).choose_spec
   | succ j =>
     simpa only [Nat.succ_ne_zero,if_false,Nat.succ_sub_one,buildStages] using
-      (stage_witness_exists (j+1) (buildStages s hs j).right (hs _).1 (hs _).2).choose_spec
+      (stage_witness_exists (j+1) (buildStages s hs j).right (hs (j+1)).1 (hs (j+1)).2).choose_spec
 
 private def SparseSupport (S : ℕ → ExchangeStage) : Set ℕ := {n | ∃ j,n ∈ (S j).vertices}
 private def sparseSwitch (S : ℕ → ExchangeStage) (n : ℕ) :=
@@ -142,7 +142,8 @@ private theorem sparse_law {S : ℕ → ExchangeStage}
   by_cases hn : n ∈ SparseSupport S
   · obtain ⟨j,hj⟩ := hn
     have h := (S j).pair.act_on hj
-    rw [sparse_eval sep hj,sparse_eval sep h.1]
+    have image : (S j).swap n ∈ (S j).vertices := h.1
+    rw [sparse_eval sep hj,sparse_eval sep image]
     exact ⟨h.2.1,Or.inr h.2.2⟩
   · have he : sparseSwitch S n=n := dif_neg hn
     exact ⟨(congrArg _ he).trans he,Or.inl he⟩
@@ -156,7 +157,8 @@ private theorem latest_spec {S : ℕ → ExchangeStage} (hindex : ∀ j,j<(S j).
     (S k).left < X ∧ ∀ j,(S j).left < X → j ≤ k := by
   refine ⟨(mem_filter.mp (max'_mem _ hn)).2,?_⟩
   intro j hj
-  exact le_max' _ _ (mem_filter.mpr ⟨mem_range.mpr (by have := hindex j; omega),hj⟩)
+  exact le_max' (latestCandidates S X) j (mem_filter.mpr
+    ⟨mem_range.mpr (Nat.lt_succ_of_lt ((hindex j).trans hj)),hj⟩)
 
 private theorem sparse_count {S : ℕ → ExchangeStage} (hindex : ∀ j,j<(S j).left)
     (sep : ∀ {i j : ℕ},i<j → (S i).right<(S j).left)
@@ -172,6 +174,8 @@ private theorem sparse_count {S : ℕ → ExchangeStage} (hindex : ∀ j,j<(S j)
     ⟨N+1,mem_filter.mpr ⟨mem_range.mpr (by have := hindex (N+1); omega),hlX⟩⟩
   let k := (latestCandidates S X).max' hin
   obtain ⟨hkX,hlast⟩ := latest_spec hindex hin
+  change (S k).left < X at hkX
+  change ∀ j, (S j).left < X → j ≤ k at hlast
   have hNk : N+1 ≤ k := hlast _ hlX
   obtain ⟨j,hj⟩ := Nat.exists_eq_succ_of_ne_zero (by omega : k ≠ 0)
   have hsub : (Icc 0 X).filter (· ∈ SparseSupport S) ⊆
@@ -198,7 +202,9 @@ private theorem sparse_count {S : ℕ → ExchangeStage} (hindex : ∀ j,j<(S j)
   have per {d : ℕ} (hd : k+1 ≤ d) : ((X/d:ℕ):ℝ)*((k:ℝ)+1) ≤ X := by
     have hh := (Nat.mul_le_mul_left (X/d) hd).trans (Nat.div_mul_le_self ..)
     exact_mod_cast hh
-  have hold : ((S j).right:ℝ)*((k:ℝ)+1) ≤ X := by exact_mod_cast (Nat.mul_comm ..) ▸ hpay
+  have hold : ((S j).right:ℝ)*((k:ℝ)+1) ≤ X := by
+    rw [mul_comm]
+    exact_mod_cast hpay
   have all := (Nat.cast_le (α := ℝ)).mpr hn
   push_cast only [Nat.cast_add] at all
   change (prescribedCount (SparseSupport S) X:ℝ) ≤ _ at all
@@ -245,7 +251,9 @@ private theorem changing_eq_crossing (F : ℕ → ℕ) (hF : ∀ n,F (F n)=n ∧
     exact ⟨fun h => by obtain ⟨a,ha,rfl⟩ := mem_image.mp h; exact (inner ha).1,
       fun h => mem_image.mpr ⟨F n,(inner h).1,(hF n).1⟩⟩
   have hinj : Function.Injective F := (show Function.Involutive F from fun n => (hF n).1).injective
-  have he : ∑ n ∈ D,(μ (F n):ℝ)=∑ n ∈ D,(μ n:ℝ) := by rw [←sum_image hinj.injOn,imageEq]
+  have he : ∑ n ∈ D,(μ (F n):ℝ)=∑ n ∈ D,(μ n:ℝ) := by
+    calc _ = ∑ n ∈ D.image F,(μ n:ℝ) := (sum_image (f := fun n => (μ n:ℝ)) hinj.injOn).symm
+         _ = _ := by rw [imageEq]
   have neg : ∑ n ∈ D,(μ (F n):ℝ)= -∑ n ∈ D,(μ n:ℝ) := by
     rw [←sum_neg_distrib]; exact sum_congr rfl (fun _ h => (inner h).2)
   have price := sum_sdiff_eq_sub (f := fun n => (μ n:ℝ)) sub
@@ -274,6 +282,7 @@ private theorem stage_changing (s : ExchangeStage) (X : ℕ) :
     have e := (s.pair.act_on hv).2.2
     have hs := e.2.2.1
     refine mem_filter.mpr ⟨mem_Icc.mpr ⟨Nat.one_le_iff_ne_zero.mpr e.1.ne_zero,hu⟩,fun he => ?_⟩
+    change μ n = -μ (s.swap n) at hs
     rw [he] at hs
     rcases moebius_eq_one_or_neg_one_of_squarefree e.1 with h | h <;> omega
 
@@ -342,6 +351,7 @@ private theorem support_moves {S : ℕ → ExchangeStage}
     have h := (S j).pair.act_on hj
     intro he
     have hneg := h.2.2.2.2.1
+    change μ n = -μ ((S j).swap n) at hneg
     rw [he] at hneg
     rcases moebius_eq_one_or_neg_one_of_squarefree h.2.2.1 with hm | hm <;> omega
   · intro h
@@ -419,7 +429,7 @@ private theorem lower_at_stages {s : ℕ → ℝ} {S : ℕ → ExchangeStage}
 
 private theorem detect_from_witnesses {s : ℕ → ℝ} {t : ℝ} {f : ℕ → ℝ} {w : ℕ → ℕ}
     (hs : ∀ᶠ j : ℕ in atTop,t ≤ s j) (hw : ∀ j,0<w j)
-    (large : ∀ j,(j:ℝ)*(w j:ℝ)^(s j) < |f (w j)|) : ¬PrefixPower t f := by
+    (large : ∀ j : ℕ,(j:ℝ)*(w j:ℝ)^(s j) < |f (w j)|) : ¬PrefixPower t f := by
   rintro ⟨C,_,bound⟩
   obtain ⟨j,hj,hC⟩ := (hs.and (tendsto_natCast_atTop_atTop.eventually_gt_atTop C)).exists
   have base : (1:ℝ) ≤ w j := by exact_mod_cast hw j
@@ -444,7 +454,8 @@ private theorem sparse_near {S : ℕ → ExchangeStage} {s : ℕ → ℝ}
     push_cast
     have hh := (div_lt_iff₀ hε).1 (hN.trans_le (Nat.cast_le.mpr hNj))
     linarith only [hh,hε])
-  simpa only [mul_one_div,mul_comm (X:ℝ)] using mul_le_mul_of_nonneg_left hi (Nat.cast_nonneg X)
+  calc (X:ℝ)/(j+1:ℕ) = (1/(j+1:ℕ):ℝ)*X := by ring
+       _ ≤ _ := mul_le_mul_of_nonneg_right hi (Nat.cast_nonneg X)
 
 /-- Inside one density-one matching there is a density-zero union of its
 actual edges on which the signed prefix detects every positive power,
@@ -470,7 +481,8 @@ theorem a_density_zero_family_of_exchanges_detects_every_mertens_power :
   have hLR (j : ℕ) : (S j).left<(S j).right := (spec j).witness_after.trans (spec j).witness_before
   have hsp (j : ℕ) : (j+1+2)*(S j).right < (S (j+1)).left := by
     simpa only [Nat.succ_ne_zero,if_false,Nat.succ_sub_one] using (spec (j+1)).spacing
-  have sep := level_separation hLR (fun j => (Nat.le_mul_of_pos_left _ (by omega : 0<j+1+2)).trans_lt (hsp j))
+  have sep {i j : ℕ} (h : i<j) : (S i).right < (S j).left :=
+    level_separation hLR (fun k => (Nat.le_mul_of_pos_left _ (by omega : 0<k+1+2)).trans_lt (hsp k)) h
   let T := SparseSupport S
   let G := sparseSwitch S
   have hcount := sparse_count (fun i => (spec i).index_lt) sep hLR hsp

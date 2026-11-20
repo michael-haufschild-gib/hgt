@@ -173,8 +173,4 @@ theorem midpoint_euclidean_gain_asymptotic :
   simpa only [Function.comp_apply,midpoint_weight_energy,Real.sqrt_div (hn _)] using
     Real.continuous_sqrt.continuousAt.tendsto.comp hs
 
-#print axioms count_midpoint_measurements
-#print axioms sharp_midpoint_energy_gain
-#print axioms midpoint_euclidean_gain_asymptotic
-
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

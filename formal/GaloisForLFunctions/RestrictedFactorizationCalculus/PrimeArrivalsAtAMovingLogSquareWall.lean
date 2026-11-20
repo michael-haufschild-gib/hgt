@@ -1,4 +1,5 @@
 import Mathlib.Analysis.MeanInequalitiesPow
+import GaloisForLFunctions.RHTower.RobinLcmCriterion
 import GaloisForLFunctions.RHTower.Sieve.DivisorSumMeanSquare
 import GaloisForLFunctions.RestrictedFactorizationCalculus.ThePrimeReadingsBeyondTheHyperbola
 import GaloisForLFunctions.RestrictedFactorizationCalculus.TotalVariationOfTheRemovedQuotientHead
@@ -109,9 +110,8 @@ theorem prime_arrivals_force_head_variation {s : ℝ} (strip : RHTower.zetaZeroA
     by_cases still : H (i+1)=H i
     · rw [still,sub_self]; exact add_nonneg (add_nonneg (abs_nonneg _) z) (abs_nonneg _)
     have arrival : H (i+1)=H i+1 := by
-      have := heights (Nat.le_succ i)
-      have := steps i (mem_range.mp hi)
-      omega
+      exact le_antisymm (steps i (mem_range.mp hi))
+        (Nat.succ_le_of_lt (lt_of_le_of_ne (heights (Nat.le_succ i)) (Ne.symm still)))
     have jump : G (H (i+1))-G (H i)=g p := by
       dsimp only [G,p]; rw [arrival,sum_Ioc_succ_top (Nat.zero_le _),add_sub_cancel_left]
     rw [jump]
@@ -143,9 +143,11 @@ theorem prime_arrivals_force_head_variation {s : ℝ} (strip : RHTower.zetaZeroA
       rw [if_neg marked]
       exact add_nonneg (add_nonneg (abs_nonneg _) z) (abs_nonneg _)
   have summed := sum_le_sum step
-  rw [sum_add_distrib,sum_add_distrib,←sum_mul,sum_range_sub,sum_range_sub] at summed
+  rw [sum_add_distrib,sum_add_distrib,←sum_mul,Finset.sum_range_sub (fun i => G (H i)),
+    Finset.sum_range_sub (fun i => (Y i:ℝ))] at summed
   have θ : G (H N)-G (H 0)=Chebyshev.theta (H N)-Chebyshev.theta (min (max (H 0) (Y N)) (H N)) := by
-    rw [GaloisForLFunctions.WorldsOfTheZeroConfiguration.PrimeEdits.theta_sub_theta (min_le_right ..)]
+    rw [←Nat.cast_max,←Nat.cast_min,
+      GaloisForLFunctions.WorldsOfTheZeroConfiguration.PrimeEdits.theta_sub_theta (min_le_right ..)]
     have consecutive := sum_Ioc_consecutive g (Nat.zero_le (H 0)) (heights (Nat.zero_le N))
     have eq : G (H N)-G (H 0)=∑ q ∈ Ioc (H 0) (H N),g q :=
       sub_eq_of_eq_add (consecutive.symm.trans (add_comm ..))
@@ -206,7 +208,7 @@ theorem upper_variation_at_moving_prime_walls {s : ℝ} (strip : RHTower.zetaZer
       rw [eq,sub_self,zero_mul,add_zero]
       dsimp only [D,nextAtSameWall]
       rw [if_pos eq]
-      exact tri.trans (add_le_add_right move _)
+      exact tri.trans (add_le_add move (le_refl _))
     · have gap := (Nat.cast_le (α := ℝ)).mpr (show Y i+1 ≤ Y (i+1) from lt_of_le_of_ne (walls (Nat.le_succ i)) (Ne.symm eq))
       rw [Nat.cast_add,Nat.cast_one] at gap
       have debt := mul_le_mul_of_nonneg_right (show (1:ℝ) ≤ (Y (i+1):ℝ)-Y i by linarith only [gap])
@@ -214,7 +216,8 @@ theorem upper_variation_at_moving_prime_walls {s : ℝ} (strip : RHTower.zetaZer
       have endpoints := (abs_sub (P (i+1)) (P i)).trans (add_le_add (size _ iN) (size _ (Nat.le_of_succ_le iN)))
       linarith only [endpoints,debt,h0,show 0 ≤ D i from abs_nonneg _]
   have sum := sum_le_sum per
-  simp only [sum_add_distrib,←sum_mul,sum_range_sub] at sum
+  simp only [sum_add_distrib,←sum_mul,Finset.sum_range_sub (fun i => (H i:ℝ)),
+    Finset.sum_range_sub (fun i => (Y i:ℝ))] at sum
   have edit := common N Y H walls heights a fixed B bp changes
   change (∑ i ∈ range N,D i) ≤ _ at edit
   have start := mul_nonneg (Nat.cast_nonneg (α := ℝ) (H 0)) l0
@@ -318,10 +321,11 @@ theorem polynomial_head_variation_has_the_height_exponent {α : ℝ} (ap : 0<α)
   have unit (i : ℕ) : a i 1=0 := abs_eq_zero.mp (le_antisymm (by simpa using dom i 1) (abs_nonneg _))
   have hzero : H 0=0 := by simp [H,powerHeight,Real.zero_rpow ap.ne']
   have lowerTop : ∀ᶠ i : ℕ in atTop,(H i:ℝ)/2 ≤ Chebyshev.theta (H i) := by
-    have main := (RHTower.tendsto_theta_div_self.comp (tendsto_natCast_atTop_atTop.comp top)).eventually_ge_const
+    have main := (RHTower.tendsto_theta_div_self.comp (tendsto_natCast_atTop_atTop.comp top)).eventually_const_le
       (by norm_num : (1/2:ℝ)<1)
     filter_upwards [main,top.eventually_ge_atTop 1] with i good ip
     have positive : 0<(H i:ℝ) := Nat.cast_pos.mpr ip
+    change 1/2 ≤ Chebyshev.theta (H i)/(H i:ℝ) at good
     have h := (le_div_iff₀ positive).mp good
     linarith only [h]
   constructor
@@ -337,6 +341,8 @@ theorem polynomial_head_variation_has_the_height_exponent {α : ℝ} (ap : 0<α)
     let T := (H N:ℝ)
     let y := (Y N:ℝ)
     let P := (1+y)*(1+Real.log T)*deletionPrice s (Y N)
+    change P ≤ A*n^h at paid
+    change 8*C ≤ n^h at enough
     have n0 : 0<n := Nat.cast_pos.mpr np
     have t1 : 1 ≤ T := Nat.one_le_cast.mpr height
     have tpower := Real.one_le_rpow t1 sp.le
@@ -347,16 +353,20 @@ theorem polynomial_head_variation_has_the_height_exponent {α : ℝ} (ap : 0<α)
     have log0 := Real.log_nonneg (by norm_num : (1:ℝ) ≤ 4)
     have ybad := mul_le_mul_of_nonneg_left ((Nat.cast_le.mpr (min_le_left (Y N) (H N))).trans (cmp.1.trans pn)) log0
     have wall := mul_le_mul_of_nonneg_right (sub_le_self y (Nat.cast_nonneg (α := ℝ) (Y 0))) (Real.log_natCast_nonneg (H N))
-    have edit := mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right cmp.2.2.1 (Real.rpow_nonneg (Nat.cast_nonneg _) s)) (mul_nonneg k0 bp)
+    have edit : K*B*(deletionPrice s (Y N)*T^s) ≤ K*B*(P*T^s) :=
+      mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right cmp.2.2.1
+        (Real.rpow_nonneg (Nat.cast_nonneg (H N)) s)) (mul_nonneg k0 bp)
     have observed := estimate N Y H logSquareCutoff_mono inc (fun i _ => steps i) a unit fix B bp (changes N)
-    rw [hzero,Nat.zero_max] at observed
+    rw [hzero,Nat.cast_zero,max_eq_right (Nat.cast_nonneg (α := ℝ) (Y N))] at observed
     have loss : T/2 ≤ V N+(Real.log 4+1+K*B)*(P*T^s) := by
       change Chebyshev.theta (H N)-Chebyshev.theta (min (Y N) (H N)) ≤ V N+
         (y-(Y 0:ℝ))*Real.log T+K*B*deletionPrice s (Y N)*T^s at observed
+      rw [←Nat.cast_min] at observed
       linarith only [observed,bad,ybad,wall,cmp.2.1,pn,edit,main]
-    have tp := Real.rpow_le_rpow (Nat.cast_nonneg (H N)) (Nat.floor_le (Real.rpow_nonneg n0.le α)) sp.le
-    rw [←Real.rpow_mul n0.le] at tp
-    have joint := mul_le_mul paid tp (Real.rpow_nonneg (Nat.cast_nonneg _) s) (mul_nonneg apos.le (Real.rpow_nonneg n0.le h))
+    have tp : T^s ≤ n^(α*s) := by
+      rw [Real.rpow_mul n0.le]
+      exact Real.rpow_le_rpow (Nat.cast_nonneg (H N)) (Nat.floor_le (Real.rpow_nonneg n0.le α)) sp.le
+    have joint := mul_le_mul paid tp (Real.rpow_nonneg (Nat.cast_nonneg (H N)) s) (mul_nonneg apos.le (Real.rpow_nonneg n0.le h))
     have mult := mul_le_mul_of_nonneg_left joint (by linarith only [log0,mul_nonneg k0 bp] : 0 ≤ Real.log 4+1+K*B)
     have limit := mul_le_mul_of_nonneg_right enough (Real.rpow_nonneg n0.le (h+α*s))
     have exp : h+(h+α*s)=α := by dsimp only [h]; ring
@@ -374,17 +384,18 @@ theorem polynomial_head_variation_has_the_height_exponent {α : ℝ} (ap : 0<α)
     let T := (H N:ℝ)
     let y := (Y N:ℝ)
     let P := (1+y)*(1+Real.log T)*deletionPrice s (Y N)
+    change P ≤ A*n^ε at paid
     have n0 : 0<n := Nat.cast_pos.mpr np
     have t1 : 1 ≤ T := Nat.one_le_cast.mpr height
     have tp : T^s ≤ T := by simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le t1 su.le
     have cmp := components_of_path_allowance sp (Y N) (H N)
     have P0 : 0 ≤ P := (Nat.cast_nonneg (α := ℝ) (Y N)).trans cmp.1
-    have edit := mul_le_mul_of_nonneg_left (mul_le_mul cmp.2.2.1 tp (Real.rpow_nonneg (Nat.cast_nonneg _) s) P0) (mul_nonneg k0 bp)
+    have edit := mul_le_mul_of_nonneg_left (mul_le_mul cmp.2.2.1 tp (Real.rpow_nonneg (Nat.cast_nonneg (H N)) s) P0) (mul_nonneg k0 bp)
     have wall := mul_le_mul_of_nonneg_right cmp.2.2.2 (Nat.cast_nonneg (α := ℝ) (H N))
     have result := estimate N Y H logSquareCutoff_mono inc (fun i _ => steps i) a dom fix B bp (changes N)
     change V N ≤ (1+2*y)*T*Real.log T+K*B*deletionPrice s (Y N)*T^s at result
     have size : T ≤ n^α := Nat.floor_le (Real.rpow_nonneg n0.le _)
-    have cap := mul_le_mul paid size (Nat.cast_nonneg _) (mul_nonneg apos.le (Real.rpow_nonneg n0.le ε))
+    have cap := mul_le_mul paid size (Nat.cast_nonneg (H N)) (mul_nonneg apos.le (Real.rpow_nonneg n0.le ε))
     have last := mul_le_mul_of_nonneg_left cap (by linarith only [mul_nonneg k0 bp] : 0 ≤ 2+K*B)
     have pos : 0 ≤ V N := sum_nonneg (fun _ _ => abs_nonneg _)
     change |V N| ≤ (2+K*B)*A*n^(α+ε)

@@ -183,7 +183,4 @@ theorem all_odd_quotient_intervals_sub_eight_ninths {c : ℝ} (hc : 24000/27001<
     exact mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le (Nat.one_le_cast.mpr hH)
       ((by norm_num : (8/9:ℝ)≤1).trans (le_of_not_gt h))) hD.le
 
-#print axioms all_odd_quotient_intervals_eight_ninths
-#print axioms all_odd_quotient_intervals_sub_eight_ninths
-#print axioms odd_quotient_interval_above_abscissa
 end GaloisForLFunctions.ExclusionOfTheCriticalState

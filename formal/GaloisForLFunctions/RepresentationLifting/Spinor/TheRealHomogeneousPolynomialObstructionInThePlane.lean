@@ -171,8 +171,4 @@ theorem homogeneous_planar_symbol_rigidity {p : ℝ} (hp : 1<p) (hp₂ : p≠2)
   · rintro rfl
     simp [planarPolarSymbol,secondPolarDerivative]
 
-#print axioms polar_critical_points_are_roots
-#print axioms polar_chart_is_a_translated_power
-#print axioms homogeneous_planar_symbol_rigidity
-
 end GaloisForLFunctions.RepresentationLifting.Spinor

@@ -208,10 +208,6 @@ theorem thetaJeffreys_strict_reverse_triangle (a : ℝ≥0) (u v : {x : ℝ // 0
   have hp : 0 ≤ thetaJeffreysLength a c := Real.sqrt_nonneg _
   nlinarith only [he,hs,hp]
 
-#print axioms thetaJeffreys_strict_reverse_triangle
-#print axioms strictConcaveOn_xiRealLogDeriv
-#print axioms thetaTiltVariance_lt_iff
-#print axioms thetaTilts_klDiv_lt_reverse_iff
 
 end
 

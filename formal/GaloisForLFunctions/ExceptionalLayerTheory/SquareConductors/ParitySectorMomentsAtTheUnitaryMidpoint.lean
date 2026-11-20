@@ -158,10 +158,6 @@ theorem unitaryHalfWeight_of_marked_sector (k : ℕ) :
   simp only [unitarySectorMoment,he,ho,Nat.cast_add,Nat.cast_one,Nat.cast_pow]
   ring
 
-#print axioms twice_card_smallUnitarySubsets
-#print axioms unitarySectorMoment_two
-#print axioms cofinal_opposite_unitarySectorMoments
-#print axioms unitaryHalfWeight_of_marked_sector
 
 end
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

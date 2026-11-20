@@ -61,9 +61,9 @@ private theorem corrected_atom_mass (m : ℕ) {a b : ℕ} (hab : a≤b) :
   have hp : ∑ k ∈ Ioc a b, purePowerLog m k=fullLogProperPrefix m b-fullLogProperPrefix m a := by
     simp only [fullLogProperPrefix,Nat.floor_natCast]
     exact eq_sub_of_add_eq' (sum_Ioc_consecutive _ (Nat.zero_le a) hab)
-  simp only [correctedCompositeAtom,compositeRootPayment,sum_sub_distrib,sum_add_distrib,←mul_sum]
-  rw [hp,_root_.RHTower.DeletionResidueMartingale.sum_Ioc_sub_eq (fun k : ℕ => (k:ℝ)^(1/2:ℝ)) hab,
-    _root_.RHTower.DeletionResidueMartingale.sum_Ioc_sub_eq (fun k : ℕ => (k:ℝ)^(1/3:ℝ)) hab]
+  unfold correctedCompositeAtom compositeRootPayment
+  rw [sum_sub_distrib,hp,sum_add_distrib,←mul_sum,←mul_sum,_root_.RHTower.sum_Ioc_sub_eq (fun k : ℕ => (k:ℝ)^(1/2:ℝ)) hab,
+    _root_.RHTower.sum_Ioc_sub_eq (fun k : ℕ => (k:ℝ)^(1/3:ℝ)) hab]
   ring
 
 private theorem evaluation_at_three_cuts (m n : ℕ) {b : ℝ} (hb : b∈Set.Ioo (0:ℝ) 1) :
@@ -114,10 +114,5 @@ theorem fixed_composite_probe_exceeds_every_quarter_power (β : ℕ → Set.Ioo 
   rintro n ⟨he,hn⟩
   rw [fractional_probe_recovers_fixed_prefix n (β n).2]
   linarith only [he,(abs_le.mp (hC n hn)).2]
-
-#print axioms fractional_probe_recovers_corrected_composite
-#print axioms fractional_probe_recovers_fixed_prefix
-#print axioms varying_order_composite_probe_spectrum
-#print axioms fixed_composite_probe_exceeds_every_quarter_power
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

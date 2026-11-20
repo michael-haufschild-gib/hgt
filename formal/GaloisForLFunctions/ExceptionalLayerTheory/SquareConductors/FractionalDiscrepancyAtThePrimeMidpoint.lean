@@ -81,7 +81,5 @@ theorem half_order_prime_midpoint_spectrum {d : ℝ} (hd : 1/2 ≤ d) :
     exact ⟨Real.pi*C, fun n hn => (mul_le_mul_of_nonneg_left (hC n hn) Real.pi_pos.le).trans_eq
       (mul_assoc _ _ _).symm⟩
 
-#print axioms integral_midpointFractionalField
-#print axioms half_order_prime_midpoint_spectrum
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

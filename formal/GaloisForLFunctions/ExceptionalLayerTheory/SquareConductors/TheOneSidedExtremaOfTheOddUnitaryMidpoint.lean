@@ -43,7 +43,7 @@ theorem unitaryDefectLayer_normalized_growth (k j : ℕ) :
   apply card_mul_le_card_mul (· ⊆ ·)
   · intro S hS
     obtain ⟨hs,hcard,hheavy⟩ := mem_layer.mp hS
-    have hinj : Set.InjOn (fun a => insert a S) (k.primeFactors \ S) :=
+    have hinj : Set.InjOn (fun a => insert a S) (↑(k.primeFactors \ S) : Set ℕ) :=
       (insert_inj_on S).mono fun a ha => (mem_sdiff.mp ha).2
     rw [show k.primeFactors.card-j = (k.primeFactors \ S).card by rw [card_sdiff_of_subset hs,hcard],
       ←card_image_of_injOn hinj]
@@ -52,14 +52,14 @@ theorem unitaryDefectLayer_normalized_growth (k j : ℕ) :
     obtain ⟨a,ha,rfl⟩ := mem_image.mp h
     obtain ⟨hp,hn⟩ := mem_sdiff.mp ha
     have hT := insert_subset hp hs
-    exact mem_bipartiteAbove.mpr ⟨mem_layer.mpr ⟨hT,by rw [card_insert_of_notMem hn,hcard],
+    exact (mem_bipartiteAbove _).mpr ⟨mem_layer.mpr ⟨hT,by rw [card_insert_of_notMem hn,hcard],
       overweight_mono (subset_insert ..) hT hheavy⟩,subset_insert ..⟩
   · intro T hT
     obtain ⟨_,hcard,_⟩ := mem_layer.mp hT
     conv_rhs => rw [←hcard,←card_image_of_injOn T.erase_injOn]
     apply card_le_card
     intro S hS
-    obtain ⟨hs,hsub⟩ := mem_bipartiteBelow.mp hS
+    obtain ⟨hs,hsub⟩ := (mem_bipartiteBelow _).mp hS
     have hc := (mem_layer.mp hs).2.1
     obtain ⟨a,ha,he⟩ := exists_eq_insert_iff.mpr ⟨hsub,by omega⟩
     apply mem_image.mpr
@@ -144,6 +144,7 @@ private theorem oriented_step (k r : ℕ) :
   unfold orientedDefectCount
   rw [rank_successor,sum_union hd,he,mul_add,mul_left_comm,←mul_pow]
   norm_num [pow_succ]
+  ring
 
 /-- Alternating cancellation at every rank below the midpoint is bounded by
 the size of its last layer. -/
@@ -156,6 +157,8 @@ theorem orientedDefectCount_bounds_below {k r : ℕ} (hr : k.primeFactors.card=2
     have he : unitaryRankDefects k 0 = unitaryDefectLayer k 0 := by
       ext S
       simp [unitaryRankDefects,unitaryDefectLayer]
+      rintro _ rfl
+      exact empty_subset _
     have hs : ∑ S ∈ unitaryDefectLayer k 0, (-1:ℤ)^S.card = (unitaryDefectLayer k 0).card := by
       calc _ = ∑ _S ∈ unitaryDefectLayer k 0, (1:ℤ) :=
                sum_congr rfl fun S hS => by rw [(mem_layer.mp hS).2.1,pow_zero]
@@ -264,12 +267,6 @@ theorem odd_unitary_midpoint_range_bound {k r : ℕ} (hr : k.primeFactors.card=2
     have hsg : (-1:ℤ)^r * (-1)^r = 1 := by rw [←mul_pow]; norm_num
     linear_combination (2*∑ S ∈ unitaryRankDefects k r, (-1:ℤ)^S.card)*hsg
 
-#print axioms unitaryDefectLayer_erdos_ko_rado
-#print axioms unitaryDefectLayer_surviving_fraction
-#print axioms odd_midpoint_central_iff
-#print axioms odd_midpoint_opposite_iff
-#print axioms orientedDefectCount_bounds
-#print axioms odd_unitary_midpoint_range_bound
 
 end
 

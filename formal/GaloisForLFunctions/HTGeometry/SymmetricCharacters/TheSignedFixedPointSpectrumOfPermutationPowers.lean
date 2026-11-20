@@ -96,9 +96,5 @@ theorem first_signed_fixed_point_power (n : ℕ) :
   · rw [signed_fixed_point_power,Nat.stirlingSecond_self,Nat.stirlingSecond_eq_zero_of_lt (Nat.lt_succ_self n)]
     simp
 
-#print axioms signed_fixed_point_enumerator
-#print axioms signed_fixed_point_choose
-#print axioms signed_fixed_point_power
-#print axioms first_signed_fixed_point_power
 end
 end GaloisForLFunctions.SymmetricCharacters

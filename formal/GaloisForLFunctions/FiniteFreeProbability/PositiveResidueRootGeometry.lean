@@ -101,9 +101,6 @@ theorem residue_zero_in_open_disk (z c : ℂ) (R : ℝ) (hs : s.Nonempty)
   obtain ⟨i, hi⟩ := hs
   nlinarith only [hpos, norm_nonneg (z-c), (norm_nonneg _).trans (hR i hi)]
 
-#print axioms residue_zero_mem_hull
-#print axioms residue_zero_radial_identity
-#print axioms residue_zero_disk_deficit
 
 end
 

@@ -164,9 +164,6 @@ theorem releaseFilter_stability (f g : ℕ → ℝ) {t : ℝ} (ht : 0 ≤ t) (ht
             calc _ ≤ 3*B := by linarith only [H]
                  _ = _ := by dsimp only [B]; ring
 
-#print axioms releaseFilter_enclosure
-#print axioms releaseFilter_tendsto
-#print axioms releaseFilter_stability
 
 end
 

@@ -92,7 +92,6 @@ private lemma eventually_floor_rpow_bounds {c α : ℝ} (hc : 0 < c) (hα : 0 < 
   have hlim : Tendsto (fun K : ℕ => c * (K : ℝ) ^ α) atTop atTop :=
     ((tendsto_rpow_atTop hα).const_mul_atTop hc).comp tendsto_natCast_atTop_atTop
   filter_upwards [hlim.eventually_ge_atTop 2] with K hge2
-  simp only [Function.comp] at hge2
   have hnn : 0 ≤ c * (K : ℝ) ^ α := by linarith
   have hfl_ge2 : 2 ≤ ⌊c * (K : ℝ) ^ α⌋₊ := Nat.le_floor (by exact_mod_cast hge2)
   have hfl_le : (⌊c * (K : ℝ) ^ α⌋₊ : ℝ) ≤ c * (K : ℝ) ^ α := Nat.floor_le hnn
@@ -268,7 +267,7 @@ private lemma hasRate_rate_tail_le {b : ℕ → ℤ} {T K B₀ M₀ S D_W : ℕ}
       calc 2 * η₀ * (1 + Real.log ((K ^ 2 : ℕ) : ℝ))
           ≤ 2 * (C_η₀ * (K : ℝ) ^ (-a')) * (2 * (1 + Real.log (K : ℝ))) :=
             mul_le_mul (mul_le_mul_of_nonneg_left hη₀_bd (by norm_num)) hlogK2
-              (by linarith [Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ K ^ 2) : (1 : ℝ) ≤ ((K ^ 2 : ℕ) : ℝ))])
+              (by linarith [Real.log_nonneg (by exact_mod_cast Nat.one_le_pow 2 K (by omega) : (1 : ℝ) ≤ ((K ^ 2 : ℕ) : ℝ))])
               (by positivity)
         _ = 4 * C_η₀ * (1 + Real.log (K : ℝ)) * (K : ℝ) ^ (-a') := by ring
     have hp2 : (1 + tautMass b (2 * T)) / ((K ^ 2 : ℕ) : ℝ) ≤
@@ -279,7 +278,7 @@ private lemma hasRate_rate_tail_le {b : ℕ → ℤ} {T K B₀ M₀ S D_W : ℕ}
       have hnum : 1 + tautMass b (2 * T) ≤
           (1 + C_mass) * (1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass := by
         calc 1 + tautMass b (2 * T)
-            ≤ 1 * ((1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass) +
+            ≤ (1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass +
                 C_mass * (1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass :=
               add_le_add h1_le_em hmass_bd
           _ = _ := by ring
@@ -325,7 +324,8 @@ private lemma hasRate_rate_tail_le {b : ℕ → ℤ} {T K B₀ M₀ S D_W : ℕ}
           have hm1 : 20 * (1 + C_mass) * (1 + Real.log (K : ℝ)) ^ 4 * (K : ℝ) ^ (e_mass - 2) ≤
               (80 * (1 + C_mass)) * (1 + Real.log (K : ℝ)) ^ 5 * (K : ℝ) ^ (e_mass - 2) := by
             calc 20 * (1 + C_mass) * (1 + Real.log (K : ℝ)) ^ 4 * (K : ℝ) ^ (e_mass - 2)
-                ≤ 80 * ((1 + C_mass) * (K : ℝ) ^ (e_mass - 2)) * (1 + Real.log (K : ℝ)) ^ 5 :=
+                = (20 * ((1 + C_mass) * (K : ℝ) ^ (e_mass - 2))) * (1 + Real.log (K : ℝ)) ^ 4 := by ring
+              _ ≤ (80 * ((1 + C_mass) * (K : ℝ) ^ (e_mass - 2))) * (1 + Real.log (K : ℝ)) ^ 5 :=
                   mul_le_mul (by linarith only [hpos_m]) hlog35 (by positivity) (by positivity)
               _ = _ := by ring
           linarith only [hm1]
@@ -340,9 +340,11 @@ private lemma hasRate_rate_tail_le {b : ℕ → ℤ} {T K B₀ M₀ S D_W : ℕ}
         (Nat.pow_log_le_self 2 (by omega)).trans h2T_le_K
       have h2 := Real.log_le_log (by positivity) (by exact_mod_cast h1 : ((2 : ℝ)) ^ Nat.log 2 (2 * T) ≤ K)
       rw [Real.log_pow] at h2
-      have hl2 : (2 / 3 : ℝ) ≤ Real.log 2 := by linarith [Real.log_two_gt_d9]
-      have hl0 : (0 : ℝ) ≤ (Nat.log 2 (2 * T) : ℝ) := Nat.cast_nonneg _
-      nlinarith
+      have hl2 : (2 / 3 : ℝ) * (Nat.log 2 (2 * T) : ℝ) ≤
+          (Nat.log 2 (2 * T) : ℝ) * Real.log 2 := by
+        rw [mul_comm (2 / 3 : ℝ)]
+        exact mul_le_mul_of_nonneg_left (by linarith [Real.log_two_gt_d9]) (Nat.cast_nonneg _)
+      linarith only [h2, hl2]
     have hsq_log2 : ((Nat.log 2 (2 * T) : ℝ) + 1) ^ 2 ≤ 16 * (1 + Real.log (K : ℝ)) ^ 2 := by
       have := pow_le_pow_left₀ (by positivity) hlog2_bd 2
       linarith
@@ -417,160 +419,169 @@ private lemma hasRate_rate_tail_le {b : ℕ → ℤ} {T K B₀ M₀ S D_W : ℕ}
     linarith only [hYn_part, hmass_part, hpos]
   exact hsum_all.trans h6pow
 
-/-- **Full-scale rate from a zero-free half-plane.** If `Θ ∈ [1/2, 1)` satisfies `ζ(s) ≠ 0` on
-`Re s > Θ`, then `HasRate (fun K => K^{-a})` holds for every `a ∈ (0, 1 - Θ)`. -/
-theorem hasRate_of_zeroFree_exact {Θ : ℝ} (hΘ : 1 / 2 ≤ Θ) (hΘ1 : Θ < 1)
-    (hzf : ∀ s : ℂ, Θ < s.re → riemannZeta s ≠ 0)
-    {a : ℝ} (ha0 : 0 < a) (ha : a < 1 - Θ) :
-    HasRate fun K => (K : ℝ) ^ (-a) := by
-  obtain ⟨δ, hδ_def⟩ : ∃ δ : ℝ, δ = 1 - Θ - a := ⟨_, rfl⟩
-  have hδ_pos : 0 < δ := by rw [hδ_def]; linarith
-  have hδ_lt_half : δ < 1 / 2 := by rw [hδ_def]; linarith
-  obtain ⟨a', ha'_def⟩ : ∃ a' : ℝ, a' = 1 - Θ - δ / 4 := ⟨_, rfl⟩
-  have ha'_pos : 0 < a' := by rw [ha'_def, hδ_def]; linarith
-  have ha'_le_half : a' ≤ 1 / 2 := by rw [ha'_def]; linarith
-  obtain ⟨ε, hε_def⟩ : ∃ ε : ℝ, ε = δ / 64 := ⟨_, rfl⟩
-  have hε_pos : 0 < ε := by rw [hε_def]; positivity
-  have hε_le4 : ε ≤ 1 / 4 := by rw [hε_def]; linarith
-  have hΘε : Θ + ε < 1 := by rw [hε_def, hδ_def]; linarith
-  have hden_pos : 0 < 1 - Θ - ε := by linarith
-  have hden_le_half : 1 - Θ - ε ≤ 1 / 2 := by linarith
-  obtain ⟨τ_exp, hτ_def⟩ : ∃ τ_exp : ℝ, τ_exp = a' / (1 - Θ - ε) := ⟨_, rfl⟩
-  have hτ_pos : 0 < τ_exp := by rw [hτ_def]; positivity
-  have hτ_gt_a' : a' < τ_exp := by
-    have h2 : 2 * a' ≤ τ_exp := by
-      rw [hτ_def, le_div_iff₀ hden_pos]
-      calc 2 * a' * (1 - Θ - ε) ≤ 2 * a' * (1 / 2) :=
-            mul_le_mul_of_nonneg_left hden_le_half (by positivity)
-        _ = a' := by ring
-    linarith
-  have hτ_le_sub : τ_exp ≤ 1 - δ / 4 := by
-    rw [hτ_def, div_le_iff₀ hden_pos]
-    have h1 : (1 - δ / 4) * (1 - Θ - ε) =
-        1 - Θ - ε - (δ / 4) * (1 - Θ) + (δ / 4) * ε := by ring
-    have h2 : (δ / 4) * (1 - Θ) ≤ δ / 8 := by
-      calc (δ / 4) * (1 - Θ) ≤ (δ / 4) * (1 / 2) :=
-            mul_le_mul_of_nonneg_left (by linarith) (by positivity)
-        _ = δ / 8 := by ring
-    have h3 : 0 ≤ (δ / 4) * ε := by positivity
-    rw [ha'_def, hε_def] at h1 ⊢
-    linarith only [h1, h2, h3, hδ_pos]
-  have hτ_lt1 : τ_exp < 1 := by linarith
-  have hτ_mert : τ_exp * (1 - Θ - ε) = a' := by
-    rw [hτ_def, div_mul_cancel₀ _ hden_pos.ne']
-  have hτ_sub_a' : τ_exp - a' = τ_exp * (Θ + ε) := by
-    calc τ_exp - a' = τ_exp - τ_exp * (1 - Θ - ε) := by rw [hτ_mert]
-      _ = τ_exp * (Θ + ε) := by ring
-  obtain ⟨d, hd_def⟩ : ∃ d : ℕ, d = ⌈1 / (1 - Θ - ε)⌉₊ + 1 := ⟨_, rfl⟩
-  have hd1 : 1 ≤ d := by rw [hd_def]; omega
-  have hτ_lt_ad1 : τ_exp < a' * ((d + 1 : ℕ) : ℝ) := by
-    have hceil : 1 / (1 - Θ - ε) ≤ (⌈1 / (1 - Θ - ε)⌉₊ : ℝ) := Nat.le_ceil _
-    have hle_d : τ_exp ≤ a' * (⌈1 / (1 - Θ - ε)⌉₊ : ℝ) := by
-      rw [hτ_def, div_eq_mul_one_div]
-      exact mul_le_mul_of_nonneg_left hceil ha'_pos.le
-    have hd_gt : (⌈1 / (1 - Θ - ε)⌉₊ : ℝ) < ((d + 1 : ℕ) : ℝ) := by
-      rw [hd_def]; push_cast; linarith
-    exact lt_of_le_of_lt hle_d (mul_lt_mul_of_pos_left hd_gt ha'_pos)
-  obtain ⟨C₁, C₂, hC₁, hC₂, hstencil⟩ :=
-    exists_taut_mertens_stencil hΘ hΘ1 hzf hε_pos hε_le4 hΘε hd1
-  -- Set Hamming-square / CRT ramp parameters `η`, `M₀`, `S`.
-  obtain ⟨η, hη_def⟩ : ∃ η : ℝ, η = δ / 32 := ⟨_, rfl⟩
-  have hη_pos : 0 < η := by rw [hη_def]; positivity
-  obtain ⟨M₀, hM₀_def⟩ : ∃ M₀ : ℕ, M₀ = ⌈1 / η⌉₊ + 2 := ⟨_, rfl⟩
-  have hM₀_ge2 : 2 ≤ M₀ := by rw [hM₀_def]; omega
-  have hη_M₀ : 1 < η * (M₀ : ℝ) := by
-    have hceil : 1 / η ≤ (⌈1 / η⌉₊ : ℝ) := Nat.le_ceil _
-    have h1 : 1 ≤ η * (⌈1 / η⌉₊ : ℝ) := by
-      have := mul_le_mul_of_nonneg_left hceil hη_pos.le
-      rwa [mul_one_div_cancel hη_pos.ne'] at this
-    rw [hM₀_def]; push_cast; linarith
-  obtain ⟨S, hS_def⟩ : ∃ S : ℕ, S = 16 * M₀ + 4 := ⟨_, rfl⟩
-  obtain ⟨D_W, hDW_def⟩ : ∃ D_W : ℕ, D_W = 2 ^ (S * (M₀ + 1) + 2) := ⟨_, rfl⟩
-  have hDW_pos : (0 : ℝ) < (D_W : ℝ) := by rw [hDW_def]; positivity
-  -- Exponents for mass and rate bounds.
-  obtain ⟨e_mass, hem_def⟩ : ∃ e_mass : ℝ, e_mass = Θ - 3 * δ / 32 := ⟨_, rfl⟩
-  have he1_le : a' * (1 + 2 * ε) + τ_exp * (2 * (Θ + ε) - 1) ≤ e_mass := by
-    have hp1 : a' * (1 + 2 * ε) ≤ a' + 2 * ε := by
-      have : a' * (2 * ε) ≤ (1 / 2) * (2 * ε) :=
-        mul_le_mul_of_nonneg_right ha'_le_half (by positivity)
-      linarith
-    have hp2 : τ_exp * (2 * (Θ + ε) - 1) ≤ 2 * Θ - 1 + 2 * ε := by
-      have h1 : τ_exp * (2 * Θ - 1) ≤ 1 * (2 * Θ - 1) :=
-        mul_le_mul_of_nonneg_right hτ_lt1.le (by linarith)
-      have h2 : τ_exp * (2 * ε) ≤ 1 * (2 * ε) :=
-        mul_le_mul_of_nonneg_right hτ_lt1.le (by positivity)
-      linarith
-    rw [hem_def, ha'_def, hε_def] at hp1 hp2 ⊢
-    linarith only [hp1, hp2, hδ_pos]
-  have he2_le : τ_exp * (Θ + ε) ≤ e_mass := by
-    have hp1 : τ_exp * Θ ≤ (1 - δ / 4) * Θ :=
-      mul_le_mul_of_nonneg_right hτ_le_sub (by linarith)
-    have hp2 : (1 - δ / 4) * Θ ≤ Θ - δ / 8 := by
-      have : (δ / 4) * (1 / 2) ≤ (δ / 4) * Θ :=
-        mul_le_mul_of_nonneg_left hΘ (by positivity)
-      linarith
-    have hp3 : τ_exp * ε ≤ ε := by
-      calc τ_exp * ε ≤ 1 * ε := mul_le_mul_of_nonneg_right hτ_lt1.le hε_pos.le
-        _ = ε := one_mul _
-    rw [hem_def, hε_def]
-    linarith only [hp1, hp2, hp3]
-  -- Eventual scale dominance conditions on `K : ℕ`.
-  have hev_y := eventually_floor_rpow_bounds (c := 1) zero_lt_one ha'_pos
-  have hev_T := eventually_floor_rpow_bounds (c := 1 / 2) (by norm_num) hτ_pos
-  have hev_W := eventually_floor_rpow_bounds (c := 1) zero_lt_one hη_pos
-  have hev_ymin : ∀ᶠ K : ℕ in atTop, (tautStencilMinY d + 1 : ℝ) * (K : ℝ) ^ (0 : ℝ) ≤ (K : ℝ) ^ a' :=
-    eventually_const_rpow_le _ ha'_pos
-  have hev_yT : ∀ᶠ K : ℕ in atTop, (4 * (smoothJumpBase d : ℝ)) * (K : ℝ) ^ a' ≤ (K : ℝ) ^ τ_exp :=
-    eventually_const_rpow_le _ hτ_gt_a'
-  have hev_Tyd : ∀ᶠ K : ℕ in atTop,
-      ((2 : ℝ) ^ (d + 1)) * (K : ℝ) ^ τ_exp ≤ (K : ℝ) ^ (a' * ((d + 1 : ℕ) : ℝ)) :=
-    eventually_const_rpow_le _ hτ_lt_ad1
-  have hev_mlo : ∀ᶠ K : ℕ in atTop, ((2 ^ S : ℕ) : ℝ) * (K : ℝ) ^ η ≤ (K : ℝ) ^ (1 : ℝ) :=
-    eventually_const_rpow_le _ (by rw [hη_def]; linarith)
-  have hev_mhi : ∀ᶠ K : ℕ in atTop,
-      (2 : ℝ) * (K : ℝ) ^ (1 : ℝ) ≤ (K : ℝ) ^ (η * (M₀ : ℝ)) :=
-    eventually_const_rpow_le _ hη_M₀
-  have hev_B₀ : ∀ᶠ K : ℕ in atTop, (4 * (D_W : ℝ)) * (K : ℝ) ^ η ≤ (K : ℝ) ^ (1 : ℝ) :=
-    eventually_const_rpow_le _ (by rw [hη_def]; linarith)
-  have hev_sq : ∀ᶠ K : ℕ in atTop,
-      (((2 ^ (2 * S + 2) : ℕ) : ℝ) * ((smoothJumpPrimeBound d + 1 : ℕ) : ℝ)) *
-        (K : ℝ) ^ (2 * η + a') ≤ (K : ℝ) ^ (1 : ℝ) :=
-    eventually_const_rpow_le _ (by rw [hη_def, ha'_def]; linarith)
-  -- Final rate terms `< (1/2) K^{-a}`.
-  set C_mass : ℝ := 3 * C₁
-  set C_η₀ : ℝ := C₂ * (2 + 2 ^ (1 : ℝ))
-  have hev_r1 : ∀ᶠ K : ℕ in atTop,
-      (80 * C_η₀) * (1 + Real.log (K : ℝ)) ^ 2 * (K : ℝ) ^ (-a') ≤
-        (K : ℝ) ^ (-(a + δ / 2)) :=
-    eventually_const_log_pow_rpow_le _ 2 (by rw [ha'_def, hδ_def]; linarith)
-  have hev_r2 : ∀ᶠ K : ℕ in atTop,
-      (80 * (1 + C_mass)) * (1 + Real.log (K : ℝ)) ^ 5 * (K : ℝ) ^ (e_mass - 2) ≤
-        (K : ℝ) ^ (-(a + δ / 2)) :=
-    eventually_const_log_pow_rpow_le _ 5 (by rw [hem_def, hδ_def]; linarith)
-  have hev_r3 : ∀ᶠ K : ℕ in atTop,
-      (2 * D_W * C_mass * (1 + 16 * (M₀ : ℝ) * (2 ^ (2 * S + 1) : ℝ) * 16)) *
-        (1 + Real.log (K : ℝ)) ^ 6 * (K : ℝ) ^ (e_mass - (1 - η)) ≤
-        (K : ℝ) ^ (-(a + δ / 32)) :=
-    eventually_const_log_pow_rpow_le _ 6 (by rw [hem_def, hη_def, hδ_def]; linarith)
-  have hev_half_pow : ∀ᶠ K : ℕ in atTop,
-      (6 : ℝ) * (K : ℝ) ^ (-(a + δ / 32)) ≤ (K : ℝ) ^ (-a) :=
-    eventually_const_rpow_le 6 (by linarith)
-  filter_upwards [eventually_ge_atTop 4, hev_y, hev_T, hev_W, hev_ymin, hev_yT, hev_Tyd,
-    hev_mlo, hev_mhi, hev_B₀, hev_sq, hev_r1, hev_r2, hev_r3, hev_half_pow] with
-    K hK4 hy_b hT_b hW_b hymin hyT hTyd hmlo hmhi hB₀_ev hsq_ev hr1 hr2 hr3 h6pow
-  simp only [one_mul, Real.rpow_zero, mul_one, Real.rpow_one] at hy_b hW_b hymin hmlo hmhi hB₀_ev hsq_ev
+/-- Tracking-error bound `C₂ * (1 / y + T^{-(1 - Θ - ε)}) ≤ (4 * C₂) * K^{-a'}` at `(y, T)`. -/
+private lemma hasRate_eta_bd {K y T : ℕ} {Θ ε a' τ_exp C₂ : ℝ}
+    (hKR_pos : (0 : ℝ) < (K : ℝ)) (hy_pos : 0 < y)
+    (hy_lo_R : (1 / 2 : ℝ) * (K : ℝ) ^ a' ≤ (y : ℝ))
+    (hT_lo_R : (1 / 2 : ℝ) / 2 * (K : ℝ) ^ τ_exp ≤ (T : ℝ))
+    (hden_pos : 0 < 1 - Θ - ε) (hden_le_half : 1 - Θ - ε ≤ 1 / 2)
+    (hτ_mert : τ_exp * (1 - Θ - ε) = a') (hC₂ : 0 < C₂) :
+    C₂ * (1 / (y : ℝ) + (T : ℝ) ^ (-(1 - Θ - ε))) ≤ (4 * C₂) * (K : ℝ) ^ (-a') := by
+  have hy_inv : 1 / (y : ℝ) ≤ 2 * (K : ℝ) ^ (-a') := by
+    have hy_pos_R : (0 : ℝ) < (y : ℝ) := by exact_mod_cast hy_pos
+    rw [div_le_iff₀ hy_pos_R]
+    have hcan : (K : ℝ) ^ (-a') * (K : ℝ) ^ a' = 1 := by
+      rw [← Real.rpow_add hKR_pos, neg_add_cancel, Real.rpow_zero]
+    calc (1 : ℝ) = 2 * (K : ℝ) ^ (-a') * ((1 / 2) * (K : ℝ) ^ a') := by
+          calc (1 : ℝ) = (K : ℝ) ^ (-a') * (K : ℝ) ^ a' := hcan.symm
+            _ = _ := by ring
+      _ ≤ 2 * (K : ℝ) ^ (-a') * (y : ℝ) :=
+          mul_le_mul_of_nonneg_left hy_lo_R (by positivity)
+  have hT_pow_bd : (T : ℝ) ^ (-(1 - Θ - ε)) ≤ 2 * (K : ℝ) ^ (-a') := by
+    have hT_ge_q : (1 / 4 : ℝ) * (K : ℝ) ^ τ_exp ≤ (T : ℝ) := by
+      linarith only [hT_lo_R]
+    have h1 : (T : ℝ) ^ (-(1 - Θ - ε)) ≤
+        ((1 / 4 : ℝ) * (K : ℝ) ^ τ_exp) ^ (-(1 - Θ - ε)) :=
+      Real.rpow_le_rpow_of_nonpos (by positivity) hT_ge_q (by linarith)
+    rw [Real.mul_rpow (by norm_num) (by positivity), ← Real.rpow_mul hKR_pos.le] at h1
+    have hexp_eq : τ_exp * -(1 - Θ - ε) = -a' := by linarith [hτ_mert]
+    have h4_le : (1 / 4 : ℝ) ^ (-(1 - Θ - ε)) ≤ 2 := by
+      have h4eq : (1 / 4 : ℝ) ^ (-(1 - Θ - ε)) = (4 : ℝ) ^ (1 - Θ - ε) := by
+        rw [one_div, Real.inv_rpow (by norm_num), Real.rpow_neg (by norm_num), inv_inv]
+      rw [h4eq]
+      calc (4 : ℝ) ^ (1 - Θ - ε) ≤ (4 : ℝ) ^ (1 / 2 : ℝ) :=
+            Real.rpow_le_rpow_of_exponent_le (by norm_num) hden_le_half
+        _ = 2 := by
+            rw [show (4 : ℝ) = (2 : ℝ) ^ (2 : ℕ) by norm_num, ← Real.rpow_natCast (2 : ℝ) 2,
+              ← Real.rpow_mul (by norm_num)]
+            norm_num
+    rw [hexp_eq] at h1
+    exact h1.trans (mul_le_mul_of_nonneg_right h4_le (by positivity))
+  calc C₂ * (1 / (y : ℝ) + (T : ℝ) ^ (-(1 - Θ - ε)))
+      ≤ C₂ * (2 * (K : ℝ) ^ (-a') + 2 * (K : ℝ) ^ (-a')) :=
+        mul_le_mul_of_nonneg_left (add_le_add hy_inv hT_pow_bd) hC₂.le
+    _ = (4 * C₂) * (K : ℝ) ^ (-a') := by ring
+
+/-- Taut-mass bound `tautMass b (2 * T) ≤ (3 * C₁) * (1 + log K)^3 * K^{e_mass}`. -/
+private lemma hasRate_tautMass_bd {b : ℕ → ℤ} {K y T : ℕ} {Θ ε a' τ_exp e_mass C₁ : ℝ}
+    (hK4 : 4 ≤ K) (hy_pos : 0 < y) (hT_ge2 : 2 ≤ T) (h2T_le_K : 2 * T ≤ K)
+    (hΘ : 1 / 2 ≤ Θ) (hε_pos : 0 < ε) (hC₁ : 0 < C₁)
+    (hy_lo_R : (1 / 2 : ℝ) * (K : ℝ) ^ a' ≤ (y : ℝ))
+    (hy_hi_R : (y : ℝ) ≤ (K : ℝ) ^ a')
+    (hT_hi_R : (T : ℝ) ≤ (1 / 2 : ℝ) * (K : ℝ) ^ τ_exp)
+    (hτ_sub_a' : τ_exp - a' = τ_exp * (Θ + ε))
+    (he1_le : a' * (1 + 2 * ε) + τ_exp * (2 * (Θ + ε) - 1) ≤ e_mass)
+    (he2_le : τ_exp * (Θ + ε) ≤ e_mass)
+    (hmass_raw : ∑ k ∈ Icc 1 (2 * T), |(b k : ℝ)| ≤
+      C₁ * ((1 + Real.log (T : ℝ)) ^ 3 * (y : ℝ) ^ (1 + 2 * ε) *
+        (T : ℝ) ^ (2 * (Θ + ε) - 1) +
+        (1 + Real.log (T : ℝ)) * ((T : ℝ) / (y : ℝ)) + (T : ℝ) ^ (Θ + ε))) :
+    tautMass b (2 * T) ≤ (3 * C₁) * (1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass := by
   have hKR_pos : (0 : ℝ) < (K : ℝ) := by exact_mod_cast (by omega : 0 < K)
   have hKR_ge1 : (1 : ℝ) ≤ (K : ℝ) := by exact_mod_cast (by omega : 1 ≤ K)
   have hlogK_nn : 0 ≤ Real.log (K : ℝ) := Real.log_nonneg hKR_ge1
-  set y : ℕ := ⌊(K : ℝ) ^ a'⌋₊
-  set T : ℕ := ⌊(1 / 2 : ℝ) * (K : ℝ) ^ τ_exp⌋₊
-  set W : ℕ := ⌊(K : ℝ) ^ η⌋₊
-  obtain ⟨hy_ge2, hy_lo_R, hy_hi_R⟩ := hy_b
-  obtain ⟨hT_ge2, hT_lo_R, hT_hi_R⟩ := hT_b
-  obtain ⟨hW_ge2, hW_lo_R, hW_hi_R⟩ := hW_b
-  -- Check `exists_taut_mertens_stencil` hypotheses for `(y, T)`.
-  have hy_min : tautStencilMinY d ≤ y :=
-    Nat.le_floor ((by push_cast; linarith : (tautStencilMinY d : ℝ) ≤ tautStencilMinY d + 1).trans hymin)
+  have hsub_Icc : tautMass b (2 * T) ≤ ∑ k ∈ Icc 1 (2 * T), |(b k : ℝ)| :=
+    sum_le_sum_of_subset_of_nonneg
+      (fun k hk => mem_Icc.mpr ⟨by have := (mem_Icc.mp hk).1; omega, (mem_Icc.mp hk).2⟩)
+      fun _ _ _ => abs_nonneg _
+  have hTK_le : (T : ℝ) ≤ (K : ℝ) := by exact_mod_cast (by omega : T ≤ K)
+  have hT_pos_R : (0 : ℝ) < (T : ℝ) := by exact_mod_cast (by omega : 0 < T)
+  have hlogT_le : 1 + Real.log (T : ℝ) ≤ 1 + Real.log (K : ℝ) := by
+    linarith [Real.log_le_log hT_pos_R hTK_le]
+  have hT_pow_K : (T : ℝ) ≤ (K : ℝ) ^ τ_exp :=
+    hT_hi_R.trans (by linarith [Real.rpow_pos_of_pos hKR_pos τ_exp])
+  have ht1 : (1 + Real.log (T : ℝ)) ^ 3 * (y : ℝ) ^ (1 + 2 * ε) *
+      (T : ℝ) ^ (2 * (Θ + ε) - 1) ≤
+      (1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass := by
+    have hp_log : (1 + Real.log (T : ℝ)) ^ 3 ≤ (1 + Real.log (K : ℝ)) ^ 3 :=
+      pow_le_pow_left₀
+        (by linarith [Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ T) : (1 : ℝ) ≤ T)])
+        hlogT_le 3
+    have hp_y : (y : ℝ) ^ (1 + 2 * ε) ≤ (K : ℝ) ^ (a' * (1 + 2 * ε)) := by
+      calc (y : ℝ) ^ (1 + 2 * ε) ≤ ((K : ℝ) ^ a') ^ (1 + 2 * ε) :=
+            Real.rpow_le_rpow (Nat.cast_nonneg _) hy_hi_R (by positivity)
+        _ = (K : ℝ) ^ (a' * (1 + 2 * ε)) := (Real.rpow_mul hKR_pos.le _ _).symm
+    have hp_T : (T : ℝ) ^ (2 * (Θ + ε) - 1) ≤ (K : ℝ) ^ (τ_exp * (2 * (Θ + ε) - 1)) := by
+      calc (T : ℝ) ^ (2 * (Θ + ε) - 1) ≤ ((K : ℝ) ^ τ_exp) ^ (2 * (Θ + ε) - 1) :=
+            Real.rpow_le_rpow hT_pos_R.le hT_pow_K (by linarith)
+        _ = (K : ℝ) ^ (τ_exp * (2 * (Θ + ε) - 1)) := (Real.rpow_mul hKR_pos.le _ _).symm
+    have hp_yT : (y : ℝ) ^ (1 + 2 * ε) * (T : ℝ) ^ (2 * (Θ + ε) - 1) ≤ (K : ℝ) ^ e_mass := by
+      calc _ ≤ (K : ℝ) ^ (a' * (1 + 2 * ε)) * (K : ℝ) ^ (τ_exp * (2 * (Θ + ε) - 1)) :=
+            mul_le_mul hp_y hp_T (by positivity) (by positivity)
+        _ = (K : ℝ) ^ (a' * (1 + 2 * ε) + τ_exp * (2 * (Θ + ε) - 1)) :=
+            (Real.rpow_add hKR_pos _ _).symm
+        _ ≤ (K : ℝ) ^ e_mass := Real.rpow_le_rpow_of_exponent_le hKR_ge1 he1_le
+    calc (1 + Real.log (T : ℝ)) ^ 3 * (y : ℝ) ^ (1 + 2 * ε) * (T : ℝ) ^ (2 * (Θ + ε) - 1)
+        = (1 + Real.log (T : ℝ)) ^ 3 *
+            ((y : ℝ) ^ (1 + 2 * ε) * (T : ℝ) ^ (2 * (Θ + ε) - 1)) := by ring
+      _ ≤ (1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass :=
+          mul_le_mul hp_log hp_yT (by positivity) (by positivity)
+  have ht2 : (1 + Real.log (T : ℝ)) * ((T : ℝ) / (y : ℝ)) ≤
+      (1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass := by
+    have hTy : (T : ℝ) / (y : ℝ) ≤ (K : ℝ) ^ e_mass := by
+      have hy_pos_R : (0 : ℝ) < (y : ℝ) := by exact_mod_cast hy_pos
+      have hdiv : (T : ℝ) / (y : ℝ) ≤
+          ((1 / 2 : ℝ) * (K : ℝ) ^ τ_exp) / ((1 / 2 : ℝ) * (K : ℝ) ^ a') :=
+        div_le_div₀ (by positivity) hT_hi_R (by positivity) hy_lo_R
+      have hcan : ((1 / 2 : ℝ) * (K : ℝ) ^ τ_exp) / ((1 / 2 : ℝ) * (K : ℝ) ^ a') =
+          (K : ℝ) ^ (τ_exp - a') := by
+        rw [mul_div_mul_left _ _ (by norm_num), sub_eq_add_neg, Real.rpow_add hKR_pos,
+          Real.rpow_neg hKR_pos.le]
+        ring
+      rw [hcan, hτ_sub_a'] at hdiv
+      exact hdiv.trans (Real.rpow_le_rpow_of_exponent_le hKR_ge1 he2_le)
+    have hlog13 : 1 + Real.log (T : ℝ) ≤ (1 + Real.log (K : ℝ)) ^ 3 := by
+      have h1 : 1 ≤ (1 + Real.log (K : ℝ)) ^ 2 := one_le_pow₀ (by linarith)
+      calc 1 + Real.log (T : ℝ) ≤ (1 + Real.log (K : ℝ)) * 1 := by linarith
+        _ ≤ (1 + Real.log (K : ℝ)) * (1 + Real.log (K : ℝ)) ^ 2 :=
+            mul_le_mul_of_nonneg_left h1 (by linarith)
+        _ = (1 + Real.log (K : ℝ)) ^ 3 := by ring
+    exact mul_le_mul hlog13 hTy (by positivity) (by positivity)
+  have ht3 : (T : ℝ) ^ (Θ + ε) ≤ (1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass := by
+    have hp : (T : ℝ) ^ (Θ + ε) ≤ (K : ℝ) ^ e_mass := by
+      calc (T : ℝ) ^ (Θ + ε) ≤ ((K : ℝ) ^ τ_exp) ^ (Θ + ε) :=
+            Real.rpow_le_rpow hT_pos_R.le hT_pow_K (by linarith)
+        _ = (K : ℝ) ^ (τ_exp * (Θ + ε)) := (Real.rpow_mul hKR_pos.le _ _).symm
+        _ ≤ (K : ℝ) ^ e_mass := Real.rpow_le_rpow_of_exponent_le hKR_ge1 he2_le
+    have h1 : 1 ≤ (1 + Real.log (K : ℝ)) ^ 3 := one_le_pow₀ (by linarith)
+    calc (T : ℝ) ^ (Θ + ε) = 1 * (T : ℝ) ^ (Θ + ε) := (one_mul _).symm
+      _ ≤ (1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass :=
+          mul_le_mul h1 hp (by positivity) (by positivity)
+  calc tautMass b (2 * T) ≤ ∑ k ∈ Icc 1 (2 * T), |(b k : ℝ)| := hsub_Icc
+    _ ≤ C₁ * ((1 + Real.log (T : ℝ)) ^ 3 * (y : ℝ) ^ (1 + 2 * ε) *
+          (T : ℝ) ^ (2 * (Θ + ε) - 1) +
+          (1 + Real.log (T : ℝ)) * ((T : ℝ) / (y : ℝ)) + (T : ℝ) ^ (Θ + ε)) := hmass_raw
+    _ ≤ C₁ * (3 * ((1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass)) :=
+        mul_le_mul_of_nonneg_left (by linarith only [ht1, ht2, ht3]) hC₁.le
+    _ = (3 * C₁) * (1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass := by ring
+
+/-- Scale-compatibility bounds for `(y, T, W, B₀)` at a fixed large alphabet bound `K`. -/
+private lemma hasRate_scale_checks {K y T W d M₀ S D_W B₀ : ℕ} {a' τ_exp η : ℝ}
+    (hK4 : 4 ≤ K) (ha'_pos : 0 < a') (hτ_lt1 : τ_exp < 1) (hS_pos : 1 ≤ S)
+    (hDW_pos_nat : 0 < D_W) (hW_ge2 : 2 ≤ W)
+    (hy_def : y = ⌊(K : ℝ) ^ a'⌋₊) (hB₀_def : B₀ = K / (D_W * W))
+    (hy_lo_R : (1 / 2 : ℝ) * (K : ℝ) ^ a' ≤ (y : ℝ)) (hy_hi_R : (y : ℝ) ≤ (K : ℝ) ^ a')
+    (hT_lo_R : (1 / 2 : ℝ) / 2 * (K : ℝ) ^ τ_exp ≤ (T : ℝ))
+    (hT_hi_R : (T : ℝ) ≤ (1 / 2 : ℝ) * (K : ℝ) ^ τ_exp)
+    (hW_lo_R : (1 / 2 : ℝ) * (K : ℝ) ^ η ≤ (W : ℝ)) (hW_hi_R : (W : ℝ) ≤ (K : ℝ) ^ η)
+    (hymin : (tautStencilMinY d : ℝ) + 1 ≤ (K : ℝ) ^ a')
+    (hyT : 4 * (smoothJumpBase d : ℝ) * (K : ℝ) ^ a' ≤ (K : ℝ) ^ τ_exp)
+    (hTyd : (2 : ℝ) ^ (d + 1) * (K : ℝ) ^ τ_exp ≤ (K : ℝ) ^ (a' * ((d + 1 : ℕ) : ℝ)))
+    (hmlo : ((2 ^ S : ℕ) : ℝ) * (K : ℝ) ^ η ≤ (K : ℝ))
+    (hmhi : 2 * (K : ℝ) ≤ (K : ℝ) ^ (η * (M₀ : ℝ)))
+    (hB₀_ev : 4 * (D_W : ℝ) * (K : ℝ) ^ η ≤ (K : ℝ))
+    (hsq_ev : ((2 ^ (2 * S + 2) : ℕ) : ℝ) * ((smoothJumpPrimeBound d + 1 : ℕ) : ℝ) *
+      (K : ℝ) ^ (2 * η + a') ≤ (K : ℝ)) :
+    tautStencilMinY d ≤ y ∧ smoothJumpBase d * y ≤ T ∧ T ≤ y ^ (d + 1) ∧
+      2 * T ≤ K ∧ 1 ≤ Nat.log (2 ^ S * W) K ∧ Nat.log (2 ^ S * W) K < M₀ ∧
+      2 ≤ B₀ ∧ (1 / (2 * (D_W : ℝ))) * (K : ℝ) ^ (1 - η) ≤ (B₀ : ℝ) ∧
+      2 ^ (2 * S + 2) * W ^ 2 * (smoothJumpPrimeBound d * y + 1) ≤ K := by
+  have hKR_pos : (0 : ℝ) < (K : ℝ) := by exact_mod_cast (by omega : 0 < K)
+  have hKR_ge1 : (1 : ℝ) ≤ (K : ℝ) := by exact_mod_cast (by omega : 1 ≤ K)
+  have hDW_pos : (0 : ℝ) < (D_W : ℝ) := by exact_mod_cast hDW_pos_nat
+  have hy_min : tautStencilMinY d ≤ y := by
+    rw [hy_def]
+    exact Nat.le_floor ((by linarith : (tautStencilMinY d : ℝ) ≤ tautStencilMinY d + 1).trans hymin)
   have hT_lo : smoothJumpBase d * y ≤ T := by
     have hR : ((smoothJumpBase d * y : ℕ) : ℝ) ≤ (T : ℝ) := by
       push_cast
@@ -578,7 +589,7 @@ theorem hasRate_of_zeroFree_exact {Θ : ℝ} (hΘ : 1 / 2 ≤ Θ) (hΘ1 : Θ < 1
           ≤ (smoothJumpBase d : ℝ) * (K : ℝ) ^ a' :=
             mul_le_mul_of_nonneg_left hy_hi_R (Nat.cast_nonneg _)
         _ ≤ (1 / 4 : ℝ) * (K : ℝ) ^ τ_exp := by linarith only [hyT]
-        _ ≤ (T : ℝ) := by simpa [div_eq_mul_inv] using hT_lo_R
+        _ ≤ (T : ℝ) := by linarith only [hT_lo_R]
     exact_mod_cast hR
   have hT_hi : T ≤ y ^ (d + 1) := by
     have hR : (T : ℝ) ≤ ((y ^ (d + 1) : ℕ) : ℝ) := by
@@ -596,9 +607,6 @@ theorem hasRate_of_zeroFree_exact {Θ : ℝ} (hΘ : 1 / 2 ≤ Θ) (hΘ1 : Θ < 1
         rwa [hcan] at hp
       exact h1.trans (h2.trans hpow_y)
     exact_mod_cast hR
-  obtain ⟨b, -, hb1, hb2, hb_supp, hb_smooth, hmass_raw, htrack_raw⟩ :=
-    hstencil y T hy_min hT_lo hT_hi
-  -- Check `exists_hamming_compensated_producer` hypotheses for `N = 2 * T`, `X = K ^ 2`.
   have h2T_le_K : 2 * T ≤ K := by
     have hR : ((2 * T : ℕ) : ℝ) ≤ (K : ℝ) := by
       push_cast
@@ -608,37 +616,37 @@ theorem hasRate_of_zeroFree_exact {Θ : ℝ} (hΘ : 1 / 2 ≤ Θ) (hΘ1 : Θ < 1
         _ ≤ (K : ℝ) ^ (1 : ℝ) := Real.rpow_le_rpow_of_exponent_le hKR_ge1 hτ_lt1.le
         _ = (K : ℝ) := Real.rpow_one _
     exact_mod_cast hR
-  have hK_le_K2 : K ≤ K ^ 2 := by nlinarith
   have hm_lo : 1 ≤ Nat.log (2 ^ S * W) K := by
-    refine Nat.le_log_of_pow_le (by have : 1 ≤ 2 ^ S := Nat.one_le_two_pow; nlinarith) ?_
+    refine Nat.le_log_of_pow_le (by
+      calc 1 < 1 * 2 := by omega
+        _ ≤ 2 ^ S * W := Nat.mul_le_mul Nat.one_le_two_pow hW_ge2) ?_
     rw [pow_one]
     have hR : ((2 ^ S * W : ℕ) : ℝ) ≤ (K : ℝ) := by
-      push_cast
+      push_cast at hmlo ⊢
       exact (mul_le_mul_of_nonneg_left hW_hi_R (by positivity)).trans hmlo
     exact_mod_cast hR
   have hm_hi : Nat.log (2 ^ S * W) K < M₀ := by
     refine Nat.log_lt_of_lt_pow (by omega) ?_
     have hR : (K : ℝ) < (((2 ^ S * W) ^ M₀ : ℕ) : ℝ) := by
       push_cast
-      have h2S_ge2 : (2 : ℝ) ≤ ((2 ^ S : ℕ) : ℝ) := by
-        have : 1 ≤ S := by rw [hS_def]; omega
-        exact_mod_cast (Nat.pow_le_pow_right (by norm_num) this)
-      have hbase_ge : (K : ℝ) ^ η ≤ ((2 ^ S : ℕ) : ℝ) * (W : ℝ) := by
+      have h2S_ge2 : (2 : ℝ) ≤ (2 : ℝ) ^ S := by
+        calc (2 : ℝ) = (2 : ℝ) ^ (1 : ℕ) := (pow_one 2).symm
+          _ ≤ (2 : ℝ) ^ S := pow_le_pow_right₀ (by norm_num) hS_pos
+      have hbase_ge : (K : ℝ) ^ η ≤ (2 : ℝ) ^ S * (W : ℝ) := by
         calc (K : ℝ) ^ η = 2 * ((1 / 2 : ℝ) * (K : ℝ) ^ η) := by ring
-          _ ≤ ((2 ^ S : ℕ) : ℝ) * (W : ℝ) :=
+          _ ≤ (2 : ℝ) ^ S * (W : ℝ) :=
               mul_le_mul h2S_ge2 hW_lo_R (by positivity) (by positivity)
-      have hpow_ge : (K : ℝ) ^ (η * (M₀ : ℝ)) ≤ (((2 ^ S : ℕ) : ℝ) * (W : ℝ)) ^ M₀ := by
-        rw [mul_comm η (M₀ : ℝ), Real.rpow_mul hKR_pos.le, Real.rpow_natCast]
+      have hpow_ge : (K : ℝ) ^ (η * (M₀ : ℝ)) ≤ ((2 : ℝ) ^ S * (W : ℝ)) ^ M₀ := by
+        rw [Real.rpow_mul hKR_pos.le, Real.rpow_natCast]
         exact pow_le_pow_left₀ (by positivity) hbase_ge M₀
       have hlt2 : (K : ℝ) < 2 * (K : ℝ) := by linarith
       exact lt_of_lt_of_le hlt2 (hmhi.trans hpow_ge)
     exact_mod_cast hR
-  set B₀ : ℕ := K / (D_W * W)
   have hDW_W_le : (D_W : ℝ) * (W : ℝ) ≤ (D_W : ℝ) * (K : ℝ) ^ η :=
     mul_le_mul_of_nonneg_left hW_hi_R hDW_pos.le
   have hB₀_ge2 : 2 ≤ B₀ := by
-    dsimp [B₀]
-    refine (Nat.le_div_iff_mul_le (by rw [hDW_def]; positivity)).mpr ?_
+    rw [hB₀_def]
+    refine (Nat.le_div_iff_mul_le (Nat.mul_pos hDW_pos_nat (by omega))).mpr ?_
     have hR : ((2 * (D_W * W) : ℕ) : ℝ) ≤ (K : ℝ) := by
       push_cast
       calc 2 * ((D_W : ℝ) * (W : ℝ)) ≤ 4 * (D_W : ℝ) * (K : ℝ) ^ η := by
@@ -648,9 +656,8 @@ theorem hasRate_of_zeroFree_exact {Θ : ℝ} (hΘ : 1 / 2 ≤ Θ) (hΘ1 : Θ < 1
   have hB₀_lo_R : (1 / (2 * (D_W : ℝ))) * (K : ℝ) ^ (1 - η) ≤ (B₀ : ℝ) := by
     have hden_R : 0 < (D_W : ℝ) * (W : ℝ) := mul_pos hDW_pos (by exact_mod_cast (by omega : 0 < W))
     have hlt_succ : (K : ℝ) < ((D_W * W : ℕ) : ℝ) * ((B₀ : ℝ) + 1) := by
-      dsimp [B₀]
-      have := Nat.lt_mul_div_succ K (by rw [hDW_def]; positivity : 0 < D_W * W)
-      exact_mod_cast this
+      rw [hB₀_def]
+      exact_mod_cast Nat.lt_mul_div_succ K (Nat.mul_pos hDW_pos_nat (by omega))
     have hdiv_le : (K : ℝ) / ((D_W : ℝ) * (K : ℝ) ^ η) ≤ (B₀ : ℝ) + 1 := by
       calc (K : ℝ) / ((D_W : ℝ) * (K : ℝ) ^ η)
           ≤ (K : ℝ) / ((D_W : ℝ) * (W : ℝ)) :=
@@ -667,9 +674,9 @@ theorem hasRate_of_zeroFree_exact {Θ : ℝ} (hΘ : 1 / 2 ≤ Θ) (hΘ1 : Θ < 1
     have hge2 : 2 ≤ (1 / (D_W : ℝ)) * (K : ℝ) ^ (1 - η) := by
       have hm := mul_le_mul_of_nonneg_left hB₀_ev
         (by positivity : 0 ≤ (1 / (D_W : ℝ)) * (K : ℝ) ^ (-η))
+      have hcan : (K : ℝ) ^ (-η) * (K : ℝ) ^ η = 1 := by
+        rw [← Real.rpow_add hKR_pos, neg_add_cancel, Real.rpow_zero]
       have heq1 : (1 / (D_W : ℝ)) * (K : ℝ) ^ (-η) * (4 * (D_W : ℝ) * (K : ℝ) ^ η) = 4 := by
-        have hcan : (K : ℝ) ^ (-η) * (K : ℝ) ^ η = 1 := by
-          rw [← Real.rpow_add hKR_pos]; simp
         calc (1 / (D_W : ℝ)) * (K : ℝ) ^ (-η) * (4 * (D_W : ℝ) * (K : ℝ) ^ η)
             = 4 * ((1 / (D_W : ℝ)) * (D_W : ℝ)) * ((K : ℝ) ^ (-η) * (K : ℝ) ^ η) := by ring
           _ = 4 := by rw [one_div_mul_cancel hDW_pos.ne', hcan]; ring
@@ -678,6 +685,9 @@ theorem hasRate_of_zeroFree_exact {Θ : ℝ} (hΘ : 1 / 2 ≤ Θ) (hΘ1 : Θ < 1
         rw [sub_eq_add_neg, Real.rpow_add hKR_pos, Real.rpow_one]; ring
       rw [heq1, heq2] at hm
       linarith only [hm]
+    have hhalf_eq : (1 / (2 * (D_W : ℝ))) * (K : ℝ) ^ (1 - η) =
+        (1 / 2 : ℝ) * ((1 / (D_W : ℝ)) * (K : ℝ) ^ (1 - η)) := by ring
+    rw [hhalf_eq]
     linarith only [hdiv_le, hge2]
   have hK_sq : 2 ^ (2 * S + 2) * W ^ 2 * (smoothJumpPrimeBound d * y + 1) ≤ K := by
     have hR : ((2 ^ (2 * S + 2) * W ^ 2 * (smoothJumpPrimeBound d * y + 1) : ℕ) : ℝ) ≤ (K : ℝ) := by
@@ -706,133 +716,181 @@ theorem hasRate_of_zeroFree_exact {Θ : ℝ} (hΘ : 1 / 2 ≤ Θ) (hΘ1 : Θ < 1
               (K : ℝ) ^ (2 * η + a') := by rw [← Real.rpow_add hKR_pos]
         _ ≤ (K : ℝ) := hsq_ev
     exact_mod_cast hR
-  set η₀ : ℝ := C₂ * (1 / (y : ℝ) + (T : ℝ) ^ (-(1 - Θ - ε)))
-  have hη₀_nn : 0 ≤ η₀ := by dsimp [η₀]; positivity
+  exact ⟨hy_min, hT_lo, hT_hi, h2T_le_K, hm_lo, hm_hi, hB₀_ge2, hB₀_lo_R, hK_sq⟩
+
+/-- **Full-scale rate from a zero-free half-plane.** If `Θ ∈ [1/2, 1)` satisfies `ζ(s) ≠ 0` on
+`Re s > Θ`, then `HasRate (fun K => K^{-a})` holds for every `a ∈ (0, 1 - Θ)`. -/
+theorem hasRate_of_zeroFree_exact {Θ : ℝ} (hΘ : 1 / 2 ≤ Θ) (hΘ1 : Θ < 1)
+    (hzf : ∀ s : ℂ, Θ < s.re → riemannZeta s ≠ 0)
+    {a : ℝ} (ha0 : 0 < a) (ha : a < 1 - Θ) :
+    HasRate fun K => (K : ℝ) ^ (-a) := by
+  obtain ⟨δ, hδ_def⟩ : ∃ δ : ℝ, δ = 1 - Θ - a := ⟨_, rfl⟩
+  have hδ_pos : 0 < δ := by rw [hδ_def]; linarith
+  obtain ⟨a', ha'_def⟩ : ∃ a' : ℝ, a' = 1 - Θ - δ / 4 := ⟨_, rfl⟩
+  have ha'_pos : 0 < a' := by rw [ha'_def, hδ_def]; linarith
+  have ha'_le_half : a' ≤ 1 / 2 := by rw [ha'_def]; linarith
+  obtain ⟨ε, hε_def⟩ : ∃ ε : ℝ, ε = δ / 64 := ⟨_, rfl⟩
+  have hε_pos : 0 < ε := by rw [hε_def]; positivity
+  have hε_le4 : ε ≤ 1 / 4 := by rw [hε_def, hδ_def]; linarith
+  have hΘε : Θ + ε < 1 := by rw [hε_def, hδ_def]; linarith
+  have hden_pos : 0 < 1 - Θ - ε := by linarith
+  have hden_le_half : 1 - Θ - ε ≤ 1 / 2 := by linarith
+  obtain ⟨τ_exp, hτ_def⟩ : ∃ τ_exp : ℝ, τ_exp = a' / (1 - Θ - ε) := ⟨_, rfl⟩
+  have hτ_pos : 0 < τ_exp := by rw [hτ_def]; positivity
+  have hτ_gt_a' : a' < τ_exp := by
+    have h2 : 2 * a' ≤ τ_exp := by
+      rw [hτ_def, le_div_iff₀ hden_pos]
+      calc 2 * a' * (1 - Θ - ε) ≤ 2 * a' * (1 / 2) :=
+            mul_le_mul_of_nonneg_left hden_le_half (by positivity)
+        _ = a' := by ring
+    linarith
+  have hτ_le_sub : τ_exp ≤ 1 - δ / 4 := by
+    rw [hτ_def, div_le_iff₀ hden_pos]
+    have h1 : (1 - δ / 4) * (1 - Θ - ε) =
+        1 - Θ - ε - (δ / 4) * (1 - Θ) + (δ / 4) * ε := by ring
+    have h2 : (δ / 4) * (1 - Θ) ≤ δ / 8 := by
+      calc (δ / 4) * (1 - Θ) ≤ (δ / 4) * (1 / 2) :=
+            mul_le_mul_of_nonneg_left (by linarith) (by positivity)
+        _ = δ / 8 := by ring
+    have h3 : 0 ≤ (δ / 4) * ε := by positivity
+    rw [hε_def] at h1 h3
+    rw [ha'_def, hε_def]
+    linarith only [h1, h2, h3, hδ_pos]
+  have hτ_lt1 : τ_exp < 1 := by linarith
+  have hτ_mert : τ_exp * (1 - Θ - ε) = a' := by
+    rw [hτ_def, div_mul_cancel₀ _ hden_pos.ne']
+  have hτ_sub_a' : τ_exp - a' = τ_exp * (Θ + ε) := by
+    calc τ_exp - a' = τ_exp - τ_exp * (1 - Θ - ε) := by rw [hτ_mert]
+      _ = τ_exp * (Θ + ε) := by ring
+  obtain ⟨d, hd_def⟩ : ∃ d : ℕ, d = ⌈1 / (1 - Θ - ε)⌉₊ + 1 := ⟨_, rfl⟩
+  have hd1 : 1 ≤ d := by rw [hd_def]; omega
+  have hτ_lt_ad1 : τ_exp < a' * ((d + 1 : ℕ) : ℝ) := by
+    have hceil : 1 / (1 - Θ - ε) ≤ (⌈1 / (1 - Θ - ε)⌉₊ : ℝ) := Nat.le_ceil _
+    have hle_d : τ_exp ≤ a' * (⌈1 / (1 - Θ - ε)⌉₊ : ℝ) := by
+      rw [hτ_def, div_eq_mul_one_div]
+      exact mul_le_mul_of_nonneg_left hceil ha'_pos.le
+    have hd_gt : (⌈1 / (1 - Θ - ε)⌉₊ : ℝ) < ((d + 1 : ℕ) : ℝ) := by
+      rw [hd_def]; push_cast; linarith
+    exact lt_of_le_of_lt hle_d (mul_lt_mul_of_pos_left hd_gt ha'_pos)
+  obtain ⟨C₁, C₂, hC₁, hC₂, hstencil⟩ :=
+    exists_taut_mertens_stencil hΘ hΘ1 hzf hε_pos hε_le4 hΘε hd1
+  obtain ⟨η, hη_def⟩ : ∃ η : ℝ, η = δ / 32 := ⟨_, rfl⟩
+  have hη_pos : 0 < η := by rw [hη_def]; positivity
+  obtain ⟨M₀, hM₀_def⟩ : ∃ M₀ : ℕ, M₀ = ⌈1 / η⌉₊ + 2 := ⟨_, rfl⟩
+  have hM₀_ge2 : 2 ≤ M₀ := by rw [hM₀_def]; omega
+  have hη_M₀ : 1 < η * (M₀ : ℝ) := by
+    have hceil : 1 / η ≤ (⌈1 / η⌉₊ : ℝ) := Nat.le_ceil _
+    have h1 : 1 ≤ η * (⌈1 / η⌉₊ : ℝ) := by
+      have := mul_le_mul_of_nonneg_left hceil hη_pos.le
+      rwa [mul_one_div_cancel hη_pos.ne'] at this
+    rw [hM₀_def]; push_cast; linarith
+  obtain ⟨S, hS_def⟩ : ∃ S : ℕ, S = 16 * M₀ + 4 := ⟨_, rfl⟩
+  have hS_pos : 1 ≤ S := by rw [hS_def]; omega
+  obtain ⟨D_W, hDW_def⟩ : ∃ D_W : ℕ, D_W = 2 ^ (S * (M₀ + 1) + 2) := ⟨_, rfl⟩
+  have hDW_pos_nat : 0 < D_W := by rw [hDW_def]; positivity
+  have hDW_pos : (0 : ℝ) < (D_W : ℝ) := by exact_mod_cast hDW_pos_nat
+  obtain ⟨e_mass, hem_def⟩ : ∃ e_mass : ℝ, e_mass = Θ - 3 * δ / 32 := ⟨_, rfl⟩
+  have he1_le : a' * (1 + 2 * ε) + τ_exp * (2 * (Θ + ε) - 1) ≤ e_mass := by
+    have hp1 : a' * (1 + 2 * ε) ≤ a' + 2 * ε := by
+      have : a' * (2 * ε) ≤ (1 / 2) * (2 * ε) :=
+        mul_le_mul_of_nonneg_right ha'_le_half (by positivity)
+      linarith
+    have hp2 : τ_exp * (2 * (Θ + ε) - 1) ≤ 2 * Θ - 1 + 2 * ε := by
+      have h1 : τ_exp * (2 * Θ - 1) ≤ 1 * (2 * Θ - 1) :=
+        mul_le_mul_of_nonneg_right hτ_lt1.le (by linarith)
+      have h2 : τ_exp * (2 * ε) ≤ 1 * (2 * ε) :=
+        mul_le_mul_of_nonneg_right hτ_lt1.le (by positivity)
+      linarith
+    rw [ha'_def, hε_def] at hp1
+    rw [hε_def] at hp2
+    rw [hem_def, ha'_def, hε_def]
+    linarith only [hp1, hp2, hδ_pos]
+  have he2_le : τ_exp * (Θ + ε) ≤ e_mass := by
+    have hexp : τ_exp * (Θ + ε) = τ_exp * Θ + τ_exp * ε := mul_add _ _ _
+    have hp1 : τ_exp * Θ ≤ (1 - δ / 4) * Θ :=
+      mul_le_mul_of_nonneg_right hτ_le_sub (by linarith)
+    have hp2 : (1 - δ / 4) * Θ ≤ Θ - δ / 8 := by
+      have : (δ / 4) * (1 / 2) ≤ (δ / 4) * Θ :=
+        mul_le_mul_of_nonneg_left hΘ (by positivity)
+      linarith
+    have hp3 : τ_exp * ε ≤ ε := by
+      calc τ_exp * ε ≤ 1 * ε := mul_le_mul_of_nonneg_right hτ_lt1.le hε_pos.le
+        _ = ε := one_mul _
+    rw [hε_def] at hp3 hexp
+    rw [hem_def, hε_def]
+    linarith only [hexp, hp1, hp2, hp3, hδ_pos]
+  obtain ⟨C_mass, hCmass_def⟩ : ∃ C_mass : ℝ, C_mass = 3 * C₁ := ⟨_, rfl⟩
+  obtain ⟨C_η₀, hCη₀_def⟩ : ∃ C_η₀ : ℝ, C_η₀ = 4 * C₂ := ⟨_, rfl⟩
+  filter_upwards [eventually_ge_atTop 4,
+    eventually_floor_rpow_bounds (c := 1) zero_lt_one ha'_pos,
+    eventually_floor_rpow_bounds (c := 1 / 2) (by norm_num) hτ_pos,
+    eventually_floor_rpow_bounds (c := 1) zero_lt_one hη_pos,
+    (eventually_const_rpow_le (tautStencilMinY d + 1 : ℝ) ha'_pos :
+      ∀ᶠ K : ℕ in atTop, (tautStencilMinY d + 1 : ℝ) * (K : ℝ) ^ (0 : ℝ) ≤ (K : ℝ) ^ a'),
+    eventually_const_rpow_le (4 * (smoothJumpBase d : ℝ)) hτ_gt_a',
+    eventually_const_rpow_le ((2 : ℝ) ^ (d + 1)) hτ_lt_ad1,
+    (eventually_const_rpow_le ((2 ^ S : ℕ) : ℝ) (by rw [hη_def, hδ_def]; linarith) :
+      ∀ᶠ K : ℕ in atTop, ((2 ^ S : ℕ) : ℝ) * (K : ℝ) ^ η ≤ (K : ℝ) ^ (1 : ℝ)),
+    eventually_const_rpow_le 2 hη_M₀,
+    (eventually_const_rpow_le (4 * (D_W : ℝ)) (by rw [hη_def, hδ_def]; linarith) :
+      ∀ᶠ K : ℕ in atTop, (4 * (D_W : ℝ)) * (K : ℝ) ^ η ≤ (K : ℝ) ^ (1 : ℝ)),
+    (eventually_const_rpow_le
+        (((2 ^ (2 * S + 2) : ℕ) : ℝ) * ((smoothJumpPrimeBound d + 1 : ℕ) : ℝ))
+        (by rw [hη_def, ha'_def, hδ_def]; linarith) :
+      ∀ᶠ K : ℕ in atTop,
+        (((2 ^ (2 * S + 2) : ℕ) : ℝ) * ((smoothJumpPrimeBound d + 1 : ℕ) : ℝ)) *
+          (K : ℝ) ^ (2 * η + a') ≤ (K : ℝ) ^ (1 : ℝ)),
+    eventually_const_log_pow_rpow_le (80 * C_η₀) 2 (by rw [ha'_def, hδ_def]; linarith :
+      -(a + δ / 2) > -a'),
+    eventually_const_log_pow_rpow_le (80 * (1 + C_mass)) 5 (by rw [hem_def, hδ_def]; linarith :
+      -(a + δ / 2) > e_mass - 2),
+    eventually_const_log_pow_rpow_le
+      (2 * D_W * C_mass * (1 + 16 * (M₀ : ℝ) * (2 ^ (2 * S + 1) : ℝ) * 16)) 6
+      (by rw [hem_def, hη_def, hδ_def]; linarith : -(a + δ / 32) > e_mass - (1 - η)),
+    eventually_const_rpow_le (6 : ℝ) (by linarith : -a > -(a + δ / 32))] with
+    K hK4 hy_b hT_b hW_b hymin hyT hTyd hmlo hmhi hB₀_ev hsq_ev hr1 hr2 hr3 h6pow
+  simp only [one_mul, Real.rpow_zero, mul_one, Real.rpow_one] at hy_b hW_b hymin hmlo hmhi hB₀_ev hsq_ev
+  have hKR_pos : (0 : ℝ) < (K : ℝ) := by exact_mod_cast (by omega : 0 < K)
+  obtain ⟨y, hy_def⟩ : ∃ y : ℕ, y = ⌊(K : ℝ) ^ a'⌋₊ := ⟨_, rfl⟩
+  obtain ⟨T, hT_def⟩ : ∃ T : ℕ, T = ⌊(1 / 2 : ℝ) * (K : ℝ) ^ τ_exp⌋₊ := ⟨_, rfl⟩
+  obtain ⟨W, hW_def⟩ : ∃ W : ℕ, W = ⌊(K : ℝ) ^ η⌋₊ := ⟨_, rfl⟩
+  rw [← hy_def] at hy_b
+  rw [← hT_def] at hT_b
+  rw [← hW_def] at hW_b
+  obtain ⟨hy_ge2, hy_lo_R, hy_hi_R⟩ := hy_b
+  obtain ⟨hT_ge2, hT_lo_R, hT_hi_R⟩ := hT_b
+  obtain ⟨hW_ge2, hW_lo_R, hW_hi_R⟩ := hW_b
+  obtain ⟨B₀, hB₀_def⟩ : ∃ B₀ : ℕ, B₀ = K / (D_W * W) := ⟨_, rfl⟩
+  obtain ⟨hy_min, hT_lo, hT_hi, h2T_le_K, hm_lo, hm_hi, hB₀_ge2, hB₀_lo_R, hK_sq⟩ :=
+    hasRate_scale_checks hK4 ha'_pos hτ_lt1 hS_pos hDW_pos_nat hW_ge2 hy_def hB₀_def
+      hy_lo_R hy_hi_R hT_lo_R hT_hi_R hW_lo_R hW_hi_R hymin hyT hTyd hmlo hmhi hB₀_ev hsq_ev
+  obtain ⟨b, -, hb1, hb2, hb_supp, hb_smooth, hmass_raw, htrack_raw⟩ :=
+    hstencil y T hy_min hT_lo hT_hi
+  obtain ⟨η₀, hη₀_def⟩ : ∃ η₀ : ℝ, η₀ = C₂ * (1 / (y : ℝ) + (T : ℝ) ^ (-(1 - Θ - ε))) := ⟨_, rfl⟩
+  have hη₀_nn : 0 ≤ η₀ := by rw [hη₀_def]; positivity
+  have hB₀_eq : K / (2 ^ ((16 * M₀ + 4) * (M₀ + 1) + 2) * W) = B₀ := by
+    rw [← hS_def, ← hDW_def, hB₀_def]
   obtain ⟨c, m, hP, halph, hrate_raw⟩ := exists_hamming_compensated_producer
     (b := b) (N := 2 * T) (P_max := smoothJumpPrimeBound d * y)
     (M₀ := M₀) (W := W) (K := K) (X := K ^ 2) (η₀ := η₀)
-    (by omega) hb1 hb2 hb_supp (fun k hk2 _ hbk => hb_smooth k hk2 hbk) hη₀_nn htrack_raw
-    hM₀_ge2 hW_ge2 h2T_le_K hK_le_K2
-    (hS_def ▸ hm_lo) (hS_def ▸ hm_hi) (by rwa [← hS_def, ← hDW_def]) (hS_def ▸ hK_sq)
+    (by omega) hb1 hb2 hb_supp (fun k hk2 _ hbk => hb_smooth k hk2 hbk) hη₀_nn
+    (fun x hx => by rw [hη₀_def]; exact htrack_raw x hx)
+    hM₀_ge2 hW_ge2 h2T_le_K (Nat.le_self_pow (by norm_num) K)
+    (by rwa [← hS_def]) (by rwa [← hS_def]) (by rwa [hB₀_eq]) (by rwa [← hS_def])
+  rw [hB₀_eq] at hP hrate_raw
+  rw [← hS_def] at hrate_raw
   refine ⟨c, m, B₀, hP, halph, hrate_raw.trans ?_⟩
-  -- Bound `η₀` and `tautMass b (2 * T)`.
   have hη₀_bd : η₀ ≤ C_η₀ * (K : ℝ) ^ (-a') := by
-    have hy_inv : 1 / (y : ℝ) ≤ 2 * (K : ℝ) ^ (-a') := by
-      have hy_pos_R : (0 : ℝ) < (y : ℝ) := by exact_mod_cast (by omega : 0 < y)
-      rw [div_le_iff₀ hy_pos_R]
-      calc (1 : ℝ) = 2 * (K : ℝ) ^ (-a') * ((1 / 2) * (K : ℝ) ^ a') := by
-            have : (K : ℝ) ^ (-a') * (K : ℝ) ^ a' = 1 := by
-              rw [← Real.rpow_add hKR_pos]; simp
-            calc (1 : ℝ) = (K : ℝ) ^ (-a') * (K : ℝ) ^ a' := this.symm
-              _ = _ := by ring
-        _ ≤ 2 * (K : ℝ) ^ (-a') * (y : ℝ) :=
-            mul_le_mul_of_nonneg_left hy_lo_R (by positivity)
-    have hT_pow_bd : (T : ℝ) ^ (-(1 - Θ - ε)) ≤ (2 : ℝ) ^ (1 : ℝ) * (K : ℝ) ^ (-a') := by
-      have hT_ge_q : (1 / 4 : ℝ) * (K : ℝ) ^ τ_exp ≤ (T : ℝ) := by
-        simpa [div_eq_mul_inv] using hT_lo_R
-      have h1 : (T : ℝ) ^ (-(1 - Θ - ε)) ≤
-          ((1 / 4 : ℝ) * (K : ℝ) ^ τ_exp) ^ (-(1 - Θ - ε)) :=
-        Real.rpow_le_rpow_of_nonpos (by positivity) hT_ge_q (by linarith)
-      rw [Real.mul_rpow (by norm_num) (by positivity), ← Real.rpow_mul hKR_pos.le] at h1
-      have hexp_eq : τ_exp * -(1 - Θ - ε) = -a' := by linarith [hτ_mert]
-      have h4_le : (1 / 4 : ℝ) ^ (-(1 - Θ - ε)) ≤ (2 : ℝ) ^ (1 : ℝ) := by
-        have h4eq : (1 / 4 : ℝ) ^ (-(1 - Θ - ε)) = (4 : ℝ) ^ (1 - Θ - ε) := by
-          rw [one_div, Real.inv_rpow (by norm_num), ← Real.rpow_neg_one ((4 : ℝ) ^ (1 - Θ - ε)),
-            ← Real.rpow_mul (by norm_num)]
-          congr 1; ring
-        rw [h4eq]
-        calc (4 : ℝ) ^ (1 - Θ - ε) ≤ (4 : ℝ) ^ (1 / 2 : ℝ) :=
-              Real.rpow_le_rpow_of_exponent_le (by norm_num) hden_le_half
-          _ = (2 : ℝ) ^ (1 : ℝ) := by
-              rw [show (4 : ℝ) = (2 : ℝ) ^ (2 : ℕ) by norm_num, ← Real.rpow_natCast (2 : ℝ) 2,
-                ← Real.rpow_mul (by norm_num)]
-              norm_num
-      rw [hexp_eq] at h1
-      exact h1.trans (mul_le_mul_of_nonneg_right h4_le (by positivity))
-    dsimp [η₀, C_η₀]
-    calc C₂ * (1 / (y : ℝ) + (T : ℝ) ^ (-(1 - Θ - ε)))
-        ≤ C₂ * (2 * (K : ℝ) ^ (-a') + (2 : ℝ) ^ (1 : ℝ) * (K : ℝ) ^ (-a')) :=
-          mul_le_mul_of_nonneg_left (add_le_add hy_inv hT_pow_bd) hC₂.le
-      _ = C₂ * (2 + (2 : ℝ) ^ (1 : ℝ)) * (K : ℝ) ^ (-a') := by ring
+    rw [hη₀_def, hCη₀_def]
+    exact hasRate_eta_bd hKR_pos (by omega) hy_lo_R hT_lo_R hden_pos hden_le_half hτ_mert hC₂
   have hmass_bd : tautMass b (2 * T) ≤ C_mass * (1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass := by
-    have hsub_Icc : tautMass b (2 * T) ≤ ∑ k ∈ Icc 1 (2 * T), |(b k : ℝ)| :=
-      sum_le_sum_of_subset_of_nonneg
-        (fun k hk => mem_Icc.mpr ⟨by have := (mem_Icc.mp hk).1; omega, (mem_Icc.mp hk).2⟩)
-        fun _ _ _ => abs_nonneg _
-    have hTK_le : (T : ℝ) ≤ (K : ℝ) := by exact_mod_cast (by omega : T ≤ K)
-    have hT_pos_R : (0 : ℝ) < (T : ℝ) := by exact_mod_cast (by omega : 0 < T)
-    have hlogT_le : 1 + Real.log (T : ℝ) ≤ 1 + Real.log (K : ℝ) := by
-      linarith [Real.log_le_log hT_pos_R hTK_le]
-    have hT_pow_K : (T : ℝ) ≤ (K : ℝ) ^ τ_exp :=
-      hT_hi_R.trans (by linarith [Real.rpow_pos_of_pos hKR_pos τ_exp])
-    have ht1 : (1 + Real.log (T : ℝ)) ^ 3 * (y : ℝ) ^ (1 + 2 * ε) *
-        (T : ℝ) ^ (2 * (Θ + ε) - 1) ≤
-        (1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass := by
-      have hp_log : (1 + Real.log (T : ℝ)) ^ 3 ≤ (1 + Real.log (K : ℝ)) ^ 3 :=
-        pow_le_pow_left₀ (by linarith [Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ T) : (1 : ℝ) ≤ T)]) hlogT_le 3
-      have hp_y : (y : ℝ) ^ (1 + 2 * ε) ≤ (K : ℝ) ^ (a' * (1 + 2 * ε)) := by
-        calc (y : ℝ) ^ (1 + 2 * ε) ≤ ((K : ℝ) ^ a') ^ (1 + 2 * ε) :=
-              Real.rpow_le_rpow (Nat.cast_nonneg _) hy_hi_R (by positivity)
-          _ = (K : ℝ) ^ (a' * (1 + 2 * ε)) := (Real.rpow_mul hKR_pos.le _ _).symm
-      have hp_T : (T : ℝ) ^ (2 * (Θ + ε) - 1) ≤ (K : ℝ) ^ (τ_exp * (2 * (Θ + ε) - 1)) := by
-        calc (T : ℝ) ^ (2 * (Θ + ε) - 1) ≤ ((K : ℝ) ^ τ_exp) ^ (2 * (Θ + ε) - 1) :=
-              Real.rpow_le_rpow hT_pos_R.le hT_pow_K (by linarith)
-          _ = (K : ℝ) ^ (τ_exp * (2 * (Θ + ε) - 1)) := (Real.rpow_mul hKR_pos.le _ _).symm
-      have hp_yT : (y : ℝ) ^ (1 + 2 * ε) * (T : ℝ) ^ (2 * (Θ + ε) - 1) ≤ (K : ℝ) ^ e_mass := by
-        calc _ ≤ (K : ℝ) ^ (a' * (1 + 2 * ε)) * (K : ℝ) ^ (τ_exp * (2 * (Θ + ε) - 1)) :=
-              mul_le_mul hp_y hp_T (by positivity) (by positivity)
-          _ = (K : ℝ) ^ (a' * (1 + 2 * ε) + τ_exp * (2 * (Θ + ε) - 1)) :=
-              (Real.rpow_add hKR_pos _ _).symm
-          _ ≤ (K : ℝ) ^ e_mass := Real.rpow_le_rpow_of_exponent_le hKR_ge1 he1_le
-      calc (1 + Real.log (T : ℝ)) ^ 3 * (y : ℝ) ^ (1 + 2 * ε) * (T : ℝ) ^ (2 * (Θ + ε) - 1)
-          = (1 + Real.log (T : ℝ)) ^ 3 *
-              ((y : ℝ) ^ (1 + 2 * ε) * (T : ℝ) ^ (2 * (Θ + ε) - 1)) := by ring
-        _ ≤ (1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass :=
-            mul_le_mul hp_log hp_yT (by positivity) (by positivity)
-    have ht2 : (1 + Real.log (T : ℝ)) * ((T : ℝ) / (y : ℝ)) ≤
-        (1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass := by
-      have hTy : (T : ℝ) / (y : ℝ) ≤ (K : ℝ) ^ e_mass := by
-        have hy_pos_R : (0 : ℝ) < (y : ℝ) := by exact_mod_cast (by omega : 0 < y)
-        have hdiv : (T : ℝ) / (y : ℝ) ≤
-            ((1 / 2 : ℝ) * (K : ℝ) ^ τ_exp) / ((1 / 2 : ℝ) * (K : ℝ) ^ a') :=
-          div_le_div₀ (by positivity) hT_hi_R (by positivity) hy_lo_R
-        have hcan : ((1 / 2 : ℝ) * (K : ℝ) ^ τ_exp) / ((1 / 2 : ℝ) * (K : ℝ) ^ a') =
-            (K : ℝ) ^ (τ_exp - a') := by
-          rw [mul_div_mul_left _ _ (by norm_num), sub_eq_add_neg, Real.rpow_add hKR_pos,
-            Real.rpow_neg hKR_pos.le]
-          ring
-        rw [hcan, hτ_sub_a'] at hdiv
-        exact hdiv.trans (Real.rpow_le_rpow_of_exponent_le hKR_ge1 he2_le)
-      have hlog13 : 1 + Real.log (T : ℝ) ≤ (1 + Real.log (K : ℝ)) ^ 3 := by
-        have h1 : 1 ≤ (1 + Real.log (K : ℝ)) ^ 2 := one_le_pow₀ (by linarith)
-        calc 1 + Real.log (T : ℝ) ≤ (1 + Real.log (K : ℝ)) * 1 := by linarith
-          _ ≤ (1 + Real.log (K : ℝ)) * (1 + Real.log (K : ℝ)) ^ 2 :=
-              mul_le_mul_of_nonneg_left h1 (by linarith)
-          _ = (1 + Real.log (K : ℝ)) ^ 3 := by ring
-      exact mul_le_mul hlog13 hTy (by positivity) (by positivity)
-    have ht3 : (T : ℝ) ^ (Θ + ε) ≤ (1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass := by
-      have hp : (T : ℝ) ^ (Θ + ε) ≤ (K : ℝ) ^ e_mass := by
-        calc (T : ℝ) ^ (Θ + ε) ≤ ((K : ℝ) ^ τ_exp) ^ (Θ + ε) :=
-              Real.rpow_le_rpow hT_pos_R.le hT_pow_K (by linarith)
-          _ = (K : ℝ) ^ (τ_exp * (Θ + ε)) := (Real.rpow_mul hKR_pos.le _ _).symm
-          _ ≤ (K : ℝ) ^ e_mass := Real.rpow_le_rpow_of_exponent_le hKR_ge1 he2_le
-      have h1 : 1 ≤ (1 + Real.log (K : ℝ)) ^ 3 := one_le_pow₀ (by linarith)
-      calc (T : ℝ) ^ (Θ + ε) = 1 * (T : ℝ) ^ (Θ + ε) := (one_mul _).symm
-        _ ≤ (1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass :=
-            mul_le_mul h1 hp (by positivity) (by positivity)
-    dsimp [C_mass]
-    calc tautMass b (2 * T) ≤ ∑ k ∈ Icc 1 (2 * T), |(b k : ℝ)| := hsub_Icc
-      _ ≤ C₁ * ((1 + Real.log (T : ℝ)) ^ 3 * (y : ℝ) ^ (1 + 2 * ε) *
-            (T : ℝ) ^ (2 * (Θ + ε) - 1) +
-            (1 + Real.log (T : ℝ)) * ((T : ℝ) / (y : ℝ)) + (T : ℝ) ^ (Θ + ε)) := hmass_raw
-      _ ≤ C₁ * (3 * ((1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass)) :=
-          mul_le_mul_of_nonneg_left (by linarith only [ht1, ht2, ht3]) hC₁.le
-      _ = 3 * C₁ * (1 + Real.log (K : ℝ)) ^ 3 * (K : ℝ) ^ e_mass := by ring
-  -- Bound the RHS of `hrate_raw` by `K^{-a}`.
-  rw [← hS_def]
-  exact hasRate_rate_tail_le hK4 hT_ge2 h2T_le_K hB₀_ge2 (Nat.div_le_self K (D_W * W)) hDW_pos
-    (by dsimp [C_η₀]; positivity) (by dsimp [C_mass]; positivity)
-    hδ_pos (by rw [hem_def]; linarith) hη₀_nn hη₀_bd hmass_bd hB₀_lo_R hr1 hr2 hr3 h6pow
+    rw [hCmass_def]
+    exact hasRate_tautMass_bd hK4 (by omega) hT_ge2 h2T_le_K hΘ hε_pos hC₁
+      hy_lo_R hy_hi_R hT_hi_R hτ_sub_a' he1_le he2_le hmass_raw
+  exact hasRate_rate_tail_le hK4 hT_ge2 h2T_le_K hB₀_ge2
+    (by rw [hB₀_def]; exact Nat.div_le_self K (D_W * W)) hDW_pos
+    (by rw [hCη₀_def]; positivity) (by rw [hCmass_def]; positivity)
+    hδ_pos (by rw [hem_def, hδ_def]; linarith) hη₀_nn hη₀_bd hmass_bd hB₀_lo_R hr1 hr2 hr3 h6pow
 
 /-! ### Part 4: Exact zero-free equivalences, RH equivalence, rate law, and Question 18 -/
 
@@ -866,9 +924,12 @@ theorem zeroFree_iff_forall_frequently_bestRate_le {Θ : ℝ} (hΘ : 1 / 2 ≤ �
       ∀ a : ℝ, 0 < a → a < 1 - Θ → ∃ᶠ K : ℕ in atTop, bestRate K ≤ (K : ℝ) ^ (-a) := by
   constructor
   · intro hzf a ha0 ha
-    refine ((hasRate_of_zeroFree_exact hΘ hΘ1 hzf ha0 ha).mono fun K hK => ?_).frequently
+    refine (Filter.Eventually.mono (hasRate_of_zeroFree_exact hΘ hΘ1 hzf ha0 ha) fun K hK => ?_).frequently
     obtain ⟨c, m, B, hP, hal, hr⟩ := hK
-    have hbdd : BddBelow (rateSet K) := ⟨0, fun _ ⟨_, _, _, hP', _, rfl⟩ => hP'.rate_pos.le⟩
+    have hbdd : BddBelow (rateSet K) := by
+      refine ⟨0, ?_⟩
+      rintro _ ⟨_, _, _, hP', _, rfl⟩
+      exact hP'.rate_pos.le
     exact (csInf_le hbdd ⟨c, m, B, hP, hal, rfl⟩).trans hr
   · intro hfreq s hs hzero
     by_cases hs1 : 1 ≤ s.re
@@ -935,7 +996,7 @@ theorem tendsto_log_bestRate_div_log :
     have hpow_pos : 0 < (K : ℝ) ^ (-a') := Real.rpow_pos_of_pos hKR_pos _
     have hlog_le : -a' * Real.log (K : ℝ) ≤ Real.log (bestRate K) := by
       have := Real.log_le_log hpow_pos hbest
-      rwa [Real.log_rpow hKR_pos, mul_comm] at this
+      rwa [Real.log_rpow hKR_pos] at this
     exact lt_of_lt_of_le hL_lt ((le_div_iff₀ hlogK_pos).mpr hlog_le)
   · intro U hU
     rcases lt_or_ge 0 U with hU_pos | hU_np
@@ -954,13 +1015,16 @@ theorem tendsto_log_bestRate_div_log :
       have ha'0 : 0 < a' := by dsimp [a', u']; linarith
       have ha'_lt : a' < 1 - RHTower.zetaZeroAbscissa := by dsimp [a', u']; linarith
       filter_upwards [eventually_ge_atTop 2, hbrack,
-        hasRate_of_lt_one_sub_zetaZeroAbscissa ha'0 ha'_lt] with K hK2 ⟨hlo, -⟩ ⟨c, m, B, hP, hal, hr⟩
+        hasRate_of_lt_one_sub_zetaZeroAbscissa ha'0 ha'_lt] with K hK2 ⟨hlo, _⟩ ⟨c, m, B, hP, hal, hr⟩
       have hKR_gt1 : (1 : ℝ) < (K : ℝ) := by exact_mod_cast hK2
       have hKR_pos : (0 : ℝ) < (K : ℝ) := by linarith
       have hlogK_pos : 0 < Real.log (K : ℝ) := Real.log_pos hKR_gt1
       have hD_pos : 0 < √(K : ℝ) * (1 + Real.log (K : ℝ)) := by positivity
       have hbest_pos : 0 < bestRate K := lt_of_lt_of_le (div_pos hc₁ hD_pos) hlo
-      have hbdd : BddBelow (rateSet K) := ⟨0, fun _ ⟨_, _, _, hP', _, rfl⟩ => hP'.rate_pos.le⟩
+      have hbdd : BddBelow (rateSet K) := by
+        refine ⟨0, ?_⟩
+        rintro _ ⟨_, _, _, hP', _, rfl⟩
+        exact hP'.rate_pos.le
       have hbest_le : bestRate K ≤ (K : ℝ) ^ (-a') :=
         (csInf_le hbdd ⟨c, m, B, hP, hal, rfl⟩).trans hr
       have hlog_le : Real.log (bestRate K) ≤ u' * Real.log (K : ℝ) := by
@@ -1010,5 +1074,13 @@ theorem strict_floor_obstruction_quarter_iff_not_riemannHypothesis :
         IsProducer c m B → AlphabetLE c K → (K : ℝ) ^ (-a_star) < rate c m B) ↔
       ¬ RiemannHypothesis :=
   exists_strict_floor_obstruction_iff_not_riemannHypothesis (by norm_num) (by norm_num)
+
+#print axioms hasRate_of_zeroFree_exact
+#print axioms zeroFree_iff_forall_hasRate
+#print axioms zeroFree_iff_forall_frequently_bestRate_le
+#print axioms riemannHypothesis_iff_forall_hasRate_half
+#print axioms tendsto_log_bestRate_div_log
+#print axioms exists_strict_floor_obstruction_iff_not_riemannHypothesis
+#print axioms strict_floor_obstruction_quarter_iff_not_riemannHypothesis
 
 end GaloisForLFunctions.ArithmeticAuxiliaryDynamics

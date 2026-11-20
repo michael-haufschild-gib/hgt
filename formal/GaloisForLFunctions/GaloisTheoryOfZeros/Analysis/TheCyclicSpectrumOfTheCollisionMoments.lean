@@ -87,10 +87,6 @@ theorem cyclicSheet_full_minor_parameter (m : ℕ) (z r : ℂ) :
     have h := Nat.succ_mul_choose_eq n 1
     simpa [Nat.mul_comm, Nat.mul_left_comm] using h.symm
 
-#print axioms cyclicSheet_proper_minor
-#print axioms cyclicSheet_full_minor_parameter
-#print axioms cyclicSheet_full_minor_ne_zero
-
 /-- When all previous nonconstant moments vanish, the first row isolates
 the mass and reversing the remaining columns gives a triangular matrix.
 Its diagonal consists entirely of the next moment. -/
@@ -190,8 +186,5 @@ theorem proper_minor_vanishing_iff_cyclic {m : ℕ} (hm : 0 < m) (v : Fin m → 
     rw [Nat.add_comm 2 k] at hqm ⊢
     exact (minor_zero_iff_next_moment hm v k (fun j hj hjk => vanish j hj (hjk.trans hqm))).mpr
       (vanish _ (by omega) hqm)
-
-#print axioms first_surviving_moment_minor
-#print axioms proper_minor_vanishing_iff_cyclic
 
 end GaloisForLFunctions.GaloisTheoryOfZeros

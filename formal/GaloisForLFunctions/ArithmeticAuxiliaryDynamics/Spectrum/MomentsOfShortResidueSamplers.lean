@@ -122,8 +122,6 @@ theorem integral_moment_sampler_optimal (K : ℕ) (w : List ℕ) :
     obtain ⟨r,hr⟩ := hd
     exact ⟨r.eval 1,by rw [hr,eval_mul]⟩
 
-#print axioms balancesEulerMoments_iff_power
-#print axioms integral_moment_sampler_optimal
 
 end
 

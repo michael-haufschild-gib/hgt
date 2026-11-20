@@ -163,8 +163,6 @@ theorem one_exchange_critical_energy {k p : ℕ} (hp : p ∈ k.primeFactors)
   change _ = 4/5*(2:ℝ)^r*((r:ℝ)-2)*(r^2-r-5)
   ring
 
-#print axioms one_exchange_virial_closed_form
-#print axioms one_exchange_critical_energy
 
 private theorem triple_singleton_contrast {k p : ℕ} (hk : 1<k) (hr : k.primeFactors.card=3)
     (hb : ∀ q ∈ k.primeFactors, (q^k.factorization q)^2<k) (hp : p ∈ k.primeFactors) :
@@ -238,7 +236,4 @@ theorem balanced_triple_virial_energy {k : ℕ} (hk : 1<k) (hr : k.primeFactors.
   norm_num [sum_range_succ,Nat.choose,f,blockVirialSymbol,nsmul_eq_mul]
   <;> ring
 
-#print axioms balanced_triple_virial_energy
-#print axioms unitaryWalshContrast_one_exchange
-#print axioms one_exchange_virial_spectrum
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

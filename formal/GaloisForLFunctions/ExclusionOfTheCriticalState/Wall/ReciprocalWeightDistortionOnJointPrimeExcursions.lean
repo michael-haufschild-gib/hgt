@@ -339,15 +339,5 @@ theorem numerator_two_endpoints_sharp {m n : ℕ} (hm : 0 < m) (h : m < n) :
     show (n:ℝ)≠0 from Nat.cast_ne_zero.mpr hn.ne']
   ring
 
-#print axioms numerator_regression_remainder
-#print axioms numerator_counting_equality_iff_affine
-#print axioms numerator_band_deficit
-#print axioms numerator_band_equality
-#print axioms numerator_band_strict_of_three
-#print axioms numerator_two_endpoints_sharp
 
-#print axioms numerator_weight_defect
-#print axioms numerator_band_distortion
-#print axioms numerator_counting_covariance
-#print axioms opposite_prime_counting_covariance
 end GaloisForLFunctions.ExclusionOfTheCriticalState

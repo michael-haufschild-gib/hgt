@@ -17,6 +17,8 @@ namespace GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean
 
 private def squareMass (n : ℕ) : ℝ := ((moebius n : ℤ):ℝ)^2
 
+private theorem squareMass_nonneg (n : ℕ) : 0 ≤ squareMass n := sq_nonneg _
+
 private theorem squareMass_eq (n : ℕ) : squareMass n = if Squarefree n then 1 else 0 := by
   classical
   rw [squareMass,←Int.cast_pow,moebius_sq]
@@ -64,11 +66,11 @@ private theorem summable_squareMass_iff (f : ℕ → ℝ) (hf : ∀ n, 0 ≤ f n
     have hu := sum_le_sum_of_subset_of_nonneg (f:=f) hsub (fun n _ _ => hf n)
     rw [sum_insert (by simp : 0 ∉ Icc 1 K)] at hu
     have hw := squarefree_quarter_of_antitone_mass f hf hm K
-    have ht := hs.sum_le_tsum (Icc 1 K) (fun n _ => mul_nonneg (sq_nonneg _) (hf n))
+    have ht := hs.sum_le_tsum (Icc 1 K) (fun n _ => mul_nonneg (squareMass_nonneg n) (hf n))
     change (∑ n ∈ Icc 1 K, f n) ≤ 4*∑ n ∈ Icc 1 K, squareMass n*f n at hw
     linarith only [hu,hw,ht]
   · intro hs
-    apply hs.of_nonneg_of_le (fun n => mul_nonneg (sq_nonneg _) (hf n))
+    apply hs.of_nonneg_of_le (fun n => mul_nonneg (squareMass_nonneg n) (hf n))
     intro n
     rw [squareMass_eq]
     split <;> simp [hf]
@@ -131,11 +133,9 @@ theorem squarefree_logarithmic_diagonal_iff (p : ℝ) :
         (Real.rpow_le_rpow_of_exponent_le hlog (by linarith only [hp] : -(1:ℝ) ≤ -p))
         (inv_nonneg.mpr (le_max_of_le_left (by norm_num)))) (sq_nonneg _)
     have h₁ : Summable (fun n => squareMass n*logWeight 1 n) := hs.of_norm_bounded_eventually_nat
-      (hm.mono fun n hn => by rwa [Real.norm_of_nonneg (mul_nonneg (sq_nonneg _) (logWeight_nonneg 1 n))])
+      (hm.mono fun n hn => by rwa [Real.norm_of_nonneg (mul_nonneg (squareMass_nonneg n) (logWeight_nonneg 1 n))])
     exact (lt_irrefl (1:ℝ)) ((logWeight_summable_iff zero_le_one).mp
       ((summable_squareMass_iff _ (logWeight_nonneg 1) (logWeight_antitone zero_le_one)).mp h₁))
 
-#print axioms squarefree_quarter_of_antitone_mass
-#print axioms squarefree_logarithmic_diagonal_iff
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean

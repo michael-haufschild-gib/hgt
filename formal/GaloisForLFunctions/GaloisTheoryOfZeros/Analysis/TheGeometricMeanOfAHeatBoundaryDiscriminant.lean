@@ -212,9 +212,4 @@ theorem rh_iff_locally_integrable_inverse_heat_boundary :
     change -1 < (heatIntersectionMultiplicity ((t:ℂ),z):ℝ)*(-1) at htest
     linarith only [htest,hmin]
 
-#print axioms heat_boundary_reciprocal_pair
-#print axioms rh_iff_locally_integrable_inverse_heat_boundary
-#print axioms heat_boundary_log_mean_at_place
-#print axioms heat_boundary_annular_mass
-#print axioms rh_iff_equal_heat_boundary_means
 end GaloisForLFunctions.GaloisTheoryOfZeros

@@ -115,7 +115,6 @@ theorem acousticCorrector_peak_locations {k : ℝ} (hk : k ≠ 0) (z : ℝ) :
     rw [hv,hr]
     ring
 
-#print axioms acousticCorrector_peak_locations
 
 private theorem corrector_diff (k z : ℝ) :
     HasDerivAt (acousticCorrector k) (-(k^2/2+acousticPulse k z)*pulseSlope k z) z := by
@@ -150,8 +149,4 @@ theorem acousticPulse_continuity_residual (δ k t x : ℝ) :
   dsimp only [v]
   ring
 
-#print axioms acousticPulse_kdv
-#print axioms acousticCorrector_polynomial
-#print axioms acousticCorrector_range
-#print axioms acousticPulse_continuity_residual
 end GaloisForLFunctions.HTGeometry.DispersivePDE

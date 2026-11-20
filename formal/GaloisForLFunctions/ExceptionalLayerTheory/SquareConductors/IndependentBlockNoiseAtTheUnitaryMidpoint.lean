@@ -1,5 +1,5 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.WalshConstraintsAtTheUnitaryMidpoint
-import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.ParitySectorMomentsAtTheUnitaryMidpoint
+import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.RankDefectsAtTheUnitaryMidpoint
 
 /-!
 # Independent block noise at the unitary midpoint
@@ -85,22 +85,8 @@ def unitaryCutSign (k : ℕ) (A : Finset ℕ) : ℤ :=
 
 private theorem cut_sign_abs {k : ℕ} (hk : 1 < k) {A : Finset ℕ} (ha : A ⊆ k.primeFactors) :
     (unitaryCutSign k A)^2=1 := by
-  let P := k.primeFactors
-  have hc := (primePowerSubset_coprime_iff ha (T:=P \ A) sdiff_subset).mpr
-    (Finset.disjoint_left.mpr (fun _ h₁ h₂ => (mem_sdiff.mp h₂).2 h₁))
-  have hn : primePowerSubset k A ≠ primePowerSubset k (P \ A) := by
-    intro h
-    have hprod : primePowerSubset k A * primePowerSubset k (P \ A) = k := by
-      rw [primePowerSubset,primePowerSubset,mul_comm,prod_sdiff ha]
-      exact (Nat.prod_primeFactors_pow_factorization (by omega : k≠0)).symm
-    rw [← h] at hc hprod
-    change (primePowerSubset k A).gcd (primePowerSubset k A)=1 at hc
-    rw [Nat.gcd_self] at hc
-    rw [hc,one_mul] at hprod
-    omega
-  dsimp only [unitaryCutSign,smallUnitarySubsets]
-  simp only [mem_filter,mem_powerset,ha,sdiff_subset,true_and,Finset.sdiff_sdiff_eq_self ha]
-  rcases lt_or_gt_of_ne hn with h|h <;> simp [h.le,h.not_ge]
+  by_cases h : A ∈ smallUnitarySubsets k <;>
+    simp [unitaryCutSign,unitary_complement_mem_small_iff hk ha,h]
 
 /-- Total squared Walsh mass is exactly the square of the cube size for
 every nontrivial integer, independently of its prime-block geometry. -/
@@ -283,12 +269,4 @@ theorem unitary_noise_linear_iff_dominant {k : ℕ} (hk : 1<k) {ρ : ℝ} (hρ :
     · intro hh
       exact (hh (mem_powerset.mpr (singleton_subset_iff.mpr hp))).elim
 
-#print axioms unitary_noise_linear_iff_dominant
-#print axioms unitaryNoiseCorrelation_physical
-#print axioms unitaryNoiseCorrelation_defect
-#print axioms balanced_noise_loss
-#print axioms primeBlockNoise_spectrum
-#print axioms primeBlockNoise_probability
-#print axioms primeBlockNoise_comp
-#print axioms unitaryWalshContrast_parseval
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

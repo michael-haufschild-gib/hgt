@@ -107,9 +107,6 @@ theorem full_primeSign_average_off_diagonal (N : ℕ) (K : ℝ → ℝ) :
     exact hn p (mem_filter.mpr ⟨mem_range.mpr (by have := Nat.le_of_dvd h₁.1 hpr.2.1; omega),hpr.1⟩) hp
   exact hne ((one ha fun p hp => (h p hp).1).trans (one hb fun p hp => (h p hp).2).symm)
 
-#print axioms signed_ratio_scale
-#print axioms primeSign_average_primitive_spectrum
-#print axioms full_primeSign_average_off_diagonal
 
 /-- Summing the twisted original coefficient pairs gives exactly the signed
 primitive reading, for every multiplier of the log-frequency difference. -/
@@ -148,8 +145,6 @@ theorem prime_signs_bracket_diagonal (N : ℕ) (K : ℝ → ℝ) :
   · by_contra! h
     exact (sum_neg (s:=univ) (fun s _ => h s) univ_nonempty).ne hsum
 
-#print axioms signedRatioReading_eq_original
-#print axioms prime_signs_bracket_diagonal
 
 private theorem rough_unit_or_prime {n N Y : ℕ} (hn : n ∈ Icc 1 N) (hcut : N ≤ Y^2)
     (h : ∀ p ∈ (range (Y+1)).filter Nat.Prime, p ∉ n.primeFactors) : n=1 ∨ n.Prime := by
@@ -442,13 +437,5 @@ theorem exists_prime_sign_for_joint_square_variation {ι : Type*} (S : Finset ι
   rw [hsum,sum_const,card_univ,hcard,nsmul_eq_mul,Nat.cast_pow,Nat.cast_ofNat] at hlt
   exact hlt.false
 
-#print axioms all_minus_primitive_envelope
-#print axioms exists_prime_sign_for_joint_square_variation
-#print axioms prime_sign_product_readout
-#print axioms prime_sign_product_covariance
-#print axioms prime_sign_covariance_nonnegative
-#print axioms twisted_short_spectrum
-#print axioms twisted_short_energy_average
-#print axioms square_root_sign_average_close_nonneg
 end
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.MoebiusGram

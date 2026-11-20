@@ -203,8 +203,6 @@ theorem cofinal_range_of_odd_unitary_midpoint {P : Finset ℕ} (hP : ∀ p ∈ P
     obtain ⟨p,hp⟩ := card_pos.mp (by omega : 0 < P.card)
     exact realize_odd_unitary_midpoint hp hP hr hj B
 
-#print axioms realize_odd_unitary_midpoint
-#print axioms cofinal_range_of_odd_unitary_midpoint
 
 end
 

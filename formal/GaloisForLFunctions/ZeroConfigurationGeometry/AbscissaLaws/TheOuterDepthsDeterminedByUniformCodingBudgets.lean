@@ -87,8 +87,5 @@ theorem uniform_coding_of_approaching_configurations (Z W : ZeroConfig)
     exact (uniform_budgets_recover_outer_depths Z W hh.le (hZ _ hh) (hW _ hh)).mpr
       (H _ hh) q (half_lt_self hqr)
 
-#print axioms uniform_budget_on_finite_layer
-#print axioms uniform_budgets_recover_outer_depths
-#print axioms uniform_coding_of_approaching_configurations
 
 end GaloisForLFunctions.ZeroConfigurationGeometry.ConfigAbscissa

@@ -77,7 +77,7 @@ private theorem separated_at_center {n : ℕ} (i j : Fin n) :
     apply scaledBumpPulse_eq_zero_of_le
     have hne : j.val≠i.val := fun h => hj (Fin.ext h)
     rcases lt_or_gt_of_ne hne with h | h
-    · have hb : (j.val:ℝ)+1≤i.val := by exact_mod_cast Nat.succ_le_of_lt h
+    · have hb : (j.val:ℝ)+1 ≤ i.val := by exact_mod_cast Nat.succ_le_of_lt h
       exact (by linarith only [hb] : 1≤(i.val:ℝ)-j.val).trans (le_abs_self _)
     · have hb : (i.val:ℝ)+1≤j.val := by exact_mod_cast Nat.succ_le_of_lt h
       exact (by linarith only [hb] : 1≤ -((i.val:ℝ)-j.val)).trans (neg_le_abs _)
@@ -126,10 +126,6 @@ theorem realizable_tail_matrix_iff_posSemidef {n : ℕ} (T : ℝ) (A : Matrix (F
     refine ⟨fun i => mixedPulse univ (S i) f,?_⟩
     rw [mixed_receiver_matrix,hf,mul_one,hS.eq]
     exact CFC.sqrt_mul_sqrt_self A (ha:=hA.nonneg)
-
-#print axioms mixed_receiver_matrix
-#print axioms exists_orthonormal_tail_pulses
-#print axioms realizable_tail_matrix_iff_posSemidef
 
 private def probeMatrix {d n : ℕ} (c : Fin d → Fin n → ℂ) :
     Matrix (Fin n) (Fin n) ℂ →ₗ[ℂ] (Fin d → ℂ) where
@@ -220,8 +216,5 @@ theorem least_number_of_complete_receiver_readings (n : ℕ) (T : ℝ) :
     by_contra! hd
     obtain ⟨f,g,hne,he⟩ := indistinguishable_tail_matrices_of_short_menu hd c T
     exact hne (h f g he)
-
-#print axioms indistinguishable_tail_matrices_of_short_menu
-#print axioms least_number_of_complete_receiver_readings
 
 end GaloisForLFunctions.BlackHoleRingdown

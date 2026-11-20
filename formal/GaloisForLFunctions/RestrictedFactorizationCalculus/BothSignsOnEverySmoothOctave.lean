@@ -23,8 +23,8 @@ private def signOf (b : Bool) : ℤ := if b then 1 else -1
 
 /-- Integers in the sharp octave with specified sign and every prime divisor
 at most the stated power of its upper endpoint. -/
-def smoothSignOctave (b : Bool) (t x : ℝ) :=
-  ((Icc 1 ⌊x⌋₊).filter fun n => x/2<(n:ℝ) ∧ μ n=signOf b ∧
+def smoothSignOctave (b : Bool) (t x : ℝ) : Finset ℕ :=
+  ((Icc 1 ⌊x⌋₊).filter fun (n : ℕ) => x/2<(n:ℝ) ∧ μ n=signOf b ∧
     ∀ q ∈ n.primeFactors,(q:ℝ) ≤ x^t)
 
 private theorem base_count (b : Bool) {x : ℝ} (hx : 0 ≤ x) :
@@ -35,7 +35,7 @@ private theorem base_count (b : Bool) {x : ℝ} (hx : 0 ≤ x) :
     intro n hn
     obtain ⟨hi,h⟩ := mem_filter.mp hn
     exact mem_filter.mpr ⟨Icc_subset_Icc le_rfl (Nat.floor_le_floor (by linarith : x/2 ≤ x)) hi,h⟩
-  have he : smoothSignOctave b 1 x=S x \\ S (x/2) := by
+  have he : smoothSignOctave b 1 x=S x \ S (x/2) := by
     ext n
     constructor
     · intro hn
@@ -107,7 +107,7 @@ private theorem polynomial_window_mass {a b : ℝ} (ha : 0<a) (hab : a<b) :
   rw [Real.log_div (Real.rpow_pos_of_pos hx0 b).ne' (by norm_num),Real.log_rpow hx0] at hlb
   have hgap := (div_le_iff₀ (sub_pos.mpr hab)).1 hlog
   have mass : (b-a)*Real.log x/2 ≤ ∑ p ∈ P, Real.log p/p := by
-    rw [show P=Nat.primesLE B \\ Nat.primesLE A from windowPrimes_eq_primesLE_sdiff _ _,sum_sdiff_eq_sub hsub]
+    rw [show P=Nat.primesLE B \ Nat.primesLE A from windowPrimes_eq_primesLE_sdiff _ _,sum_sdiff_eq_sub hsub]
     unfold Sieve.mertensBlockGapConst at hgap
     linarith only [Sieve.mertensFirst_lower (hA.trans hle),Sieve.mertensFirst_upper hA,hgap,hua,hlb]
   have bound : ∑ p ∈ P,Real.log p/p ≤ (b*Real.log x)*∑ p ∈ P,1/(p:ℝ) := by
@@ -120,7 +120,7 @@ private theorem polynomial_window_mass {a b : ℝ} (ha : 0<a) (hab : a<b) :
     simpa only [mul_one_div] using div_le_div_of_nonneg_right hh (Nat.cast_nonneg p)
   have hh := mass.trans bound
   calc c = ((b-a)*Real.log x/2)/(b*Real.log x) := by
-         dsimp only [c]; field_simp; ring
+         dsimp only [c]; field_simp
        _ ≤ _ := (div_le_iff₀ (mul_pos hb hlog0)).2 (by rw [mul_comm _ (b*Real.log x)]; exact hh)
 
 private theorem smooth_step (b : Bool) {a u t : ℝ}

@@ -160,11 +160,4 @@ theorem rh_or_one_opposite_prime_superlevel : RiemannHypothesis ∨
   obtain ⟨H,hH,hu⟩ := opposite_prime_tied_height_level left s a g d (T i) (k i) L hn
   exact ⟨s,left,H,hs,hH,hlarge.trans_le hu⟩
 
-#print axioms weak_moment_cost_of_tied_heights
-#print axioms unit_weak_moment_of_reciprocal_ranks
-#print axioms reciprocal_rank_order
-#print axioms opposite_prime_tied_height_level
-#print axioms exists_harmonic_superlevel
-#print axioms opposite_prime_single_superlevel
-#print axioms rh_or_one_opposite_prime_superlevel
 end GaloisForLFunctions.ExclusionOfTheCriticalState

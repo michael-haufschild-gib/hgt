@@ -131,7 +131,4 @@ theorem simultaneous_root_terms_of_balanced_composites {J : ℕ} (hJ : 2≤J) :
   exact ⟨b,hb',balanced_composites_after_a_block_of_root_scales hJ hJK ((le_max_left _ _).trans_lt hb)
     ((le_max_right _ _).trans hb.le)⟩
 
-#print axioms balanced_composites_after_a_block_of_root_scales
-#print axioms simultaneous_root_terms_of_balanced_composites
-
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

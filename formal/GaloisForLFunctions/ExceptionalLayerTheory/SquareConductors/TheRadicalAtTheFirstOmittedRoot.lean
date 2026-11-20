@@ -190,11 +190,4 @@ theorem least_cost_of_an_omitted_power_fraction {J : ℕ} (hJ : 2≤J) {t : ℝ}
   exact div_le_div_of_nonneg_right (Real.log_le_log (Nat.cast_pos.mpr hpos) (Nat.cast_le.mpr hle))
     (Real.rpow_nonneg hx.le _)
 
-#print axioms log_clipped_prime_radical
-#print axioms fractional_reading_of_the_clipped_radical
-#print axioms radical_law_for_the_first_omitted_power
-#print axioms omitted_power_limit_iff_radical_limit
-#print axioms every_omitted_power_fraction_at_its_exact_cost
-#print axioms least_cost_of_an_omitted_power_fraction
-
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

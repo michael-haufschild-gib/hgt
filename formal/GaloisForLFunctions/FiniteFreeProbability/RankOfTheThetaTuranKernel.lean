@@ -143,9 +143,6 @@ theorem thetaTuran_reconstruct {m n : ℕ} (r : Fin m → ℕ) (s : Fin n → �
   simp only [Matrix.mul_inv_rev, Matrix.mul_assoc, Matrix.mul_nonsing_inv_cancel_left B _ hB,
     Matrix.nonsing_inv_mul_cancel_left A _ hA, Matrix.nonsing_inv_mul_cancel_left J _ hJ]
 
-#print axioms thetaTuran_consecutive_det
-#print axioms thetaTuran_rectangular_rank
-#print axioms thetaTuran_reconstruct
 
 end
 

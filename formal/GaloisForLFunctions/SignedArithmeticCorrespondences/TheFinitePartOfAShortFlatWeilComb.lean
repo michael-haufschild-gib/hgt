@@ -166,9 +166,6 @@ theorem mesoscopic_flat_comb_limit (H : ℕ → ℕ) (hwidth : Tendsto H atTop a
   rw [ε,counterterm,Real.log_div hN (by positivity),Real.log_div hN hH]
   ring
 
-#print axioms mesoscopic_flat_comb_limit
-#print axioms flat_interval_singular_jet
-#print axioms short_flat_comb_finite_part
 
 end
 end GaloisForLFunctions.SignedArithmeticCorrespondences

@@ -90,6 +90,5 @@ theorem first_positive_activity_collision (P : Finset ℕ) (hp : ∀ p ∈ P, Na
   refine ⟨b,hb,hbC,hmem.2,fun u hu hub => hmin hu hub,x,squarefree_real_root_neg P b x hroot,?_⟩
   rwa [count_roots] at hx
 
-#print axioms first_positive_activity_collision
 
 end GaloisForLFunctions.SelbergClass.Primon

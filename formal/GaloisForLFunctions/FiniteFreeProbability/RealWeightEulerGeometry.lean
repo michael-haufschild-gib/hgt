@@ -118,8 +118,6 @@ theorem weightedEuler_boundary_root_iff {a : ℝ} (ha : 0 < a) {p : ℂ[X]} (hp 
   · rintro ⟨h₁,h₂⟩
     simp [Polynomial.IsRoot, weightedEuler, h₁.eq_zero, h₂.eq_zero]
 
-#print axioms weightedEuler_root_hull
-#print axioms weightedEuler_boundary_root_iff
 
 end
 

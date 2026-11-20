@@ -140,11 +140,4 @@ theorem truncated_moment_iff (w : ℝ) (hw : w ∈ Set.Ioo 0 1) (a b : G) {f : G
     exact sq_eq_zero_iff.mp ((mul_eq_zero.mp he).resolve_left
       (pow_pos (mul_pos hw.1 (sub_pos.mpr hw.2)) _).ne')
 
-#print axioms moment_time_difference
-#print axioms binomial_walk_second_moment
-#print axioms contrast_forces_binomial_growth
-#print axioms moment_difference_zero_iff
-#print axioms contrast_zero_of_cofinal_moment
-#print axioms truncated_moment_iff
-
 end GaloisForLFunctions.ArithmeticPositiveDuality.TranslationLaw

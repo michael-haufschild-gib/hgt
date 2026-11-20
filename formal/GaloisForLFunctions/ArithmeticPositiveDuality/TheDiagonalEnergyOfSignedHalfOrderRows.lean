@@ -117,7 +117,7 @@ theorem integral_offDiagonalDensity (S : Finset ℕ) (w : ℕ → ℝ) :
 /-- Signs at distinct sites cannot cancel the logarithmic divergences.
 Zero is an invisible site because the observation half-line is positive. -/
 theorem halfRow_square_integrable_iff (S : Finset ℕ) (w : ℕ → ℝ) :
-    Integrable (fun t => halfRow S w t^2) ↔ ∀ i ∈ S, 0<i → w i=0 := by
+    Integrable (fun t => halfRow S w t^2) ↔ ∀ i ∈ S, 0 < i → w i=0 := by
   constructor
   · intro h i hi hpos
     have hd : Integrable (fun t => ∑ j ∈ S, (w j*halfAtom j t)^2) := by
@@ -127,6 +127,7 @@ theorem halfRow_square_integrable_iff (S : Finset ℕ) (w : ℕ → ℝ) :
       apply hd.mono' ((measurable_const.mul ((measurable_halfAtom i).pow_const 2)).aestronglyMeasurable)
       apply ae_of_all
       intro t
+      change ‖w i ^ 2 * halfAtom i t ^ 2‖ ≤ _
       rw [← mul_pow,Real.norm_of_nonneg (sq_nonneg _)]
       exact single_le_sum (fun j _ => sq_nonneg (w j*halfAtom j t)) hi
     exact halfAtom_square_not_integrable (Nat.cast_pos.mpr hpos)
@@ -140,8 +141,5 @@ theorem halfRow_square_integrable_iff (S : Finset ℕ) (w : ℕ → ℝ) :
       · rw [h i hi hp,zero_mul]
     simp_rw [he,zero_pow (by decide : 2 ≠ 0)]
     exact integrable_zero _ _ _
-
-#print axioms halfRow_square_integrable_iff
-#print axioms integral_offDiagonalDensity
 
 end GaloisForLFunctions.ArithmeticPositiveDuality.FractionalDiscrepancy

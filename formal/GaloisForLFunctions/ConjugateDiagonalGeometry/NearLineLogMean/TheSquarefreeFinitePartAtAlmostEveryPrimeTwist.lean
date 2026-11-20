@@ -26,7 +26,7 @@ private theorem integrated_error_sq {L : ℝ} (hL : 0 < L) (A : ℝ) (N : ℕ) :
   have he := sharp_interval_moebius_variance N (A:=A) (B:=A+L) (le_add_of_nonneg_right hL.le)
   rw [add_sub_cancel_left] at he
   simp only [meanSquareError,div_pow,integral_div]
-  exact (div_le_div_of_nonneg_right he (sq_nonneg L)).trans_eq (by field_simp [hL.ne']; ring)
+  exact (div_le_div_of_nonneg_right he (sq_nonneg L)).trans_eq (by field_simp [hL.ne'])
 
 /-- The variance cost controls the entire series of squared errors for
 any prescribed sequence of positive length windows and sharp cutoffs. -/
@@ -40,7 +40,10 @@ theorem ae_summable_translated_errors (N : ℕ → ℕ) (A L : ℕ → ℝ) (hL 
   have hi (j : ℕ) : Integrable (F j) gaugeHaar :=
     (hc j).integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
   have hn (j : ℕ) : ∫ x, ‖F j x‖ ∂gaugeHaar ≤ B j := by
-    simpa only [F,Real.norm_eq_abs,abs_of_nonneg (sq_nonneg _)] using integrated_error_sq (hL j) (A j) (N j)
+    have he (x : GaugeTorus) : ‖F j x‖ = F j x :=
+      (Real.norm_eq_abs _).trans (abs_of_nonneg (sq_nonneg _))
+    simp_rw [he]
+    exact integrated_error_sq (hL j) (A j) (N j)
   have hb : Summable B := (hs.mul_left 6).congr fun j => by dsimp only [B]; ring
   have hsfin : ∫⁻ x, ∑' j, ‖F j x‖ₑ ∂gaugeHaar ≠ ⊤ := by
     rw [lintegral_tsum (fun j => (hi j).aestronglyMeasurable.enorm)]
@@ -60,10 +63,13 @@ theorem ae_summable_translated_errors (N : ℕ → ℕ) (A L : ℕ → ℝ) (hL 
 
 private theorem dyadic_cost (r : ℕ) :
     Summable fun j : ℕ => (1+Real.log (((2^(r*j):ℕ):ℝ)+1))^4/(2:ℝ)^j := by
-  have hbase := (summable_nat_add_iff 1).mpr
-    (summable_pow_mul_geometric_of_norm_lt_one 4 (by norm_num : ‖(1/2:ℝ)‖<1))
+  let f (n : ℕ) : ℝ := (n:ℝ)^4 * (1/2:ℝ)^n
+  have hf : Summable f := summable_pow_mul_geometric_of_norm_lt_one 4
+    (by norm_num [Real.norm_eq_abs] : ‖(1/2:ℝ)‖ < 1)
+  have hbase : Summable (fun n : ℕ => f (n+1)) := (summable_nat_add_iff 1).mpr hf
   have hs : Summable fun j : ℕ => ((j:ℝ)+1)^4/(2:ℝ)^j := (hbase.mul_left 2).congr fun j => by
-    simp only [Nat.cast_succ,pow_succ,one_div,inv_pow,div_eq_mul_inv]
+    change 2 * (((j+1 : ℕ) : ℝ)^4 * (1/2 : ℝ)^(j+1)) = ((j:ℝ)+1)^4/(2:ℝ)^j
+    rw [Nat.cast_succ,pow_succ (1/2 : ℝ) j,div_pow,one_pow]
     ring
   let C := (2*((r:ℝ)+1))^4
   apply Summable.of_nonneg_of_le (fun j => div_nonneg (by positivity) (by positivity)) _ (hs.mul_left C)
@@ -129,7 +135,5 @@ theorem ae_dyadic_moebius_finite_part (A : ℕ → ℕ → ℝ) :
   field_simp [hp.ne']
   <;> ring
 
-#print axioms ae_summable_translated_errors
-#print axioms ae_dyadic_moebius_finite_part
 end
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.PrimeTwistedMoments

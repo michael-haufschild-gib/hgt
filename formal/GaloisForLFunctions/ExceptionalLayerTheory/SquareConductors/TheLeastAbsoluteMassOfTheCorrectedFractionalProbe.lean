@@ -45,12 +45,13 @@ private theorem atom_extrema (m : ℕ) {k : ℕ} (hk : 0<k) (hl : 10<Real.log k)
   by_cases h : ¬k.Prime ∧ k.primeFactors.card=1
   · by_cases hc : m.Coprime k
     · simp only [correctedCompositeAtom,purePowerLog,if_pos (And.intro hc h),if_pos (And.intro (Nat.coprime_one_left k) h),
-        paid,hsurplus.le,le_refl,hsurplus.ne,log_ne,iff_self,true_and,and_self]
+        paid,hsurplus.le,le_refl,hsurplus.ne,log_ne,iff_self,and_self]
     · have hn : ¬(m.Coprime k ∧ ¬k.Prime ∧ k.primeFactors.card=1) := fun hit => hc hit.1
       simp only [correctedCompositeAtom,purePowerLog,if_neg hn,if_pos (And.intro (Nat.coprime_one_left k) h),
-        empty,paid,hsurplus.le,le_refl,iff_self,true_and,and_self]
+        empty,paid,hsurplus.le,le_refl,iff_self,and_self]
   · have hn (c : ℕ) : ¬(c.Coprime k ∧ ¬k.Prime ∧ k.primeFactors.card=1) := fun hit => h hit.2
-    simp [correctedCompositeAtom,purePowerLog,hn,empty,hp]
+    have hz (c : ℕ) : purePowerLog c k = 0 := if_neg (hn c)
+    simp only [correctedCompositeAtom,hz,empty,le_refl,iff_self,and_self]
 
 private theorem factorial_omits_octave {n k : ℕ} (hn : 0<n) (hk : k∈Ioc (2*n) (4*n)) :
     purePowerLog (4*n).factorial k=0 := by
@@ -78,8 +79,8 @@ theorem factorial_variation_is_the_root_payment {n : ℕ} (hn : 0<n) :
          rw [correctedCompositeAtom,factorial_omits_octave hn hk,zero_sub,abs_neg,abs_of_nonneg (payment_bounds (by omega : 0<k)).1]
        _ = _ := by
          simp only [compositeRootPayment,sum_add_distrib,←mul_sum]
-         rw [_root_.RHTower.DeletionResidueMartingale.sum_Ioc_sub_eq (fun k : ℕ => (k:ℝ)^(1/2:ℝ)) (by omega : 2*n≤4*n),
-           _root_.RHTower.DeletionResidueMartingale.sum_Ioc_sub_eq (fun k : ℕ => (k:ℝ)^(1/3:ℝ)) (by omega : 2*n≤4*n)]
+         rw [_root_.RHTower.sum_Ioc_sub_eq (fun k : ℕ => (k:ℝ)^(1/2:ℝ)) (by omega : 2*n≤4*n),
+           _root_.RHTower.sum_Ioc_sub_eq (fun k : ℕ => (k:ℝ)^(1/3:ℝ)) (by omega : 2*n≤4*n)]
 
 /-- The exact range endpoints of absolute mass, with a classification of
 all minimizing centers. Every surviving proper power strictly raises the mass. -/
@@ -157,13 +158,8 @@ theorem every_subhalf_absolute_atom_bound_fails (m : ℕ → ℕ) {t : ℝ} (ht 
   have h := mul_lt_mul_of_pos_right hpay (Real.sqrt_pos.mpr hx)
   change A*(n:ℝ)^(-(1/2-t))*Real.sqrt n < c*Real.sqrt n at h
   rw [Real.sqrt_eq_rpow,mul_assoc,←Real.rpow_add hx,show -(1/2-t)+1/2=t by ring,←Real.sqrt_eq_rpow] at h
+  change 10 < Real.log (2*(n:ℝ)) at hlog
   exact h.trans_le (square_root_floor_for_absolute_composite_mass (m n) hn
     (by simpa only [Nat.cast_mul,Nat.cast_ofNat] using hlog))
-
-#print axioms factorial_variation_is_the_root_payment
-#print axioms absolute_composite_mass_extrema
-#print axioms square_root_floor_for_absolute_composite_mass
-#print axioms normalized_factorial_composite_variation
-#print axioms every_subhalf_absolute_atom_bound_fails
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

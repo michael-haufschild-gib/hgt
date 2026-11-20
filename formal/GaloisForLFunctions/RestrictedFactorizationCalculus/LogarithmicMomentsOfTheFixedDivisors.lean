@@ -75,8 +75,9 @@ theorem logExchangeMoment_ne_zero {J k : ℕ} (h : bandReady J k) : logExchangeM
   change (∑ w ∈ W, (Real.log (f w)-Real.log w))=0 at he
   rw [sum_sub_distrib,sub_eq_zero,←Real.log_prod (fun w hm => (Nat.cast_ne_zero.mpr (hp w hm).ne')),
     ←Real.log_prod (fun w hm => (Nat.cast_ne_zero.mpr (hw w hm).ne'))] at he
-  have hprod := Real.log_injOn_pos (prod_pos fun w hm => Nat.cast_pos.mpr (hp w hm))
-    (prod_pos fun w hm => Nat.cast_pos.mpr (hw w hm)) he
+  have pf : 0 < ∏ w ∈ W,(f w:ℝ) := prod_pos fun w hm => Nat.cast_pos.mpr (hp w hm)
+  have pw : 0 < ∏ w ∈ W,(w:ℝ) := prod_pos fun w hm => Nat.cast_pos.mpr (hw w hm)
+  have hprod := Real.log_injOn_pos pf pw he
   have heq : (∏ w ∈ W, f w) = ∏ w ∈ W, w := by exact_mod_cast hprod
   rw [heq,pairs] at primes
   have hcard : 0 < W.card := card_pos.mpr (products_nonempty h)
@@ -133,7 +134,10 @@ private theorem fixed_single {J k : ℕ} (h : bandReady J k) :
       have ha : (activeBands J {k} d).Nonempty ↔ d ∈ bandEndpoints J k := by
         simp only [activeBands,filter_nonempty_iff,mem_singleton]
         change (∃ i, i=k ∧ d.gcd (switchModulus i) ∈ bandEndpoints J i) ↔ _
-        simp only [exists_eq_left',show d.gcd (switchModulus k)=d from hg]
+        constructor
+        · rintro ⟨_,rfl,hm⟩
+          rwa [hg] at hm
+        · exact fun hm => ⟨k,rfl,by rwa [hg]⟩
       by_cases hm : d ∈ bandEndpoints J k <;> simp [ha,hm]
     rw [hx,sum_sdiff_eq_sub hsub]
     change _ - (∑ d ∈ W ∪ W.image f, v d) = _
@@ -150,7 +154,7 @@ private theorem fixed_single {J k : ℕ} (h : bandReady J k) :
   constructor
   · simpa only [split,pow_zero,mul_one,sub_self,sum_const_zero,add_zero] using hzero
   · rw [split]
-    simpa only [pow_one,hfirst,zero_add] using (rfl : (∑ d ∈ W, (Real.log (f d)-Real.log d))=logExchangeMoment J k)
+    simp only [pow_one,hfirst,zero_add,logExchangeMoment,W,f]
 
 /-- Möbius sign on a fixed local divisor, zero on eligible divisors. -/
 def fixedDivisorCharge (J : ℕ) (I : Finset ℕ) (d : ℕ) : ℝ :=
@@ -174,14 +178,15 @@ private theorem local_charge_mul {J k a b : ℕ} {I : Finset ℕ}
     Nat.Coprime.gcd_mul_left_cancel b (Nat.Coprime.coprime_dvd_right (divides_period hi) hcoA)
   have he : (activeBands J (insert k I) (a*b)).Nonempty ↔
       (activeBands J {k} a).Nonempty ∨ (activeBands J I b).Nonempty := by
-    simp only [activeBands,filter_nonempty_iff,mem_insert,mem_singleton,exists_eq_left']
+    simp only [activeBands,filter_nonempty_iff,mem_insert,mem_singleton]
     constructor
     · rintro ⟨i,hi,hm⟩
       rcases hi with rfl | hi
-      · exact Or.inl (by rwa [hak] at hm)
+      · exact Or.inl ⟨_,rfl,by rwa [hak] at hm⟩
       · exact Or.inr ⟨i,hi,by rwa [hbi i hi] at hm⟩
-    · rintro (hk | ⟨i,hi,hm⟩)
-      · exact ⟨k,Or.inl rfl,by rw [hak]; exact hk⟩
+    · rintro (⟨i,hi,hk⟩ | ⟨i,hi,hm⟩)
+      · subst i
+        exact ⟨k,Or.inl rfl,by rw [hak]; exact hk⟩
       · exact ⟨i,Or.inr hi,by rw [hbi i hi]; exact hm⟩
   unfold fixedDivisorCharge
   rcases em (activeBands J {k} a).Nonempty with h|h <;>
@@ -307,7 +312,8 @@ theorem fixed_prefix_as_coprime_quotients (J X : ℕ) (I : Finset ℕ)
   · rw [if_pos h,fixedDivisorCharge,if_neg h]
     congr 1
     rw [coprimeMoebiusSum,sum_filter]
-    exact sum_congr rfl fun a _ => by simp only [coprimeMoebiusIndicator,Nat.coprime_comm Q a]
+    exact sum_congr rfl fun a _ => by
+      rw [coprimeMoebiusIndicator,(Nat.coprime_comm : Q.Coprime a ↔ a.Coprime Q)]
 
 /-- Every requested order of exact fixed-divisor cancellation is realized
 by disjoint prime exchanges at any prescribed resolution. The same ranges

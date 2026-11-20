@@ -214,7 +214,4 @@ theorem real_homogeneous_cartesian_p_laplacian {n : ℕ} (hn : 2≤n) (P : MvPol
   · rintro rfl
     simp [clearedPLaplacian,infinityPolynomial,euclideanPolynomialLaplacian]
 
-#print axioms cartesian_planar_symbol_in_chart
-#print axioms real_homogeneous_cartesian_p_laplacian
-
 end GaloisForLFunctions.RepresentationLifting.Spinor

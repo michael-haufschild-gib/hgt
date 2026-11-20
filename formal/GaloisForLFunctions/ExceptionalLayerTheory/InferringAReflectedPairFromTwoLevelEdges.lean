@@ -72,7 +72,7 @@ theorem reflected_two_edges_invert {m δ A B : ℝ} (hm : 0 < m) (hd : 0 < δ)
   have hy : 0 < y := (edge_inside hm hd hB).1
   have h₁ : x^2+2*(m/A)*x=δ^2 := edge_balance ..
   have h₂ : y^2+2*(m/B)*y=δ^2 := edge_balance ..
-  have hratio : m/B<m/A := (div_lt_div_iff₀ hB hA).mpr (mul_lt_mul_of_pos_left hAB hm)
+  have hratio : m/B < m/A := (div_lt_div_iff₀ hB hA).mpr (mul_lt_mul_of_pos_left hAB hm)
   have hxy : x < y := by
     by_contra! h
     have hsq := (sq_le_sq₀ hy.le hx.le).mpr h

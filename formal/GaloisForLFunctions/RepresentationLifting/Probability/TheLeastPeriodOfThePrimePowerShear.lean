@@ -135,10 +135,5 @@ theorem even_dyadic_shear_periods (k : ℕ) (t : ℤ) :
   · intro hd g
     rw [even_dyadic_shear_eq_gcd,even_dyadic_shear_eq_gcd,Int.gcd_add_right_left_of_dvd _ hd]
 
-#print axioms arithmetic_shear_gcd_formula
-#print axioms odd_precision_shear_periods
-#print axioms even_precision_odd_prime_shear_periods
-#print axioms even_dyadic_shear_eq_gcd
-#print axioms even_dyadic_shear_periods
 end
 end GaloisForLFunctions.RepresentationLifting

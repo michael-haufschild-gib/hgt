@@ -158,12 +158,6 @@ theorem four_dyadic_jumps_constant {u X : ℕ} (hu : Odd u) (hX : 8*u≤X) :
     oddPrimeJump_odd _ hu,full_divisor_excess hu₀ (by omega)]
   ring
 
-#print axioms oddPrimeJump_higher_full
-#print axioms dyadic_jump_difference_reads_divisor_count
-#print axioms four_dyadic_jumps_constant
 
-#print axioms oddPrimeJump_divisors
-#print axioms divisorPrimeExcess_dyadic
-#print axioms oddPrimeJump_twice_odd_full
 end
 end GaloisForLFunctions.ExclusionOfTheCriticalState

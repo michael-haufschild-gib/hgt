@@ -121,9 +121,6 @@ theorem normalized_population_tendsto {P : Finset ℕ} (hp : ∀ p ∈ P, Nat.Pr
   · filter_upwards [eventually_gt_atTop (0:ℝ)] with β hb using (normalized_population_enclosure hp hj hb).1
   · filter_upwards [eventually_gt_atTop (0:ℝ)] with β hb using (normalized_population_enclosure hp hj hb).2
 
-#print axioms leastPopulationEnergy_double
-#print axioms normalized_population_enclosure
-#print axioms normalized_population_tendsto
 
 end
 

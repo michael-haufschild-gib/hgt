@@ -564,16 +564,6 @@ theorem exists_real_heat_boundary_windings :
     rw [hmass n, ← Nat.cast_sum, Nat.cast_eq_zero]
 
 
-#print axioms thin_heatBox_collisions
-#print axioms exists_real_heat_boundary_windings
-#print axioms heatBoundaryDiscriminant_eq_vandermonde
-#print axioms heatBoundaryDiscriminant_eq_zero_iff
-#print axioms IsCollision.boundaryMoment_winding
-#print axioms IsCollision.boundaryMoment_regular_winding
-#print axioms heatIntersectionMultiplicity_from_boundary
-#print axioms vandermonde_square_insert_sheet
-#print axioms glued_discriminant_trace
-#print axioms height_cut_transition
 
 end
 

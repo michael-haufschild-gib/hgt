@@ -57,7 +57,7 @@ theorem realize_every_even_superlinear_degree {m : ℕ} (hm : 0 < m) {p : ℝ} (
       rw [hval,show u x=y^a by exact congrArg (fun z : ℝ => z^a) (max_eq_left hy.le),
         ←Real.rpow_mul hy.le,heq,Real.rpow_add hy,Real.rpow_natCast,Real.rpow_mul hy.le]
     change (-1:ℝ)^m*iteratedDeriv k u x=_
-    rw [show (-1:ℝ)^m*iteratedDeriv k u x=Q.eval x*(u x)^q from he x,hprice,eval_mul,eval_pow]
+    rw [show (-1:ℝ)^m*iteratedDeriv k u x=Q.eval x*(u x)^q from he x,hprice,eval_mul (p:=Q) (q:=B^j),eval_pow]
     ring
 
 theorem superlinear_polynomial_degrees {m : ℕ} (hm : 0 < m) {p : ℝ} (hp : 1<p) :
@@ -116,8 +116,5 @@ theorem weighted_polynomial_degrees {m : ℕ} (hm : 0 < m) {p : ℝ} (hp : 0<p) 
       exact stride heven _
     · rw [show d=(2*m-1)+2*(q+1-m) by omega]
       exact stride hodd _
-
-#print axioms superlinear_polynomial_degrees
-#print axioms weighted_polynomial_degrees
 
 end GaloisForLFunctions.ArithmeticPositiveDuality

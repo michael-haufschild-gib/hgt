@@ -203,8 +203,4 @@ theorem vanishing_prime_midpoint_step_progression (j : ℕ) : primeMidpointStep 
   rw [h₁,h₂,h₃,h₄,h₅]
   ring
 
-#print axioms finite_prime_midpoint_step_limit_iff
-#print axioms three_possible_finite_prime_midpoint_steps
-#print axioms vanishing_prime_midpoint_step_progression
-
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

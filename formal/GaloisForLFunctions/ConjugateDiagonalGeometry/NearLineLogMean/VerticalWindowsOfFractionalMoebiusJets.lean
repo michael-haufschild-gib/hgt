@@ -62,7 +62,9 @@ private theorem orbit_polynomial (N k : ℕ) {α : ℝ} (hα : 0 < α) (ω : Ome
     ring
   rw [hleft,←sum_modes N f]
   exact sum_congr rfl fun i _ => by
-    by_cases hi : 2 ≤ i.val+1 <;> simp [f,orbitCoeff,hi]
+    by_cases hi : 2 ≤ i.val+1
+    · simp only [f,orbitCoeff,if_pos hi,Nat.cast_add_one]
+    · simp only [orbitCoeff,if_neg hi,zero_mul]
 
 private theorem orbit_norm (N k : ℕ) (α : ℝ) (ω : Omega) (i : Fin N) :
     ‖orbitCoeff N k α ω i‖^2 = if 2 ≤ i.val+1 then moebiusJetAmplitude k α (i.val+1)^2 else 0 := by
@@ -80,7 +82,7 @@ theorem fractional_moebius_window_error (N k : ℕ) {α : ℝ} (hα : 0 < α) (�
       ∑ n ∈ Icc 2 N, (n:ℝ)*moebiusJetAmplitude k α n^2 := by
     simpa only [Nat.cast_add_one,mul_ite,mul_zero] using
       (sum_modes N fun n => (n:ℝ)*moebiusJetAmplitude k α n^2)
-  rw [he,sum_modes,add_sub_cancel_left] at H
+  rw [he,sum_modes N (fun n => moebiusJetAmplitude k α n^2),add_sub_cancel_left] at H
   simpa only [moebiusJetWindow,orbit_polynomial _ _ hα,energy_as_sum _ _ hα] using H
 
 private theorem energy_sandwich (N k : ℕ) {α U : ℝ} (hα : 0 < α) (hU : 0 < U)
@@ -100,7 +102,7 @@ private theorem energy_sandwich (N k : ℕ) {α U : ℝ} (hα : 0 < α) (hU : 0 
 /-- One window per cutoff per arbitrary choice of phase detects the
 exact regularity threshold. Both the phase and the origin may change with N. -/
 theorem single_window_fractional_threshold (k : ℕ) {α : ℝ} (hα : 0 < α)
-    (ω : ℕ → Omega) (A U : ℕ → ℝ) (hU : ∀ N, 0 < U N) (hN : ∀ N, 416*(N:ℝ) ≤ U N) :
+    (ω : ℕ → Omega) (A U : ℕ → ℝ) (hU : ∀ N, 0 < U N) (hN : ∀ N : ℕ, 416*(N:ℝ) ≤ U N) :
     (∃ C : ℝ, ∀ N, moebiusJetWindow N k α (ω N) (A N) (U N)/U N ≤ C) ↔ (k:ℝ)+1/2 < α := by
   rw [←uniform_random_jet_second_moment_iff k hα]
   constructor
@@ -170,7 +172,7 @@ private theorem borderline_cost (k : ℕ) {N : ℕ} (hN : 2 ≤ N) :
   rw [sum_mul]
   have hlarge := mul_le_mul_of_nonneg_right (Nat.cast_le.mpr hcard : (S.card:ℝ) ≤ N) (by norm_num : (0:ℝ) ≤ 2)
   have hshort := mul_le_mul_of_nonneg_right (Nat.cast_le.mpr hsmall : ((S.filter (· ≤ H)).card:ℝ) ≤ H) hc
-  linarith only [hsum,hlarge,hshort,hc']
+  exact hsum.trans ((add_le_add hlarge (hshort.trans hc')).trans_eq (by ring))
 
 /-- At α=k+1/2, a window of length N/log N recovers the Haar energy
 with an absolute error independent of the origin, cutoff and order. -/
@@ -217,11 +219,10 @@ theorem borderline_fractional_windows_diverge (k : ℕ) (ω : ℕ → Omega) (A 
   have h := borderline_log_window_error k ((le_max_left 2 M).trans hN) (ω N) (A N)
   have h' := hmono ((le_max_right 2 M).trans hN)
   dsimp only [α] at hM h'
-  exact le_of_lt (by linarith only [(abs_le.mp h).1,hM,h'])
+  let U := (N:ℝ)/Real.log N
+  have hlo : -(208*(2+2/Real.log 2)) ≤ moebiusJetWindow N k (k+1/2) (ω N) (A N) U/U - moebiusJetEnergy N k (k+1/2) := (abs_le.mp h).1
+  change b ≤ moebiusJetWindow N k (k+1/2) (ω N) (A N) U/U
+  linarith only [hlo,hM,h']
 
-#print axioms fractional_moebius_window_error
-#print axioms single_window_fractional_threshold
-#print axioms borderline_log_window_error
-#print axioms borderline_fractional_windows_diverge
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean

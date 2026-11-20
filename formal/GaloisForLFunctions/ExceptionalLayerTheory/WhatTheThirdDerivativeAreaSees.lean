@@ -41,7 +41,7 @@ private theorem sqrt_sum_vanishes {ι : Type*} (S : Finset ι) (m : ι → ℕ) 
 /-- An integer relation between positive square-root weights holds exactly
 when it holds separately in every square class represented by an index. -/
 theorem sqrt_order_relation_iff_square_classes {ι : Type*} (S : Finset ι)
-    (m : ι → ℕ) (hm : ∀ i, 0<m i) (c : ι → ℤ) :
+    (m : ι → ℕ) (hm : ∀ i, 0 < m i) (c : ι → ℤ) :
     (∑ i ∈ S, (c i:ℝ)*Real.sqrt (m i:ℝ)=0) ↔
       ∀ j, ∑ i ∈ S with IsSquare (m i*m j), (c i:ℝ)*Real.sqrt (m i:ℝ)=0 := by
   classical

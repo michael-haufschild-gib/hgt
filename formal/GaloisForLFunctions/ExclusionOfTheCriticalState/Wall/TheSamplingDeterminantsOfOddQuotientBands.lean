@@ -101,8 +101,5 @@ theorem det_quotientSignSamples {k : ℕ} (d : Fin (k+1) ↪o ℕ) :
     simp [hd]
   simpa only [B,Matrix.det_mul,difference_det,mul_one,A] using he
 
-#print axioms det_oddDigitSamples
-#print axioms oddDigitSamples_prime_reading
-#print axioms det_quotientSignSamples
 end
 end GaloisForLFunctions.ExclusionOfTheCriticalState

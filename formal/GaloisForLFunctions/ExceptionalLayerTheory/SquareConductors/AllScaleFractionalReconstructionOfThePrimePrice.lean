@@ -117,7 +117,4 @@ theorem variable_order_prime_green_series (order : ℕ → ℝ → Set.Ioo (0:�
   simp_rw [he]
   exact midpoint_green_of_terminal discreteLogPrice t (discrete_log_terminal t)
 
-#print axioms real_prime_interval_inversion
-#print axioms variable_order_prime_green_series
-
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

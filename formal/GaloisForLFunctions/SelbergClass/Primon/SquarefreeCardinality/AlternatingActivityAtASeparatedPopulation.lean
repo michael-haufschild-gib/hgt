@@ -193,8 +193,6 @@ theorem squarefree_negative_activity_sign {P : Finset ℕ} (hp : ∀ p ∈ P, Na
   rw [←neg_one_mul (Real.exp _),mul_pow,he]
   ring
 
-#print axioms dominant_population_sign
-#print axioms squarefree_negative_activity_sign
 
 end
 

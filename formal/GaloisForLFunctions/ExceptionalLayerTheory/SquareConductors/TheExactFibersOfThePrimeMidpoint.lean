@@ -24,9 +24,12 @@ theorem monotone_prime_midpoint_clock : Monotone primeMidpointClock := by
   have hp (k : ℕ) := Nat.monotone_primeCounting (Nat.mul_le_mul_left k h)
   exact Nat.add_le_add (Nat.add_le_add (hp 2) (hp 3)) (hp 4)
 
+private theorem mem_window {a b : ℕ} {p : Nat.Primes} :
+    p ∈ primeWindow a b ↔ a < (p:ℕ) ∧ (p:ℕ) ≤ b := mem_subtype.trans mem_Ioc
+
 private theorem window_membership {a b c d : ℕ} (h : primeWindow a b = primeWindow c d) (p : Nat.Primes) :
     (a < (p:ℕ) ∧ (p:ℕ) ≤ b) ↔ c < (p:ℕ) ∧ (p:ℕ) ≤ d := by
-  simpa only [primeWindow,mem_subtype,mem_Ioc] using (Finset.ext_iff.mp h p)
+  exact mem_window.symm.trans ((Finset.ext_iff.mp h p).trans mem_window)
 
 private theorem equal_cutoffs_of_equal_midpoints {n m : ℕ} (hnm : n ≤ m)
     (h : primeMidpointPrice n=primeMidpointPrice m) :
@@ -54,7 +57,7 @@ private theorem equal_price_of_equal_cutoffs {n m : ℕ}
   have same (a b : ℕ) (ha : 2≤a) (ha' : a≤4) (hb : 2≤b) (hb' : b≤4) :
       primeWindow (a*n) (b*n)=primeWindow (a*m) (b*m) := by
     ext p
-    simp only [primeWindow,mem_subtype,mem_Ioc,←Nat.not_le]
+    simp only [mem_window,←Nat.not_le]
     exact and_congr (not_congr (h a ha ha' p)) (h b hb hb' p)
   exact ⟨same 2 3 le_rfl (by decide) (by decide) (by decide),same 3 4 (by decide) (by decide) (by decide) le_rfl⟩
 
@@ -138,17 +141,11 @@ theorem number_of_distinct_midpoint_readings (N : ℕ) :
       · intro h
         exact mem_image.mpr ⟨N,mem_range.mpr (Nat.lt_succ_self _),(prime_midpoint_equivalence_of_clock _ _).mpr h⟩
     have hm := monotone_prime_midpoint_clock (Nat.le_succ N)
-    rw [range_succ (N+1),image_insert]
-    conv_rhs => rw [range_succ N,filter_insert]
+    rw [range_add_one (n := N+1),image_insert]
+    conv_rhs => rw [range_add_one (n := N),filter_insert]
     by_cases he : primeMidpointClock N=primeMidpointClock (N+1)
     · rw [if_neg (not_lt.mpr he.ge),insert_eq_of_mem (hold.mpr he),ih]
     · rw [if_pos (lt_of_le_of_ne hm he),card_insert_of_notMem (fun h => he (hold.mp h)),
-        card_insert_of_notMem (fun h => (Nat.lt_irrefl N) (mem_range.mp (mem_filter.mp h).1)),ih]
-      omega
-
-#print axioms prime_midpoint_has_the_same_cutoffs
-#print axioms prime_midpoint_equivalence_of_clock
-#print axioms intervening_midpoints_are_equal
-#print axioms number_of_distinct_midpoint_readings
+        card_insert_of_notMem (fun h => (Nat.lt_irrefl N) (mem_range.mp (mem_filter.mp h).1)),ih] <;> omega
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

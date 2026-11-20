@@ -261,11 +261,4 @@ theorem sharp_exponential_diagonal_cost {n : ℕ} (i : Fin n) :
     apply (div_le_iff₀ hA).mpr
     exact le_of_mul_le_mul_right (show 1*E≤(L*A)*E by linarith only [hh]) hE
 
-#print axioms receiver_spiral_nodes_injective
-#print axioms recover_full_receiver_gram_from_spiral
-#print axioms consecutive_spiral_readings_iff_gram
-#print axioms spiral_pair_error_bound
-#print axioms peak_isolated_spiral_readout
-#print axioms sharp_exponential_diagonal_cost
-
 end GaloisForLFunctions.BlackHoleRingdown

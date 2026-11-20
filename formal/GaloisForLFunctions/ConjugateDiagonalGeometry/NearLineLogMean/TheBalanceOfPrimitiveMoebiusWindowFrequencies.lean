@@ -42,7 +42,7 @@ theorem absolute_primitive_spectrum (N : ℕ) (K : ℝ → ℝ) :
 the squarefree diagonal. -/
 theorem signed_primitive_window_excess (N : ℕ) (T : ℝ) :
     ∑ q ∈ primitiveRatioPairs N,integratedRatio N T q =
-      (∫ t in (1:ℝ)..T, ‖moebiusPoly N (linePoint t)‖^2) -
+      (∫ t in (1:ℝ)..T, ‖moebiusPoly N (MultiscaleMollifiedZetaField.linePoint t)‖^2) -
         (T-1)*(∑ n ∈ Icc 1 N,mobiusRealCoefficient n^2/n) := by
   rw [sharp_interval_spectrum,add_sub_cancel_left]
   refine sum_congr rfl fun q _ => congrArg (fun v : ℝ => atom N q.1 q.2*v) ?_
@@ -67,7 +67,7 @@ private theorem diagonal_bound (N : ℕ) :
       ∑ i ∈ range N,((i:ℝ)+1)^(-(1/2:ℝ)) := by
     calc _ ≤ ∑ n ∈ Icc 1 N,(n:ℝ)^(-(1/2:ℝ)) := sum_le_sum row
          _ = _ := by rw [_root_.RHTower.sum_Icc_eq_sum_range_shift]; simp only [Nat.cast_succ]
-  exact h'.trans (hb.trans_eq (by norm_num <;> ring))
+  exact h'.trans (hb.trans_eq (by norm_num; ring))
 
 private theorem window_le_small_root {a : ℝ} (ha : a ≤ 1) (δ : ℝ) (hδ : 0 < δ) :
     ∀ᶠ N : ℕ in atTop, Real.exp (a*(Real.log N)^((1:ℝ)/3)/108) ≤
@@ -86,11 +86,12 @@ private theorem window_le_small_root {a : ℝ} (ha : a ≤ 1) (δ : ℝ) (hδ : 
   rw [Real.rpow_neg xp.le,Real.exp_neg,←mul_inv] at hl
   have hk := (one_div_le_one_div_of_le (by positivity : 0 < (K*(N:ℝ)^((1:ℝ)/4))⁻¹) hl)
   simp only [one_div,inv_inv] at hk
+  change K/δ ≤ (N:ℝ)^((1:ℝ)/4) at hn
   have hδk := (div_le_iff₀ hδ).mp hn
   have hδk' := mul_le_mul_of_nonneg_right hδk hx.le
   calc Real.exp (a*(Real.log N)^((1:ℝ)/3)/108) = Real.exp (a*u) := by rw [mul_div_assoc]
        _ ≤ Real.exp u := Real.exp_le_exp.mpr (mul_le_of_le_one_left hu ha)
-       _ ≤ K*(N:ℝ)^((1:ℝ)/4) := hk
+       _ ≤ K*(N:ℝ)^((1:ℝ)/4) := by simpa only [one_div] using hk
        _ ≤ δ*((N:ℝ)^((1:ℝ)/4)*(N:ℝ)^((1:ℝ)/4)) := hδk'.trans_eq (by ring)
        _ = _ := by rw [←Real.rpow_add xp]; norm_num
 
@@ -133,10 +134,11 @@ theorem primitive_window_sign_balance {a : ℝ} (ha : a < 1) {ε : ℝ} (hε : 0
   have hdN := mul_le_mul_of_nonneg_right hd2 (Nat.cast_nonneg (α:=ℝ) N)
   have hid : δ*R*(2*R)=2*δ*N := by rw [show δ*R*(2*R)=2*δ*(R*R) by ring,hr2]
   rw [hid] at hc
-  have hi := intervalIntegral.integral_nonneg h1 (fun t _ => sq_nonneg ‖moebiusPoly N (linePoint t)‖)
+  have hi := intervalIntegral.integral_nonneg (μ := volume) h1
+    (fun t _ => sq_nonneg ‖moebiusPoly N (MultiscaleMollifiedZetaField.linePoint t)‖)
   have hdn := mul_nonneg (sub_nonneg.mpr h1) diag0
   rw [signed_primitive_window_excess,abs_le]
-  constructor <;> linarith only [hp,hn,hcharge,hc,hdN,hi,hdn]
+  constructor <;> linarith only [hp,hn,hcharge.trans hc,hdN,hi,hdn]
 
 #print axioms absolute_primitive_spectrum
 #print axioms signed_primitive_window_excess

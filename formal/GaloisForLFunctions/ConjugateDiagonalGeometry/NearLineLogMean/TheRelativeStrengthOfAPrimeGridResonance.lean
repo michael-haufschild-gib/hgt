@@ -92,7 +92,7 @@ private theorem terminal_mass {p : ℕ} (hp : p.Prime) (N : ℕ) :
     exact mem_Ioc.mpr ⟨lt_of_not_ge fun h => hk' ⟨⟨⟨hd.1.1.1,h⟩,hd.1.2⟩,hd.2⟩,hd.1.1.2⟩
   apply (sum_le_sum_of_subset_of_nonneg hV fun _ _ _ => by positivity).trans
   rcases Nat.eq_zero_or_pos N with rfl | hN
-  · simp [K,Real.log_nonneg (Nat.one_le_cast.mpr hp.pos)]
+  · simpa [K] using add_nonneg (show (0:ℝ) ≤ 1 by norm_num) (Real.log_nonneg (Nat.one_le_cast.mpr hp.pos))
   have hhar (n : ℕ) : (harmonic n:ℝ) = ∑ d ∈ Ioc 0 n, (d:ℝ)⁻¹ := by
     rw [harmonic_eq_sum_Icc]; push_cast; rfl
   have hsplit := sum_Ioc_consecutive (fun d : ℕ => (d:ℝ)⁻¹) (Nat.zero_le K) hk
@@ -103,7 +103,9 @@ private theorem terminal_mass {p : ℕ} (hp : p.Prime) (N : ℕ) :
   have hp' : 0 < (p:ℝ) := Nat.cast_pos.mpr hp.pos
   have hl := Real.log_le_log (Nat.cast_pos.mpr hN) hn
   rw [Real.log_mul hk'.ne' hp'.ne'] at hl
-  linarith only [hsplit,harmonic_le_one_add_log N,log_add_one_le_harmonic K,hl]
+  have hlo := log_add_one_le_harmonic K
+  rw [Nat.cast_add_one] at hlo
+  linarith only [hsplit,harmonic_le_one_add_log N,hlo,hl]
 
 private theorem scale_prime {p : ℕ} (hp : p.Prime) (N : ℕ) :
     primitiveCubicScaleWeight 0 N p 1 = freeMass p (N/p) := by
@@ -115,8 +117,9 @@ private theorem scale_prime {p : ℕ} (hp : p.Prime) (N : ℕ) :
   rw [primitiveCubicScaleWeight,he,freeMass,freeTerms,terms,sum_filter,sum_filter]
   apply sum_congr rfl
   intro d _
-  simp only [Nat.coprime_one_right,and_true,sub_zero,Real.rpow_neg_one,mobius_sq_indicator]
-  by_cases hs : Squarefree d <;> by_cases hc : p.Coprime d <;> simp [hs,hc,Nat.coprime_comm d p]
+  simp only [sub_zero,Real.rpow_neg_one,mobius_sq_indicator]
+  have hcop : d.Coprime p ↔ p.Coprime d := Nat.coprime_comm
+  by_cases hs : Squarefree d <;> by_cases hc : p.Coprime d <;> simp [hs,hcop,hc]
 
 private theorem prime_atom {p : ℕ} (hp : p.Prime) (N : ℕ) :
     atom N p 1 = -(freeMass p (N/p))/Real.sqrt p := by
@@ -151,8 +154,9 @@ private theorem atom_swap (N a b : ℕ) : atom N a b=atom N b a := by
   rw [atom,atom,mul_comm (coeff a) (coeff b)]
   congr 1
   have h : ratioScales N a b=ratioScales N b a := by
-    ext d; simp only [ratioScales,mem_filter,and_comm (d*a ≤ N)]
-  simp only [primitiveCubicScaleWeight,h,and_comm (Nat.Coprime _ a)]
+    ext d
+    simp only [ratioScales,mem_filter,and_comm, and_left_comm, and_assoc]
+  simp only [primitiveCubicScaleWeight,h,and_comm]
 
 private theorem diagonal_diverges : Tendsto squarefreeDiagonal atTop atTop := by
   have h (N : ℕ) : Real.log ((N:ℝ)+1)/2 ≤ squarefreeDiagonal N := by
@@ -195,7 +199,7 @@ that cosine has the explicit amplitude 2√p/(p+1). -/
 theorem normalized_prime_grid_profile (p : Nat.Primes) (t : ℝ) :
     ∃ V : ℕ → ℝ, (∀ N ≥ p.val,
       Tendsto (fun r : ℕ => (binomialHeightMean (2*Real.pi/Real.log p.val)^r)
-        (fun x => ‖moebiusPoly N (linePoint x)‖^2) t) atTop (𝓝 (V N))) ∧
+        (fun x => ‖moebiusPoly N (MultiscaleMollifiedZetaField.linePoint x)‖^2) t) atTop (𝓝 (V N))) ∧
       Tendsto (fun N => V N/squarefreeDiagonal N) atTop
         (𝓝 (1-(2*Real.sqrt p.val/((p.val:ℝ)+1))*Real.cos (Real.log p.val*t))) := by
   let c := Real.cos (Real.log p.val*t)
@@ -203,9 +207,10 @@ theorem normalized_prime_grid_profile (p : Nat.Primes) (t : ℝ) :
   refine ⟨V,fun N hN => ?_,?_⟩
   · have hp₁ := p.property.one_lt
     have hmem : (p.val,1) ∈ primitiveRatioPairs N ∧ (1,p.val) ∈ primitiveRatioPairs N := by
-      simp only [primitiveRatioPairs,mem_filter,mem_product,mem_Icc,Nat.coprime_one_left,
-        Nat.coprime_one_right,true_and]
-      omega
+      have hP : p.val ∈ Icc 1 N := mem_Icc.mpr ⟨hp₁.le,hN⟩
+      have h1 : 1 ∈ Icc 1 N := mem_Icc.mpr ⟨le_rfl,hp₁.le.trans hN⟩
+      exact ⟨mem_filter.mpr ⟨mem_product.mpr ⟨hP,h1⟩, Nat.coprime_one_right _, hp₁.ne'⟩,
+        mem_filter.mpr ⟨mem_product.mpr ⟨h1,hP⟩, Nat.coprime_one_left _, hp₁.ne⟩⟩
     have hpair : (primitiveRatioPairs N).filter (fun q => q=(p.val,1) ∨ q=(1,p.val)) =
         {(p.val,1),(1,p.val)} := by
       ext q
@@ -227,7 +232,5 @@ theorem normalized_prime_grid_profile (p : Nat.Primes) (t : ℝ) :
     field_simp
     <;> ring
 
-#print axioms prime_resonance_amplitude
-#print axioms normalized_prime_grid_profile
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.MoebiusGram

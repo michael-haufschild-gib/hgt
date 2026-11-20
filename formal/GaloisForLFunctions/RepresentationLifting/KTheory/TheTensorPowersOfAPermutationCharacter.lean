@@ -114,9 +114,5 @@ theorem permutationPowerMultiplicity_limit [Nonempty X] (ρ : Representation ℂ
   apply tendsto_iff_norm_sub_tendsto_zero.mpr
   exact squeeze_zero (fun _ => norm_nonneg _) (permutationPowerMultiplicity_geometric_error G X ρ) hl
 
-#print axioms permutationFixedCount_le_card_sub_two
-#print axioms permutationPowerMultiplicity_moment
-#print axioms permutationPowerMultiplicity_geometric_error
-#print axioms permutationPowerMultiplicity_limit
 end
 end GaloisForLFunctions.RepresentationLifting

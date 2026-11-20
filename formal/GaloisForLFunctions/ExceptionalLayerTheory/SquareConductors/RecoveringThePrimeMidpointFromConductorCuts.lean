@@ -135,10 +135,6 @@ theorem prime_midpoint_forces_cut_oscillation {N n : ℕ} (hn : 0<n) (hN : 0<N)
   rw [conductor_recovers_prime_midpoint hN hk,abs_mul,abs_neg,abs_of_pos innerPrimeSlope_pos] at hr
   simpa only [Nat.cast_mul,Nat.cast_ofNat] using hr
 
-#print axioms reciprocal_cut_contrast_sharp
-#print axioms half_order_integral_from_conductor_cuts
-#print axioms prime_midpoint_forces_cut_oscillation
-
 /-- The unknown base price at a conductor disappears on subtraction.
 All terminal conductors give the same complex differences below the knot. -/
 theorem inner_cut_differences_independent {N M a b : ℕ}
@@ -196,7 +192,7 @@ private theorem theta_spectrum_majorant {b t : ℝ} (hb : 1/2 ≤ b) (ht : b<t)
   intro i
   rcases Nat.eq_zero_or_pos i with rfl | hi
   · simp [Chebyshev.theta,Real.zero_rpow (by linarith only [hb,ht] : t≠0)]
-  have h₁ : (1:ℝ)≤i := Nat.one_le_cast.mpr hi
+  have h₁ : (1:ℝ) ≤ i := Nat.one_le_cast.mpr hi
   have hproper : |Chebyshev.psi i-Chebyshev.theta i| ≤ |D| * (i:ℝ)^t := by
     rw [abs_of_nonneg (sub_nonneg.mpr (Chebyshev.theta_le_psi _))]
     apply (hD _).trans
@@ -237,9 +233,6 @@ theorem conductor_octave_oscillation_of_zero_abscissa {b t : ℝ} (hb : 1/2≤b)
   simp only [B,Nat.cast_mul,Nat.cast_ofNat,Real.mul_rpow (by norm_num : (0:ℝ)≤4) (Nat.cast_nonneg n),
     Real.rpow_add (Nat.cast_pos.mpr hn),Real.rpow_one]
   ring
-
-#print axioms inner_cut_differences_independent
-#print axioms conductor_octave_oscillation_of_zero_abscissa
 
 /-- Measuring the entire inner-cut octave at one terminal conductor of
 one's choice for each n already gives the exact zero-abscissa threshold.
@@ -294,7 +287,5 @@ theorem zero_abscissa_iff_one_conductor_per_octave {b : ℝ} (hb : 1/2≤b) :
     calc primeMidpointPrice n≤|primeMidpointPrice n| := le_abs_self _
       _ ≤ 4*C*(n:ℝ)^t/innerPrimeSlope := (le_div_iff₀ innerPrimeSlope_pos).mpr (by rwa [mul_comm])
       _ = _ := by ring
-
-#print axioms zero_abscissa_iff_one_conductor_per_octave
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval.ConductorMoment

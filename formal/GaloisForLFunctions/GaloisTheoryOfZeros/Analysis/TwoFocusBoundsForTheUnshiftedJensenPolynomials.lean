@@ -183,9 +183,4 @@ theorem rh_iff_cofinal_rational_focal_bounds :
       Set.eq_empty_iff_forall_notMem,Set.mem_setOf_eq,not_not] at H
     exact riemannHypothesis_iff_forall_xiSpectralPoint_im_eq_zero.mpr H
 
-#print axioms real_root_focal_bounds
-#print axioms focal_half_plane_factors
-#print axioms real_roots_polynomial_focal_bounds
-#print axioms real_roots_iff_rational_focal_lower
-#print axioms rh_iff_cofinal_rational_focal_bounds
 end GaloisForLFunctions.GaloisTheoryOfZeros

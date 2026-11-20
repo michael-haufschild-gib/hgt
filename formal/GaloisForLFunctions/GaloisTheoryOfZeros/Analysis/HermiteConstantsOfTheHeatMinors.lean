@@ -212,9 +212,6 @@ theorem hermiteMinorCoefficient_two (n : ℕ) :
   simp [Fin.prod_univ_succ,Nat.cast_succ]
   <;> ring
 
-#print axioms hermiteRoot_clusterMomentMinor
-#print axioms hermiteMinorCoefficient_product
-#print axioms hermiteMinorCoefficient_two
 
 end
 

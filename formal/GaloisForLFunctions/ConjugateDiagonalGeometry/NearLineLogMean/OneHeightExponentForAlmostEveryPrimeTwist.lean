@@ -14,6 +14,7 @@ Haar-full set. Monotonicity of the time integral fills the dyadic gaps.
 namespace GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.PrimeTwistedMoments
 open Filter Topology Finset MeasureTheory Complex
 open GaloisForLFunctions.ArithmeticCorrelationGeometry
+open GaloisForLFunctions.MultiscaleMollifiedZetaField (moebiusPoly)
 open _root_.RHTower hiding linePoint
 noncomputable section
 
@@ -35,7 +36,7 @@ private theorem energy_le (M : ℕ) :
     ext n
     simp only [mem_Ioc,mem_Icc]
     omega
-  simpa only [hi,harmonic_eq_sum_Icc,Rat.cast_sum,Rat.cast_inv,Rat.cast_natCast] using h
+  simpa only [hi,_root_.RHTower.harmonic_eq_sum_Icc,one_div] using h
 
 private abbrev times (T : ℝ) := volume.restrict (Set.Ioc (1:ℝ) T)
 
@@ -52,7 +53,9 @@ theorem power_at_trivial_twist (N : ℕ) (t : ℝ) :
   let c := 2*Real.pi
   have hc : c ≠ 0 := (mul_pos (by norm_num) Real.pi_pos).ne'
   let w := t/(-c)
-  have ht : -(2*Real.pi)*w=t := by dsimp only [w,c]; field_simp [Real.pi_ne_zero]
+  have ht : -(2*Real.pi)*w=t := by
+    dsimp only [w,c]
+    field_simp [Real.pi_ne_zero] <;> ring
   have h := MoebiusGram.critical_moebius_logPoly N w
   rw [ht] at h
   rw [h]
@@ -196,8 +199,9 @@ theorem ae_common_height_exponent :
     exact add_le_add hpow hl
   have hs := pow_le_pow_left₀ (add_nonneg zero_le_one (Real.log_nonneg hT)) hb 5
   have hpow5 : (T^δ)^5=T^ε := by
-    rw [←Real.rpow_natCast (T^δ),←Real.rpow_mul (zero_le_one.trans hT),
-      show δ*(5:ℝ)=ε by dsimp only [δ]; ring]
+    rw [←Real.rpow_natCast (T^δ),←Real.rpow_mul (zero_le_one.trans hT)]
+    congr 1
+    norm_num [δ] <;> ring
   rw [mul_pow,hpow5] at hs
   refine (ht N hN).trans ((mul_le_mul_of_nonneg_left hs (by positivity : 0 ≤ 128*((r:ℝ)+1)^3*T)).trans_eq ?_)
   rw [Real.rpow_add (zero_lt_one.trans_le hT),Real.rpow_one]

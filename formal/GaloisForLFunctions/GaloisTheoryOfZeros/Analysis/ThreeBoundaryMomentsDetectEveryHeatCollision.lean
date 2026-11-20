@@ -129,10 +129,6 @@ theorem riemannHypothesis_iff_three_boundary_moments :
   · rintro H t ht ⟨⟨τ,z⟩,hc,rfl⟩
     exact (H t ht z) ((multipleZero_iff_three_moment_derivative _ _).mp hc)
 
-#print axioms IsCollision.contourMinor_orders
-#print axioms IsCollision.three_moment_derivative
-#print axioms multipleZero_iff_three_moment_derivative
-#print axioms riemannHypothesis_iff_three_boundary_moments
 
 end
 

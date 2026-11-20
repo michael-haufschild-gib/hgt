@@ -29,7 +29,6 @@ theorem small_unitary_sum_on_divisors {M : Type*} [AddCommMonoid M] (w : ℕ →
   rw [cut]
   exact unitary_sum_on_divisor_section hk (fun d => d^2≤k) (fun _ S => w S.card)
 
-#print axioms small_unitary_sum_on_divisors
 
 /-- Sum of full logarithms of multiples of a positive step through a cutoff. -/
 def progressionLogFactorial (l T : ℕ) : ℝ :=
@@ -70,7 +69,6 @@ theorem progression_log_factorial_error {l : ℕ} (hl : 0 < l) (T : ℕ) :
     exact abs_le.mpr ⟨by linarith only [(abs_le.mp he).1,hhi,hll],
       by linarith only [(abs_le.mp he).2,hlo,hll,hlogT]⟩
 
-#print axioms progression_log_factorial_error
 
 private theorem log_scaled_sum (l : ℕ) (hl : 0 < l) (q : ℕ) :
     (∑ j ∈ Icc 1 q,Real.log (l*j:ℕ))=
@@ -122,7 +120,6 @@ theorem small_unitary_factorial_row {e n T : ℕ} (he : 0 < e) (hn : 0 < n) (hT 
   exact eq_sub_of_add_eq' (sum_Ioc_consecutive f (Nat.zero_le _)
     (Nat.div_le_div_right ((Nat.sub_le _ _).trans hT)))
 
-#print axioms small_unitary_factorial_row
 
 private theorem primitive_progression_density (e : ℕ) {m : ℕ} (hm : 0 < m) (x : ℝ) :
     x*m.totient/((e:ℝ)*m)=∑ d ∈ m.divisors,(moebius d:ℝ)*(x/(e*d:ℕ)) := by
@@ -149,7 +146,6 @@ theorem primitive_scaled_log_density {e n : ℕ} (he : 0 < e) (hn : 0 < n) (T : 
                (Nat.mul_pos he (Nat.pos_of_mem_divisors hd)) T) (abs_nonneg _) zero_le_one).trans_eq (one_mul _)
        _ = _ := by rw [sum_const,nsmul_eq_mul]
 
-#print axioms primitive_scaled_log_density
 
 /-- Positive row indices whose square is reached by the endpoint. -/
 def smallDivisorIndices (T : ℕ) : Finset ℕ := (Icc 1 T).filter (fun e => e^2 ≤ T)
@@ -220,7 +216,6 @@ theorem small_unitary_factorial_center (w : ℕ → ℝ) {n : ℕ} (hn : 0 < n) 
                simp only [f,hcond,mul_ite,mul_zero]
              · simp [f,Nat.coprime_mul_iff_right,hc]
 
-#print axioms small_unitary_factorial_center
 
 /-- Möbius sum through the square root, with ordinary divisors. -/
 def halfMoebius (k : ℕ) : ℤ := ∑ d ∈ k.divisors.filter (fun d => d^2 ≤ k),moebius d
@@ -299,7 +294,5 @@ theorem half_moebius_factorial_center {n : ℕ} (hn : 0 < n) (T : ℕ) :
                         rw [←sum_filter,hij,←mul_sum,log_multiple_interval (Nat.lcm_pos he0 hd0) _ _
                           ((Nat.sub_le _ _).trans heT)]
 
-#print axioms half_moebius_squarefree
-#print axioms half_moebius_factorial_center
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

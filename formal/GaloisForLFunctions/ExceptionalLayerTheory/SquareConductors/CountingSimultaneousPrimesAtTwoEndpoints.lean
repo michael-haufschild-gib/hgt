@@ -177,6 +177,4 @@ theorem two_affine_prime_endpoints_log_squared {a b : ℕ} (ha : 0<a) (hb : 0<b)
   have hv := secondary_power_times_log_sq hMR
   linarith only [hu,hv,hscale]
 
-#print axioms two_affine_prime_endpoints_log_squared
-
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

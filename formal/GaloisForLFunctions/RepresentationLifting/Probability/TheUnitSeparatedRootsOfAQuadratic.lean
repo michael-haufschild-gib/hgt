@@ -125,10 +125,5 @@ theorem simple_split_coefficient_probability (p h : ℕ) [Fact p.Prime] :
     (mul_ne_zero (by norm_num) hpR)]
   linear_combination (p:ℝ)*hc
 
-#print axioms simple_split_coefficient_probability
-#print axioms unit_separated_root_iff
-#print axioms card_unit_separated_roots
-#print axioms twice_card_simple_split_labels
-#print axioms twice_card_simple_split_mod_prime_power
 end
 end GaloisForLFunctions.RepresentationLifting

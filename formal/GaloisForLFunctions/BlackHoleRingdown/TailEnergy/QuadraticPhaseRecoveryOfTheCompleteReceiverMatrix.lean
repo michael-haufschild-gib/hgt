@@ -194,8 +194,4 @@ theorem chirp_settings_determine_receiver_matrix (hp : 2 < p) (f g : ZMod p → 
     rw [chirp_recovers_cross_energy hp g V hne] at eq
     exact mul_left_cancel₀ (pow_ne_zero _ (Nat.cast_ne_zero.mpr (Fact.out : p.Prime).ne_zero)) eq
 
-#print axioms chirp_recovers_cross_energy
-#print axioms chirp_settings_cardinality
-#print axioms chirp_row_trace
-#print axioms chirp_settings_determine_receiver_matrix
 end GaloisForLFunctions.BlackHoleRingdown

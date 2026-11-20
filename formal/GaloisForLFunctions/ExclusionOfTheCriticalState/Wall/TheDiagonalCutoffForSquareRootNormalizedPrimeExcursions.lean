@@ -309,11 +309,4 @@ theorem rh_or_large_diagonal_prime_rectangle : RiemannHypothesis ∨
     (g:=g) (d:=d) (T:=T i) (k i) L hs ha
   exact ⟨s,left,hs,r,t,hdg,big.trans_le (mul_le_mul_of_nonneg_left small (Nat.cast_nonneg L))⟩
 
-#print axioms rh_or_large_diagonal_prime_rectangle
-#print axioms occupied_area_of_diagonal_cutoff
-#print axioms eventually_prime_product_below_every_linear_cap
-#print axioms root_scaled_prime_product_power_saving
-#print axioms uniform_middle_endpoint_power_cap
-#print axioms middle_endpoint_power_above_abscissa
-#print axioms opposite_prime_moment_at_one_diagonal_rectangle
 end GaloisForLFunctions.ExclusionOfTheCriticalState

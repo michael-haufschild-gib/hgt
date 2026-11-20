@@ -227,9 +227,5 @@ theorem moving_modulation_diverges_iff (M N : ℕ → ℕ) (s : ℕ → ℝ)
     change b ≤ E k
     linarith only [hk,he,hu]
 
-#print axioms moving_modulation_inner_bound
-#print axioms moving_modulation_vanishes_iff
-#print axioms moving_modulation_exponential_rate
-#print axioms moving_modulation_diverges_iff
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField.RandomDirichletJets

@@ -196,8 +196,4 @@ theorem negative_attained_above_prime_band_radius {δ : ℝ} (hd : 0 ≤ δ)
   change observedPrimeBand X e=logSquarePrimeBandCharge X+ -δ*logSquarePrimeBandVariation X at hval
   linarith only [hval,hnum]
 
-#print axioms possible_perturbed_band_readings
-#print axioms relative_sign_radius_at_log_square_cutoff
-#print axioms all_positive_below_prime_band_radius
-#print axioms negative_attained_above_prime_band_radius
 end GaloisForLFunctions.RestrictedFactorizationCalculus

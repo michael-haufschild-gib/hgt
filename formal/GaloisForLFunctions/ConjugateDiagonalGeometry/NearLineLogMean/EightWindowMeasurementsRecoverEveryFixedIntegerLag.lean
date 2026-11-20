@@ -25,7 +25,7 @@ def initialLagBlock (a : ℕ → ℂ) (P Q K : ℕ) :=
 
 private theorem excess_step (a : ℕ → ℂ) (j : ℕ) (d : ℝ) :
     excessEnergy a (j+1) d-excessEnergy a j d = row a j d - ‖a (j+1)‖^2*d := by
-  rw [excessEnergy,excessEnergy,row,sum_range_succ]
+  rw [excessEnergy,excessEnergy,row,Finset.sum_range_succ (fun i : ℕ => ‖a (i+1)‖^2) j]
   ring
 
 private theorem rectangular_row (a : ℕ → ℂ) {j K : ℕ} (hK : K≤j) {d e : ℝ}
@@ -146,9 +146,6 @@ theorem fixed_lag_readings_on_expanding_blocks (a : ℕ → ℂ) (K : ℕ) {A : 
     apply le_of_eq
     ring
 
-#print axioms fixed_lag_readings_on_expanding_blocks
 
-#print axioms rectangle_reads_initial_lags
-#print axioms eight_readings_recover_integer_lag
 end
 end GaloisForLFunctions.ConjugateDiagonalGeometry.LogWindowRetrieval

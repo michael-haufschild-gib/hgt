@@ -150,11 +150,8 @@ theorem quartet_above_verified_height_fails_every_higher_degree :
   change ((31927+(n : ℝ)+4)-2)*((31927+n+4)-3)*
       ((67+1/1000000)^2+(8999/24000-1/100000000)^2)^2 ≤
     (31927+n+4)*(31927+n+4-1)*((67+1/1000000)^2-(8999/24000-1/100000000)^2)^2 at hh
-  nlinarith only [hh, Nat.cast_nonneg (R := ℝ) n, sq_nonneg (n : ℝ)]
+  nlinarith only [hh, Nat.cast_nonneg (α := ℝ) n, sq_nonneg (n : ℝ)]
 
-#print axioms quartet_above_verified_height_fails_every_higher_degree
-#print axioms jensenNonrealCount_eq_zero_of_quartet_sector
-#print axioms jensenNonrealCount_eq_zero_through_31930
 
 end
 

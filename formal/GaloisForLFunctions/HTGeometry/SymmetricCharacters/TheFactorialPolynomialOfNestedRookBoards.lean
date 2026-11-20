@@ -168,10 +168,6 @@ theorem rook_count_from_product_samples {α : Type*} (U : ℕ → Finset α) (hU
   rw [fwdDiff_iter_eq_sum_shift] at h
   simpa only [nsmul_eq_mul,mul_one,zero_add,zsmul_eq_mul] using h
 
-#print axioms rook_product_difference
-#print axioms rook_count_from_product_samples
 
-#print axioms factorial_rook_expansion
-#print axioms factorial_rook_factorization
 end
 end GaloisForLFunctions.StaircasePacking

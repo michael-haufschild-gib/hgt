@@ -176,12 +176,5 @@ theorem sharp_fixed_displacement_factor {D : ℝ} (hD : 0≤D) (C : ℝ) :
     exact (one_add_pairU_transport z w Z W).trans (mul_le_mul_of_nonneg_right
       ((Real.exp_le_exp.mpr travel).trans h) (by linarith only [pairU_nonneg Z W]))
 
-#print axioms pairU_radial_transport
-#print axioms radial_transport_attained
-#print axioms sharp_fixed_displacement_factor
 
-#print axioms one_add_pairU_transport
-#print axioms log_pairU_distortion
-#print axioms log_bergK_distortion
-#print axioms automorphic_power_transport
 end GaloisForLFunctions.CompactHyperbolicSurfaces

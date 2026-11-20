@@ -26,6 +26,7 @@ private theorem norm_depth (σ : ℝ) (q : XiZeroCopy) :
 private theorem depth_bdd (σ : ℝ) : BddAbove (range fun q => ‖depthCoeff σ q‖) := by
   refine ⟨max (1-σ) 0,?_⟩
   rintro _ ⟨q,rfl⟩
+  change ‖depthCoeff σ q‖ ≤ max (1-σ) 0
   rw [norm_depth]
   exact max_le_max_right 0 (sub_le_sub_right (xi_divisor_support_re_mem_open_unit q.1).2.le σ)
 
@@ -76,6 +77,7 @@ private theorem depth_tail {σ : ℝ} (hσ : 1/2 ≤ σ) :
       intro q hq
       change b+σ < (q.1:ℂ).re at hq
       by_contra h
+      change q ∉ F at h
       have H := le_ampSup (bddAbove_tailAmp (depth_bdd σ) F) q
       rw [tailAmp,if_neg h,norm_depth] at H
       change max ((q.1:ℂ).re-σ) 0 ≤ b at H
@@ -151,8 +153,5 @@ theorem optimal_compact_zero_depth_approximation :
     exact depth_difference half_le_zetaAsymptoticAbscissa
   · exact rectEssentialNorm_le _ _ hc
 
-#print axioms zero_depth_operator_norms
-#print axioms abscissa_laws_of_zero_depth_operator
-#print axioms optimal_compact_zero_depth_approximation
 
 end GaloisForLFunctions.ZeroConfigurationGeometry

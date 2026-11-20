@@ -69,7 +69,9 @@ theorem positive_density_of_forced_long_moves {γ : ℝ} (hγ : γ<1) (b : Bool)
   refine ⟨2*c,by positivity,?_⟩
   filter_upwards [twice.eventually hcnt,grow,eventually_ge_atTop (1:ℕ)] with X hX hg hx
   have hx0 : (0:ℝ)<X := Nat.cast_pos.mpr hx
-  have hx1 : (1:ℝ) ≤ 2*(X:ℝ) := by have hh : (1:ℝ) ≤ X := by exact_mod_cast hx; linarith
+  have hx1 : (1:ℝ) ≤ 2*(X:ℝ) := by
+    have hh : (1:ℝ) ≤ X := by exact_mod_cast hx
+    linarith only [hh]
   let y := (2*(X:ℝ))^δ
   have hy : 1 ≤ y := Real.one_le_rpow hx1 hd.le
   have hsmall : (X:ℝ)^γ*y^2 < X := by
@@ -92,7 +94,7 @@ theorem positive_density_of_forced_long_moves {γ : ℝ} (hγ : γ<1) (b : Bool)
     have price := smooth_edge_cost hy hs edge
     by_contra! hh
     have imp := mul_le_mul_of_nonneg_right hh (sq_nonneg y)
-    linarith only [price,imp,hsmall,Nat.cast_lt.mpr hlo]
+    linarith only [price,imp,hsmall,(Nat.cast_lt (α := ℝ)).mpr hlo]
   calc (2*c)*(X:ℝ) = c*(2*X) := by ring
        _ ≤ _ := hX
        _ ≤ _ := Nat.cast_le.mpr (card_le_card sub)
@@ -141,7 +143,8 @@ private theorem traffic_interior {F : ℕ → ℕ} (law : ∀ n,Squarefree n →
     exact (card_le_card sub).trans ((card_union_le ..).trans
       ((Nat.add_le_add_left card_image_le _).trans_eq (two_mul _).symm))
   calc S.card*H = ∑ n ∈ S,(cut n).card := by
-         rw [sum_congr rfl (fun n hn => (spec hn).1),sum_const,nsmul_eq_mul]
+         rw [sum_congr rfl (fun n hn => (spec hn).1)]
+         simp
        _ = ∑ n ∈ S,∑ x ∈ V,if x ∈ cut n then 1 else 0 := by
          apply sum_congr rfl
          intro n hn
@@ -177,7 +180,10 @@ theorem unsigned_traffic_on_every_octave {γ : ℝ} (hγ : 0<γ) (hsub : γ<1) :
   have hx0 : (0:ℝ)<X := Nat.cast_pos.mpr hx
   have grow := Real.rpow_pos_of_pos hx0 γ
   have hup : (H:ℝ) ≤ (X:ℝ)^γ := Nat.floor_le grow.le
-  have hdown : (X:ℝ)^γ/2 ≤ (H:ℝ) := by linarith only [Nat.lt_floor_add_one ((X:ℝ)^γ),hlarge]
+  change 2 ≤ (X:ℝ)^γ at hlarge
+  have hdown : (X:ℝ)^γ/2 ≤ (H:ℝ) := by
+    dsimp only [H]
+    linarith only [Nat.lt_floor_add_one ((X:ℝ)^γ),hlarge]
   have hH : H ≤ X := Nat.cast_le.mp (hup.trans (by
     simpa only [Real.rpow_one] using Real.rpow_le_rpow_of_exponent_le (by exact_mod_cast hx : (1:ℝ) ≤ X) hsub.le))
   have hbudget : 4*(H:ℝ) ≤ c*X := by

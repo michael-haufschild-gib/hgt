@@ -164,10 +164,6 @@ theorem tiltCapacity_lower (u v : ℝ) (h : 17/2 ≤ Real.exp (u-v)) :
   rw [tiltCapacity_eq_xi_susceptibility, div_eq_mul_one_div]
   exact mul_le_mul_of_nonneg_left (xi_susceptibility_lower h) (sq_nonneg _)
 
-#print axioms xi_susceptibility_lower
-#print axioms xi_third_cumulant_upper
-#print axioms xi_third_cumulant_negative
-#print axioms tiltCapacity_lower
 
 end
 

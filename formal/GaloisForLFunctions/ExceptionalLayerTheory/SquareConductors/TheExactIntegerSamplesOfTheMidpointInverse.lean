@@ -115,9 +115,4 @@ theorem theta_from_binomial_midpoint_samples (b m : ℕ) :
     funext prime_midpoint_price_eq
   rw [he,←ternary_binomial_green,ternary_row_recovers_price]
 
-#print axioms ternary_binomial_green
-#print axioms boundary_sample_indispensable
-#print axioms forcing_sample_indispensable
-#print axioms theta_from_binomial_midpoint_samples
-
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

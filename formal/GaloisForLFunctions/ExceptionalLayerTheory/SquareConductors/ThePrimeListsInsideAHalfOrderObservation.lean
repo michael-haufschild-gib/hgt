@@ -69,7 +69,9 @@ theorem halfOrderMidpointRead_price (n : ℕ) : halfOrderMidpointRead n=primeMid
 theorem halfOrderMidpointRead_eq (n : ℕ) : halfOrderMidpointRead n =
     signedPrimeLog (primeWindow (2*n) (3*n)) (primeWindow (3*n) (4*n)) := by
   rw [halfOrderMidpointRead_price]
-  simp only [primeMidpointPrice,primeWindow,signedPrimeLog,sum_subtype_eq_sum_filter]
+  have h (a b : ℕ) := sum_subtype_eq_sum_filter (s := Ioc a b) (p := Nat.Prime)
+    (fun k : ℕ => Real.log (k : ℝ))
+  exact congrArg₂ (· - ·) (h (2*n) (3*n)).symm (h (3*n) (4*n)).symm
 
 /-- Exact decoding of the two adjacent ordinary-prime intervals. -/
 theorem fractional_read_recovers_prime_lists (n : ℕ) {L U : Finset Nat.Primes} (hd : Disjoint L U) :
@@ -102,7 +104,7 @@ theorem separated_half_order_readings {n m : ℕ} (hn : 0 < n) (hm : 2*n ≤ m) 
   constructor
   · intro hz
     have e : signedPrimeLog ∅ ∅=halfOrderMidpointRead n := by simp [signedPrimeLog,hz]
-    obtain ⟨hL,hU⟩ := (fractional_read_recovers_prime_lists n disjoint_empty_left).mp e
+    obtain ⟨hL,hU⟩ := (fractional_read_recovers_prime_lists n (disjoint_empty_left ∅)).mp e
     rw [←hL,←hU] at hp
     simpa only [notMem_empty,or_self] using hp
   · intro he
@@ -173,10 +175,6 @@ theorem prime_list_separation {L U L' U' : Finset Nat.Primes} (hd : Disjoint L U
   rw [he]
   exact integer_log_gap hA hB hn
 
-#print axioms fractional_read_recovers_prime_lists
-#print axioms separated_half_order_readings
-#print axioms prime_list_separation
-
 /-- A single progression gives length-L intervals with no prime crossed
 by any of the first d dilations. -/
 def primePlateauStride (d L : ℕ) := (d*(2+L)).factorial
@@ -223,7 +221,9 @@ theorem halfOrderMidpointRead_eq_of_frozen_thresholds {n j : ℕ}
   have same (a b : ℕ) (ha : 0 < a) (ha' : a ≤ 4) (hb : 0 < b) (hb' : b ≤ 4) :
       primeWindow (a*(n+j)) (b*(n+j))=primeWindow (a*n) (b*n) := by
     ext p
-    simp only [primeWindow,mem_subtype,mem_Ioc,←Nat.not_le]
+    have hp (u v : ℕ) : p ∈ primeWindow u v ↔ u < (p:ℕ) ∧ (p:ℕ) ≤ v :=
+      mem_subtype.trans mem_Ioc
+    simp only [hp,←Nat.not_le]
     exact and_congr (not_congr (h a ha ha' p)) (h b hb hb' p)
   simp only [halfOrderMidpointRead_eq,same 2 3 (by decide) (by decide) (by decide) (by decide),
     same 3 4 (by decide) (by decide) (by decide) (by decide)]
@@ -240,8 +240,5 @@ theorem half_order_prime_plateau (L q : ℕ) :
   intro j hj
   exact halfOrderMidpointRead_eq_of_frozen_thresholds
     (fun k hk hd p => simultaneous_prime_plateau 4 L q hj hk hd p)
-
-#print axioms simultaneous_prime_plateau
-#print axioms half_order_prime_plateau
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

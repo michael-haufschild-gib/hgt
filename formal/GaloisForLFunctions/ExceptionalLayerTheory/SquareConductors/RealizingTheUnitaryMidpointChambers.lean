@@ -165,9 +165,6 @@ theorem unitary_central_bound_attained {P : Finset ℕ} (hP : ∀ p ∈ P, Nat.P
   rw [hs,hr,if_neg (by omega),if_neg (by simp),show (2*r+1)/2 = r by omega,hD] at hf
   simpa using hf
 
-#print axioms smallUnitarySubsets_pow
-#print axioms unitary_chamber_cofinal
-#print axioms unitary_central_bound_attained
 
 end
 

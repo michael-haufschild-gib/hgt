@@ -85,9 +85,16 @@ private theorem prefix_loss (n a b : ℕ) (hab : a≤b) :
     linarith only [sum_Ioc_consecutive (purePowerLog c) (Nat.zero_le a) hab]
   rw [interval,interval,←sum_sub_distrib,removedProperMass,removedProperPowers,sum_filter]
   refine sum_congr rfl fun k _ => ?_
-  by_cases hc : n.Coprime k
-  · simp only [purePowerLog,Nat.coprime_one_left,hc,true_and,not_true_eq_false,false_and,if_false,sub_self]
-  · simp only [purePowerLog,Nat.coprime_one_left,hc,true_and,not_false_eq_true,false_and,if_false,sub_zero]
+  unfold purePowerLog
+  by_cases h : ¬k.Prime ∧ k.primeFactors.card=1
+  · rw [if_pos (And.intro (Nat.coprime_one_left k) h)]
+    by_cases hc : n.Coprime k
+    · have keep : ¬(¬n.Coprime k ∧ ¬k.Prime ∧ k.primeFactors.card=1) := fun hk => hk.1 hc
+      rw [if_pos (And.intro hc h),if_neg keep,sub_self]
+    · have hdrop : ¬(n.Coprime k ∧ ¬k.Prime ∧ k.primeFactors.card=1) := fun hk => hc hk.1
+      rw [if_neg hdrop,if_pos (And.intro hc h),sub_zero]
+  · have off (P : Prop) : ¬(P ∧ ¬k.Prime ∧ k.primeFactors.card=1) := fun hk => h hk.2
+    rw [if_neg (off (Nat.Coprime 1 k)),if_neg (off (n.Coprime k)),if_neg (off (¬n.Coprime k)),sub_self]
 
 /-- The exact signed discrepancy from dropping coprimality at the three
 cuts, with the closed middle endpoint assigned to the lower interval. -/
@@ -388,16 +395,5 @@ theorem fractional_coprimality_defect_at_even_centers {n : ℕ} (hn : 0<n) (hd :
   intro hz
   rw [(fractional_null_iff_no_removed_power hn hb).mp hz] at he
   exact notMem_empty _ he
-
-#print axioms distinct_removed_bases_in_an_octave
-#print axioms removed_power_mass_bound
-#print axioms composite_coprimality_error_by_prime_divisors
-#print axioms logarithmic_composite_coprimality_error
-#print axioms unrestricted_composite_iff_no_removed_power
-#print axioms unrestricted_composite_at_prime_powers_iff
-#print axioms exact_composite_defect_at_prime_powers
-#print axioms fractional_reading_of_removed_powers
-#print axioms fractional_null_iff_no_removed_power
-#print axioms fractional_coprimality_defect_at_even_centers
 
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

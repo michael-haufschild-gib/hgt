@@ -168,7 +168,4 @@ theorem phase_from_wide_window_slopes (a b : ℕ → ℂ) :
     simp only [heq N,sub_self,zero_div]
     exact tendsto_const_nhds
 
-#print axioms wide_window_affine
-#print axioms wide_window_slope
-#print axioms phase_from_wide_window_slopes
 end GaloisForLFunctions.ConjugateDiagonalGeometry.LogWindowRetrieval

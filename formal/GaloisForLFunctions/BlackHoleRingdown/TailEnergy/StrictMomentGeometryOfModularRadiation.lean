@@ -117,10 +117,6 @@ theorem radiationReading_no_recurrence (h : CompactPulse) (hne : ∃ t : ℝ, h 
   ⟨shifts_independent (radiationReading_sample_hankel_posDef h hne a b n hq) v,
    shifts_independent (radiationReading_order_hankel_posDef h hne a b n hq) v⟩
 
-#print axioms exists_late_positive_release
-#print axioms radiationReading_sample_hankel_posDef
-#print axioms radiationReading_order_hankel_posDef
-#print axioms radiationReading_no_recurrence
 
 end
 

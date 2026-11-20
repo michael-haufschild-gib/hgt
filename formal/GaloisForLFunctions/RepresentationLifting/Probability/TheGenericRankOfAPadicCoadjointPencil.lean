@@ -133,9 +133,5 @@ theorem ae_affine_padic_minimal_stabilizer
   change Module.finrank _ (LinearMap.ker (padicFieldMatrix p P x).mulVecLin) ≤ _
   omega
 
-#print axioms polynomial_maximal_minor_certificate
-#print axioms full_padic_affine_rank_stratum
-#print axioms padic_maximal_minor_certificate
-#print axioms ae_affine_padic_minimal_stabilizer
 end
 end GaloisForLFunctions.RepresentationLifting

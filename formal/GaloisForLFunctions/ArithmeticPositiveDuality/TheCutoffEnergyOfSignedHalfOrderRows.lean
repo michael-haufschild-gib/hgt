@@ -34,7 +34,7 @@ private theorem measurable_cutoff (ε : ℝ) (i : ℕ) : Measurable (cutoffHalfA
 private theorem cutoff_dominated (ε : ℝ) (i j : ℕ) (t : ℝ) :
     ‖cutoffHalfAtom ε i t*cutoffHalfAtom ε j t‖ ≤ ‖halfAtom i t*halfAtom j t‖ := by
   by_cases hi : t∈Set.Ioc 0 ((i:ℝ)-ε) <;> by_cases hj : t∈Set.Ioc 0 ((j:ℝ)-ε) <;>
-    simp [cutoffHalfAtom,hi,hj]
+    simp [cutoffHalfAtom,hi,hj] <;> exact mul_nonneg (abs_nonneg _) (abs_nonneg _)
 
 private theorem cutoff_eventually (i : ℕ) (t : ℝ) :
     ∀ᶠ ε in 𝓝[>] (0:ℝ), cutoffHalfAtom ε i t=halfAtom i t := by
@@ -62,7 +62,7 @@ private theorem cutoff_cross_limit {i j : ℕ} (h : i≠j) :
     filter_upwards [cutoff_eventually i t,cutoff_eventually j t] with ε hi hj
     rw [hi,hj]
 
-private theorem cutoff_diagonal {i : ℕ} (hi : 0<i) {ε : ℝ} (he : 0<ε) (hε : ε≤i) :
+private theorem cutoff_diagonal {i : ℕ} (hi : 0 < i) {ε : ℝ} (he : 0<ε) (hε : ε ≤ i) :
     (∫ t, cutoffHalfAtom ε i t*cutoffHalfAtom ε i t)=Real.log i-Real.log ε := by
   have hid (t : ℝ) : cutoffHalfAtom ε i t*cutoffHalfAtom ε i t =
       (Set.Ioc 0 ((i:ℝ)-ε)).indicator (fun t => halfAtom i t^2) t := by
@@ -120,9 +120,10 @@ private theorem regularized_pair_limit (i j : ℕ) :
     · filter_upwards [self_mem_nhdsWithin,(gt_mem_nhds (zero_lt_one' ℝ)).filter_mono nhdsWithin_le_nhds]
         with ε (hpos : 0<ε) hlt
       rw [cutoff_diagonal hi hpos (hlt.le.trans (Nat.one_le_cast.mpr hi))]
-      simp only [diagonalSubtraction,if_pos rfl,if_neg hi.ne',one_div,Real.log_inv,sub_neg_eq_add]
+      simp only [diagonalSubtraction,ite_self,if_true,if_pos rfl,if_neg hi.ne',one_div,Real.log_inv,
+        sub_neg_eq_add]
       ring
-  · simpa only [diagonalSubtraction,if_neg h,sub_zero] using cutoff_cross_limit h.symm
+  · simpa only [diagonalSubtraction,if_neg h,sub_zero] using cutoff_cross_limit (Ne.symm h)
 
 /-- The common cutoff tends to zero through arbitrary positive reals.
 Oppositely signed shared sites can cancel in the total logarithmic residue. -/
@@ -144,9 +145,6 @@ theorem cutoff_half_pairing_finite_part (S : Finset ℕ) (w v : ℕ → ℝ) :
     by_cases hj : j=i <;> by_cases h0 : i=0 <;> simp [diagonalSubtraction,hj,h0,mul_comm]
   simp_rw [he]
   simp [hi]
-
-#print axioms integral_cutoff_pairing
-#print axioms cutoff_half_pairing_finite_part
 
 private theorem cutoff_log_atTop : Tendsto (fun ε : ℝ => Real.log (1/ε)) (𝓝[>] 0) atTop := by
   simpa only [one_div,Real.log_inv,Function.comp_def] using
@@ -174,8 +172,5 @@ theorem cutoff_half_pairing_converges_iff (S : Finset ℕ) (w v : ℕ → ℝ) :
     exact tendsto_nhds_unique (cutoff_half_pairing_residue S w v) (hc.div_atTop cutoff_log_atTop)
   · intro h
     exact ⟨_,by simpa only [h,mul_zero,sub_zero] using cutoff_half_pairing_finite_part S w v⟩
-
-#print axioms cutoff_half_pairing_residue
-#print axioms cutoff_half_pairing_converges_iff
 
 end GaloisForLFunctions.ArithmeticPositiveDuality.FractionalDiscrepancy

@@ -168,12 +168,6 @@ theorem odd_band_opposite_count (S : Finset ℕ) (a b : ℕ → ℝ) {U : ℕ} (
       rw [show A (H+(U+q))= -A (H+q) from shift q a,show B (H+(U+q))= -B (H+q) from shift q b,pair]
     _ = _ := sum_boole (R:=ℕ) F _
 
-#print axioms odd_band_quotient_phase
-#print axioms odd_band_opposite_count
 
-#print axioms quotientGramMean_eq_franel
-#print axioms quotientGram_jordan_diagonal
-#print axioms quotientReading_square_period
-#print axioms centeredPrimeReading_jordan_square
 end
 end GaloisForLFunctions.ExclusionOfTheCriticalState

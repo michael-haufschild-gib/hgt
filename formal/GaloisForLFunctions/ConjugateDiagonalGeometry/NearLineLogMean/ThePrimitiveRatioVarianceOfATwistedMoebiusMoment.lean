@@ -62,7 +62,7 @@ private def entry (x : GaugeTorus) (t : ℝ) (m n : ℕ) :=
 private theorem diagonal_entry (x : GaugeTorus) (t : ℝ) (n : ℕ) :
     entry x t n n = ((mobiusRealCoefficient n^2/n:ℝ):ℂ) := by
   simp only [entry,ratioFrequency,sub_self,timePhase,mul_zero,Complex.ofReal_zero,zero_mul,Complex.exp_zero,
-    charge,twist_mul_conj_self,mul_one,one_mul]
+    charge,twist_mul_conj_self,mul_one]
   rw [←sq,coeff,div_pow,Real.sq_sqrt (Nat.cast_nonneg _)]
 
 private theorem reduced_entries (x : GaugeTorus) (t : ℝ) (N : ℕ) :
@@ -101,7 +101,10 @@ private theorem power_spectrum (x : GaugeTorus) (N : ℕ) (t : ℝ) :
   intro m hm
   have hrow : (∑ n ∈ s, a m * conj (a n) * charge x m n) = ∑ n ∈ s, entry x t m n :=
     sum_congr rfl fun n _ => by rw [vertical_product]; unfold entry; ring
-  rw [hrow,←diagonal_entry x t m,add_comm,sum_erase_add _ _ hm]
+  rw [hrow]
+  change ∑ n ∈ s, entry x t m n =
+    ((mobiusRealCoefficient m^2/m : ℝ) : ℂ) + ∑ n ∈ s.erase m, entry x t m n
+  rw [←diagonal_entry x t m,add_comm,sum_erase_add _ _ hm]
 
 /-- The sharp critical Möbius section measured against an arbitrary finite
 height distribution, with its Haar mean removed. -/
@@ -122,7 +125,7 @@ theorem centered_moment_eq_pairForm (ν : Measure ℝ) [IsFiniteMeasure ν] (N :
   have hi (q : ℕ × ℕ) := (integrable_timePhase ν (ratioFrequency q.1 q.2)).const_mul (c q)
   rw [centeredMoment,Complex.ofReal_sub,moment,←integral_complex_ofReal]
   simp_rw [he]
-  rw [integral_add integrable_const (integrable_finsetSum _ fun q _ => hi q),integral_const,
+  rw [integral_add (integrable_const _) (integrable_finsetSum _ fun q _ => hi q),integral_const,
     integral_finsetSum _ (fun q _ => hi q)]
   simp only [pairForm,integral_const_mul,timeTransform,Complex.real_smul,Complex.ofReal_mul,add_sub_cancel_left]
   exact sum_congr rfl fun q _ => by dsimp only [c,charge]; ring

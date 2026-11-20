@@ -153,12 +153,6 @@ theorem sparse_matching_overlap_iff_rh {ε : ℝ} (hε : 0<ε) :
     (le_antisymm h half_le_zetaZeroAbscissa),fun h =>
       (zetaZeroAbscissa_eq_half_iff_riemannHypothesis.mpr h).le⟩
 
-#print axioms matchingOverlap_halfplane
-#print axioms sparse_matching_overlap_iff_rh
 
-#print axioms signed_crossing_mixed_overlap
-#print axioms mixed_cut_gram
-#print axioms matchingOverlap_eq_mertens
-#print axioms matchingOverlap_exponent
 end
 end GaloisForLFunctions.RestrictedFactorizationCalculus

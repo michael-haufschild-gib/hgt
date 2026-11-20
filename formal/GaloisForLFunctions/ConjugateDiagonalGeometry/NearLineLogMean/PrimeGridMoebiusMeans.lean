@@ -19,7 +19,7 @@ noncomputable section
 /-- Symmetric binomial height average, with weights one quarter, one half, one quarter. -/
 def binomialHeightMean (h : ℝ) : Module.End ℝ (ℝ → ℝ) where
   toFun f t := (f (t-h) + 2*f t + f (t+h))/4
-  map_add' f g := by funext t; change (_ + _ + _)/4 = _/4 + _/4; dsimp; ring
+  map_add' f g := by funext t; simp only [Pi.add_apply]; ring
   map_smul' c f := by funext t; dsimp; ring
 
 private def wave (L : ℝ) (t : ℝ) := Real.cos (L*t)
@@ -54,12 +54,12 @@ private theorem mean_power_const (r : ℕ) (h c : ℝ) :
 
 /-- Exact pointwise spectrum of every finite binomial average. -/
 theorem critical_power_binomial (N r : ℕ) (t h : ℝ) :
-    (binomialHeightMean h ^ r) (fun x => ‖moebiusPoly N (linePoint x)‖^2) t =
+    (binomialHeightMean h ^ r) (fun x => ‖moebiusPoly N (MultiscaleMollifiedZetaField.linePoint x)‖^2) t =
       (∑ n ∈ Icc 1 N, mobiusRealCoefficient n^2/n) +
         ∑ q ∈ primitiveRatioPairs N, atom N q.1 q.2 * heightMultiplier (Real.log q.1-Real.log q.2) h ^ r *
           Real.cos ((Real.log q.1-Real.log q.2)*t) := by
   let D := ∑ n ∈ Icc 1 N, mobiusRealCoefficient n^2/n
-  have hf : (fun x => ‖moebiusPoly N (linePoint x)‖^2) = (fun _ : ℝ => D) +
+  have hf : (fun x => ‖moebiusPoly N (MultiscaleMollifiedZetaField.linePoint x)‖^2) = (fun _ : ℝ => D) +
       ∑ q ∈ primitiveRatioPairs N, atom N q.1 q.2 • wave (Real.log q.1-Real.log q.2) := by
     funext x
     simpa only [D, wave, Pi.add_apply, Finset.sum_apply, Pi.smul_apply, smul_eq_mul] using
@@ -145,7 +145,7 @@ private theorem resonance {p N a b : ℕ} (hp : p.Prime) (hq : (a,b) ∈ primiti
 off-diagonal contribution except the prime and its reciprocal disappears. -/
 theorem prime_grid_binomial_spectrum (N : ℕ) (p : Nat.Primes) (t : ℝ) :
     Tendsto (fun r : ℕ => (binomialHeightMean (2*Real.pi/Real.log p.val) ^ r)
-      (fun x => ‖moebiusPoly N (linePoint x)‖^2) t) atTop
+      (fun x => ‖moebiusPoly N (MultiscaleMollifiedZetaField.linePoint x)‖^2) t) atTop
       (𝓝 ((∑ n ∈ Icc 1 N, mobiusRealCoefficient n^2/n) +
         ∑ q ∈ (primitiveRatioPairs N).filter (fun q => q = (p.val,1) ∨ q = (1,p.val)),
           atom N q.1 q.2 * Real.cos ((Real.log q.1-Real.log q.2)*t))) := by
@@ -160,8 +160,6 @@ theorem prime_grid_binomial_spectrum (N : ℕ) (p : Nat.Primes) (t : ℝ) :
         (atom N q.1 q.2)).mul_const (Real.cos ((Real.log q.1-Real.log q.2)*t))
     simpa only [resonance p.property hq hn, mul_ite, ite_mul, mul_one, mul_zero, zero_mul] using H
 
-#print axioms critical_power_binomial
-#print axioms prime_grid_binomial_spectrum
 
 end
 

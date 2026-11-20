@@ -54,9 +54,13 @@ private theorem critical_entry (d : ℕ) (i j : Fin d) :
   have H (ε : ℝ) (hε : 0 < ε) : F ε = limitingJetGram d ε i j := by
     have hG := tendsto_pi_nhds.mp (tendsto_pi_nhds.mp (steinhaus_jet_gram_limit d hε) i) j
     exact tendsto_nhds_unique (hN ε hε) hG
-  have hden : (1/2:ℂ)+conj (1/2:ℂ)=1 := by norm_num
+  have hden : (1/2:ℂ)+conj (1/2:ℂ)=1 := by
+    rw [map_div₀,map_one,map_ofNat]
+    norm_num
   rw [hden,one_pow,div_one] at hF
-  exact hF.congr' (self_mem_nhdsWithin.mono fun ε hε => congrArg _ (H ε hε))
+  apply hF.congr'
+  filter_upwards [self_mem_nhdsWithin (a:=(0:ℝ)) (s:=Set.Ioi (0:ℝ))] with ε hε
+  rw [H ε hε]
 
 private theorem signed_factorial_det (d : ℕ) :
     (signedFactorialGram d).det = ∏ i : Fin d, (i.val.factorial:ℂ)^2 := by
@@ -117,7 +121,5 @@ theorem critical_jet_gram_determinant (d : ℕ) :
   change Tendsto (fun ε => (T ε).det) _ (𝓝 (signedFactorialGram d).det) at h
   simpa only [T,scaled_jet_det,signed_factorial_det] using h
 
-#print axioms steinhaus_jet_gram_limit
-#print axioms critical_jet_gram_determinant
 
 end GaloisForLFunctions.MultiscaleMollifiedZetaField.RandomDirichletJets

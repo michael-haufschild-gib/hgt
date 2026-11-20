@@ -81,9 +81,6 @@ theorem receiver_higher_derivative_signs (h : CompactPulse) (hne : ∃ t : ℝ, 
     rw [show -(tailEnergy h)=(-1:ℝ) • tailEnergy h by simp,fwdDiff_iter_const_smul] at hp
     exact hw.not_ge (by simpa only [Pi.smul_apply,smul_eq_mul,neg_one_mul,neg_nonneg] using hp)
 
-#print axioms receiver_lattice_higher_difference_signs
-#print axioms receiver_higher_derivative_signs
-
 /-- From third order onward no single threshold separates the derivative
 signs in either orientation. This holds for every phase of the input pulse. -/
 theorem receiver_derivative_straddles_every_affine_cut (h : CompactPulse)
@@ -111,8 +108,6 @@ theorem receiver_derivative_straddles_every_affine_cut (h : CompactPulse)
       (by simpa only [Pi.neg_apply,abs_neg] using hb) hneg
     exact hn fun x => neg_injective (hc x)
 
-#print axioms receiver_derivative_straddles_every_affine_cut
-
 /-- The m-th time derivative of the receiver tail has at least m ordered
 strict readings of alternating sign, beginning with a negative reading.
 This supplies m−1 disjoint intervals containing distinct zeros. -/
@@ -128,7 +123,5 @@ theorem ordered_receiver_tail_derivatives (h : CompactPulse) (hh : ∃ x : ℝ, 
     hpos (neg_lt_neg hx) hb n (contDiff_infty.mp (smooth_receiver_tail h).neg (n+1))
   refine ⟨t,ht,fun j hj => ?_⟩
   simpa only [pow_succ,iteratedDeriv_neg,mul_neg_one,neg_mul,mul_neg,mul_one] using hs j hj
-
-#print axioms ordered_receiver_tail_derivatives
 
 end GaloisForLFunctions.BlackHoleRingdown

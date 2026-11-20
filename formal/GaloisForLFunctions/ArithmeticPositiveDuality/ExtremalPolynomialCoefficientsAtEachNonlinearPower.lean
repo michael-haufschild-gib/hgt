@@ -228,8 +228,6 @@ theorem least_coefficient_degree_at_each_power {m : ℕ} (hm : 0 < m) {p : ℝ} 
     exact (distinct_roots_of_polyharmonic_coefficient P hP hm hp hu hb hpos hne he).trans
       ((Multiset.toFinset_card_le _).trans P.card_roots')
 
-#print axioms least_coefficient_degree_at_each_power
-
 /-- Degrees realized with a smooth positive multiplier bounded by one.
 Both the solution and the multiplier are allowed to vary. -/
 def weightedPolyharmonicDegrees (m : ℕ) (p : ℝ) : Set ℕ :=
@@ -310,7 +308,5 @@ theorem least_weighted_coefficient_degree {m : ℕ} (hm : 0 < m) {p : ℝ} (hp :
     exact ⟨P,v,u,hP,hd,hvC,hv,hu,hb,fun x => (hu₀ x).le,hn,he⟩
   · rintro d ⟨P,v,u,hP,rfl,_,hv,hu,hb,hpos,hne,he⟩
     exact lower P hP v u (fun x => (hv x).1) hu hb hpos hne he
-
-#print axioms least_weighted_coefficient_degree
 
 end GaloisForLFunctions.ArithmeticPositiveDuality

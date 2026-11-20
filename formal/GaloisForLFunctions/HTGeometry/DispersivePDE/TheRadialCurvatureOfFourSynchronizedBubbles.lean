@@ -113,7 +113,4 @@ theorem sharp_radial_curvature {μ x : Fin 4 → ℝ} {m b : ℝ} (hb : 0<b) (h 
     · intro hu
       rw [(spread_zero u).mpr hu,mul_zero,add_zero]
 
-#print axioms centered_energy_at_scale
-#print axioms second_difference_limit
-#print axioms sharp_radial_curvature
 end HTGeometry.CriticalQuartet

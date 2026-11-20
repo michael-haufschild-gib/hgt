@@ -335,11 +335,7 @@ theorem prime_diagonal_commutes_iff_all_weights (A U : ℕ) (f : ℕ → ℝ) :
     · simp [intervalContactMatrix,contactW,hab,hba]
   · exact fun h => h ArithmeticFunction.vonMangoldt
 
-#print axioms prime_diagonal_commutes_iff_all_weights
 
-#print axioms isolatedPrimeSites_fourfold_card
-#print axioms mem_isolatedPrimeSites_iff
-#print axioms contactTerm_delete_isolated
 
 end
 end GaloisForLFunctions.SignedArithmeticCorrespondences

@@ -110,12 +110,10 @@ theorem excess_energy_by_integer_lag (a : ℕ → ℂ) (M K : ℕ) {d : ℝ} (hd
     rw [max_eq_left hd,row_by_lag,truncate_lags a M K hb] at hrow
     unfold row at hrow
     unfold excessEnergy at hp ⊢
-    rw [sum_range_succ]
+    rw [Finset.sum_range_succ (fun j : ℕ => ‖a (j+1)‖^2) M]
     simp_rw [lagSum_succ]
     rw [sum_add_distrib]
     linarith only [hrow,hp]
 
-#print axioms log_lag_bounds
-#print axioms excess_energy_by_integer_lag
 end
 end GaloisForLFunctions.ConjugateDiagonalGeometry.LogWindowRetrieval

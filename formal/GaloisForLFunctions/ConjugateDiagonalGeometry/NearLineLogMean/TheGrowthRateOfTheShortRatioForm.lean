@@ -98,8 +98,5 @@ theorem riemannHypothesis_iff_normalized_ratio_log_rate :
     rw [Real.log_rpow ht]
     exact ((div_lt_iff₀ (Real.log_pos hT)).mp hr).le
 
-#print axioms normalizedRatioForm_tendsto_atTop
-#print axioms width_iff_normalized_ratio_growth
-#print axioms riemannHypothesis_iff_normalized_ratio_log_rate
 end
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean.MoebiusGram

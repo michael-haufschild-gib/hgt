@@ -27,12 +27,12 @@ private theorem one_at_radius {xs : List ℝ} {h : ℝ} (hh : 0 < h) :
   | nil => simp [curve]
   | cons x xs ih =>
     change intervals h x * curve xs h = 1 ↔ _
-    rw [List.forall_mem_cons,←hc,←ih]
+    rw [List.forall_mem_cons]
     constructor
     · intro H
-      exact ⟨Nat.eq_one_of_mul_eq_one_right H,Nat.eq_one_of_mul_eq_one_left H⟩
+      exact ⟨(hc x).mp (Nat.eq_one_of_mul_eq_one_right H),ih.mp (Nat.eq_one_of_mul_eq_one_left H)⟩
     · rintro ⟨ha,hb⟩
-      rw [ha,hb,one_mul]
+      rw [(hc x).mpr ha,ih.mpr hb,one_mul]
 
 private theorem head_bound {x b a : ℝ} {xs ys : List ℝ} (ha : 0 ≤ a) (hb : a ≤ b)
     (hy : ∀ d ∈ ys, d ≤ b)
@@ -136,8 +136,10 @@ theorem zero_covering_curves_iff (S T : Finset ℂ) :
   · intro H h hh
     rw [zero_sample_codebook_size S hh,zero_sample_codebook_size T hh]
     congr 1
-    rw [← sample_curve S (a:=0) hh.le hh,← sample_curve T (a:=0) hh.le hh]
-    simp only [descending,H]
+    have ht : 0 < (h:ℝ) := hh
+    calc zeroSampleCodeCount S h = curve (descending S 0) h := (sample_curve S ht.le ht).symm
+         _ = curve (descending T 0) h := by simp only [descending,H]
+         _ = zeroSampleCodeCount T h := sample_curve T ht.le ht
 
 #print axioms rational_code_curve_above_iff
 #print axioms code_counts_identify_positive_depths

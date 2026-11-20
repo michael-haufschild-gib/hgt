@@ -54,7 +54,7 @@ private theorem endpoint_jet_step (a b : ℝ) (j : ℕ) (ha : 1<a-j) (hb : 1<b-j
   have hr := (hasDerivAt_positivePartPower (b-j) (R x) (Or.inr hb)).comp x hR
   apply (((intervalJacobiFactor a b j).hasDerivAt x).mul (hl.mul hr)).congr_deriv
   simp only [endpointWeight,intervalJacobiFactor,jacobiSlope,eval_add,eval_sub,eval_mul,eval_pow,eval_one,eval_C,eval_X,
-    Function.comp_apply,Nat.cast_succ,show a-((j:ℝ)+1)=a-j-1 by ring,show b-((j:ℝ)+1)=b-j-1 by ring,L,R]
+    Pi.mul_apply,Function.comp_apply,Nat.cast_succ,show a-((j:ℝ)+1)=a-j-1 by ring,show b-((j:ℝ)+1)=b-j-1 by ring,L,R]
   rw [lower_positivePartPower (a-j) (1+x) (Or.inr ha),lower_positivePartPower (b-j) (1-x) (Or.inr hb)]
   ring
 
@@ -186,7 +186,7 @@ theorem sublinear_degree_with_endpoint_factor {m : ℕ} (hm : 0 < m) {p : ℝ} (
   refine ⟨S*(X+1)^j,endpointWeight a b,hprod,?_,?_,
     smooth_endpoint_weight ha hb,endpoint_nonneg a b,endpoint_one a b,fun _ => endpoint_support (hk.trans ha) (hk.trans hb),?_⟩
   · rw [natDegree_mul hS (pow_ne_zero _ hX₀),natDegree_pow,hX,Nat.mul_one]
-    exact congrArg (·+j) ((natDegree_C_mul_of_isUnit hs.isUnit).trans hd)
+    exact congrArg (·+j) ((natDegree_C_mul_of_isUnit hs.isUnit Q).trans hd)
   · rw [rootMultiplicity_mul hprod,rootMultiplicity_eq_zero hroot,hlinear,rootMultiplicity_X_sub_C_pow,zero_add]
   · intro x
     have hleft : a-k=a*p+j := by
@@ -197,9 +197,10 @@ theorem sublinear_degree_with_endpoint_factor {m : ℕ} (hm : 0 < m) {p : ℝ} (
       push_cast
       linarith only [hh]
     rw [endpoint_jet ha hb (le_refl k)]
+    have hn (v y : ℝ) : 0 ≤ positivePartPower v y := Real.rpow_nonneg (le_max_right _ _) v
     simp only [endpointWeight,S,eval_mul,eval_C,eval_pow,eval_add,eval_X,eval_one,
       absorb_endpoint_power ha hp.1 hleft,absorb_endpoint_power hb hp.1 (j:=0) hright,pow_zero,one_mul,
-      Real.mul_rpow (Real.rpow_nonneg (le_max_right _ _) _) (Real.rpow_nonneg (le_max_right _ _) _)]
+      Real.mul_rpow (hn a (1+x)) (hn b (1-x))]
     dsimp only [Q]
     rw [add_comm x 1]
     ring
@@ -222,9 +223,5 @@ theorem sublinear_polynomial_degrees {m : ℕ} (hm : 0 < m) {p : ℝ} (hp : p∈
     · simp only [mem_Icc,not_and_or,not_le] at hx
       rw [hs x (hx.imp le_of_lt le_of_lt),abs_zero]
       exact le_max_right _ _
-
-#print axioms endpoint_polynomial_exact_degree
-#print axioms sublinear_degree_with_endpoint_factor
-#print axioms sublinear_polynomial_degrees
 
 end GaloisForLFunctions.ArithmeticPositiveDuality

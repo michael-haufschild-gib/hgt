@@ -170,8 +170,4 @@ theorem reversible_contact_signs_iff (N B : ℕ) :
     exact ⟨paritySign,fun i hi => sign_sq ((Nat.zero_le _).trans_lt (mem_Ioc.mp hi).1),
       fun _ hi _ hj => short_flip h hi hj⟩
 
-#print axioms cubicTrace_eq_matrix
-#print axioms cubic_trace_lower
-#print axioms cubic_zero_iff_short
-#print axioms reversible_contact_signs_iff
 end GaloisForLFunctions.SignedArithmeticCorrespondences.PrimeContactMoments

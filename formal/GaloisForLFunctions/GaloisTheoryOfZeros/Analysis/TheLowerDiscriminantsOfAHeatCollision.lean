@@ -195,10 +195,6 @@ theorem IsCollision.two_moment_derivative {τ z : ℂ} {m : ℕ} (hc : IsCollisi
   rw [hf,←h₀]
   simpa using (hasDerivAt_id (0:ℂ)).mul hV.differentiableAt.hasDerivAt
 
-#print axioms IsCollision.exists_momentMinor_germ
-#print axioms IsCollision.two_moment_derivative
-#print axioms hermiteMinorCoefficient_pos
-#print axioms clusterMomentMinor_zero_of_lt
 
 end
 

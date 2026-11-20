@@ -269,9 +269,4 @@ theorem reciprocal_octave_variation_iff (q : ℝ) :
   rw [Nat.sub_add_cancel hn] at b
   linarith only [b,hl,hg]
 
-#print axioms bounded_reciprocal_octave_variation
-#print axioms reciprocal_octave_variation_iff
-#print axioms reciprocal_octave_psi_identity
-#print axioms reciprocal_octave_psi_bound
-#print axioms reciprocal_octave_global_envelope
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

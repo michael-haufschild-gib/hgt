@@ -99,7 +99,7 @@ theorem density_one_with_prescribed_exchanges (T : Set ℕ) (G : ℕ → ℕ)
     filter_upwards [eventually_ge_atTop (max A L),hsmall _ hδ] with X hX hs
     have hA := (le_max_left ..).trans hX
     have hLX := (le_max_right ..).trans hX
-    have hm := unpaid_bound_after_prescriptions F G T hF.injective (imageBound hA)
+    have hm := unpaid_bound_after_prescriptions F G T hF.injective (fun n hn => imageBound (n := n) hA hn)
     have hmr := (Nat.cast_le (α := ℝ)).mpr hm
     push_cast at hmr
     have h₂ := hL (2*X) (by omega)

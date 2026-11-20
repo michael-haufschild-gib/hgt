@@ -1,6 +1,6 @@
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.TheVirialGapOfComplementaryFactors
 import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.WalshConstraintsAtTheUnitaryMidpoint
-import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.ParitySectorMomentsAtTheUnitaryMidpoint
+import GaloisForLFunctions.ExceptionalLayerTheory.SquareConductors.RankDefectsAtTheUnitaryMidpoint
 
 /-!
 # Logarithmic block-flip spectrum at the critical coupling
@@ -84,12 +84,12 @@ theorem logarithmic_block_virial_coercivity {k : ℕ} (hk : 1<k) (c : Finset ℕ
   have sub := mem_powerset.mp h
   have comp : k.primeFactors \ T⊆k.primeFactors := sdiff_subset
   have prod := product_of_sides (show 0<k by omega) sub
-  have co := (primePowerSubset_coprime_iff sub comp).mpr
-    (disjoint_left.mpr (fun _ hs ht => (mem_sdiff.mp ht).2 hs))
-  have floor := unitary_factor_virial_floor co (block_pos sub) (block_pos comp) (prod.symm ▸ hk)
+  have different : primePowerSubset k T ≠ primePowerSubset k (k.primeFactors \ T) := by
+    intro equal
+    have flip := unitary_complement_mem_small_iff hk sub
+    simp [smallUnitarySubsets,sub,Finset.sdiff_sdiff_eq_self sub,equal] at flip
+  have floor := factor_virial_integer_floor (block_pos sub) (block_pos comp) different
   rw [scaledFactorVirial,←Nat.cast_mul,prod] at floor
   exact (mul_le_mul_of_nonneg_right floor (sq_nonneg _)).trans_eq (mul_assoc ..)
 
-#print axioms logarithmic_block_eigenvalue
-#print axioms logarithmic_block_virial_coercivity
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

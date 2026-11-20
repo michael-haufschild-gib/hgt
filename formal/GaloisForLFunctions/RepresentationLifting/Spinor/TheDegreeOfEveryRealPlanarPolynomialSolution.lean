@@ -153,7 +153,4 @@ theorem real_planar_polynomial_p_laplacian_iff_affine {p : ℝ} (hp : 1<p) (hp�
     change clearedPLaplacian (p:ℂ) Q=0
     simp only [clearedPLaplacian,euclideanPolynomialLaplacian,infinityPolynomial,hh,mul_zero,sum_const_zero,add_zero]
 
-#print axioms highest_degree_of_cleared_p_laplacian
-#print axioms real_planar_polynomial_p_laplacian_iff_affine
-
 end GaloisForLFunctions.RepresentationLifting.Spinor

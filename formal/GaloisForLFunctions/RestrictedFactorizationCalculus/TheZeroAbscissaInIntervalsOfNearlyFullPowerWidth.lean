@@ -35,10 +35,12 @@ private theorem power_increment {x t s : ℝ} (xp : 0 < x) (t0 : 0 ≤ t) (tx : 
   have ratio : 1-z ≤ 2*(1-z^s) := by
     nlinarith only [root,Real.sq_sqrt z0,sq_nonneg (1-Real.sqrt z)]
   have multiply : x^s*z^s=t^s := by
-    rw [←Real.mul_rpow xp.le z0,show x*z=t by dsimp only [z];field_simp]
+    rw [←Real.mul_rpow xp.le z0,show x*z=t by
+      dsimp only [z]
+      field_simp [xp.ne']]
   calc
     _ = x^s*(1-z) := by
-      rw [Real.rpow_sub xp,Real.rpow_one];dsimp only [z];field_simp [xp.ne'] <;> ring
+      rw [Real.rpow_sub xp,Real.rpow_one];dsimp only [z];field_simp [xp.ne']
     _ ≤ x^s*(2*(1-z^s)) := mul_le_mul_of_nonneg_left ratio (Real.rpow_nonneg xp.le _)
     _ = _ := by linarith only [multiply]
 
@@ -171,8 +173,4 @@ theorem first_site_in_each_inverse_log_window (r : ℕ) {β : ℝ} (hb : 1/2 ≤
       _root_.RHTower.zetaZeroAbscissa ≤ β :=
   first_site_on_nearly_full_power_intervals hb _ (inverse_log_window_has_full_width_exponent r)
 
-#print axioms first_site_in_each_inverse_log_window
-#print axioms recover_frozen_rows_from_power_increments
-#print axioms abscissa_from_first_site_and_interval_width
-#print axioms first_site_on_nearly_full_power_intervals
 end GaloisForLFunctions.RestrictedFactorizationCalculus

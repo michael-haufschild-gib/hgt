@@ -56,8 +56,8 @@ private theorem middle_hits {Q b : ℕ} (hq : 1<Q) (hb : 0 < b) (X : ℕ) :
   · obtain ⟨a,ha⟩ := he
     obtain ⟨hga,hba⟩ := mem_filter.mp ha
     have hcA := (congruent_one hq hga).gcd_eq
-    rw [Nat.one_gcd] at hcA
-    have hcop := (Nat.Coprime.coprime_dvd_left hba (show a.Coprime Q from hcA)).symm
+    have cop : a.Coprime Q := by simpa [Nat.Coprime] using hcA
+    have hcop := (Nat.Coprime.coprime_dvd_left hba cop).symm
     have hsub : H ⊆ (Ioc X (2*X)).filter (fun n => n%(Q*b)=a%(Q*b)) := by
       intro n hn
       obtain ⟨hg,hd⟩ := mem_filter.mp hn

@@ -588,7 +588,7 @@ theorem le_card_bertrandPrimes {W : ℕ} (hW : 1 ≤ W) (S : ℕ) :
         · rw [pow_succ']; linarith
       · obtain ⟨⟨hq1, hq2⟩, hqp⟩ := mem_bertrandPrimes.mp hq'
         refine mem_bertrandPrimes.mpr ⟨⟨hq1, hq2.trans ?_⟩, hqp⟩
-        rw [pow_succ']; omega
+        exact Nat.mul_le_mul_right W (Nat.pow_le_pow_right (by norm_num) (Nat.le_succ S))
     have hcard := card_le_card hsub
     rw [card_insert_of_notMem hnot] at hcard
     omega
@@ -656,21 +656,21 @@ private lemma hammingLetter_bounds {K W S Q P_max p₁ p₂ : ℕ}
     intro h0; simp [h0] at this
   have hpow_le : 2 ^ hammingExp K W S Q ≤ K / D₀ := Nat.pow_log_le_self 2 hdiv_ne
   have hpow_gt : K / D₀ < 2 * 2 ^ hammingExp K W S Q := by
-    have h := Nat.lt_pow_succ_log_self (by norm_num) (K / D₀)
+    have h := Nat.lt_pow_succ_log_self (by norm_num : 1 < 2) (K / D₀)
     rw [pow_succ'] at h; exact h
   have hp_prod_le : p₁ * p₂ * Q ≤ D₀ := by
     calc p₁ * p₂ * Q ≤ (2 ^ S * W) * (2 ^ S * W) * Q :=
           Nat.mul_le_mul_right Q (Nat.mul_le_mul hp₁_le hp₂_le)
-      _ = 2 ^ (2 * S) * W ^ 2 * Q := by rw [pow_mul]; ring
+      _ = (2 ^ S * 2 ^ S) * W ^ 2 * Q := by ring
+      _ = 2 ^ (2 * S) * W ^ 2 * Q := by rw [← pow_add, two_mul]
   have hL_ge2 : 2 ≤ hammingLetter K W S Q p₁ p₂ := by
-    unfold hammingLetter
     have h2b : 2 ≤ 2 ^ hammingExp K W S Q := by
       calc 2 = 2 ^ 1 := (pow_one 2).symm
         _ ≤ 2 ^ hammingExp K W S Q := Nat.pow_le_pow_right (by norm_num) hb1
-    have hpQ : 1 ≤ p₁ * p₂ * Q := by nlinarith
+    have hpQ : 1 ≤ p₁ * p₂ * Q := Nat.mul_pos (Nat.mul_pos (by omega) (by omega)) hQ
     calc 2 = 2 * 1 := (mul_one 2).symm
       _ ≤ 2 ^ hammingExp K W S Q * (p₁ * p₂ * Q) := Nat.mul_le_mul h2b hpQ
-      _ = hammingLetter K W S Q p₁ p₂ := by ring
+      _ = hammingLetter K W S Q p₁ p₂ := by unfold hammingLetter; ring
   have hL_le : hammingLetter K W S Q p₁ p₂ ≤ K := by
     unfold hammingLetter
     calc 2 ^ hammingExp K W S Q * p₁ * p₂ * Q
@@ -708,8 +708,12 @@ private lemma hamming_mod_align {K W S Q p₁ p₂ B₀ r : ℕ}
   have hdvd₂ : hammingBase K W S Q p₂ ∣ hammingLetter K W S Q p₁ p₂ :=
     ⟨p₁, by unfold hammingBase hammingLetter; ring⟩
   refine ⟨?_, ?_⟩
-  · exact ((Nat.mod_modEq r _).of_dvd hdvd₁).symm.trans (Nat.mod_eq_of_lt (hsmall.trans hB₁))
-  · exact ((Nat.mod_modEq r _).of_dvd hdvd₂).symm.trans (Nat.mod_eq_of_lt (hsmall.trans hB₂))
+  · have h1 : (r % hammingLetter K W S Q p₁ p₂) % hammingBase K W S Q p₁ =
+        r % hammingBase K W S Q p₁ := (Nat.mod_modEq r _).of_dvd hdvd₁
+    rw [← h1, Nat.mod_eq_of_lt (hsmall.trans hB₁)]
+  · have h2 : (r % hammingLetter K W S Q p₁ p₂) % hammingBase K W S Q p₂ =
+        r % hammingBase K W S Q p₂ := (Nat.mod_modEq r _).of_dvd hdvd₂
+    rw [← h2, Nat.mod_eq_of_lt (hsmall.trans hB₂)]
 
 /-- Majority-good rows `p₁ ∈ C` having more than `|C| / 2` small-residue columns `p₂ ∈ C`. -/
 private def alignedRows (K W S Q B₀ r : ℕ) (C : Finset ℕ) : Finset ℕ :=
@@ -758,7 +762,7 @@ private lemma alignedRows_spec {K W S Q B₀ r M₀ q : ℕ} {P : Finset ℕ}
       have hle : 2 * (goodC p₁).card ≤ C.card := not_lt.mp (mem_filter.mp hp₁).2
       have hp := hcol_part p₁
       omega
-    calc badR.card * C.card = ∑ _p₁ ∈ badR, C.card := by rw [sum_const, nsmul_eq_mul]
+    calc badR.card * C.card = ∑ _p₁ ∈ badR, C.card := by rw [sum_const, smul_eq_mul]
       _ ≤ ∑ p₁ ∈ badR, 2 * (badC p₁).card := sum_le_sum hterm
       _ ≤ ∑ p₁ ∈ C, 2 * (badC p₁).card :=
           sum_le_sum_of_subset_of_nonneg (filter_subset _ _) fun _ _ _ => Nat.zero_le _
@@ -788,6 +792,7 @@ private lemma alignedRows_spec {K W S Q B₀ r M₀ q : ℕ} {P : Finset ℕ}
   have hsdiff_bd : 8 * M₀ * (P \ R).card ≤ P.card + 8 * M₀ - 1 := by
     have h1 : 8 * M₀ * (P \ R).card ≤ 8 * M₀ * (badR.card + 1) :=
       Nat.mul_le_mul_left _ hsdiff_card
+    have h2 : 8 * M₀ * (badR.card + 1) = 8 * M₀ * badR.card + 8 * M₀ := by ring
     omega
   have hR_ne : R.Nonempty := by
     refine Finset.card_pos.mp ?_
@@ -798,6 +803,7 @@ private lemma alignedRows_spec {K W S Q B₀ r M₀ q : ℕ} {P : Finset ℕ}
   set h := r % hammingBase K W S Q p₀
   have hp₀_lt_B₀ : h < B₀ := by
     obtain ⟨hp₀C, hp₀_maj⟩ := mem_filter.mp hp₀_mem
+    change C.card < 2 * (goodC p₀).card at hp₀_maj
     have hgood_ne : (goodC p₀).Nonempty := Finset.card_pos.mp (by omega)
     obtain ⟨p₂, hp₂_good⟩ := hgood_ne
     obtain ⟨hp₂C, hsmall⟩ := mem_filter.mp hp₂_good
@@ -808,6 +814,8 @@ private lemma alignedRows_spec {K W S Q B₀ r M₀ q : ℕ} {P : Finset ℕ}
     intro p₁ hp₁
     obtain ⟨hp₀C, hp₀_maj⟩ := mem_filter.mp hp₀_mem
     obtain ⟨hp₁C, hp₁_maj⟩ := mem_filter.mp hp₁
+    change C.card < 2 * (goodC p₀).card at hp₀_maj
+    change C.card < 2 * (goodC p₁).card at hp₁_maj
     have hunion_le : (goodC p₀ ∪ goodC p₁).card ≤ C.card :=
       card_le_card (union_subset (filter_subset _ _) (filter_subset _ _))
     have hinter_card := card_union_add_card_inter (goodC p₀) (goodC p₁)
@@ -829,13 +837,11 @@ private lemma alignedRows_spec {K W S Q B₀ r M₀ q : ℕ} {P : Finset ℕ}
     have h2_exp : 2 ∣ 2 ^ hammingExp K W S Q := dvd_pow_self 2 (by omega)
     have h2_base : 2 ^ hammingExp K W S Q ∣ hammingBase K W S Q p₀ :=
       ⟨p₀ * Q, by unfold hammingBase; ring⟩
-    exact (h2_exp.trans h2_base).trans hdvd_p₀
+    exact dvd_trans (dvd_trans h2_exp h2_base) hdvd_p₀
   have hQ_dvd : Q ∣ r - h :=
-    (⟨2 ^ hammingExp K W S Q * p₀, by unfold hammingBase; ring⟩ :
-      Q ∣ hammingBase K W S Q p₀).trans hdvd_p₀
+    dvd_trans ⟨2 ^ hammingExp K W S Q * p₀, by unfold hammingBase; ring⟩ hdvd_p₀
   have hp_dvd : ∀ p ∈ R, p ∣ r - h := fun p hp =>
-    (⟨2 ^ hammingExp K W S Q * Q, by unfold hammingBase; ring⟩ :
-      p ∣ hammingBase K W S Q p).trans (hdvd_base p hp)
+    dvd_trans ⟨2 ^ hammingExp K W S Q * Q, by unfold hammingBase; ring⟩ (hdvd_base p hp)
   exact ⟨hR_sub_P, hsdiff_bd, h, hp₀_lt_B₀, h2_dvd, hQ_dvd, hp_dvd⟩
 
 /-- Combinatorial half-retention for `m`-subsets when `2 * |P \ R| * m ≤ |P|`. -/
@@ -864,6 +870,7 @@ private lemma powersetCard_half_subset {α : Type*} [DecidableEq α]
       set F := (P.powersetCard m).filter ({x} ⊆ ·)
       have hinj : Set.InjOn (fun A : Finset α => A.erase x) F := by
         intro A₁ hA₁ A₂ hA₂ heq
+        dsimp only at heq
         have hx₁ : x ∈ A₁ := singleton_subset_iff.mp (mem_filter.mp hA₁).2
         have hx₂ : x ∈ A₂ := singleton_subset_iff.mp (mem_filter.mp hA₂).2
         rw [← insert_erase hx₁, ← insert_erase hx₂, heq]
@@ -880,7 +887,7 @@ private lemma powersetCard_half_subset {α : Type*} [DecidableEq α]
       calc F.card = (F.image (fun A => A.erase x)).card := (card_image_of_injOn hinj).symm
         _ ≤ ((P.erase x).powersetCard (m - 1)).card := card_le_card himg
         _ = (P.card - 1).choose (m - 1) := by rw [card_powersetCard, card_erase_of_mem hxP]
-    exact (sum_le_sum hfib).trans_eq (by rw [sum_const, nsmul_eq_mul])
+    exact (sum_le_sum hfib).trans_eq (by rw [sum_const, smul_eq_mul])
   have hchoose_id : P.card * (P.card - 1).choose (m - 1) = P.card.choose m * m := by
     have hP_eq : P.card - 1 + 1 = P.card := by omega
     have hm_eq : m - 1 + 1 = m := by omega
@@ -941,8 +948,9 @@ private lemma hammingCluster_pay_of_not_aligned {b : ℕ → ℤ} {N K W S M₀ 
       ∑ p ∈ C_x ×ˢ C_x,
         ((r % hammingLetter K W S (x.1 ^ x.2) p.1 p.2 : ℕ) : ℝ) /
           (hammingLetter K W S (x.1 ^ x.2) p.1 p.2 : ℝ) := by
+    have hsub : badP ⊆ C_x ×ˢ C_x := filter_subset _ _
     refine le_trans ?_
-      (sum_le_sum_of_subset_of_nonneg (filter_subset _ _) fun _ _ _ => by positivity)
+      (sum_le_sum_of_subset_of_nonneg hsub fun _ _ _ => by positivity)
     have hterm_ge : ∀ p ∈ badP,
         (B₀ : ℝ) / (K : ℝ) ≤
           ((r % hammingLetter K W S (x.1 ^ x.2) p.1 p.2 : ℕ) : ℝ) /
@@ -1031,7 +1039,7 @@ private lemma hammingCluster_slope_le {b : ℕ → ℤ} {N P_max K W S M₀ B₀
         Real.log_le_log hLR_pos (by exact_mod_cast hLK)
       have hinv_le : 1 / (hammingLetter K W S (x.1 ^ x.2) p.1 p.2 : ℝ) ≤
           (2 ^ (2 * S + 1) : ℝ) / (K : ℝ) := by
-        rw [div_le_div_iff₀ hLR_pos hKR_pos, one_mul, mul_comm]
+        rw [div_le_div_iff₀ hLR_pos hKR_pos, one_mul]
         exact_mod_cast hKL.le
       calc Real.log (hammingLetter K W S (x.1 ^ x.2) p.1 p.2 : ℝ) /
             (hammingLetter K W S (x.1 ^ x.2) p.1 p.2 : ℝ)
@@ -1044,8 +1052,12 @@ private lemma hammingCluster_slope_le {b : ℕ → ℤ} {N P_max K W S M₀ B₀
           Real.log (hammingLetter K W S (x.1 ^ x.2) p.1 p.2 : ℝ) /
             (hammingLetter K W S (x.1 ^ x.2) p.1 p.2 : ℝ)) ≤
         Real.log (K : ℝ) * ((2 ^ (2 * S + 1) : ℝ) / (K : ℝ)) := by
-      have hs := (sum_le_sum hp_bd).trans_eq
-        (by rw [sum_const, card_product, nsmul_eq_mul]; push_cast; ring)
+      have hs : ∑ p ∈ C_x ×ˢ C_x,
+          Real.log (hammingLetter K W S (x.1 ^ x.2) p.1 p.2 : ℝ) /
+            (hammingLetter K W S (x.1 ^ x.2) p.1 p.2 : ℝ) ≤
+          (C_x.card : ℝ) ^ 2 * (Real.log (K : ℝ) * ((2 ^ (2 * S + 1) : ℝ) / (K : ℝ))) :=
+        (sum_le_sum hp_bd).trans_eq
+          (by rw [sum_const, card_product, nsmul_eq_mul]; push_cast; ring)
       calc (1 / ((C_x.card : ℝ) ^ 2)) * _
           ≤ (1 / ((C_x.card : ℝ) ^ 2)) *
               ((C_x.card : ℝ) ^ 2 * (Real.log (K : ℝ) * ((2 ^ (2 * S + 1) : ℝ) / (K : ℝ)))) :=
@@ -1066,6 +1078,258 @@ private lemma hammingCluster_slope_le {b : ℕ → ℤ} {N P_max K W S M₀ B₀
           (((Nat.log 2 N : ℝ) + 1) ^ 2 * tautMass b N) :=
         mul_le_mul_of_nonneg_left (sum_tautDefect_le b N P_max) (by positivity)
     _ = _ := by ring
+
+private def hammingClusterTerm (b : ℕ → ℤ) (N K W S M₀ B₀ : ℕ) (x : ℕ × ℕ) (r : ℕ) : ℝ :=
+  ((16 * (M₀ : ℝ) * (K : ℝ) / (B₀ : ℝ)) * (tautDefect b N (x.1 ^ x.2) : ℝ)) *
+    ((1 / ((clusterPrimes W S x.1).card ^ 2 : ℝ)) *
+      ∑ p ∈ clusterPrimes W S x.1 ×ˢ clusterPrimes W S x.1,
+        ((r % hammingLetter K W S (x.1 ^ x.2) p.1 p.2 : ℕ) : ℝ) /
+          (hammingLetter K W S (x.1 ^ x.2) p.1 p.2 : ℝ))
+
+private lemma hammingClusterTerm_nonneg (b : ℕ → ℤ) (N K W S M₀ B₀ : ℕ) (x : ℕ × ℕ) (r : ℕ) :
+    0 ≤ hammingClusterTerm b N K W S M₀ B₀ x r := by
+  unfold hammingClusterTerm
+  refine mul_nonneg (by positivity) (mul_nonneg (by positivity) (sum_nonneg fun _ _ => ?_))
+  positivity
+
+private def hammingRampTerm (Y_rat : ℚ) (I_ramp : Finset (Finset ℕ)) (r : ℕ) : ℝ :=
+  (4 * (Y_rat : ℝ) / (I_ramp.card : ℝ)) * ∑ A ∈ I_ramp, ((r % A.prod id : ℕ) : ℝ)
+
+private lemma hammingRampTerm_nonneg {Y_rat : ℚ} (hY : 0 ≤ (Y_rat : ℝ))
+    (I_ramp : Finset (Finset ℕ)) (r : ℕ) :
+    0 ≤ hammingRampTerm Y_rat I_ramp r := by
+  unfold hammingRampTerm
+  exact mul_nonneg (div_nonneg (by linarith) (Nat.cast_nonneg _))
+    (sum_nonneg fun _ _ => Nat.cast_nonneg _)
+
+private lemma hammingTotal_win_ge_one {b : ℕ → ℤ} {N K W S M₀ B₀ X : ℕ} {Y_n : ℝ} {Y_rat : ℚ}
+    {Q_set : Finset (ℕ × ℕ)} {I_ramp : Finset (Finset ℕ)}
+    (hYrat_nn : 0 ≤ (Y_rat : ℝ)) (hYrat_ge : Y_n ≤ (Y_rat : ℝ))
+    (hIramp_pos : 0 < I_ramp.card)
+    (hramp_bounds : ∀ A ∈ I_ramp, B₀ < A.prod id ∧ A.prod id ≤ K)
+    (hB₀_le_X : B₀ ≤ X)
+    (hnear_X : ∀ s : ℕ, 1 ≤ s → s ≤ X → |tautNear b N s - 1| ≤ (s : ℝ) * Y_n)
+    {r : ℕ} (hr1 : 1 ≤ r) (hrB : r < B₀) :
+    1 ≤ tautNear b N r + (∑ x ∈ Q_set, hammingClusterTerm b N K W S M₀ B₀ x r) +
+      hammingRampTerm Y_rat I_ramp r := by
+  have hnear_r := (abs_le.mp (hnear_X r hr1 (hrB.le.trans hB₀_le_X))).1
+  have hramp_eq : hammingRampTerm Y_rat I_ramp r = 4 * (Y_rat : ℝ) * (r : ℝ) := by
+    unfold hammingRampTerm
+    have hmod_eq : ∀ A ∈ I_ramp, ((r % A.prod id : ℕ) : ℝ) = (r : ℝ) :=
+      fun A hA => by rw [Nat.mod_eq_of_lt (hrB.trans (hramp_bounds A hA).1)]
+    rw [sum_congr rfl hmod_eq, sum_const, nsmul_eq_mul]
+    have hcard_ne : (I_ramp.card : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hIramp_pos.ne'
+    field_simp [hcard_ne]
+  have hcl_nn : 0 ≤ ∑ x ∈ Q_set, hammingClusterTerm b N K W S M₀ B₀ x r :=
+    sum_nonneg fun x _ => hammingClusterTerm_nonneg b N K W S M₀ B₀ x r
+  have hr_nn : (0 : ℝ) ≤ (r : ℝ) := Nat.cast_nonneg r
+  have hY_cmp : (r : ℝ) * Y_n ≤ 4 * (Y_rat : ℝ) * (r : ℝ) := by
+    nlinarith only [hYrat_nn, hYrat_ge, hr_nn]
+  linarith only [hnear_r, hramp_eq, hcl_nn, hY_cmp]
+
+private lemma hammingTotal_nonneg {b : ℕ → ℤ} {N P_max M₀ W K S B₀ X m_star : ℕ}
+    {Y_n : ℝ} {Y_rat : ℚ}
+    {P_set : Finset ℕ} {Q_set : Finset (ℕ × ℕ)} {I_ramp : Finset (Finset ℕ)}
+    (hN2 : 2 ≤ N) (hb2 : b 2 = -1)
+    (hb_smooth : ∀ k : ℕ, 2 ≤ k → k ≤ N → b k ≠ 0 → ¬ 4 ∣ k ∧
+      ∀ q e : ℕ, q.Prime → 1 ≤ e → q ^ e ∣ k → q ^ e ≤ P_max)
+    (hM₀ : 2 ≤ M₀) (hW : 2 ≤ W) (hK_pos : 0 < K) (hB₀_pos : 0 < B₀)
+    (hS_def : S = 16 * M₀ + 4)
+    (hK_sq : 2 ^ (2 * S + 2) * W ^ 2 * (P_max + 1) ≤ K)
+    (hm_lo : 1 ≤ m_star) (hm_hi : m_star < M₀)
+    (hP_def : P_set = bertrandPrimes W S) (hP_card_ge : S ≤ P_set.card) (hm_le_P : m_star ≤ P_set.card)
+    (hQ_def : Q_set = oddPrimePowers P_max)
+    (hIramp_def : I_ramp = P_set.powersetCard m_star) (hIramp_pos : 0 < I_ramp.card)
+    (hC_card_pos : ∀ x : ℕ × ℕ, 0 < (clusterPrimes W S x.1).card)
+    (hramp_bounds : ∀ A ∈ I_ramp, B₀ < A.prod id ∧ A.prod id ≤ K)
+    (hcl_bounds : ∀ x ∈ Q_set, ∀ p₁ ∈ clusterPrimes W S x.1, ∀ p₂ ∈ clusterPrimes W S x.1,
+      2 ≤ hammingLetter K W S (x.1 ^ x.2) p₁ p₂ ∧
+      hammingLetter K W S (x.1 ^ x.2) p₁ p₂ ≤ K ∧
+      K < 2 ^ (2 * S + 1) * hammingLetter K W S (x.1 ^ x.2) p₁ p₂ ∧
+      B₀ < hammingBase K W S (x.1 ^ x.2) p₁)
+    (hYn_nn : 0 ≤ Y_n) (hYrat_nn : 0 ≤ (Y_rat : ℝ)) (hYrat_ge : Y_n ≤ (Y_rat : ℝ))
+    (hB₀_le_X : B₀ ≤ X)
+    (hnear_X : ∀ s : ℕ, 1 ≤ s → s ≤ X → |tautNear b N s - 1| ≤ (s : ℝ) * Y_n)
+    (r : ℕ) :
+    0 ≤ tautNear b N r + (∑ x ∈ Q_set, hammingClusterTerm b N K W S M₀ B₀ x r) +
+      hammingRampTerm Y_rat I_ramp r := by
+  rcases eq_or_ne r 0 with rfl | hr0
+  · rw [tautNear_zero]
+    linarith only [sum_nonneg (fun x (_ : x ∈ Q_set) => hammingClusterTerm_nonneg b N K W S M₀ B₀ x 0),
+      hammingRampTerm_nonneg hYrat_nn I_ramp 0]
+  by_cases hrB : r < B₀
+  · exact zero_le_one.trans (hammingTotal_win_ge_one hYrat_nn hYrat_ge hIramp_pos hramp_bounds
+      hB₀_le_X hnear_X (by omega) hrB)
+  push Not at hrB
+  let isAligned : ℕ × ℕ → Prop := fun x =>
+    16 * M₀ * (((clusterPrimes W S x.1) ×ˢ (clusterPrimes W S x.1)).filter
+      fun p => B₀ ≤ r % hammingLetter K W S (x.1 ^ x.2) p.1 p.2).card <
+    (clusterPrimes W S x.1).card ^ 2
+  have hunaligned_pay : ∀ x ∈ Q_set, ¬ isAligned x →
+      (tautDefect b N (x.1 ^ x.2) : ℝ) ≤ hammingClusterTerm b N K W S M₀ B₀ x r := by
+    intro x hx hnot
+    dsimp [isAligned] at hnot
+    push Not at hnot
+    unfold hammingClusterTerm
+    exact hammingCluster_pay_of_not_aligned hK_pos hB₀_pos (hC_card_pos x)
+      (fun p₁ hp₁ p₂ hp₂ => ⟨(hcl_bounds x hx p₁ hp₁ p₂ hp₂).1,
+        (hcl_bounds x hx p₁ hp₁ p₂ hp₂).2.1⟩) hnot
+  by_cases hex_al : ∃ x ∈ Q_set, isAligned x
+  · obtain ⟨x₀, hx₀, hal₀⟩ := hex_al
+    have hx₀_mem : x₀ ∈ oddPrimePowers P_max := hQ_def ▸ hx₀
+    obtain ⟨_, hqp₀, _, hQP₀⟩ := mem_oddPrimePowers_iff.mp hx₀_mem
+    have hC₀_eq : P_set.erase x₀.1 = clusterPrimes W S x₀.1 := by rw [hP_def]; rfl
+    have hspec₀ := alignedRows_spec (P := P_set) (q := x₀.1) (K := K) (W := W) (S := S)
+      (Q := x₀.1 ^ x₀.2) (B₀ := B₀) (r := r) (M₀ := M₀) hM₀
+      (hC₀_eq ▸ hC_card_pos x₀)
+      (fun p hp => (hcl_bounds x₀ hx₀ p (hC₀_eq ▸ hp) p (hC₀_eq ▸ hp)).2.2.2)
+      (hammingExp_pos hW (pow_pos hqp₀.pos _) hQP₀ hK_sq)
+      (by simpa only [hC₀_eq] using hal₀)
+    obtain ⟨hR₀_sub, hR₀_sdiff, h, hh_lt, h2_dvd, _, hp₀_dvd⟩ := hspec₀
+    set R₀ := alignedRows K W S (x₀.1 ^ x₀.2) B₀ r (P_set.erase x₀.1)
+    have hh_le_r : h ≤ r := hh_lt.le.trans hrB
+    have hall_al_dvd : ∀ x ∈ Q_set, isAligned x → x.1 ^ x.2 ∣ r - h := by
+      intro x hx halx
+      have hx_mem : x ∈ oddPrimePowers P_max := hQ_def ▸ hx
+      obtain ⟨_, hqpx, _, hQPx⟩ := mem_oddPrimePowers_iff.mp hx_mem
+      have hCx_eq : P_set.erase x.1 = clusterPrimes W S x.1 := by rw [hP_def]; rfl
+      obtain ⟨hRx_sub, hRx_sdiff, hx_val, hhx_lt, _, hQx_dvd, hpx_dvd⟩ :=
+        alignedRows_spec (P := P_set) (q := x.1) (K := K) (W := W) (S := S)
+          (Q := x.1 ^ x.2) (B₀ := B₀) (r := r) (M₀ := M₀) hM₀
+          (hCx_eq ▸ hC_card_pos x)
+          (fun p hp => (hcl_bounds x hx p (hCx_eq ▸ hp) p (hCx_eq ▸ hp)).2.2.2)
+          (hammingExp_pos hW (pow_pos hqpx.pos _) hQPx hK_sq)
+          (by simpa only [hCx_eq] using halx)
+      set Rx := alignedRows K W S (x.1 ^ x.2) B₀ r (P_set.erase x.1)
+      have hsdiff_inter : P_set \ (R₀ ∩ Rx) ⊆ (P_set \ R₀) ∪ (P_set \ Rx) := by
+        intro p hp
+        obtain ⟨hpP, hpI⟩ := mem_sdiff.mp hp
+        by_cases hp0 : p ∈ R₀
+        · exact mem_union_right _ (mem_sdiff.mpr ⟨hpP, fun hpx => hpI (mem_inter.mpr ⟨hp0, hpx⟩)⟩)
+        · exact mem_union_left _ (mem_sdiff.mpr ⟨hpP, hp0⟩)
+      have hsdiff_le : (P_set \ (R₀ ∩ Rx)).card ≤ (P_set \ R₀).card + (P_set \ Rx).card :=
+        (card_le_card hsdiff_inter).trans (card_union_le _ _)
+      have hinter_part : (P_set \ (R₀ ∩ Rx)).card + (R₀ ∩ Rx).card = P_set.card :=
+        card_sdiff_add_card_eq_card (inter_subset_left.trans hR₀_sub)
+      have hm_le_inter : m_star ≤ (R₀ ∩ Rx).card := by
+        have h8D : 8 * M₀ * (P_set \ (R₀ ∩ Rx)).card ≤ 2 * P_set.card + 16 * M₀ := by
+          have hmul := Nat.mul_le_mul_left (8 * M₀) hsdiff_le
+          rw [mul_add] at hmul
+          omega
+        have hlin : 8 * (M₀ * P_set.card) =
+            8 * M₀ * (P_set \ (R₀ ∩ Rx)).card + 8 * M₀ * (R₀ ∩ Rx).card := by
+          calc 8 * (M₀ * P_set.card)
+              = 8 * M₀ * P_set.card := (mul_assoc 8 M₀ P_set.card).symm
+            _ = 8 * M₀ * ((P_set \ (R₀ ∩ Rx)).card + (R₀ ∩ Rx).card) := by rw [hinter_part]
+            _ = _ := mul_add _ _ _
+        have h2P : 2 * P_set.card ≤ M₀ * P_set.card := Nat.mul_le_mul_right P_set.card hM₀
+        have hMP : 16 * (M₀ * M₀) + 4 * M₀ ≤ M₀ * P_set.card := by
+          calc 16 * (M₀ * M₀) + 4 * M₀ = M₀ * (16 * M₀ + 4) := by ring
+            _ ≤ M₀ * P_set.card := Nat.mul_le_mul_left M₀ (hS_def ▸ hP_card_ge)
+        have hM_inter : 8 * (M₀ * M₀) ≤ 8 * M₀ * (R₀ ∩ Rx).card := by omega
+        have hM_inter' : 8 * M₀ * M₀ ≤ 8 * M₀ * (R₀ ∩ Rx).card := by
+          rwa [← mul_assoc 8 M₀ M₀] at hM_inter
+        have : M₀ ≤ (R₀ ∩ Rx).card :=
+          Nat.le_of_mul_le_mul_left hM_inter' (by positivity)
+        omega
+      obtain ⟨A, hA_sub_I, hA_card⟩ := exists_subset_card_eq hm_le_inter
+      have hA_mem : A ∈ I_ramp := by
+        rw [hIramp_def, mem_powersetCard]
+        exact ⟨hA_sub_I.trans (inter_subset_left.trans hR₀_sub), hA_card⟩
+      have hB₀_lt_MA := (hramp_bounds A hA_mem).1
+      have hprimes_A : ∀ p ∈ A, Prime p := fun p hp => by
+        have hp_b : p ∈ bertrandPrimes W S :=
+          hP_def ▸ (hA_sub_I.trans (inter_subset_left.trans hR₀_sub)) hp
+        exact (mem_bertrandPrimes.mp hp_b).2.prime
+      have hdvd_0 : A.prod id ∣ r - h := Finset.prod_primes_dvd (r - h) hprimes_A
+        fun p hp => hp₀_dvd p ((mem_inter.mp (hA_sub_I hp)).1)
+      have hdvd_x : A.prod id ∣ r - hx_val := Finset.prod_primes_dvd (r - hx_val) hprimes_A
+        fun p hp => hpx_dvd p ((mem_inter.mp (hA_sub_I hp)).2)
+      have hmod_0 : h = r % A.prod id := by
+        have hm := (Nat.modEq_iff_dvd' hh_le_r).mpr hdvd_0
+        rwa [Nat.ModEq, Nat.mod_eq_of_lt (hh_lt.trans hB₀_lt_MA)] at hm
+      have hmod_x : hx_val = r % A.prod id := by
+        have hm := (Nat.modEq_iff_dvd' (hhx_lt.le.trans hrB)).mpr hdvd_x
+        rwa [Nat.ModEq, Nat.mod_eq_of_lt (hhx_lt.trans hB₀_lt_MA)] at hm
+      have heq_h : hx_val = h := hmod_x.trans hmod_0.symm
+      rwa [heq_h] at hQx_dvd
+    have hnear_diff : |tautNear b N r - tautNear b N h| ≤
+        ∑ x ∈ Q_set, hammingClusterTerm b N K W S M₀ B₀ x r := by
+      have hd := abs_tautNear_sub_le_tautDefect (P_max := P_max) hb_smooth hh_le_r h2_dvd
+      rw [← hQ_def] at hd
+      refine hd.trans (sum_le_sum fun x hx => ?_)
+      split_ifs with hdvd
+      · exact hammingClusterTerm_nonneg b N K W S M₀ B₀ x r
+      · exact hunaligned_pay x hx fun hal => hdvd (hall_al_dvd x hx hal)
+    rcases eq_or_ne h 0 with rfl | hh0
+    · rw [tautNear_zero, sub_zero] at hnear_diff
+      linarith only [(abs_le.mp hnear_diff).1, hammingRampTerm_nonneg hYrat_nn I_ramp r]
+    · have hbad_half : 2 * (P_set \ R₀).card * m_star ≤ P_set.card := by
+        have h4M : 4 * M₀ * (2 * (P_set \ R₀).card * m_star) ≤ 4 * M₀ * P_set.card := by
+          have h1 : (8 * M₀ * (P_set \ R₀).card) * m_star ≤ (P_set.card + 8 * M₀) * M₀ :=
+            Nat.mul_le_mul (by omega) (by omega)
+          have hMP : M₀ * (16 * M₀ + 4) ≤ M₀ * P_set.card :=
+            Nat.mul_le_mul_left M₀ (hS_def ▸ hP_card_ge)
+          have h8_le : 8 * (M₀ * M₀) ≤ 3 * (M₀ * (16 * M₀ + 4)) := by
+            calc 8 * (M₀ * M₀) ≤ 48 * (M₀ * M₀) + 12 * M₀ := by omega
+              _ = 3 * (M₀ * (16 * M₀ + 4)) := by ring
+          calc 4 * M₀ * (2 * (P_set \ R₀).card * m_star)
+              = (8 * M₀ * (P_set \ R₀).card) * m_star := by ring
+            _ ≤ (P_set.card + 8 * M₀) * M₀ := h1
+            _ = M₀ * P_set.card + 8 * (M₀ * M₀) := by ring
+            _ ≤ M₀ * P_set.card + 3 * (M₀ * (16 * M₀ + 4)) := Nat.add_le_add_left h8_le _
+            _ ≤ M₀ * P_set.card + 3 * (M₀ * P_set.card) :=
+                Nat.add_le_add_left (Nat.mul_le_mul_left 3 hMP) _
+            _ = 4 * M₀ * P_set.card := by ring
+        exact Nat.le_of_mul_le_mul_left h4M (by positivity)
+      have hhalf := powersetCard_half_subset hm_lo hm_le_P hbad_half
+      set goodRamp := I_ramp.filter (· ⊆ R₀)
+      have hramp_ge : 2 * Y_n * (h : ℝ) ≤ hammingRampTerm Y_rat I_ramp r := by
+        unfold hammingRampTerm
+        have hsub_g : goodRamp ⊆ I_ramp := filter_subset _ _
+        have hsub_sum : ∑ A ∈ goodRamp, ((r % A.prod id : ℕ) : ℝ) ≤
+            ∑ A ∈ I_ramp, ((r % A.prod id : ℕ) : ℝ) :=
+          sum_le_sum_of_subset_of_nonneg hsub_g fun _ _ _ => Nat.cast_nonneg _
+        have hgood_eq : ∀ A ∈ goodRamp, ((r % A.prod id : ℕ) : ℝ) = (h : ℝ) := by
+          intro A hA
+          obtain ⟨hAI, hAR⟩ := mem_filter.mp hA
+          have hprimes_A : ∀ p ∈ A, Prime p := fun p hp => by
+            have hp_b : p ∈ bertrandPrimes W S := hP_def ▸ (hR₀_sub (hAR hp))
+            exact (mem_bertrandPrimes.mp hp_b).2.prime
+          have hdvd_h : A.prod id ∣ r - h := Finset.prod_primes_dvd (r - h) hprimes_A
+            fun p hp => hp₀_dvd p (hAR hp)
+          have hm := (Nat.modEq_iff_dvd' hh_le_r).mpr hdvd_h
+          rw [Nat.ModEq, Nat.mod_eq_of_lt (hh_lt.trans (hramp_bounds A hAI).1)] at hm
+          rw [← hm]
+        rw [sum_congr rfl hgood_eq, sum_const, nsmul_eq_mul] at hsub_sum
+        have hhalf_R : (I_ramp.card : ℝ) ≤ 2 * (goodRamp.card : ℝ) := by
+          dsimp [goodRamp]; rw [hIramp_def]; exact_mod_cast hhalf
+        have hcard_pos : (0 : ℝ) < (I_ramp.card : ℝ) := by exact_mod_cast hIramp_pos
+        have hfrac : (1 / 2 : ℝ) ≤ (goodRamp.card : ℝ) / (I_ramp.card : ℝ) := by
+          rw [div_le_div_iff₀ (by norm_num) hcard_pos]; linarith only [hhalf_R]
+        calc 2 * Y_n * (h : ℝ)
+            ≤ 4 * (Y_rat : ℝ) * (1 / 2) * (h : ℝ) := by
+              have hh_nn : (0 : ℝ) ≤ (h : ℝ) := Nat.cast_nonneg h
+              nlinarith only [hYrat_nn, hYrat_ge, hh_nn]
+          _ ≤ 4 * (Y_rat : ℝ) * ((goodRamp.card : ℝ) / (I_ramp.card : ℝ)) * (h : ℝ) :=
+              mul_le_mul_of_nonneg_right
+                (mul_le_mul_of_nonneg_left hfrac (by linarith only [hYrat_nn])) (Nat.cast_nonneg h)
+          _ = (4 * (Y_rat : ℝ) / (I_ramp.card : ℝ)) * ((goodRamp.card : ℝ) * (h : ℝ)) := by ring
+          _ ≤ (4 * (Y_rat : ℝ) / (I_ramp.card : ℝ)) *
+                ∑ A ∈ I_ramp, ((r % A.prod id : ℕ) : ℝ) :=
+              mul_le_mul_of_nonneg_left hsub_sum (by positivity)
+      have hnear_h := (abs_le.mp (hnear_X h (by omega) (hh_lt.le.trans hB₀_le_X))).1
+      have hdiff_lo := (abs_le.mp hnear_diff).1
+      have hprod_nn : 0 ≤ (h : ℝ) * Y_n := mul_nonneg (Nat.cast_nonneg h) hYn_nn
+      have hprod_eq : 2 * Y_n * (h : ℝ) = 2 * ((h : ℝ) * Y_n) := by ring
+      linarith only [hnear_h, hdiff_lo, hramp_ge, hprod_nn, hprod_eq]
+  · push Not at hex_al
+    have hsum_pay : ∑ x ∈ Q_set, (tautDefect b N (x.1 ^ x.2) : ℝ) ≤
+        ∑ x ∈ Q_set, hammingClusterTerm b N K W S M₀ B₀ x r :=
+      sum_le_sum fun x hx => hunaligned_pay x hx (hex_al x hx)
+    have hneg_near := neg_sum_tautDefect_le_tautNear hN2 hb2 hb_smooth r
+    rw [← hQ_def] at hneg_near
+    linarith only [hsum_pay, hneg_near, hammingRampTerm_nonneg hYrat_nn I_ramp r]
 
 /-- **Bipartite Hamming-square and subset-product CRT producer assembly.**
 Given a smooth `4`-free stencil `b` supported in `[1, N]` tracking `M(x)` within `η₀ x`,
@@ -1097,10 +1361,13 @@ theorem exists_hamming_compensated_producer
   intro S B₀ Y_n
   have hS_def : S = 16 * M₀ + 4 := rfl
   have hB₀_def : B₀ = K / (2 ^ (S * (M₀ + 1) + 2) * W) := rfl
+  have hB₀2 : 2 ≤ B₀ := hB₀_ge2
+  have hB₀_pos : 0 < B₀ := by omega
   have hK_ge2 : 2 ≤ K := hN2.trans hNK
+  have hK_pos : 0 < K := by omega
   have hX_ge2 : 2 ≤ X := hK_ge2.trans hKX
-  have hKR_pos : (0 : ℝ) < (K : ℝ) := by exact_mod_cast (by omega : 0 < K)
-  have hBR_pos : (0 : ℝ) < (B₀ : ℝ) := by exact_mod_cast (by omega : 0 < B₀)
+  have hKR_pos : (0 : ℝ) < (K : ℝ) := by exact_mod_cast hK_pos
+  have hBR_pos : (0 : ℝ) < (B₀ : ℝ) := by exact_mod_cast hB₀_pos
   have hYn_pos : 0 < Y_n := by
     dsimp [Y_n]
     have hlogX : 0 ≤ Real.log (X : ℝ) := Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ X))
@@ -1240,16 +1507,18 @@ theorem exists_hamming_compensated_producer
     intro u hu
     rw [hI_def] at hu; rw [hℓ_def]
     rcases u with k | (z | A)
-    · have hk : k ∈ Icc 2 N := by simpa using hu
+    · simp only [Sum.elim_inl, id]
+      have hk : k ∈ Icc 2 N := by simpa using hu
       obtain ⟨hk2, hkN⟩ := mem_Icc.mp hk
       exact ⟨hk2, hkN.trans hNK⟩
-    · have hz : z ∈ I_cl := by simpa using hu
+    · simp only [Sum.elim_inr, Sum.elim_inl]
+      have hz : z ∈ I_cl := by simpa using hu
       obtain ⟨hx, hp₁, hp₂⟩ := (hmem_Icl z).mp hz
       have hb := hcl_bounds z.1 hx z.2.1 hp₁ z.2.2 hp₂
       exact ⟨hb.1, hb.2.1⟩
-    · have hA : A ∈ I_ramp := by simpa using hu
+    · simp only [Sum.elim_inr]
+      have hA : A ∈ I_ramp := by simpa using hu
       obtain ⟨hgt, hle⟩ := hramp_bounds A hA
-      have : 2 ≤ B₀ := hB₀_ge2
       exact ⟨by omega, hle⟩
   obtain ⟨c, D_den, hD_pos, hc0, hbal, hstep, hslope, hsupp⟩ :=
     exists_stencil_of_family I_all ℓ_fn w_fn (fun u hu => (hℓ_bounds u hu).1)
@@ -1272,224 +1541,52 @@ theorem exists_hamming_compensated_producer
       rw [hw_def, hℓ_def]; simp only [Sum.elim_inl, id]; push_cast; rfl
     · congr 1
       · rw [hsum_Icl]
-        refine sum_congr rfl fun x _ => ?_
-        rw [mul_assoc, mul_sum, mul_sum]
-        refine sum_congr rfl fun p _ => ?_
+        refine sum_congr rfl fun x hx => ?_
+        rw [mul_sum, mul_sum]
+        refine sum_congr rfl fun p hp => ?_
+        obtain ⟨hp₁, hp₂⟩ := mem_product.mp hp
+        have hL_pos : (0 : ℝ) < (hammingLetter K W S (x.1 ^ x.2) p.1 p.2 : ℝ) := by
+          exact_mod_cast (by have := (hcl_bounds x hx p.1 hp₁ p.2 hp₂).1; omega)
+        have hC_ne : ((clusterPrimes W S x.1).card : ℝ) ≠ 0 :=
+          Nat.cast_ne_zero.mpr (hC_card_pos x).ne'
         rw [hw_def, hℓ_def]; simp only [Sum.elim_inr, Sum.elim_inl]
-        push_cast; ring
+        push_cast
+        field_simp [hBR_pos.ne', hC_ne, hL_pos.ne']
       · rw [mul_sum]
         refine sum_congr rfl fun A _ => ?_
+        have hcard_ne : (I_ramp.card : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hIramp_pos.ne'
         rw [hw_def, hℓ_def]; simp only [Sum.elim_inr]
-        push_cast; ring
-  obtain ⟨clTerm, hcl_def⟩ : ∃ clTerm : (ℕ × ℕ) → ℕ → ℝ, clTerm = fun x r =>
-      ((16 * (M₀ : ℝ) * (K : ℝ) / (B₀ : ℝ)) * (tautDefect b N (x.1 ^ x.2) : ℝ)) *
-        ((1 / ((clusterPrimes W S x.1).card ^ 2 : ℝ)) *
-          ∑ p ∈ clusterPrimes W S x.1 ×ˢ clusterPrimes W S x.1,
-            ((r % hammingLetter K W S (x.1 ^ x.2) p.1 p.2 : ℕ) : ℝ) /
-              (hammingLetter K W S (x.1 ^ x.2) p.1 p.2 : ℝ)) := ⟨_, rfl⟩
-  obtain ⟨rampTerm, hramp_def⟩ : ∃ rampTerm : ℕ → ℝ, rampTerm = fun r =>
-      (4 * (Y_rat : ℝ) / (I_ramp.card : ℝ)) * ∑ A ∈ I_ramp, ((r % A.prod id : ℕ) : ℝ) := ⟨_, rfl⟩
+        push_cast
+        field_simp [hcard_ne]
   have hval_r : ∀ r : ℕ,
       ∑ u ∈ I_all, (w_fn u : ℝ) * ((r % ℓ_fn u : ℕ) : ℝ) =
-        tautNear b N r + (∑ x ∈ Q_set, clTerm x r) + rampTerm r := by
+        tautNear b N r + (∑ x ∈ Q_set, hammingClusterTerm b N K W S M₀ B₀ x r) +
+          hammingRampTerm Y_rat I_ramp r := by
     intro r
-    rw [hsplit_φ fun k => ((r % k : ℕ) : ℝ), tautNear, hcl_def, hramp_def]
-  have hclTerm_nn : ∀ x ∈ Q_set, ∀ r : ℕ, 0 ≤ clTerm x r := by
-    intro x _ r
-    rw [hcl_def]
-    refine mul_nonneg (by positivity) (mul_nonneg (by positivity) (sum_nonneg fun _ _ => ?_))
-    positivity
-  have hrampTerm_nn : ∀ r : ℕ, 0 ≤ rampTerm r := by
-    intro r
-    rw [hramp_def]
-    exact mul_nonneg (div_nonneg (by linarith) (Nat.cast_nonneg _))
-      (sum_nonneg fun _ _ => Nat.cast_nonneg _)
+    rw [hsplit_φ fun k => ((r % k : ℕ) : ℝ), tautNear]
+    rfl
   have hnear_X : ∀ s : ℕ, 1 ≤ s → s ≤ X → |tautNear b N s - 1| ≤ (s : ℝ) * Y_n :=
     fun s hs1 hsX => abs_tautNear_sub_one_le (by omega) hb1 hb_supp hη₀ hB_mert hs1 hsX
   have hB₀_le_K : B₀ ≤ K := Nat.div_le_self _ _
-  -- Window bound: for `1 ≤ r < B₀`, total sawtooth ≥ 1.
-  have hwin_ge1 : ∀ r : ℕ, 1 ≤ r → r < B₀ →
-      1 ≤ tautNear b N r + (∑ x ∈ Q_set, clTerm x r) + rampTerm r := by
-    intro r hr1 hrB
-    have hnear_r := (abs_le.mp (hnear_X r hr1 (hrB.le.trans (hB₀_le_K.trans hKX)))).1
-    have hramp_eq : rampTerm r = 4 * (Y_rat : ℝ) * (r : ℝ) := by
-      rw [hramp_def]
-      have hmod_eq : ∀ A ∈ I_ramp, ((r % A.prod id : ℕ) : ℝ) = (r : ℝ) :=
-        fun A hA => by rw [Nat.mod_eq_of_lt (hrB.trans (hramp_bounds A hA).1)]
-      rw [sum_congr rfl hmod_eq, sum_const, nsmul_eq_mul]
-      have hcard_ne : (I_ramp.card : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hIramp_pos.ne'
-      field_simp [hcard_ne]
-    have hcl_nn : 0 ≤ ∑ x ∈ Q_set, clTerm x r := sum_nonneg fun x hx => hclTerm_nn x hx r
-    have hr_nn : (0 : ℝ) ≤ (r : ℝ) := Nat.cast_nonneg r
-    have hY_cmp : (r : ℝ) * Y_n ≤ 4 * (Y_rat : ℝ) * (r : ℝ) := by nlinarith
-    linarith
-  -- Global nonnegativity for all `r : ℕ`.
-  have htot_nn : ∀ r : ℕ, 0 ≤ tautNear b N r + (∑ x ∈ Q_set, clTerm x r) + rampTerm r := by
-    intro r
-    rcases eq_or_ne r 0 with rfl | hr0
-    · rw [tautNear_zero]
-      linarith [sum_nonneg (fun x hx => hclTerm_nn x hx 0), hrampTerm_nn 0]
-    by_cases hrB : r < B₀
-    · exact zero_le_one.trans (hwin_ge1 r (by omega) hrB)
-    push Not at hrB
-    let isAligned : ℕ × ℕ → Prop := fun x =>
-      16 * M₀ * (((clusterPrimes W S x.1) ×ˢ (clusterPrimes W S x.1)).filter
-        fun p => B₀ ≤ r % hammingLetter K W S (x.1 ^ x.2) p.1 p.2).card <
-      (clusterPrimes W S x.1).card ^ 2
-    -- Unaligned `x` pays its full defect `D_Q`.
-    have hunaligned_pay : ∀ x ∈ Q_set, ¬ isAligned x →
-        (tautDefect b N (x.1 ^ x.2) : ℝ) ≤ clTerm x r := by
-      intro x hx hnot
-      dsimp [isAligned] at hnot
-      push Not at hnot
-      rw [hcl_def]
-      exact hammingCluster_pay_of_not_aligned (by omega) (by omega) (hC_card_pos x)
-        (fun p₁ hp₁ p₂ hp₂ => ⟨(hcl_bounds x hx p₁ hp₁ p₂ hp₂).1,
-          (hcl_bounds x hx p₁ hp₁ p₂ hp₂).2.1⟩) hnot
-    by_cases hex_al : ∃ x ∈ Q_set, isAligned x
-    · obtain ⟨x₀, hx₀, hal₀⟩ := hex_al
-      have hx₀_mem : x₀ ∈ oddPrimePowers P_max := hQ_def ▸ hx₀
-      obtain ⟨_, hqp₀, _, hQP₀⟩ := mem_oddPrimePowers_iff.mp hx₀_mem
-      have hC₀_eq : P_set.erase x₀.1 = clusterPrimes W S x₀.1 := by rw [hP_def]; rfl
-      have hspec₀ := alignedRows_spec (P := P_set) (q := x₀.1) (K := K) (W := W) (S := S)
-        (Q := x₀.1 ^ x₀.2) (B₀ := B₀) (r := r) (M₀ := M₀) hM₀
-        (hC₀_eq ▸ hC_card_pos x₀)
-        (fun p hp => (hcl_bounds x₀ hx₀ p (hC₀_eq ▸ hp) p (hC₀_eq ▸ hp)).2.2.2)
-        (hammingExp_pos hW (pow_pos hqp₀.pos _) hQP₀ (hS_def ▸ hK_sq))
-        (by simpa only [hC₀_eq] using hal₀)
-      obtain ⟨hR₀_sub, hR₀_sdiff, h, hh_lt, h2_dvd, _, hp₀_dvd⟩ := hspec₀
-      set R₀ := alignedRows K W S (x₀.1 ^ x₀.2) B₀ r (P_set.erase x₀.1)
-      have hh_le_r : h ≤ r := hh_lt.le.trans hrB
-      -- Every aligned `x ∈ Q_set` has the SAME `h`, hence `x.1 ^ x.2 ∣ r - h`.
-      have hall_al_dvd : ∀ x ∈ Q_set, isAligned x → x.1 ^ x.2 ∣ r - h := by
-        intro x hx halx
-        have hx_mem : x ∈ oddPrimePowers P_max := hQ_def ▸ hx
-        obtain ⟨_, hqpx, _, hQPx⟩ := mem_oddPrimePowers_iff.mp hx_mem
-        have hCx_eq : P_set.erase x.1 = clusterPrimes W S x.1 := by rw [hP_def]; rfl
-        obtain ⟨hRx_sub, hRx_sdiff, hx_val, hhx_lt, _, hQx_dvd, hpx_dvd⟩ :=
-          alignedRows_spec (P := P_set) (q := x.1) (K := K) (W := W) (S := S)
-            (Q := x.1 ^ x.2) (B₀ := B₀) (r := r) (M₀ := M₀) hM₀
-            (hCx_eq ▸ hC_card_pos x)
-            (fun p hp => (hcl_bounds x hx p (hCx_eq ▸ hp) p (hCx_eq ▸ hp)).2.2.2)
-            (hammingExp_pos hW (pow_pos hqpx.pos _) hQPx (hS_def ▸ hK_sq))
-            (by simpa only [hCx_eq] using halx)
-        set Rx := alignedRows K W S (x.1 ^ x.2) B₀ r (P_set.erase x.1)
-        -- `R₀ ∩ Rx` has size `≥ m_star`, so an `m_star`-subset `A` forces `hx_val = h`.
-        have hsdiff_inter : P_set \ (R₀ ∩ Rx) ⊆ (P_set \ R₀) ∪ (P_set \ Rx) := by
-          intro p hp
-          obtain ⟨hpP, hpI⟩ := mem_sdiff.mp hp
-          by_cases hp0 : p ∈ R₀
-          · exact mem_union_right _ (mem_sdiff.mpr ⟨hpP, fun hpx => hpI (mem_inter.mpr ⟨hp0, hpx⟩)⟩)
-          · exact mem_union_left _ (mem_sdiff.mpr ⟨hpP, hp0⟩)
-        have hsdiff_le : (P_set \ (R₀ ∩ Rx)).card ≤ (P_set \ R₀).card + (P_set \ Rx).card :=
-          (card_le_card hsdiff_inter).trans (card_union_le _ _)
-        have hinter_part : (P_set \ (R₀ ∩ Rx)).card + (R₀ ∩ Rx).card = P_set.card :=
-          card_sdiff_add_card_eq_card (inter_subset_left.trans hR₀_sub)
-        have hm_le_inter : m_star ≤ (R₀ ∩ Rx).card := by
-          have hM_inter : 8 * M₀ * M₀ ≤ 8 * M₀ * (R₀ ∩ Rx).card := by
-            nlinarith [hR₀_sdiff, hRx_sdiff, hsdiff_le, hinter_part, hP_card_ge, hS_def, hM₀]
-          have : M₀ ≤ (R₀ ∩ Rx).card :=
-            Nat.le_of_mul_le_mul_left hM_inter (by positivity)
-          omega
-        obtain ⟨A, hA_sub_I, hA_card⟩ := exists_subset_card_eq hm_le_inter
-        have hA_mem : A ∈ I_ramp := by
-          rw [hIramp_def, mem_powersetCard]
-          exact ⟨hA_sub_I.trans (inter_subset_left.trans hR₀_sub), hA_card⟩
-        have hB₀_lt_MA := (hramp_bounds A hA_mem).1
-        have hprimes_A : ∀ p ∈ A, Prime p := fun p hp => by
-          have hp_b : p ∈ bertrandPrimes W S :=
-            hP_def ▸ (hA_sub_I.trans (inter_subset_left.trans hR₀_sub)) hp
-          exact (mem_bertrandPrimes.mp hp_b).2.prime
-        have hdvd_0 : A.prod id ∣ r - h := Finset.prod_primes_dvd (r - h) hprimes_A
-          fun p hp => hp₀_dvd p ((mem_inter.mp (hA_sub_I hp)).1)
-        have hdvd_x : A.prod id ∣ r - hx_val := Finset.prod_primes_dvd (r - hx_val) hprimes_A
-          fun p hp => hpx_dvd p ((mem_inter.mp (hA_sub_I hp)).2)
-        have hmod_0 : h = r % A.prod id := by
-          have hm := (Nat.modEq_iff_dvd' hh_le_r).mpr hdvd_0
-          rwa [Nat.mod_eq_of_lt (hh_lt.trans hB₀_lt_MA)] at hm
-        have hmod_x : hx_val = r % A.prod id := by
-          have hm := (Nat.modEq_iff_dvd' (hhx_lt.le.trans hrB)).mpr hdvd_x
-          rwa [Nat.mod_eq_of_lt (hhx_lt.trans hB₀_lt_MA)] at hm
-        have heq_h : hx_val = h := hmod_x.trans hmod_0.symm
-        rwa [heq_h] at hQx_dvd
-      -- Therefore unaligned clusters cover `|tautNear b N r - tautNear b N h|`.
-      have hnear_diff : |tautNear b N r - tautNear b N h| ≤ ∑ x ∈ Q_set, clTerm x r := by
-        have hd := abs_tautNear_sub_le_tautDefect (P_max := P_max) hb_smooth hh_le_r h2_dvd
-        rw [← hQ_def] at hd
-        refine hd.trans (sum_le_sum fun x hx => ?_)
-        split_ifs with hdvd
-        · exact hclTerm_nn x hx r
-        · exact hunaligned_pay x hx fun hal => hdvd (hall_al_dvd x hx hal)
-      rcases eq_or_ne h 0 with rfl | hh0
-      · rw [tautNear_zero, sub_zero] at hnear_diff
-        linarith [(abs_le.mp hnear_diff).1, hrampTerm_nn r]
-      · -- `1 ≤ h < B₀`: at least half of `I_ramp` lies in `R₀`, giving `rampTerm r ≥ 2 Y_n h`.
-        have hbad_half : 2 * (P_set \ R₀).card * m_star ≤ P_set.card := by
-          have h4M : 4 * M₀ * (2 * (P_set \ R₀).card * m_star) ≤ 4 * M₀ * P_set.card := by
-            have h1 : (8 * M₀ * (P_set \ R₀).card) * m_star ≤ (P_set.card + 8 * M₀) * M₀ :=
-              Nat.mul_le_mul (by omega) (by omega)
-            nlinarith [hP_card_ge, hS_def, hM₀]
-          exact Nat.le_of_mul_le_mul_left h4M (by positivity)
-        have hhalf := powersetCard_half_subset hm_lo hm_le_P hbad_half
-        set goodRamp := I_ramp.filter (· ⊆ R₀)
-        have hramp_ge : 2 * Y_n * (h : ℝ) ≤ rampTerm r := by
-          rw [hramp_def]
-          have hsub_sum : ∑ A ∈ goodRamp, ((r % A.prod id : ℕ) : ℝ) ≤
-              ∑ A ∈ I_ramp, ((r % A.prod id : ℕ) : ℝ) :=
-            sum_le_sum_of_subset_of_nonneg (filter_subset _ _) fun _ _ _ => Nat.cast_nonneg _
-          have hgood_eq : ∀ A ∈ goodRamp, ((r % A.prod id : ℕ) : ℝ) = (h : ℝ) := by
-            intro A hA
-            obtain ⟨hAI, hAR⟩ := mem_filter.mp hA
-            have hprimes_A : ∀ p ∈ A, Prime p := fun p hp => by
-              have hp_b : p ∈ bertrandPrimes W S := hP_def ▸ (hR₀_sub (hAR hp))
-              exact (mem_bertrandPrimes.mp hp_b).2.prime
-            have hdvd_h : A.prod id ∣ r - h := Finset.prod_primes_dvd (r - h) hprimes_A
-              fun p hp => hp₀_dvd p (hAR hp)
-            have hm := (Nat.modEq_iff_dvd' hh_le_r).mpr hdvd_h
-            rw [Nat.mod_eq_of_lt (hh_lt.trans (hramp_bounds A hAI).1)] at hm
-            rw [← hm]
-          rw [sum_congr rfl hgood_eq, sum_const, nsmul_eq_mul] at hsub_sum
-          have hhalf_R : (I_ramp.card : ℝ) ≤ 2 * (goodRamp.card : ℝ) := by
-            dsimp [goodRamp]; rw [hIramp_def]; exact_mod_cast hhalf
-          have hcard_pos : (0 : ℝ) < (I_ramp.card : ℝ) := by exact_mod_cast hIramp_pos
-          have hfrac : (1 / 2 : ℝ) ≤ (goodRamp.card : ℝ) / (I_ramp.card : ℝ) := by
-            rw [div_le_div_iff₀ (by norm_num) hcard_pos]; linarith
-          calc 2 * Y_n * (h : ℝ)
-              ≤ 4 * (Y_rat : ℝ) * (1 / 2) * (h : ℝ) := by
-                have hh_nn : (0 : ℝ) ≤ (h : ℝ) := Nat.cast_nonneg h
-                nlinarith
-            _ ≤ 4 * (Y_rat : ℝ) * ((goodRamp.card : ℝ) / (I_ramp.card : ℝ)) * (h : ℝ) :=
-                mul_le_mul_of_nonneg_right
-                  (mul_le_mul_of_nonneg_left hfrac (by linarith)) (Nat.cast_nonneg h)
-            _ = (4 * (Y_rat : ℝ) / (I_ramp.card : ℝ)) * ((goodRamp.card : ℝ) * (h : ℝ)) := by ring
-            _ ≤ (4 * (Y_rat : ℝ) / (I_ramp.card : ℝ)) *
-                  ∑ A ∈ I_ramp, ((r % A.prod id : ℕ) : ℝ) :=
-                mul_le_mul_of_nonneg_left hsub_sum (by positivity)
-        have hnear_h := (abs_le.mp (hnear_X h (by omega)
-          (hh_lt.le.trans (hB₀_le_K.trans hKX)))).1
-        have hdiff_lo := (abs_le.mp hnear_diff).1
-        have hh_nn : (0 : ℝ) ≤ (h : ℝ) := Nat.cast_nonneg h
-        nlinarith
-    · -- No `x ∈ Q_set` is aligned: every `x` pays `D_Q`, covering `-tautNear b N r`.
-      push Not at hex_al
-      have hsum_pay : ∑ x ∈ Q_set, (tautDefect b N (x.1 ^ x.2) : ℝ) ≤ ∑ x ∈ Q_set, clTerm x r :=
-        sum_le_sum fun x hx => hunaligned_pay x hx (hex_al x hx)
-      have hneg_near := neg_sum_tautDefect_le_tautNear hN2 hb2 hb_smooth r
-      rw [← hQ_def] at hneg_near
-      linarith [hrampTerm_nn r]
+  have hB₀_le_X : B₀ ≤ X := hB₀_le_K.trans hKX
   -- Assemble `IsProducer c D_den B₀`, `AlphabetLE c K`, and the rate bound.
   have hP : IsProducer c D_den B₀ := by
-    refine ⟨hc0, hbal, fun r => ?_, hD_pos, hB₀_ge2, fun r hr => ?_⟩
+    refine ⟨hc0, hbal, fun r => ?_, hD_pos, hB₀2, fun r hr => ?_⟩
     · have hR : (0 : ℝ) ≤ (stepWeight c r : ℝ) := by
         rw [hstep r, hval_r r]
-        exact mul_nonneg hDR_pos.le (htot_nn r)
+        exact mul_nonneg hDR_pos.le
+          (hammingTotal_nonneg hN2 hb2 hb_smooth hM₀ hW hK_pos hB₀_pos hS_def (hS_def ▸ hK_sq)
+            hm_lo hm_hi hP_def hP_card_ge hm_le_P hQ_def hIramp_def hIramp_pos hC_card_pos
+            hramp_bounds hcl_bounds hYn_pos.le hYrat_nn hYrat_ge hB₀_le_X hnear_X r)
       exact_mod_cast hR
     · obtain ⟨hr1, hr2⟩ := mem_Ico.mp hr
       have hR : ((D_den : ℤ) : ℝ) ≤ (stepWeight c r : ℝ) := by
         rw [hstep r, hval_r r]
         push_cast
         calc (D_den : ℝ) = (D_den : ℝ) * 1 := (mul_one _).symm
-          _ ≤ _ := mul_le_mul_of_nonneg_left (hwin_ge1 r hr1 hr2) hDR_pos.le
+          _ ≤ _ := mul_le_mul_of_nonneg_left
+              (hammingTotal_win_ge_one hYrat_nn hYrat_ge hIramp_pos hramp_bounds hB₀_le_X hnear_X hr1 hr2)
+              hDR_pos.le
       exact_mod_cast hR
   have halph : AlphabetLE c K := by
     intro k hk
@@ -1499,11 +1596,9 @@ theorem exists_hamming_compensated_producer
       exact (hℓ_bounds u hu).2
   refine ⟨c, D_den, hP, halph, ?_⟩
   have hlogK_nn : 0 ≤ Real.log (K : ℝ) := Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ K))
-  have hlogB_nn : 0 ≤ Real.log (B₀ : ℝ) := Real.log_nonneg (by exact_mod_cast (by omega : 1 ≤ B₀))
   have hslope_near : tautSlope b N ≤
       1 - 1 / (B₀ : ℝ) + Y_n * (1 + Real.log (B₀ : ℝ)) + tautMass b N / (B₀ : ℝ) :=
-    tautSlope_le hB₀_ge2 hYn_pos.le fun s hs1 hsB =>
-      hnear_X s hs1 (hsB.le.trans (hB₀_le_K.trans hKX))
+    tautSlope_le hB₀2 hYn_pos.le fun s hs1 hsB => hnear_X s hs1 (hsB.le.trans hB₀_le_X)
   have hslope_cl : ∑ x ∈ Q_set,
       ((16 * (M₀ : ℝ) * (K : ℝ) / (B₀ : ℝ)) * (tautDefect b N (x.1 ^ x.2) : ℝ)) *
         ((1 / ((clusterPrimes W S x.1).card ^ 2 : ℝ)) *
@@ -1513,27 +1608,27 @@ theorem exists_hamming_compensated_producer
       (16 * (M₀ : ℝ) * (2 ^ (2 * S + 1) : ℝ) * Real.log (K : ℝ) / (B₀ : ℝ)) *
         ((Nat.log 2 N : ℝ) + 1) ^ 2 * tautMass b N := by
     rw [hQ_def]
-    exact hammingCluster_slope_le (by omega) (by omega) hC_card_pos
+    exact hammingCluster_slope_le (by omega) hB₀_pos hC_card_pos
       (fun x hx p₁ hp₁ p₂ hp₂ =>
         ⟨(hcl_bounds x (hQ_def.symm ▸ hx) p₁ hp₁ p₂ hp₂).1,
          (hcl_bounds x (hQ_def.symm ▸ hx) p₁ hp₁ p₂ hp₂).2.1,
          (hcl_bounds x (hQ_def.symm ▸ hx) p₁ hp₁ p₂ hp₂).2.2.1⟩)
   have hslope_ramp : (4 * (Y_rat : ℝ) / (I_ramp.card : ℝ)) *
-      (∑ A ∈ I_ramp, Real.log (A.prod id : ℝ)) ≤ 8 * Y_n * Real.log (K : ℝ) := by
-    have hlog_A : ∀ A ∈ I_ramp, Real.log (A.prod id : ℝ) ≤ Real.log (K : ℝ) := by
+      (∑ A ∈ I_ramp, Real.log ((A.prod id : ℕ) : ℝ)) ≤ 8 * Y_n * Real.log (K : ℝ) := by
+    have hlog_A : ∀ A ∈ I_ramp, Real.log ((A.prod id : ℕ) : ℝ) ≤ Real.log (K : ℝ) := by
       intro A hA
       obtain ⟨hgt, hle⟩ := hramp_bounds A hA
-      have hpos : (0 : ℝ) < (A.prod id : ℝ) := by
-        exact_mod_cast (lt_of_lt_of_le (by omega : 0 < B₀) hgt.le)
+      have hpos : (0 : ℝ) < ((A.prod id : ℕ) : ℝ) := by
+        exact_mod_cast (lt_of_lt_of_le hB₀_pos hgt.le)
       exact Real.log_le_log hpos (by exact_mod_cast hle)
     have hcard_ne : (I_ramp.card : ℝ) ≠ 0 := Nat.cast_ne_zero.mpr hIramp_pos.ne'
-    calc (4 * (Y_rat : ℝ) / (I_ramp.card : ℝ)) * (∑ A ∈ I_ramp, Real.log (A.prod id : ℝ))
+    calc (4 * (Y_rat : ℝ) / (I_ramp.card : ℝ)) * (∑ A ∈ I_ramp, Real.log ((A.prod id : ℕ) : ℝ))
         ≤ (4 * (Y_rat : ℝ) / (I_ramp.card : ℝ)) * ((I_ramp.card : ℝ) * Real.log (K : ℝ)) :=
           mul_le_mul_of_nonneg_left
             ((sum_le_sum hlog_A).trans_eq (by rw [sum_const, nsmul_eq_mul])) (by positivity)
       _ = 4 * (Y_rat : ℝ) * Real.log (K : ℝ) := by field_simp [hcard_ne]
       _ ≤ 8 * Y_n * Real.log (K : ℝ) :=
-          mul_le_mul_of_nonneg_right (by linarith) hlogK_nn
+          mul_le_mul_of_nonneg_right (by linarith only [hYrat_le]) hlogK_nn
   set E_tot := Y_n * (1 + Real.log (B₀ : ℝ)) + 8 * Y_n * Real.log (K : ℝ) +
     tautMass b N / (B₀ : ℝ) +
     (16 * (M₀ : ℝ) * (2 ^ (2 * S + 1) : ℝ) * Real.log (K : ℝ) / (B₀ : ℝ)) *
@@ -1545,6 +1640,6 @@ theorem exists_hamming_compensated_producer
   refine mul_le_mul_of_nonneg_left ?_ hDR_pos.le
   change tautSlope b N + _ + _ ≤ 1 - 1 / (B₀ : ℝ) + E_tot
   dsimp [E_tot]
-  linarith
+  linarith only [hslope_near, hslope_cl, hslope_ramp]
 
 end GaloisForLFunctions.ArithmeticAuxiliaryDynamics
