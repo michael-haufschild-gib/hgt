@@ -1,5 +1,5 @@
 import GaloisForLFunctions.goldbach.LiLiu.ArithmeticKernel
-import GaloisForLFunctions.goldbach.LiLiu.BoundaryTest
+import GaloisForLFunctions.goldbach.LiLiu.MellinWeight
 import GaloisForLFunctions.goldbach.LiLiu.ModelConvolution
-import GaloisForLFunctions.goldbach.LiLiu.SpectralScales
 import GaloisForLFunctions.goldbach.LiLiu.RepresentationBound
+import GaloisForLFunctions.goldbach.LiLiu.SpectralScales

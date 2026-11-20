@@ -103,8 +103,8 @@ theorem gaussian_path_microscopic_circuit_floor :
   have hs := (pow_le_pow_left₀ (mul_nonneg ha.le hnpos.le) hdeficit 2).trans hg
   have hx := hs.trans (mul_le_mul_of_nonneg_left hm (by positivity))
   change a^2/(168*Real.pi^2*b)*N ≤ C.gateCount
-  rw [div_mul_eq_mul_div,(div_le_iff₀ (by positivity))]
-  apply le_of_mul_le_mul_right (a := N) _ hnpos
+  rw [div_mul_eq_mul_div₀,div_le_iff₀ (by positivity)]
+  apply (mul_le_mul_iff_left₀ hnpos).mp
   linarith only [hx]
 
 #print axioms gaussian_path_microscopic_circuit_floor

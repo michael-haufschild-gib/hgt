@@ -1,0 +1,6 @@
+import GaloisForLFunctions.HTGeometry.Quantum.FirstCircuitSaturationBoundary
+import GaloisForLFunctions.HTGeometry.Quantum.PrescribedClockCircuitOccupation
+import GaloisForLFunctions.HTGeometry.Quantum.SpectralSignReturnClock
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPathMicroscopicCircuitFloor
+
+/-! # Circuit complexity along static local Hamiltonian trajectories -/

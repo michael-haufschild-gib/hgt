@@ -56,11 +56,15 @@ private theorem aligned_energy_difference (u : PathShell n) :
     pathDiagEnergy u (alignField u) - pathDiagEnergy u (fun i => !(alignField u i))
       = 2 * ∑ s : Fin (n+2), |u (.inl (s,2))| := by
   let x := alignField u
+  have flip_pair (a b : Bool) :
+      (if !a then (-1:ℝ) else 1) * (if !b then -1 else 1) =
+        (if a then -1 else 1) * (if b then -1 else 1) := by
+    cases a <;> cases b <;> norm_num
   have hedge (e : Fin (n+1)) :
       zSetSign {e.castSucc,e.succ} (fun i => !(x i)) = zSetSign {e.castSucc,e.succ} x := by
     have he : e.castSucc ≠ e.succ := fun h => by have := congrArg Fin.val h; simp at this
     simp only [zSetSign,Finset.prod_insert (Finset.notMem_singleton.mpr he),Finset.prod_singleton]
-    cases x e.castSucc <;> cases x e.succ <;> norm_num
+    exact flip_pair _ _
   change pathDiagEnergy u x - pathDiagEnergy u (fun i => !(x i)) = _
   simp only [pathDiagEnergy,hedge,add_sub_add_right_eq_sub,← Finset.sum_sub_distrib,Finset.mul_sum]
   apply Finset.sum_congr rfl

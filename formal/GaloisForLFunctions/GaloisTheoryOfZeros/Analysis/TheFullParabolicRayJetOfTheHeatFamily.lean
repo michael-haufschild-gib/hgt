@@ -20,7 +20,10 @@ def spacetimeHeatJet (k : ℕ) (p : ℂ × ℂ) := iteratedDeriv k (complexHeat 
 
 theorem analyticAt_spacetimeHeatJet (k : ℕ) (p : ℂ × ℂ) : AnalyticAt ℂ (spacetimeHeatJet k) p := by
   induction k generalizing p with
-  | zero => simpa only [spacetimeHeatJet,iteratedDeriv_zero] using analyticAt_complexHeat p
+  | zero =>
+    rw [show spacetimeHeatJet 0 = fun q : ℂ × ℂ => complexHeat q.1 q.2 from
+      funext fun q => by simp [spacetimeHeatJet]]
+    exact analyticAt_complexHeat p
   | succ k ih =>
     have he : spacetimeHeatJet (k+1) = fun q => fderiv ℂ (spacetimeHeatJet k) q (0,1) := by
       funext q
@@ -73,7 +76,8 @@ theorem derivative_heat_shift_polynomial (t : ℝ) (n : ℕ) :
   | zero => simp [heatShiftPoly_succ]
   | succ n ih =>
     rw [heatShiftPoly_succ t (n+1),derivative_sub,derivative_mul,derivative_X,one_mul,
-      derivative_C_mul,ih,derivative_C_mul,heatShiftPoly_succ t n,Nat.cast_succ,map_add,map_one]
+      derivative_C_mul,ih,derivative_C_mul,heatShiftPoly_succ t n,Nat.cast_succ]
+    simp only [map_add,map_one,map_natCast]
     ring
 
 /-- The monic heat polynomial evaluated at a complex direction. -/
@@ -83,7 +87,9 @@ theorem parabolic_ray_raise (j : ℕ) (y : ℂ) :
     parabolicRayPolynomial (j+1) y = y*parabolicRayPolynomial j y-2*deriv (parabolicRayPolynomial j) y := by
   have h : deriv (parabolicRayPolynomial j) y=aeval y (heatShiftPoly (1/4) j).derivative :=
     ((heatShiftPoly (1/4) j).hasDerivAt_aeval y).deriv
-  rw [h,parabolicRayPolynomial,heatShiftPoly_succ,map_sub,map_mul,map_mul,aeval_X,aeval_C]
+  rw [h]
+  simp only [parabolicRayPolynomial]
+  rw [heatShiftPoly_succ,map_sub,map_mul,map_mul,aeval_X,aeval_C]
   norm_num
 
 theorem parabolic_ray_lower (j : ℕ) (y : ℂ) :
@@ -110,8 +116,9 @@ theorem heat_parabolic_ray_derivative (τ z y : ℂ) (j k : ℕ) :
     have hb : ContDiffAt ℂ (j+1) (fun s => 2*(s*ray τ z y (k+2) s)) 0 :=
       contDiffAt_const.mul (contDiffAt_id.mul (ray_analytic τ z y (k+2) 0).contDiffAt)
     rw [iteratedDeriv_succ',ray_deriv,iteratedDeriv_sub ha hb,
-      iteratedDeriv_const_mul_field,iteratedDeriv_const_mul_field,
-      HTGeometry.iteratedDeriv_id_mul_zero (hf (k+2)) j,h₁ (k+1),h₀ (k+2),
+      iteratedDeriv_const_mul_field,iteratedDeriv_const_mul_field]
+    beta_reduce
+    rw [HTGeometry.iteratedDeriv_id_mul_zero (hf (k+2)) j,h₁ (k+1),h₀ (k+2),
       parabolic_ray_raise (j+1),parabolic_ray_lower]
     rw [show k+1+(j+1)=k+(j+2) by omega,show k+2+j=k+(j+2) by omega]
     ring

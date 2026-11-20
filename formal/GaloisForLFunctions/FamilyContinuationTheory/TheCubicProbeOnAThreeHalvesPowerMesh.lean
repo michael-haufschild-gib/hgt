@@ -44,7 +44,7 @@ private theorem cubic_chords (𝔪 : Modulus K) (η : HeckeCharacter 𝔪) (S : 
     have g : DifferentiableAt ℂ G s := ((by fun_prop : DifferentiableAt ℂ (fun z : ℂ => Complex.exp (z^2)) s).mul d).div
       (differentiableAt_heckeLFunction 𝔪 η (ne_one_of_one_lt_re hs))
       (heckeLFunction_ne_zero_of_one_lt_re 𝔪 η hs)
-    exact g.continuousAt.comp continuous_linePoint.continuousAt
+    exact ContinuousAt.comp (x := y) (f := linePoint) g.continuousAt continuous_linePoint.continuousAt
   apply mellin_signal_chord_bound gcont
   let L := Real.exp (-(3 / 2 * ∑' v : HeightOneSpectrum (𝓞 K),
     ‖((v.asIdeal.absNorm : ℂ) ^ (-(2 : ℂ)))‖))
@@ -69,7 +69,8 @@ private theorem cubic_chords (𝔪 : Modulus K) (η : HeckeCharacter 𝔪) (S : 
   have gauss₀ : Integrable (fun y : ℝ => Real.exp (-y^2)) := by
     simpa using _root_.RHTower.integrable_pow_mul_exp_neg_sq 0
   have gi := ((gauss₀.const_mul 4).add (_root_.RHTower.integrable_pow_mul_exp_neg_sq 2)).const_mul C
-  apply gi.mono' (by fun_prop)
+  apply gi.mono' ((continuous_const.add (continuous_linePoint.norm.mul
+    (continuous_linePoint.sub continuous_const).norm)).mul gcont.norm).aestronglyMeasurable
   apply Eventually.of_forall
   intro y
   let s := linePoint y
@@ -77,7 +78,9 @@ private theorem cubic_chords (𝔪 : Modulus K) (η : HeckeCharacter 𝔪) (S : 
   have h₂ : ‖s-1‖^2=1+y^2 := by
     rw [Complex.sq_norm,Complex.normSq_apply,sub_re,sub_im,one_re,one_im,linePoint_re,linePoint_im]; ring
   have freq : 1+‖s‖*‖s-1‖ ≤ 4+y^2 := by nlinarith only [h₁,h₂,sq_nonneg (‖s‖-‖s-1‖)]
-  rw [Real.norm_of_nonneg (by positivity)]
+  show ‖(1 + ‖linePoint y‖ * ‖linePoint y - 1‖) * ‖G (linePoint y)‖‖ ≤
+    C * (4 * Real.exp (-y^2) + y^2 * Real.exp (-y^2))
+  rw [Real.norm_of_nonneg (by positivity : (0:ℝ) ≤ (1 + ‖linePoint y‖ * ‖linePoint y - 1‖) * ‖G (linePoint y)‖)]
   exact (mul_le_mul freq (gauss y) (norm_nonneg _) (by positivity)).trans_eq (by
     change (4+y^2)*(C*Real.exp (-y^2))=C*(4*Real.exp (-y^2)+y^2*Real.exp (-y^2)); ring)
 
@@ -129,7 +132,7 @@ theorem cubic_probe_three_halves_sampling (𝔪 : Modulus K) (η : HeckeCharacte
     eventually_ge_atTop (1:ℝ)] with x high x1
   let n := ⌊x^(2/3:ℝ)⌋₊
   have nN : N ≤ n := Nat.le_floor ((le_max_left ..).trans high)
-  have np : 1 ≤ n := Nat.le_floor (by exact_mod_cast (le_max_right ..).trans high : (1:ℝ) ≤ x^(2/3:ℝ))
+  have np : 1 ≤ n := Nat.le_floor (by simpa only [Nat.cast_one] using (le_max_right (N:ℝ) 1).trans high)
   have n1 := (Nat.one_le_cast (α:=ℝ)).mpr np
   have x0 := zero_lt_one.trans_le x1
   have inv : (x^(2/3:ℝ))^(3/2:ℝ)=x := by rw [←Real.rpow_mul x0.le]; norm_num
@@ -148,7 +151,7 @@ theorem cubic_probe_three_halves_sampling (𝔪 : Modulus K) (η : HeckeCharacte
   have right : mesh n+gap=mesh (n+1) := by dsimp only [gap]; ring
   have base : 0 < mesh n := Real.rpow_pos_of_pos (zero_lt_one.trans_le n1) _
   have cap : mesh (n+1) ≤ 4*x := by
-    have h := Real.rpow_le_rpow (Nat.cast_nonneg (n+1)) (b := 2*(n:ℝ))
+    have h := Real.rpow_le_rpow (Nat.cast_nonneg (n+1)) (y := 2*(n:ℝ))
       (by rw [Nat.cast_succ]; linarith only [n1]) (by norm_num : (0:ℝ) ≤ 3/2)
     rw [Real.mul_rpow (by norm_num : (0:ℝ)≤2) (Nat.cast_nonneg n)] at h
     have h2 := (Real.rpow_le_rpow_of_exponent_le (by norm_num : (1:ℝ)≤2)

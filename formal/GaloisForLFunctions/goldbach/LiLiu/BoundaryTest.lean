@@ -12,7 +12,7 @@ theorem boundaryTest_continuous (φ : TestWeight) {N : ℕ} (hN : 0 < N) :
     Continuous (boundaryTest φ N) := by
   have h0 : (N : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr hN.ne'
   have hs : Continuous (fun t : ℝ => (leftEdge N : ℂ) + t * I) := by fun_prop
-  exact (((continuous_const.cpow hs (fun _ => Or.inl h0)).mul
+  exact ((hs.const_cpow (Or.inl h0)).mul
     ((mellin_companion_differentiable φ).continuous.comp hs)).mul (continuous_const.add hs)
 
 /-- Uniform domination by a fixed integrable function on the Mellin line. -/

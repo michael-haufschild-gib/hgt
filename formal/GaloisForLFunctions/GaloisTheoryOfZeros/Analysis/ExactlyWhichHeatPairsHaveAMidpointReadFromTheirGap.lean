@@ -50,8 +50,8 @@ private theorem sheet_origin_derivative {τ z ρ : ℂ} {m : ℕ} (hc : IsCollis
     (hr : heatModelFwd m ρ=0) : HasDerivAt (collisionZero τ z m ρ) ρ 0 := by
   obtain ⟨hY,h₀,_,_⟩ := collisionBranch_spec hc hr
   have h := ((hasDerivAt_id (0:ℂ)).mul hY.differentiableAt.hasDerivAt).const_add z
-  have he : (fun w => z+(id * collisionBranch τ z m ρ) w)=collisionZero τ z m ρ := by funext w; rfl
-  simpa only [he,id_eq,h₀,one_mul,zero_mul,add_zero] using h
+  simp only [id_eq,h₀,one_mul,zero_mul,add_zero] at h
+  exact h
 
 /-- Among distinct sheets, the signed roots must be opposites exactly
 when the unordered squared gap determines the midpoint near the collision. -/

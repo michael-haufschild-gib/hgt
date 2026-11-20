@@ -60,6 +60,7 @@ theorem norm_le_singularSeries_div_of_exclusion {N : ℕ} (hN : 1 < N) {h : ℕ 
     (mul_le_mul_iff_left₀ hL).mp (by linarith only [hle])
   exact (le_div_iff₀ hh).mpr (le_of_sq_le_sq hsq hS.le)
 
+omit [CompleteSpace H] in
 /-- Critical-line zeros exclude every admissible open half-space. -/
 theorem zeroFree_of_critical {N : ℕ} {h : ℕ → ℝ} (hw : exclusionWidth h N ≤ 1 / 4)
     {T : H →L[ℂ] H} [Fact (IsCompactOperator T)]

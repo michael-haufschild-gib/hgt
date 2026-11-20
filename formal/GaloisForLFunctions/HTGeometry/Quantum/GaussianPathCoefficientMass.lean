@@ -69,7 +69,8 @@ private theorem disorder_sq_le (ω : PathPauliDisorder) (n : ℕ) :
     (∑ e : Fin (n+1), ∑ a : Fin 3, ∑ b : Fin 3, (ω (e.val,.inr (a,b)))^2) ≤ _
   apply add_le_add
   · rw [Finset.sum_comm]
-    exact le_of_eq (Finset.sum_congr rfl fun a _ => Fin.sum_univ_eq_sum_range _ _)
+    exact le_of_eq (Finset.sum_congr rfl fun a _ =>
+      Fin.sum_univ_eq_sum_range (fun i => (ω (i,.inl a))^2) (n+2))
   · rw [Fin.sum_univ_eq_sum_range (fun e => ∑ a : Fin 3, ∑ b : Fin 3, (ω (e,.inr (a,b)))^2)]
     calc
       _ ≤ ∑ e ∈ Finset.range (n+2), ∑ a : Fin 3, ∑ b : Fin 3, (ω (e,.inr (a,b)))^2 :=
