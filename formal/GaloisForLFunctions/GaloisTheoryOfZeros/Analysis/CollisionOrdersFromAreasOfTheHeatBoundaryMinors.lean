@@ -42,7 +42,9 @@ theorem IsCollision.contour_minor_area_laws {τ z : ℂ} {m : ℕ} (hc : IsColli
     obtain ⟨r,hr,h⟩ := analytic_germ_derivative_disk_area ha hn j
     refine ⟨r,hr,fun s hs hsr => ?_⟩
     rw [if_pos hm]
-    simpa only [hord,ENat.toNat_coe] using h s hs hsr
+    have h' := h s hs hsr
+    rw [show analyticOrderAt F 0 = ((q.choose 2 : ℕ) : ℕ∞) from hord, ENat.toNat_coe] at h'
+    exact h'
   · obtain ⟨r,hr,he⟩ := zero_germ_derivative_disk_area ((hd q).2 (lt_of_not_ge hm)) j
     refine ⟨r,hr,fun s _ hs => ?_⟩
     rw [if_neg hm]

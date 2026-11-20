@@ -21,7 +21,8 @@ private theorem gateLift_inv {n : ℕ} (a b : Fin n) (h : a ≠ b)
   apply Subtype.ext
   change Matrix.reindex e e (Matrix.kronecker U.valᴴ 1) =
     (Matrix.reindex e e (Matrix.kronecker U.val 1))ᴴ
-  rw [Matrix.conjTranspose_reindex,Matrix.conjTranspose_kronecker,Matrix.conjTranspose_one]
+  simp only [Matrix.kronecker,Matrix.conjTranspose_reindex,Matrix.conjTranspose_kronecker,
+    Matrix.conjTranspose_one]
 
 private theorem ofFn_rev {α : Type*} {r : ℕ} (f : Fin r → α) :
     List.ofFn (fun i => f i.rev) = (List.ofFn f).reverse := by
@@ -40,8 +41,10 @@ theorem TwoQubitCircuit.adjoint_eval {n : ℕ} (C : TwoQubitCircuit n) :
     gateLift_inv _ _ _ _
   change (List.ofFn fun i => C.adjoint.architecture.gateLift i (C.adjoint.gates i)).reverse.prod =
     (List.ofFn g).reverse.prod⁻¹
-  simp only [h,ofFn_rev (fun i => (g i)⁻¹),List.reverse_reverse,List.prod_inv_reverse,
-    List.map_reverse,List.reverse_reverse,List.map_ofFn,Function.comp_def]
+  simp only [h,List.prod_inv_reverse,List.map_reverse,List.reverse_reverse,List.map_ofFn,Function.comp_def]
+  let f (i : Fin C.gateCount) := (g i)⁻¹
+  change (List.ofFn (fun i => f i.rev)).reverse.prod = (List.ofFn f).prod
+  rw [ofFn_rev f,List.reverse_reverse]
 
 /-- A gate approximation at time t gives one of equal cost and error at −t. -/
 theorem HasProjectiveCircuitApproximation.neg_time {n P : ℕ} {ε t : ℝ}

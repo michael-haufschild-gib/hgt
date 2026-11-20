@@ -58,19 +58,23 @@ theorem continuedProfileDensity_strip_bound (N : ℕ) (φ : TestWeight) {a : ℝ
   apply extend_height_bound (D := C*(2*D))
     (fun s hs => (continuedProfileDensity_differentiableAt N φ (ha.trans_le hs.1)).continuousAt)
   intro s hs ht
-  have hne : s ≠ 1 := by intro H; simp [H] at ht
+  have hne : s ≠ 1 := by intro H; norm_num [H] at ht
   have hζ := _root_.RHTower.norm_riemannZeta_le_of_re_pos (ha.trans_le hs.1)
     (by linarith only [hs.2]) ht
   rw [Complex.re_add_im] at hζ
   have hquot := div_le_div_of_nonneg_left (by positivity : 0 ≤ 2 * |s.im|) ha hs.1
-  have hz : ‖riemannZeta s‖ ≤ (1+2/a)*|s.im| := by linarith only [hζ,hquot,ht]
+  have hz : ‖riemannZeta s‖ ≤ (1+2/a)*|s.im| := calc
+    _ ≤ 2 + 2*|s.im|/s.re := hζ
+    _ ≤ |s.im| + 2*|s.im|/a := add_le_add ht hquot
+    _ = _ := by ring
   have h2 : 1+s.im^2 ≤ 2*|s.im|^2 := by nlinarith only [sq_abs s.im, ht, sq_nonneg (|s.im|-1)]
   rw [continuedProfileDensity_eq hne, norm_mul, norm_mul, norm_mul, Complex.norm_real,
     Real.norm_eq_abs, abs_of_pos (singularSeries_pos _)]
   calc
     _ ≤ singularSeries N * ((1+2/a)*|s.im|) * E * ‖profileMellin φ s‖ * (2*|s.im|^2) := by
-      gcongr
-      exact he N _ hs.1
+      have hS := (singularSeries_pos N).le
+      have hEuler := he N s hs.1
+      gcongr <;> first | positivity | assumption
     _ = C * (2*(|s.im|^3 * ‖profileMellin φ s‖)) := by dsimp [C]; ring
     _ ≤ _ := by gcongr; exact hd s (ha.trans_le hs.1) hs.2 (by linarith only [ht])
 

@@ -39,6 +39,7 @@ theorem integrated_weight_inversion {X : Type*} [MeasurableSpace X] (μ : Measur
     (φ : TestWeight) (σ : ℝ) {q : X → ℝ} {W : X → ℂ}
     (hq : Measurable q) (hW : Measurable W) (hp : ∀ᵐ x ∂μ, 0 < q x)
     (hi : Integrable (fun x => ‖W x‖ * q x ^ (-(1/2+σ))) μ) :
+    Integrable (fun x => W x * (φ (q x) : ℂ)) μ ∧
     (∫ x, W x * (φ (q x) : ℂ) ∂μ) = (1/(2*Real.pi) : ℂ) * ∫ t : ℝ,
       (∫ x, W x * (q x : ℂ)^(-(1/2+((σ:ℂ)+t*I))) ∂μ) *
         mellin (companion φ) ((σ:ℂ)+t*I) := by
@@ -60,13 +61,17 @@ theorem integrated_weight_inversion {X : Type*} [MeasurableSpace X] (μ : Measur
     simp only [Function.uncurry, F, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hp]
     have hre : (-(1/2+line σ p.2)).re = -(1/2+σ) := by norm_num [line]
     rw [hre]
+  have he : (fun x => W x * (φ (q x) : ℂ)) =ᵐ[μ]
+      fun x => (1/(2*Real.pi) : ℂ) * ∫ t : ℝ, F x t := by
+    filter_upwards [hp] with x hx
+    simp only [F, M, mul_assoc, integral_const_mul, weight_inversion φ σ hx]
+    ring
+  refine ⟨(hFi.integral_prod_left.const_mul _).congr he.symm, ?_⟩
   calc
     _ = (1/(2*Real.pi) : ℂ) * ∫ x, ∫ t : ℝ, F x t ∂volume ∂μ := by
       rw [← integral_const_mul]
       apply integral_congr_ae
-      filter_upwards [hp] with x hx
-      simp only [F, M, mul_assoc, integral_const_mul, weight_inversion φ σ hx]
-      ring
+      exact he
     _ = _ := by
       rw [integral_integral_swap hFi]
       simp only [F, integral_mul_const, M, line]
@@ -78,20 +83,21 @@ theorem product_weight_inversion (μ ν : Measure ℝ) [SFinite μ] [SFinite ν]
     (hμ : ∀ᵐ x ∂μ, 0 < x) (hν : ∀ᵐ x ∂ν, 0 < x)
     (hI : Integrable (fun x => ‖A x‖ * x ^ (-(1/2+σ))) μ)
     (hJ : Integrable (fun x => ‖B x‖ * x ^ (-(1/2+σ))) ν) :
-    (∫ p : ℝ × ℝ, A p.1 * B p.2 * (φ (p.1*p.2) : ℂ) ∂μ.prod ν) =
+    (∫ x, ∫ y, A x * B y * (φ (x*y) : ℂ) ∂ν ∂μ) =
       (1/(2*Real.pi) : ℂ) * ∫ t : ℝ,
         (∫ x, A x * (x:ℂ)^(-(1/2+((σ:ℂ)+t*I))) ∂μ) *
         (∫ y, B y * (y:ℂ)^(-(1/2+((σ:ℂ)+t*I))) ∂ν) *
         mellin (companion φ) ((σ:ℂ)+t*I) := by
   have hx : ∀ᵐ p ∂μ.prod ν, 0 < p.1 := Measure.quasiMeasurePreserving_fst.ae hμ
   have hy : ∀ᵐ p ∂μ.prod ν, 0 < p.2 := Measure.quasiMeasurePreserving_snd.ae hν
-  rw [integrated_weight_inversion (μ.prod ν) φ σ (measurable_fst.mul measurable_snd)
+  obtain ⟨hi,he⟩ := integrated_weight_inversion (μ.prod ν) φ σ (measurable_fst.mul measurable_snd)
     ((hA.comp measurable_fst).mul (hB.comp measurable_snd))
     (hx.and hy |>.mono fun _ h => mul_pos h.1 h.2) (by
       apply (hI.mul_prod hJ).congr
       filter_upwards [hx,hy] with p hx hy
       simp only [norm_mul, Real.mul_rpow hx.le hy.le]
-      ring)]
+      ring)
+  rw [← integral_prod _ hi, he]
   congr 1
   apply integral_congr_ae
   filter_upwards with t

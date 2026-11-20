@@ -121,14 +121,15 @@ theorem gaussian_pauli_chain_early_cost_excursions_and_returns :
       with k hk he
   refine ⟨?_,excursion_of_projective_spectrum (by omega) he _ (hω k)⟩
   obtain ⟨i,j,hmax,hlo,hhi,hwin⟩ := hk
+  have hthree : (1:ℝ)+2 = 3 := by norm_num
   refine ⟨i,j,hmax,?_,?_,?_⟩
-  · simpa only [Nat.cast_add,Nat.cast_one,Nat.cast_ofNat,add_assoc] using hlo
-  · simpa only [Nat.cast_add,Nat.cast_one,Nat.cast_ofNat,add_assoc] using hhi
+  · simpa only [Nat.cast_add,Nat.cast_one,Nat.cast_ofNat,add_assoc,hthree] using hlo
+  · simpa only [Nat.cast_add,Nat.cast_one,Nat.cast_ofNat,add_assoc,hthree] using hhi
   intro τ hτ
-  have hh := hwin τ (by simpa only [Nat.cast_add,Nat.cast_one,Nat.cast_ofNat,add_assoc] using hτ)
+  have hh := hwin τ (by simpa only [Nat.cast_add,Nat.cast_one,Nat.cast_ofNat,add_assoc,hthree] using hτ)
   refine ⟨hh.1,?_⟩
   intro C z herr
-  simpa only [Nat.cast_add,Nat.cast_one,Nat.cast_ofNat,add_assoc] using hh.2 C z herr
+  simpa only [Nat.cast_add,Nat.cast_one,Nat.cast_ofNat,add_assoc,hthree] using hh.2 C z herr
 
 #print axioms gaussian_pauli_chain_early_cost_excursions_and_returns
 end

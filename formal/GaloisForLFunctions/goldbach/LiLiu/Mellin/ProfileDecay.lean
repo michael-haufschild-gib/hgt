@@ -66,6 +66,7 @@ private theorem profileMellin_eq_interval (φ : TestWeight) (s : ℂ) :
   apply setIntegral_eq_of_subset_of_forall_sdiff_eq_zero measurableSet_Ioi (fun _ h => h.1)
   intro x hx
   have h2 : 2 < x := lt_of_not_ge fun h => hx.2 ⟨hx.1,h⟩
+  change (x:ℂ)^(s-1) * profile φ x = 0
   rw [profile_zero_above φ (by linarith only [h2] : 3/2 < x), mul_zero]
 
 /-- The cubic integration-by-parts identity includes the lower endpoint exactly. -/
@@ -95,10 +96,10 @@ theorem profileMellin_third_derivative (φ : TestWeight) {s : ℂ} (hs : 0 < s.r
       simp only [truncatedMellin, iteratedDeriv_succ, iteratedDeriv_zero, add_sub_cancel_right]
 
 /-- A common O(|t|⁻³) bound on any bounded range of positive real parts. -/
-theorem profileMellin_height_bound (φ : TestWeight) {b : ℝ} (hb : 0 < b) :
+theorem profileMellin_height_bound (φ : TestWeight) {b : ℝ} (_hb : 0 < b) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ s : ℂ, 0 < s.re → s.re ≤ b → 1 ≤ |s.im| →
       |s.im| ^ 3 * ‖profileMellin φ s‖ ≤ C := by
-  have hf := (profile_smooth φ).continuous_iteratedDeriv 3 (by simp)
+  have hf := (profile_smooth φ).continuous_iteratedDeriv 3 (WithTop.coe_le_coe.mpr le_top)
   obtain ⟨M,hM⟩ := isCompact_Icc.exists_bound_of_continuousOn (s := Icc (0:ℝ) 2) hf.continuousOn
   have hM0 : 0 ≤ M := (norm_nonneg _).trans (hM 0 (by norm_num))
   refine ⟨2*(2^(b+2)*M), by positivity, ?_⟩
