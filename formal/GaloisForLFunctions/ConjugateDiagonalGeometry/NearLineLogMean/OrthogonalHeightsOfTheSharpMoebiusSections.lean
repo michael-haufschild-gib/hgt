@@ -193,8 +193,12 @@ theorem harmonic_gram_error_on_a_band (S : Finset ℤ) (a b : ℤ → ℂ) {R X 
       (Real.log_pos hX).le
     have h' := h.trans (add_le_add_right hg _)
     dsimp only [K,G,c,d,E]
-    split_ifs at h' ⊢ <;> simp only [mul_zero,mul_one] at h' <;>
-      convert h' using 1 <;> ring
+    have hE : 104*X/L+12*X^(-(1/2:ℝ))+24*(R*(2*Real.pi))/Real.log X =
+        104*X/L+12*X^(-(1/2:ℝ))+48*Real.pi*R/Real.log X := by ring
+    rw [hE] at h'
+    split_ifs at h' ⊢
+    · simpa only [mul_one] using h'
+    · simpa only [mul_zero,sub_zero] using h'
   have hdiag (i : ℤ) (hi : i∈S) : (∑ j∈S,a i*conj (b j)*(if i=j then d else 0))=d*(a i*conj (b i)) := by
     rw [sum_eq_single_of_mem i hi]
     · rw [if_pos rfl];ring

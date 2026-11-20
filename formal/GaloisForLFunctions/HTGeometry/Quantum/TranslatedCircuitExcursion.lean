@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.NearHilbertContinuousCircuitEntropyLaw
 import GaloisForLFunctions.HTGeometry.ProjectiveContinuousCircuitConeLaw
-import GaloisForLFunctions.HTGeometry.ContinuousPlateauGrid
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.ReferenceGrid
 import GaloisForLFunctions.RHTower.PairQubitProjectiveSeedLocalCompilerData
 
 /-!
@@ -115,32 +115,7 @@ theorem translatedNet_physical_hard_window {n d s : ℕ}
   refine ⟨G,hG,?_⟩
   intro a
   obtain ⟨u,hu,z,hz,hclose⟩ := hh a
-  refine ⟨u,hu,?_⟩
-  intro t ht c hc C hC
-  obtain ⟨j,hj⟩ := exists_plateauGrid_near hm u ht
-  let v := u + τ j
-  have hstep : ‖unitaryEvolution (H : QMat n) t - unitaryEvolution H v‖ ≤ 1/40 :=
-    (norm_unitaryEvolution_time_sub_le H.2 t v).trans
-      ((mul_le_mul_of_nonneg_left hj (norm_nonneg _)).trans hspeed)
-  have hprod : unitaryEvolution (H : QMat n) u * (U j : QMat n) =
-      unitaryEvolution H v := by
-    simpa only [v, add_sub_cancel_right] using unitaryEvolution_sub_mul H v (τ j)
-  have hnear : ‖unitaryEvolution (H : QMat n) v - z • (B * (U j : QMat n))‖ < 1/40 := by
-    rw [← hprod, ← Matrix.smul_mul, ← sub_mul, CStarRing.norm_mul_coe_unitary]
-    exact hclose
-  have hfar := hx j (z⁻¹*c) (by rw [norm_mul,norm_inv,hz,hc,inv_one,one_mul]) C hC
-  have hfactor : z • (B * (U j : QMat n) - (z⁻¹*c) • (C.eval : QMat n)) =
-      z • (B * (U j : QMat n)) - c • (C.eval : QMat n) := by
-    rw [smul_sub, smul_smul, ← mul_assoc, mul_inv_cancel₀ (norm_ne_zero_iff.mp (by rw [hz]; exact one_ne_zero)), one_mul]
-  have hfar' : 3/20 < ‖z • (B * (U j : QMat n)) - c • (C.eval : QMat n)‖ := by
-    rw [← hfactor, norm_smul, hz, one_mul]
-    exact hfar
-  have htri := norm_sub_le_norm_sub_add_norm_sub (z • (B * (U j : QMat n)))
-    (unitaryEvolution (H : QMat n) v) (c • (C.eval : QMat n))
-  have htri' := norm_sub_le_norm_sub_add_norm_sub (unitaryEvolution (H : QMat n) v)
-    (unitaryEvolution H t) (c • (C.eval : QMat n))
-  rw [norm_sub_rev] at hnear hstep
-  linarith only [htri,htri',hnear,hstep,hfar']
+  exact ⟨u,hu,circuit_window_of_reference_grid H B z u W mesh hz hm hspeed hclose.le hx⟩
 
 /-- Increasing the allowed gate count from r to 2r pays for (r+1)^(2r)
 different translations of the entire smaller circuit net. -/

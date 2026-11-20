@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.AbsoluteCircuitClock
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.DatedExcursion
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.ReflectionVisitPacking
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PersistentCircuitFloor
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.CircuitCellAverage

@@ -170,7 +170,7 @@ private theorem leafMean_response (ε : CenterMass) {k : ℕ} (x : Boundary k) :
   rw [← Finset.sum_div, Finset.sum_sub_distrib, Finset.sum_const, Finset.card_univ,
     Fintype.card_fin, nsmul_eq_mul]
   change _ = ((∑ i : Fin (k + 1), x (some i)) / ((k + 1 : ℕ) : ℝ) - x none) / _
-  field_simp [(leafCount_pos k).ne', (leafMass_pos ε).ne'] <;> ring
+  field_simp [(leafCount_pos k).ne', (leafMass_pos ε).ne']
 
 /-- Response measured in the invariant sector equals response to the projected data. -/
 theorem symmetrize_response (ε : CenterMass) {k : ℕ} (x : Boundary k) :
@@ -298,6 +298,24 @@ theorem symmetrize_contrastBasis {k : ℕ} (j : Fin k) :
   | none => rfl
   | some i => exact contrastBasis_mean j
 
+/-- The only zero-response data on the connected star are constants. -/
+theorem response_eq_zero_iff (ε : CenterMass) {k : ℕ} (x : Boundary k) :
+    response ε k x = 0 ↔ ∀ i, x i = x none := by
+  constructor
+  · intro h i
+    cases i with
+    | none => rfl
+    | some i =>
+      have hi := congrFun h (some i)
+      rw [response_leaf, Pi.zero_apply, div_eq_iff (leafMass_pos ε).ne', zero_mul] at hi
+      exact sub_eq_zero.mp hi
+  · intro h
+    have hm := leafMean_eq_const x (x none) (fun i => h (some i))
+    funext i
+    cases i with
+    | none => simp [hm]
+    | some i => simp [h (some i)]
+
 /-- The full positive spectrum has only the invariant level and, when there is
 more than one leaf, the independent contrast level. -/
 theorem positive_level_iff (ε : CenterMass) (k : ℕ) (r : ℝ) :
@@ -313,8 +331,12 @@ theorem positive_level_iff (ε : CenterMass) (k : ℕ) (r : ℝ) :
     intro i
     by_cases hk : k = 0
     · subst k
+      have hsame (j : Fin (0 + 1)) : j = i := Fin.ext (by
+        have hi := i.isLt
+        have hj := j.isLt
+        omega)
       exact (leafMean_eq_const x (x (some i))
-        (fun j => congrArg (fun j => x (some j)) (Subsingleton.elim j i))).symm
+        (fun j => congrArg (fun j => x (some j)) (hsame j))).symm
     · have hm := congrArg (leafMean k) heig
       have hi := congrFun heig (some i)
       rw [leafMean_response, map_smul, smul_eq_mul] at hm
@@ -338,7 +360,8 @@ are symmetry breaking while the invariant positive level grows without bound. -/
 theorem exists_unbounded_invariant_gap_with_bounded_contrasts (k : ℕ) (R : ℝ) :
     ∃ ε : CenterMass, R < invariantLevel ε ∧ 0 < lowLevel ε ∧ lowLevel ε < 2 ∧
       ∃ v : Fin k → Boundary k, LinearIndependent ℝ v ∧
-        ∀ j, response ε k (v j) = lowLevel ε • v j ∧ ¬ Invariant (v j) := by
+        ∀ j, response ε k (v j) = lowLevel ε • v j ∧
+          ¬ Invariant (v j) ∧ symmetrize k (v j) = 0 := by
   let a := |R| + 3
   have ha : 0 < a := by dsimp [a]; positivity
   have hhalf : a⁻¹ < (1 : ℝ) / 2 := by
@@ -348,7 +371,7 @@ theorem exists_unbounded_invariant_gap_with_bounded_contrasts (k : ℕ) (R : ℝ
   let ε : CenterMass := ⟨a⁻¹, inv_pos.mpr ha, hhalf⟩
   refine ⟨ε, ?_, div_pos one_pos (leafMass_pos ε), ?_, contrastBasis,
     contrastBasis_independent k, fun j => ⟨contrastBasis_eigen ε j,
-      contrastBasis_not_invariant j⟩⟩
+      contrastBasis_not_invariant j, symmetrize_contrastBasis j⟩⟩
   · have hh : (ε : ℝ)⁻¹ ≤ invariantLevel ε := by
       rw [inv_eq_one_div, invariantLevel]
       exact div_le_div_of_nonneg_left zero_le_one

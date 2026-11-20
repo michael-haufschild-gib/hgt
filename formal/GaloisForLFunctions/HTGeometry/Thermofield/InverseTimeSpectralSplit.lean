@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Thermofield.ThermalReturnPlateau
+import GaloisForLFunctions.HTGeometry.FiniteWindowOneKnobUniformity
 
 /-!
 # Inverse-time splitting of thermofield collisions
@@ -7,7 +8,8 @@ In the finite spectral counterpart of scale separation in arXiv:2611.25720,
 fixed nonzero replica gaps dephase. A splitting proportional to the inverse
 observation time keeps a finite phase within each resonant block. The limit
 retains the Gibbs weights of the unsplit spectrum and resolves the internal
-gaps by the symmetric-window sinc kernel.
+gaps by the symmetric-window sinc kernel. The affine exceptional set identifies
+the same joint collision mass in the limit of fixed nonzero perturbations.
 -/
 
 open Filter Topology
@@ -81,9 +83,8 @@ private theorem continuous_replicaMultiplicityWeight (p q : α → ℕ) :
   fun_prop
 
 omit [DecidableEq α] in
-private theorem tendsto_GibbsWeight_inverseTime (β τ : ℝ) (E F : α → ℝ) :
-    Tendsto (fun T => finiteGibbsStateWeight β (inverseTimeSpectrum E F τ T))
-      atTop (𝓝 (finiteGibbsStateWeight β E)) := by
+private theorem continuousAt_gibbsWeight (β : ℝ) (E : α → ℝ) :
+    ContinuousAt (finiteGibbsStateWeight β) E := by
   refine tendsto_pi_nhds.mpr fun i => ?_
   have hterm (j : α) : Continuous (fun e : α → ℝ => Real.exp (-β * e j)) := by fun_prop
   have hpart : Continuous (finiteGibbsPartition (α := α) β) := by
@@ -92,7 +93,7 @@ private theorem tendsto_GibbsWeight_inverseTime (β τ : ℝ) (E F : α → ℝ)
   have hquot : ContinuousAt (fun e : α → ℝ => finiteGibbsStateWeight β e i) E := by
     unfold finiteGibbsStateWeight
     exact (hterm i).continuousAt.div hpart.continuousAt (finiteGibbsPartition_pos β E).ne'
-  exact hquot.tendsto.comp (tendsto_inverseTimeSpectrum E F τ)
+  exact hquot.tendsto
 
 /-- Finite crossover mass. Only exactly resonant coarse replica pairs contribute,
 with their fine gaps resolved at the scaled window size. -/
@@ -117,7 +118,7 @@ theorem thermalReplicaMean_tendsto_inverseTimeSpectrum
   refine tendsto_finsetSum _ fun p _ => tendsto_finsetSum _ fun q _ => ?_
   have hw := Complex.continuous_ofReal.continuousAt.tendsto.comp
     ((continuous_replicaMultiplicityWeight p q).continuousAt.tendsto.comp
-      (tendsto_GibbsWeight_inverseTime β τ E F))
+      ((continuousAt_gibbsWeight β E).tendsto.comp (tendsto_inverseTimeSpectrum E F τ)))
   have hphase := tendsto_symmetricPhaseAverage_inverseTime
     (replicaMultiplicityEnergy E p - replicaMultiplicityEnergy E q)
     (replicaMultiplicityEnergy F p - replicaMultiplicityEnergy F q) τ
@@ -188,9 +189,149 @@ theorem partitionReturnMean_tendsto_inverseTimeSpectrum (β τ : ℝ) (E F : α 
     finiteSpectralSurvivalFidelity, survival_eq_partition_ratio, pow_one] using
     thermalReplicaMean_tendsto_inverseTimeSpectrum β τ E F 1
 
+omit [DecidableEq α] [Nonempty α] in
+private theorem affine_gap (E F : α → ℝ) (s : ℝ) (p q : α → ℕ) :
+    oneKnobDetuning (affineSpectrum E F) s p q =
+      (replicaMultiplicityEnergy E p - replicaMultiplicityEnergy E q) +
+        s * (replicaMultiplicityEnergy F p - replicaMultiplicityEnergy F q) := by
+  simpa only [replicaMultiplicityEnergy, sub_mul, Finset.sum_sub_distrib] using
+    oneKnobDetuning_affineSpectrum E F s p q
+
+private def affineExceptions (E F : α → ℝ) (M : ℕ) : Set ℝ :=
+  exceptionalKnobSet (affineReplicaRelationDetection E F Set.univ M)
+
+omit [Nonempty α] in
+private theorem affine_joint_resonance_iff (E F : α → ℝ) {M n : ℕ} (hn : n ≤ M)
+    {s : ℝ} (hs : s ∉ affineExceptions E F M)
+    {p q : α → ℕ} (hp : p ∈ Finset.univ.piAntidiag n)
+    (hq : q ∈ Finset.univ.piAntidiag n) :
+    replicaMultiplicityEnergy (affineSpectrum E F s) p =
+        replicaMultiplicityEnergy (affineSpectrum E F s) q ↔
+      replicaMultiplicityEnergy E p = replicaMultiplicityEnergy E q ∧
+        replicaMultiplicityEnergy F p = replicaMultiplicityEnergy F q := by
+  constructor
+  · intro hzero
+    have hzero' : oneKnobDetuning (affineSpectrum E F) s p q = 0 :=
+      sub_eq_zero.mpr hzero
+    have hident (a : ℝ) : oneKnobDetuning (affineSpectrum E F) a p q = 0 := by
+      by_contra ha
+      apply hs
+      rw [affineExceptions, exceptionalKnobSet, Set.mem_iUnion₂]
+      refine ⟨(n, p, q), mem_replicaPairIndex hn hp hq, ?_, ?_⟩
+      · change |(affineRelationPolynomial E F (n, p, q)).eval s| = 0
+        rw [eval_affineRelationPolynomial, hzero', abs_zero]
+      · exact fun h => ha (h a (Set.mem_univ a))
+    have hE := hident 0
+    rw [affine_gap, zero_mul, add_zero, sub_eq_zero] at hE
+    have hF := hident 1
+    rw [affine_gap, hE, sub_self, zero_add, one_mul, sub_eq_zero] at hF
+    exact ⟨hE, hF⟩
+  · rintro ⟨hE, hF⟩
+    apply sub_eq_zero.mp
+    change oneKnobDetuning (affineSpectrum E F) s p q = 0
+    simp only [affine_gap, hE, hF, sub_self, mul_zero, add_zero]
+
+omit [Nonempty α] in
+/-- One punctured neighborhood of zero stabilizes the exact resonance pattern
+at every replica order up to the chosen finite order. -/
+theorem exists_affine_resonance_neighborhood (E F : α → ℝ) (M : ℕ) :
+    ∃ δ : ℝ, 0 < δ ∧ ∀ s : ℝ, s ≠ 0 → |s| < δ →
+      ∀ n ≤ M, ∀ p ∈ Finset.univ.piAntidiag n, ∀ q ∈ Finset.univ.piAntidiag n,
+        (replicaMultiplicityEnergy (affineSpectrum E F s) p =
+            replicaMultiplicityEnergy (affineSpectrum E F s) q ↔
+          replicaMultiplicityEnergy E p = replicaMultiplicityEnergy E q ∧
+            replicaMultiplicityEnergy F p = replicaMultiplicityEnergy F q) := by
+  let Z := affineExceptions E F M
+  have hfinite : Z.Finite := finite_exceptionalKnobSet _
+  have hclosed : IsClosed (Z \ {0}) := (hfinite.subset Set.sdiff_subset).isClosed
+  have hzero : (0 : ℝ) ∈ (Z \ {0})ᶜ := by simp
+  obtain ⟨δ, hδ, hball⟩ := Metric.mem_nhds_iff.mp (hclosed.isOpen_compl.mem_nhds hzero)
+  refine ⟨δ, hδ, fun s hne hlt n hn p hp q hq =>
+    affine_joint_resonance_iff E F hn ?_ hp hq⟩
+  intro hs
+  have hsb : s ∈ Metric.ball (0 : ℝ) δ := by
+    simpa only [Metric.mem_ball, Real.dist_eq, sub_zero] using hlt
+  exact hball hsb ⟨hs, hne⟩
+
+/-- Collision weight of the ordered pairs resonant at both scales. -/
+def jointReplicaCollisionMass (w E F : α → ℝ) (n : ℕ) : ℝ :=
+  ∑ p ∈ Finset.univ.piAntidiag n,
+    ∑ q ∈ Finset.univ.piAntidiag n,
+      if replicaMultiplicityEnergy E p = replicaMultiplicityEnergy E q ∧
+          replicaMultiplicityEnergy F p = replicaMultiplicityEnergy F q
+      then fidelityReplicaMultiplicityWeight w p q else 0
+
+omit [Nonempty α] in
+private theorem continuous_jointReplicaCollisionMass (E F : α → ℝ) (n : ℕ) :
+    Continuous (fun w => jointReplicaCollisionMass w E F n) := by
+  unfold jointReplicaCollisionMass
+  refine continuous_finsetSum _ fun p _ => continuous_finsetSum _ fun q _ => ?_
+  split_ifs
+  · exact continuous_replicaMultiplicityWeight p q
+  · exact continuous_const
+
+omit [Nonempty α] in
+/-- On a punctured neighborhood, the completed replica collision mass is
+exactly the joint mass for every choice of weights and every order through M. -/
+theorem eventually_affine_collisionMass_eq_joint (E F : α → ℝ) (M : ℕ) :
+    ∀ᶠ s in 𝓝[≠] (0 : ℝ), ∀ w : α → ℝ, ∀ n ≤ M,
+      fidelityReplicaCollisionMass w (affineSpectrum E F s) n =
+        jointReplicaCollisionMass w E F n := by
+  obtain ⟨δ, hδ, h⟩ := exists_affine_resonance_neighborhood E F M
+  have hm : ∀ᶠ s in 𝓝 (0 : ℝ), s ∈ Metric.ball (0 : ℝ) δ :=
+    Metric.ball_mem_nhds _ hδ
+  have hsmall : ∀ᶠ s in 𝓝 (0 : ℝ), |s| < δ :=
+    hm.mono fun _ hs => by simpa only [Metric.mem_ball, Real.dist_eq, sub_zero] using hs
+  have hne : ∀ᶠ s in 𝓝[≠] (0 : ℝ), s ≠ 0 := self_mem_nhdsWithin
+  filter_upwards [hsmall.filter_mono nhdsWithin_le_nhds, hne] with s hs hsne w n hn
+  rw [← fidelityReplicaResonantMass_eq_collisionMass, fidelityReplicaResonantMass,
+    jointReplicaCollisionMass]
+  refine Finset.sum_congr rfl fun p hp => Finset.sum_congr rfl fun q hq => ?_
+  simp only [h s hsne hs n hn p hp q hq]
+
+/-- First taking the long-time plateau of a fixed perturbed Gibbs spectrum,
+then sending the splitting to zero, gives the joint collision mass. -/
+theorem gibbsAffinePlateau_tendsto_joint (β : ℝ) (E F : α → ℝ) (n : ℕ) :
+    Tendsto (fun s => fidelityReplicaCollisionMass
+      (finiteGibbsStateWeight β (affineSpectrum E F s)) (affineSpectrum E F s) n)
+      (𝓝[≠] (0 : ℝ))
+      (𝓝 (jointReplicaCollisionMass (finiteGibbsStateWeight β E) E F n)) := by
+  have hcont : Continuous (affineSpectrum E F) := by
+    unfold affineSpectrum
+    fun_prop
+  have hE : Tendsto (affineSpectrum E F) (𝓝 (0 : ℝ)) (𝓝 E) := by
+    have hzero : affineSpectrum E F 0 = E := by
+      funext i
+      simp only [affineSpectrum, zero_mul, add_zero]
+    have ht := hcont.tendsto 0
+    rwa [hzero] at ht
+  have hw := (continuousAt_gibbsWeight β E).tendsto.comp hE
+  have hmass := (continuous_jointReplicaCollisionMass E F n).continuousAt.tendsto.comp hw
+  apply (hmass.mono_left nhdsWithin_le_nhds).congr'
+  filter_upwards [eventually_affine_collisionMass_eq_joint E F n] with s hs
+  exact (hs (finiteGibbsStateWeight β (affineSpectrum E F s)) n le_rfl).symm
+
+/-- The actual two-copy return plateau has the same punctured splitting limit. -/
+theorem affinePartitionReturnPlateau_tendsto_joint (β : ℝ) (E F : α → ℝ) :
+    Tendsto (fun s => returnPlateau β (affineSpectrum E F s)) (𝓝[≠] (0 : ℝ))
+      (𝓝 (jointReplicaCollisionMass (finiteGibbsStateWeight β E) E F 1)) :=
+  gibbsAffinePlateau_tendsto_joint β E F 1
+
+omit [Nonempty α] in
+/-- The resolved crossover and the fixed-splitting plateau have the same
+joint collision limit. -/
+theorem thermalReplicaCrossover_tendsto_affinePlateau (β : ℝ) (E F : α → ℝ) (n : ℕ) :
+    Tendsto (thermalReplicaCrossover β E F n) atTop
+      (𝓝 (jointReplicaCollisionMass (finiteGibbsStateWeight β E) E F n : ℂ)) := by
+  simpa only [jointReplicaCollisionMass, Complex.ofReal_sum, apply_ite, Complex.ofReal_zero]
+    using thermalReplicaCrossover_tendsto_jointCollision β E F n
+
 #print axioms thermalReplicaMean_tendsto_inverseTimeSpectrum
 #print axioms thermalReplicaCrossover_tendsto_jointCollision
 #print axioms partitionReturnMean_tendsto_inverseTimeSpectrum
+#print axioms exists_affine_resonance_neighborhood
+#print axioms gibbsAffinePlateau_tendsto_joint
+#print axioms affinePartitionReturnPlateau_tendsto_joint
 
 end
 

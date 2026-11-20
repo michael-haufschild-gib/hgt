@@ -50,7 +50,8 @@ private theorem row_diagonal {X : ℝ} (s : ℂ) :
   have hp : 0<(n:ℝ) := Nat.cast_pos.mpr (mem_Icc.mp hn).1
   rw [conjugate_row _ (mem_Icc.mp hn).1,row,mul_mul_mul_comm,
     ←Complex.cpow_add _ _ (Complex.ofReal_ne_zero.mpr hp.ne'),show -(s/2)+-(s/2)=-s by ring]
-  simp only [mobCoeff,Complex.ofReal_pow,Complex.ofReal_intCast,Complex.ofReal_natCast,pow_two,mul_comm]
+  simp only [mobCoeff,Complex.ofReal_pow,Complex.ofReal_mul,Complex.ofReal_intCast,Complex.ofReal_natCast,
+    pow_two,mul_comm]
 
 private theorem row_gap_energy {X : ℝ} (hX : 1≤X) {z : ℂ} (hz : 1/2≤2*z.re) :
     (∑ n∈Icc 1 ⌊X⌋₊, ‖row z n‖^2/((n:ℝ)+1)⁻¹) ≤ 2*X*Real.sqrt X := by
@@ -89,7 +90,7 @@ def complexMoebiusReading (X A : ℝ) (s : ℂ) : ℂ :=
 
 /-- Absolute error uniform in both vertical coordinates, including the
 height of the spectral parameter, throughout the closed right half strip. -/
-theorem complex_moebius_reading_error {X : ℝ} (hX : 1≤X) (A : ℝ) {s : ℂ} (hs : 1/2≤s.re) :
+theorem complex_moebius_reading_error {X : ℝ} (hX : 1≤X) (A : ℝ) {s : ℂ} (hs : 1/2≤ s.re) :
     ‖complexMoebiusReading X A s-squarefreeSection X s‖ ≤ 104*X^(-(1/2:ℝ)) := by
   let S := Icc 1 ⌊X⌋₊
   let δ := fun n : ℕ => ((n:ℝ)+1)⁻¹
@@ -106,7 +107,7 @@ theorem complex_moebius_reading_error {X : ℝ} (hX : 1≤X) (A : ℝ) {s : ℂ}
   rw [row_diagonal] at ht
   unfold complexMoebiusReading
   simp only [vertical]
-  rw [div_sub' (Complex.ofReal_ne_zero.mpr hx2.ne'),mul_comm (squarefreeSection X s),
+  rw [div_sub' (Complex.ofReal_ne_zero.mpr hx2.ne'),
     norm_div,Complex.norm_real,Real.norm_eq_abs,abs_of_pos hx2,div_le_iff₀ hx2]
   apply ht.trans
   calc

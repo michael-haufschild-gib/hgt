@@ -2,7 +2,7 @@ import GaloisForLFunctions.goldbach.LiLiu.Arithmetic.DensityDirichlet
 import GaloisForLFunctions.goldbach.LiLiu.Arithmetic.EulerBounds
 import GaloisForLFunctions.goldbach.LiLiu.ArithmeticKernel
 import GaloisForLFunctions.goldbach.LiLiu.MellinWeight
-import GaloisForLFunctions.goldbach.LiLiu.Mellin.DirichletInversion
+import GaloisForLFunctions.goldbach.LiLiu.Mellin.CharacterMoment
 import GaloisForLFunctions.goldbach.LiLiu.Mellin.HalfLineBeta
 import GaloisForLFunctions.goldbach.LiLiu.Mellin.DoubleModel
 import GaloisForLFunctions.goldbach.LiLiu.RepresentationBound

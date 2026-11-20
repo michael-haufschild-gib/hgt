@@ -59,6 +59,7 @@ theorem diagonal_line_integral (a : ℕ → ℂ) (h0 : a 0=0) (σ : ℝ)
       have hprod : (∫ p : ℝ × ℝ, F p.1 * conj (F p.2)) = (∫ t, F t) * ∫ t, conj (F t) :=
         integral_prod_mul (μ := volume) (ν := volume) F (fun t => conj (F t))
       simp only [he,integral_const_mul,hprod,integral_conj]
+      rfl
 
 /-- Formula (7.5) on the Hermitian product contour, including the 1/N normalization. -/
 theorem diagonal_mellin_evaluation (N : ℕ) [NeZero N] (φ : TestWeight) {σ : ℝ} (hσ : 0 < σ) :
@@ -70,7 +71,8 @@ theorem diagonal_mellin_evaluation (N : ℕ) [NeZero N] (φ : TestWeight) {σ : 
   have hp : 0 < (N:ℝ) := Nat.cast_pos.mpr hn
   have hV := mellinMultiplier_integrable N hn φ σ
   have hline : Continuous (mellinLine σ) := by unfold mellinLine; fun_prop
-  have hc := (mellinMultiplier_continuous N hn φ).comp hline
+  have hc : Continuous (fun t => mellinMultiplier N φ (mellinLine σ t)) :=
+    (mellinMultiplier_continuous N hn φ).comp hline
   simp only [diagonalSeries]
   rw [diagonal_line_integral _ (diagonalCoefficient_zero _) σ
     (diagonalSeries_summable N (by simp; linarith only [hσ])) hc.measurable hV,
