@@ -4,6 +4,8 @@
 
 **Lean baseline:** `bb1367919e8c30309ddfacb3c18038b6fdc2f04e`. Since `b1ae42543dd9`, ODD advanced. No new routes, candidates, or retirements. [Killed mechanisms and survivors](goldbach-killed-routes.md).
 
+The Li–Liu conclusion is present in Lean source. Its fresh compilation and axiom audit await dependency oleans.
+
 ## Live routes
 
 | Route | What is established | Hard step still open |
