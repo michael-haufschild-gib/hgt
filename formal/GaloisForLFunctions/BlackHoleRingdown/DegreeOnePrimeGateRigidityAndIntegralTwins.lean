@@ -319,8 +319,7 @@ theorem degree_one_real_prime_gate_classification {p : ℕ} (hp2 : 2 ≤ p)
   rcases hbranch with ⟨hc₀, _, _, hrat⟩ | ⟨hc₀, _, _, hrat⟩
   · have hu_im : u.im = 0 := by
       have him := congrArg Complex.im hc₀
-      simp only [Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re, mul_zero,
-        add_zero, zero_add] at him
+      simp only [Complex.ofReal_im, Complex.mul_im, Complex.ofReal_re, mul_zero, zero_add] at him
       exact (mul_eq_zero.mp him.symm).resolve_right hd₀
     have hu_eq : u = (u.re : ℂ) := Complex.ext rfl hu_im
     have habs : |u.re| = 1 := by
@@ -679,7 +678,7 @@ theorem flippedEchoKernel_causal_and_laplace {p : ℕ} (hp : p.Prime) :
       refine (hsingle.mul hbase).congr_fun fun q => ?_
       by_cases hqp : q = p₀
       · subst hqp
-        rw [if_pos rfl, if_pos (rfl : (p₀ : ℕ) = p), ← zetaLocalGate_primeEchoGate]
+        rw [if_pos (rfl : (p₀ : ℕ) = p), if_pos (rfl : p₀ = p₀), ← zetaLocalGate_primeEchoGate]
         dsimp only [p₀, flippedGateRatio, zetaLocalGate, flippedLocalGate]
         have h1v : 1 - v ≠ 0 := sub_ne_zero.mpr fun h => by
           rw [← h, norm_one] at hv_norm; exact lt_irrefl _ hv_norm
@@ -768,8 +767,9 @@ theorem finiteFlipped_passive_unitary_and_strip_rigid (S : Finset ℕ) (hS : ∀
       dsimp only [v]
       rw [Complex.norm_natCast_cpow_of_pos hp_prime.pos, show (-(2 * w)).re = -2 * w.re by simp]
     have hv_lt_p : ‖v‖ < p := by
-      rw [hv_norm, ← Real.rpow_one (p : ℝ)]
-      exact Real.rpow_lt_rpow_of_exponent_lt hp1 (by linarith)
+      calc ‖v‖ = (p : ℝ) ^ (-2 * w.re) := hv_norm
+        _ < (p : ℝ) ^ (1 : ℝ) := Real.rpow_lt_rpow_of_exponent_lt hp1 (by linarith)
+        _ = p := Real.rpow_one (p : ℝ)
     have hv_ge_1 : 1 ≤ ‖v‖ := by
       rw [hv_norm]
       exact Real.one_le_rpow hp1.le (by linarith)
@@ -907,7 +907,7 @@ private theorem singleFlipped_time_domain_identities {p : ℕ} (hp2 : 2 ≤ p)
             (((p : ℂ) ^ (-(2 * ((ξ : ℂ) * I))))) ^ (k + 1)) =
           ∑' k : ℕ, ((c k : ℝ) : ℂ) *
             Complex.exp (((-1 : ℝ) : ℂ) * (I * (ξ : ℂ) * ((d k : ℝ) : ℂ))) :=
-        tsum_congr fun k => by rw [hpow_rw k]; rfl
+        tsum_congr fun k => by rw [hpow_rw k]
       rw [hsum_eq] at hts
       linear_combination -hts
     have hlhs : unitaryReflected J' h T =
@@ -969,7 +969,7 @@ private theorem singleFlipped_time_domain_identities {p : ℕ} (hp2 : 2 ≤ p)
             (v⁻¹) ^ (k + 1)) =
           ∑' k : ℕ, ((c k : ℝ) : ℂ) *
             Complex.exp (((1 : ℝ) : ℂ) * (I * (ξ : ℂ) * ((d k : ℝ) : ℂ))) :=
-        tsum_congr fun k => by rw [hpow_rw k]; rfl
+        tsum_congr fun k => by rw [hpow_rw k]
       rw [hsum_eq] at hts
       linear_combination -hts
     have hJ_recover : ∀ ξ : ℝ, J ξ = ε₀⁻¹ *
@@ -1470,7 +1470,7 @@ theorem integral_trace_degree_two_slow_mode_of_ge_five {p : ℕ} (hp5 : 5 ≤ p)
     hσ_half, hσ1, hquarter, ?_,
     PositiveEulerHorizon.differentiable_completedXi hp_ne0 (p : ℝ),
     PositiveEulerHorizon.completedXi_one_sub p (p : ℝ),
-    positiveEuler_completedXi_real_pos hp1_nat hp_pos, ?_, ?_, ?_, hfail_above,
+    positiveEuler_completedXi_real_pos (by omega) hp_pos.le, ?_, ?_, ?_, hfail_above,
     hfail_above (1 / 4) hquarter⟩
   · intro τ hτ
     rw [twinEchoKernel, echoKernel_eq_zero_of_nonpos hτ, mul_zero, zero_add]

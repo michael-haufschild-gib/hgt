@@ -19,7 +19,8 @@ def sieveLogSize (P : Finset Nat.Primes) : ℝ := ∑ p ∈ P, Real.log (p:ℕ)
 
 theorem sieveLogSize_eq_log_primorial (P : Finset Nat.Primes) :
     sieveLogSize P=Real.log (sievePrimorial P) := by
-  simp only [sievePrimorial,Nat.cast_prod,Real.log_prod (fun p _ => Nat.cast_ne_zero.2 p.2.ne_zero),sieveLogSize]
+  rw [sieveLogSize,sievePrimorial,Nat.cast_prod,Real.log_prod]
+  exact fun p _ => Nat.cast_ne_zero.2 p.2.ne_zero
 
 /-- Finite subset products of a nonnegative summable sequence have finite
 sum, bounded on any finite family by the full exponential majorant. -/
@@ -49,7 +50,8 @@ theorem summable_primorial_variance_cost {s : ℝ} (hs : 1 < s) :
   intro P
   have h (p : Nat.Primes) : ((p:ℕ):ℝ)^(-s)=Real.exp (-(s*Real.log (p:ℕ))) := by
     rw [Real.rpow_def_of_pos (by exact_mod_cast p.2.pos)]; congr 1; ring
-  simp only [v,prod_mul_distrib,prod_const,h,← Real.exp_sum,← sum_neg_distrib,← mul_sum,sieveLogSize]
+  simp only [prod_mul_distrib,prod_const,h,← Real.exp_sum,sieveLogSize]
+  rw [Finset.mul_sum,← Finset.sum_neg_distrib]
 
 /-- An integrable majorant simultaneously bounds each member of a countable
 positive family whose integrals form a summable series. -/
@@ -59,7 +61,7 @@ private theorem common_majorant_of_summable_integrals {ι : Type*} [Countable ι
     ∃ B : ℝ → ℝ, Integrable B μ ∧ ∀ᵐ t ∂μ, ∀ i, f i t ≤ B t := by
   let b := fun t : ℝ => ∑' i, ENNReal.ofReal (f i t)
   have hm (i : ι) : AEMeasurable (fun t => ENNReal.ofReal (f i t)) μ :=
-    ENNReal.continuous_ofReal.comp_aemeasurable (hf i).aemeasurable
+    (hf i).aemeasurable.ennreal_ofReal
   have hb : AEMeasurable b μ := AEMeasurable.tsum hm
   have he (i : ι) := ofReal_integral_eq_lintegral_ofReal (hf i) (Eventually.of_forall (hn i))
   have hfin : (∫⁻ t, b t ∂μ) ≠ ⊤ := by
@@ -99,7 +101,7 @@ private theorem adaptive_sieve_envelope {V : Finset Nat.Primes → ℝ → ℝ} 
     intro P
     change (∫ t in Ioi (0:ℝ), w P*(Real.exp (r*t)*V P t)) ≤ _
     rw [integral_const_mul]
-    exact (mul_le_mul_of_nonneg_left (hP P).2 (Real.exp_pos _).le).trans_eq (by dsimp only [w]; ring)
+    exact (mul_le_mul_of_nonneg_left (hP P).2 (Real.exp_pos _).le).trans_eq (by ring)
   obtain ⟨A,hA,hmajor⟩ := common_majorant_of_summable_integrals hi hn hsum
   refine ⟨A,hA,?_⟩
   filter_upwards [hmajor,ae_restrict_mem (μ := (volume : Measure ℝ)) measurableSet_Ioi] with t hbound ht0
@@ -140,7 +142,7 @@ theorem criticalState_adaptive_prime_wave_envelope {W₀ : ℝ} (hW : 0 < W₀)
     (fun _ _ => sq_nonneg _) _ hb0 hγ hroom
   intro r hr hr'
   let β := r/2
-  have hβ : 0 ≤ β := half_nonneg hr
+  have hβ : 0 ≤ β := div_nonneg hr (by norm_num)
   have hβ' : β < 1/2 := by dsimp only [β]; linarith only [hr']
   obtain ⟨B,_,hP⟩ := criticalState_commonSieve_tilted_error hW ht hF hc he hC hb hβ hβ'
   refine ⟨B^2,sq_nonneg _,fun P => ?_⟩

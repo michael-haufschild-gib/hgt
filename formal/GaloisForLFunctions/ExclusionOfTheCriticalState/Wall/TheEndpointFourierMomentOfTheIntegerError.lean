@@ -56,7 +56,7 @@ theorem criticalState_endpoint_integer_fourier_moment {W₀ : ℝ} (hW : 0 < W�
   have hσ (n : ℕ) : 0 < σ n ∧ σ n ≤ 1/2 := by
     dsimp only [σ]
     exact ⟨by positivity,div_le_div_of_nonneg_right
-      ((one_div_le_one_div_of_le (by norm_num : (0:ℝ)<1) (by linarith only [Nat.cast_nonneg (R := ℝ) n])).trans_eq (by norm_num))
+      ((one_div_le_one_div_of_le (by norm_num : (0:ℝ)<1) (by linarith only [Nat.cast_nonneg (α := ℝ) n])).trans_eq (by norm_num))
       (by norm_num)⟩
   have hβ (n : ℕ) : 0 ≤ β n ∧ β n < 1/2 := ⟨sub_nonneg.2 (hσ n).2,sub_lt_self _ (hσ n).1⟩
   let s := fun (n : ℕ) (ξ : ℝ) => (σ n:ℂ)+((2*Real.pi*ξ:ℝ):ℂ)*I
@@ -68,8 +68,9 @@ theorem criticalState_endpoint_integer_fourier_moment {W₀ : ℝ} (hW : 0 < W�
     have hs (n : ℕ) : 1/2-β n=σ n := sub_sub_cancel _ _
     simpa only [v,s,Z,f,hs] using criticalState_integer_quadrature_parseval hW ht hF hc he hC hb (hβ n).1 (hβ n).2
   have hcont (n : ℕ) : Continuous (f n) := by
-    have h := ((RHTower.continuous_fourier_of_integrable (hdata n).1).norm.pow 2)
-    simpa only [f,← (hdata n).2.1] using h
+    have h := (RHTower.continuous_fourier_of_integrable (hdata n).1).norm.pow 2
+    have he : f n = fun ξ => ‖𝓕 (v n) ξ‖^2 := by funext ξ; simp only [f,(hdata n).2.1]
+    rw [he]; exact h.congr fun ξ => rfl
   have hint (n : ℕ) : Integrable (f n) := by
     have hv : MemLp (v n) 2 := (memLp_two_iff_integrable_sq_norm (hdata n).1.1).2 (by
       simpa only [v,Complex.norm_real,Real.norm_eq_abs,sq_abs] using hsq (hβ n).1 (hβ n).2)
@@ -84,7 +85,7 @@ theorem criticalState_endpoint_integer_fourier_moment {W₀ : ℝ} (hW : 0 < W�
   have hlim (ξ : ℝ) : Tendsto (fun n => f n ξ) atTop (𝓝 (‖Z (w ξ)‖^2)) := by
     have hre : (w ξ).re=0 := by simp [w]
     have hs : Tendsto (fun n => s n ξ) atTop (𝓝 (w ξ)) := by
-      simpa only [s,w,ofReal_zero,zero_add] using ((Complex.continuous_ofReal.tendsto 0).comp hσlim).add_const (w ξ)
+      simpa only [s,w,ofReal_zero,zero_add,Function.comp_apply] using ((Complex.continuous_ofReal.tendsto 0).comp hσlim).add_const (w ξ)
     have hne : w ξ ≠ 1 := by intro h; rw [h,one_re] at hre; norm_num at hre
     have hd := criticalHalfLineEnergyDomain_of_groundState hF
     have hL := differentiableAt_laplace_of_sq hd hd.exponential (w := 1/2-w ξ) (by simp [Complex.sub_re,hre]; norm_num)

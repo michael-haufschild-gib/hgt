@@ -32,22 +32,16 @@ theorem edge_root_sq (c' x : ℝ) (hc : 0 ≤ c') :
   have h := Real.sq_sqrt (show 0 ≤ c' / 3 by positivity)
   have hC : ((√(c' / 3) : ℝ) : ℂ) ^ 2 = ((c' / 3 : ℝ) : ℂ) := by exact_mod_cast h
   rw [mul_pow, hC]
-  linear_combination (((c' / 3 : ℝ) : ℂ) * x) * Complex.I * 0 + (((c' / 3 : ℝ) : ℂ)) * (x ^ 2 * 0) +
-    (-((c' / 3 : ℝ) : ℂ) * (1 / 4 - x ^ 2) + ((c' / 3 : ℝ) : ℂ) * (1 / 4 - x ^ 2)) * 0 +
-    (((c' / 3 : ℝ) : ℂ) * (x ^ 2 * 1)) * 0 + ((c' / 3 : ℝ) : ℂ) * (x ^ 2 - 1 / 4 * 1) * 0 +
-    (((c' / 3 : ℝ) : ℂ) * (-(x ^ 2) + 1 / 4 + 1 / 4 - 1 / 4) - ((c' / 3 : ℝ) : ℂ) * (1 / 4 - x ^ 2)) * 0 +
-    (((c' / 3 : ℝ) : ℂ) * (x ^ 2) - ((c' / 3 : ℝ) : ℂ) * (x ^ 2)) * Complex.I_sq * 0 +
-    (-(((c' / 3 : ℝ) : ℂ)) * x ^ 2 + ((c' / 3 : ℝ) : ℂ) * (1 / 4)) * 0 +
-    (((c' / 3 : ℝ) : ℂ) * (x ^ 2) - ((c' / 3 : ℝ) : ℂ) / 4) * Complex.I_sq + (((c' / 3 : ℝ) : ℂ) * x ^ 2 * 0)
+  linear_combination (((c' / 3 : ℝ) : ℂ) * ((x : ℂ) ^ 2 + 1 / 4)) * Complex.I_sq
 
 /-- **On the edges, `(Re √α)² = a = c'/12`.** -/
+theorem edge_root_re (c' x : ℝ) :
+    ((√(c' / 3) : ℂ) * (1 / 2 - x * Complex.I)).re = √(c' / 3) / 2 := by
+  simp [Complex.mul_re]; ring
+
 theorem edge_root_re_sq (c' x : ℝ) (hc : 0 ≤ c') :
     (((√(c' / 3) : ℂ) * (1 / 2 - x * Complex.I)).re) ^ 2 = c' / 12 := by
-  have h := Real.sq_sqrt (show 0 ≤ c' / 3 by positivity)
-  simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, Complex.sub_re, Complex.sub_im,
-    Complex.mul_im, Complex.I_re, Complex.I_im]
-  norm_num
-  rw [mul_pow, h]
+  rw [edge_root_re, div_pow, Real.sq_sqrt (by positivity)]
   ring
 
 /-- **The parabolic region.** If `(Re w)² ≤ a` then `α = w²` satisfies
@@ -94,11 +88,12 @@ def besselI0C (z : ℂ) : ℂ := (1 / π) * ∫ θ in (0 : ℝ)..π, Complex.cos
 /-- On real arguments it is the corpus `I₀`. -/
 theorem besselI0C_ofReal (u : ℝ) : besselI0C u = (RHTower.besselI0 u : ℂ) := by
   unfold besselI0C RHTower.besselI0
+  have h : ∀ θ : ℝ, Complex.cosh ((u : ℂ) * ((Real.sin θ : ℝ) : ℂ)) =
+      ((Real.cosh (u * Real.sin θ) : ℝ) : ℂ) := fun θ => by
+    rw [← Complex.ofReal_mul, Complex.ofReal_cosh]
+  simp_rw [h, intervalIntegral.integral_ofReal]
   push_cast
-  congr 1
-  rw [intervalIntegral.integral_ofReal]
-  congr 1; funext θ
-  rw [← Complex.ofReal_mul, Complex.ofReal_cosh]
+  ring
 
 /-- **`‖I₀(z)‖ ≤ I₀(Re z)`.** -/
 theorem norm_besselI0C_le (z : ℂ) : ‖besselI0C z‖ ≤ RHTower.besselI0 z.re := by
@@ -113,8 +108,8 @@ theorem norm_besselI0C_le (z : ℂ) : ‖besselI0C z‖ ≤ RHTower.besselI0 z.r
         · exact (by fun_prop : Continuous fun θ : ℝ => ‖Complex.cosh (z * Real.sin θ)‖).intervalIntegrable _ _
         · exact (by fun_prop : Continuous fun θ : ℝ => Real.cosh (z.re * Real.sin θ)).intervalIntegrable _ _
         · intro θ _
-          have := norm_cosh_le (z * Real.sin θ)
-          simpa [Complex.mul_re] using this
+          have := norm_cosh_le (z * ((Real.sin θ : ℝ) : ℂ))
+          rwa [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero] at this
 
 /-- **Cardy growth on the edges:** with `w` the edge root, `‖I₀(4π√t · w)‖ ≤ K_a(t)`, `a = c'/12`. -/
 theorem norm_edge_kernel_le (c' x t : ℝ) (hc : 0 ≤ c') (ht : 0 ≤ t) :
@@ -122,8 +117,7 @@ theorem norm_edge_kernel_le (c' x t : ℝ) (hc : 0 ≤ c') (ht : 0 ≤ t) :
   refine (norm_besselI0C_le _).trans (le_of_eq ?_)
   rw [cardyKernel_eq_besselI0 (by positivity) ht]
   congr 1
-  have hre : ((√(c' / 3) : ℂ) * (1 / 2 - x * Complex.I)).re = √(c' / 3) / 2 := by
-    simp [Complex.mul_re]
+  have hre := edge_root_re c' x
   rw [show (4 * π * √t * ((√(c' / 3) : ℂ) * (1 / 2 - x * Complex.I)) : ℂ) =
       ((4 * π * √t : ℝ) : ℂ) * ((√(c' / 3) : ℂ) * (1 / 2 - x * Complex.I)) by push_cast; ring,
     Complex.re_ofReal_mul, hre]
