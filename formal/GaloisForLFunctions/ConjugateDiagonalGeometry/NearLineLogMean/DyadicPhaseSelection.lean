@@ -30,7 +30,9 @@ private theorem scaled_gap {N m : ℕ} (hm : m ∈ Icc 1 N) :
   have hlog := Real.log_le_log (Nat.cast_pos.mpr hm'.1) (Nat.cast_le.mpr (hm'.2.trans (Nat.le_succ N)))
   rw [abs_of_nonneg (sub_nonneg.mpr hlog),← one_div] at h₁
   constructor
-  · simpa only [mul_comm] using (div_le_iff₀ hp).mp h₁
+  · have h := (div_le_iff₀ hp).mp h₁
+    rw [mul_comm] at h
+    exact h
   · rw [Nat.cast_pow,sq]
     apply mul_le_mul_of_nonneg_left _ hp.le
     dsimp only [gap]
@@ -106,7 +108,7 @@ theorem dyadic_error {N m : ℕ} (hm : m ∈ Icc 1 N) (x v e f : ℝ) :
     abs_div,abs_of_pos hp,div_le_iff₀ hp]
   have hcos := abs_sub (e*Real.cos θ) f
   rw [abs_mul] at hcos
-  have hsmall := mul_le_of_le_one_right (abs_nonneg e) (abs_le.mpr ⟨Real.neg_one_le_cos _,Real.cos_le_one _⟩)
+  have hsmall := mul_le_of_le_one_right (abs_nonneg e) (abs_le.mpr ⟨Real.neg_one_le_cos θ,Real.cos_le_one θ⟩)
   have hlarge := mul_le_mul_of_nonneg_left hs (add_nonneg (abs_nonneg e) (abs_nonneg f))
   linarith only [hcos,hsmall,hlarge]
 
@@ -152,7 +154,10 @@ theorem raw_energy_error (a : ℕ → ℂ) {N m : ℕ} (hm : m ∈ Icc 1 N) {h �
   have he := dyadic_error hm x v (extract F N g h-x) (extract G N g h-v)
   simp only [add_sub_cancel] at he
   rw [← hd]
-  exact he.trans (by change 2*(|extract F N g h-extract (energy a) N g h|+
-      |extract G N g h-extract (energy (translated a t)) N g h|) ≤ _; linarith only [hx,hv])
+  refine he.trans ?_
+  have h4 : 16*δ/h = 4*(4*δ/h) := by ring
+  change 2*(|extract F N g h-extract (energy a) N g h|+
+      |extract G N g h-extract (energy (translated a t)) N g h|) ≤ _
+  linarith only [hx,hv,h4]
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry.LogWindowRetrieval
