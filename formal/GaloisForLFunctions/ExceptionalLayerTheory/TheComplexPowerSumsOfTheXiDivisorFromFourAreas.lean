@@ -31,9 +31,14 @@ theorem xi_spatial_moment_by_polarization (c : ℂ) {R : ℝ} (hR : 0<R)
   have hl := ((ha (q+C v)).sub (ha (q-C v))).div_const (4*Real.pi)
   convert hl using 2
   rw [←mul_sub,←Finset.sum_sub_distrib]
-  simp only [eval_add,eval_sub,eval_C,←sub_mul,polarized_norm,mul_assoc (4:ℝ)]
-  rw [←Finset.mul_sum]
-  field_simp [Real.pi_ne_zero] <;> ring
+  have hsum : ∑ z ∈ S, (‖eval z (q + C v)‖^2*(hadamardOrder z:ℝ) - ‖eval z (q - C v)‖^2*(hadamardOrder z:ℝ)) =
+      4 * ∑ z ∈ S, ((q.eval z).re*v.re+(q.eval z).im*v.im)*(hadamardOrder z:ℝ) := by
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun z _ => ?_
+    rw [←sub_mul, eval_add, eval_sub, eval_C, polarized_norm]
+    ring
+  rw [hsum, eq_div_iff (by positivity)]
+  ring
 
 /-- A fixed four-probe scheme recovers the real and imaginary power
 sums at each degree, including the winding at degree zero. -/
@@ -74,11 +79,11 @@ theorem xi_divisor_polynomial_from_area_limits (c : ℂ) {R : ℝ} (hR : 0<R)
     · change directionalXiAreaMoment c R k 1 = _
       rw [Complex.re_sum]
       simpa only [directionalXiAreaMoment,Complex.mul_re,Complex.natCast_re,Complex.natCast_im,
-        zero_mul,sub_zero,mul_comm] using (h k).1.limUnder_eq
+        zero_mul,mul_zero,sub_zero,mul_comm] using (h k).1.limUnder_eq
     · change directionalXiAreaMoment c R k I = _
       rw [Complex.im_sum]
       simpa only [directionalXiAreaMoment,Complex.mul_im,Complex.natCast_re,Complex.natCast_im,
-        zero_mul,add_zero,mul_comm] using (h k).2.limUnder_eq
+        zero_mul,mul_zero,add_zero,zero_add,mul_comm] using (h k).2.limUnder_eq
   apply ConjugateDiagonalGeometry.newtonPoly_eq_finset_prod S id hadamardOrder
   · rw [hsum,Complex.re_sum]
     simp only [pow_zero,mul_one,Complex.natCast_re,← Nat.cast_sum,Nat.floor_natCast]

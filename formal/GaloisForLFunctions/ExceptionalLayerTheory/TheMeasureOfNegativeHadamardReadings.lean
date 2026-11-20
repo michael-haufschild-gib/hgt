@@ -49,7 +49,7 @@ private theorem shadow {p : ℝ×ℝ} {h T : ℝ} (hh : 0≤h) (hp : p∈negativ
     rw [sub_add_cancel,abs_sub_comm (ord q)] at htri
     linarith only [hy,htri,hdist,hmax]
   have hpos : h^2 < dep q^2 := (sq_lt_sq₀ hh hd0.le).mpr (hx.trans hxδ)
-  refine ⟨q,Finset.mem_filter.mpr ⟨Set.Finite.mem_toFinset.mpr hord,hx.trans hxδ⟩,hxδ,?_⟩
+  refine ⟨q,Finset.mem_filter.mpr ⟨(Set.Finite.mem_toFinset _).mpr hord,hx.trans hxδ⟩,hxδ,?_⟩
   apply (sq_lt_sq₀ (abs_nonneg _) (Real.sqrt_nonneg _)).mp
   rw [sq_abs,Real.sq_sqrt (sub_nonneg.mpr hpos.le)]
   linarith only [hdisc,(sq_lt_sq₀ hh (hh.trans hx.le)).mpr hx]
@@ -70,7 +70,8 @@ theorem negative_hadamard_section_measure {h T x : ℝ} (hh : 0≤h) (hx : h<x) 
   apply (measure_mono cover).trans ((measure_biUnion_finset_le _ _).trans_eq ?_)
   apply Finset.sum_congr rfl
   intro q _
-  rw [I,Real.volume_Ioo,show ord q+rad q h-(ord q-rad q h)=2*rad q h by ring]
+  simp only [I]
+  rw [Real.volume_Ioo,show ord q+rad q h-(ord q-rad q h)=2*rad q h by ring]
 
 /-- The two-dimensional negative area costs at most
 2(δ−h)√(δ²−h²) per candidate zero of depth δ. -/
@@ -88,7 +89,8 @@ theorem negative_hadamard_window_area {h T : ℝ} (hh : 0≤h) :
   apply Finset.sum_congr rfl
   intro q hq
   have hd := (Finset.mem_filter.mp hq).2
-  rw [R,Measure.prod_prod,Real.volume_Ioo,Real.volume_Ioo,←ENNReal.ofReal_mul (sub_nonneg.mpr hd.le)]
+  simp only [R]
+  rw [Measure.prod_prod,Real.volume_Ioo,Real.volume_Ioo,←ENNReal.ofReal_mul (sub_nonneg.mpr hd.le)]
   congr 1; ring
 
 private theorem negative_open (h T : ℝ) : IsOpen (negativeHadamardWindow h T) := by
@@ -116,7 +118,7 @@ theorem zero_forces_positive_hadamard_area {h T : ℝ} (q : XiZeroCopy)
     (hx : h<dep q) (hy : |ord q|<T) :
     0<(volume.prod volume) (negativeHadamardWindow h T) := by
   obtain ⟨u,_,hu,hn⟩ := exists_re_logDeriv_xi_neg_near_zero (xi_xiZeroCopy_eq_zero q) (sub_pos.mpr hx)
-  apply (negative_open h T).measure_pos
+  apply (negative_open h T).measure_pos (volume.prod volume)
   let p : ℝ×ℝ := (dep q-u,ord q)
   have eq : point p = (q.1:ℂ)-(u:ℂ) := by
     apply Complex.ext <;> simp [point,p,dep,ord] <;> ring
@@ -140,7 +142,7 @@ theorem right_zeros_iff_negative_area_vanishes {h : ℝ} (hh : 0≤h) :
   · intro hc q
     by_contra! hq
     obtain ⟨T,hT,hzero⟩ := frequently_atTop.mp hc (|ord q|+1)
-    have hp := zero_forces_positive_hadamard_area q hq (by linarith only [hT])
+    have hp := zero_forces_positive_hadamard_area (T := T) q hq (by linarith only [hT])
     exact hp.ne' hzero
 
 /-- At a cut ε below a depth ceiling, every remaining disk costs at
