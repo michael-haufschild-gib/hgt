@@ -405,12 +405,12 @@ theorem frullaniEnergy_polarization {ν μ : Measure ℝ} [IsProbabilityMeasure 
       (by positivity)
     have hΦμμ : 0 ≤ Φ s μ μ := div_nonneg (by linarith [exp_neg_four_le_gaussianGram hs'.le hμ hμ])
       (by positivity)
+    dsimp only [D, gaussianEnergyDefectDensity]
     rw [← ENNReal.ofReal_add hΦνν hΦμμ, ← ENNReal.ofReal_ofNat 2,
-      ← ENNReal.ofReal_mul (by norm_num), D, gaussianEnergyDefectDensity, ← ENNReal.ofReal_add (by positivity) hD0]
+      ← ENNReal.ofReal_mul (by norm_num), ← ENNReal.ofReal_add (by positivity) hD0]
     congr 1
     simp only [hΦ]
-    field_simp
-    ring
+    field_simp <;> ring
   rw [frullaniEnergy_eq_lintegral_gram hν hν, frullaniEnergy_eq_lintegral_gram hμ hμ,
       frullaniEnergy_eq_lintegral_gram hν hμ, ← lintegral_add_left (hmΦ ν ν),
       setLIntegral_congr_fun measurableSet_Ioi hpt, lintegral_add_right _ hmD,

@@ -76,7 +76,7 @@ theorem recovery_moment_cost (ν : Measure ℝ) [IsProbabilityMeasure ν] (hν :
     rw [H.tsum_eq] at hupper
     exact div_le_div_of_nonneg_right hupper (by positivity)
   rw [recovery_energy_splitting ν hν]
-  exact (add_le_add_left h _).trans le_self_add
+  exact (add_le_add le_rfl h).trans le_self_add
 
 private theorem level_nonneg : 0 ≤ recoveryEquilibriumConstant := by
   have hz := recoveryEquilibrium_potential_eq (x:=0) (by simp [recoveryEdge_mem.1.le])
@@ -88,8 +88,9 @@ private theorem level_nonneg : 0 ≤ recoveryEquilibriumConstant := by
 private theorem real_effective_potential {x : ℝ} (hx : |x| < 1) :
     recoveryKernelPotential x+recoveryField x = ENNReal.ofReal (Real.log 2+recoveryWeightedPotential |x|) := by
   have he : recoveryWeightedPotential |x|=recoveryWeightedPotential x := by
+    have hx' : abs (abs x) ≤ 1 := by simpa only [abs_abs] using hx.le
     simp only [recoveryWeightedPotential,integral_log_abs_sub_recoveryEquilibriumMeasure hx.le,
-      integral_log_abs_sub_recoveryEquilibriumMeasure (show | |x| | ≤ 1 by simpa only [abs_abs] using hx.le),abs_abs]
+      integral_log_abs_sub_recoveryEquilibriumMeasure hx',abs_abs]
   rw [he,recoveryKernelPotential_eq hx.le,recoveryField,if_pos hx,←ENNReal.ofReal_add
     (sub_nonneg.mpr (integral_log_abs_sub_le_log_two hx.le))
     (by have := Real.log_nonpos (by linarith only [hx]) (by linarith only [abs_nonneg x] : 1-|x| ≤ 1); linarith)]

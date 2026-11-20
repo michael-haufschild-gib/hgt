@@ -36,7 +36,8 @@ private theorem gram_decomposition {k : ℕ} (hk : 1 ≤ k) :
   congr 1
   dsimp only [mertensSquareCell]
   have hp := (Nat.cast_pos (α:=ℝ)).mpr hk
-  field_simp [hp.ne',(by positivity : (k:ℝ)+1 ≠ 0)] <;> ring
+  field_simp [hp.ne',(by positivity : (k:ℝ)+1 ≠ 0)]
+  ring
 
 /-- An upper-half cutoff has its complete Poisson cost at most five
 times the cumulative square mass at the terminal cutoff. -/
@@ -80,11 +81,12 @@ theorem width_le_of_sparse_mertens_square_mass {b : ℝ} (hb : 0 ≤ b)
   obtain ⟨k,hk,hcost⟩ := half_octave_mertens_square_selection (N:=N) (by omega)
   have hkn := (mem_Ioc.mp hk).1
   have h2 : (N:ℝ) ≤ 2*k := by exact_mod_cast (show N ≤ 2*k by omega)
-  have hpow := Real.rpow_le_rpow (Nat.cast_nonneg _) h2 (mul_nonneg (by norm_num) hb)
+  have hpow := Real.rpow_le_rpow (Nat.cast_nonneg N) h2 (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) hb)
   rw [Real.mul_rpow (by norm_num : (0:ℝ)≤2) (Nat.cast_nonneg k)] at hpow
   refine ⟨k,by omega,hcost.trans ?_⟩
   calc 5*mertensSquareMass N ≤ 5*(C*(N:ℝ)^(2*b)) := by linarith only [hbound]
-       _ ≤ 5*(C*(2^(2*b)*(k:ℝ)^(2*b))) := by gcongr
+       _ ≤ 5*(C*(2^(2*b)*(k:ℝ)^(2*b))) :=
+         mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hpow hC) (by norm_num)
        _ = _ := by ring
 
 /-- Every large cutoff exceeds each subcritical power with arbitrarily
@@ -103,7 +105,8 @@ theorem mertens_square_mass_upper {b : ℝ} (h : zetaZeroWidth < b) :
   obtain ⟨C,hC,hbound⟩ := mertens_gram_upper_power h
   refine ⟨C,hC,fun N => ?_⟩
   have hh := hbound (N+1)
-  rw [gram_decomposition (Nat.succ_pos N),Nat.add_sub_cancel,Nat.cast_succ] at hh
+  rw [gram_decomposition (Nat.succ_pos N)] at hh
+  simp only [Nat.succ_sub_one,Nat.cast_succ,Nat.cast_add,Nat.cast_one] at hh
   linarith only [hh,mul_nonneg (by positivity : 0 ≤ (N:ℝ)+1+1) (cell_nn (Nat.succ_pos N))]
 
 #print axioms half_octave_mertens_square_selection

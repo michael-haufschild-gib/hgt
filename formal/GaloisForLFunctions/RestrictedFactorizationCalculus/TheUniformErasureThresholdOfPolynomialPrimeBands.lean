@@ -35,7 +35,9 @@ private theorem positive_density (j : ℕ) :
   linarith only [hs,hn]
 
 private theorem density_le_one {y Z : ℕ} (zp : 0 < Z) : density y Z ≤ 1 := by
-  have c := card_le_card (filter_subset (fun s : ℕ => s.primeFactors ⊆ Nat.primesLE y) (Icc 1 Z))
+  have sub : RHTower.Sieve.smoothUpTo (Nat.primesLE y) Z ⊆ Icc 1 Z :=
+    fun _ h => mem_Icc.mpr (RHTower.Sieve.mem_smoothUpTo.mp h).1
+  have c := card_le_card sub
   rw [Nat.card_Icc,Nat.add_sub_cancel] at c
   exact (div_le_iff₀ (Nat.cast_pos.mpr zp : 0 < (Z:ℝ))).mpr (by
     rw [one_mul];exact_mod_cast c)
@@ -101,7 +103,7 @@ theorem arbitrarily_small_errors_erase_a_polynomial_band {δ : ℝ} (hδ : 0 < �
   have den : 1 ≤ 2-d := by linarith only [d1]
   have d0 : 0 ≤ d := div_nonneg (Nat.cast_nonneg _) zp.le
   have bound : d/(2-d) ≤ d := div_le_self d0 den
-  apply (band_erasure_iff _ _ _ _ hδ).mpr
+  apply (band_erasure_iff _ _ _ _ hδ.le).mpr
   have h := (abs_le.mp lim).2
   change bandErasureRadius _ y X Z - d/(2-d) ≤ δ/2 at h
   change d ≤ δ/2 at ratio

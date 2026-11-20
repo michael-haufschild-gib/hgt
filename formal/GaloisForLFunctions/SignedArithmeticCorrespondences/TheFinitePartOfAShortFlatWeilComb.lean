@@ -163,7 +163,8 @@ theorem mesoscopic_flat_comb_limit (H : ℕ → ℕ) (hwidth : Tendsto H atTop a
   have hH : (H N:ℝ)≠0 := Nat.cast_ne_zero.mpr hn.2.1.ne'
   change ε N - (harm (H N)-Real.log (H N))+(1-Real.log (2*Real.pi)) =
     W N-Real.log ((N:ℝ)/(H N:ℝ))
-  rw [ε,counterterm,Real.log_div hN (by positivity),Real.log_div hN hH]
+  dsimp only [ε]
+  rw [counterterm,Real.log_div hN (by positivity),Real.log_div hN hH]
   ring
 
 

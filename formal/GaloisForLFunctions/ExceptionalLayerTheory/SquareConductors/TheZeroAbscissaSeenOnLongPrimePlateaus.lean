@@ -41,8 +41,10 @@ theorem midpoint_bound_from_mesh {S : Set ℕ} {δ t : ℝ} (hm : midpointMesh S
   have hlog := Real.log_le_rpow_div (x:=((4*n:ℕ):ℝ)) (Nat.cast_nonneg _) hε
   simp only [Nat.cast_mul,Nat.cast_ofNat,Real.mul_rpow (by norm_num : 0≤(4:ℝ)) hn'.le] at hlog
   have hmotion := (le_abs_self _).trans (full_midpoint_motion hm')
+  have hlog₀ := Real.log_natCast_nonneg (4*n)
+  simp only [Nat.cast_mul,Nat.cast_ofNat] at hmotion hlog₀
   have hprod := mul_le_mul (mul_le_mul_of_nonneg_left hgap (by norm_num : (0:ℝ)≤6)) hlog
-    (Real.log_natCast_nonneg (4*n)) (by positivity)
+    hlog₀ (by positivity)
   have he : (n:ℝ)^δ*(n:ℝ)^ε=(n:ℝ)^t := by
     rw [←Real.rpow_add hn',show δ+ε=t by dsimp only [ε]; ring]
   have hid : 6*(K*(n:ℝ)^δ)*((4:ℝ)^ε*(n:ℝ)^ε/ε)=

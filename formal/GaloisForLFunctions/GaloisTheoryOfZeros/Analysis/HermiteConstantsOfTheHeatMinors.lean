@@ -47,8 +47,10 @@ private theorem hermite_step (n : ℕ) :
 private theorem at_node_step {x : ℝ} (k : ℕ) (hk : 0 < k) :
     x*(hermiteReal k).eval x = (hermiteReal (k+1)).eval x + (k:ℝ)*(hermiteReal (k-1)).eval x := by
   obtain ⟨a,rfl⟩ := Nat.exists_eq_succ_of_ne_zero hk.ne'
-  rw [hermite_step]
-  simp only [eval_sub,eval_mul,eval_X,eval_C,Nat.add_sub_cancel]
+  change x*(hermiteReal (a+1)).eval x = (hermiteReal (a+2)).eval x +
+    ((a+1:ℕ):ℝ)*(hermiteReal a).eval x
+  rw [hermite_step a]
+  simp only [eval_sub,eval_mul,eval_X,eval_C]
   ring
 
 private theorem reverse_value {n : ℕ} {x : ℝ} (hx : (hermiteReal (n+1)).eval x = 0) (j : ℕ) (hj : j ≤ n) :
@@ -95,10 +97,11 @@ private theorem node_quadrature (n : ℕ) (p : ℝ[X]) (hd : p.natDegree ≤ n) 
   apply sum_congr rfl
   intro i _
   rw [hden]
-  change _ = ((n:ℝ)+1)*(_/(((n:ℝ)+1)*_))
+  change p.eval (x i)/(hermiteReal n).eval (x i) =
+    ((n:ℝ)+1)*(p.eval (x i)/(((n:ℝ)+1)*(hermiteReal n).eval (x i)))
   have hn : (n:ℝ)+1 ≠ 0 := by positivity
   by_cases he : (hermiteReal n).eval (x i) = 0
-  · simp [he,x]
+  · simp [he]
   · field_simp [he,hn]
 
 private theorem mixed_entry (n i j : ℕ) (hij : i ≤ j) (hj : j ≤ n) :
@@ -111,8 +114,11 @@ private theorem mixed_entry (n i j : ℕ) (hij : i ≤ j) (hj : j ≤ n) :
     dsimp only [p]
     rw [coeff_X_pow_mul', if_pos (by omega)]
     by_cases he : i=j
-    · rw [if_pos he,he,←natDegree_hermiteReal (n-j),coeff_natDegree]
-      exact ((hermite_monic _).map _)
+    · rw [if_pos he,he]
+      have hm : (hermiteReal (n-j)).coeff (hermiteReal (n-j)).natDegree = 1 := by
+        rw [coeff_natDegree]
+        exact (hermite_monic _).map _
+      simpa only [natDegree_hermiteReal] using hm
     · rw [if_neg he]
       exact coeff_eq_zero_of_natDegree_lt (by rw [natDegree_hermiteReal]; omega)
   have H := node_quadrature n p hd
@@ -166,10 +172,12 @@ theorem hermiteRoot_clusterMomentMinor (n q : ℕ) (hq : q ≤ n+1) :
     have h : i.val < j.val := hij
     exact (mixed_entry n i.val j.val h.le (by have := j.isLt; omega)).trans (if_neg h.ne)
   change A.det = _
-  rw [←mul_one A.det,←hdet,←det_mul,hM,det_of_lowerTriangular _ hL]
+  have he : A.det = M.det := by rw [←hM,det_mul,hdet,mul_one]
+  rw [he,det_of_lowerTriangular _ hL]
   apply prod_congr rfl
   intro i _
-  simpa using mixed_entry n i.val i.val le_rfl (by have := i.isLt; omega)
+  simpa [M,x] using
+    mixed_entry n i.val i.val le_rfl (by have := i.isLt; omega)
 
 /-- Closed product for the leading coefficient in physical heat time, at every
 collision multiplicity and every minor size up to that multiplicity. -/

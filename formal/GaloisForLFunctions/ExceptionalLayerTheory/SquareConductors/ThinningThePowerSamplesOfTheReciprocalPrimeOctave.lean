@@ -202,7 +202,7 @@ private theorem reciprocal_deficit_le_gcd (m r : ℕ) (hm : 0 < m) :
     max ((-1:ℝ)*reciprocalOctaveError (2*m^r)) 0 ≤
       max (Real.log 2-Real.log (octaveGcdProduct (m^r) (m^(r+1)))/(m:ℝ)^(r+1)) 0 := by
   apply max_le_max_right
-  have h := (octave_gcd_product_rounding (show 0<m^r from pow_pos hm r) (m^(r+1))).1
+  have h := (octave_gcd_product_rounding (show 0 < m^r from pow_pos hm r) (m^(r+1))).1
   have hp : 0<(m:ℝ)^(r+1) := pow_pos (Nat.cast_pos.mpr hm) _
   let A := ∑ j ∈ Ioc (m^r) (2*m^r), vonMangoldt j/j
   change 0≤((m^(r+1):ℕ):ℝ)*A-Real.log (octaveGcdProduct (m^r) (m^(r+1))) at h

@@ -30,7 +30,9 @@ theorem reciprocal_octave_psi_identity {x : ℝ} (hx : 0<x) :
   have habel := sum_mul_eq_sub_sub_integral_mul (𝕜:=ℝ) (fun n => vonMangoldt n) hx.le hx₂
     (f:=fun t : ℝ => t⁻¹) (fun t ht => (hasDerivAt_inv (hx.trans_le ht.1).ne').differentiableAt)
     (show IntegrableOn (deriv (fun t : ℝ => t⁻¹)) (Set.Icc x (2*x)) from by
-      simpa only [deriv_inv] using cont.neg.integrableOn_compact (μ:=volume) isCompact_Icc)
+      rw [show deriv (fun t : ℝ => t⁻¹) = -(fun t : ℝ => (t^2)⁻¹)
+        from funext (fun t => deriv_inv (x:=t))]
+      exact cont.neg.integrableOn_compact (μ:=volume) isCompact_Icc)
   simp only [←Chebyshev.psi_eq_sum_Icc,deriv_inv,neg_mul] at habel
   rw [← intervalIntegral.integral_of_le hx₂,intervalIntegral.integral_neg,sub_neg_eq_add] at habel
   have hi₁ : IntervalIntegrable (fun t : ℝ => (t^2)⁻¹*Chebyshev.psi t) volume x (2*x) :=
@@ -216,8 +218,9 @@ private theorem envelope_weighted_jump_sum {C c q : ℝ} (hC : 0<C) (hc : 0<c) (
   rw [show -(c*x)*(q-1) = -(4*d*x) by dsimp only [d]; ring]
   dsimp only [K]
   calc _ = (2*C^(q-1)/(d^2*(n:ℝ))) * (d^2*Real.log n*Real.exp (-(4*d*x))) := by
-             field_simp [hd.ne',hn'.ne']; ring
-       _ ≤ _ := (mul_le_mul_of_nonneg_left hb (by positivity)).trans_eq (by ring)
+             field_simp [hd.ne',hn'.ne']
+       _ ≤ _ := (mul_le_mul_of_nonneg_left hb (by positivity)).trans_eq
+         (by field_simp [hd.ne',hn'.ne'] <;> ring)
 
 /-- A common bound over every finite increasing or nondecreasing sampling
 grid. Repeated endpoints are allowed. -/

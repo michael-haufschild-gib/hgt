@@ -85,8 +85,8 @@ theorem first_positive_activity_collision (P : Finset ℕ) (hp : ∀ p ∈ P, Na
   obtain ⟨x,hx⟩ : ∃ x : ℝ, 1 < (F b).roots.count x := by
     by_contra! h
     exact hd (Multiset.nodup_iff_count_le_one.mpr h)
-  have hroot : (F b).IsRoot x := (mem_roots (partition_ne_zero P b)).mp
-    (Multiset.count_pos.mp (by omega))
+  have hroot : (F b).IsRoot x := (mem_roots (partition_ne_zero P b : F b ≠ 0)).mp
+    (Multiset.count_pos.mp (Nat.zero_lt_one.trans hx))
   refine ⟨b,hb,hbC,hmem.2,fun u hu hub => hmin hu hub,x,squarefree_real_root_neg P b x hroot,?_⟩
   rwa [count_roots] at hx
 

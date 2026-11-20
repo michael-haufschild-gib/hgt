@@ -21,8 +21,8 @@ private abbrev C₁ := _root_.RHTower.Sieve.mertensIntervalConst
 private abbrev gap := 1-((1/2:ℝ)^(1/2:ℝ))
 private theorem gap_pos : 0 < gap := sub_pos.mpr (Real.rpow_lt_one (by norm_num) (by norm_num) (by norm_num))
 
-private theorem exponential_increment {u λ : ℝ} (hu : 0 ≤ u) (hλ : u ≤ λ) :
-    Real.exp u-1 ≤ Real.exp λ*u := by
+private theorem exponential_increment {u rate : ℝ} (hu : 0 ≤ u) (hλ : u ≤ rate) :
+    Real.exp u-1 ≤ Real.exp rate*u := by
   have h := Real.add_one_le_exp (-u)
   rw [Real.exp_neg] at h
   have h' := (le_div_iff₀ (Real.exp_pos u)).mp (by simpa only [one_div] using h :
@@ -30,13 +30,13 @@ private theorem exponential_increment {u λ : ℝ} (hu : 0 ≤ u) (hλ : u ≤ �
   have h'' := mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr hλ) hu
   linarith only [h',h'']
 
-private theorem tilted_factor {p : ℕ} (hp : p.Prime) {δ λ : ℝ}
-    (hδ : 0 ≤ δ) (hh : δ ≤ 1/2) (hz : δ*Real.log p ≤ λ) :
+private theorem tilted_factor {p : ℕ} (hp : p.Prime) {δ rate : ℝ}
+    (hδ : 0 ≤ δ) (hh : δ ≤ 1/2) (hz : δ*Real.log p ≤ rate) :
     (1-(1/(p:ℝ))^(1-δ))⁻¹ ≤ (1-(1/(p:ℝ)))⁻¹*
-      Real.exp ((Real.exp λ/gap*δ)*(Real.log p/(p:ℝ))) := by
+      Real.exp ((Real.exp rate/gap*δ)*(Real.log p/(p:ℝ))) := by
   let a := 1/(p:ℝ)
   let w := a^(1-δ)
-  let E := ((Real.exp λ/gap)*δ)*(Real.log p/(p:ℝ))
+  let E := ((Real.exp rate/gap)*δ)*(Real.log p/(p:ℝ))
   have pp := (Nat.cast_pos (α:=ℝ)).mpr hp.pos
   have p2 : (2:ℝ) ≤ p := by exact_mod_cast hp.two_le
   have ap : 0 < a := one_div_pos.mpr pp
@@ -52,7 +52,7 @@ private theorem tilted_factor {p : ℕ} (hp : p.Prime) {δ λ : ℝ}
   have gpos := gap_pos.trans_le gw
   have aa : 0 < 1-a := by linarith only [ha]
   have inc := exponential_increment (mul_nonneg hδ (Real.log_natCast_nonneg p)) hz
-  have hdiff : w-a ≤ (Real.exp λ*δ)*(Real.log p/(p:ℝ)) := by
+  have hdiff : w-a ≤ (Real.exp rate*δ)*(Real.log p/(p:ℝ)) := by
     have hl := mul_le_mul_of_nonneg_right inc ap.le
     rw [wa]
     dsimp only [a] at hl ⊢
@@ -61,7 +61,7 @@ private theorem tilted_factor {p : ℕ} (hp : p.Prime) {δ λ : ℝ}
     (div_nonneg (Real.log_natCast_nonneg p) pp.le)
   have hbound : 1-a ≤ (1-w)*(1+E) := by
     have add := mul_le_mul_of_nonneg_right gw e0
-    have eq : gap*E=(Real.exp λ*δ)*(Real.log p/(p:ℝ)) := by
+    have eq : gap*E=(Real.exp rate*δ)*(Real.log p/(p:ℝ)) := by
       dsimp only [E];field_simp [gap_pos.ne']
     rw [eq] at add
     linarith only [hdiff,add]
@@ -74,13 +74,13 @@ private theorem tilted_factor {p : ℕ} (hp : p.Prime) {δ λ : ℝ}
 /-- The inverse prime Euler product is stable under a finite critical
 tilt. Its price relative to the untilted product depends only on the
 displacement times the logarithmic width and on the first Mertens constant. -/
-theorem price_of_a_critical_euler_tilt {y : ℕ} (hy : 1 ≤ y) {δ λ : ℝ}
-    (hd : 0 ≤ δ) (hh : δ ≤ 1/2) (hz : δ*Real.log y ≤ λ) :
+theorem price_of_a_critical_euler_tilt {y : ℕ} (hy : 1 ≤ y) {δ rate : ℝ}
+    (hd : 0 ≤ δ) (hh : δ ≤ 1/2) (hz : δ*Real.log y ≤ rate) :
     deletionPrice (1-δ) y ≤ deletionPrice 1 y*
-      Real.exp ((Real.exp λ/gap)*(λ+δ*C₁)) := by
+      Real.exp ((Real.exp rate/gap)*(rate+δ*C₁)) := by
   let P := Nat.primesLE y
-  let A := Real.exp λ/gap*δ
-  have big (p : ℕ) (hp : p ∈ P) : δ*Real.log p ≤ λ := by
+  let A := Real.exp rate/gap*δ
+  have big (p : ℕ) (hp : p ∈ P) : δ*Real.log p ≤ rate := by
     obtain ⟨hl,pr⟩ := Nat.mem_primesLE.mp hp
     exact (mul_le_mul_of_nonneg_left (Real.log_le_log (Nat.cast_pos.mpr pr.pos) (Nat.cast_le.mpr hl)) hd).trans hz
   have factor := prod_le_prod (s:=P)
@@ -94,10 +94,10 @@ theorem price_of_a_critical_euler_tilt {y : ℕ} (hy : 1 ≤ y) {δ λ : ℝ}
     exact ⟨hp,fun h => by have h₁ := (Nat.mem_primesLE.mp h).1;have h₂ := (Nat.mem_primesLE.mp h).2.two_le;omega⟩
   have first := _root_.RHTower.Sieve.sum_log_div_prime_interval_le (a:=1) le_rfl hy hsub
   rw [Nat.cast_one,Real.log_one,sub_zero] at first
-  have apos := div_nonneg (Real.exp_pos λ).le gap_pos.le
+  have apos := div_nonneg (Real.exp_pos rate).le gap_pos.le
   have main := mul_le_mul_of_nonneg_left first (mul_nonneg apos hd)
-  have endprice := mul_le_mul_of_nonneg_left (add_le_add_right hz (δ*C₁)) apos
-  have hlog : A*(∑ p∈P,Real.log p/(p:ℝ)) ≤ (Real.exp λ/gap)*(λ+δ*C₁) := by
+  have endprice := mul_le_mul_of_nonneg_left (add_le_add hz (le_rfl : δ*C₁ ≤ δ*C₁)) apos
+  have hlog : A*(∑ p∈P,Real.log p/(p:ℝ)) ≤ (Real.exp rate/gap)*(rate+δ*C₁) := by
     dsimp only [A]
     linarith only [main,endprice]
   rw [prod_mul_distrib,←Real.exp_sum,←mul_sum] at factor
@@ -138,24 +138,24 @@ private theorem ordinary_price : ∃ C : ℝ,0 < C ∧ ∀ y : ℕ, deletionPric
 /-- Exponential decay in the ratio of the endpoint logarithm to the
 logarithmic prime cutoff. The constant and the shift in the denominator
 can depend on the chosen decay rate but are uniform in both endpoints. -/
-theorem exponential_rough_prefix_at_every_prime_wall {λ : ℝ} (hλ : 0 < λ) :
+theorem exponential_rough_prefix_at_every_prime_wall {rate : ℝ} (hλ : 0 < rate) :
     ∃ C : ℝ,0 < C ∧ ∀ X y t : ℕ, 1 ≤ X → 1 ≤ y → t ≤ X →
       |coprimeMoebiusSum (primorial y) t| ≤
-        C*(1+Real.log y)*(X:ℝ)*Real.exp (-(λ*Real.log X/(16*(1+λ)+Real.log y))) := by
+        C*(1+Real.log y)*(X:ℝ)*Real.exp (-(rate*Real.log X/(16*(1+rate)+Real.log y))) := by
   have strip : _root_.RHTower.zetaZeroAbscissa < 7/8 := by
     linarith only [GaloisForLFunctions.ZeroForcingCalculus.zetaZeroAbscissa_le_sub_seven_eighths]
   obtain ⟨B,hB,hbase⟩ := exists_moebius_power_bound_of_abscissa_lt strip
   obtain ⟨P,hP,price⟩ := ordinary_price
-  let E := Real.exp ((Real.exp λ/gap)*(λ+C₁))
+  let E := Real.exp ((Real.exp rate/gap)*(rate+C₁))
   have hE : 0 < E := Real.exp_pos _
   refine ⟨2*(B+1)*P*E,by positivity,fun X y t hX hy ht => ?_⟩
-  let L := 16*(1+λ)+Real.log y
-  let δ := λ/L
+  let L := 16*(1+rate)+Real.log y
+  let δ := rate/L
   have logy := Real.log_natCast_nonneg y
   have hl : 0 < L := by dsimp only [L];linarith only [hλ,logy]
   have hd : 0 ≤ δ := div_nonneg hλ.le hl.le
   have hd16 : δ ≤ 1/16 := (div_le_iff₀ hl).mpr (by dsimp only [L];linarith only [logy])
-  have hsmall : δ*Real.log y ≤ λ := by
+  have hsmall : δ*Real.log y ≤ rate := by
     have hr : Real.log y ≤ L := by dsimp only [L];linarith only [hλ]
     exact (mul_le_mul_of_nonneg_left hr hd).trans_eq (div_mul_cancel₀ _ hl.ne')
   have hpos : 0 < 1-δ := by linarith only [hd16]
@@ -169,15 +169,15 @@ theorem exponential_rough_prefix_at_every_prime_wall {λ : ℝ} (hλ : 0 < λ) :
       simpa [coprimeMoebiusSum,coprimeMoebiusIndicator,moebiusReal] using h
   have cost := price_of_a_critical_euler_tilt hy hd (by linarith only [hd16]) hsmall
   have hcost : deletionPrice (1-δ) y ≤ P*(1+Real.log y)*E := by
-    have hb : λ+δ*C₁ ≤ λ+C₁ := by
-      apply add_le_add_left
+    have hb : rate+δ*C₁ ≤ rate+C₁ := by
+      apply add_le_add le_rfl
       exact mul_le_of_le_one_left _root_.RHTower.Sieve.mertensIntervalConst_nonneg (by linarith only [hd16])
     apply cost.trans
     exact mul_le_mul (price y) (Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hb
       (div_nonneg (Real.exp_pos _).le gap_pos.le))) (Real.exp_pos _).le (mul_nonneg hP.le (by linarith))
   have estimate := all_frozen_rows_from_full_prefix hpos (show 0 ≤ B+1 by positivity) base t y
   have x0 := (Nat.cast_pos (α:=ℝ)).mpr hX
-  have form : (X:ℝ)^(1-δ)=(X:ℝ)*Real.exp (-(λ*Real.log X/L)) := by
+  have form : (X:ℝ)^(1-δ)=(X:ℝ)*Real.exp (-(rate*Real.log X/L)) := by
     rw [sub_eq_add_neg,Real.rpow_add x0,Real.rpow_one,Real.rpow_def_of_pos x0]
     congr 2
     dsimp only [δ];ring
@@ -197,29 +197,29 @@ theorem logarithmic_savings_through_subpower_prime_walls (p : ℕ) {K : ℝ} (hk
       Real.log y*Real.log (Real.log X) ≤ K*Real.log X →
       |coprimeMoebiusSum (primorial y) t| * Real.log X^p ≤ C*(X:ℝ) := by
   let m := (p:ℝ)+2
-  let λ := 2*(K+1)*m
+  let rate := 2*(K+1)*m
   have hm : 0 < m := by dsimp only [m];positivity
-  have hλ : 0 < λ := by dsimp only [λ];positivity
+  have hλ : 0 < rate := by dsimp only [rate];positivity
   obtain ⟨C,hC,estimate⟩ := exponential_rough_prefix_at_every_prime_wall hλ
   refine ⟨2*C,by positivity,?_⟩
   have grow := Real.tendsto_log_atTop.comp (tendsto_natCast_atTop_atTop (R:=ℝ))
   have loglog := Real.tendsto_log_atTop.comp grow
   have little := (Real.isLittleO_log_id_atTop.tendsto_div_nhds_zero.comp grow)
   filter_upwards [grow.eventually_ge_atTop 1,loglog.eventually_ge_atTop (K+1),eventually_ge_atTop 1,
-    little.eventually_lt_const (show 0 < 1/(16*(1+λ)) by positivity)]
+    little.eventually_lt_const (show 0 < 1/(16*(1+rate)) by positivity)]
     with X hL hLL xp hsmall
   intro y t hy ht hwall
   let L := Real.log (X:ℝ)
   let w := Real.log (y:ℝ)
-  let D := 16*(1+λ)+w
+  let D := 16*(1+rate)+w
   have w0 : 0 ≤ w := Real.log_natCast_nonneg _
   have L1 : 1 ≤ L := hL
   have lp := zero_lt_one.trans_le L1
   change K+1 ≤ Real.log L at hLL
-  change Real.log L/L < 1/(16*(1+λ)) at hsmall
+  change Real.log L/L < 1/(16*(1+rate)) at hsmall
   change w*Real.log L ≤ K*L at hwall
   have d0 : 0 < D := by dsimp only [D];linarith only [hλ,w0]
-  have tiny := (div_lt_div_iff₀ lp (show 0 < 16*(1+λ) by positivity)).mp hsmall
+  have tiny := (div_lt_div_iff₀ lp (show 0 < 16*(1+rate) by positivity)).mp hsmall
   have wL : w ≤ L := by
     have hmul := mul_le_mul_of_nonneg_left (show K ≤ Real.log L by linarith only [hLL]) w0
     by_cases hzero : K=0
@@ -229,15 +229,15 @@ theorem logarithmic_savings_through_subpower_prime_walls (p : ℕ) {K : ℝ} (hk
       linarith only [this,L1]
     · exact (mul_le_mul_iff_left₀ (lt_of_le_of_ne hk (Ne.symm hzero))).mp
         (hmul.trans (by simpa only [mul_comm K L] using hwall))
-  have rate : m*Real.log L ≤ λ*L/D := by
+  have decay : m*Real.log L ≤ rate*L/D := by
     apply (le_div_iff₀ d0).mpr
     have hbd : Real.log L*D ≤ (K+1)*L := by
       dsimp only [D];linarith only [tiny,hwall]
     have h := mul_le_mul_of_nonneg_left hbd hm.le
     have hpos := mul_nonneg (mul_nonneg hm.le (by linarith : 0 ≤ K+1)) lp.le
-    dsimp only [λ];nlinarith only [h,hpos]
-  have save : Real.exp (-(λ*L/D)) ≤ 1/L^(p+2) := by
-    apply (Real.exp_le_exp.mpr (neg_le_neg rate)).trans_eq
+    dsimp only [rate];nlinarith only [h,hpos]
+  have save : Real.exp (-(rate*L/D)) ≤ 1/L^(p+2) := by
+    apply (Real.exp_le_exp.mpr (neg_le_neg decay)).trans_eq
     rw [Real.exp_neg,one_div,←Real.rpow_natCast L (p+2),Real.rpow_def_of_pos lp]
     congr 2
     dsimp only [m];push_cast;ring

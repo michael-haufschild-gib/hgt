@@ -75,7 +75,7 @@ theorem mertens_mass_two_population_bound {a b : ℝ} (hb : 0<b) (hb1 : b ≤ 1/
       obtain ⟨hk,hn⟩ := mem_sdiff.mp hk
       apply le_of_not_gt
       intro hh
-      exact hn (mem_inter.mpr ⟨hk,mem_filter.mpr ⟨mem_range.mpr (Nat.lt_succ_of_le (mem_Icc.mp hk).2),hh⟩⟩)
+      exact hn (mem_inter.mpr ⟨hk,mem_filter.mpr ⟨mem_range.mpr (Nat.lt_succ_of_le (mem_Icc.mp hk).2),hh⟩⟩))
   have hbad := mass_on_set ha0 ha1 hA T (fun k hk => (mem_Icc.mp (hTS hk)).1) (fun k _ => h k)
   have cg : (S \ T).card ≤ N := by
     have hh := card_le_card (sdiff_subset : S \ T ⊆ S)
@@ -136,7 +136,7 @@ theorem eventually_many_mertens_excursions {b d : ℝ} (hb : 0<b) (hw : b < zeta
     apply (hbound N).trans
     apply mul_le_mul_of_nonneg_left _ hB
     change X^(2*b)+(m+1)^(2*a) ≤ _
-    linarith only [low,high,mul_le_mul_of_nonneg_left hh' (Real.rpow_nonneg (by positivity : 0≤K+1) _)]
+    linarith only [low,high,mul_le_mul_of_nonneg_left hh' (Real.rpow_nonneg (by positivity : 0≤K+1) (2*a))]
   have hscale := Real.rpow_le_rpow xp.le (by dsimp only [X]; linarith only [hn] : X≤2*N) (by positivity : 0≤2*e)
   rw [Real.mul_rpow (by norm_num : (0:ℝ)≤2) nx.le] at hscale
   exact step.trans ((mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hscale (by positivity : 0≤1+(K+1)^(2*a))) hB).trans_eq (by ring))
