@@ -71,7 +71,7 @@ theorem reciprocal_carriers_strip {δ : ℝ} (hd : 0<δ) (hd1 : δ≤1/4) :
   have inj : Function.Injective c := by
     intro n m he
     have h := inv_injective he
-    exact Nat.cast_injective (add_left_inj.mp h)
+    exact Nat.cast_injective ((add_left_inj _).mp h)
   constructor
   · intro hf ρ hz hp
     by_contra! hb

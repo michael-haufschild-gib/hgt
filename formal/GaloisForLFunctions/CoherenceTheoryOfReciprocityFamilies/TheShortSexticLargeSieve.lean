@@ -362,11 +362,4 @@ theorem short_sextic_large_sieve {I : Type*} [DecidableEq I]
   rw [mul_comm (_ + Δ)]
   exact mul_le_mul_of_nonneg_left (add_le_add_left (hΔ i hi) _) (sq_nonneg _)
 
-#print axioms conj_sexticSymbol_prod_eq_pow_five
-#print axioms norm_sexticSymbol_prod_le_one
-#print axioms conj_sexticGramEntry
-#print axioms norm_sexticGramEntry_symm
-#print axioms short_sextic_large_sieve_rowwise
-#print axioms short_sextic_large_sieve
-
 end GaloisForLFunctions.CoherenceTheoryOfReciprocityFamilies

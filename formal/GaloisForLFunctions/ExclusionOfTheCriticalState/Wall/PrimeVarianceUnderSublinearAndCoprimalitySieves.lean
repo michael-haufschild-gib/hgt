@@ -371,7 +371,7 @@ theorem criticalState_quadratic_sieve_variance_ratio {W₀ : ℝ} (hW : 0 < W₀
     have hη0 : η ≠ 0 := hη.ne'
     have h3 : η*(3/η) = 3 := by field_simp
     have : η*(2+3/η-1) = η+3 := by linear_combination h3
-    linarith only [this]
+    linarith only [this,hη]
   have hB0' : B ≠ 0 := hBpos.ne'
   have hsq : A^2/B^2-1 = (A/B-1)*(A/B+1) := by rw [← div_pow]; ring
   rw [hsq,abs_mul]

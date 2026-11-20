@@ -311,21 +311,4 @@ theorem endpointExponentOrder_le_directWExponentOrder {n lx ly ℓ σ₀ δ q R 
     mul_nonneg (by linarith) (by linarith)
   linarith
 
-#print axioms gcd_cubic_quadratic_index_eq_div_six
-#print axioms cubic_quadratic_span_unit_iff_eq_six
-#print axioms not_cubic_quadratic_span_twelve
-#print axioms unique_low_cover_quadratic_order
-#print axioms dual_reflection_shorter_iff
-#print axioms holder_reflection_gap_at_row_scale
-#print axioms planted_conjugate_character_saturates_multilinear_sum
-#print axioms norm_sum_sq_le_card_mul_sum_norm_sq
-#print axioms twist_coupling_signal_le_noise_exp
-#print axioms twist_offdiag_double_sqrt_dominates
-#print axioms lowBoundaryGenOrder_shift_lx_ge
-#print axioms double_obstruction_at_one_third
-#print axioms short_sieve_split_impossible
-#print axioms outer_cs_reflection_forces_eleven_twelfths
-#print axioms directWExponentOrder_sub_endpointExponentOrder
-#print axioms endpointExponentOrder_le_directWExponentOrder
-
 end GaloisForLFunctions.FamilyContinuationTheory

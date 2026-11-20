@@ -376,15 +376,4 @@ theorem prime_centers_shell_eight_ninths_iff_five_sixths :
     rw [h89, show (5 / 6 : ℝ) + (t - 5 / 6) = t by ring] at herr
     linarith only [herr, hC p hp]
 
-#print axioms midpointFloorWeight_self
-#print axioms divisibleCofactorFactorial_self
-#print axioms divisibleCofactorPrimePrice_self
-#print axioms primitiveProjectedFactorial_prime_one
-#print axioms remainingPrimitivePrimePrice_prime_one
-#print axioms ordinaryPrimeBandPrice_self_prime
-#print axioms unrestrictedLargePrimePrice_eq_sum_cofactorThetaSlice
-#print axioms cofactorThetaSlice_eq_chebyshev_theta
-#print axioms cofactorThetaSlice_mul_eq_neg_primeMidpointPrice
-#print axioms prime_centers_shell_eight_ninths_iff_five_sixths
-
 end GaloisForLFunctions.ExceptionalLayerTheory.FactorialInterval

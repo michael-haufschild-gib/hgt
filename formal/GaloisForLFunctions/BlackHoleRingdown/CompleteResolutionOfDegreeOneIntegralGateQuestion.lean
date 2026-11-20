@@ -95,9 +95,9 @@ private theorem quartetGate_eq_blaschke_four' {σ γ : ℝ} (h0 : 1 / 2 < σ) (h
       ((w - (starRingEnd ℂ) w₂) / (w + w₂)) := by
   have hq1 : quartetZero σ γ * (1 - quartetZero σ γ) ≠ 0 := fun hz => by
     have him := congrArg Complex.im hz
-    simp only [quartetZero, Complex.mul_im, Complex.sub_re, Complex.sub_im, Complex.add_re,
-      Complex.add_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im,
-      Complex.one_re, Complex.one_im, Complex.zero_im] at him
+    simp only [quartetZero, Complex.mul_re, Complex.mul_im, Complex.sub_re, Complex.sub_im,
+      Complex.add_re, Complex.add_im, Complex.ofReal_re, Complex.ofReal_im, Complex.I_re,
+      Complex.I_im, Complex.one_re, Complex.one_im, Complex.zero_im] at him
     nlinarith
   have hq2 : (starRingEnd ℂ) (quartetZero σ γ) * (1 - (starRingEnd ℂ) (quartetZero σ γ)) ≠ 0 := by
     have heq : (starRingEnd ℂ) (quartetZero σ γ) * (1 - (starRingEnd ℂ) (quartetZero σ γ)) =
@@ -299,10 +299,12 @@ theorem integrable_and_laplace_quartetImpulseTail {σ γ : ℝ} (h0 : 1 / 2 < σ
   set w₂ : ℂ := (a₂ : ℂ) + (b : ℂ) * I
   have hib : 2 * I * (b : ℂ) ≠ 0 :=
     mul_ne_zero (mul_ne_zero two_ne_zero I_ne_zero) (Complex.ofReal_ne_zero.mpr hb.ne')
-  have hw1 : w - p₁ ≠ 0 := fun h => by have := congrArg Complex.re h; simp at this; linarith [hre1]
-  have hw2 : w - p₂ ≠ 0 := fun h => by have := congrArg Complex.re h; simp at this; linarith [hre2]
-  have hw3 : w - p₃ ≠ 0 := fun h => by have := congrArg Complex.re h; simp at this; linarith [hre3]
-  have hw4 : w - p₄ ≠ 0 := fun h => by have := congrArg Complex.re h; simp at this; linarith [hre4]
+  have hwp : ∀ {p_z : ℂ}, (p_z - w).re < 0 → w - p_z ≠ 0 := fun hpz h => by
+    have := congrArg Complex.re h; simp at hpz this; linarith
+  have hw1 := hwp hre1
+  have hw2 := hwp hre2
+  have hw3 := hwp hre3
+  have hw4 := hwp hre4
   have hpair : ∀ (a : ℝ),
       let w_z : ℂ := (a : ℂ) + (b : ℂ) * I
       let q₁ : ℂ := -(a : ℂ) + (b : ℂ) * I
@@ -397,7 +399,7 @@ theorem quartet_bounce_euler_factorization {σ γ : ℝ} (h0 : 1 / 2 < σ) (h1 :
     intro v
     by_cases hv : 0 < v <;> simp [bounceWave, hv]
   have hswap := integral_integral_swap
-    (f := fun v u => (Complex.exp (-w * (u : ℂ)) * quartetImpulseTail σ γ u) * bounceWave w (v - u))
+    (f := fun (v u : ℝ) => (Complex.exp (-w * (u : ℂ)) * quartetImpulseTail σ γ u) * bounceWave w (v - u))
     hconv_i
   have hint_conv : Integrable fun v : ℝ =>
       Complex.exp (-w * (v : ℂ)) * ∫ u : ℝ, quartetImpulseTail σ γ u * bounceWave 0 (v - u) := by
@@ -510,7 +512,7 @@ private theorem integrable_tail_mul_bounce {σ γ : ℝ} (h0 : 1 / 2 < σ) (h1 :
       have : S < |x| := by
         by_contra hle; push Not at hle; exact hne ⟨x, abs_le.mp hle⟩
       rw [hs x this, norm_zero]
-  set R : ℝ := max (u + S) 1
+  set R : ℝ := max (u + S + 1) 1
   have hR_pos : 0 < R := lt_of_lt_of_le zero_lt_one (le_max_right _ _)
   have hbk_int : IntegrableOn (fun w : ℝ => bounceKernel w) (Ioo 0 R) := by
     have hbw1 := (integrableOn_and_integral_bounce (w := 1) (by norm_num)).1
@@ -537,14 +539,18 @@ private theorem integrable_tail_mul_bounce {σ γ : ℝ} (h0 : 1 / 2 < σ) (h1 :
       refine integral_congr_ae (Eventually.of_forall fun w => ?_)
       by_cases hw0 : 0 < w
       · by_cases hwR : w < R
-        · rw [indicator_of_mem hw0, indicator_of_mem ⟨hw0, hwR⟩]
+        · rw [indicator_of_mem (Set.mem_Ioi.mpr hw0),
+            indicator_of_mem (Set.mem_Ioo.mpr ⟨hw0, hwR⟩)]
         · push Not at hwR
           have hgt : S < |x - w| := by
-            have : u + S ≤ R := le_max_left _ _
-            exact lt_of_lt_of_le (by linarith) (neg_le_abs _)
-          rw [indicator_of_mem hw0, indicator_of_notMem (fun hm => hwR.not_gt hm.2),
+            have : u + S + 1 ≤ R := le_max_left _ _
+            calc S < -(x - w) := by linarith
+              _ ≤ |x - w| := neg_le_abs (x - w)
+          rw [indicator_of_mem (Set.mem_Ioi.mpr hw0),
+            indicator_of_notMem (show w ∉ Set.Ioo 0 R from fun hm => hwR.not_gt hm.2),
             hs _ hgt, zero_mul]
-      · rw [indicator_of_notMem hw0, indicator_of_notMem (fun hm => hw0 hm.1)]
+      · rw [indicator_of_notMem (show w ∉ Set.Ioi 0 from hw0),
+          indicator_of_notMem (show w ∉ Set.Ioo 0 R from fun hm => hw0 hm.1)]
     rw [hsupp_w]
     calc ‖∫ w in Ioo 0 R, h (x - w) * ((bounceKernel w : ℝ) : ℂ)‖
         ≤ ∫ w in Ioo 0 R, Mh * bounceKernel w := by
@@ -567,15 +573,18 @@ private theorem integrable_tail_mul_bounce {σ γ : ℝ} (h0 : 1 / 2 < σ) (h1 :
       refine integral_congr_ae (Eventually.of_forall fun w => ?_)
       by_cases hw0 : 0 < w
       · by_cases hwR : w < R
-        · rw [indicator_of_mem ⟨hw0, hwR⟩, indicator_of_mem hw0]
+        · rw [indicator_of_mem (Set.mem_Ioo.mpr ⟨hw0, hwR⟩),
+            indicator_of_mem (Set.mem_Ioi.mpr hw0)]
         · push Not at hwR
           have hgt : S < |x - w| := by
-            have : u + S ≤ R := le_max_left _ _
+            have : u + S + 1 ≤ R := le_max_left _ _
             have hxu : x ≤ u := hx
-            exact lt_of_lt_of_le (by linarith) (neg_le_abs _)
-          rw [indicator_of_notMem (fun hm => hwR.not_gt hm.2), indicator_of_mem hw0,
-            hs _ hgt, zero_mul]
-      · rw [indicator_of_notMem (fun hm => hw0 hm.1), indicator_of_notMem hw0]
+            calc S < -(x - w) := by linarith
+              _ ≤ |x - w| := neg_le_abs (x - w)
+          rw [indicator_of_notMem (show w ∉ Set.Ioo 0 R from fun hm => hwR.not_gt hm.2),
+            indicator_of_mem (Set.mem_Ioi.mpr hw0), hs _ hgt, zero_mul]
+      · rw [indicator_of_notMem (show w ∉ Set.Ioo 0 R from fun hm => hw0 hm.1),
+          indicator_of_notMem (show w ∉ Set.Ioi 0 from hw0)]
     have hcont_int : Continuous fun x : ℝ =>
         ∫ w in Ioo 0 R, h (x - w) * ((bounceKernel w : ℝ) : ℂ) := by
       refine continuous_of_dominated (bound := fun w => Mh * bounceKernel w) ?_ ?_
@@ -600,7 +609,7 @@ private theorem integrable_tail_mul_bounce {σ γ : ℝ} (h0 : 1 / 2 < σ) (h1 :
           (Ici (0 : ℝ)).indicator (fun v' => ReturnCancellation.bounce h (u - v')) v := by
       funext v
       rcases le_or_gt 0 v with hv | hv
-      · rw [indicator_of_mem hv]
+      · rw [indicator_of_mem (Set.mem_Ici.mpr hv)]
       · simp [quartetImpulseTail, not_lt.mpr hv.le]
     rw [heq]
     have hcont_ind : ContinuousOn (fun v' : ℝ => ReturnCancellation.bounce h (u - v')) (Ici 0) :=
@@ -717,8 +726,8 @@ theorem quartet_finite_return_sum {σ γ : ℝ} (h0 : 1 / 2 < σ) (h1 : σ < 1) 
   have hint_refl : Integrable fun v : ℝ => quartetImpulseTail σ γ v * pulseReflected h (t - v) := by
     refine hG_int.integral_prod_left.congr (Eventually.of_forall fun v => ?_)
     dsimp only [G]
-    unfold pulseReflected unitaryReflected
-    exact (integral_const_mul _ _).symm
+    unfold pulseReflected
+    exact (integral_const_mul (quartetImpulseTail σ γ v) _).symm
   have hval_refl : pulseReflected h t +
       (∫ v : ℝ, quartetImpulseTail σ γ v * pulseReflected h (t - v)) =
       quartetReflected σ γ h t := by
@@ -726,8 +735,8 @@ theorem quartet_finite_return_sum {σ γ : ℝ} (h0 : 1 / 2 < σ) (h1 : σ < 1) 
         ∫ v : ℝ, ∫ ξ : ℝ, G (v, ξ) := by
       refine integral_congr_ae (Eventually.of_forall fun v => ?_)
       dsimp only [G]
-      unfold pulseReflected unitaryReflected
-      exact (integral_const_mul _ _).symm
+      unfold pulseReflected
+      exact (integral_const_mul (quartetImpulseTail σ γ v) _).symm
     rw [hlhs, integral_integral_swap (f := fun v ξ => G (v, ξ)) hG_int]
     have hinner_ξ : ∀ ξ : ℝ, (∫ v : ℝ, G (v, ξ)) =
         pulseAmplitude h (ξ : ℂ) * ((quartetGate σ γ ((ξ : ℂ) * I) - 1) *
@@ -760,7 +769,7 @@ theorem quartet_finite_return_sum {σ γ : ℝ} (h0 : 1 / 2 < σ) (h1 : σ < 1) 
           scatteringPhase ((ξ : ℂ) * I)) * Complex.exp (I * (ξ : ℂ) * (t : ℂ)) := by
       have hint_q := h.integrable_amplitude_mul hcont_q.measurable (fun ξ => (hunit ξ).2.le) t
       refine (hint_q.sub hint_mod).congr (Eventually.of_forall fun ξ => ?_)
-      dsimp only
+      simp only [Pi.sub_apply]
       have hph : quartetScatteringPhase σ γ ((ξ : ℂ) * I) =
           quartetGate σ γ ((ξ : ℂ) * I) * scatteringPhase ((ξ : ℂ) * I) := by
         unfold quartetScatteringPhase quartetReducedScattering xiQuartet quartetGate scatteringPhase
@@ -768,7 +777,6 @@ theorem quartet_finite_return_sum {σ γ : ℝ} (h0 : 1 / 2 < σ) (h1 : σ < 1) 
       rw [hph]; ring
     rw [pulseReflected, ← integral_add hint_mod hint_diff, quartetReflected, unitaryReflected]
     refine integral_congr_ae (Eventually.of_forall fun ξ => ?_)
-    dsimp only
     have hph : quartetScatteringPhase σ γ ((ξ : ℂ) * I) =
         quartetGate σ γ ((ξ : ℂ) * I) * scatteringPhase ((ξ : ℂ) * I) := by
       unfold quartetScatteringPhase quartetReducedScattering xiQuartet quartetGate scatteringPhase
@@ -1059,7 +1067,7 @@ theorem quartet_prime_sector_equivalence_and_inverse {σ γ : ℝ} (h0 : 1 / 2 <
     constructor
     · rintro ⟨C, hC⟩
       refine ⟨(C + b * C) / ‖a‖, fun u => (le_div_iff₀ (norm_pos_iff.mpr ha_ne)).mpr ?_⟩
-      calc ‖F u‖ * ‖a‖ = ‖a * F u‖ := by rw [norm_mul, mul_comm]
+      calc ‖F u‖ * ‖a‖ = ‖a * F u‖ := by rw [norm_mul a, mul_comm]
         _ = ‖Y u - (b : ℂ) * Y (u - echoDelay p)‖ := by rw [hrec u, add_sub_cancel_right]
         _ ≤ ‖Y u‖ + ‖(b : ℂ) * Y (u - echoDelay p)‖ := norm_sub_le _ _
         _ ≤ C + b * C := by
@@ -1116,11 +1124,15 @@ theorem quartet_prime_sector_equivalence_and_inverse {σ γ : ℝ} (h0 : 1 / 2 <
       (1 - b)⁻¹ * (quartetReflected σ γ h t - b * quartetReflected σ γ h (t - echoDelay p)) := by
     intro t
     have hi_h := h.integrable_amplitude_mul hcont_q.measurable (fun ξ => (hunit ξ).2.le) t
-    have hi_d := (h.delay (echoDelay p)).integrable_amplitude_mul hcont_q.measurable
-      (fun ξ => (hunit ξ).2.le) t
-    dsimp only [g, ReturnCancellation.inverseSectorInput]
+    have hamp_g : ∀ ξ : ℝ, pulseAmplitude g (ξ : ℂ) =
+        (1 - b)⁻¹ * (pulseAmplitude h (ξ : ℂ) +
+          (-b) * (Complex.exp (-(I * (ξ : ℂ) * (echoDelay p : ℂ))) * pulseAmplitude h (ξ : ℂ))) := by
+      intro ξ
+      change pulseAmplitude (CompactPulse.smul (1 - b)⁻¹
+        (h.add (CompactPulse.smul (-b) (h.delay (echoDelay p))))) (ξ : ℂ) = _
+      rw [pulseAmplitude_smul, pulseAmplitude_add, pulseAmplitude_smul, pulseAmplitude_delay]
     unfold quartetReflected unitaryReflected
-    simp only [pulseAmplitude_smul, pulseAmplitude_add, pulseAmplitude_delay]
+    simp_rw [hamp_g]
     have hpt : ∀ ξ : ℝ,
         ((1 - b)⁻¹ * (pulseAmplitude h (ξ : ℂ) +
           (-b) * (Complex.exp (-(I * (ξ : ℂ) * (echoDelay p : ℂ))) * pulseAmplitude h (ξ : ℂ)))) *
@@ -1293,9 +1305,12 @@ theorem not_quartetReflected_l2_tail_decay_gt {σ γ δ : ℝ} (h0 : 1 / 2 < σ)
             ENNReal.ofReal (Real.exp (2 * δ₁ * ((n : ℝ) + 1))) *
               ENNReal.ofReal (‖quartetReflected σ γ h u‖ ^ 2) := by
         intro u hu
-        rw [← ENNReal.ofReal_mul (Real.exp_pos _).le, mul_comm]
-        exact ENNReal.ofReal_le_ofReal (mul_le_mul_of_nonneg_left
-          (Real.exp_le_exp.mpr (by nlinarith [hu.2])) (sq_nonneg _))
+        rw [← ENNReal.ofReal_mul (Real.exp_pos _).le]
+        refine ENNReal.ofReal_le_ofReal ?_
+        calc ‖quartetReflected σ γ h u‖ ^ 2 * Real.exp (2 * δ₁ * u)
+            ≤ ‖quartetReflected σ γ h u‖ ^ 2 * Real.exp (2 * δ₁ * ((n : ℝ) + 1)) :=
+              mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr (by nlinarith [hu.2])) (sq_nonneg _)
+          _ = Real.exp (2 * δ₁ * ((n : ℝ) + 1)) * ‖quartetReflected σ γ h u‖ ^ 2 := mul_comm _ _
       have hset_sub : Ioc (n : ℝ) ((n : ℝ) + 1) ⊆ Ioi (n : ℝ) := fun _ hx => hx.1
       have hae_eq : (Ico (n : ℝ) ((n : ℝ) + 1) : Set ℝ) =ᵐ[volume] Ioc (n : ℝ) ((n : ℝ) + 1) :=
         Ico_ae_eq_Ioc
@@ -1307,16 +1322,16 @@ theorem not_quartetReflected_l2_tail_decay_gt {σ γ δ : ℝ} (h0 : 1 / 2 < σ)
             setLIntegral_mono' measurableSet_Ico hmono_pt
         _ = ENNReal.ofReal (Real.exp (2 * δ₁ * ((n : ℝ) + 1))) *
               ∫⁻ u in Ico (n : ℝ) ((n : ℝ) + 1), ENNReal.ofReal (‖quartetReflected σ γ h u‖ ^ 2) :=
-            lintegral_const_mul _ (hGc.norm.pow 2).ennreal_ofReal
+            lintegral_const_mul _ (ENNReal.continuous_ofReal.comp (hGc.norm.pow 2)).measurable
         _ = ENNReal.ofReal (Real.exp (2 * δ₁ * ((n : ℝ) + 1))) *
               ∫⁻ u in Ioc (n : ℝ) ((n : ℝ) + 1), ENNReal.ofReal (‖quartetReflected σ γ h u‖ ^ 2) := by
             rw [setLIntegral_congr hae_eq]
         _ ≤ ENNReal.ofReal (Real.exp (2 * δ₁ * ((n : ℝ) + 1))) *
               ∫⁻ u in Ioi (n : ℝ), ENNReal.ofReal (‖quartetReflected σ γ h u‖ ^ 2) :=
-            mul_le_mul_left' (lintegral_mono_set hset_sub) _
+            mul_le_mul_right (lintegral_mono_set hset_sub) _
         _ ≤ ENNReal.ofReal (Real.exp (2 * δ₁ * ((n : ℝ) + 1))) *
               ENNReal.ofReal (C₀ * Real.exp (-2 * δ * (n : ℝ))) :=
-            mul_le_mul_left' (hC₀ (n : ℝ) (Nat.cast_nonneg n)) _
+            mul_le_mul_right (hC₀ (n : ℝ) (Nat.cast_nonneg n)) _
         _ = ENNReal.ofReal (Real.exp (2 * δ₁) * C₀ * (Real.exp (-2 * (δ - δ₁))) ^ n) := by
             rw [← ENNReal.ofReal_mul (Real.exp_pos _).le, ← Real.exp_nat_mul]
             congr 1
@@ -1353,18 +1368,32 @@ theorem not_quartetReflected_l2_tail_decay_gt {σ γ δ : ℝ} (h0 : 1 / 2 < σ)
     rw [HasFiniteIntegral]
     refine lt_of_eq_of_lt ?_ hsq_lint
     refine lintegral_congr_ae ((ae_restrict_iff' measurableSet_Ioi).mpr (Eventually.of_forall fun u _ => ?_))
+    dsimp only
     rw [Real.enorm_eq_ofReal (by positivity)]
   -- By AM-GM, `Lpos w := ∫ u in Ioi 0, e^{-w u} quartetReflected σ γ h u` is `DifferentiableOn` `Re w > -δ₂`!
   have hLpos_d : DifferentiableOn ℂ
       (fun w : ℂ => ∫ τ in Ioi (0 : ℝ), Complex.exp (-w * (τ : ℂ)) * quartetReflected σ γ h τ)
       {w : ℂ | -δ₂ < w.re} := by
     have hUo : IsOpen {w : ℂ | -δ₂ < w.re} := isOpen_lt continuous_const Complex.continuous_re
-    refine differentiableOn_integral_of_locally_bounded (ν := volume.restrict (Ioi (0 : ℝ)))
-      (F := fun (τ : ℝ) (w : ℂ) => Complex.exp (-w * (τ : ℂ)) * quartetReflected σ γ h τ) hUo
-      (fun τ => (by fun_prop : Differentiable ℂ fun w : ℂ =>
-        Complex.exp (-w * (τ : ℂ)) * quartetReflected σ γ h τ).differentiableOn)
-      (fun w _ => ((by fun_prop : Continuous fun τ : ℝ =>
-        Complex.exp (-w * (τ : ℂ))).mul hGc).aestronglyMeasurable.restrict) ?_
+    have h_ind_eq : (fun w : ℂ => ∫ τ in Ioi (0 : ℝ),
+          Complex.exp (-w * (τ : ℂ)) * quartetReflected σ γ h τ) =
+        fun w : ℂ => ∫ τ : ℝ, (Ioi (0 : ℝ)).indicator
+          (fun u => Complex.exp (-w * (u : ℂ)) * quartetReflected σ γ h u) τ :=
+      funext fun w => (integral_indicator measurableSet_Ioi).symm
+    rw [h_ind_eq]
+    refine differentiableOn_integral_of_locally_bounded (ν := volume)
+      (F := fun (τ : ℝ) (w : ℂ) => (Ioi (0 : ℝ)).indicator
+        (fun u => Complex.exp (-w * (u : ℂ)) * quartetReflected σ γ h u) τ) hUo
+      (fun τ => by
+        by_cases hτ : τ ∈ Ioi (0 : ℝ)
+        · simp only [indicator_of_mem hτ]
+          exact (by fun_prop : Differentiable ℂ fun w : ℂ =>
+            Complex.exp (-w * (τ : ℂ)) * quartetReflected σ γ h τ).differentiableOn
+        · simp only [indicator_of_notMem hτ]
+          exact differentiableOn_const 0)
+      (fun w _ => (aestronglyMeasurable_indicator_iff measurableSet_Ioi).mpr
+        (((by fun_prop : Continuous fun τ : ℝ =>
+          Complex.exp (-w * (τ : ℂ))).mul hGc).aestronglyMeasurable.restrict)) ?_
     intro w₀ hw₀
     have hw₀' : -δ₂ < w₀.re := hw₀
     set r : ℝ := (w₀.re + δ₂) / 2
@@ -1373,11 +1402,11 @@ theorem not_quartetReflected_l2_tail_decay_gt {σ γ δ : ℝ} (h0 : 1 / 2 < σ)
     have hc_lt : c < δ₁ := by dsimp [c, r]; linarith
     have hexp_tail : IntegrableOn (fun τ : ℝ => Real.exp (-2 * (δ₁ - c) * τ)) (Ioi 0) :=
       integrableOn_exp_mul_Ioi (by linarith) 0
-    set B_fn : ℝ → ℝ := fun τ =>
+    set B_fn : ℝ → ℝ := (Ioi (0 : ℝ)).indicator fun τ =>
       (‖quartetReflected σ γ h τ‖ ^ 2 * Real.exp (2 * δ₁ * τ) +
         Real.exp (-2 * (δ₁ - c) * τ)) / 2
-    have hB_int : Integrable B_fn (volume.restrict (Ioi (0 : ℝ))) :=
-      (hsq_int.add hexp_tail).div_const 2
+    have hB_int : Integrable B_fn volume :=
+      (integrable_indicator_iff measurableSet_Ioi).mpr ((hsq_int.add hexp_tail).div_const 2)
     refine ⟨r, hr_pos, fun w hw => ?_, B_fn, hB_int, ?_⟩
     · have hd := Complex.abs_re_le_norm (w - w₀)
       rw [Metric.mem_closedBall, dist_eq_norm] at hw
@@ -1385,30 +1414,35 @@ theorem not_quartetReflected_l2_tail_decay_gt {σ γ δ : ℝ} (h0 : 1 / 2 < σ)
       show -δ₂ < w.re
       dsimp [r] at habs
       linarith [(abs_le.mp habs).1]
-    · refine (ae_restrict_iff' measurableSet_Ioi).mpr (Eventually.of_forall fun τ hτ => ?_)
-      intro w hw
-      have hτ_pos : (0 : ℝ) < τ := hτ
-      have hd := Complex.abs_re_le_norm (w - w₀)
-      rw [Metric.mem_closedBall, dist_eq_norm] at hw
-      have habs : |w.re - w₀.re| ≤ r := by simpa using hd.trans hw
-      have hw_re_ge : w₀.re - r ≤ w.re := by linarith [(abs_le.mp habs).1]
-      rw [norm_mul, Complex.norm_exp, show (-w * (τ : ℂ)).re = -w.re * τ by simp]
-      have hexp_le : Real.exp (-w.re * τ) ≤ Real.exp (c * τ) :=
-        Real.exp_le_exp.mpr (by dsimp [c]; nlinarith)
-      set X : ℝ := ‖quartetReflected σ γ h τ‖ * Real.exp (δ₁ * τ)
-      set Y : ℝ := Real.exp (-(δ₁ - c) * τ)
-      have hXY : Real.exp (c * τ) * ‖quartetReflected σ γ h τ‖ = X * Y := by
-        dsimp [X, Y]
-        rw [mul_left_comm, ← Real.exp_add]; congr 2; ring
-      have hX2 : X ^ 2 = ‖quartetReflected σ γ h τ‖ ^ 2 * Real.exp (2 * δ₁ * τ) := by
-        dsimp [X]; rw [mul_pow, sq (Real.exp _), ← Real.exp_add]; congr 2; ring
-      have hY2 : Y ^ 2 = Real.exp (-2 * (δ₁ - c) * τ) := by
-        dsimp [Y]; rw [sq, ← Real.exp_add]; congr 1; ring
-      calc Real.exp (-w.re * τ) * ‖quartetReflected σ γ h τ‖
-          ≤ Real.exp (c * τ) * ‖quartetReflected σ γ h τ‖ :=
-            mul_le_mul_of_nonneg_right hexp_le (norm_nonneg _)
-        _ = X * Y := hXY
-        _ ≤ B_fn τ := by dsimp [B_fn]; rw [← hX2, ← hY2]; nlinarith [sq_nonneg (X - Y)]
+    · intro τ w hw
+      by_cases hτ : τ ∈ Ioi (0 : ℝ)
+      · have hτ_pos : (0 : ℝ) < τ := hτ
+        simp only [B_fn, indicator_of_mem hτ]
+        have hd := Complex.abs_re_le_norm (w - w₀)
+        rw [Metric.mem_closedBall, dist_eq_norm] at hw
+        have habs : |w.re - w₀.re| ≤ r := by simpa using hd.trans hw
+        have hw_re_ge : w₀.re - r ≤ w.re := by linarith [(abs_le.mp habs).1]
+        rw [norm_mul, Complex.norm_exp, show (-w * (τ : ℂ)).re = -w.re * τ by simp]
+        have hexp_le : Real.exp (-w.re * τ) ≤ Real.exp (c * τ) :=
+          Real.exp_le_exp.mpr (by dsimp [c]; nlinarith)
+        set X : ℝ := ‖quartetReflected σ γ h τ‖ * Real.exp (δ₁ * τ)
+        set Y : ℝ := Real.exp (-(δ₁ - c) * τ)
+        have hXY : Real.exp (c * τ) * ‖quartetReflected σ γ h τ‖ = X * Y := by
+          dsimp [X, Y]
+          rw [mul_assoc, ← Real.exp_add, mul_comm (Real.exp (c * τ))]
+          congr 2; ring
+        have hX2 : X ^ 2 = ‖quartetReflected σ γ h τ‖ ^ 2 * Real.exp (2 * δ₁ * τ) := by
+          dsimp [X]; rw [mul_pow, sq (Real.exp _), ← Real.exp_add]; congr 2; ring
+        have hY2 : Y ^ 2 = Real.exp (-2 * (δ₁ - c) * τ) := by
+          dsimp [Y]; rw [sq, ← Real.exp_add]; congr 1; ring
+        calc Real.exp (-w.re * τ) * ‖quartetReflected σ γ h τ‖
+            ≤ Real.exp (c * τ) * ‖quartetReflected σ γ h τ‖ :=
+              mul_le_mul_of_nonneg_right hexp_le (norm_nonneg _)
+          _ = X * Y := hXY
+          _ ≤ (‖quartetReflected σ γ h τ‖ ^ 2 * Real.exp (2 * δ₁ * τ) +
+                Real.exp (-2 * (δ₁ - c) * τ)) / 2 := by
+              rw [← hX2, ← hY2]; nlinarith [sq_nonneg (X - Y)]
+      · simp [B_fn, indicator_of_notMem hτ]
   -- For `t ≤ -S`, `quartet_finite_return_sum` identifies `quartetReflected` with `-quartetMeanCoeff * e^{t/2}`,
   -- making `Lneg` holomorphic on `Re w < 1/2` and `quartetReflected` integrable on `ℝ`
   obtain ⟨S, hS_nn, hs⟩ := h.exists_support_bound
@@ -1454,12 +1488,16 @@ theorem not_quartetReflected_l2_tail_decay_gt {σ γ δ : ℝ} (h0 : 1 / 2 < σ)
   set Lneg₀ : ℂ → ℂ := fun z =>
     ∫ σ' in Ioi (0 : ℝ), Complex.exp (-z * (σ' : ℂ)) * quartetReflected σ γ h (-σ')
   have hLneg₀_d : DifferentiableOn ℂ Lneg₀ {z : ℂ | -(1 / 2 : ℝ) < z.re} := by
-    refine RingdownRate.differentiableOn_laplace (hGc.comp continuous_neg) hKneg_nn fun σ' hσ' => ?_
-    simpa [mul_neg, neg_mul] using href_neg_bound (-σ') (by linarith)
+    have hraw := RingdownRate.differentiableOn_laplace (T := 0) (δ := 1 / 2)
+      (hGc.comp continuous_neg) hKneg_nn fun σ' hσ' => by
+        simpa only [Function.comp_apply, mul_neg, neg_mul] using href_neg_bound (-σ') (by linarith)
+    simpa only [Lneg₀, neg_zero, Function.comp_apply] using hraw
   set Lneg : ℂ → ℂ := fun w => Lneg₀ (-w)
   have hLneg_d : DifferentiableOn ℂ Lneg {w : ℂ | w.re < 1 / 2} := by
     intro w hw
-    have hw' : -w ∈ {z : ℂ | -(1 / 2 : ℝ) < z.re} := by show -(1 / 2 : ℝ) < (-w).re; simp; exact hw
+    have hw_lt : w.re < 1 / 2 := hw
+    have hw' : -w ∈ {z : ℂ | -(1 / 2 : ℝ) < z.re} := by
+      show -(1 / 2 : ℝ) < (-w).re; rw [Complex.neg_re]; linarith
     have hopen : IsOpen {z : ℂ | -(1 / 2 : ℝ) < z.re} :=
       isOpen_lt continuous_const Complex.continuous_re
     exact ((hLneg₀_d (-w) hw').differentiableAt (hopen.mem_nhds hw')).comp w
@@ -1473,13 +1511,15 @@ theorem not_quartetReflected_l2_tail_decay_gt {σ γ δ : ℝ} (h0 : 1 / 2 < σ)
     set X : ℝ := ‖quartetReflected σ γ h τ‖ * Real.exp (δ₁ * τ)
     set Y : ℝ := Real.exp (-δ₁ * τ)
     have hXY : ‖quartetReflected σ γ h τ‖ = X * Y := by
-      dsimp [X, Y]; rw [mul_assoc, ← Real.exp_add, add_neg_cancel, Real.exp_zero, mul_one]
+      dsimp [X, Y]
+      rw [mul_assoc, ← Real.exp_add, show δ₁ * τ + -δ₁ * τ = 0 by ring, Real.exp_zero, mul_one]
     have hX2 : X ^ 2 = ‖quartetReflected σ γ h τ‖ ^ 2 * Real.exp (2 * δ₁ * τ) := by
       dsimp [X]; rw [mul_pow, sq (Real.exp _), ← Real.exp_add]; congr 2; ring
     have hY2 : Y ^ 2 = Real.exp (-2 * δ₁ * τ) := by
       dsimp [Y]; rw [sq, ← Real.exp_add]; congr 1; ring
-    rw [hXY, ← hX2, ← hY2]
-    nlinarith [sq_nonneg (X - Y)]
+    calc ‖quartetReflected σ γ h τ‖ = X * Y := hXY
+      _ ≤ (X ^ 2 + Y ^ 2) / 2 := by nlinarith [sq_nonneg (X - Y)]
+      _ = _ := by simp only [Pi.add_apply, hX2, hY2]
   have hg_neg_int : IntegrableOn (quartetReflected σ γ h) (Iic (0 : ℝ)) := by
     have hdom_i : IntegrableOn (fun σ' : ℝ => Kneg * Real.exp (-(1 / 2) * σ')) (Ioi 0) :=
       (integrableOn_exp_mul_Ioi (by norm_num) 0).const_mul Kneg
@@ -1812,13 +1852,15 @@ theorem not_quartet_prime_sector_and_tower_decay_gt {σ γ δ : ℝ} (h0 : 1 / 2
       have hdel_pk : echoDelay (p ^ k) = (k : ℝ) * echoDelay p := by
         unfold echoDelay; push_cast; rw [Real.log_pow]; ring
       have hwt_pk : echoWeight (p ^ k) = 1 - 1 / (p : ℝ) := by
-        obtain ⟨j, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (by omega : k ≠ 0)
+        obtain ⟨j, hj⟩ := Nat.exists_eq_succ_of_ne_zero (by omega : k ≠ 0)
+        rw [hj]
         unfold echoWeight
         rw [Nat.totient_prime_pow hp (Nat.succ_pos j), Nat.cast_mul, Nat.cast_pow,
           Nat.cast_sub hp.one_le, Nat.cast_one, pow_succ]
         have hp_ne : (p : ℝ) ≠ 0 := by positivity
         have hpow_ne : (p : ℝ) ^ j ≠ 0 := pow_ne_zero j hp_ne
         field_simp [hp_ne, hpow_ne]
+        simp only [Nat.succ_sub_one, Nat.cast_mul, Nat.cast_pow]; ring
       have hT_eq : echoDelay (p ^ k) + u = T := by rw [hdel_pk]; dsimp [u]; ring
       have her := quartet_erase_one_return h0 h1 hγ h hS hs u (pow_pos hp.pos k)
       rw [hwt_pk, hT_eq] at her
@@ -1828,7 +1870,7 @@ theorem not_quartet_prime_sector_and_tower_decay_gt {σ γ δ : ℝ} (h0 : 1 / 2
             hC u k hk1 (by rw [hT_eq]; exact hT)
         _ = C * Real.exp (-δ * T) := by
             rw [← Real.exp_nat_mul, mul_assoc C, ← Real.exp_add]
-            congr 2; unfold echoDelay at u; dsimp [u]; ring
+            congr 2; dsimp only [u, echoDelay]; ring
         _ ≤ max C C_early * Real.exp (-δ * T) :=
             mul_le_mul_of_nonneg_right (le_max_left _ _) (Real.exp_pos _).le
 
@@ -1998,16 +2040,5 @@ theorem complete_resolution_of_degree_one_integral_gate_question :
     obtain ⟨hsigns, hθ0, _⟩ := degreeOne_integral_gate_classification F hd h1 hmul hpow
     obtain ⟨hiff, hpin⟩ := degreeOne_integral_gate_eq_zeta_iff F hd h1 hmul hpow
     exact ⟨hsigns, hθ0, hiff, fun hc => ⟨(hpin hc).2.1, (hpin hc).2.2⟩⟩
-
-#print axioms quartet_bounce_euler_factorization
-#print axioms quartet_finite_return_sum
-#print axioms quartet_mobius_scattering_returns
-#print axioms quartet_centered_sector_delay
-#print axioms quartet_prime_sector_equivalence_and_inverse
-#print axioms quartet_correlator_pole_dictionary
-#print axioms not_quartetReflected_l2_tail_decay_gt
-#print axioms not_quartet_prime_sector_and_tower_decay_gt
-#print axioms falsification_of_degree_one_integral_gate_axiom_class
-#print axioms complete_resolution_of_degree_one_integral_gate_question
 
 end GaloisForLFunctions.BlackHoleRingdown

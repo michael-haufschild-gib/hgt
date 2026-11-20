@@ -314,13 +314,4 @@ theorem sexticGauss_mul_quadGauss_prod_cubic_cross (s : Finset O) (hnz : ∀ π 
     (∏ x ∈ s, @sexticGaussPow 1 x ⟨if h : x ∈ s then hnz x h else one_ne_zero⟩ 1) *
       (∏ x ∈ s, @sexticGaussPow 3 x ⟨if h : x ∈ s then hnz x h else one_ne_zero⟩ 1) * hcross
 
-#print axioms conj_quadraticPhase
-#print axioms column_quadraticPhase_cancel
-#print axioms rowRoot_column_hasseDavenport_clean
-#print axioms conj_sexticSymbol_mul_rowRootNumber
-#print axioms sexticGauss_mul_cube
-#print axioms orderB_coupled_column_collapse
-#print axioms sexticGaussPow_prod_eq
-#print axioms sexticGauss_mul_quadGauss_prod_cubic_cross
-
 end GaloisForLFunctions.OrderSixMetaplecticTheory

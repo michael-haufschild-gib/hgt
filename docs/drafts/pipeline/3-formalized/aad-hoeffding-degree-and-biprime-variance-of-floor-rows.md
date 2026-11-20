@@ -1,9 +1,9 @@
 # Hoeffding degree truncation on smooth cosets and biprime ANOVA variance of floor rows
 
 - **ID:** aad-hoeffding-degree-and-biprime-variance-of-floor-rows
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Source:** `docs/reports/review-1911/todo.md` #18 · `formal/GaloisForLFunctions/ArithmeticAuxiliaryDynamics/Spectrum/`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
+- **Source:** `docs/reports/review-1911/todo.md` #18 · `formal/GaloisForLFunctions/ArithmeticAuxiliaryDynamics/Spectrum/TheHoeffdingDegreeAndBiprimeVarianceOfAFloorRow.lean`
 - **Statement:** Every letter `1 ≤ k < (Y + 1)^{d+1}` has at most `d` prime divisors `> Y`, making `saw q K` purely additive across primes `> Y` on each `Y`-smooth CRT coset when `K < (Y + 1)^2` and quadratic when `K < (Y + 1)^3`; on `ℤ/(pq)ℤ ≃ ℤ/pℤ × ℤ/qℤ` (`gcd(p,q)=1`), the centered normalized residue decomposes orthogonally into marginals of variance `(p^2-1)/(12 p^2 q^2)` and `(q^2-1)/(12 p^2 q^2)` plus a pure degree-2 interaction of variance `(p^2-1)(q^2-1)/(12 p^2 q^2)`.
 
 ## Goal
@@ -12,7 +12,7 @@ Isolate the exact combinatorial degree of sawtooth sums on smooth-frozen CRT cos
 ## Gates
 - [x] 0 → 1  in-progress: exact coset degree and biprime ANOVA formulas isolated
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean module `Spectrum/TheHoeffdingDegreeAndBiprimeVarianceOfAFloorRow.lean`, `lake --old env lean` green, standard axioms only
+- [x] 2 → 3  formalized: Lean module `Spectrum/TheHoeffdingDegreeAndBiprimeVarianceOfAFloorRow.lean`, `lake --old env lean` green, standard axioms only
 
 ## Paper Proof (`[PROVED HERE]`)
 

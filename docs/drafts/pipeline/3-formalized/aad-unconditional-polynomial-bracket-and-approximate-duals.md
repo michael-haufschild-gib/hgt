@@ -1,9 +1,9 @@
 # Unconditional polynomial rate bracket, quadratic coefficient mass, and approximate fake prime measures
 
 - **ID:** aad-unconditional-polynomial-bracket-and-approximate-duals
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Source:** `docs/reports/review-1911/todo.md` #18 · `formal/GaloisForLFunctions/ArithmeticAuxiliaryDynamics/`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
+- **Source:** `docs/reports/review-1911/todo.md` #18 · `formal/GaloisForLFunctions/ArithmeticAuxiliaryDynamics/TheUnconditionalPolynomialBracketAndApproximateDuals.lean`
 - **Statement:** Integer floor producers unconditionally attain `HasRate (fun K => K^{-a})` for all `0 < a < 3001 / 24000` (upgrading `bestRate K` to a two-sided polynomial bracket and `HasParityNeutralRate` to `0 < a < 3001 / 120000`), every producer obeys the alphabet-independent bound `∑ |c(k)| / k^2 ≤ 6 · stencilSlope c`, approximate fake prime measures with `|M_u(k) - log k| ≤ η / k` certify `(1 + 6η) · normSlope c m B ≥ mass(u) / (1 - 1/B)`, and the prime mass-move `τ_p = δ_{p-1} + δ_1 - δ_p` isolates the single moment `p · δ_{k,p}` across all `k ≥ 2`.
 
 ## Goal
@@ -12,7 +12,7 @@ Upgrade the unconditional rate and parity-neutral rate scales of `ArithmeticAuxi
 ## Gates
 - [x] 0 → 1  in-progress: exact dependencies and statements isolated in `ArithmeticAuxiliaryDynamics`
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean module `TheUnconditionalPolynomialBracketAndApproximateDuals.lean`, `lake --old env lean` green, standard axioms only
+- [x] 2 → 3  formalized: Lean module `TheUnconditionalPolynomialBracketAndApproximateDuals.lean`, `lake --old env lean` green, standard axioms only
 
 ## Paper Proof (`[PROVED HERE]`)
 

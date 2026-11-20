@@ -104,6 +104,7 @@ import GaloisForLFunctions.SelbergClass.DegreeGap
 import GaloisForLFunctions.SelbergClass.DiskContinuationCoefficientDecay
 import GaloisForLFunctions.SelbergClass.DegreeOneConductorPole
 import GaloisForLFunctions.SelbergClass.DegreeOne.Classification
+import GaloisForLFunctions.SelbergClass.DegreeOne.IntegralGateRigidity
 import GaloisForLFunctions.SelbergClass.Primon.LocalDuality
 import GaloisForLFunctions.SelbergClass.Primon.KestenMcKay
 import GaloisForLFunctions.SelbergClass.Primon.ChargedOscillators

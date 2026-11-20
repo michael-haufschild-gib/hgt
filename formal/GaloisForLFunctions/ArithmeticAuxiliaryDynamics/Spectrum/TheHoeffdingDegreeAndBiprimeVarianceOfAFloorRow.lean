@@ -870,7 +870,7 @@ theorem _root_.GaloisForLFunctions.ArithmeticAuxiliaryDynamics.IsProducer.solo_p
       obtain ⟨hk2, hkK⟩ := mem_Icc.mp (mem_of_mem_erase hk)
       refine hp.coprime_iff_not_dvd.mpr fun hd => ?_
       obtain ⟨d, rfl⟩ := hd
-      have hd0 : d ≠ 0 := by omega
+      have hd0 : d ≠ 0 := by rintro rfl; simp at hk2
       have hd1 : d ≠ 1 := fun h => hne (by rw [h, mul_one])
       have hge : 2 * p ≤ p * d := by
         calc 2 * p ≤ d * p := Nat.mul_le_mul_right p (by omega)
@@ -896,7 +896,6 @@ theorem _root_.GaloisForLFunctions.ArithmeticAuxiliaryDynamics.IsProducer.solo_p
       rw [hstep_p, Nat.cast_sub hp.one_le]
       push_cast
       field_simp
-      ring
     have hmulZ : (p : ℤ) * stepWeight c r = -c p * ((p : ℤ) - 1) := by exact_mod_cast hmulR
     have hdvd : (p : ℤ) ∣ c p := ⟨c p + stepWeight c r, by linarith⟩
     have hnn : 0 ≤ stepWeight c r := hP.nonneg r

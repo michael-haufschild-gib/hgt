@@ -386,15 +386,4 @@ theorem lehmer_quartet_moment_obstruction {γ δ γbar η : ℝ}
     mul_pos (by positivity) (by positivity)
   exact ⟨by linarith, by linarith⟩
 
-#print axioms exists_max_depth_below_and_zero_free_strip
-#print axioms exists_descending_strip_ladder_of_not_landing
-#print axioms zeta_descending_strip_ladder_of_not_landing
-#print axioms topRightOrdinate_eq_on_zero_free_strip
-#print axioms differentiable_dirichletZeroAnnihilator
-#print axioms norm_dirichletZeroAnnihilator_le_of_re_ge
-#print axioms norm_dirichletZeroAnnihilator_ge_of_re_le
-#print axioms exists_deep_zero_annihilator_of_zerosApproachLine
-#print axioms kiKimLee_saddle_in_strip_of_healing_time
-#print axioms lehmer_quartet_moment_obstruction
-
 end GaloisForLFunctions.ExceptionalLayerTheory
