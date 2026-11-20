@@ -104,6 +104,7 @@ import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.PrimePowerReturnsForceSi
 import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.TheMobiusReadingOfTheScatteringReturns
 import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.AllMomentsOfARapidReceiverSweep
 import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.AccumulatingCarriersForceTheScatteringStrip
+import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.FourExplicitPulsesDetectEveryScatteringStrip
 
 /-!
 # Black-hole ringdown and the zeros of zeta

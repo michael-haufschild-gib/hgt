@@ -67,6 +67,7 @@ open Complex Filter Topology Set Finset MeasureTheory
 open scoped ComplexConjugate
 open GaloisForLFunctions.ExclusionOfTheCriticalState
 open GaloisForLFunctions.HTGeometry
+open GaloisForLFunctions.ZeroConfigurationGeometry
 
 namespace GaloisForLFunctions.ExceptionalLayerTheory
 
@@ -117,21 +118,11 @@ private theorem quartetCopyMult_eq_of_mem_zeroQuartetSet {ρ₀ ρ : ℂ}
   · exact quartetCopyMult_one_sub ρ₀
   · exact quartetCopyMult_one_sub_conj ρ₀
 
-private theorem carrier_not_trivial_zero {ρ : ℂ} (hρ : ρ ∈ Zeta23.zetaZeroConfig.carrier) :
-    ¬ ∃ n : ℕ, ρ = -2 * ((n : ℂ) + 1) := by
-  rintro ⟨n, rfl⟩
-  have h0 := hρ.2.1
-  simp only [Complex.mul_re, Complex.neg_re, Complex.ofReal_re, Complex.add_re, Complex.natCast_re,
-    Complex.one_re, Complex.neg_im, Complex.ofReal_im, neg_zero, Complex.add_im,
-    Complex.natCast_im, Complex.one_im, add_zero, mul_zero, sub_zero] at h0
-  linarith [Nat.cast_nonneg (α := ℝ) n]
-
 /-- `RiemannHypothesis` implies `OutsideQuartetOnLine ρ₀` for every `ρ₀ ∈ ℂ`. -/
 theorem outsideQuartetOnLine_of_riemannHypothesis (hRH : RiemannHypothesis) (ρ₀ : ℂ) :
-    OutsideQuartetOnLine ρ₀ := by
-  intro ρ hρ _
-  have hne1 : ρ ≠ 1 := fun h => by rw [h, Complex.one_re] at hρ; exact lt_irrefl 1 hρ.2.2
-  exact hRH ρ hρ.1 (carrier_not_trivial_zero hρ) hne1
+    OutsideQuartetOnLine ρ₀ :=
+  fun ρ hρ _ =>
+    (GaloisForLFunctions.SquareRootThreshold.riemannHypothesis_iff_zetaZeroConfig_onLine.mp hRH) ρ hρ
 
 /-- Exact equivalence between `HasSingleOffLineQuartet ρ₀` and `OutsideQuartetOnLine ρ₀` at a
 right-of-line strip zero `ρ₀`. -/
@@ -179,11 +170,8 @@ theorem outsideQuartetOnLine_dichotomy {ρ₀ : ℂ} (hre : 1 / 2 < ρ₀.re) (h
   by_cases hm : quartetCopyMult ρ₀ = 0
   · left
     refine ⟨?_, hm⟩
-    rw [RHTower.riemannHypothesis_iff_xi_re]
-    intro ρ hxi
-    obtain ⟨q, hq_eq⟩ := RHTower.exists_xiZeroCopy_of_xi_eq_zero hxi
-    have hcar : ρ ∈ Zeta23.zetaZeroConfig.carrier := by
-      rw [← hq_eq]; exact xiZeroCopy_mem_carrier_local q
+    rw [GaloisForLFunctions.SquareRootThreshold.riemannHypothesis_iff_zetaZeroConfig_onLine]
+    intro ρ hcar
     have hpos : 0 < quartetCopyMult ρ :=
       (mem_carrier_iff_quartetCopyMult_pos hcar.2.1 hcar.2.2).mp hcar
     have hnot : ρ ∉ zeroQuartetSet ρ₀ := by
@@ -209,8 +197,9 @@ theorem riemannHypothesis_iff_outsideQuartetOnLine_and_mult_zero {ρ₀ : ℂ}
     by_contra hm
     have hcar : ρ₀ ∈ Zeta23.zetaZeroConfig.carrier :=
       (mem_carrier_iff_quartetCopyMult_pos (by linarith) hlt1).mpr (Nat.pos_of_ne_zero hm)
-    have hne1 : ρ₀ ≠ 1 := fun h => by rw [h, Complex.one_re] at hlt1; exact lt_irrefl 1 hlt1
-    have hhalf := hRH ρ₀ hcar.1 (carrier_not_trivial_zero hcar) hne1
+    have hhalf :=
+      (GaloisForLFunctions.SquareRootThreshold.riemannHypothesis_iff_zetaZeroConfig_onLine.mp hRH)
+        ρ₀ hcar
     linarith
   · rintro ⟨hout, hm⟩
     rcases outsideQuartetOnLine_dichotomy hre hlt1 hout with ⟨hRH, -⟩ | ⟨-, hpos⟩
@@ -248,13 +237,14 @@ theorem outsideQuartetOnLine_chebyshevPsi_and_theta_wave {ρ₀ : ℂ}
     refine ⟨K₀, hK₀, fun x hx => ?_⟩
     have hempty : ∀ q : RHTower.XiZeroCopy, (q.1 : ℂ).re ≠ 1 / 2 → q ∈ (∅ : Finset RHTower.XiZeroCopy) := by
       intro q hne
-      have hhalf := (RHTower.riemannHypothesis_iff_xi_re.mp hRH) (q.1 : ℂ)
-        (RHTower.xi_eq_zero_of_mem_divisor_support q.1)
+      have hhalf :=
+        (GaloisForLFunctions.SquareRootThreshold.riemannHypothesis_iff_zetaZeroConfig_onLine.mp hRH)
+          (q.1 : ℂ) (xiZeroCopy_mem_carrier_local q)
       exact absurd hhalf hne
     have hpsi := RHTower.abs_chebyshevPsi_sub_add_offLineWave_le (S := ∅) hempty hx
     simp only [RHTower.offLineWave, Finset.sum_empty, Complex.zero_re, add_zero,
       Finset.card_empty, Nat.cast_zero, mul_zero] at hpsi
-    rw [hm0, Nat.cast_zero, mul_zero, zero_mul, add_zero]
+    simp only [hm0, Nat.cast_zero, mul_zero, zero_mul, add_zero]
     refine ⟨hpsi, ?_⟩
     have hsplit : Chebyshev.theta x - x =
         (Chebyshev.psi x - x) - (Chebyshev.psi x - Chebyshev.theta x) := by ring
@@ -1013,15 +1003,6 @@ theorem singleQuartet_short_interval_subcritical_rh_bound {ρ₀ : ℂ}
 private theorem exists_cos_extrema_in_three_halves {γ X : ℝ} (hγ : 67 < |γ|) (hX : 0 < X) :
     (∃ x₊ ∈ Set.Icc X (3 * X / 2), Real.cos (γ * Real.log x₊) = -1) ∧
       (∃ x₋ ∈ Set.Icc X (3 * X / 2), Real.cos (γ * Real.log x₋) = 1) := by
-  -- Note `log(3/2) > 1/3` since `exp(1/3) < 3/2` (`(3/2)^3 = 27/8 > 3 > e`), so `|γ| log(3/2) > 67/3 > 2π`.
-  have hlog32 : (1 / 3 : ℝ) < Real.log (3 / 2) := by
-    rw [lt_iff_not_ge]
-    intro hle
-    have hexp := Real.exp_le_exp.mpr hle
-    rw [Real.exp_log (by norm_num : (0 : ℝ) < 3 / 2)] at hexp
-    have hpow := pow_le_pow_left₀ (Real.exp_nonneg _) hexp 3
-    rw [← Real.exp_nat_mul, show (3 : ℕ) * (1 / 3 : ℝ) = 1 by norm_num, Real.exp_one_rpow] at hpow
-  -- Simpler: `1 + 1/3 < 3/2` gives `log(3/2) = -log(2/3) ≥ 1 - 2/3 = 1/3`!
   have hlog32' : (1 / 3 : ℝ) ≤ Real.log (3 / 2) := by
     have h := Real.log_le_sub_one_of_pos (by norm_num : (0 : ℝ) < 2 / 3)
     have hinv : Real.log (2 / 3 : ℝ) = -Real.log (3 / 2) := by

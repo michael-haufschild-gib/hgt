@@ -1048,8 +1048,8 @@ theorem locallyLipschitzOn_deriv_confiningHalfLineGroundEnergy :
     ?_⟩
   apply lipschitzOnWith_iff_dist_le_mul.mpr
   intro s hs s' hs'
-  have hs0 : 0 < s := by linarith only [hs.1, hr't]
-  have hs'0 : 0 < s' := by linarith only [hs'.1, hr't]
+  have hs0 : 0 < s := by linarith only [hs.1, hr't, ht']
+  have hs'0 : 0 < s' := by linarith only [hs'.1, hr't, ht']
   have hcoord (x : ℝ) : criticalAliasCoefficient x⁻¹ - criticalAliasCoefficient t⁻¹ =
       criticalAliasCoefficient 1 * (x - t) := by
     rw [criticalAliasCoefficient_inv, criticalAliasCoefficient_inv]; ring

@@ -25,12 +25,11 @@ private theorem moving_hasDeriv (h : CompactPulse) (x : ℝ) :
     (h.continuous_toFun.integral_hasStrictDerivAt 0 x).hasDerivAt
   have he : movingIntegral h = fun x => F (x+1)-F x := by
     funext x
-    have hh := intervalIntegral.integral_add_adjacent_intervals
+    have hh := intervalIntegral.integral_add_adjacent_intervals (μ := volume)
       (h.continuous_toFun.intervalIntegrable 0 x) (h.continuous_toFun.intervalIntegrable x (x+1))
     exact eq_sub_of_add_eq' hh
   rw [he]
-  exact (show HasDerivAt (fun t => F (t+1)) (h (x+1)) x by
-    simpa only [Function.comp_def,id_eq,mul_one] using (hF (x+1)).comp x ((hasDerivAt_id x).add_const 1)).sub (hF x)
+  exact ((hF (x+1)).comp_add_const x 1).sub (hF x)
 
 /-- Unit box average, still in the space of compact smooth pulses. -/
 def forwardBoxPulse (h : CompactPulse) : CompactPulse where
@@ -71,8 +70,9 @@ theorem tail_energy_delay (h : CompactPulse) (d T : ℝ) :
       fun u => (Ioi (T-d)).indicator f (u-d) := by
     funext u
     by_cases hu : T<u
-    · rw [indicator_of_mem hu,indicator_of_mem (sub_lt_sub_right hu d),pulseReflected_delay]
-    · rw [indicator_of_notMem hu,indicator_of_notMem (show u-d∉Ioi (T-d) from
+    · rw [indicator_of_mem (show u ∈ Ioi T from hu),
+        indicator_of_mem (show u-d ∈ Ioi (T-d) from sub_lt_sub_right hu d),pulseReflected_delay]
+    · rw [indicator_of_notMem (show u ∉ Ioi T from hu),indicator_of_notMem (show u-d∉Ioi (T-d) from
         not_lt.mpr (sub_le_sub_right (le_of_not_gt hu) d))]
   unfold tailEnergy
   rw [←integral_indicator measurableSet_Ioi,he,integral_sub_right_eq_self,integral_indicator measurableSet_Ioi]

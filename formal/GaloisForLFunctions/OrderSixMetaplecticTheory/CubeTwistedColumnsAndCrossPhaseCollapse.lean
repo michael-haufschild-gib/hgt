@@ -141,7 +141,11 @@ theorem sexticGauss_mul_cube {c : O} [NeZero c] (hc : lambda ^ 2 ∣ c - 1) (hc2
   have hq2 : quadSymbol d c ^ 2 = 1 := quadSymbol_sq hc0 hc2 hdc
   rw [hd3] at ht
   change sexticGauss c (a * d ^ 3) = quadSymbol d c * sexticGauss c a
-  linear_combination -quadSymbol d c * ht + sexticGauss c (a * d ^ 3) * hq2
+  calc sexticGauss c (a * d ^ 3)
+      = 1 * sexticGauss c (a * d ^ 3) := (one_mul _).symm
+    _ = quadSymbol d c ^ 2 * sexticGauss c (a * d ^ 3) := by rw [hq2]
+    _ = quadSymbol d c * (quadSymbol d c * sexticGauss c (a * d ^ 3)) := by ring
+    _ = quadSymbol d c * sexticGauss c a := by rw [ht]
 
 section CoupledRow
 
@@ -173,8 +177,11 @@ theorem orderB_coupled_column_collapse (n₁ n₂ k d : O) (h1 : lambda ^ 2 ∣ 
   have hrec : quadSymbol c d = quadraticPhase d c * quadSymbol d c := by
     have hr := quadSymbol_reciprocity hd hP hd2 hc2' hcd
     have hsq := quadSymbol_sq (NeZero.ne c) hc2' hcd
-    have hr2 := quadraticPhase_sq (not_mem_two_of_isCoprime hd2) (not_mem_two_of_isCoprime hc2')
-    linear_combination quadraticPhase d c * hr - quadSymbol c d * hr2
+    calc quadSymbol c d
+        = quadSymbol c d * 1 := (mul_one _).symm
+      _ = quadSymbol c d * quadSymbol d c ^ 2 := by rw [hsq]
+      _ = (quadSymbol c d * quadSymbol d c) * quadSymbol d c := by ring
+      _ = quadraticPhase d c * quadSymbol d c := by rw [hr]
   have hcube := sexticGauss_mul_cube hP hc2' (n₁ * n₂ ^ 2 * k ^ 3) hcd
   have hrew_arg : n₁ * n₂ ^ 2 * k ^ 3 * d ^ 3 = n₁ * n₂ ^ 2 * (k * d) ^ 3 := by ring
   rw [hrew_arg] at hcube
@@ -222,6 +229,17 @@ private lemma sexticSymbol_prod_denominator (x : O) (t : Finset O) :
   | insert q r hqr ih =>
     rw [Finset.prod_insert hqr, Finset.prod_insert hqr, sexticSymbol_mul_denominator, ih]
 
+/-- Local Gauss sum `g_π^{(j)}(h)` extended by `0` at `π = 0` so prime-set products require no
+membership-dependent `NeZero` proof inside the integrand. -/
+def sexticGaussPowTotal (j : ℕ) (π h : O) : ℂ :=
+  if h0 : π ≠ 0 then @sexticGaussPow j π ⟨h0⟩ h else 0
+
+@[simp]
+theorem sexticGaussPowTotal_eq (j : ℕ) (π : O) [NeZero π] (h : O) :
+    sexticGaussPowTotal j π h = sexticGaussPow j π h := by
+  unfold sexticGaussPowTotal
+  rw [dif_pos (NeZero.ne π)]
+
 /-- **Ordered-pair prime factorization of `sexticGaussPow`.** For any finite set `s` of pairwise
 coprime primary primes `π ∤ 6` and any `j : ℕ`,
 `g_{∏_s π}^{(j)}(1) = (∏_{π ∈ s} ∏_{q ∈ s \setminus \{π\}} χ_π(q)^j) · ∏_{π ∈ s} g_π^{(j)}(1)`. -/
@@ -231,7 +249,7 @@ theorem sexticGaussPow_prod_eq (s : Finset O) (hnz : ∀ π ∈ s, π ≠ 0)
     (hcop : (s : Set O).Pairwise IsCoprime) [hne : NeZero (∏ π ∈ s, π)] (j : ℕ) :
     sexticGaussPow j (∏ π ∈ s, π) 1 =
       (∏ π ∈ s, ∏ q ∈ s.erase π, sexticSymbol q π ^ j) *
-        ∏ π ∈ s, @sexticGaussPow j π ⟨if h : π ∈ s then hnz π h else one_ne_zero⟩ 1 := by
+        ∏ π ∈ s, sexticGaussPowTotal j π 1 := by
   induction s using Finset.induction_on generalizing hne with
   | empty =>
     have h1 : (∏ π ∈ (∅ : Finset O), π) = 1 := Finset.prod_empty
@@ -265,21 +283,12 @@ theorem sexticGaussPow_prod_eq (s : Finset O) (hnz : ∀ π ∈ s, π ≠ 0)
             (∏ q ∈ t, sexticSymbol π q ^ j) * (∏ x ∈ t, ∏ y ∈ t.erase x, sexticSymbol y x ^ j) := by
         rw [← Finset.prod_mul_distrib]
         refine Finset.prod_congr rfl fun q hq => ?_
-        have hqne : q ≠ π := fun h => hπt (h ▸ hq)
-        rw [Finset.erase_insert_of_ne _ hqne,
+        have hqne : π ≠ q := fun h => hπt (h.symm ▸ hq)
+        rw [Finset.erase_insert_of_ne hqne,
           Finset.prod_insert (fun hm => hπt (Finset.mem_of_mem_erase hm))]
       rw [hrest]
       ring
-    have hlocal :
-        (∏ x ∈ insert π t,
-            @sexticGaussPow j x ⟨if h : x ∈ insert π t then hnz x h else one_ne_zero⟩ 1) =
-          sexticGaussPow j π 1 *
-            ∏ x ∈ t, @sexticGaussPow j x ⟨if h : x ∈ t then hnz x (hsub x h) else one_ne_zero⟩ 1 := by
-      rw [Finset.prod_insert hπt]
-      congr 1
-      · exact sexticGaussPow_congr j rfl
-      · refine Finset.prod_congr rfl fun x hx => sexticGaussPow_congr j rfl
-    rw [hcross, hlocal]
+    rw [hcross, Finset.prod_insert hπt, sexticGaussPowTotal_eq]
     ring
 
 /-- **Purely cubic cross-phase collapse of `g_c^{(1)}(1) g_c^{(3)}(1)`.** Multiplying the sextic
@@ -291,9 +300,7 @@ theorem sexticGauss_mul_quadGauss_prod_cubic_cross (s : Finset O) (hnz : ∀ π 
     (hcop : (s : Set O).Pairwise IsCoprime) [hne : NeZero (∏ π ∈ s, π)] :
     sexticGaussPow 1 (∏ π ∈ s, π) 1 * sexticGaussPow 3 (∏ π ∈ s, π) 1 =
       (∏ π ∈ s, ∏ q ∈ s.erase π, ringComplex (symbol q π) ^ 2) *
-        ∏ π ∈ s,
-          (@sexticGaussPow 1 π ⟨if h : π ∈ s then hnz π h else one_ne_zero⟩ 1 *
-            @sexticGaussPow 3 π ⟨if h : π ∈ s then hnz π h else one_ne_zero⟩ 1) := by
+        ∏ π ∈ s, (sexticGaussPowTotal 1 π 1 * sexticGaussPowTotal 3 π 1) := by
   rw [sexticGaussPow_prod_eq s hnz hmax hlam h2 hprim hcop 1,
     sexticGaussPow_prod_eq s hnz hmax hlam h2 hprim hcop 3]
   have hcross :
@@ -310,8 +317,13 @@ theorem sexticGauss_mul_quadGauss_prod_cubic_cross (s : Finset O) (hnz : ∀ π 
     have h4 : sexticSymbol q π ^ 1 * sexticSymbol q π ^ 3 = (sexticSymbol q π ^ 2) ^ 2 := by ring
     rw [h4, sexticSymbol_sq_eq q π (hprim π hπ) hπ2]
   rw [Finset.prod_mul_distrib]
-  linear_combination
-    (∏ x ∈ s, @sexticGaussPow 1 x ⟨if h : x ∈ s then hnz x h else one_ne_zero⟩ 1) *
-      (∏ x ∈ s, @sexticGaussPow 3 x ⟨if h : x ∈ s then hnz x h else one_ne_zero⟩ 1) * hcross
+  calc ((∏ π ∈ s, ∏ q ∈ s.erase π, sexticSymbol q π ^ 1) * ∏ π ∈ s, sexticGaussPowTotal 1 π 1) *
+        ((∏ π ∈ s, ∏ q ∈ s.erase π, sexticSymbol q π ^ 3) * ∏ π ∈ s, sexticGaussPowTotal 3 π 1)
+      = ((∏ π ∈ s, ∏ q ∈ s.erase π, sexticSymbol q π ^ 1) *
+          (∏ π ∈ s, ∏ q ∈ s.erase π, sexticSymbol q π ^ 3)) *
+          ((∏ π ∈ s, sexticGaussPowTotal 1 π 1) * (∏ π ∈ s, sexticGaussPowTotal 3 π 1)) := by ring
+    _ = (∏ π ∈ s, ∏ q ∈ s.erase π, ringComplex (symbol q π) ^ 2) *
+          ((∏ π ∈ s, sexticGaussPowTotal 1 π 1) * (∏ π ∈ s, sexticGaussPowTotal 3 π 1)) := by
+        rw [hcross]
 
 end GaloisForLFunctions.OrderSixMetaplecticTheory

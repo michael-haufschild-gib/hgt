@@ -1,6 +1,5 @@
 # Ordinary-prime variance under a common sieve
 
-
 Let $D=N-Ae^{t/2}$ be the [subcritical integer quadrature](../3-formalized/ecs-subcritical-exponential-mean-square-integer-quadrature.md). For a finite prime set $P$, the translated error recursion costs at most $\prod_{p\in P}(1+p^{\lambda-1/2})/(1-p^{-1})\le 4^{|P|}$ in weighted $L^2$. Hence the cost is $e^{o(T)}$ uniformly over every family with $|P|=o(T)$, at arbitrary prime sizes. This includes all subsets of the primes up to $T$ by Chebyshev's upper bound. Let $E$ be the ordinary-prime wave minus its polar term. For $d>\Theta-1/2$, $e^{-dt}E\in L^2(0,\infty)$: take the empty set of removed modes in the [ordinary-prime square-mean theorem](../../../../formal/GaloisForLFunctions/ExclusionOfTheCriticalState/Modes/UnheatedZeroModesBeyondTheWall.lean), using $-\Re z_c\le\Theta-1/2$ for every centered zero. Write $E_P$ for the ordinary-prime wave with $P$ removed, minus the normalized integer reference sieved by the same $P$, and $G=E-E_P$. Each deleted prime $p$ contributes a translate of $e^{\lambda u}\Phi(u)$ with coefficient $(\log p)p^{\lambda-1/2}=O_\lambda(1)$. Consequently $\|e^{\lambda t}G\|_2\ll_\lambda 4^{|P|}+|P|$. For $0\le r<1-\Theta$ choose $\Theta-1/2<d<\lambda-r$ and $\lambda<1/2$. Cauchy–Schwarz on the positive ray gives
 \[
  \int_0^\infty e^{rt}|E_P^2-E^2|

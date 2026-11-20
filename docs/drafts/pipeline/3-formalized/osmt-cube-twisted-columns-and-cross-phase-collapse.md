@@ -1,9 +1,9 @@
 # Mod-4 phase cancellation in column Hasse–Davenport, cube-twisted columns, and cubic cross-phase collapse
 
 - **ID:** osmt-cube-twisted-columns-and-cross-phase-collapse
-- **Stage:** 2-fully-proven
-- **Type:** THEOREM (paper)
-- **Source:** `docs/reports/review-1911/todo.md` #12 · `formal/GaloisForLFunctions/OrderSixMetaplecticTheory/`
+- **Stage:** 3-formalized
+- **Type:** THEOREM (Lean 4)
+- **Source:** `docs/reports/review-1911/todo.md` #12 · `formal/GaloisForLFunctions/OrderSixMetaplecticTheory/CubeTwistedColumnsAndCrossPhaseCollapse.lean`
 - **Statement:** In `rowRoot_column_hasseDavenport`, the mod-4 Weil factor `\overline{r(n₁ n₂^2 k^3, c)} r(n₁ k, c)` equals `1` identically, yielding the phase-free column identity `(g_c^{(1)}(n₁ n₂^2 k^3)/|c|) G̃(-2 n₁ n₂) G̃(n₁) = (g_c^{(3)}(n₁ k)/|c|) G̃(-2 n₁ n₂ c) G̃(n₁ c)`; for any `a ∈ O` and `d` prime to `c`, `g_c^{(1)}(a d^3) = (d/c)_2 g_c^{(1)}(a)`, collapsing the coupled twist column `\overline{χ_c(n₁ n₂^2 k^3)} (c/d)_2 Φ(c) G̃(-2 n₁ n₂) G̃(n₁)` to `r(d, c) (g_c^{(3)}(n₁ k d)/|c|) G̃(-2 n₁ n₂ c) G̃(n₁ c)`; and across `c = ∏_{π ∈ s} π`, `g_c^{(1)}(1) g_c^{(3)}(1)` factors over `s` with purely cubic cross-phase `∏_{π ∈ s} ∏_{q ∈ s \setminus \{π\}} (q/π)_3^2`.
 
 ## Goal
@@ -12,7 +12,7 @@ Simplify `rowRoot_column_hasseDavenport` by proving exact cancellation of its mo
 ## Gates
 - [x] 0 → 1  in-progress: exact interfaces in `TheColumnsAreShiftedThetaProducts.lean` and `TheQuadraticPhaseIsABicharacterModuloFour.lean` verified
 - [x] 1 → 2  fully-proven: complete paper proof, `[PROVED HERE]`, no open dependency
-- [ ] 2 → 3  formalized: Lean module `CubeTwistedColumnsAndCrossPhaseCollapse.lean`, `lake --old env lean` green, standard axioms only
+- [x] 2 → 3  formalized: Lean module `CubeTwistedColumnsAndCrossPhaseCollapse.lean`, `lake --old env lean` green, standard axioms only
 
 ## Paper Proof (`[PROVED HERE]`)
 
