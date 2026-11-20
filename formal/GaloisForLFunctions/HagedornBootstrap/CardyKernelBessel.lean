@@ -28,7 +28,7 @@ theorem cardyKernel_eq_besselI {α t : ℝ} (hα : 0 ≤ α) (ht : 0 ≤ t) :
   unfold cardyKernel besselI
   congr 1; funext i
   simp only [zero_add]
-  rw [pow_mul, hbase, sq]
+  rw [pow_mul, hbase, sq ((i.factorial : ℕ) : ℝ)]
 
 /-- The corpus Bessel function inherits the Laplace identity of the Cardy kernel. -/
 theorem laplace_besselI_zero {α β : ℝ} (hα : 0 ≤ α) (hβ : 0 < β) :

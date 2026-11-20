@@ -77,7 +77,7 @@ private theorem weighted_error_le_section (ρ : ℂ) (hr : 1/2 < ρ.re) (hi : 0 
   have hint := setIntegral_mono_on hmeas ((continuous_const.mul (continuous_const.add hf)).integrableOn_Icc)
     measurableSet_Icc hrow
   simp only [Pi.mul_apply,Pi.add_apply] at hint
-  rw [integral_const_mul,integral_add (integrableOn_const (by simp [S])) hf.integrableOn_Icc,
+  rw [integral_const_mul,integral_add continuous_const.integrableOn_Icc hf.integrableOn_Icc,
     setIntegral_const,Real.volume_real_Icc_of_le (by dsimp [A,B]; linarith),
     smul_eq_mul,mul_one] at hint
   change _ ≤ K*(1+∫ u in A..B, f u)
@@ -241,7 +241,6 @@ theorem superpolynomial_section_energy_order {ι : Type*} {l : Filter ι}
     change (Real.log C+k*Real.log (N i)+d*Real.log (T i))/Real.log (N i) =
       Real.log C*(Real.log (N i))⁻¹+k+d*(Real.log (T i)/Real.log (N i))
     field_simp [(Real.log_pos hp).ne']
-    <;> ring
 
 
 end GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean
