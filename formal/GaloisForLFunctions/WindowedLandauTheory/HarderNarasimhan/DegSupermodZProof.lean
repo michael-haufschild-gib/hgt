@@ -18,6 +18,7 @@ theorem cast_rank_eq_moduleRank (N : Submodule ℤ E) [DiscreteTopology N] :
   unfold rk
   exact Module.finrank_eq_rank ℤ N
 
+omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
 private theorem discreteTopology_of_le_discrete (L A : Submodule ℤ E) [DiscreteTopology L] (h : A ≤ L) :
     DiscreteTopology A :=
   DiscreteTopology.of_subset (s := (L : Set E)) ‹_› h
@@ -51,8 +52,9 @@ theorem mem_span_inf_of_mem_span (L A B : Submodule ℤ E) [DiscreteTopology L] 
   have hn : 0 < Nat.card (satur L A ⧸ N) := Nat.card_pos
   have h0 : Nat.card (satur L A ⧸ N) • (Submodule.Quotient.mk ⟨b, hbAs⟩ : satur L A ⧸ N) = 0 :=
     card_nsmul_eq_zero'
-  rw [← Submodule.Quotient.mk_smul, Submodule.Quotient.mk_eq_zero] at h0
-  have hA' : Nat.card (satur L A ⧸ N) • b ∈ A := by simpa [N] using h0
+  have hmem : Nat.card (satur L A ⧸ N) • (⟨b, hbAs⟩ : satur L A) ∈ N :=
+    (Submodule.Quotient.mk_eq_zero N).1 ((Submodule.Quotient.mk_smul N _ _).trans h0)
+  have hA' : Nat.card (satur L A ⧸ N) • b ∈ A := by simpa [N] using hmem
   have hC : Nat.card (satur L A ⧸ N) • b ∈ A ⊓ B :=
     Submodule.mem_inf.2 ⟨hA', B.nsmul_mem hbB _⟩
   have hb : b = ((Nat.card (satur L A ⧸ N) : ℕ) : ℝ)⁻¹ • (Nat.card (satur L A ⧸ N) • b) := by
@@ -264,11 +266,7 @@ theorem degree_supermodular_integral : DegSupermodZ := by
     refine covol_le_of_contraction _ _ φ
       ((span ℝ ((satur (A ⊔ B) A : Submodule ℤ E) : Set E))ᗮ.starProjection) (fun x => hg x) ?_
     intro v
-    first
-      | exact Submodule.norm_starProjection_apply_le _ v
-      | exact (span ℝ ((satur (A ⊔ B) A : Submodule ℤ E) : Set E))ᗮ.norm_starProjection_apply_le v
-      | exact ContinuousLinearMap.le_of_opNorm_le _ (Submodule.starProjection_norm_le _) v
-      | simpa using ContinuousLinearMap.le_of_opNorm_le _ (Submodule.starProjection_norm_le _) v
+    exact Submodule.norm_starProjection_apply_le _ v
   have k1 : Real.log (covol (quot (A ⊔ B) (satur (A ⊔ B) A))) ≤
       Real.log (covol (quot B (satur B (A ⊓ B)))) :=
     Real.log_le_log (covol_pos _) hcov

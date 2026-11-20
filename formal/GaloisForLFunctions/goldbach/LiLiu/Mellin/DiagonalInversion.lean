@@ -56,7 +56,9 @@ theorem diagonal_line_integral (a : ℕ → ℂ) (h0 : a 0=0) (σ : ℝ)
       have he (p : ℝ × ℝ) : K k p = (a k/k) * (F p.1 * conj (F p.2)) := by
         simp only [K,w,F,separate_dirichlet_term a h0,map_mul]
         ring
-      simp only [he,integral_const_mul,integral_prod_mul,integral_conj,F]
+      have hprod : (∫ p : ℝ × ℝ, F p.1 * conj (F p.2)) = (∫ t, F t) * ∫ t, conj (F t) :=
+        integral_prod_mul (μ := volume) (ν := volume) F (fun t => conj (F t))
+      simp only [he,integral_const_mul,hprod,integral_conj]
 
 /-- Formula (7.5) on the Hermitian product contour, including the 1/N normalization. -/
 theorem diagonal_mellin_evaluation (N : ℕ) [NeZero N] (φ : TestWeight) {σ : ℝ} (hσ : 0 < σ) :
@@ -84,7 +86,7 @@ theorem diagonal_mellin_evaluation (N : ℕ) [NeZero N] (φ : TestWeight) {σ : 
     simp only [J,c,mellinLine,mellinMultiplier,positive_quotient_cpow_neg _ _ (Nat.cast_pos.mpr hk) hp,
       Complex.ofReal_natCast,mul_assoc]
   change c^2 * (_ * (J * conj J)) = _
-  rw [hi,map_mul, show conj c=c by simp [c]]
+  rw [hi,map_mul, show conj c=c by simp only [c,map_div₀,map_one,map_mul,map_ofNat,Complex.conj_ofReal]]
   ring
 
 #print axioms diagonal_mellin_evaluation

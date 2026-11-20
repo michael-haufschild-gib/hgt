@@ -88,7 +88,7 @@ theorem unitLogWindow_eq_zero_iff (v : ℝ) :
   obtain ⟨k,hk⟩ := Complex.exp_eq_one_iff.mp hv
   have him := congrArg Complex.im hk
   simp only [Complex.mul_im,Complex.ofReal_im,Complex.neg_re,Complex.ofReal_re,Complex.neg_im,
-    Complex.I_im,Complex.I_re,Complex.intCast_im,Complex.intCast_re,Complex.re_ofNat,Complex.im_ofNat,
+    Complex.I_im,Complex.I_re,Complex.intCast_im,Complex.intCast_re,Complex.re_ofNat,Complex.im_ofNat,Complex.mul_re,sub_zero,
     mul_one,zero_mul,mul_zero,add_zero,zero_add,neg_zero] at him
   refine ⟨-k,?_,?_⟩
   · intro hzero
@@ -187,11 +187,11 @@ theorem harmonic_gram_error_on_a_band (S : Finset ℤ) (a b : ℤ → ℂ) {R X 
   let K := fun i j : ℤ => G i j-(if i=j then d else 0)-c
   have hbnd (i : ℤ) (hi : i∈S) (j : ℤ) (hj : j∈S) : ‖K i j‖≤E := by
     have h := microscopic_gram_error hX hL A ((i:ℝ)*(2*Real.pi)) ((j:ℝ)*(2*Real.pi))
-    rw [lattice_window,←sub_mul,abs_mul,abs_of_pos (mul_pos (by norm_num) Real.pi_pos)] at h
+    rw [lattice_window,←sub_mul,abs_mul,abs_of_pos (mul_pos (by norm_num : (0:ℝ) < 2) Real.pi_pos)] at h
     have hg := div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left
-      (mul_le_mul_of_nonneg_right (hR i hi j hj) (mul_pos (by norm_num) Real.pi_pos).le) (by norm_num : (0:ℝ)≤24))
+      (mul_le_mul_of_nonneg_right (hR i hi j hj) (mul_pos (by norm_num : (0:ℝ) < 2) Real.pi_pos).le) (by norm_num : (0:ℝ)≤24))
       (Real.log_pos hX).le
-    have h' := h.trans (add_le_add_left hg _)
+    have h' := h.trans (add_le_add_right hg _)
     dsimp only [K,G,c,d,E]
     split_ifs at h' ⊢ <;> simp only [mul_zero,mul_one] at h' <;>
       convert h' using 1 <;> ring

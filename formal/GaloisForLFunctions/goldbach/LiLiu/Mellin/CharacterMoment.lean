@@ -76,16 +76,17 @@ theorem characterMoment_integral {n : ℕ} (φ : TestWeight) (h : modulusGRH (n+
   have hN : 0 < (N:ℝ) := Nat.cast_pos.mpr (Nat.succ_pos n)
   have hs : (Real.sqrt N : ℂ)^2 = (N : ℂ) := by
     rw [← Complex.ofReal_pow,Real.sq_sqrt hN.le,Complex.ofReal_natCast]
-  have hn0 : (Real.sqrt N : ℂ) ≠ 0 := ofReal_ne_zero.mpr (Real.sqrt_pos.mpr hN).ne'
+  have hc : conj c=c := by simp only [c,map_div₀,map_one,map_mul,map_ofNat,Complex.conj_ofReal]
   have hval (χ) (hχ : χ ∈ X) : c^2 * (∫ p, G χ p) = (‖U χ‖^2 : ℝ) / (N : ℂ) := by
     have e : U χ/(Real.sqrt N : ℂ) = -c*(∫ t : ℝ, F χ t) :=
       character_polynomial_integral φ h (hn hχ) ha ht
-    rw [show (∫ p, G χ p) = (∫ t : ℝ, F χ t)*conj (∫ t : ℝ, F χ t) by
-      simp only [G,integral_prod_mul,integral_conj]]
+    have hG : (∫ p, G χ p) = (∫ t : ℝ, F χ t)*(∫ t : ℝ, conj (F χ t)) :=
+      integral_prod_mul (μ := volume) (ν := volume) (F χ) (fun t => conj (F χ t))
+    rw [hG,integral_conj]
     calc
       _ = (-c*(∫ t : ℝ, F χ t)) * (-c*conj (∫ t : ℝ, F χ t)) := by ring
-      _ = (U χ/(Real.sqrt N : ℂ))*conj (U χ/(Real.sqrt N : ℂ)) := by rw [e]; simp [c]
-      _ = _ := by rw [map_div,conj_ofReal,div_mul_div_comm,← sq,hs,Complex.mul_conj,Complex.normSq_eq_norm_sq]
+      _ = (U χ/(Real.sqrt N : ℂ))*conj (U χ/(Real.sqrt N : ℂ)) := by rw [e,map_mul,map_neg,hc]
+      _ = _ := by rw [map_div₀,conj_ofReal,div_mul_div_comm,← sq,hs,Complex.mul_conj,Complex.normSq_eq_norm_sq]
   change c^2 * ((2/(N.totient:ℂ)) * _) = _
   rw [mul_left_comm,Finset.mul_sum]
   simp_rw [Finset.sum_congr rfl hval]
