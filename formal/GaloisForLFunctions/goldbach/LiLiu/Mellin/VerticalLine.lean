@@ -15,13 +15,15 @@ def mellinMultiplier (N : ℕ) (φ : TestWeight) (s : ℂ) : ℂ :=
 
 theorem mellinLine_reflect {w : ℂ} {σ : ℝ} (hw : w.re = 2*σ) (t : ℝ) :
     mellinLine σ (w.im-t) = w - mellinLine σ t := by
-  apply Complex.ext <;> simp [mellinLine,hw] <;> ring
+  apply Complex.ext <;> simp [mellinLine,hw]
+  all_goals ring
 
 theorem mellin_companion_conj (φ : TestWeight) (s : ℂ) :
     mellin (companion φ) (conj s) = conj (mellin (companion φ) s) := by
   simp only [mellin, smul_eq_mul, ← integral_conj]
   apply setIntegral_congr_fun measurableSet_Ioi
   intro x hx
+  change (x:ℂ)^(conj s-1) * companion φ x = conj ((x:ℂ)^(s-1) * companion φ x)
   rw [map_mul, show conj s-1 = conj (s-1) by simp,
     _root_.RHTower.GaussZeroSum.ofReal_cpow_conj hx]
   simp [companion,Vstar]
@@ -66,6 +68,7 @@ theorem mellinMultiplier_quarter_integrable (N : ℕ) (hN : 0 < N) (φ : TestWei
   have hsq : 1+t^2 ≤ r^2 := by dsimp [r]; nlinarith only [sq_abs t,abs_nonneg t]
   have hM : r^3 * ‖mellin (companion φ) (mellinLine σ t)‖ ≤ D := hd σ ⟨le_rfl,le_rfl⟩ t
   have hpow : ‖(N:ℂ)^mellinLine σ t‖ = P := by simp [mellinLine,P,Complex.norm_natCast_cpow_of_pos hN]
+  change ‖(1+|t|)^(1/4:ℝ) * ‖mellinMultiplier N φ (mellinLine σ t)‖‖ ≤ P*D*(1+t^2)⁻¹
   rw [Real.norm_eq_abs,abs_of_nonneg (mul_nonneg (Real.rpow_nonneg (by positivity) _) (norm_nonneg _)),
     ← div_eq_mul_inv,le_div_iff₀ (by positivity),mellinMultiplier,norm_mul,hpow]
   calc

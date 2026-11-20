@@ -79,9 +79,10 @@ private theorem roots_per_cofactor {A H D k : ℕ} (hD : 0 < D) (hk : 0 < k) :
         rw [hf]
         have bound := Nat.mul_le_mul_right (k*f) hdD
         nlinarith only [bound,Nat.zero_le (k*d*f),Nat.zero_le (k*f^2)]
+      have hl' : A < k*d^2 := hl
       have hf' := (Nat.le_div_iff_mul_le (Nat.mul_pos hk hD)).mpr (show f*(k*D) ≤ H by omega)
       exact mem_Icc.mpr ⟨hde,by omega⟩
-    exact (card_le_card hsubset).trans_eq (by rw [Nat.card_Icc];omega)
+    exact (card_le_card hsubset).trans_eq (by rw [Nat.card_Icc]; generalize H/(k*D) = t; omega)
   · change S.card ≤ _
     rw [not_nonempty_iff_eq_empty.mp hn,card_empty]
     exact Nat.zero_le _
@@ -127,10 +128,13 @@ theorem nonsquarefree_count_on_a_short_interval (A H : ℕ) {D : ℕ} (hD : 0 < 
     by_cases hle : p ≤ D
     · exact mem_union_left _ (mem_biUnion.mpr ⟨p,Nat.mem_primesLE.mpr ⟨hle,hp⟩,mem_filter.mpr ⟨hI,hdiv⟩⟩)
     obtain ⟨k,he⟩ := hdiv
-    have hk : 0 < k := by by_contra! h;have hz : k=0 := by omega;simp [hz] at he;omega
+    have hk : 0 < k := by
+      rcases Nat.eq_zero_or_pos k with hz|hz
+      · subst hz; simp at he; omega
+      · exact hz
     have pk : k*D^2 ≤ n := by
       rw [he,mul_comm]
-      exact Nat.mul_le_mul_left k (Nat.pow_le_pow_left (le_of_lt (lt_of_not_ge hle)) 2)
+      exact Nat.mul_le_mul_right k (Nat.pow_le_pow_left (le_of_lt (lt_of_not_ge hle)) 2)
     have hK : k ≤ K := (Nat.le_div_iff_mul_le (pow_pos hD 2)).mpr (pk.trans (mem_Ioc.mp hI).2)
     have hpn : p ≤ n := (Nat.le_self_pow (by decide : 2≠0) p).trans (Nat.le_of_dvd pos ⟨k,he⟩)
     have eq : k*p^2=n := (Nat.mul_comm ..).trans he.symm
@@ -175,7 +179,8 @@ theorem local_price_of_a_squarefree_pair_gap {A H D : ℕ} (hD : 0 < D)
     exact_mod_cast covering_pairless_block missing
   have hleft := nonsquarefree_count_on_a_short_interval A H hD
   have hright := nonsquarefree_count_on_a_short_interval (A+1) H hD
-  rw [show A+1+H=A+H+1 by omega] at hright
+  dsimp only [bad] at hcover
+  rw [show A+1+H=A+H+1 by omega] at hright hcover
   have hdiv : (((A+H)/D^2:ℕ):ℝ) ≤ (((A+H+1)/D^2:ℕ):ℝ) :=
     Nat.cast_le.mpr (Nat.div_le_div_right (Nat.le_succ _))
   linarith only [hcover,hleft,hright,hdiv]

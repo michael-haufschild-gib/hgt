@@ -43,7 +43,6 @@ theorem contractive_receiver_plancherel (h : CompactPulse) {J : ℝ → ℂ} (hJ
       rw [htime]; push_cast;ring
     beta_reduce
     rw [he,smul_eq_mul,mul_comm]
-    rfl
   have hcomp := ((_root_.GaloisForLFunctions.RHTower.integrable_norm_sq_fourier hi hF₂).comp_mul_left' hk)
   constructor
   · exact hcomp.congr (.of_forall fun t => by beta_reduce; rw [htransform])
@@ -192,6 +191,7 @@ private theorem multiplier_poisson {p : ℕ} (hp : p.Prime) (ξ : ℝ) :
     ←Complex.normSq_eq_norm_sq,Complex.ofReal_div,div_eq_mul_inv,hgeo]
   push_cast
   rw [hfac,mul_inv_rev]
+  dsimp only [r] at hrp hrm ⊢
   field_simp [hrp,hrm]
   <;> ring
 
@@ -221,8 +221,9 @@ theorem prime_sector_energy_by_input_correlations (h : CompactPulse) {p : ℕ} (
     unfold F H osc
     fun_prop
   have hnorm (m : ℤ) (ξ : ℝ) : ‖F m ξ‖ = q^m.natAbs*H ξ := by
-    simp only [F,norm_mul,norm_pow,Complex.norm_real,Real.norm_of_nonneg hq.1.le,norm_osc,mul_one,
-      Real.norm_of_nonneg (sq_nonneg ‖pulseAmplitude h (ξ:ℂ)‖)]
+    simp only [F,norm_mul,norm_pow,Complex.norm_real,norm_osc,mul_one]
+    rw [Real.norm_of_nonneg (show (0:ℝ) ≤ q from hq.1.le),
+      Real.norm_of_nonneg (show (0:ℝ) ≤ H ξ from sq_nonneg _)]
   have hint (m : ℤ) : Integrable (F m) :=
     (hH.const_mul (q^m.natAbs)).mono' (hm m).aestronglyMeasurable (.of_forall fun ξ => (hnorm m ξ).le)
   have hsum := (_root_.RHTower.summable_int_pow_natAbs hq.1.le hq.2).mul_right (∫ ξ : ℝ,H ξ)
@@ -235,19 +236,21 @@ theorem prime_sector_energy_by_input_correlations (h : CompactPulse) {p : ℕ} (
     rw [mul_left_comm,←tsum_mul_left]
     congr 1
     refine tsum_congr fun m => ?_
-    rw [_root_.RHTower.semilocalBilateralPoissonTerm,osc_integer_delay,F]
+    rw [_root_.RHTower.semilocalBilateralPoissonTerm,osc_integer_delay]
+    dsimp only [F]
     ring
   have hrow (m : ℤ) : (2*(Real.pi:ℂ))*(∫ ξ : ℝ, F m ξ) =
       (q:ℂ)^m.natAbs*inputCorrelation h (m*d) := by
     simp only [F,integral_const_mul]
     rw [mul_left_comm]
     exact congrArg (fun x => (q:ℂ)^m.natAbs*x) (integral_norm_sq_pulseAmplitude_mul_cexp h (m*d))
-  rw [(prime_sector_energy_spectrum h hp).2,Complex.ofReal_mul,←integral_ofReal]
+  rw [(prime_sector_energy_spectrum h hp).2,Complex.ofReal_mul,←integral_complex_ofReal]
   change ((2*Real.pi:ℝ):ℂ)*(∫ ξ : ℝ, ((H ξ*‖sectorMultiplier p ξ‖^2:ℝ):ℂ))=_
   simp_rw [hpoint]
   rw [integral_const_mul,←hswitch,mul_left_comm,←tsum_mul_left]
   push_cast
-  exact congrArg (fun x => (B:ℂ)*x) (tsum_congr hrow)
+  rw [tsum_congr hrow]
+  simp only [B,q,d,Complex.ofReal_div,Complex.ofReal_sub,Complex.ofReal_add,Complex.ofReal_one]
 
 private theorem correlation_zero_of_gap (h : CompactPulse) {A B v : ℝ}
     (hs : ∀ t ∉ Icc A B, h t=0) (hv : B-A < |v|) : inputCorrelation h v=0 := by
@@ -288,7 +291,7 @@ theorem short_pulse_prime_energy (h : CompactPulse) {p : ℕ} (hp : p.Prime) {A 
       ((p:ℝ)-1)/((p:ℝ)+1)*(∫ t : ℝ, ‖h t‖^2) := by
   have hf := sector_energy_finite_autocorrelations h hp hs (M:=0) (by simpa using hwidth)
   have hz : inputCorrelation h 0 = ((∫ t : ℝ, ‖h t‖^2:ℝ):ℂ) := by
-    simp only [inputCorrelation,sub_zero,Complex.mul_conj,Complex.normSq_eq_norm_sq,integral_ofReal]
+    simp only [inputCorrelation,sub_zero,Complex.mul_conj,Complex.normSq_eq_norm_sq,integral_complex_ofReal]
   have h := congrArg Complex.re hf
   simp only [Nat.cast_zero,neg_zero,Finset.Icc_self,Finset.sum_singleton,Int.natAbs_zero,pow_zero,Int.cast_zero,
     zero_mul,hz,one_mul,←Complex.ofReal_mul,Complex.ofReal_re] at h

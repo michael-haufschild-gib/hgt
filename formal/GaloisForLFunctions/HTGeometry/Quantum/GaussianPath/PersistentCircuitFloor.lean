@@ -92,7 +92,7 @@ theorem gaussian_pauli_persistent_circuit_floor (T : ℝ) (hT : 0 < T) :
     have h' : (k:ℝ) ≤ (N:ℝ) := by exact_mod_cast (show k ≤ N by dsimp [N]; omega)
     have h8 : 8 < (k:ℝ)*p := (div_lt_iff₀ hp).mp hk
     linarith only [h8,mul_le_mul_of_nonneg_right h' hp.le]
-  intro t hlo hhi
+  intro _ _ t hlo hhi
   have ht : 0 < t := (div_pos hA hN).trans_le hlo
   have hstart : A ≤ (N:ℝ)*t := by simpa only [mul_comm t] using (div_le_iff₀ hN).mp hlo
   have hend : q*t ≤ 1/8 := by
@@ -132,7 +132,7 @@ theorem gaussian_pauli_sublinear_dip_spacing :
   intro s hsub T
   obtain ⟨k,hk⟩ := exists_nat_gt T
   obtain ⟨m,hm⟩ := exists_nat_gt (A k)
-  have hsmall i := hsub.eventually_lt_const (show 0 < c i/2 by positivity)
+  have hsmall i := hsub.eventually_lt_const (div_pos (hc i) (by norm_num : (0:ℝ) < 2))
   filter_upwards [hω 0,hω k,hsmall 0,hsmall k,eventually_ge_atTop m]
     with n hzero hwide hsmall0 hsmallk hlarge
   let N := n+2
@@ -144,7 +144,7 @@ theorem gaussian_pauli_sublinear_dip_spacing :
     apply (div_le_iff₀ hN).mpr
     rw [one_mul]
     exact hm.le.trans (by exact_mod_cast (show m ≤ N by dsimp [N]; omega))
-  intro t ht v hv he
+  intro _ _ t ht v hv he
   by_contra! hT
   by_cases htone : t ≤ 1
   · have h := (hzero t ht (by simpa using htone)).2 v (s n) (s n) hv he
@@ -153,6 +153,34 @@ theorem gaussian_pauli_sublinear_dip_spacing :
       (by linarith only [hT,hk])).2 v (s n) (s n) hv he
     exact (not_lt_of_ge h) (hcost k hsmallk)
 
+/-- For every time sequence tending to zero after the inverse-size startup,
+the minimum gate count exceeds every fixed multiple of Nt. A size-uniform
+linear upper ramp must therefore start on a macroscopic time scale. -/
+theorem gaussian_pauli_submacroscopic_cost_exceeds_linear_clock :
+    ∃ A : ℝ, 0 < A ∧ ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ f : ℕ → ℝ,
+      Tendsto f atTop (nhds 0) → (∀ᶠ n : ℕ in atTop, A/((n+2:ℕ):ℝ) ≤ f n) →
+      ∀ v : ℝ, ∀ᶠ n : ℕ in atTop, ∀ s : ℕ,
+        HasProjectiveCircuitApproximation (n+2) (1/10:ℝ) s
+          (unitaryEvolution (pathHamiltonian (pathPauliDisorderShell ω n)) (f n)) →
+        v*((n+2:ℕ):ℝ)*f n < s := by
+  obtain ⟨A,c,hA,hc,hw⟩ := gaussian_pauli_persistent_circuit_floor 1 zero_lt_one
+  refine ⟨A,hA,?_⟩
+  filter_upwards [hw] with ω hω
+  intro f hf hstart v
+  have hv : Tendsto (fun n => v*f n) atTop (nhds 0) := by
+    simpa using (tendsto_const_nhds (x := v)).mul hf
+  filter_upwards [hω,hstart,hf.eventually_lt_const zero_lt_one,hv.eventually_lt_const hc]
+    with n hn ht hT he
+  intro s hs
+  obtain ⟨z,_,C,hC,herr⟩ := hs
+  have hfloor := (hn (f n) ht hT.le).1 C z (herr.trans (by norm_num))
+  calc
+    _ = (v*f n)*((n+2:ℕ):ℝ) := by ring
+    _ < c*((n+2:ℕ):ℝ) := mul_lt_mul_of_pos_right he (by positivity)
+    _ ≤ (C.gateCount:ℝ) := hfloor
+    _ ≤ _ := by exact_mod_cast hC
+
+#print axioms gaussian_pauli_submacroscopic_cost_exceeds_linear_clock
 #print axioms gaussian_pauli_persistent_circuit_floor
 #print axioms gaussian_pauli_sublinear_dip_spacing
 end

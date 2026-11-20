@@ -5,7 +5,7 @@ import GaloisForLFunctions.goldbach.LiLiu.MellinWeight
 import GaloisForLFunctions.goldbach.LiLiu.Mellin.DirichletInversion
 import GaloisForLFunctions.goldbach.LiLiu.Mellin.HalfLineBeta
 import GaloisForLFunctions.goldbach.LiLiu.Mellin.ModelEvaluation
-import GaloisForLFunctions.goldbach.LiLiu.Mellin.ProfileGeometry
+import GaloisForLFunctions.goldbach.LiLiu.Mellin.ProfileBeta
 import GaloisForLFunctions.goldbach.LiLiu.Mellin.SignedMellin
 import GaloisForLFunctions.goldbach.LiLiu.RepresentationBound
 import GaloisForLFunctions.goldbach.LiLiu.Spectral.SpectralScales

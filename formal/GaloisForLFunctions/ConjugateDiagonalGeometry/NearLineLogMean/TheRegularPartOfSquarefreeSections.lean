@@ -15,7 +15,7 @@ including the removable point s=1.
 -/
 noncomputable section
 open Finset Complex MeasureTheory Filter
-open scoped Topology
+open scoped Topology ComplexConjugate
 open _root_.RHTower.SquarefreeDiscrepancy (count error moment)
 open _root_.RHTower.Sieve (squarefreeDensity)
 namespace GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean
@@ -39,7 +39,7 @@ def squarefreeRegularPart (s : ℂ) : ℂ := (squarefreeDensity:ℂ)+s*moment s
 /-- Holomorphic continuation of the regular part through one. -/
 theorem differentiableAt_squarefreeRegularPart {s : ℂ} (hs : 1/2<s.re) :
     DifferentiableAt ℂ squarefreeRegularPart s :=
-  differentiableAt_const.add (differentiableAt_id.mul (_root_.RHTower.SquarefreeDiscrepancy.differentiableAt_moment hs))
+  (differentiableAt_const _).add (differentiableAt_id.mul (_root_.RHTower.SquarefreeDiscrepancy.differentiableAt_moment hs))
 
 theorem squarefreeRegularPart_eq_quotient {s : ℂ} (hs : 1/2<s.re) (hne : s≠1) :
     squarefreeRegularPart s = riemannZeta s / riemannZeta (2*s) - (squarefreeDensity:ℂ)/(s-1) := by
@@ -98,10 +98,10 @@ theorem squarefree_density_primitive {X : ℝ} (hX : 1≤X) (s : ℂ) :
   by_cases he : s=1
   · subst s;simp
   have hz : (0:ℝ)∉Set.uIcc 1 X := by rw [Set.uIcc_of_le hX];simp
-  have h := integral_cpow (r:=-s) (a:=1) (b:=X) (Or.inr ⟨neg_ne_neg.mpr he,hz⟩)
+  have h := integral_cpow (r:=-s) (a:=1) (b:=X) (Or.inr ⟨neg_injective.ne he,hz⟩)
   rw [intervalIntegral.integral_of_le hX] at h
   simp only [Complex.ofReal_one,Complex.one_cpow,show -s+1=1-s by ring] at h
-  rw [h,mul_comm (1-s),div_mul_cancel₀ _ (sub_ne_zero.mpr he.symm)]
+  rw [h,mul_comm (1-s),div_mul_cancel₀ _ (sub_ne_zero.mpr (Ne.symm he))]
 
 /-- Exact finite part, with an upper-endpoint jump and a discrepancy-tail
 integral. This identity also holds at the pole and uses the literal count. -/
@@ -113,7 +113,8 @@ theorem squarefree_cutoff_remainder {X : ℝ} (hX : 1≤X) {s : ℂ} (hs : 1/2<s
   have hx := zero_lt_one.trans_le hX
   have hc (t : ℝ) : (count t:ℂ)=(error t:ℂ)+d*(t:ℂ) := by
     simp only [d,error,Complex.ofReal_sub,Complex.ofReal_mul,sub_add_cancel]
-  have herr := _root_.RHTower.SquarefreeDiscrepancy.integrable_moment hs
+  have herr : IntegrableOn (weightedCountError s) (Set.Ioi 1) :=
+    _root_.RHTower.SquarefreeDiscrepancy.integrable_moment hs
   have hu : (∫ t in Set.Ioc 1 X,(count t:ℂ)*(t:ℂ)^(-(s+1))) =
       (∫ t in Set.Ioc 1 X,weightedCountError s t)+d*(∫ t in Set.Ioc 1 X,(t:ℂ)^(-s)) := by
     rw [←integral_const_mul,←integral_add (herr.mono_set Set.Ioc_subset_Ioi_self)
@@ -157,11 +158,11 @@ theorem squarefree_section_regular_part_error {X : ℝ} (hX : 1≤X) {s : ℂ} (
       (_root_.RHTower.SquarefreeDiscrepancy.integrable_moment hs).mono_set (Set.Ioi_subset_Ioi hX)
     apply (setIntegral_mono_on hi.norm ((integrableOn_Ioi_rpow_of_lt hlt hp).const_mul 4)
       measurableSet_Ioi (fun t ht => ?_)).trans_eq
-    · simpa only [weightedCountError,Complex.add_re,Complex.one_re] using
-        point_envelope (s:=s+1) (hX.trans (Set.mem_Ioi.mp ht).le)
     · rw [integral_const_mul,integral_Ioi_rpow_of_lt hlt hp,show 1/2-(s.re+1)+1=1/2-s.re by ring]
       field_simp [sub_ne_zero.mpr hs.ne',sub_ne_zero.mpr hs.ne]
       <;> ring
+    · simpa only [weightedCountError,Complex.add_re,Complex.one_re] using
+        point_envelope (s:=s+1) (hX.trans (Set.mem_Ioi.mp ht).le)
   rw [squarefree_cutoff_remainder hX hs]
   apply (norm_sub_le _ _).trans
   rw [norm_mul s]
@@ -211,6 +212,7 @@ theorem squarefree_dilation_difference_limit {s : ℂ} (hs : 1/2<s.re) (hne : s�
     ring
   change squarefreeSection _ s-P (r*x)-q*(squarefreeSection x s-P x) = _
   rw [step]
+  dsimp only [q,id_eq]
   ring
 
 /-- Two sharp cutoffs recover the zeta quotient wherever the dilation

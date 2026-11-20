@@ -36,7 +36,7 @@ private theorem ratioKernel_beta {d : ℝ} (hd : d^2=1) {s w : ℂ}
     have hf : ratioKernel 1 w s = fun u : ℝ => (u:ℂ)^(-(1/2+s))*(1+(u:ℂ))^(w-1) := by
       funext u
       simp [ratioKernel,mul_comm]
-    simpa only [hf,shapeDomain_add,shapeBeta,if_pos rfl] using And.intro H E
+    simpa [hf,shapeDomain_add,shapeBeta] using And.intro H E
   · have H := (betaIntegral_convergent ha hw).1.mono_set Ioo_subset_Ioc_self
     have E : (∫ u in Ioo (0:ℝ) 1, (u:ℂ)^((1/2-s)-1) * (1-(u:ℂ))^(w-1)) =
         betaIntegral (1/2-s) w := by
@@ -67,6 +67,7 @@ private theorem radial_moment (φ : TestWeight) (w s : ℂ) :
       have h0 : (r:ℂ) ≠ 0 := ofReal_ne_zero.mpr hr0.ne'
       have hh : (Real.sqrt r : ℂ) = (r:ℂ)^(1/2:ℂ) := by
         rw [Real.sqrt_eq_rpow,Complex.ofReal_cpow hr0.le]; push_cast; rfl
+      change (r:ℂ)^(w-s-1) • companion φ r = radialKernel φ w r * (r:ℂ)^(-(1/2+s))
       rw [smul_eq_mul, companion,Vstar,radialKernel,hh,← mul_assoc,← cpow_add _ _ h0]
       rw [mul_right_comm _ (φ r:ℂ), ← cpow_add _ _ h0]
       congr 2
@@ -113,7 +114,7 @@ theorem orientedProfile_mellin_beta (φ : TestWeight) {d : ℝ} (hd : d^2=1) {σ
   have hJ : Integrable (fun u => ‖B u‖ * u ^ (-(1/2+σ))) ν := by
     apply (ratioKernel_beta (s := (σ:ℂ)) hd hσ hw hw').1.norm.congr
     filter_upwards [hν] with u hu
-    simp [B,ratioKernel,norm_mul,Complex.norm_cpow_eq_rpow_re_of_pos hu]
+    simp [B,ratioKernel,Complex.norm_cpow_eq_rpow_re_of_pos hu]
   obtain ⟨hv,he⟩ := product_weight_inversion μ ν φ σ hA hB hμ hν hI hJ
   have H (t : ℝ) := (ratioKernel_beta (s := (σ:ℂ)+t*I) hd (by simpa using hσ) hw (by simpa using hw')).2
   simp only [μ,ν,B,radial_moment,← H] at hv he ⊢

@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PersistentCircuitFloor
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPauliFirstThreshold
 import GaloisForLFunctions.HTGeometry.Quantum.PrescribedClockCircuitOccupation
 import GaloisForLFunctions.HTGeometry.Quantum.SpectralSignReturnClock

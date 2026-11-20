@@ -1,4 +1,5 @@
 import GaloisForLFunctions.goldbach.GammaFactorBoundary
+import GaloisForLFunctions.goldbach.SignedBetaReflection
 import Mathlib.Analysis.SpecialFunctions.Gamma.Beta
 
 /-! # Factorization of the three signed Beta integrals
@@ -38,11 +39,6 @@ private theorem beta_reflection {u v t : ℂ} (hu : 0 < u.re) (hv : 0 < v.re)
   rw [betaIntegral_eq_Gamma_mul_div _ _ hu hv, hvu, div_eq_mul_inv,
     inverse_reflected_gamma ht (by linarith only [hr,hu,hv])]
   ring
-
-private theorem sine_factor (a b : ℂ) :
-    sin (2*a) + sin (2*b) - sin (2*(a+b)) = 4 * sin a * sin b * sin (a+b) := by
-  simp only [sin_two_mul, sin_add, cos_add]
-  linear_combination -2*sin a*cos a*(sin_sq_add_cos_sq b) - 2*sin b*cos b*(sin_sq_add_cos_sq a)
 
 private theorem gamma_half_factor (r : ℂ) (hr : 0 < r.re) (hr' : r.re < 1) :
     signedBetaGammaFactor (1/2-r) =
@@ -91,10 +87,12 @@ theorem signedBeta_factorization {s z : ℂ} (hs : 0 < s.re) (hs' : s.re < 1/2)
   let b := (Real.pi : ℂ)*t/2
   have htr : sin (Real.pi*t) + sin (Real.pi*r) - sin (Real.pi*w) =
       4*sin a*sin b*cos (Real.pi*w/2) := by
-    rw [show (Real.pi : ℂ)*t=2*b by dsimp [b]; ring, show (Real.pi : ℂ)*r=2*a by dsimp [a]; ring,
-      show (Real.pi : ℂ)*w = Real.pi-2*(a+b) by dsimp [a,b]; linear_combination (Real.pi : ℂ)*hsum,
-      sin_pi_sub, show (Real.pi : ℂ)*w/2 = Real.pi/2-(a+b) by dsimp [a,b]; linear_combination ((Real.pi : ℂ)/2)*hsum,
-      cos_pi_div_two_sub, add_comm (sin (2*b)), sine_factor]
+    have H := signedBetaReflectionCore_factorization r t
+    rw [signedBetaReflectionCore_eq_sine_sum, show 1-r-t=w by linear_combination -hsum] at H
+    have H' := (div_eq_iff (Complex.ofReal_ne_zero.mpr Real.pi_ne_zero)).mp H
+    dsimp only [a,b]
+    rw [add_comm (sin _),H']
+    field_simp [Complex.ofReal_ne_zero.mpr Real.pi_ne_zero]
   have htwo : (2:ℂ)^(1-w) * (2:ℂ)^(1-r) * (2:ℂ)^(1-t) = 4 := by
     rw [← cpow_add _ _ (by norm_num), ← cpow_add _ _ (by norm_num),
       show (1-w)+(1-r)+(1-t) = (2:ℕ) by push_cast; linear_combination -hsum, cpow_natCast]
@@ -105,9 +103,11 @@ theorem signedBeta_factorization {s z : ℂ} (hs : 0 < s.re) (hs' : s.re < 1/2)
   calc
     _ = Gamma r * Gamma t * Gamma w * (sin (Real.pi*t) + sin (Real.pi*r) - sin (Real.pi*w)) / Real.pi := by ring
     _ = _ := by
-      rw [htr, ← htwo, ← hpi]
-      dsimp [a,b]
-      ring
+      rw [htr, ← htwo]
+      dsimp only [a,b]
+      field_simp [hp,hq]
+      ring_nf at hpi ⊢
+      first | assumption | simp only [hpi] | ring
 
 #print axioms signedBeta_factorization
 end

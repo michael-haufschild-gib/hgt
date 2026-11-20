@@ -39,7 +39,8 @@ private theorem response_on_real (a : ℕ → ℂ) (N : ℕ) (t : ℝ) :
 private theorem energy_finite (a : ℕ → ℂ) (N : ℕ) (d : ℝ) :
     energy a N d = ∑ p ∈ pairs N, (amplitude a p).re*max (d-|(frequency p).im|) 0 := by
   rw [energy,RHTower.Sieve.integral_normSq_logWindowSum]
-  simp [pairs,prefixSet,Finset.sum_product,amplitude,frequency,Complex.mul_im]
+  simp only [frequency,Complex.mul_I_im,Complex.ofReal_re]
+  simp [pairs,prefixSet,Finset.sum_product,amplitude,Complex.mul_im]
 
 private theorem gap_bound {N : ℕ} {p : ℕ × ℕ} (hp : p∈pairs N) :
     |(frequency p).im| ≤ Real.log N := by
@@ -59,6 +60,7 @@ theorem wide_window_affine (a : ℕ → ℂ) (N : ℕ) {d : ℝ} (hd : Real.log 
       ∑ i ∈ Icc 1 N, ∑ j ∈ Icc 1 N, gram (a i) (a j)*|Real.log i-Real.log j| := by
   have hsum : (∑ p ∈ pairs N, (amplitude a p).re) = ‖∑ n ∈ prefixSet N, a n‖^2 := by
     have h := congrArg Complex.re (response_on_real a N 0)
+    rw [Complex.ofReal_re] at h
     simpa [response,translated,Complex.re_sum] using h
   rw [energy_finite]
   calc
@@ -68,7 +70,8 @@ theorem wide_window_affine (a : ℕ → ℂ) (N : ℕ) {d : ℝ} (hd : Real.log 
       ring
     _ = _ := by
       rw [sum_sub_distrib,←mul_sum,hsum]
-      simp [pairs,prefixSet,Finset.sum_product,amplitude,frequency,gram,Complex.mul_im]
+      simp only [frequency,Complex.mul_I_im,Complex.ofReal_re]
+      simp [pairs,prefixSet,Finset.sum_product,amplitude,gram,Complex.mul_im]
 
 /-- Any two bandwidths beyond the diameter read the same squared amplitude
 by a single divided difference. -/
@@ -91,7 +94,7 @@ private theorem response_entire (a : ℕ → ℂ) (N : ℕ) : AnalyticOnNhd ℂ 
   intro z _
   unfold response
   exact Finset.analyticAt_fun_sum _ fun p _ => analyticAt_const.mul
-    (Complex.analyticAt_exp.comp ((analyticAt_const (v:=frequency p)).mul analyticAt_id))
+    ((analyticAt_const (v:=frequency p)).mul analyticAt_id).cexp
 
 private theorem equal_response_of_late_readings {a b : ℕ → ℂ} {N : ℕ} {t₀ : ℝ}
     (hread : ∃ᶠ t : ℝ in 𝓝[≠] t₀,
@@ -131,7 +134,7 @@ private theorem zero_after_multiplier {ι : Type*} (S : Finset ι) (c f : ι →
   have hgroup (F : ℂ → ℂ) : (∑ i ∈ S, c i*F (f i)) = ∑ z ∈ T, A z*F z := by
     rw [←sum_fiberwise_of_maps_to hmap (fun i => c i*F (f i))]
     refine sum_congr rfl fun z _ => ?_
-    rw [A,sum_mul]
+    rw [show A z = ∑ i ∈ S.filter (fun i => f i=z), c i from rfl,sum_mul]
     exact sum_congr rfl fun i hi => by rw [(mem_filter.mp hi).2]
   have hall := HTGeometry.exp_coeff_eq_zero (S:=T) (C:=A) (fun t => by rw [←hgroup]; exact h t)
   rw [hgroup]
@@ -159,7 +162,8 @@ theorem phase_from_wide_window_slopes (a b : ℕ → ℂ) :
       simp only [c,sub_mul,sum_sub_distrib,sub_eq_zero] at hmul
       rw [rotate_energy,rotate_energy,hmul]
     apply (two_translates_recover_phase a b).mp
-    exact ⟨fun N d => by simpa [translated] using he N 0 d,fun N d => he N Real.pi d⟩
+    have h0 (c : ℕ → ℂ) : translated c 0 = c := funext fun n => by simp [translated]
+    exact ⟨fun N d => by simpa only [h0] using he N 0 d,fun N d => he N Real.pi d⟩
   · rintro ⟨u,hu,h⟩ N
     refine ⟨0,Filter.Eventually.frequently (.of_forall fun t => ?_)⟩
     have hphase : ∀ n : ℕ, 0 < n → translated b t n=translated a t n*u := fun n hn => by

@@ -2,7 +2,7 @@ import GaloisForLFunctions.goldbach.LiLiu.Boundary.ArithmeticOperator
 
 /-! # Strip Hardy traces and the columns of the residual operator
 
-The trace norm is the sum of the two squared line norms. Vertical means
+The squared trace norm is the sum of the two squared line norms. Vertical means
 are uniformly bounded in the strip and approach the boundary values in L².
 The Hilbert space uses the closure of these traces in the boundary norm.
 -/
@@ -62,9 +62,9 @@ theorem exists_trace_of_majorant {a b : ℝ} {F : ℂ → ℂ} (hc : Continuous 
       · exact Eventually.of_forall fun x => (((hC x).sub (hC c)).norm.pow 2).aestronglyMeasurable
       · exact Eventually.of_forall fun x => Eventually.of_forall fun t => hdom x t
       · exact hi.const_mul 4
-      · exact Eventually.of_forall fun t =>
-          ((((hc.comp (show Continuous (fun x : ℝ => mellinLine x t) by unfold mellinLine; fun_prop)).sub
-            continuous_const).norm.pow 2).continuousAt
+      · have hv (t : ℝ) : Continuous (fun x : ℝ => F (mellinLine x t)) :=
+          hc.comp (by unfold mellinLine; fun_prop)
+        exact Eventually.of_forall fun t => (((hv t).sub continuous_const).norm.pow 2).continuousAt
     simpa using hcont.tendsto.mono_left nhdsWithin_le_nhds
 
 /-- Each arithmetic column gives an actual Hardy trace. -/

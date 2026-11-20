@@ -35,11 +35,14 @@ theorem betaModel_differentiableAt {N : ℕ} (hN : 0 < N) {p : ℂ × ℂ}
     have he' := congrArg Complex.re he
     simp only [sub_re,one_re] at he'
     linarith only [hw,he']
-  exact ((((((differentiableAt_const _).mul (hW.const_cpow (Or.inl hp))).mul
-    ((densityEuler_differentiableAt N hw).comp p hW)).mul
-    ((differentiableAt_riemannZeta hne).comp p ((differentiableAt_const _).sub hW))).mul
-    ((signedBetaGammaFactor_differentiableAt hs).comp p (by fun_prop))).mul
-    ((signedBetaGammaFactor_differentiableAt hz).comp p (by fun_prop))
+  have hc : DifferentiableAt ℂ (fun q : ℂ × ℂ =>
+      (singularSeries N : ℂ) * ((Real.pi/N:ℝ):ℂ)^(q.1+q.2)) p :=
+    (differentiableAt_const _).mul (hW.const_cpow (Or.inl hp))
+  have he := (densityEuler_differentiableAt N hw).comp p hW
+  have hzeta := (differentiableAt_riemannZeta hne).comp p ((differentiableAt_const _).sub hW)
+  exact ((((hc.mul he).mul hzeta).mul
+    ((signedBetaGammaFactor_differentiableAt hs).comp p differentiableAt_fst)).mul
+    ((signedBetaGammaFactor_differentiableAt hz).comp p differentiableAt_snd)
 
 private theorem denom_ne {s : ℂ} (hs : 0 < s.re) : 1+s ≠ 0 := by
   intro he

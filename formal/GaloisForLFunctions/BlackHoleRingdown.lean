@@ -106,6 +106,7 @@ import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.AllMomentsOfARapidReceiv
 import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.AccumulatingCarriersForceTheScatteringStrip
 import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.FourExplicitPulsesDetectEveryScatteringStrip
 import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.TheSupportEndpointsOfTheSteklovPulse
+import GaloisForLFunctions.BlackHoleRingdown.TailEnergy.SectorEnergyMultiplier
 
 /-!
 # Black-hole ringdown and the zeros of zeta
