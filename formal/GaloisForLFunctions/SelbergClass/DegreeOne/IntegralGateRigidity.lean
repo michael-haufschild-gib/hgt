@@ -180,10 +180,7 @@ theorem integral_prime_gate_mem_signs (F : ExtendedSelbergClass) (hd : F.gammaDa
     by_contra hgt
     push Not at hgt
     have h2 : (2 : ℝ) ≤ |(a p : ℝ)| := by
-      have hi : 2 ≤ |a p| := by
-        rcases le_or_gt 0 (a p) with h0 | h0
-        · rw [abs_of_nonneg h0] at hgt; omega
-        · rw [abs_of_neg h0] at hgt; omega
+      have hi : 2 ≤ |a p| := by linarith
       exact_mod_cast hi
     obtain ⟨k, hkM⟩ := exists_nat_gt M
     have hk_pow : (k : ℝ) < (2 : ℝ) ^ k := by
@@ -193,12 +190,9 @@ theorem integral_prime_gate_mem_signs (F : ExtendedSelbergClass) (hd : F.gammaDa
     rw [hpow hp k, norm_pow, Complex.norm_intCast] at hpk
     have hpow_le : (2 : ℝ) ^ k ≤ |(a p : ℝ)| ^ k := pow_le_pow_left₀ (by norm_num) h2 k
     linarith
+  obtain ⟨hlo, hhi⟩ := abs_le.mp habs_le
   refine ⟨habs_le, ?_⟩
-  rcases le_or_gt 0 (a p) with h0 | h0
-  · rw [abs_of_nonneg h0] at habs_le
-    omega
-  · rw [abs_of_neg h0] at habs_le
-    omega
+  omega
 
 /-! ### Step 2: Automatic Euler-product lift to the full Selberg class -/
 
@@ -395,10 +389,12 @@ private theorem internalShift_eq_zero_of_integral_primes {q : ℕ} [NeZero q]
       exact hp_pow.symm
     obtain ⟨k, hk⟩ := Complex.exp_eq_one_iff.mp h1
     refine ⟨k, ?_⟩
-    have him := congrArg Complex.im hk
-    simp only [Complex.mul_im, Complex.I_re, Complex.I_im, Complex.ofReal_re, Complex.ofReal_im,
-      Complex.intCast_re, Complex.intCast_im, Complex.re_ofNat, Complex.im_ofNat] at him
-    linarith
+    have hc_eq : (((-((2 * M : ℝ) * θ * Real.log p) : ℝ) : ℂ)) =
+        (((k : ℝ) * (2 * Real.pi) : ℝ) : ℂ) := by
+      apply mul_right_cancel₀ I_ne_zero
+      rw [Complex.ofReal_mul, Complex.ofReal_intCast, Complex.ofReal_mul, Complex.ofReal_ofNat]
+      linear_combination hk
+    exact Complex.ofReal_injective hc_eq
   obtain ⟨k₁, hk₁⟩ := hunit_pow hp₁ hp₁_gt
   obtain ⟨k₂, hk₂⟩ := hunit_pow hp₂ hp₂_gt
   have hlog₁ : 0 < Real.log p₁ := Real.log_pos (by exact_mod_cast hp₁.one_lt)
@@ -567,27 +563,13 @@ theorem degreeOne_integral_gate_eq_zeta_iff (F : ExtendedSelbergClass)
       intro s hs
       rw [hFval s hs, hχ1, DirichletCharacter.LFunction_modOne_eq]
     have hpole : meromorphicOrderAt F 1 = ((-1 : ℤ) : WithTop ℤ) := by
-      have hev : (F : ℂ → ℂ) =ᶠ[𝓝[≠] (1 : ℂ)]
-          (RHTower.zetaPoleUnit * fun s : ℂ => (s - 1)⁻¹) := by
-        filter_upwards [self_mem_nhdsWithin] with s hs
-        have hs1 : s - 1 ≠ 0 := sub_ne_zero.mpr hs
-        dsimp only [Pi.mul_apply]
-        rw [hzeta s hs, RHTower.zetaPoleUnit_of_ne hs]
-        field_simp [hs1]
-      rw [meromorphicOrderAt_congr hev,
-        meromorphicOrderAt_mul_of_ne_zero (RHTower.differentiable_zetaPoleUnit.analyticAt 1)
-          (by rw [RHTower.zetaPoleUnit_one]; exact one_ne_zero),
-        meromorphicOrderAt_inv]
-      have hlin : meromorphicOrderAt (fun s : ℂ => s - 1) 1 = ((1 : ℤ) : WithTop ℤ) := by
-        have han : AnalyticAt ℂ (fun s : ℂ => s - 1) 1 := by fun_prop
-        rw [han.meromorphicOrderAt_eq]
-        have hd : HasDerivAt (fun s : ℂ => s - 1) 1 1 := (hasDerivAt_id 1).sub_const 1
-        have hord1 : analyticOrderAt (fun s : ℂ => s - 1) 1 = 1 := by
-          rw [han.analyticOrderAt_eq_one_iff]
-          exact ⟨by simp, by rw [hd.deriv]; exact one_ne_zero⟩
-        simp [hord1]
-      rw [hlin]
-      rfl
+      rw [meromorphicOrderAt_eq_int_iff (F.meromorphic_value 1)]
+      refine ⟨RHTower.zetaPoleUnit, RHTower.differentiable_zetaPoleUnit.analyticAt 1,
+        by rw [RHTower.zetaPoleUnit_one]; exact one_ne_zero, ?_⟩
+      filter_upwards [self_mem_nhdsWithin] with s hs
+      have hs1 : s - 1 ≠ 0 := sub_ne_zero.mpr hs
+      rw [zpow_neg_one, smul_eq_mul, hzeta s hs, RHTower.zetaPoleUnit_of_ne hs]
+      field_simp [hs1]
     refine ⟨hpole, ?_, hzeta⟩
     intro p hp
     have hp1 := hpow hp 1
@@ -596,7 +578,7 @@ theorem degreeOne_integral_gate_eq_zeta_iff (F : ExtendedSelbergClass)
     rw [hχ1] at hp1'
     have hone_mod : (p : ZMod 1) = 1 := Subsingleton.elim _ _
     rw [hone_mod, map_one] at hp1'
-    exact_mod_cast hp1'.symm
+    exact_mod_cast hp1'
   refine ⟨⟨fun hc => by rw [(hq_one_imp hc).1]; decide, fun hpole => ?_⟩, hq_one_imp⟩
   by_contra hne1
   have hq_ne1 : q ≠ 1 := fun h => hne1 (by rw [hcond, h]; norm_num)

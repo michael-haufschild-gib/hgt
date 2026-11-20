@@ -80,7 +80,7 @@ theorem criticalState_large_divisor_signed_tail {W₀ : ℝ} (hW : 0 < W₀)
     ring
   let g := fun t => S t-(L t-m/2)
   have hg : MemLp (fun t : ℝ => Real.exp ((2*(1/16))*t)*g t) 2 := by
-    apply (hsmall.sub hD).congr
+    refine MemLp.ae_eq ?_ (hsmall.sub hD)
     refine Eventually.of_forall fun t => ?_
     change Real.exp ((1/8)*t)*(E t-L t)-Real.exp ((1/8)*t)*D t=_
     dsimp only [g]; rw [hsplit,show (2*(1/16):ℝ)=1/8 by norm_num]; ring

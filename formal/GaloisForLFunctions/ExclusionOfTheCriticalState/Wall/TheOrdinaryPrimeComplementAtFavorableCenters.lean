@@ -34,6 +34,7 @@ private theorem log_mass_eq_preimage_volume {A : Set ℝ} (hm : MeasurableSet A)
   calc _ = ∫ _t in B, (1:ℝ) := by
              apply setIntegral_congr_fun hB
              intro t _
+             dsimp only
              rw [abs_of_pos (Real.exp_pos _),smul_eq_mul,mul_inv_cancel₀ (Real.exp_pos _).ne']
        _ = _ := by rw [setIntegral_const,smul_eq_mul,mul_one]
 
@@ -169,7 +170,7 @@ theorem riemannHypothesis_or_ordinary_prime_complement_on_every_late_octave : Ri
 /-- Below its center the state row has no integer weight: the wall support
 kills every integer `n ≤ e^t`. Hence the complement of the first critical
 window is exactly the tail strictly beyond `e^t + √(e^t · t)`. -/
-private theorem tsum_compl_wallWindow_eq {Φ : ℝ → ℝ} (hs : ∀ u, 0 ≤ u → Φ u = 0) {t : ℝ} (ht : 0 ≤ t) :
+private theorem tsum_compl_wallWindow_eq {Φ : ℝ → ℝ} (hs : ∀ u, 0 ≤ u → Φ u = 0) (t : ℝ) :
     (∑' n : {j : ℕ // j ∉ wallIntegerWindow t (criticalWallWidth t)},
         (ArithmeticFunction.vonMangoldt n-1)*continuousIntegerAtom Φ n t) =
       ∑' n : {j : ℕ // Real.exp t+Real.sqrt (Real.exp t*Real.log (Real.exp t)) < j},
@@ -236,13 +237,12 @@ theorem riemannHypothesis_or_ordinary_prime_tail_beyond_the_critical_width : Rie
   refine Or.inr ⟨W₀,F,Φ,hW,ht,hF,hΨ,he,fun ε hε => ?_⟩
   obtain ⟨c,k,hc0,hc1,hk,hev⟩ := h ε hε
   refine ⟨c,k,hc0,hc1,hk,?_⟩
-  filter_upwards [hev,eventually_ge_atTop (0:ℝ)] with T hT hT0
+  filter_upwards [hev] with T hT
   obtain ⟨B,hmB,hBI,hkB,hB⟩ := hT
   refine ⟨B,hmB,hBI,hkB,fun t htB => ?_⟩
-  have ht0 : 0 ≤ t := hT0.trans (hBI htB).1.le
   have hBt := hB t htB
   dsimp only at hBt ⊢
-  rw [← tsum_compl_wallWindow_eq hs ht0]
+  rw [← tsum_compl_wallWindow_eq hs t]
   exact hBt
 
 #print axioms riemannHypothesis_or_ordinary_prime_tail_beyond_the_critical_width

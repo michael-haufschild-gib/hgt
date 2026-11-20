@@ -60,7 +60,8 @@ theorem clipped_lattice_error {h h' h'' : ℝ → ℝ}
     rw [Real.norm_eq_abs,abs_mul]
     exact mul_le_mul (abs_sawPrimitive_le _) ((hD x hx).trans (le_abs_self _))
       (abs_nonneg _) (by norm_num)
-  have hi := intervalIntegral.norm_integral_le_of_norm_le_const' (by norm_num : (1/2:ℝ)≤1) hs
+  have hi := intervalIntegral.norm_integral_le_of_norm_le_const (a := 1/2) (b := 1) fun x hx =>
+    hs x (Set.Ioc_subset_Icc_self (by rwa [Set.uIoc_of_le (by norm_num : (1/2:ℝ)≤1)] at hx))
   rw [Real.norm_eq_abs,abs_of_nonneg (by norm_num : 0≤(1:ℝ)-1/2)] at hi
   have term₁ : |sawPrimitive t*h' 1| ≤ (1/8)*|h' 1| := by
     rw [abs_mul]; exact mul_le_mul_of_nonneg_right (abs_sawPrimitive_le _) (abs_nonneg _)
@@ -84,7 +85,7 @@ theorem clipped_lattice_constant {h h' h'' : ℝ → ℝ}
   have err : Tendsto (fun t : ℝ => |reading h t-t*density h+h (1/2)/2|) atTop (𝓝 0) := by
     apply squeeze_zero' (Eventually.of_forall fun _ => abs_nonneg _) _ lim
     filter_upwards [eventually_gt_atTop (0:ℝ)] with t ht
-    simpa only [he,zero_mul,sub_zero] using hK ht
+    simpa only [he,zero_mul,sub_zero,id_eq] using hK ht
   apply (tendsto_iff_norm_sub_tendsto_zero).mpr
   simpa only [Real.norm_eq_abs,sub_neg_eq_add] using err
 

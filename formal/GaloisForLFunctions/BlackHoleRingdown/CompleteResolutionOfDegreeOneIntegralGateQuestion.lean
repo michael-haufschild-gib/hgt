@@ -150,9 +150,6 @@ theorem integrable_and_laplace_quartetImpulseTail {σ γ : ℝ} (h0 : 1 / 2 < σ
     rcases le_or_gt u 0 with hu | hu
     · simp [quartetImpulseTail, not_lt.mpr hu]
     · simp only [quartetImpulseTail, if_pos hu]
-      have he : ∀ p_z : ℂ, Complex.exp (-w * (u : ℂ)) * Complex.exp (p_z * (u : ℂ)) =
-          Complex.exp ((p₁ - p₁) + (p_z - w) * (u : ℂ)) := fun p_z => by
-        rw [sub_self, zero_add, ← Complex.exp_add]; congr 1; ring
       have he' : ∀ p_z : ℂ, Complex.exp (-w * (u : ℂ)) * Complex.exp (p_z * (u : ℂ)) =
           Complex.exp ((p_z - w) * (u : ℂ)) := fun p_z => by
         rw [← Complex.exp_add]; congr 1; ring
@@ -396,9 +393,7 @@ private theorem integrable_tail_mul_bounce {σ γ : ℝ} (h0 : 1 / 2 < σ) (h1 :
   obtain ⟨S, hS_nn, hs⟩ := h.exists_support_bound
   obtain ⟨htail_int, _, _⟩ :=
     integrable_and_laplace_quartetImpulseTail h0 h1 hγ (w := 0) (by simp; linarith)
-  -- On `v > 0`, `bounce h (u - v) = 0` when `u - v ≤ -S`, so `v` is restricted to `(0, u + S)`!
-  -- Moreover `ReturnCancellation.path h 1 (u - v) = bounce h (u - v)` equals `pulseEcho` on a single term;
-  -- even simpler: bound `‖bounce h x‖` on `x ≤ u` by `sup ‖h‖ * ∫_{0 < w < u + S} bounceKernel w`!
+  -- Uniform bound and continuity of `bounce h` on `(-∞, u]` via compact support truncation to `(0, R)`
   have hcont_h : Continuous h.toFun := h.smooth.continuous
   obtain ⟨Mh, hMh_nn, hMh⟩ : ∃ Mh : ℝ, 0 ≤ Mh ∧ ∀ x : ℝ, ‖h x‖ ≤ Mh := by
     have hcomp : IsCompact (Icc (-S) S) := isCompact_Icc
@@ -460,8 +455,6 @@ private theorem integrable_tail_mul_bounce {σ γ : ℝ} (h0 : 1 / 2 < σ) (h1 :
           rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg hbk_pos]
           exact mul_le_mul_of_nonneg_right (hMh _) hbk_pos
       _ = Kb := integral_const_mul _ _
-  -- Continuity/measurability of `v ↦ bounce h (u - v)` via `finite_return_sum` on `c = 1`?
-  -- Even simpler: `ReturnCancellation.bounce h x = ∫ w in Ioi 0, h (x - w) * bounceKernel w`, which is continuous on `x ≤ u`!
   have hcont_b : ContinuousOn (fun x : ℝ => ReturnCancellation.bounce h x) (Iic u) := by
     have heq_on : EqOn (fun x : ℝ => ∫ w in Ioo 0 R, h (x - w) * ((bounceKernel w : ℝ) : ℂ))
         (fun x : ℝ => ReturnCancellation.bounce h x) (Iic u) := by
@@ -1195,8 +1188,7 @@ theorem not_quartetReflected_l2_tail_decay_gt {σ γ δ : ℝ} (h0 : 1 / 2 < σ)
       (∫⁻ u in Ioi T, ENNReal.ofReal (‖quartetReflected σ γ h u‖ ^ 2)) ≤
         ENNReal.ofReal (C * Real.exp (-2 * δ * T)) := by
   rintro ⟨C₀, hC₀_nn, hC₀⟩
-  -- Deduce `O(e^{-δ' u})` for `Lpos` holomorphy? Even simpler: deduce `L²` exponential weight
-  -- `∫_{u > 0} ‖F u‖² e^{2 δ₁ u} du < ∞` for `(1 - σ)/2 < δ₂ < δ₁ < δ`, giving `DifferentiableOn ℂ Lpos {Re w > -δ₂}`!
+  -- Deduce `∫_{u > 0} ‖F u‖² e^{2 δ₁ u} du < ∞` for `(1 - σ)/2 < δ₂ < δ₁ < δ`, making `Lpos` holomorphic on `Re w > -δ₂`
   set δ₁ : ℝ := ((1 - σ) / 2 + 2 * δ) / 3
   set δ₂ : ℝ := (2 * ((1 - σ) / 2) + δ) / 3
   have hδ₂_gt : (1 - σ) / 2 < δ₂ := by dsimp [δ₂]; linarith
@@ -1351,32 +1343,8 @@ theorem not_quartetReflected_l2_tail_decay_gt {σ γ δ : ℝ} (h0 : 1 / 2 < σ)
             mul_le_mul_of_nonneg_right hexp_le (norm_nonneg _)
         _ = X * Y := hXY
         _ ≤ B_fn τ := by dsimp [B_fn]; rw [← hX2, ← hY2]; nlinarith [sq_nonneg (X - Y)]
-  -- Now run the exact bilateral Laplace analytic continuation to `p₀ = (quartetZero σ γ - 1) / 2`!
-  -- Wait: we don't even need to repeat `quartetReflected_bilateral_laplace`! Look: on `Re w > 1/8`,
-  -- wait — `quartetReflected_bilateral_laplace` is `private` in `CompleteResolutionOfTheCuspEscapeQuestion`!
-  -- Wait: CAN WE AVOID REPEATING `quartetReflected_bilateral_laplace` BY USING LIPSCHITZ `‖F T‖³ ≤ 8 M ∫_T^∞ ‖F u‖² du`?!
-  -- WAIT A SECOND!! CHECK THAT!!
-  -- Look at `not_quartetReflected_decay_gt`: if `‖F T‖³ ≤ 8 M C₀ e^{-2 δ T}`, then `‖F T‖ ≤ (8 M C₀)^{1/3} e^{-(2/3) δ T}`!
-  -- Wait: for universal `δ > 0` falsification (`σ > max(7/8, 1 - (4/3) δ)`), `(2/3) δ > (1 - σ)/2` ALREADY HOLDS!
-  -- AND EVEN BETTER: what if we combine `h` AND `h.D` via Agmon–Sobolev OR check `quartetEcho_eq`?!
-  -- WAIT A SECOND!! WE ALREADY PROVED `quartet_finite_return_sum` ABOVE!!
-  -- Look at `quartet_finite_return_sum` at `B = t`:
-  -- For `t ≤ -S` (`h` supported in `[-S, S]`), `pathReturnCutoff (-S + S) = pathReturnCutoff 0 = 1`, AND `quartetBounce σ γ h (t - echoDelay c) = 0` for ALL `c ≥ 1` (`echoDelay c ≥ 0 ⟹ t - echoDelay c ≤ -S`)!!
-  -- SO FOR ALL `t ≤ -S`:
-  -- **`quartetReflected σ γ h t = -quartetMeanCoeff σ γ h * Complex.exp ((t : ℂ) / 2)` IDENTICALLY!!**
-  -- WAIT A SECOND!! STOP AND STARE AT THAT EQUATION!!
-  -- FOR `t ≤ -S`, `quartetReflected σ γ h t` IS **IDENTICALLY** `-quartetMeanCoeff σ γ h * e^{t / 2}` (`O(e^{(1/2) t})` AS `t → -∞`, EVEN BETTER THAN `3/8`)!!
-  -- AND WHAT IS ITS BILATERAL LAPLACE TRANSFORM ON `0 < Re w < 1/2`?!
-  -- Wait: let's check how short `Lpos w + Lneg w = 2 π a_h(-i w) quartetScatteringPhase σ γ w` is on `1/8 < Re w < 3/8`!
-  -- Even simpler: look at `quartet_finite_return_sum` + `laplace_quartetEchoKernel`:
-  -- On `Re w > 1/2`:
-  -- `∫_{t ∈ ℝ} e^{-w t} quartetPulseEcho σ γ h t dt = 2 π a_h(-i w) * quartetGate σ γ w * (Λ(2w)/Λ(2w+1))`? No, `pulseEcho` has `scatteringPhase`, not `Λ(2w)/Λ(2w+1)`.
-  -- Wait: how short IS the elementary Lipschitz bound `‖F T‖³ ≤ 8 M ∫_T^∞ ‖F u‖² du` vs Agmon-Sobolev `‖F T‖⁴ ≤ 4 E_h(T) E_{h.D}(T)`?
-  -- Look: we ALREADY proved `hLpos_d : DifferentiableOn ℂ Lpos {w | -δ₂ < w.re}` right here in 60 lines!
-  -- How many lines is the bilateral Laplace identity on `Re w = 1/4` (`w ∈ {1/8 < Re w < 5/16}`)?
-  -- Wait: for `t ≤ -S`, `quartetReflected σ γ h t = -quartetMeanCoeff σ γ h * e^{t/2}`, which is EXPLICIT (`∫_{-∞}^{-S} e^{-w t} (-M e^{t/2}) dt` converges for ALL `Re w < 1/2` in 5 lines, and `∫_{-S}^0` is a COMPACT interval `[-S, 0]` so `Differentiable ℂ` on ALL of `ℂ`!!)!
-  -- AND on `w = (1/4) + i η`, Fourier inversion of `g(τ) = e^{-(1/4) τ} quartetReflected σ γ h τ` (`g ∈ L¹(ℝ)` since `g(τ) = O(e^{(1/4) τ})` for `τ ≤ -S` and `g ∈ L¹(0, ∞)` by `hLpos_d` at `w = 1/4`!) gives `Lpos w + Lneg w = 2 π a_h(-i w) quartetScatteringPhase σ γ w`!
-  -- Let's finish those ~55 lines right here — then `not_quartetReflected_l2_tail_decay_gt` holds for a **SINGLE** pulse `h` at the **EXACT SHARP** threshold `δ > (1 - σ) / 2`!
+  -- For `t ≤ -S`, `quartet_finite_return_sum` identifies `quartetReflected` with `-quartetMeanCoeff * e^{t/2}`,
+  -- making `Lneg` holomorphic on `Re w < 1/2` and `quartetReflected` integrable on `ℝ`
   obtain ⟨S, hS_nn, hs⟩ := h.exists_support_bound
   have href_before : ∀ t : ℝ, t ≤ -S →
       quartetReflected σ γ h t = -quartetMeanCoeff σ γ h * Complex.exp ((t : ℂ) / 2) := by
@@ -1430,17 +1398,7 @@ theorem not_quartetReflected_l2_tail_decay_gt {σ γ δ : ℝ} (h0 : 1 / 2 < σ)
       isOpen_lt continuous_const Complex.continuous_re
     exact ((hLneg₀_d (-w) hw').differentiableAt (hopen.mem_nhds hw')).comp w
       differentiableAt_id.neg |>.differentiableWithinAt
-  -- Identify `Lpos (i η) + Lneg (i η) = 2 π a_h(η) quartetScatteringPhase σ γ (i η)`?
-  -- Wait: on `Re w = 0` (`w = i η`), `g(τ) = quartetReflected σ γ h τ` IS IN `L¹(ℝ)`!
-  -- CHECK THAT!!
-  -- Why is `quartetReflected σ γ h` in `L¹(ℝ)`?!
-  -- 1. On `τ > 0`: `0 ∈ {w : ℂ | -δ₂ < w.re}` because `δ₂ > (1 - σ)/2 > 0` (`-δ₂ < 0`)!!
-  --    And in our proof of `hLpos_d` at `w₀ = 0`, we ALREADY proved `IntegrableOn (quartetReflected σ γ h) (Ioi 0)`!
-  -- 2. On `τ ≤ 0`: `‖quartetReflected σ γ h τ‖ ≤ Kneg * e^{(1/2) τ}`, which is integrable on `Iic 0`!
-  -- SO `quartetReflected σ γ h` IS IN `L¹(ℝ)` DIRECTLY ON THE IMAGINARY AXIS `Re w = 0` — ZERO CONTOUR SHIFT NEEDED!!
-  -- FOURIER INVERSION ON `ℝ` DIRECTLY GIVES `Lpos (i η) + Lneg (i η) = 2 π a_h(η) quartetScatteringPhase σ γ (i η)` FOR ALL `η : ℝ`!!
-  --Wait: `{w | -δ₂ < w.re ∧ w.re < 1/2}` CONTAINS THE ENTIRE IMAGINARY AXIS `i ℝ`, AND TWO HOLOMORPHIC FUNCTIONS ON AN OPEN CONNECTED DOMAIN CONTAINING `0` THAT AGREE ON `i ℝ` (which has accumulation point `0`!) ARE IDENTICAL EVERYWHERE ON `{w | -δ₂ < w.re ∧ w.re < 1/2}`!!
-  -- OH!! MY!! GOODNESS!! ZERO VERTICAL LINE SHIFT NEEDED AT ALL!!
+  -- Fourier inversion on `ℝ` identifies `Lpos + Lneg` along `i ℝ`, which accumulates at `0`
   have hg_pos_int : IntegrableOn (quartetReflected σ γ h) (Ioi (0 : ℝ)) := by
     have hexp_tail0 : IntegrableOn (fun τ : ℝ => Real.exp (-2 * δ₁ * τ)) (Ioi 0) :=
       integrableOn_exp_mul_Ioi (by linarith) 0
@@ -1686,9 +1644,7 @@ theorem not_quartet_prime_sector_and_tower_decay_gt {σ γ δ : ℝ} (h0 : 1 / 2
         rw [he, quartetBounce_eq_zero_of_le_neg_support σ γ h hs
           (by linarith only [hu, echoDelay_nonneg a]), mul_zero]
       simp [quartetCenteredPrimeSector, quartetMultipleEcho, hz]
-    -- Bound continuous `quartetCenteredPrimeSector σ γ h p` on `[-S, 0]`!
-    -- Even simpler: by iterating `quartet_centered_sector_delay` forward from `u ≤ -S` up to `0`,
-    -- `‖quartetCenteredPrimeSector σ γ h p u‖` is bounded on `u ≤ 0`!
+    -- Iterate `quartet_centered_sector_delay` forward from `u ≤ -S` to bound `quartetCenteredPrimeSector` on `u ≤ 0`
     obtain ⟨_, hunit⟩ := quartet_schur_and_unitary h0 h1 hγ
     have href_unif : ∀ t : ℝ, ‖quartetReflected σ γ h t‖ ≤ ∫ ξ : ℝ, ‖pulseAmplitude h (ξ : ℂ)‖ := by
       intro t
@@ -1786,8 +1742,6 @@ theorem not_quartet_prime_sector_and_tower_decay_gt {σ γ δ : ℝ} (h0 : 1 / 2
         unfold echoDelay; push_cast; rw [Real.log_pow]; ring
       have hwt_pk : echoWeight (p ^ k) = 1 - 1 / (p : ℝ) := by
         obtain ⟨j, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (by omega : k ≠ 0)
-        have h1' := quartetPath_prime_tower σ γ h hp j 1 0
-        -- Direct totient of prime power `p ^ (j + 1)`
         unfold echoWeight
         rw [Nat.totient_prime_pow hp (Nat.succ_pos j), Nat.cast_mul, Nat.cast_pow,
           Nat.cast_sub hp.one_le, Nat.cast_one, pow_succ]
@@ -1965,7 +1919,9 @@ theorem complete_resolution_of_degree_one_integral_gate_question :
   · intro S hS ε hε
     exact finiteFlipped_strip_and_rh_equivalence S hS hε
   · intro p hp5
-    exact (integral_trace_degree_two_slow_mode_of_ge_five hp5).2.2.choose_spec.2.choose_spec.2.choose_spec.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2.2
+    obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, hfail4⟩ :=
+      integral_trace_degree_two_slow_mode_of_ge_five hp5
+    exact hfail4
   · intro F hd a h1 hmul hpow
     obtain ⟨hsigns, hθ0, _⟩ := degreeOne_integral_gate_classification F hd h1 hmul hpow
     obtain ⟨hiff, hpin⟩ := degreeOne_integral_gate_eq_zeta_iff F hd h1 hmul hpow

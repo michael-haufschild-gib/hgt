@@ -339,6 +339,12 @@ theorem degree_one_real_prime_gate_classification {p : ℕ} (hp2 : 2 ≤ p)
     refine ⟨u.re, abs_eq (by norm_num : (0 : ℝ) ≤ 1) |>.mp habs, Or.inr ?_⟩
     simpa [← hu_eq] using hrat
 
+private theorem norm_finset_prod (S : Finset ℕ) (g : ℕ → ℂ) :
+    ‖∏ p ∈ S, g p‖ = ∏ p ∈ S, ‖g p‖ := by
+  induction S using Finset.induction_on with
+  | empty => simp
+  | insert p S' hp ih => rw [Finset.prod_insert hp, Finset.prod_insert hp, norm_mul, ih]
+
 private theorem norm_eq_one_of_prod_eq_one {S : Finset ℕ} {f : ℕ → ℝ}
     (hf0 : ∀ p ∈ S, 0 ≤ f p) (hf1 : ∀ p ∈ S, f p ≤ 1) (hprod : ∏ p ∈ S, f p = 1) :
     ∀ p ∈ S, f p = 1 := by
@@ -401,7 +407,7 @@ theorem finite_prime_degree_one_gate_classification (S : Finset ℕ) (hS : ∀ p
     intro v hv
     obtain ⟨t, ht⟩ := exists_imag_axis_prime_coord hp_prime.two_le hv
     have hprod_norm : ∏ q ∈ S, ‖M q ((q : ℂ) ^ (-(2 * ((t : ℂ) * I))))‖ = 1 := by
-      rw [← Finset.prod_hom S norm, h_unit t]
+      rw [← norm_finset_prod S, h_unit t]
     have hle1 : ∀ q ∈ S, ‖M q ((q : ℂ) ^ (-(2 * ((t : ℂ) * I))))‖ ≤ 1 := by
       intro q hq
       refine hM_passive q hq _ ?_
@@ -703,7 +709,7 @@ theorem finiteFlipped_passive_unitary_and_strip_rigid (S : Finset ℕ) (hS : ∀
   refine ⟨?_, ?_, ?_⟩
   · intro w hw
     have hmul_le : ‖finiteFlippedMultiplier S ε w‖ ≤ 1 := by
-      rw [finiteFlippedMultiplier, Finset.prod_hom S norm]
+      rw [finiteFlippedMultiplier, norm_finset_prod S]
       refine Finset.prod_le_one (fun _ _ => norm_nonneg _) fun p hp => ?_
       rw [norm_mul, hε p hp, one_mul]
       have hp_prime := hS p hp
@@ -712,10 +718,9 @@ theorem finiteFlipped_passive_unitary_and_strip_rigid (S : Finset ℕ) (hS : ∀
         exact Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast hp_prime.one_lt.le) (by linarith)
       exact (flippedGateRatio_schur_and_unitary hp_prime.two_le).2.1 _ hv_le
     have hxi_le : ‖xi (2 * w) / xi (1 + 2 * w)‖ ≤ 1 := by
-      have hdiv := norm_xi_two_mul_le_of_re_nonneg hw
-      have hne := xi_shift_ne_zero hw
-      exact (div_le_one (norm_pos_iff.mpr hne)).mpr (by rwa [norm_div] at *)
-    -- Wait: let's check `norm_xi_two_mul_le_of_re_nonneg` directly!
+      rw [norm_div]
+      exact (div_le_one (norm_pos_iff.mpr (xi_shift_ne_zero hw))).mpr
+        (norm_xi_two_mul_le_of_re_nonneg hw)
     have hred_le : ‖finiteFlippedReducedScattering S ε w‖ ≤ 1 := by
       rw [finiteFlippedReducedScattering, norm_mul]
       exact mul_le_one₀ hmul_le (norm_nonneg _) hxi_le
@@ -735,7 +740,7 @@ theorem finiteFlipped_passive_unitary_and_strip_rigid (S : Finset ℕ) (hS : ∀
       exact div_nonneg hnum_nn hd_pos.le
   · intro t
     rw [finiteFlippedScatteringPhase, norm_mul, norm_scatteringPhase_line t, mul_one,
-      finiteFlippedMultiplier, Finset.prod_hom S norm]
+      finiteFlippedMultiplier, norm_finset_prod S]
     refine Finset.prod_eq_one fun p hp => ?_
     rw [norm_mul, hε p hp, one_mul]
     have hp_prime := hS p hp

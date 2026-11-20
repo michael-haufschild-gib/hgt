@@ -13,7 +13,8 @@ open MeasureTheory Set Filter Topology Finset
 namespace GaloisForLFunctions.ExclusionOfTheCriticalState
 open HTGeometry ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri CriticalArithmeticCorrelationTheory _root_.RHTower
 
-private theorem card_sieving_primes_le {T : ℝ} (P : Finset Nat.Primes)
+/-- A set of primes below `T²` has at most `T²` elements. -/
+theorem card_sieving_primes_le {T : ℝ} (P : Finset Nat.Primes)
     (hP : ∀ p ∈ P, ((p:ℕ):ℝ) ≤ T^2) : (P.card:ℝ) ≤ T^2 := by
   let e : Nat.Primes ↪ ℕ := ⟨Subtype.val,Subtype.coe_injective⟩
   have hsub : P.map e ⊆ Icc 1 ⌊T^2⌋₊ := by
@@ -90,7 +91,8 @@ theorem criticalState_quadratic_sieve_sqrt_variance {W₀ : ℝ} (hW : 0 < W₀)
   intro P hP ν hν hf
   exact (abs_lpNorm_sub_le_global hν hf (h P hP).1).trans (h P hP).2
 
-private theorem memLp_ordinaryPolar_on_window {W₀ : ℝ} (hW : 0 < W₀)
+/-- On each finite time window the polar ordinary-prime error is square integrable. -/
+theorem memLp_ordinaryPolar_on_window {W₀ : ℝ} (hW : 0 < W₀)
     (ht : (⨅ (a : ℝ) (_ : 0 ≤ a), windowThreshold a)=(W₀:EReal)) {F Φ : ℝ → ℝ}
     (hF : IsCriticalHalfLineGroundState W₀ F) (he : F =ᵐ[volume] Φ) (T : ℝ) :
     MemLp (ordinaryPrimePolarError Φ) 2 (volume.restrict (Ioc 0 T)) := by

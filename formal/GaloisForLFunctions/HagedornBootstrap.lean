@@ -13,3 +13,5 @@ import GaloisForLFunctions.HagedornBootstrap.EinsteinHawkingPage
 import GaloisForLFunctions.HagedornBootstrap.StripBlaschke
 import GaloisForLFunctions.HagedornBootstrap.CumulantAndScheme
 import GaloisForLFunctions.HagedornBootstrap.BesselSeries
+import GaloisForLFunctions.HagedornBootstrap.ZeroLawAndDeficit
+import GaloisForLFunctions.HagedornBootstrap.CrossingKernelFourier

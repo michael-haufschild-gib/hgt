@@ -148,6 +148,29 @@ theorem commutator_pow {P : A →+ A} {x q : A} (h : ∀ g, P (x * g) = x * P g 
       simp only [Nat.add_sub_cancel, nsmul_eq_mul, Nat.cast_add, Nat.cast_one]
       ring
 
+/-- `[P, f g] = [P, f] ∘ g + f ∘ [P, g]`. -/
+theorem commutator_mul (P : A →+ A) (f g : A) :
+    commutator P (f * g) = (commutator P f).comp (AddMonoidHom.mulLeft g) +
+      (AddMonoidHom.mulLeft f).comp (commutator P g) := by
+  ext h
+  simp only [commutator_apply, AddMonoidHom.comp_apply, AddMonoidHom.add_apply,
+    AddMonoidHom.coe_mulLeft, mul_sub]
+  rw [mul_assoc, mul_assoc]
+  ring
+
+theorem commutator_add_right (P : A →+ A) (f g : A) :
+    commutator P (f + g) = commutator P f + commutator P g := by
+  ext h
+  simp only [commutator_apply, AddMonoidHom.add_apply, add_mul, map_add]
+  ring
+
+theorem hasOrderLE_mulLeft (f : A) : HasOrderLE 0 (AddMonoidHom.mulLeft f) := fun g h => by
+  simp only [AddMonoidHom.coe_mulLeft]
+  ring
+
+theorem hasOrderLE_zero_map (k : ℕ) : HasOrderLE k (0 : A →+ A) :=
+  (show HasOrderLE 0 (0 : A →+ A) from fun _ _ => by simp).mono (Nat.zero_le k)
+
 /-- The `k`-fold composition `Dᵏ`. -/
 def iter (D : A →+ A) : ℕ → (A →+ A)
   | 0 => AddMonoidHom.id A
@@ -177,6 +200,27 @@ theorem eq_zero_of_nsmul_X_pow_mul {a : ℕ} (ha : IsRegular (a : R)) (i : σ) (
   have hm := congrArg (coeff (Finsupp.single i n + m)) h
   rw [coeff_smul, X_pow_eq_monomial, coeff_monomial_mul, one_mul, coeff_zero, nsmul_eq_mul] at hm
   exact ha.left (hm.trans (mul_zero _).symm)
+
+/-- Order is tested on the coordinates: an `R`-linear operator whose commutators with the `X_i` have
+order `≤ k` has order `≤ k + 1`. -/
+theorem hasOrderLE_succ_of_X {k : ℕ} (P : MvPolynomial σ R →ₗ[R] MvPolynomial σ R)
+    (h : ∀ i, HasOrderLE k (commutator P.toAddMonoidHom (X i))) :
+    HasOrderLE (k + 1) P.toAddMonoidHom := by
+  intro f
+  induction f using MvPolynomial.induction_on with
+  | C r =>
+    have h0 : commutator P.toAddMonoidHom (C r) = 0 := AddMonoidHom.ext fun g => by
+      change P (C r * g) - C r * P g = 0
+      rw [← smul_eq_C_mul, map_smul, smul_eq_C_mul, sub_self]
+    rw [h0]
+    exact hasOrderLE_zero_map k
+  | add f g hf hg =>
+    rw [commutator_add_right]
+    exact hf.add hg
+  | mul_X f i hf =>
+    rw [commutator_mul]
+    exact (hf.comp (hasOrderLE_mulLeft _)).add
+      (((hasOrderLE_mulLeft f).comp (h i)).mono (Nat.zero_add k).le)
 
 /-- **No differential operator is linear over the Frobenius image.** Let `a` be regular in `R`. An
 operator of finite order on `R[X_σ]` that is linear over the image of `ψ_a` is linear over

@@ -21,6 +21,8 @@ Lean folder: formal/GaloisForLFunctions/HagedornBootstrap/ ; umbrella formal/Gal
 - StripBlaschke
 - CumulantAndScheme
 - BesselSeries
+- ZeroLawAndDeficit
+- CrossingKernelFourier
 
 ## Contribution count
-180
+206
