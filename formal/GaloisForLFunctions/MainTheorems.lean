@@ -135,3 +135,4 @@ import GaloisForLFunctions.JointMarkedMoments
 import GaloisForLFunctions.QuantitativeFactorizationMatching
 import GaloisForLFunctions.RestrictedFactorizationCalculus
 import GaloisForLFunctions.HagedornBootstrap
+import GaloisForLFunctions.WindowedLandauTheory

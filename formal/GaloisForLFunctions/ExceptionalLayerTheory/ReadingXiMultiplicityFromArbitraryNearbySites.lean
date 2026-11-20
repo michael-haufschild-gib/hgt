@@ -66,7 +66,7 @@ theorem xi_barycentric_residue_error (p : ℂ) :
 same integer in a fixed disk. A separate polynomial drift at each cloud
 may grow without bound as long as its degree leaves one residue reading. -/
 theorem xi_multiplicity_from_calibrated_clouds (p : ℂ) :
-    ∃ d : ℝ, 0<d ∧ ∀ {ι : Type*} {l : Filter ι} (t : ι → Finset ℂ) (P : ι → ℂ[X]),
+    ∃ d : ℝ, 0<d ∧ ∀ {ι : Type*} {l : Filter ι} (t : ι → Finset ℂ) (P : ι → Polynomial ℂ),
       Tendsto (fun i => (t i).card) l atTop →
       (∀ᶠ i in l, p∉t i ∧ (∀ x ∈ t i, dist x p≤d) ∧ (P i).natDegree+1<(t i).card) →
       Tendsto (fun i => barycentricResidue (t i) p (fun z => logDeriv xi z+(P i).eval z))
@@ -87,7 +87,7 @@ theorem xi_multiplicity_from_calibrated_clouds (p : ℂ) :
 the exact order uniformly over all site choices and polynomial drifts. -/
 theorem uniquely_decoded_xi_multiplicity (p : ℂ) :
     ∃ d : ℝ, 0<d ∧ ∃ N : ℕ, ∀ t : Finset ℂ, N≤t.card → p∉t →
-      (∀ x ∈ t, dist x p≤d) → ∀ P : ℂ[X], P.natDegree+1<t.card →
+      (∀ x ∈ t, dist x p≤d) → ∀ P : Polynomial ℂ, P.natDegree+1<t.card →
       ∀ k : ℤ, |(barycentricResidue t p (fun z => logDeriv xi z+P.eval z)).re-k|<1/2 ↔
         k=(hadamardOrder p:ℤ) := by
   obtain ⟨d,C,hd,_,hb⟩ := xi_barycentric_residue_error p

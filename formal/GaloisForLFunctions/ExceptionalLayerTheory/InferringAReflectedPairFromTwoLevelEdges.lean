@@ -55,7 +55,13 @@ theorem reflected_level_past_edge {m δ L x : ℝ} (hm : 0 < m) (hL : 0 < L)
   have hscaled : L/m*(δ^2-x^2)<2*x ↔ L*(δ^2-x^2)-2*m*x<0 := by
     rw [div_mul_eq_mul_div,div_lt_iff₀ hm]
     constructor <;> intro h <;> linarith only [h]
-  rw [hscaled,he,mul_neg_iff_of_pos_right hfactor,sub_neg]
+  rw [hscaled,he]
+  constructor
+  · intro h
+    by_contra hc
+    exact (not_lt.mpr (mul_nonneg (sub_nonneg.mpr (not_lt.mp hc)) hfactor.le)) h
+  · intro h
+    exact mul_neg_of_neg_of_pos (sub_neg.mpr h) hfactor
 
 /-- Two distinct levels give the common pole residue and squared pole
 offset by rational operations on their two edge positions. -/

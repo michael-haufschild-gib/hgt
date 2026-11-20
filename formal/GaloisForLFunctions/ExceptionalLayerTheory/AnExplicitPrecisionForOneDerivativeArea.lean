@@ -27,6 +27,8 @@ theorem quantitative_radical_sum {W p : ℕ} (hp : 0<p) (m : Fin W → ℕ) (c :
   classical
   let x (i : Fin W) : ℂ := (radicalWeight p (m i):ℂ)
   have hx (i : Fin W) : (x i)^p=(m i:ℂ) := by
+    show ((radicalWeight p (m i):ℝ):ℂ)^p=(m i:ℂ)
+    rw [radicalWeight]
     exact_mod_cast Real.rpow_inv_natCast_pow (Nat.cast_nonneg (m i) : (0:ℝ) ≤ m i) hp.ne'
   let K := IntermediateField.adjoin ℚ (Set.range x)
   letI : Finite (Set.range x) := Set.finite_range x
@@ -39,7 +41,10 @@ theorem quantitative_radical_sum {W p : ℕ} (hp : 0<p) (m : Fin W → ℕ) (c :
   have hdeg : Module.finrank ℚ K≤p^W := by
     have h := HTGeometry.finrank_adjoin_image_le_prod (F:=ℚ) x (fun _ => p) (fun _ => hp)
       (fun i => ⟨(m i:ℚ),by rw [hx,map_natCast]⟩) Finset.univ
-    simpa only [Finset.coe_univ,Set.image_univ,Finset.prod_const,Finset.card_univ,Fintype.card_fin] using h
+    have hs : x '' ↑(Finset.univ : Finset (Fin W)) = Set.range x := by
+      rw [Finset.coe_univ, Set.image_univ]
+    rw [hs] at h
+    simpa only [Finset.prod_const,Finset.card_univ,Fintype.card_fin] using h
   let b (i : Fin W) : K := ⟨x i,IntermediateField.subset_adjoin _ _ (Set.mem_range_self i)⟩
   have hb (i : Fin W) : b i^p=(m i:K) := Subtype.ext (hx i)
   have hint (i : Fin W) : IsIntegral ℤ (b i) := by
@@ -51,7 +56,9 @@ theorem quantitative_radical_sum {W p : ℕ} (hp : 0<p) (m : Fin W → ℕ) (c :
   have hreal : σ₀ v = ((∑ i, (c i:ℝ)*radicalWeight p (m i):ℝ):ℂ) := by
     simp only [v,map_sum,map_mul,map_intCast,Complex.ofReal_sum,Complex.ofReal_mul,Complex.ofReal_intCast]
     rfl
-  have hv : v≠0 := fun he => hn (Complex.ofReal_injective (by rw [←hreal,he,map_zero,Complex.ofReal_zero]))
+  have hv : v≠0 := fun he => hn (Complex.ofReal_injective (by
+    rw [show (∑ i, (c i:ℝ)*(m i:ℝ)^((p:ℝ)⁻¹)) = ∑ i, (c i:ℝ)*radicalWeight p (m i) from rfl,
+      ←hreal,he,map_zero,Complex.ofReal_zero]))
   let β : 𝓞 K := ⟨v,IsIntegral.sum _ fun i _ => (isIntegral_intCast (c i)).mul (hint i)⟩
   let B := 1+∑ i, |(c i:ℝ)| * radicalWeight p (m i)
   have hB : 1≤B := le_add_of_nonneg_right (Finset.sum_nonneg (fun i _ =>
@@ -83,12 +90,12 @@ theorem prime_area_gap {W p : ℕ} (hp : p.Prime) (hW : W<2^p)
   have hn : boundedOrderMoment (2*p-1) a≠boundedOrderMoment (2*p-1) b := by
     intro h
     have hh : (fun i => ((a i).val:ℚ))=(fun i => ((b i).val:ℚ)) :=
-      prime_derivative_area_injective hp hW (by simpa only [Rat.cast_natCast] using h)
+      prime_derivative_area_injective hp hW (by simpa only [boundedOrderMoment,Rat.cast_natCast] using h)
     exact hab (funext fun k => Fin.ext (by exact_mod_cast congrFun hh k))
   have he : boundedOrderMoment (2*p-1) a-boundedOrderMoment (2*p-1) b =
       ∑ i, (c i:ℝ)*(m i:ℝ)^((p:ℝ)⁻¹) := by
-    simp only [boundedOrderMoment,divisorAreaMoment,←Finset.sum_sub_distrib,←mul_sub,
-      prime_order_weight hp.pos,c,m,Int.cast_sub,Int.cast_natCast,mul_comm]
+    simp only [boundedOrderMoment,divisorAreaMoment,prime_order_weight hp.pos]
+    simp only [←Finset.sum_sub_distrib,←mul_sub,←sub_mul,c,m,Int.cast_sub,Int.cast_natCast,mul_comm]
   have hsum : 1+∑ i, |(c i:ℝ)| * (m i:ℝ)^((p:ℝ)⁻¹)≤1+2*(W:ℝ)^2 := by
     refine add_le_add le_rfl ?_
     have hbound (i : Fin W) : |(c i:ℝ)| * (m i:ℝ)^((p:ℝ)⁻¹) ≤ (W:ℝ)*2 := by
@@ -118,7 +125,7 @@ nearest histogram even for an adversarial perturbation of the reading. -/
 theorem prime_area_error_tolerance {W p : ℕ} (hp : p.Prime) (hW : W<2^p)
     (a : BoundedOrderCounts W) (x : ℝ)
     (hx : |x-boundedOrderMoment (2*p-1) a|<derivativeAreaGap W p/2) (b : BoundedOrderCounts W) :
-    (∀ e, |x-boundedOrderMoment (2*p-1) b|≤|x-boundedOrderMoment (2*p-1) e|) ↔ b=a := by
+    (∀ e : BoundedOrderCounts W, |x-boundedOrderMoment (2*p-1) b|≤|x-boundedOrderMoment (2*p-1) e|) ↔ b=a := by
   let v := boundedOrderMoment (W:=W) (2*p-1)
   have hs (e : BoundedOrderCounts W) (he : e≠a) : |x-v a| < |x-v e| := by
     have ht := abs_sub_le (v a) x (v e)
@@ -132,7 +139,7 @@ theorem prime_area_error_tolerance {W p : ℕ} (hp : p.Prime) (hW : W<2^p)
     by_contra he
     exact (hs b he).not_ge (hm a)
   · rintro rfl e
-    by_cases he : e=a
+    by_cases he : e=b
     · rw [he]
     · exact (hs e he).le
 
