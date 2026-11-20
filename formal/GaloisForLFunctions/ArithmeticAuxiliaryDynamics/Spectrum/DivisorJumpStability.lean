@@ -30,7 +30,7 @@ private theorem jump_gcd (hp : IsProducer c m B) (hk : AlphabetLE c K) (r : ℕ)
     increment c (K.factorial.gcd r) = increment c r := by
   unfold increment
   refine sum_congr rfl fun k h => ?_
-  rw [show (k ∣ K.factorial.gcd r) ↔ k ∣ r from
+  simp only [show (k ∣ K.factorial.gcd r) ↔ k ∣ r from
     ⟨fun h => h.trans (Nat.gcd_dvd_right _ _),Nat.dvd_gcd (all_dvd_period hp hk k h)⟩]
 
 private theorem defect_swap (P a b : ℝ) (ha : 0 ≤ a) (hb : 0 ≤ b)
@@ -163,8 +163,8 @@ theorem coefficient_divisibility_from_defect (hp : IsProducer c m B) (hk : Alpha
     have hpos := Nat.totient_pos.mpr (Nat.div_pos (Nat.le_of_dvd (Nat.factorial_pos _) (hd.trans hperiod))
       (Nat.pos_of_dvd_of_pos hd hn))
     have hweight : w n ≤ w d := by
-      exact_mod_cast Nat.le_of_dvd hpos (Nat.totient_dvd_of_dvd hdiv)
-    have hsum : w d ≤ ∑ k∈S,w k := single_le_sum (fun k _ => Nat.cast_nonneg _) hmem
+      exact Nat.cast_le.mpr (Nat.le_of_dvd hpos (Nat.totient_dvd_of_dvd hdiv))
+    have hsum : w d ≤ ∑ k∈S,w k := single_le_sum (f := w) (fun k _ => Nat.cast_nonneg _) hmem
     have h := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (hweight.trans hsum)
       (by norm_num : (0:ℝ) ≤ 6)) hP
     exact (not_lt_of_ge (h.trans (corrupted_jump_mass hp hk))) hsmall

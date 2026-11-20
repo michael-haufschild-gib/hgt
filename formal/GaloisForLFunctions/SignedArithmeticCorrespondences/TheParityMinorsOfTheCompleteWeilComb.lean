@@ -61,7 +61,8 @@ private theorem even_floor {K : ℕ} (hK : 1 ≤ K) :
     ∀ᶠ N : ℕ in atTop, ∀ e : ℕ → ℝ, (∀ n ∈ aligned K N, ¬2 ∣ n → e n=0) →
       ∑ n ∈ aligned K N, e n^2 ≤ combForm (aligned K N) e := by
   let Q : ℕ+ := ⟨3*K,by omega⟩
-  simpa only [one_mul] using eventually_full_comb_on_multiples (2:ℕ+) (by decide) Q 1
+  simpa only [one_mul,aligned,Q,PNat.mk_coe,PNat.val_ofNat] using
+    eventually_full_comb_on_multiples (2:ℕ+) (by decide) Q 1
 
 private theorem all_profiles_of_minors {K N : ℕ} (hk : 1 ≤ K) (hn : 1 ≤ N)
     (h : parityMinorsNonnegative (aligned K N))
@@ -77,7 +78,8 @@ private theorem all_profiles_of_minors {K N : ℕ} (hk : 1 ≤ K) (hn : 1 ≤ N)
     dsimp only [j]
     omega
   have hu (n : ℕ) (_ : n ∈ S) (hne : ¬2 ∣ n) : u n=0 := by
-    exact if_neg fun eq => hne (eq ▸ (dvd_mul_right 2 (N+1)))
+    show (if n = j then (1:ℝ) else 0) = 0
+    exact if_neg fun heq => hne (by rw [heq]; exact dvd_mul_right 2 (N+1))
   have u1 : 0 < combForm S u := by
     have mass : (∑ n ∈ S,u n^2)=1 := by simp [u,ite_pow,hj]
     have ub := floor u hu
@@ -114,7 +116,9 @@ theorem rh_iff_cofinal_parity_minors :
     apply Eventually.frequently
     filter_upwards [top (eventually_combForm_nonneg_of_riemannHypothesis h K)] with N hN
     apply minors_of_positive
-    simpa only [←window] using hN
+    have hN' : ∀ c, 0 ≤ combForm (Ioc (2*N) (2*N+3*K*(2*N))) c := hN
+    rw [← window] at hN'
+    exact hN'
   · intro h
     apply riemannHypothesis_of_frequently_combForm_ge
     intro K hk η hη

@@ -33,7 +33,8 @@ private theorem ratioKernel_beta {d : ℝ} (hd : d^2=1) {s w : ℂ}
       (1+(u:ℂ))^(-((1/2-s)+(1/2+s-w)))) (Ioi 0) at H
     have he' : -((1/2-s)+(1/2+s-w)) = w-1 := by ring
     simp only [he,he'] at H E
-    have hf (u : ℝ) : ratioKernel 1 w s u = (u:ℂ)^(-(1/2+s))*(1+(u:ℂ))^(w-1) := by
+    have hf : ratioKernel 1 w s = fun u : ℝ => (u:ℂ)^(-(1/2+s))*(1+(u:ℂ))^(w-1) := by
+      funext u
       simp [ratioKernel,mul_comm]
     simpa only [hf,shapeDomain_add,shapeBeta,if_pos rfl] using And.intro H E
   · have H := (betaIntegral_convergent ha hw).1.mono_set Ioo_subset_Ioc_self
@@ -42,7 +43,8 @@ private theorem ratioKernel_beta {d : ℝ} (hd : d^2=1) {s w : ℂ}
       rw [betaIntegral, intervalIntegral.integral_of_le zero_le_one]
       exact setIntegral_congr_set Ioo_ae_eq_Ioc
     simp only [he] at H E
-    have hf (u : ℝ) : ratioKernel (-1) w s u = (u:ℂ)^(-(1/2+s))*(1-(u:ℂ))^(w-1) := by
+    have hf : ratioKernel (-1) w s = fun u : ℝ => (u:ℂ)^(-(1/2+s))*(1-(u:ℂ))^(w-1) := by
+      funext u
       simp [ratioKernel,sub_eq_add_neg,mul_comm]
     simpa only [hf,shapeDomain_sub,shapeBeta,if_neg (by norm_num : (-1:ℝ) ≠ 1)] using And.intro H E
 
@@ -86,6 +88,8 @@ theorem shapeBeta_bound {d : ℝ} (hd : d^2=1) {σ c : ℝ} (hσ : σ < 1/2)
 
 theorem orientedProfile_mellin_beta (φ : TestWeight) {d : ℝ} (hd : d^2=1) {σ : ℝ} {w : ℂ}
     (hσ : σ < 1/2) (hw : 0 < w.re) (hw' : w.re < 1/2+σ) :
+    Integrable (fun t : ℝ => mellin (companion φ) (w-((σ:ℂ)+t*I)) * shapeBeta d w ((σ:ℂ)+t*I) *
+        mellin (companion φ) ((σ:ℂ)+t*I)) ∧
     mellin (orientedProfile φ d) w = (1/(2*Real.pi) : ℂ) * ∫ t : ℝ,
       mellin (companion φ) (w-((σ:ℂ)+t*I)) * shapeBeta d w ((σ:ℂ)+t*I) *
         mellin (companion φ) ((σ:ℂ)+t*I) := by
@@ -110,12 +114,10 @@ theorem orientedProfile_mellin_beta (φ : TestWeight) {d : ℝ} (hd : d^2=1) {σ
     apply (ratioKernel_beta (s := (σ:ℂ)) hd hσ hw hw').1.norm.congr
     filter_upwards [hν] with u hu
     simp [B,ratioKernel,norm_mul,Complex.norm_cpow_eq_rpow_re_of_pos hu]
-  rw [orientedProfile_mellin φ hd hw, product_weight_inversion μ ν φ σ hA hB hμ hν hI hJ]
-  congr 1
-  apply integral_congr_ae
-  filter_upwards with t
-  have H := ratioKernel_beta (s := (σ:ℂ)+t*I) hd (by simpa using hσ) hw (by simpa using hw')
-  rw [radial_moment, ← H.2]
+  obtain ⟨hv,he⟩ := product_weight_inversion μ ν φ σ hA hB hμ hν hI hJ
+  have H (t : ℝ) := (ratioKernel_beta (s := (σ:ℂ)+t*I) hd (by simpa using hσ) hw (by simpa using hw')).2
+  simp only [μ,ν,B,radial_moment,← H] at hv he ⊢
+  exact ⟨hv,(orientedProfile_mellin φ hd hw).trans he⟩
 
 #print axioms orientedProfile_mellin_beta
 end

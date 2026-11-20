@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.Quantum.InverseBandwidthCircuitCost
-import GaloisForLFunctions.HTGeometry.Quantum.DisjointSiteCircuitApproximation
-import GaloisForLFunctions.HTGeometry.PathHamiltonianSiteRestriction
+import GaloisForLFunctions.HTGeometry.Quantum.LocalPacketComparison
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.IncidentPauliTerms
 import GaloisForLFunctions.HTGeometry.SiteFactorLeafTransport
 
 /-!
@@ -16,19 +16,6 @@ open scoped Matrix.Norms.L2Operator Kronecker
 namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 private abbrev Reg (n : ℕ) := Matrix (Fin n → Bool) (Fin n → Bool) ℂ
-
-private theorem supported_product {n : ℕ} {S : Finset (Fin n)} {X Y : Reg n}
-    (hx : IsSiteSupported S X) (hy : IsSiteSupported S Y) : IsSiteSupported S (X*Y) := by
-  obtain ⟨B,rfl⟩ := exists_liftLocalMatrix_of_isSiteSupported hx
-  obtain ⟨C,rfl⟩ := exists_liftLocalMatrix_of_isSiteSupported hy
-  have he : liftLocalMatrix S B * liftLocalMatrix S C = liftLocalMatrix S (B*C) := by
-    let Φ := Matrix.reindexAlgEquiv ℂ ℂ (configurationSplitEquiv (fun _ : Fin n => Bool) S)
-    apply Φ.injective
-    rw [map_mul]
-    change Matrix.reindex _ _ _ * Matrix.reindex _ _ _ = Matrix.reindex _ _ _
-    simp only [reindex_liftLocalMatrix_eq_kronecker_one,← Matrix.mul_kronecker_mul,mul_one]
-  rw [he]
-  exact isSiteSupported_liftLocalMatrix S _
 
 private theorem twoQubitLift_supported {n : ℕ} (a b : Fin n) (hab : a ≠ b)
     (U : Matrix.specialUnitaryGroup (Bool × Bool) ℂ) :
@@ -69,7 +56,7 @@ theorem TwoQubitCircuit.isSiteSupported_touchedSites {n : ℕ} (C : TwoQubitCirc
     induction l with
     | nil => exact (isSiteSupported_one (B := fun _ : Fin n => Bool)).mono (Finset.empty_subset _)
     | cons a l ih =>
-      exact supported_product (hl a List.mem_cons_self)
+      exact (hl a List.mem_cons_self).matrix_mul
         (ih (fun U h => hl U (List.mem_cons_of_mem _ h)))
   apply hp ((List.ofFn g).reverse)
   intro U hu
@@ -98,67 +85,15 @@ theorem path_gap_circuit_deletion_floor {n : ℕ} (u : PathShell n)
     (C.isSiteSupported_touchedSites.complex_smul c) t
   exact (half_gap_time_scalar_error_ge_one H.2.isHermitian i j hgap z).trans hz
 
-private def incident {n : ℕ} (v : Fin (n+2)) : PathLabel n → Prop
-  | .inl (w,_) => w = v
-  | .inr (e,_) => e.castSucc = v ∨ e.succ = v
-
-private def incidentLabels {n : ℕ} (v : Fin (n+2)) : Finset (PathLabel n) := by
-  classical
-  exact Finset.univ.filter (incident v)
-
-/-- Three onsite directions and at most nine Pauli couplings on either
-incident edge meet a given site. Endpoints only decrease this count. -/
-private theorem incidentLabels_card {n : ℕ} (v : Fin (n+2)) : (incidentLabels v).card ≤ 21 := by
-  classical
-  let code : PathLabel n → Fin 3 ⊕ ((Fin 3 × Fin 3) ⊕ (Fin 3 × Fin 3))
-    | .inl (_,q) => .inl q
-    | .inr (e,ab) => if e.castSucc = v then .inr (.inl ab) else .inr (.inr ab)
-  have valid (l) (hl : l ∈ incidentLabels v) : incident v l := (Finset.mem_filter.mp hl).2
-  have hinj : Set.InjOn code (↑(incidentLabels v)) := by
-    intro l hl t ht eq
-    have h := valid l hl
-    have k := valid t ht
-    rcases l with ⟨s,q⟩ | ⟨e,ab⟩ <;> rcases t with ⟨w,r⟩ | ⟨f,cd⟩
-    · have hs : s = v := h
-      have hw : w = v := k
-      simpa [code,hs,hw] using eq
-    · by_cases hf : f.castSucc = v <;> simp [code,hf] at eq
-    · by_cases he : e.castSucc = v <;> simp [code,he] at eq
-    · change e.castSucc = v ∨ e.succ = v at h
-      change f.castSucc = v ∨ f.succ = v at k
-      by_cases he : e.castSucc = v <;> by_cases hf : f.castSucc = v <;> simp [code,he,hf] at eq
-      · have hef : e = f := Fin.castSucc_injective _ (he.trans hf.symm)
-        simp [hef,eq]
-      · have hef : e = f := Fin.succ_injective _ ((h.resolve_left he).trans (k.resolve_left hf).symm)
-        simp [hef,eq]
-  have hcard := Finset.card_le_card_of_injOn code (fun _ _ => Finset.mem_univ _) hinj
-  simpa [Fintype.card_sum,Fintype.card_prod] using hcard
-
-private theorem pathWord_none_of_not_incident {n : ℕ} (v : Fin (n+2)) (l : PathLabel n)
-    (h : ¬incident v l) : pathWord l v = none := by
-  rcases l with ⟨w,q⟩ | ⟨e,ab⟩
-  · change ¬w = v at h
-    simp [pathWord,onsiteWord,Ne.symm h]
-  · change ¬(e.castSucc = v ∨ e.succ = v) at h
-    rw [not_or] at h
-    simp [pathWord,couplingWord,Ne.symm h.1,Ne.symm h.2]
-
 /-- Removing all terms that meet a chosen gate support has squared operator
 cost at most 21 times its size times the total squared coefficient norm. -/
 theorem path_idle_deletion_norm_sq {n : ℕ} (S : Finset (Fin (n+2))) (u : PathShell n) :
     ‖pathHamiltonian u - pathHamiltonianOnSites Sᶜ u‖^2 ≤ 21*(S.card:ℝ)*‖u‖^2 := by
   classical
-  let W := S.biUnion incidentLabels
-  have hcard : W.card ≤ 21*S.card := calc
-    _ ≤ ∑ v ∈ S, (incidentLabels v).card := Finset.card_biUnion_le
-    _ ≤ ∑ _v ∈ S, 21 := Finset.sum_le_sum fun v _ => incidentLabels_card v
-    _ = _ := by simp [mul_comm]
-  have hmiss (l) (hl : l ∉ W) : PathWordSupportedIn Sᶜ l := by
-    intro v hv
-    have hS : v ∈ S := by simpa using hv
-    apply pathWord_none_of_not_incident
-    intro hinc
-    exact hl (Finset.mem_biUnion.mpr ⟨v,hS,Finset.mem_filter.mpr ⟨Finset.mem_univ _,hinc⟩⟩)
+  let W := S.biUnion pathIncidentLabels
+  have hcard : W.card ≤ 21*S.card := pathIncident_union_card S
+  have hmiss (l) (hl : l ∉ W) : PathWordSupportedIn Sᶜ l :=
+    path_supported_compl_of_not_incident S l hl
   have hbound : ‖pathHamiltonian u-pathHamiltonianOnSites Sᶜ u‖ ≤ ∑ l ∈ W, |u l| := by
     have h0 := norm_pathHamiltonian_sub_packetReference_le Sᶜ ∅ u 0
     have hR : pathHamiltonianPacketReference Sᶜ ∅ u 0 = pathHamiltonianOnSites Sᶜ u := by

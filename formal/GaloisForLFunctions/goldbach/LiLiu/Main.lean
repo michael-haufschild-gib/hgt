@@ -3,7 +3,7 @@ import GaloisForLFunctions.goldbach.LiLiu.Arithmetic.EulerBounds
 import GaloisForLFunctions.goldbach.LiLiu.ArithmeticKernel
 import GaloisForLFunctions.goldbach.LiLiu.MellinWeight
 import GaloisForLFunctions.goldbach.LiLiu.Mellin.DirichletInversion
-import GaloisForLFunctions.goldbach.LiLiu.Mellin.ProfileDecay
+import GaloisForLFunctions.goldbach.LiLiu.Mellin.ModelEvaluation
 import GaloisForLFunctions.goldbach.LiLiu.Mellin.SignedMellin
 import GaloisForLFunctions.goldbach.LiLiu.RepresentationBound
 import GaloisForLFunctions.goldbach.LiLiu.Spectral.SpectralScales

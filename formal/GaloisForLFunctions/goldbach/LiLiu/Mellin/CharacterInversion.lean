@@ -1,7 +1,6 @@
 import GaloisForLFunctions.goldbach.LiLiu.Mellin.CharacterContour
 import GaloisForLFunctions.goldbach.LiLiu.Mellin.DirichletInversion
-import GaloisForLFunctions.goldbach.LiLiu.FiniteProjection
-import GaloisForLFunctions.RHTower.SelbergKloostermanCongruence
+import GaloisForLFunctions.goldbach.LiLiu.Arithmetic.UnitSamples
 
 /-! # The Mellin integral of the odd character polynomial -/
 
@@ -51,12 +50,7 @@ private theorem weighted_samples_eq_units (n : ℕ) (φ : TestWeight) (χ : Diri
     · simp [hu, χ.map_nonunit hu]
   · intro k hk
     have hkN : N ≤ k := Nat.le_of_not_gt fun h => hk (mem_range.mpr h)
-    have hφ : φ ((k : ℝ)/N) = 0 := by
-      by_contra hn
-      have hb := (φ.supported hn).2
-      have h1 : 1 ≤ (k : ℝ)/N := (one_le_div (Nat.cast_pos.mpr hN)).mpr (by exact_mod_cast hkN)
-      linarith only [hb,h1]
-    simp [coefficient, hφ]
+    simp [coefficient, weight_sample_zero hN hkN φ]
 
 private theorem twisted_LSeries_eq {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N)
     {s : ℂ} (hs : 1 < (1/2+s : ℂ).re) :

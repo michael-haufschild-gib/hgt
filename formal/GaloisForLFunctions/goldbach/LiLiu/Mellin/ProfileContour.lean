@@ -74,7 +74,7 @@ theorem continuedProfileDensity_strip_bound (N : ℕ) (φ : TestWeight) {a : ℝ
     _ ≤ singularSeries N * ((1+2/a)*|s.im|) * E * ‖profileMellin φ s‖ * (2*|s.im|^2) := by
       have hS := (singularSeries_pos N).le
       have hEuler := he N s hs.1
-      gcongr <;> first | positivity | assumption
+      gcongr
     _ = C * (2*(|s.im|^3 * ‖profileMellin φ s‖)) := by dsimp [C]; ring
     _ ≤ _ := by gcongr; exact hd s (ha.trans_le hs.1) hs.2 (by linarith only [ht])
 

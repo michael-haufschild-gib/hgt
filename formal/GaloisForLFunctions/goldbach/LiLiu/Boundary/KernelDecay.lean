@@ -1,4 +1,4 @@
-import GaloisForLFunctions.goldbach.LiLiu.Boundary.KernelSymmetry
+import GaloisForLFunctions.goldbach.LiLiu.Boundary.KernelRegularity
 import GaloisForLFunctions.goldbach.LiLiu.Boundary.ModelKernelBound
 import GaloisForLFunctions.goldbach.LiLiu.Mellin.CharacterContour
 import GaloisForLFunctions.HTGeometry.DirichletCriticalUpperBoundPoleExclusion
@@ -9,12 +9,6 @@ namespace GaloisForLFunctions.Goldbach.LiLiu
 open _root_.Complex Set Finset
 open scoped ComplexConjugate Classical
 noncomputable section
-
-theorem odd_ne_principal {N : ℕ} {χ : DirichletCharacter ℂ N} (h : χ.Odd) : χ ≠ 1 := by
-  rintro rfl
-  apply h.not_even
-  change (1 : DirichletCharacter ℂ N) (-1) = 1
-  exact MulChar.one_apply (isUnit_neg.mpr isUnit_one)
 
 def heightGrowth (t : ℝ) := (1+|t|)^(1/4:ℝ)
 
