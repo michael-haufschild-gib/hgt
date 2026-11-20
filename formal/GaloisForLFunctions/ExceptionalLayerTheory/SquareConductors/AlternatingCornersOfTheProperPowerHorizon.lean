@@ -44,7 +44,8 @@ theorem proper_profile_on_unit_cell {t : ℝ} (n : ℕ) (hl : (n:ℝ)≤t) (hu :
     have h : (n:ℝ)+1 ≤ 2*j := by exact_mod_cast (show n+1≤2*j by omega)
     have hlow : (1:ℝ)≤t/j := (one_le_div (Nat.cast_pos.mpr jp)).mpr ((Nat.cast_le.mpr hjn).trans hl)
     have hhi : t/j≤2 := (div_le_iff₀ (Nat.cast_pos.mpr jp)).mpr (hu.trans h)
-    simp only [f,properHorizonClip,min_eq_right hhi,max_eq_right hlow,Real.sqrt_div hp,div_eq_mul_inv]
+    simp only [f,properHorizonClip]
+    rw [min_eq_right hhi,max_eq_right hlow,Real.sqrt_div hp,div_eq_mul_inv]
   rw [sum_congr rfl low,sum_congr rfl high,sum_const,Nat.card_Ioc,Nat.sub_zero,nsmul_eq_mul,
     sum_sub_distrib,←mul_sum,sum_const,Nat.card_Ioc,nsmul_eq_mul,mul_one,properHorizonSlope]
   ring
@@ -65,7 +66,7 @@ theorem proper_slope_at_even (k : ℕ) :
     show (2*k+1)/2=k by omega,show 2*(k+1)=2*k+1+1 by omega,sum_Ioc_succ_top (by omega)]
   have h := sum_Ioc_consecutive (fun j : ℕ => (Real.sqrt j)⁻¹) (Nat.le_succ k)
     (show k+1≤2*k+1 by omega)
-  rw [sum_Ioc_succ_top le_rfl,sum_Ioc_self,sum_empty,zero_add] at h
+  rw [sum_Ioc_succ_top le_rfl,Ioc_self,sum_empty,zero_add] at h
   have hh : Real.sqrt (2*k+1+1:ℕ) = Real.sqrt 2*Real.sqrt (k+1:ℕ) := by
     rw [show 2*k+1+1=2*(k+1) by omega,Nat.cast_mul,Nat.cast_ofNat,Real.sqrt_mul (by norm_num : (0:ℝ)≤2)]
   rw [hh,←h]

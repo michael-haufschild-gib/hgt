@@ -47,6 +47,7 @@ theorem sqrt_order_relation_iff_square_classes {ι : Type*} (S : Finset ι)
   classical
   haveI : Algebra.IsAlgebraic ℚ A := by
     convert algebraicClosure.isAlgebraic ℚ ℂ
+    all_goals first | rfl | exact Subsingleton.elim _ _
   letI : IsAlgClosure ℚ A := ⟨HTGeometry.algebraicClosure_isAlgClosed ℚ ℂ,inferInstance⟩
   letI : IsGalois ℚ A := ⟨⟩
   have hs (i : ι) : algebraicSqrt (m i)^2=algebraMap ℚ A (m i:ℚ) := by

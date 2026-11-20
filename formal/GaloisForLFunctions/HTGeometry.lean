@@ -18056,3 +18056,4 @@ import GaloisForLFunctions.HTGeometry.Quantum.SpectralBlockHamiltonian
 import GaloisForLFunctions.HTGeometry.Quantum.SpectralDetuningCoverage
 import GaloisForLFunctions.HTGeometry.Quantum.AutonomousEchoModelOrder
 import GaloisForLFunctions.HTGeometry.Quantum.FourierClockModelOrder
+import GaloisForLFunctions.HTGeometry.Quantum.TranslatedCircuitExcursion

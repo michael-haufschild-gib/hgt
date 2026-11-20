@@ -21,11 +21,11 @@ innermost rebuilt layer is the current frontier. RH/GRH are not claimed.
 | # | Layer | Statement | Corpus before | Native module (`WindowedLandauTheory/`) | Status |
 |---|---|---|---|---|---|
 | L0 | headline reductions | nonvanishing of all Dirichlet `L` on `Re s > 1/2` ⇒ `RiemannHypothesis`, zeros on the line; primitive ⇒ all | pieces (`LFunction_eq_zero_conj_one_sub`, `riemannZeta_ne_zero_of_re_lt_zero`) | NonvanishingRightOfTheCriticalLine | open |
-| L1a | Taylor coefficients of a Laplace transform | `(-1)^k Φ^(k)(s)/k! = ∫ g u^k e^{-su}/k!`; kernel mass, Chernoff tails with `k ≍ U` | no | TaylorCoefficientsOfLaplaceTransforms | open |
-| L1b | coefficients near a simple pole | Cauchy bound `M/r'^k`; `c/(z-ρ)^{k+1}` main term | Cauchy bounds at 0 only | TaylorCoefficientsNearASimplePole | open |
-| L1c | Landau on windows (abstract) | real `g ≤ C e^{θu}` on windows `[U,(1+δ)U]`, Laplace transform meromorphic on `Re > θ` with simple poles, positive real coefficient at real poles ⇒ no pole with `Re > θ` | eventual version only (`abscissa_landau_eq`) | LandauOnWindows | open |
-| L1d | logarithmic pole data | entire `P`, `P(1) ≠ 0`: `-(P'/P(s) - s P'/P(1) + k(1-s))/(s(s-1))` analytic off zeros, principal part `m·(1/(ρ(1-ρ)))/(s-ρ)` | residue lemmas (`logDeriv_eventuallyEq_of_factor`) | LogarithmicPoleData | open |
-| L1e | Mellin transform of the ramp | `∫_1^∞ Σ_{n≤y} a(n)(y/n-1) y^{-s-1} dy = L(a,s)/(s(s-1))` | Abel form only | TheCesaroVonMangoldtRamp | open |
+| L1a | Taylor coefficients of a Laplace transform | `(-1)^k Φ^(k)(s)/k! = ∫ g u^k e^{-su}/k!`; kernel mass, Chernoff tails with `k ≍ U` | no | TaylorCoefficientsOfLaplaceTransforms | compiled |
+| L1b | coefficients near a simple pole | Cauchy bound `M/r'^k`; `c/(z-ρ)^{k+1}` main term | Cauchy bounds at 0 only | TaylorCoefficientsNearASimplePole | compiled |
+| L1c | Landau on windows (abstract) | real `g ≤ C e^{θu}` on windows `[U,(1+δ)U]`, Laplace transform meromorphic on `Re > θ` with simple poles, positive real coefficient at real poles ⇒ no pole with `Re > θ` | eventual version only (`abscissa_landau_eq`) | LandauOnWindows (`re_le_of_window_bound`) | compiled |
+| L1d | logarithmic pole data | entire `P`, `P(1) ≠ 0`: `-(P'/P(s) - s P'/P(1) + k(1-s))/(s(s-1))` analytic off zeros, principal part `m·(1/(ρ(1-ρ)))/(s-ρ)` | residue lemmas (`logDeriv_eventuallyEq_of_factor`) | LogarithmicPoleData (`exists_sum_logPoleFun_principal`) | compiled |
+| L1e | Mellin transform of the ramp | `∫_1^∞ Σ_{n≤y} a(n)(y/n-1) y^{-s-1} dy = L(a,s)/(s(s-1))` | Abel form only | TheCesaroRamp (`integral_cesaroRamp_exp_mul`) | compiled |
 | L1f | windowed criterion | `G_ζ(y) + Σ w_i Re G_{χ_i}(y) ≤ C y^θ` on windows `[Y, Y^{1+δ}]` ⇒ `ζ`, `L(χ_i)` zero-free on `Re s > θ` | ψ-version, all large x (`re_le_half_add_of_chebyshevError_ge_rpow`) | WindowedCesaroBoundsForceZeroFreeHalfPlanes | open |
 | L2 | levels | cyclic level of a primitive character, weights `1`, `1/(3o+1)`; window scale ⇒ zero-free for all primitive characters | no | — | not started |
 | L3 | host/chain inequality | `ChainTied` family data on windows ⇒ `Gm ≤ x^{1/2+cε}` on windows (archive: `core_gm`, `level_gm_le_on_family_scales`) | no | — | not started (statement not yet read in full) |

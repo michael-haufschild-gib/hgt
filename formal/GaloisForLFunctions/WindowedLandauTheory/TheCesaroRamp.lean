@@ -79,8 +79,9 @@ theorem setIntegral_Ioi_inter_Ici_log {E : Type*} [NormedAddCommGroup E] [Normed
   have hlog0 : 0 ≤ Real.log n := Real.log_nonneg (by exact_mod_cast hn)
   rcases eq_or_lt_of_le hlog0 with h0 | hpos
   · rw [← h0, Set.inter_eq_left.mpr Set.Ioi_subset_Ici_self]
-  · rw [Set.inter_eq_right.mpr (fun t ht => lt_of_lt_of_le hpos ht),
-      integral_Ici_eq_integral_Ioi]
+  · have hset : Ioi (0 : ℝ) ∩ Ici (Real.log n) = Ici (Real.log n) :=
+      Set.inter_eq_right.mpr fun t ht => lt_of_lt_of_le hpos ht
+    rw [hset, integral_Ici_eq_integral_Ioi]
 
 /-- `∫_{log n}^∞ (e^u/n - 1) e^{-su} du = n^{-s}/(s(s-1))` for `Re s > 1`. -/
 theorem integral_rampStep_shape {n : ℕ} (hn : 1 ≤ n) {s : ℂ} (hs : 1 < s.re) :
@@ -192,7 +193,7 @@ theorem integrable_rampStep_mul (a : ℕ → ℂ) (n : ℕ) {s : ℂ} (hs : 1 < 
     have hf : IntegrableOn (fun t : ℝ => a n * ((cexp t / n - 1) * cexp (-s * t))) (Ioi 0) := by
       have h1 := ((integrableOn_exp_mul_complex_Ioi ha1 0).const_mul (1 / (n : ℂ))).sub
         (integrableOn_exp_mul_complex_Ioi ha2 0)
-      refine (h1.const_mul (a n)).congr_fun (fun t _ => ?_) measurableSet_Ioi
+      refine IntegrableOn.congr_fun (h1.const_mul (a n)) (fun t _ => ?_) measurableSet_Ioi
       show a n * (1 / (n : ℂ) * cexp ((1 - s) * t) - cexp (-s * t)) = _
       rw [show (1 - s) * (t : ℂ) = t + -s * t by ring, Complex.exp_add]
       ring
