@@ -55,7 +55,7 @@ theorem admissible_long_height_exponent_iff (K : ℝ) :
     have hk : 1 < K := by
       by_contra! hK
       have hlarge := (long_moebius_mean_diverges (zero_lt_one.trans_le hθ)).eventually_gt_atTop C
-      obtain ⟨T,hb,hbig,hT⟩ := ((hfreq.and_eventually hlarge).and_eventually
+      obtain ⟨T,⟨hb,hbig⟩,hT⟩ := ((hfreq.and_eventually hlarge).and_eventually
         (eventually_ge_atTop (1:ℝ))).exists
       have ht := zero_lt_one.trans_le hT
       have hpow := Real.rpow_le_rpow_of_exponent_le hT hK
@@ -72,7 +72,8 @@ theorem admissible_long_height_exponent_iff (K : ℝ) :
         (_root_.RHTower.riemannHypothesis_iff_xiZeroHalfPlaneBound_zero.mp hRH)) zetaZeroWidth_nonneg
     obtain ⟨C,hC,hbound⟩ := long_moebius_moment_unit_intercept hθ₀ (sub_pos.mpr hK)
     refine ⟨θ₀,le_rfl,C,hC, (eventually_ge_atTop (1:ℝ)).frequently.mono (fun T hT => ?_)⟩
-    simpa only [longMoebiusEnergy,hw,mul_zero,zero_mul,add_zero,add_sub_cancel_left] using hbound T hT
+    simpa only [longMoebiusEnergy,hw,mul_zero,zero_mul,add_zero,add_sub_cancel_left,add_sub_cancel] using
+      hbound T hT
 
 /-- At a fixed positive power length, RH forces ordinary growth order one,
 while the normalized mean square still diverges. -/

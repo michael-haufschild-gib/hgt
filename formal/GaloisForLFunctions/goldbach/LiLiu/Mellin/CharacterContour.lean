@@ -34,11 +34,12 @@ theorem characterFeature_strip_bound {n : ℕ} (h : modulusGRH (n+1)) {a : ℝ} 
       linarith only [mul_nonneg hq0.le (abs_nonneg s.im)]
     have hv := log_le_four_rpow_quarter (mul_nonneg hq0.le (by positivity : 0 ≤ |s.im|+3))
     have hw := Real.rpow_le_rpow (mul_nonneg hq0.le (by positivity)) hx (by norm_num : (0:ℝ) ≤ 1/4)
-    rw [Real.mul_rpow (by positivity) (by positivity)] at hw
+    rw [Real.mul_rpow (by positivity : 0 ≤ 3*q) (by positivity : 0 ≤ 1+|s.im|)] at hw
     dsimp [L, B, R]
     calc
       _ ≤ pfConst * (4 * (q * (|s.im| + 3)) ^ (1/4 : ℝ)) := mul_le_mul_of_nonneg_left hv pfConst_pos.le
-      _ ≤ pfConst * (4 * ((3*q) ^ (1/4 : ℝ) * (1+|s.im|) ^ (1/4 : ℝ))) := by gcongr
+      _ ≤ pfConst * (4 * ((3*q) ^ (1/4 : ℝ) * (1+|s.im|) ^ (1/4 : ℝ))) :=
+        mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left hw (by norm_num)) pfConst_pos.le
       _ = _ := by ring
   have hpos : 1 / 2 < (1 / 2 + s : ℂ).re := by norm_num; linarith only [ha, hs]
   have htop : (1 / 2 + s : ℂ).re ≤ 2 := by norm_num; linarith only [hs']
@@ -49,7 +50,8 @@ theorem characterFeature_strip_bound {n : ℕ} (h : modulusGRH (n+1)) {a : ℝ} 
   have hnum : 4 * (8+L) ≤ 4*(8+B)*R := by linarith only [hL, hR]
   have hfrac : 4*(8+L)/s.re ≤ 4*(8+B)*R/a :=
     div_le_div₀ (by positivity) hnum ha hs
-  exact he.trans (by linarith only [hL, hfrac])
+  change ‖characterFeature χ s‖ ≤ (B+4*(8+B)/a)*R
+  exact he.trans ((add_le_add hL hfrac).trans_eq (by ring))
 
 def characterIntegrand {N : ℕ} [NeZero N] (φ : TestWeight) (χ : DirichletCharacter ℂ N) (s : ℂ) : ℂ :=
   (N : ℂ) ^ s * mellin (companion φ) s * characterFeature χ s

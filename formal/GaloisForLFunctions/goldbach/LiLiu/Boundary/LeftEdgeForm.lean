@@ -54,7 +54,7 @@ theorem leftLift_inner_op {a b : ℝ} (hab : a < b)
       rw [hs,hrow]
     _ = ∫ x : ℝ, conj (L (mellinLine a x)) * (∫ z, G (mellinLine a x) z ∂μ) := by
       exact integral_supported_left hab ((continuous_conj.measurable.comp hL).mul
-        (hG.stronglyMeasurable.integral_prod_right (μ := μ)).measurable)
+        (hG.stronglyMeasurable.integral_prod_right (ν := μ)).measurable)
         (by intro z hz; simp [L,leftLift,hz])
     _ = _ := by
       apply integral_congr_ae
