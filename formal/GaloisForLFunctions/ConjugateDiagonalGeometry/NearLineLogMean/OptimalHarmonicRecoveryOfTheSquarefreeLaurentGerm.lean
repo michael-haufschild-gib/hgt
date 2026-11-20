@@ -46,7 +46,9 @@ private theorem fundamental_limit : Tendsto fundamental atTop (𝓝 0) := by
   have hr : Tendsto (fun T : ℝ => 2*Real.pi/T) atTop (𝓝 0) :=
     Tendsto.div_atTop tendsto_const_nhds tendsto_id
   have hh := (Complex.continuous_ofReal.continuousAt.tendsto.comp hr).mul_const I
-  simpa only [fundamental_as_real,Complex.ofReal_zero,zero_mul,Function.comp_apply] using hh
+  have hfun : fundamental = fun T : ℝ => ((2*Real.pi/T:ℝ):ℂ)*I := funext fundamental_as_real
+  rw [hfun]
+  simpa only [Complex.ofReal_zero,zero_mul,Function.comp_apply] using hh
 
 private theorem fundamental_nonzero {T : ℝ} (hT : 0<T) : fundamental T≠0 :=
   div_ne_zero (mul_ne_zero (mul_ne_zero (by norm_num) (Complex.ofReal_ne_zero.mpr Real.pi_ne_zero)) I_ne_zero)
@@ -60,7 +62,7 @@ private theorem density_primitive_vanishes {T : ℝ} (hT : 0<T) {k : ℕ} (hk : 
   rw [hs,Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr (Real.exp_pos T).ne'),
     ←Complex.ofReal_log (Real.exp_pos T).le,Real.log_exp] at h
   have he : (T:ℂ)*(-(k:ℂ)*fundamental T)=-((k:ℂ)*(2*(Real.pi:ℂ)*I)) := by
-    dsimp only [fundamental];field_simp [Complex.ofReal_ne_zero.mpr hT.ne'];ring
+    dsimp only [fundamental];field_simp [Complex.ofReal_ne_zero.mpr hT.ne']
   have hphase : Complex.exp (-((k:ℂ)*(2*(Real.pi:ℂ)*I)))=1 := by
     rw [Complex.exp_neg,Complex.exp_nat_mul_two_pi_mul_I,inv_one]
   rw [he,hphase,sub_self] at h
@@ -82,9 +84,10 @@ private theorem sample_error {T : ℝ} (hT : 1≤T) {k : ℕ} (hk : 0<k) :
   have hs : ‖location T k‖≤1+(k:ℝ)*(2*Real.pi) := by
     refine (norm_add_le _ _).trans ?_
     rw [norm_one,norm_mul,Complex.norm_natCast]
-    exact add_le_add_left (mul_le_mul_of_nonneg_left hf (Nat.cast_nonneg _)) _
+    exact add_le_add_right (mul_le_mul_of_nonneg_left hf (Nat.cast_nonneg _)) _
   refine h.trans (mul_le_mul_of_nonneg_right ?_ (Real.exp_pos _).le)
-  linarith only [hs]
+  have h2 : ‖location T k‖/(1-1/2) = 2*‖location T k‖ := by ring
+  linarith only [hs,h2]
 
 private theorem exponential_beats_power (m : ℕ) :
     Tendsto (fun T : ℝ => T^m*Real.exp (-(T/2))) atTop (𝓝 0) := by
@@ -123,19 +126,19 @@ def harmonicJetExact {n : ℕ} (m : ℕ) (node : Fin n → ℕ) (a : Fin n → �
   ∀ k ≤ m, (∑ j, a j*(node j:ℂ)^k) = if k=m then 1 else 0
 
 private theorem interpolate_top {m : ℕ} {node : Fin (m+1) → ℕ}
-    (hnode : Function.Injective node) (P : ℂ[X]) (hP : P.natDegree≤m) :
-    P.coeff m=∑ j, harmonicJetWeight node j*P.eval (node j) := by
+    (hnode : Function.Injective node) (P : Polynomial ℂ) (hP : P.natDegree≤ m) :
+    P.coeff m=∑ j, harmonicJetWeight node j*P.eval (node j : ℂ) := by
   have hinj : Function.Injective (fun j => (node j:ℂ)) := fun i j h =>
     hnode (Nat.cast_injective h)
   have hd : P.degree<((univ : Finset (Fin (m+1))).card : WithBot ℕ) := by
     rw [card_univ,Fintype.card_fin]
     exact Polynomial.degree_le_natDegree.trans_lt (WithBot.coe_lt_coe.mpr (Nat.lt_succ_of_le hP))
   have he := Lagrange.eq_interpolate (s:=univ) (v:=fun j => (node j:ℂ)) hinj.injOn hd
-  have hh := congrArg (fun Q : ℂ[X] => Q.coeff m) he
+  have hh := congrArg (fun Q : Polynomial ℂ => Q.coeff m) he
   rw [Lagrange.interpolate_apply] at hh
-  change P.coeff m=(Polynomial.lcoeff ℂ m) (∑ j, C (P.eval (node j))*_) at hh
+  change P.coeff m=(Polynomial.lcoeff ℂ m) (∑ j, C (P.eval (node j : ℂ))*_) at hh
   rw [map_sum] at hh
-  change P.coeff m=∑ j, (C (P.eval (node j))*Lagrange.basis univ (fun i => (node i:ℂ)) j).coeff m at hh
+  change P.coeff m=∑ j, (C (P.eval (node j : ℂ))*Lagrange.basis univ (fun i => (node i:ℂ)) j).coeff m at hh
   simpa only [harmonicJetWeight,Polynomial.coeff_C_mul,mul_comm] using hh
 
 private theorem exact_lagrange {m : ℕ} {node : Fin (m+1) → ℕ}
@@ -151,7 +154,7 @@ theorem harmonic_jet_requires_nodes {m n : ℕ} {node : Fin n → ℕ} {a : Fin 
   by_contra hn
   have hinj : Function.Injective (fun j => (node j:ℂ)) := fun i j he => hnode (Nat.cast_injective he)
   have hzero := GaloisForLFunctions.vandermonde_moments_eq_zero_of_injective hinj (c:=a) (fun k => by
-    have hk : (k:ℕ)<m := by have := k.isLt; omega
+    have hk : (k:ℕ)< m := by have := k.isLt; omega
     simpa only [if_neg hk.ne] using h k hk.le)
   have htop := h m le_rfl
   simp [hzero] at htop
@@ -166,7 +169,7 @@ theorem harmonic_jet_weights_unique {m : ℕ} {node : Fin (m+1) → ℕ} {a : Fi
   apply sub_eq_zero.mp
   apply GaloisForLFunctions.vandermonde_moments_eq_zero_of_injective hinj
   intro k
-  have hk : (k:ℕ)≤m := Nat.lt_succ_iff.mp k.isLt
+  have hk : (k:ℕ)≤ m := Nat.lt_succ_iff.mp k.isLt
   simp only [Pi.sub_apply,sub_mul,sum_sub_distrib,ha k hk,exact_lagrange hnode k hk,sub_self]
 
 private theorem harmonic_taylor_expansion {m n : ℕ} {node : Fin n → ℕ} {a : Fin n → ℂ}
@@ -186,7 +189,7 @@ private theorem harmonic_taylor_expansion {m n : ℕ} {node : Fin n → ℕ} {a 
   rw [sum_add_distrib,←mul_sum,sum_comm]
   congr 1
   simp_rw [←sum_mul]
-  rw [sum_range_succ,sum_eq_zero (fun k (hk : k∈range m) => by
+  rw [Finset.sum_range_succ,sum_eq_zero (fun k (hk : k∈range m) => by
     rw [ha k (mem_range.mp hk).le,if_neg (mem_range.mp hk).ne,zero_mul]),zero_add,
     ha m le_rfl,if_pos rfl,one_mul]
 
@@ -260,7 +263,7 @@ private theorem moments (P : Polynomial ℂ) (k : ℕ) :
 private theorem filter_at (m k : ℕ) : (harmonicJetFilter m).eval ((2:ℂ)^k)=
     ∏ j∈range m,((2:ℂ)^k-2^j) := by simp [harmonicJetFilter,Polynomial.eval_prod]
 
-private theorem filter_low {k m : ℕ} (h : k<m) : (harmonicJetFilter m).eval ((2:ℂ)^k)=0 := by
+private theorem filter_low {k m : ℕ} (h : k< m) : (harmonicJetFilter m).eval ((2:ℂ)^k)=0 := by
   rw [filter_at]
   exact prod_eq_zero (mem_range.mpr h) (sub_self _)
 
@@ -294,7 +297,7 @@ private theorem filter_expansion (m : ℕ) (F H : ℂ → ℂ)
       P.coeff j*((2^j:ℕ):ℂ)^k*(taylorCoeffZero F k*w^k))=P.eval ((2:ℂ)^m)*taylorCoeffZero F m*w^m by
     rw [hsum]
   simp_rw [←sum_mul,moments]
-  rw [sum_range_succ,sum_eq_zero (fun k (hk : k∈range m) => by
+  rw [Finset.sum_range_succ,sum_eq_zero (fun k (hk : k∈range m) => by
     rw [show P.eval ((2:ℂ)^k)=0 from filter_low (mem_range.mp hk),zero_mul]),zero_add,mul_assoc]
 
 /-- The normalized arithmetic reading uses finitely many nonzero positive

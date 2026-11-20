@@ -1,5 +1,6 @@
 import GaloisForLFunctions.goldbach.LiLiu.Mellin.CharacterInversion
 import GaloisForLFunctions.goldbach.LiLiu.Mellin.VerticalLine
+import GaloisForLFunctions.goldbach.LiLiu.Boundary.KernelRegularity
 
 /-! # The odd-character moment on two Mellin lines
 
@@ -50,10 +51,8 @@ theorem characterMoment_integral {n : ℕ} (φ : TestWeight) (h : modulusGRH (n+
     (fun u => (coefficient φ N (u : ZMod N).val : ℂ)) χ
   let X := univ.filter (fun χ : DirichletCharacter ℂ N => χ.Odd)
   let G (χ : DirichletCharacter ℂ N) (p : ℝ × ℝ) := F χ p.1 * conj (F χ p.2)
-  have hn {χ : DirichletCharacter ℂ N} (hχ : χ ∈ X) : χ ≠ 1 := by
-    have ho := (mem_filter.mp hχ).2
-    rintro rfl
-    exact ho.not_even (MulChar.one_apply (isUnit_one.neg))
+  have hn {χ : DirichletCharacter ℂ N} (hχ : χ ∈ X) : χ ≠ 1 :=
+    odd_ne_principal (mem_filter.mp hχ).2
   have hi (χ) (hχ : χ ∈ X) : Integrable (G χ) := by
     have hF := characterIntegrand_integrable φ h (hn hχ) ha ht
     have hconj : Integrable (fun t => conj (F χ t)) := by
@@ -70,7 +69,8 @@ theorem characterMoment_integral {n : ℕ} (φ : TestWeight) (h : modulusGRH (n+
     intro χ hχ
     simp only [G,F,V,P,characterIntegrand,mellinMultiplier,map_mul]
     ring
-  simp only [hK]
+  change Integrable (characterTestKernel N φ a) ∧ c^2 * (∫ p, characterTestKernel N φ a p) = _
+  rw [show characterTestKernel N φ a = fun p => (2/(N.totient:ℂ))*∑ χ ∈ X, G χ p from funext hK]
   refine ⟨(integrable_finsetSum X hi).const_mul _,?_⟩
   rw [integral_const_mul,integral_finsetSum X hi]
   have hN : 0 < (N:ℝ) := Nat.cast_pos.mpr (Nat.succ_pos n)

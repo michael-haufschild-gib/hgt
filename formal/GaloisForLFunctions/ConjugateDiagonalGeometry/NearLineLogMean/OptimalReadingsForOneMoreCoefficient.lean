@@ -38,7 +38,7 @@ private theorem gap_injective (n : ℕ) : Function.Injective (gap (n:=n)) := by
   have h : Real.log (i.val+1:ℕ)=Real.log (j.val+1:ℕ) :=
     sub_right_inj.mp he
   exact Fin.ext (Nat.add_right_cancel (by exact_mod_cast
-    (Real.log_injOn_pos (by positivity) (by positivity) h)))
+    (Real.log_injOn_pos (Set.mem_Ioi.mpr (by positivity)) (Set.mem_Ioi.mpr (by positivity)) h)))
 private theorem gap_le {n : ℕ} (i : Fin n) : gap i ≤ Real.log (n+1:ℕ) :=
   sub_le_self _ (Real.log_natCast_nonneg _)
 
@@ -98,8 +98,9 @@ private theorem spectral_row {n : ℕ} (u : Fin n → ℂ) (x y : ℂ) (t : ℝ)
   have hc : conj (reference u t)=∑ i, conj (u i)*wave (t*gap i) := by
     simp [reference,map_sum,map_mul,conj_wave]
   have hz : wave 0=1 := by simp [wave]
+  have hr : reference u t=∑ i, u i*wave (-(t*gap i)) := by simp only [reference,neg_mul]
   rw [Fintype.sum_option,Fintype.sum_sum_type]
-  simp only [mass,freq,mul_zero,hz,mul_one,hneg,mul_assoc,←Finset.mul_sum,←hc,←reference]
+  simp only [mass,freq,mul_zero,hz,mul_one,mul_neg,mul_assoc,←Finset.mul_sum,←hc,←hr]
   simp only [lastReading,Complex.ofReal_sub,←Complex.normSq_eq_norm_sq,←Complex.mul_conj,map_add]
   ring
 
@@ -111,7 +112,7 @@ private theorem grid_inj (n : ℕ) : Function.Injective (fun i : Index n => wave
   have hp : 0 < gridStep n := by dsimp [gridStep]; positivity
   have hh (i : Index n) : |gridStep n*freq i| < 1 := by
     rw [abs_mul,abs_of_pos hp,gridStep,one_div,inv_mul_eq_div,div_lt_one (by positivity)]
-    rcases i with _|i; · simp [freq]; linarith
+    rcases i with _|i; · simp only [freq,abs_zero]; linarith
     rcases i with i|i <;> simp only [freq,abs_neg,abs_of_pos (gap_pos i)] <;> linarith only [gap_le i]
   intro i j he
   have hi := abs_lt.mp (hh i)
@@ -179,7 +180,7 @@ theorem fewer_shifts_confuse_last {n m : ℕ} (hn : 0<n) (hm : m ≤ 2*n) (t : F
   | succ m =>
     have hdim : Fintype.card (Fin m) < Module.finrank ℝ (Fin n → ℂ) := by
       simp only [Module.finrank_pi_fintype,Complex.finrank_real_complex,sum_const,
-        Finset.card_univ,Fintype.card_fin,nsmul_eq_mul]
+        Finset.card_univ,Fintype.card_fin,nsmul_eq_mul,Nat.cast_id]
       omega
     obtain ⟨u,hu,hker⟩ := GaloisForLFunctions.HTGeometry.exists_ne_zero_forall_apply_eq_zero_of_finrank_lt
       (fun j : Fin m => referenceRe (t j.succ)-referenceRe (t 0)) hdim

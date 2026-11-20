@@ -43,7 +43,8 @@ private theorem weighted_samples_eq_units (n : ℕ) (φ : TestWeight) (χ : Diri
         (Real.sqrt (n+1:ℕ) : ℂ) := by
   let f (k : ℕ) := (coefficient φ (n+1) k : ℂ) * χ (k : ZMod (n+1)) / (Real.sqrt (n+1:ℕ) : ℂ)
   have hf (k : ℕ) (hk : n+1 ≤ k) : f k=0 := by
-    simp [f,coefficient,weight_sample_zero (Nat.succ_pos n) hk φ]
+    simp only [f,coefficient,weight_sample_zero (Nat.succ_pos n) hk φ,mul_zero,
+      Complex.ofReal_zero,zero_mul,zero_div]
   have he (k : ℕ) : f k = if k.Coprime (n+1) then f k else 0 := by
     split_ifs with h
     · rfl

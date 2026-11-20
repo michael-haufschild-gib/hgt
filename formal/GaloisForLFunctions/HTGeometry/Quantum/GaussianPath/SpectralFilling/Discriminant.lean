@@ -96,5 +96,56 @@ theorem gaussian_pauli_discriminant_lower_tail (k : ℕ) {r : ℝ} (hr : 0 < r) 
   exact hx.trans_le (le_mul_of_one_le_left (pow_nonneg hr.le _) ha)
 
 #print axioms gaussian_pauli_discriminant_lower_tail
+
+/-- The Vandermonde discriminant has one factor per ordered pair of distinct indices. -/
+theorem spectralDiscriminantDegree_eq_mul_pred (D : ℕ) : spectralDiscriminantDegree D = D*(D-1) := by
+  rw [spectralDiscriminantDegree,mul_comm,Fin.sum_univ_eq_sum_range (fun i => i) D,Finset.sum_range_id_mul_two]
+
+private theorem abs_gap_product_le {D : ℕ} (E : Fin D → ℝ) {B : ℝ} (hB : 1 ≤ B)
+    (hE : ∀ i j, |E j-E i| ≤ B) {i j : Fin D} (hij : i < j) :
+    |∏ a, ∏ b ∈ Finset.Ioi a, (E b-E a)| ≤ |E j-E i| *B^(D*D) := by
+  classical
+  let s := (Finset.univ : Finset (Fin D)).sigma (fun a => Finset.Ioi a)
+  let c : (a : Fin D) × Fin D := ⟨i,j⟩
+  let F (p : (a : Fin D) × Fin D) := |E p.2-E p.1|
+  have hc : c ∈ s := Finset.mem_sigma.mpr ⟨Finset.mem_univ _,Finset.mem_Ioi.mpr hij⟩
+  have hcard : s.card ≤ D*D := by
+    dsimp only [s]; rw [Finset.card_sigma]
+    calc
+      _ ≤ ∑ _a : Fin D, D := Finset.sum_le_sum fun a _ => (Finset.card_le_univ _).trans_eq (Fintype.card_fin D)
+      _ = _ := by simp
+  have hremaining : ∏ p ∈ s.erase c, F p ≤ B^(D*D) := by
+    refine (Finset.prod_le_prod (fun _ _ => abs_nonneg _) (fun p _ => hE p.1 p.2)).trans ?_
+    rw [Finset.prod_const]
+    exact pow_le_pow_right₀ hB ((Finset.card_le_card (Finset.erase_subset c s)).trans hcard)
+  calc
+    _ = ∏ p ∈ s, F p := by simp only [s,F,Finset.abs_prod,Finset.prod_sigma]
+    _ = (∏ p ∈ s.erase c, F p)*F c := (Finset.prod_erase_mul s F hc).symm
+    _ ≤ _ := by rw [mul_comm]; exact mul_le_mul_of_nonneg_left hremaining (abs_nonneg _)
+
+/-- At fixed spectral diameter B, all eigenvalue gaps on the same draw obey
+a lower-tail estimate with degree D(D−1), simultaneously over all pairs. -/
+theorem gaussian_pauli_minimum_gap_lower_tail (k : ℕ) {r B : ℝ}
+    (hr : 0 < r) (hr' : r ≤ 1) (hB : 1 ≤ B) :
+    let D : ℕ := 2^(k+3)
+    let d : ℕ := D*(D-1)
+    (Measure.pi fun _ : Fin (Fintype.card (ChainLabel (k+3))) => gaussianReal 0 1)
+      {x | let E := (isHermitian_spectralEnsembleMatrix (chainPauliFin_isHermitian (k+3)) x).eigenvalues
+           (∀ i j, |E j-E i| ≤ B) ∧ ∃ i j, i < j ∧ (|E j-E i| *B^(D*D))^2 < r^d} ≤
+      ENNReal.ofReal (2*d*r) := by
+  intro D d
+  have hprob := gaussian_pauli_discriminant_lower_tail k hr hr'
+  dsimp only at hprob
+  rw [spectralDiscriminantDegree_eq_mul_pred] at hprob
+  refine (measure_mono ?_).trans hprob
+  rintro x ⟨hE,i,j,hij,hsmall⟩
+  change MvPolynomial.eval x (spectralDiscriminantPoly (chainPauliFin (k+3))) < _
+  rw [eval_spectralDiscriminantPoly (chainPauliFin_isHermitian (k+3))]
+  have h := abs_gap_product_le _ hB hE hij
+  have hs := pow_le_pow_left₀ (abs_nonneg _) h 2
+  rw [sq_abs] at hs
+  exact hs.trans_lt hsmall
+
+#print axioms gaussian_pauli_minimum_gap_lower_tail
 end
 end GaloisForLFunctions.HTGeometry

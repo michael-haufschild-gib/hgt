@@ -12,9 +12,12 @@ is a common rank-one term.
 noncomputable section
 open Finset Complex MeasureTheory Filter
 open scoped ComplexConjugate Topology
-open _root_.RHTower.Sieve (squarefreeDensity squarefreeDensity_pos)
+open _root_.RHTower.Sieve (squarefreeDensity)
 open GaloisForLFunctions.MultiscaleMollifiedZetaField
 namespace GaloisForLFunctions.ConjugateDiagonalGeometry.NearLineLogMean
+
+private theorem density_pos : 0 < squarefreeDensity := by
+  rw [_root_.RHTower.Sieve.squarefreeDensity_eq]; positivity
 
 /-- Time Gram entry for two independently translated copies of the same
 sharp critical-line polynomial, with logarithmic height coordinates. -/
@@ -27,8 +30,8 @@ private theorem gram_as_shift (X A L u v : ℝ) :
   let f := fun t => moebiusPoly ⌊X⌋₊ (linePoint (t+(u-v)/Real.log X))*conj (moebiusPoly ⌊X⌋₊ (linePoint t))
   have h := intervalIntegral.integral_comp_add_right (f:=f) (a:=A) (b:=A+L) (v/Real.log X)
   dsimp only [f] at h
-  rw [show ∀ t : ℝ,t+v/Real.log X+(u-v)/Real.log X=t+u/Real.log X by intro t;ring,
-    show A+L+v/Real.log X=A+v/Real.log X+L by ring] at h
+  simp only [show ∀ t : ℝ,t+v/Real.log X+(u-v)/Real.log X=t+u/Real.log X from fun t => by ring] at h
+  rw [show A+L+v/Real.log X=A+v/Real.log X+L by ring] at h
   exact congrArg (fun z : ℂ => z/(L:ℂ)) h
 
 /-- Uniform error for every pair of microscopic height translates. -/
@@ -85,7 +88,7 @@ theorem unitLogWindow_eq_zero_iff (v : ℝ) :
   obtain ⟨k,hk⟩ := Complex.exp_eq_one_iff.mp hv
   have him := congrArg Complex.im hk
   simp only [Complex.mul_im,Complex.ofReal_im,Complex.neg_re,Complex.ofReal_re,Complex.neg_im,
-    Complex.I_im,Complex.I_re,Complex.intCast_im,Complex.intCast_re,Complex.ofNat_re,Complex.ofNat_im,
+    Complex.I_im,Complex.I_re,Complex.intCast_im,Complex.intCast_re,Complex.re_ofNat,Complex.im_ofNat,
     mul_one,zero_mul,mul_zero,add_zero,zero_add,neg_zero] at him
   refine ⟨-k,?_,?_⟩
   · intro hzero
@@ -105,7 +108,7 @@ theorem microscopic_orthogonal_iff (A L : ℝ → ℝ) (hL : ∀ᶠ X in atTop,0
   rw [←unitLogWindow_eq_zero_iff]
   constructor
   · intro hz
-    exact (mul_eq_zero.mp (tendsto_nhds_unique h hz)).resolve_left (Complex.ofReal_ne_zero.mpr squarefreeDensity_pos.ne')
+    exact (mul_eq_zero.mp (tendsto_nhds_unique h hz)).resolve_left (Complex.ofReal_ne_zero.mpr density_pos.ne')
   · intro hz
     simpa only [hz,mul_zero] using h
 
@@ -125,7 +128,8 @@ theorem harmonic_gram_finite_part (A L : ℝ → ℝ) (hL : ∀ᶠ X in atTop,0<
   let u := (i:ℝ)*(2*Real.pi)
   let v := (j:ℝ)*(2*Real.pi)
   have hh : Tendsto (fun X : ℝ => (u-v)/Real.log X) atTop (𝓝 0) := by
-    simpa only [div_eq_mul_inv,mul_zero] using (tendsto_inv_atTop_zero.comp Real.tendsto_log_atTop).const_mul (u-v)
+    simpa only [div_eq_mul_inv,mul_zero,Function.comp_apply] using
+      (tendsto_inv_atTop_zero.comp Real.tendsto_log_atTop).const_mul (u-v)
   have ht := sharp_covariance_regular_part (fun X => A X+v/Real.log X) L _ hL hshort hh
   apply ht.congr'
   filter_upwards [eventually_gt_atTop (1:ℝ)] with X hX
@@ -152,8 +156,8 @@ theorem weighted_harmonic_gram_finite_part (S : Finset ℤ) (a b : ℤ → ℂ)
   have hs := tendsto_finsetSum S (fun i _ => tendsto_finsetSum S (fun j _ => ht i j))
   have hsum : (∑ i∈S,∑ j∈S,a i*conj (b j)*(squarefreeHarmonicConstant:ℂ))=
       (squarefreeHarmonicConstant:ℂ)*(∑ i∈S,a i)*conj (∑ j∈S,b j) := by
-    rw [map_sum,mul_sum,sum_mul]
-    exact sum_congr rfl fun i _ => by rw [mul_sum];exact sum_congr rfl fun j _ => by ring
+    rw [map_sum,mul_assoc,Finset.sum_mul_sum,Finset.mul_sum]
+    exact sum_congr rfl fun i _ => by rw [Finset.mul_sum];exact sum_congr rfl fun j _ => by ring
   rw [hsum] at hs
   apply hs.congr'
   apply Filter.Eventually.of_forall

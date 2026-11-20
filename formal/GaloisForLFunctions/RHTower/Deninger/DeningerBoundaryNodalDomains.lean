@@ -26,8 +26,9 @@ private theorem nodalLabel_continuousOn (q : ℕ) :
   intro z hz
   have hp : ContinuousAt (fun w : ℂ => w ^ q) z := by fun_prop
   have hz' : z ^ q ∈ Complex.slitPlane := hz
+  have hbase : ContinuousAt Complex.arg (z ^ q) := Complex.continuousAt_arg hz'
   have ha : ContinuousAt (fun w : ℂ => Complex.arg (w ^ q)) z :=
-    (Complex.continuousAt_arg hz').comp hp
+    hbase.comp_of_eq hp rfl
   have harg : ContinuousAt
       (fun w : ℂ => (((Complex.arg (w ^ q) / (q : ℝ) : ℝ) : ℂ) * Complex.I)) z :=
     (Complex.continuous_ofReal.continuousAt.comp (ha.div_const _)).mul_const _
@@ -71,35 +72,6 @@ private theorem pow_mem_slitPlane_iff (k : ℕ) (z : ℂ) :
     z ^ (2 * k) ∈ Complex.slitPlane ↔ (z ^ k).re ≠ 0 := by
   rw [Nat.mul_comm 2 k, pow_mul, square_mem_slitPlane_iff]
 
-/-- Connected subsets of the nonzero locus carry a single root label. -/
-private theorem nodalLabel_eq_on_preconnected {X : Type*} [TopologicalSpace X]
-    (u : C(X, ℂ)) (hu : ∀ x, ‖u x‖ = 1) (k : ℕ) (hk : k ≠ 0)
-    {s : Set X} (hs : IsPreconnected s) (hn : s ⊆ {x | (u x ^ k).re ≠ 0})
-    {x y : X} (hx : x ∈ s) (hy : y ∈ s) :
-    nodalLabel (2 * k) (u x) = nodalLabel (2 * k) (u y) := by
-  let q := 2 * k
-  let f := nodalLabel q ∘ u
-  let ζ := Complex.exp (2 * Real.pi * Complex.I / (q : ℂ))
-  have hq : q ≠ 0 := mul_ne_zero two_ne_zero hk
-  have hζ : IsPrimitiveRoot ζ q := Complex.isPrimitiveRoot_exp q hq
-  haveI : NeZero q := ⟨hq⟩
-  have hf : ContinuousOn f s :=
-    (nodalLabel_continuousOn q).comp u.continuous.continuousOn
-      (fun z hz => (pow_mem_slitPlane_iff k (u z)).mpr (hn hz))
-  have hb : f '' s ⊆ range (fun i : Fin q => ζ ^ (i : ℕ)) := by
-    rintro z ⟨v, _, rfl⟩
-    obtain ⟨i, hi, he⟩ := hζ.eq_pow_of_pow_eq_one (nodalLabel_pow hq (hu v))
-    exact ⟨⟨i, hi⟩, he⟩
-  have hfin := (Set.finite_range (fun i : Fin q => ζ ^ (i : ℕ))).subset hb
-  by_contra hne
-  exact ((hs.image f hf).infinite_of_nontrivial
-    ⟨f x, mem_image_of_mem f hx, f y, mem_image_of_mem f hy, hne⟩).not_finite hfin
-
-private theorem mFourier_pointwise_norm {d : Type*} [Fintype d]
-    (n : d → ℤ) (x : UnitAddTorus d) : ‖mFourier n x‖ = 1 := by
-  simp only [mFourier, fourier_apply, ContinuousMap.coe_mk, norm_prod, Circle.norm_coe,
-    Finset.prod_const_one]
-
 private theorem mFourier_nsmul_apply {d : Type*} [Fintype d] (k : ℕ)
     (n : d → ℤ) (x : UnitAddTorus d) : mFourier (k • n) x = mFourier n x ^ k := by
   induction k with
@@ -110,9 +82,66 @@ private theorem mFourier_nsmul_apply {d : Type*} [Fintype d] (k : ℕ)
 def deningerBoundaryNonzero {d : Type*} [Fintype d] (n : d → ℤ) : Set (UnitAddTorus d) :=
   {x | (mFourier n x).re ≠ 0}
 
-/-- A nonzero character raised to the `(k+1)`st power has at least `2(k+1)`
-connected nodal domains on the full torus. Witnesses lie on a single flow line,
-but equality of components is tested in the full nonzero locus. -/
+private def rootSample {d : Type*} [Fintype d] (lam : d → ℝ) (n : d → ℤ) {q : ℕ}
+    (i : Fin q) : UnitAddTorus d :=
+  deningerTorusFlow lam ((i : ℕ) / ((q : ℝ) * deningerFrequency n lam))
+
+private theorem rootSample_fourier {d : Type*} [Fintype d] (lam : d → ℝ) (n : d → ℤ)
+    (hfreq : deningerFrequency n lam ≠ 0) {q : ℕ} (hq : q ≠ 0) (i : Fin q) :
+    mFourier n (rootSample lam n i) =
+      Complex.exp (2 * Real.pi * Complex.I / (q : ℂ)) ^ (i : ℕ) := by
+  rw [rootSample, deningerMFourier_flow, ← Complex.exp_nat_mul]
+  congr 1
+  push_cast
+  have hqC : (q : ℂ) ≠ 0 := by exact_mod_cast hq
+  have hμC : (deningerFrequency n lam : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hfreq
+  field_simp [hqC, hμC]
+
+private theorem rootSample_mem_nonzero {d : Type*} [Fintype d] (lam : d → ℝ)
+    (n : d → ℤ) (k : ℕ) (i : Fin (2 * k))
+    (hroot : mFourier n (rootSample lam n i) ^ (2 * k) = 1) :
+    rootSample lam n i ∈ deningerBoundaryNonzero (k • n) := by
+  change (mFourier (k • n) (rootSample lam n i)).re ≠ 0
+  rw [mFourier_nsmul_apply]
+  apply (pow_mem_slitPlane_iff k (mFourier n (rootSample lam n i))).mp
+  rw [hroot]
+  exact Or.inl (by simp)
+
+/-- The full nodal nonzero locus splits by a continuous label onto exactly
+the `2(k+1)` roots of unity. Each fiber is a union of connected components. -/
+theorem deningerBoundaryNodalSheetPartition {d : Type*} [Fintype d]
+    (lam : d → ℝ) (n : d → ℤ) (hfreq : deningerFrequency n lam ≠ 0) (k : ℕ) :
+    let s := deningerBoundaryNonzero ((k + 1) • n)
+    let roots := {z : ℂ | z ^ (2 * (k + 1)) = 1}
+    ∃ f : UnitAddTorus d → ℂ, ContinuousOn f s ∧ MapsTo f s roots ∧ SurjOn f s roots := by
+  dsimp only
+  let q := 2 * (k + 1)
+  let ζ := Complex.exp (2 * Real.pi * Complex.I / (q : ℂ))
+  have hq : q ≠ 0 := by omega
+  haveI : NeZero q := ⟨hq⟩
+  have hζ : IsPrimitiveRoot ζ q := Complex.isPrimitiveRoot_exp q hq
+  refine ⟨nodalLabel q ∘ mFourier n, (nodalLabel_continuousOn q).comp
+    (mFourier n).continuous.continuousOn ?_, ?_, ?_⟩
+  · intro y hy
+    apply (pow_mem_slitPlane_iff (k + 1) (mFourier n y)).mpr
+    simpa only [deningerBoundaryNonzero, Set.mem_setOf_eq, mFourier_nsmul_apply] using hy
+  · intro y _
+    exact nodalLabel_pow hq (by
+      simp only [mFourier, fourier_apply, ContinuousMap.coe_mk, norm_prod, Circle.norm_coe,
+        Finset.prod_const_one])
+  · intro z hz
+    have hzq : z ^ q = 1 := hz
+    obtain ⟨j, hj, hpow⟩ := hζ.eq_pow_of_pow_eq_one hzq
+    let i : Fin q := ⟨j, hj⟩
+    have hx : mFourier n (rootSample lam n i) = z :=
+      (rootSample_fourier lam n hfreq hq i).trans hpow
+    have hroot : mFourier n (rootSample lam n i) ^ q = 1 := by rw [hx, hzq]
+    refine ⟨rootSample lam n i, rootSample_mem_nonzero lam n (k + 1) i hroot, ?_⟩
+    change nodalLabel q (mFourier n (rootSample lam n i)) = z
+    rw [nodalLabel_eq_of_pow_eq_one hroot, hx]
+
+/-- Raising a nonzero character to the `(k+1)`st power gives at least
+`2(k+1)` connected nodal domains on the full torus. -/
 theorem deningerBoundaryDistinctNodalDomains {d : Type*} [Fintype d]
     (lam : d → ℝ) (n : d → ℤ) (hfreq : deningerFrequency n lam ≠ 0) (k : ℕ) :
     ∃ x : Fin (2 * (k + 1)) → UnitAddTorus d,
@@ -120,49 +149,39 @@ theorem deningerBoundaryDistinctNodalDomains {d : Type*} [Fintype d]
       Function.Injective (fun i =>
         connectedComponentIn (deningerBoundaryNonzero ((k + 1) • n)) (x i)) := by
   let q := 2 * (k + 1)
-  let μ := deningerFrequency n lam
   let ζ := Complex.exp (2 * Real.pi * Complex.I / (q : ℂ))
-  have hq : q ≠ 0 := by omega
-  have hqC : (q : ℂ) ≠ 0 := by exact_mod_cast hq
-  have hζ : IsPrimitiveRoot ζ q := Complex.isPrimitiveRoot_exp q hq
-  let x (i : Fin q) := deningerTorusFlow lam ((i : ℕ) / ((q : ℝ) * μ))
-  have hx (i : Fin q) : mFourier n (x i) = ζ ^ (i : ℕ) := by
-    rw [show x i = deningerTorusFlow lam ((i : ℕ) / ((q : ℝ) * μ)) from rfl,
-      deningerMFourier_flow, show ζ = Complex.exp (2 * Real.pi * Complex.I / (q : ℂ)) from rfl,
-      ← Complex.exp_nat_mul]
-    congr 1
-    change ((2 * Real.pi * μ * ((i : ℕ) / ((q : ℝ) * μ)) : ℝ) : ℂ) *
-        Complex.I = _
-    push_cast
-    have hμC : (μ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hfreq
-    field_simp [hqC, hμC]
-    ring
-  have hroot (i : Fin q) : mFourier n (x i) ^ q = 1 := by
-    rw [hx i, ← pow_mul, Nat.mul_comm (i : ℕ) q, pow_mul, hζ.pow_eq_one, one_pow]
   let s := deningerBoundaryNonzero ((k + 1) • n)
-  have hs (i : Fin q) : x i ∈ s := by
-    change (mFourier ((k + 1) • n) (x i)).re ≠ 0
-    rw [mFourier_nsmul_apply]
-    apply (pow_mem_slitPlane_iff (k + 1) (mFourier n (x i))).mp
-    change mFourier n (x i) ^ q ∈ Complex.slitPlane
-    rw [hroot i]
-    exact Or.inl (by simp)
+  have hq : q ≠ 0 := by omega
+  haveI : NeZero q := ⟨hq⟩
+  have hζ : IsPrimitiveRoot ζ q := Complex.isPrimitiveRoot_exp q hq
+  obtain ⟨f, hcont, hmap, hsurj⟩ := deningerBoundaryNodalSheetPartition lam n hfreq k
+  have hsample (i : Fin q) : ∃ x ∈ s, f x = ζ ^ (i : ℕ) := by
+    apply hsurj
+    change (ζ ^ (i : ℕ)) ^ q = 1
+    rw [← pow_mul, Nat.mul_comm (i : ℕ) q, pow_mul, hζ.pow_eq_one, one_pow]
+  choose x hs hx using hsample
   refine ⟨x, hs, ?_⟩
   intro i j hij
+  change connectedComponentIn s (x i) = connectedComponentIn s (x j) at hij
+  let D := connectedComponentIn s (x i)
+  have hDs : D ⊆ s := connectedComponentIn_subset s (x i)
   have hi : x i ∈ connectedComponentIn s (x i) := mem_connectedComponentIn (hs i)
   have hj : x j ∈ connectedComponentIn s (x i) := by
     rw [hij]
     exact mem_connectedComponentIn (hs j)
-  have hsub : connectedComponentIn s (x i) ⊆ {y | (mFourier n y ^ (k + 1)).re ≠ 0} := by
-    intro y hy
-    simpa only [s, deningerBoundaryNonzero, Set.mem_setOf_eq, mFourier_nsmul_apply]
-      using connectedComponentIn_subset s (x i) hy
-  have hlabel :=
-    nodalLabel_eq_on_preconnected (mFourier n) (mFourier_pointwise_norm n)
-      (k + 1) (Nat.succ_ne_zero k) isPreconnected_connectedComponentIn hsub hi hj
-  change nodalLabel q (mFourier n (x i)) = nodalLabel q (mFourier n (x j)) at hlabel
-  rw [nodalLabel_eq_of_pow_eq_one (hroot i), nodalLabel_eq_of_pow_eq_one (hroot j),
-    hx i, hx j] at hlabel
+  have hsub : f '' D ⊆ range (fun l : Fin q => ζ ^ (l : ℕ)) := by
+    rintro _ ⟨y, hy, rfl⟩
+    have hp : f y ^ q = 1 := hmap (hDs hy)
+    obtain ⟨l, hl, he⟩ := hζ.eq_pow_of_pow_eq_one hp
+    exact ⟨⟨l, hl⟩, he⟩
+  have hconn : IsPreconnected (f '' D) :=
+    isPreconnected_connectedComponentIn.image f (hcont.mono hDs)
+  have hlabel : f (x i) = f (x j) := by
+    by_contra hne
+    exact (hconn.infinite_of_nontrivial
+      ⟨_, mem_image_of_mem f hi, _, mem_image_of_mem f hj, hne⟩).not_finite
+      ((Set.finite_range _).subset hsub)
+  rw [hx i, hx j] at hlabel
   exact Fin.ext (hζ.pow_inj i.isLt j.isLt hlabel)
 
 /-- The outward radial derivative of the real cylinder mode is the boundary
@@ -251,6 +270,7 @@ theorem deningerTwoPrime_small_frequency_many_nodal_domains (ε : Ioi (0 : ℝ))
     exact (lt_div_iff₀ hd).mp hsmall
 
 #print axioms deningerBoundaryDistinctNodalDomains
+#print axioms deningerBoundaryNodalSheetPartition
 #print axioms deningerCylinder_real_conormal
 #print axioms deningerTwoPrime_small_frequency_many_nodal_domains
 

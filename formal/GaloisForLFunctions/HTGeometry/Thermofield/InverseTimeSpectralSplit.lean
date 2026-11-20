@@ -23,6 +23,7 @@ variable {α : Type*} [Fintype α] [DecidableEq α] [Nonempty α]
 def inverseTimeSpectrum (E F : α → ℝ) (τ T : ℝ) (i : α) : ℝ :=
   E i + (τ / T) * F i
 
+omit [DecidableEq α] [Nonempty α] in
 private theorem replicaMultiplicityEnergy_inverseTimeSpectrum
     (E F : α → ℝ) (τ T : ℝ) (p : α → ℕ) :
     replicaMultiplicityEnergy (inverseTimeSpectrum E F τ T) p =
@@ -56,22 +57,22 @@ private theorem tendsto_symmetricPhaseAverage_inverseTime (a b τ : ℝ) :
   refine (tendsto_congr' hrepr).mpr ?_
   by_cases ha : a = 0
   · subst a
-    simpa only [mul_zero, zero_add, if_pos rfl] using
+    simpa only [mul_zero, zero_add, if_pos rfl, if_true] using
       (tendsto_const_nhds : Tendsto (fun _ : ℝ => (Real.sinc (τ * b) : ℂ)) atTop
         (𝓝 (Real.sinc (τ * b) : ℂ)))
   · simp only [if_neg ha]
     have h := Complex.continuous_ofReal.continuousAt.tendsto.comp
       (tendsto_sinc_affine_nonzero a (τ * b) ha)
-    simpa only [Function.comp_apply, Complex.ofReal_zero] using h
+    simpa only [Function.comp_def, Complex.ofReal_zero] using h
 
+omit [Fintype α] [DecidableEq α] [Nonempty α] in
 private theorem tendsto_inverseTimeSpectrum (E F : α → ℝ) (τ : ℝ) :
     Tendsto (inverseTimeSpectrum E F τ) atTop (𝓝 E) := by
   refine tendsto_pi_nhds.mpr fun i => ?_
   have h := (tendsto_inv_atTop_zero.const_mul τ).mul_const (F i)
-  have h' := tendsto_const_nhds.add h
-  simpa only [inverseTimeSpectrum, div_eq_mul_inv, mul_zero, zero_mul, add_zero] using
-    (h' : Tendsto (fun T : ℝ => E i + τ * T⁻¹ * F i) atTop
-      (𝓝 (E i + τ * 0 * F i)))
+  have h' : Tendsto (fun T : ℝ => E i + τ * T⁻¹ * F i) atTop
+      (𝓝 (E i + τ * 0 * F i)) := tendsto_const_nhds.add h
+  simpa only [inverseTimeSpectrum, div_eq_mul_inv, mul_zero, zero_mul, add_zero] using h'
 
 omit [DecidableEq α] [Nonempty α] in
 private theorem continuous_replicaMultiplicityWeight (p q : α → ℕ) :
@@ -126,6 +127,7 @@ theorem thermalReplicaMean_tendsto_inverseTimeSpectrum
     show ∀ a b c d e : ℝ, a + e * b - (c + e * d) = (a - c) + e * (b - d)
       by intros; ring] using h
 
+omit [Nonempty α] in
 /-- At zero splitting, the crossover is the original Gibbs collision mass. -/
 theorem thermalReplicaCrossover_zero (β : ℝ) (E F : α → ℝ) (n : ℕ) :
     thermalReplicaCrossover β E F n 0 =
@@ -134,6 +136,26 @@ theorem thermalReplicaCrossover_zero (β : ℝ) (E F : α → ℝ) (n : ℕ) :
   simp only [thermalReplicaCrossover, fidelityReplicaResonantMass, zero_mul, Real.sinc_zero,
     Complex.ofReal_one, mul_one, Complex.ofReal_sum, apply_ite, Complex.ofReal_zero]
 
+omit [Nonempty α] in
+/-- A flat coarse spectrum leaves the entire fine-spectrum return at the
+scaled window size, with the Gibbs weights of the flat state. -/
+theorem thermalReplicaCrossover_flat (β e : ℝ) (F : α → ℝ) (n : ℕ) (τ : Set.Ioi (0 : ℝ)) :
+    thermalReplicaCrossover β (fun _ => e) F n τ =
+      finiteSpectralSurvivalFidelityMean (finiteGibbsStateWeight β (fun _ => e)) F n τ := by
+  have hτ : 0 < (τ : ℝ) := τ.2
+  rw [finiteSpectralSurvivalFidelityMean_eq_replicaPhaseAverage, thermalReplicaCrossover]
+  apply Finset.sum_congr rfl
+  intro p hp
+  apply Finset.sum_congr rfl
+  intro q hq
+  have henergy (m : α → ℕ) (hm : m ∈ Finset.univ.piAntidiag n) :
+      replicaMultiplicityEnergy (fun _ => e) m = (n : ℝ) * e := by
+    rw [replicaMultiplicityEnergy, ← Finset.sum_mul]
+    congr 1
+    exact_mod_cast (Finset.mem_piAntidiag.mp hm).1
+  rw [henergy p hp, henergy q hq, if_pos rfl, symmetricPhaseAverage_eq_sinc _ _ hτ.ne']
+
+omit [Nonempty α] in
 /-- Further dephasing of the resolved profile retains precisely the replica
 pairs resonant at both scales. -/
 theorem thermalReplicaCrossover_tendsto_jointCollision (β : ℝ) (E F : α → ℝ) (n : ℕ) :
