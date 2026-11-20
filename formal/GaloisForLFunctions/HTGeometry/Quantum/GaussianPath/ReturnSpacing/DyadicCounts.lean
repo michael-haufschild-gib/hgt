@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.ReturnSpacing.PairedR
 
 /-! # Simultaneous isolated-field counts across dyadic scales -/
 open MeasureTheory ProbabilityTheory Filter Set
-open scoped Classical
+open scoped Classical ENNReal
 namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
@@ -14,7 +14,7 @@ private abbrev Block := PathPauliBlockLabel → ℝ
 isolated-field boxes eventually almost surely on a single infinite sample. -/
 theorem gaussian_pauli_dyadic_box_counts :
     ∃ c : ℝ, 0 < c ∧ ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ j : ℕ in atTop,
-      let k := 2^j
+      let k : ℕ := 2^j
       c*(k:ℝ)^24 ≤ (((Finset.range (k^48)).filter
         (fun i => pathPauliBlock ω i ∈ isolatedFieldBox k)).card : ℝ) := by
   let μ : Measure Block := Measure.infinitePi fun _ => gaussianReal 0 1
@@ -28,7 +28,7 @@ theorem gaussian_pauli_dyadic_box_counts :
       d/2*(k:ℝ)^24}
   have hrisk (j : ℕ) : ν (bad j) ≤ ENNReal.ofReal (4/d)*(2:ℝ≥0∞)⁻¹^j := by
     let k : ℕ := 2^j
-    have hk : 1 ≤ (k:ℝ) := by exact_mod_cast (show 1 ≤ 2^j by positivity)
+    have hk : 1 ≤ (k:ℝ) := by exact_mod_cast (show 1 ≤ 2^j from Nat.succ_le_of_lt (pow_pos (by decide : 0 < (2:ℕ)) _))
     have hkp : 0 < (k:ℝ) := zero_lt_one.trans_le hk
     have hm : d*(k:ℝ)^24 ≤ ((k^48:ℕ):ℝ)*μ.real (isolatedFieldBox k) := by
       have h := hmass k hk
@@ -52,7 +52,7 @@ theorem gaussian_pauli_dyadic_box_counts :
       have hlow := (mul_le_mul_of_nonneg_left hkpow hd.le).trans hm
       calc
         _ ≤ 4/(d*(k:ℝ)) := div_le_div_of_nonneg_left (by norm_num) (mul_pos hd hkp) hlow
-        _ = (4/d)*(2⁻¹:ℝ)^j := by simp [k,div_eq_mul_inv,mul_assoc]
+        _ = (4/d)*(2⁻¹:ℝ)^j := by simp [k,div_eq_mul_inv,mul_assoc,mul_comm,mul_left_comm]
     refine (ENNReal.ofReal_le_ofReal hr).trans_eq ?_
     rw [ENNReal.ofReal_mul (by positivity),ENNReal.ofReal_pow (by norm_num),
       ENNReal.ofReal_inv_of_pos (by norm_num : (0:ℝ)<2)]

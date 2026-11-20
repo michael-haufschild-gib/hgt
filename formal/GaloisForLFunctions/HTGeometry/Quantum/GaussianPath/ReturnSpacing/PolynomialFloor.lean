@@ -75,7 +75,7 @@ theorem gaussian_pauli_polynomial_interval_cost_floor :
   filter_upwards [hω,tendsto_isolatedFieldScaleIndex.eventually hsitesω,hbig] with n hshort hmany hbig
   let N := n+2
   let k : ℕ := 2^isolatedFieldScaleIndex n
-  have hk : 1 ≤ (k:ℝ) := by exact_mod_cast (show 1 ≤ 2^isolatedFieldScaleIndex n by positivity)
+  have hk : 1 ≤ (k:ℝ) := by exact_mod_cast (show 1 ≤ 2^isolatedFieldScaleIndex n from Nat.succ_le_of_lt (pow_pos (by decide : 0 < (2:ℕ)) _))
   obtain ⟨hfit,hsqrt,hroot⟩ := isolatedFieldScale_bounds n
   obtain ⟨S,hS,his⟩ := hmany n hfit
   have hlarge : 32*Real.pi ≤ b*(k:ℝ)^23 := by

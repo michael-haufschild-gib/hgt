@@ -1,5 +1,8 @@
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.MaximumOccupation
 import GaloisForLFunctions.HTGeometry.Quantum.TranslatedCircuitExcursion
 import GaloisForLFunctions.HTGeometry.ContinuousCircuitCompletedOccupationLaw
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPauliFirstThreshold
+import GaloisForLFunctions.HTGeometry.OnsetRecurrenceIndependence
 
 /-!
 # Recurrence of the actual maximum physical circuit cost
@@ -256,6 +259,63 @@ theorem gaussianPath_attained_circuit_maximum_and_permanent_locality :
   exact (not_lt_of_ge he) (hu u ⟨le_rfl,le_add_of_nonneg_right hw⟩ c hc C (hC.trans h))
 
 #print axioms gaussianPath_attained_circuit_maximum_and_permanent_locality
+
+
+/-- On every static two-local orbit let m be its actual maximum at error 1/10.
+At error 1/20, budgets strictly below half of m occupy at most half of every
+long interval, uniformly in its origin. The same additive constant works for
+all such budgets. -/
+theorem twoLocal_actual_maximum_and_half_occupation {n : ℕ} (hn : 2 ≤ n)
+    (H : selfAdjoint (Reg n)) (hloc : HasPauliWeightAtMost (Fin n) 2 H) :
+    ∃ m : ℕ, IsRecurrentOrbitCircuitMaximum H m ∧ ∃ u : ℝ, 0 ≤ u ∧
+      ∀ s : ℕ, 2*s < m → ∀ a T : ℝ, 0 ≤ T →
+        2*volume.real ({t | HasProjectiveCircuitApproximation n (1/20:ℝ) s
+          (unitaryEvolution H.val t)} ∩ Icc a (a+T)) ≤ T+u := by
+  obtain ⟨m,hm⟩ := orbit_maximum_of_budget H (exists_uniform_orbit_gate_budget hn H hloc)
+  obtain ⟨G,w,_,hw,hvisit⟩ := hm.2
+  obtain ⟨u,hu,hfloor⟩ := hvisit 0
+  refine ⟨m,hm,u,hu.1,?_⟩
+  intro s hs
+  apply affordable_time_le_half_of_hard_lag H u hu.1
+  intro z hz C hC
+  by_contra! he
+  have hc := hfloor u ⟨le_rfl,le_add_of_nonneg_right hw.le⟩ z hz C he
+  omega
+
+#print axioms twoLocal_actual_maximum_and_half_occupation
+
+
+/-- Along one Gaussian chain the maximum at error 1/10 exceeds the exponential
+budget on every sufficiently long prefix. At error 1/20, less than half that
+actual maximum is affordable on at most half of a long interval. -/
+theorem gaussian_pauli_prefix_maximum_and_half_occupation :
+    ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ k : ℕ in Filter.atTop,
+      let N := k+3
+      let h := pathPauliDisorderShell ω (k+1)
+      let H : selfAdjoint (Reg N) := ⟨pathHamiltonian h,isSelfAdjoint_pathHamiltonian h⟩
+      ∃ m > nearHilbertContinuousCircuitBudget N, IsRecurrentOrbitCircuitMaximum H m ∧
+        ∃ u : ℝ, 0 ≤ u ∧ ∀ s : ℕ, 2*s < m → ∀ a T : ℝ, 0 ≤ T →
+          2*volume.real ({t | HasProjectiveCircuitApproximation N (1/20:ℝ) s
+            (unitaryEvolution H.val t)} ∩ Icc a (a+T)) ≤ T+u := by
+  obtain ⟨_,_,hw⟩ := gaussian_pauli_prefix_first_threshold_and_return
+  filter_upwards [hw] with ω hω
+  filter_upwards [hω] with k hk
+  let N := k+3
+  let h := pathPauliDisorderShell ω (k+1)
+  let H : selfAdjoint (Reg N) := ⟨pathHamiltonian h,isSelfAdjoint_pathHamiltonian h⟩
+  obtain ⟨m,hm,hocc⟩ := twoLocal_actual_maximum_and_half_occupation (by dsimp [N]; omega : 2 ≤ N) H
+    (hasPauliWeightAtMost_pathHamiltonian h (isSelfAdjoint_pathHamiltonian h))
+  obtain ⟨σ,_,hcross,_⟩ := hk
+  refine ⟨m,?_,hm,hocc⟩
+  by_contra! hsmall
+  obtain ⟨z,hz,C,hC,he⟩ := hm.1 σ
+  have hx := (hasProjectiveCircuitApproximation_iff_infDist (unitaryEvolution H.val σ)
+    (nearHilbertContinuousCircuitBudget N) (1/10:ℝ)).mp ⟨z,hz,C,hC.trans hsmall,he⟩
+  change orbitCircuitDistance H (nearHilbertContinuousCircuitBudget N) σ ≤ 1/10 at hx
+  change orbitCircuitDistance H (nearHilbertContinuousCircuitBudget N) σ = 9/80 at hcross
+  linarith only [hx,hcross]
+
+#print axioms gaussian_pauli_prefix_maximum_and_half_occupation
 
 end
 end GaloisForLFunctions.HTGeometry

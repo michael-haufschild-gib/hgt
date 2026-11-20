@@ -417,7 +417,7 @@ lemma KK_le_ker (k : ℕ) : KK (k + 3) ≤ (psi k).ker := by
     rw [QuotientGroup.mk_pow]; simpa using hq
   have hm := QuotientGroup.eq.1 hq'
   have hsq : ∀ x : ℤˣ × ℤˣ × ℤˣ, x ^ 2 = 1 := fun x =>
-    Prod.ext (by simp [Int.units_sq]) (Prod.ext (by simp [Int.units_sq]) (by simp [Int.units_sq]))
+    Prod.ext (Int.units_sq x.1) (Prod.ext (Int.units_sq x.2.1) (Int.units_sq x.2.2))
   rw [MonoidHom.mem_ker]
   rcases mem_zpowers_JJ hm with h1 | h1
   · rw [← inv_mul_eq_one.1 h1, map_pow, hsq]

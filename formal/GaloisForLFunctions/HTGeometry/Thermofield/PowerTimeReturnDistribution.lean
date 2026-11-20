@@ -43,7 +43,8 @@ def gibbsWindowReturnDistribution (β : ℝ) (E : α → ℝ) (T : ℝ) :
 omit [DecidableEq α] in
 /-- The window distribution has exactly the finite replica return moments. -/
 theorem gibbsWindowReturnDistribution_moment (β : ℝ) (E : α → ℝ) (T : Ioi (0 : ℝ)) (n : ℕ) :
-    (∫ x, ((x : ℝ) ^ n) ∂(gibbsWindowReturnDistribution β E T : Measure _)) =
+    (∫ x : RHTower.SpectralReturnFidelityInterval, (x : ℝ) ^ n
+      ∂(gibbsWindowReturnDistribution β E T : Measure RHTower.SpectralReturnFidelityInterval)) =
       (finiteSpectralSurvivalFidelityMean (finiteGibbsStateWeight β E) E n T).re := by
   rw [gibbsWindowReturnDistribution,
     RHTower.integral_pow_centeredSpectralReturnProbabilityMeasure (gibbsEnergyMeasure β E) n T.2]
@@ -60,7 +61,8 @@ theorem existsUnique_gibbsPowerTimeReturnDistribution (β τ : ℝ) (E F : α �
     ∃! law : ProbabilityMeasure RHTower.SpectralReturnFidelityInterval,
       Tendsto (fun T => gibbsWindowReturnDistribution β (powerTimeSpectrum E F τ γ T) T)
         atTop (𝓝 law) ∧
-      ∀ n : ℕ, (∫ x, ((x : ℝ) ^ n) ∂(law : Measure _)) =
+      ∀ n : ℕ, (∫ x : RHTower.SpectralReturnFidelityInterval, (x : ℝ) ^ n
+        ∂(law : Measure RHTower.SpectralReturnFidelityInterval)) =
         (powerTimeReplicaLimit β τ E F γ n).re := by
   let μ := fun T : ℝ => gibbsWindowReturnDistribution β (powerTimeSpectrum E F τ γ T) T
   let I := RHTower.SpectralReturnFidelityInterval
@@ -77,8 +79,12 @@ theorem existsUnique_gibbsPowerTimeReturnDistribution (β τ : ℝ) (E F : α �
       hfrequent
   have hvalue (n : ℕ) : (∫ x : I, (x : ℝ) ^ n ∂(law : Measure I)) =
       (powerTimeReplicaLimit β τ E F γ n).re := by
-    have hc := continuous_integral_real_continuousMap (RHTower.spectralReturnMomentContinuousMap n)
-    exact eq_of_mapClusterPt_of_tendsto (hcluster.continuousAt_comp hc.continuousAt) (hmoment n)
+    have hc : Continuous (fun ν : ProbabilityMeasure I => ∫ x : I, (x : ℝ) ^ n ∂(ν : Measure I)) :=
+      continuous_integral_real_continuousMap (RHTower.spectralReturnMomentContinuousMap n)
+    have hcl : MapClusterPt (∫ x : I, (x : ℝ) ^ n ∂(law : Measure I)) atTop
+        (fun T : ℝ => ∫ x : I, (x : ℝ) ^ n ∂(μ T : Measure I)) :=
+      hcluster.continuousAt_comp hc.continuousAt
+    exact eq_of_mapClusterPt_of_tendsto hcl (hmoment n)
   have htend : Tendsto μ atTop (𝓝 law) := by
     apply probabilityMeasure_tendsto_of_integral_pow_tendsto
     intro n

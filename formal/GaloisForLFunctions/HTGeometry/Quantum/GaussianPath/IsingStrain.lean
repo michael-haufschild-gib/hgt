@@ -38,7 +38,7 @@ theorem exists_right_affine_minimizer {ι : Type*} [Fintype ι] [Nonempty ι]
   by_cases h : a j = a i
   · filter_upwards [self_mem_nhdsWithin (a := (0 : ℝ)) (s := Set.Ici 0)] with t ht
     rw [h]
-    exact add_le_add_left (mul_le_mul_of_nonneg_left (hslope j h) ht) _
+    exact add_le_add le_rfl (mul_le_mul_of_nonneg_left (hslope j h) ht)
   · have hgap : a i + (0 : ℝ) * b i < a j + 0 * b j := by
       simpa only [zero_mul, add_zero] using lt_of_le_of_ne (hmin j) (Ne.symm h)
     have hleft : ContinuousAt (fun t : ℝ => a i + t * b i) 0 :=
