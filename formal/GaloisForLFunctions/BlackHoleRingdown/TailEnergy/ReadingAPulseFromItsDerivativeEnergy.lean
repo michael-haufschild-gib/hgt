@@ -46,8 +46,8 @@ private theorem unit_field_change (h : CompactPulse) {C σ t : ℝ} (ht : 0≤t)
   have hi := intervalIntegral.integral_mono_on (μ := volume) hle ((continuous_const.mul hcont).intervalIntegrable ..)
     ((continuous_const.add (hcont.pow 2)).intervalIntegrable ..) (fun u _ => hpt u)
   simp only [Pi.mul_apply, Pi.add_apply, Pi.pow_apply] at hi
-  rw [intervalIntegral.integral_const_mul,intervalIntegral.integral_add intervalIntegrable_const
-    ((hcont.pow 2).intervalIntegrable ..),intervalIntegral.integral_const,smul_eq_mul,
+  rw [intervalIntegral.integral_const_mul,intervalIntegral.integral_add (f := fun _ => L^2)
+    (g := fun u => ‖pulseReflected h.D u‖^2) intervalIntegrable_const ((hcont.pow 2).intervalIntegrable _ _),intervalIntegral.integral_const,smul_eq_mul,
     show t+1-t=1 by ring,one_mul] at hi
   have he := hE t ht
   have hs : stepDecrement h.D t 1 ≤ tailEnergy h.D t := by

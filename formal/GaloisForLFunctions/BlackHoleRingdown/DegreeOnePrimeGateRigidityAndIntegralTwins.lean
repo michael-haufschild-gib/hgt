@@ -679,7 +679,8 @@ theorem flippedEchoKernel_causal_and_laplace {p : ℕ} (hp : p.Prime) :
       by_cases hqp : q = p₀
       · subst hqp
         rw [if_pos (rfl : (p₀ : ℕ) = p), if_pos (rfl : p₀ = p₀), ← zetaLocalGate_primeEchoGate]
-        dsimp only [p₀, flippedGateRatio, zetaLocalGate, flippedLocalGate]
+        change flippedLocalGate p v = flippedGateRatio p v * zetaLocalGate p v
+        dsimp only [flippedGateRatio, zetaLocalGate, flippedLocalGate]
         have h1v : 1 - v ≠ 0 := sub_ne_zero.mpr fun h => by
           rw [← h, norm_one] at hv_norm; exact lt_irrefl _ hv_norm
         have hd := hden_ne v hv_lt_p

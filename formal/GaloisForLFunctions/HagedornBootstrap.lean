@@ -16,3 +16,5 @@ import GaloisForLFunctions.HagedornBootstrap.BesselSeries
 import GaloisForLFunctions.HagedornBootstrap.ZeroLawAndDeficit
 import GaloisForLFunctions.HagedornBootstrap.CrossingKernelFourier
 import GaloisForLFunctions.HagedornBootstrap.CurieWeissTwin
+import GaloisForLFunctions.HagedornBootstrap.EdgeRootAndKernel
+import GaloisForLFunctions.HagedornBootstrap.HagedornPole

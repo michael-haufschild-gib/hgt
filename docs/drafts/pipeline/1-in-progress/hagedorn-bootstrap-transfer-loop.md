@@ -24,6 +24,8 @@ Lean folder: formal/GaloisForLFunctions/HagedornBootstrap/ ; umbrella formal/Gal
 - ZeroLawAndDeficit
 - CrossingKernelFourier
 - CurieWeissTwin
+- EdgeRootAndKernel
+- HagedornPole
 
 ## Contribution count
-219
+236
