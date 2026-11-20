@@ -62,6 +62,7 @@ theorem arithmeticSqKernel_mem_hardy {n : ℕ} (hN : 4 ≤ n+1) (h : modulusGRH 
     {a : ℝ} (ha : 0 < a) (hab : a ≤ 1/8) (f : Lp ℂ 2 (boundaryMeasure a (1/8))) :
     (arithmeticSqKernel hN h ha hab).op f ∈ hardySpace a (1/8) := by
   let H := hardySpace a (1/8)
+  change (arithmeticSqKernel hN h ha hab).op f ∈ H
   rw [← H.orthogonal_orthogonal,H.orthogonal.mem_orthogonal]
   intro v hv
   rw [← arithmeticSqKernel_symmetric hN h ha hab v f,arithmeticSqKernel_zero_orthogonal hN h ha hab hv,
@@ -84,21 +85,7 @@ theorem hardyOperator_form {n : ℕ} (hN : 4 ≤ n+1) (h : modulusGRH (n+1)) {a 
   rw [he,hp,← H.adjoint_subtypeL,H.subtypeL.adjoint_inner_right]
   rfl
 
-theorem hardyOperator_form_bound {n : ℕ} (hN : 4 ≤ n+1) (h : modulusGRH (n+1)) {a : ℝ}
-    (ha : 0 < a) (hab : a ≤ 1/8) (f : Lp ℂ 2 (boundaryMeasure a (1/8))) :
-    ‖⟪f,(arithmeticSqKernel hN h ha hab).op f⟫_ℂ‖ ≤ ‖hardyOperator hN h ha hab‖ * ‖f‖^2 := by
-  rw [hardyOperator_form]
-  let p := (hardySpace a (1/8)).orthogonalProjectionOnto f
-  let T := hardyOperator hN h ha hab
-  calc
-    ‖⟪p,T p⟫_ℂ‖ ≤ ‖p‖*‖T p‖ := norm_inner_le_norm _ _
-    _ ≤ ‖f‖*(‖T‖*‖f‖) := by
-      have hp := (hardySpace a (1/8)).norm_orthogonalProjectionOnto_apply_le f
-      exact mul_le_mul hp ((T.le_opNorm p).trans (mul_le_mul_of_nonneg_left hp (norm_nonneg _)))
-        (norm_nonneg _) (norm_nonneg _)
-    _ = _ := by ring
-
 #print axioms arithmeticSqKernel_mem_hardy
-#print axioms hardyOperator_form_bound
+#print axioms hardyOperator_form
 end
 end GaloisForLFunctions.Goldbach.LiLiu

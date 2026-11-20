@@ -68,8 +68,14 @@ theorem charpoly_partialTransposeOn_chargeDifference {A : Type*} [AddCommGroup A
     (S : Finset σ) (w : σ → A) (f : A → ℂ) :
     (partialTransposeOn S (chargeDifferenceMatrix w f)).charpoly =
       (chargeDifferenceMatrix w f).charpoly := by
+  let M := chargeDifferenceMatrix w f
+  let e : Equiv.Perm (σ → Bool) := (flipEquiv S).symm
+  have he : M.submatrix (flipBits S) (flipBits S) = Matrix.reindex e e M := by
+    ext x y
+    rfl
   rw [partialTransposeOn_chargeDifference]
-  exact Matrix.charpoly_reindex (flipEquiv S).symm _
+  change (M.submatrix (flipBits S) (flipBits S)).charpoly = M.charpoly
+  rw [he, Matrix.charpoly_reindex]
 
 /-- Positivity of this kernel is equivalent to positivity of any partial transpose. -/
 theorem partialTransposeOn_chargeDifference_posSemidef_iff {A : Type*} [AddCommGroup A]
@@ -112,7 +118,8 @@ theorem cauchyChargeState_ppt (w : σ → ℝ) (S : Finset σ) :
   have hp := (CauchyDephasing.symbol_posSemidef r).submatrix e
   have he : chargeDifferenceMatrix w
       (fun d => ((Fintype.card (σ → Bool) : ℝ)⁻¹ * (Real.cosh (d / 2))⁻¹ : ℝ)) =
-      ((Fintype.card (σ → Bool) : ℝ)⁻¹ : ℂ) • (CauchyDephasing.symbol r).submatrix e e := by
+      Complex.ofReal ((Fintype.card (σ → Bool) : ℝ)⁻¹) •
+        (CauchyDephasing.symbol r).submatrix e e := by
     ext x y
     simp only [chargeDifferenceMatrix, Matrix.smul_apply, smul_eq_mul,
       Matrix.submatrix_apply, CauchyDephasing.symbol, r, Function.comp_apply,

@@ -28,7 +28,7 @@ private theorem floor_between_one_and_scale {n : ℕ} (u : PathShell n)
   have hp : 0 < p := div_pos hL hN
   have hq : 0 < q := by dsimp [q]; positivity
   have hpN : p*N = L := div_mul_cancel₀ _ hN.ne'
-  have hqL : q*L = c*k^23/8 := by dsimp [q,L]; field_simp; ring
+  have hqL : q*L = c*k^23/8 := by dsimp [q,L]; field_simp [hkpos.ne']; ring
   have hl : c*k^23 ≤ L := by
     dsimp [L]
     exact mul_le_mul_of_nonneg_left (pow_le_pow_right₀ hk (by decide : 23 ≤ 24)) hc.le
@@ -41,7 +41,7 @@ private theorem floor_between_one_and_scale {n : ℕ} (u : PathShell n)
       _ = _ := by rw [← hpN]; ring
   have hend : q*t ≤ 1/8 := by
     apply (mul_le_mul_of_nonneg_left htk hq.le).trans_eq
-    dsimp [q]; field_simp
+    dsimp [q]; field_simp [hkpos.ne']
   have hf := isolated_sites_uniform_circuit_floor u q p hq hp S (hpN.le.trans hS) his h8 t
     (zero_lt_one.trans_le ht) hstart hend C z herr
   change p/8*N ≤ _ at hf

@@ -61,6 +61,7 @@ private def splitReplicaSineSum (β : ℝ) (E F : α → ℝ) (n : ℕ) (τ : �
   ∑ pq ∈ splitReplicaPairs E F n,
     (pairWeight β E pq / replicaGap F pq) * Real.sin (τ * replicaGap F pq)
 
+omit [Nonempty α] in
 /-- Only the separated pairs appear in the residual relative to the joint plateau. -/
 theorem thermalReplicaCrossover_sub_joint_eq (β : ℝ) (E F : α → ℝ) (n : ℕ) (τ : ℝ) :
     thermalReplicaCrossover β E F n τ - (jointReplicaCollisionMass (finiteGibbsStateWeight β E) E F n : ℂ) =
@@ -73,6 +74,7 @@ theorem thermalReplicaCrossover_sub_joint_eq (β : ℝ) (E F : α → ℝ) (n : 
     by_cases hF : replicaMultiplicityEnergy F p = replicaMultiplicityEnergy F q <;>
     simp [hE, hF, replicaGap, pairWeight, sub_eq_zero]
 
+omit [Nonempty α] in
 private theorem thermalReplicaCrossover_scaled_re (β : ℝ) (E F : α → ℝ) (n : ℕ) (τ : ℝ) :
     τ * ((thermalReplicaCrossover β E F n τ).re -
       jointReplicaCollisionMass (finiteGibbsStateWeight β E) E F n) =
@@ -103,6 +105,7 @@ theorem thermalReplicaCrossover_scaled_norm_le (β : ℝ) (E F : α → ℝ) (n 
   rw [abs_mul, abs_div, abs_of_nonneg hw]
   simpa only [mul_one] using mul_le_mul_of_nonneg_left (Real.abs_sin_le_one _) (div_nonneg hw (abs_nonneg _))
 
+omit [Nonempty α] in
 private theorem hasDerivAt_splitReplicaSineSum_zero (β : ℝ) (E F : α → ℝ) (n : ℕ) :
     HasDerivAt (splitReplicaSineSum β E F n)
       (∑ pq ∈ splitReplicaPairs E F n, pairWeight β E pq) 0 := by
@@ -113,6 +116,7 @@ private theorem hasDerivAt_splitReplicaSineSum_zero (β : ℝ) (E F : α → ℝ
   simpa only [zero_mul, Real.cos_zero, one_mul, div_mul_cancel₀ _ hgap] using
     hs.const_mul (pairWeight β E pq / replicaGap F pq)
 
+omit [Nonempty α] in
 /-- The initial slope of the rescaled residual equals the mass lost at the
 punctured affine plateau. -/
 theorem hasDerivAt_thermalReplicaCrossover_scaled_zero (β : ℝ) (E F : α → ℝ) (n : ℕ) :
@@ -129,6 +133,7 @@ theorem hasDerivAt_thermalReplicaCrossover_scaled_zero (β : ℝ) (E F : α → 
   simpa only [thermalReplicaCrossover_scaled_re, hmass] using
     hasDerivAt_splitReplicaSineSum_zero β E F n
 
+omit [Nonempty α] in
 private theorem splitReplicaSineSum_neg (β : ℝ) (E F : α → ℝ) (n : ℕ) (τ : ℝ) :
     splitReplicaSineSum β E F n (-τ) = -splitReplicaSineSum β E F n τ := by
   simp only [splitReplicaSineSum, neg_mul, Real.sin_neg, mul_neg, Finset.sum_neg_distrib]
@@ -155,8 +160,8 @@ theorem splitReplicaPairs_nonempty_iff_crossover_excursions (β : ℝ) (E F : α
       have h := (tendsto_order.mp hslope).1 0 hmass
       change ∀ᶠ s in 𝓝[>] (0 : ℝ), 0 < s⁻¹ • (P (0 + s) - P 0) at h
       simpa only [zero_add, hPzero, sub_zero, smul_eq_mul] using h
-    obtain ⟨s, hs, hPs⟩ := (self_mem_nhdsWithin.and hpos).exists
-    have hspos : 0 < s := hs
+    have hstrict : ∀ᶠ s in 𝓝[>] (0 : ℝ), 0 < s := self_mem_nhdsWithin
+    obtain ⟨s, hspos, hPs⟩ := (hstrict.and hpos).exists
     have hvalue : 0 < P s := pos_of_mul_pos_right hPs (inv_nonneg.mpr hspos.le)
     let δ := P s / 2
     have hδ : 0 < δ := half_pos hvalue

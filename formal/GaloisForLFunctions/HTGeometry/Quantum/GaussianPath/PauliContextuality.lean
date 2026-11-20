@@ -148,8 +148,10 @@ theorem gaussian_path_ae_contextual :
     letI : NullSingletonClass (gaussianReal 0 1) := nullSingletonClass_gaussianReal one_ne_zero
     have hnormal : ∀ᵐ x : ℝ ∂gaussianReal 0 1, x ≠ 0 := by
       apply ae_iff.mpr
-      change gaussianReal 0 1 {x : ℝ | ¬ x ≠ 0} = 0
-      simpa only [not_not] using (measure_singleton (μ := gaussianReal 0 1) (0 : ℝ))
+      rw [show {x : ℝ | ¬ x ≠ 0} = ({0} : Set ℝ) by
+        ext x
+        simp only [Set.mem_setOf_eq, not_not, Set.mem_singleton_iff]]
+      exact measure_singleton (0 : ℝ)
     exact (measurePreserving_eval_infinitePi
       (fun _ : ℕ × PathPauliDirections => gaussianReal 0 1) k).quasiMeasurePreserving.ae hnormal
   filter_upwards [ae_all_iff.mpr h] with ω hω

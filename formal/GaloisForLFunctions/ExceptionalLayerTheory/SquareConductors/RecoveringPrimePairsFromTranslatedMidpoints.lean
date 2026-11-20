@@ -71,7 +71,9 @@ private theorem log_separation {n j : ℕ} (hj : j<n) :
   · exact Real.log_le_log (by norm_num) (by linarith only [hmin])
   · rw [←Real.log_div hmn.ne' hm0.ne']
     apply Real.log_le_log (by norm_num)
-    rw [le_div_iff₀ hm0,Nat.cast_add]
+    rw [le_div_iff₀ hm0]
+    have hc : ((m+n:ℕ):ℝ) = (m:ℝ)+n := Nat.cast_add m n
+    rw [hc]
     linarith only [hmax]
 
 /-- Equal or sufficiently close translated prices distinguish every pair of

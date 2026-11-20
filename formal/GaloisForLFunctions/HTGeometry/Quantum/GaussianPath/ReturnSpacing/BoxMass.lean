@@ -57,7 +57,8 @@ theorem isolated_field_box_mass :
   have hcard : Fintype.card PathPauliBlockLabel = 24 := by
     simp [PathPauliBlockLabel,PathPauliDirections,Fintype.card_prod,Fintype.card_sum]
   rw [hcard]
-  exact le_of_eq (congrArg ENNReal.ofReal (by rw [← div_pow]; dsimp [d]; ring))
+  dsimp only [d]
+  rw [← div_pow,div_div]
 
 end
 end GaloisForLFunctions.HTGeometry

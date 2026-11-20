@@ -33,7 +33,7 @@ theorem isolatedFieldScale_bounds (n : ℕ) :
   rw [he] at hlo
   rw [pow_succ,he] at hhi
   have hN : ((n+2:ℕ):ℝ) ≤ 2^49*(k:ℝ)^48 := by
-    exact_mod_cast (show n+2 ≤ 2^49*k^48 by omega)
+    exact_mod_cast (show n+2 ≤ 2^49*k^48 by norm_num at hhi ⊢; omega)
   refine ⟨by change 2*k^48 ≤ n+2; omega,?_,?_⟩
   · apply (Real.sqrt_le_iff).mpr
     exact ⟨by positivity,hN.trans (by
