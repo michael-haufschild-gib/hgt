@@ -88,8 +88,9 @@ theorem mertens_excursion_block_count {E : Finset ℕ} {L N J : ℕ} (hL : 0 < L
     have hu : j∈U := by
       rcases hj.eq_or_lt with h₁ | h₁
       · exact mem_insert.mpr (Or.inl h₁)
-      · exact mem_insert.mpr (Or.inr (mem_filter.mpr ⟨mem_range.mpr h₁,
-          same_block hcell (hh k hk (le_of_not_gt h))⟩))
+      · refine mem_insert.mpr (Or.inr ?_)
+        simp only [signedMertensBlocks, mem_filter]
+        exact ⟨mem_range.mpr h₁, same_block hcell (hh k hk (le_of_not_gt h))⟩
     exact mem_union_right _ (mem_biUnion.mpr ⟨j,hu,hcell⟩)
   have hc := card_biUnion_le_card_mul U cell L (fun j _ => by simp [cell,Nat.add_mul])
   refine (card_le_card hsub).trans ((card_union_le _ _).trans ?_)
@@ -169,7 +170,9 @@ theorem contiguous_mertens_counting_order {a : ℝ} (ha : 0 < a) (hθ : a < zeta
     have hL := Nat.le_ceil (X^a)
     have hh : (C N)*L ≤ X := by
       have hb : (signedMertensBlocks L N (A*X^a)).card ≤ (range ((N+1)/L)).card :=
-        card_le_card (filter_subset _ _)
+        card_le_card fun j hj => by
+          simp only [signedMertensBlocks, mem_filter] at hj
+          exact hj.1
       rw [card_range] at hb
       exact_mod_cast (Nat.mul_le_mul_right L hb).trans (Nat.div_mul_le_self (N+1) L)
     have hq : (C N) ≤ X^(1-a) := by
@@ -195,7 +198,8 @@ theorem supercritical_mertens_blocks_empty {a : ℝ} (ha : zetaZeroAbscissa < a)
   have hL : 0 < L := Nat.ceil_pos.mpr (Real.rpow_pos_of_pos xp a)
   apply eq_empty_iff_forall_notMem.mpr
   intro j hj
-  obtain ⟨hjr,hsign⟩ := mem_filter.mp hj
+  simp only [signedMertensBlocks, mem_filter] at hj
+  obtain ⟨hjr,hsign⟩ := hj
   have hjq : j+1 ≤ (N+1)/L := mem_range.mp hjr
   have hfull := (Nat.mul_le_mul_right L hjq).trans (Nat.div_mul_le_self (N+1) L)
   rw [Nat.add_mul,one_mul] at hfull

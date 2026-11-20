@@ -58,8 +58,8 @@ theorem primeLogVacuumResolventRemainder_bounds (P : Finset Nat.Primes) (β : �
   have hpn : (2 : ℝ) ≤ (p.1 : ℕ) := by exact_mod_cast p.1.2.two_le
   have hl : Real.log 2 ≤ primeLogSupport p.1 :=
     Real.strictMonoOn_log.monotoneOn
-      (show (2 : ℝ) ∈ Set.Ioi 0 from zero_lt_two)
-      (show ((p.1 : ℕ) : ℝ) ∈ Set.Ioi 0 from zero_lt_two.trans_le hpn) hpn
+      (Set.mem_Ioi.mpr (show (0 : ℝ) < 2 from zero_lt_two))
+      (Set.mem_Ioi.mpr ((show (0 : ℝ) < 2 from zero_lt_two).trans_le hpn)) hpn
   have hle := add_le_add hl (le_refl (d : ℝ))
   exact div_le_div_of_nonneg_left (finiteGibbsStateWeight_pos _ _ _).le (sq_pos_of_pos hg)
     ((sq_le_sq₀ hg.le (hg.le.trans hle)).mpr hle)
@@ -115,7 +115,9 @@ theorem primeLogVacuumDistanceEstimate_error (P : Finset Nat.Primes) (β : ℝ) 
     _ ≤ (d : ℝ) ^ 3 * ((1 - w) / (Real.log 2 + (d : ℝ)) ^ 2) / (2 * w) :=
       div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hru (pow_nonneg hd.le _))
         (by positivity)
-    _ = _ := by change _ = (d : ℝ) ^ 3 * (1 - w) / _; ring
+    _ = _ := by
+      change _ = (d : ℝ) ^ 3 * (1 - w) / (2 * w * (Real.log 2 + (d : ℝ)) ^ 2)
+      rw [mul_div_assoc, div_div, mul_comm ((Real.log 2 + (d : ℝ)) ^ 2)]
 
 #print axioms primeLogVacuumResolventRemainder_bounds
 #print axioms primeLogVacuumDistanceEstimate_error

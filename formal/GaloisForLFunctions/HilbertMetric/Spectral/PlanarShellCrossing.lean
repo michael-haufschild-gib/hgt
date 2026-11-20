@@ -1,4 +1,6 @@
 import Mathlib.Analysis.Real.Sqrt
+import Mathlib.Tactic.LinearCombination
+
 
 /-!
 # Angular crossings of the planar concentric shell
@@ -32,16 +34,16 @@ private theorem reflection_degree_lt {d e x : ℝ} (hx : 0 < x) (hd : x < d) (hd
   nlinarith only [mul_pos hx (sub_pos.mpr hde)]
 
 /-- The coefficient for angular degree `n+1` in the diagonal boundary operator. -/
-def angularCoefficient (a : UnitInterval) (n : ℕ) (λ : UnitInterval) : ℝ :=
-  reflection (n + 1 : ℝ) λ * reflection (n + 1 : ℝ) ((a : ℝ) * λ) *
+def angularCoefficient (a : UnitInterval) (n : ℕ) (z : UnitInterval) : ℝ :=
+  reflection (n + 1 : ℝ) z * reflection (n + 1 : ℝ) ((a : ℝ) * z) *
     (a : ℝ) ^ (2 * (n + 1))
 
-private theorem angularInput_lt_degree (a : UnitInterval) (n : ℕ) (λ : UnitInterval) :
-    (a : ℝ) * λ < (n + 1 : ℝ) := by
-  have hn : (1 : ℝ) ≤ (n : ℝ) + 1 := by positivity
-  have h := mul_lt_mul_of_pos_right a.2.2 λ.2.1
-  exact (by simpa only [one_mul] using h : (a : ℝ) * λ < (λ : ℝ)).trans
-    (λ.2.2.trans_le hn)
+private theorem angularInput_lt_degree (a : UnitInterval) (n : ℕ) (z : UnitInterval) :
+    (a : ℝ) * z < (n + 1 : ℝ) := by
+  have hn : (1 : ℝ) ≤ (n : ℝ) + 1 := le_add_of_nonneg_left (Nat.cast_nonneg n)
+  have h := mul_lt_mul_of_pos_right a.2.2 z.2.1
+  have hlt : (a : ℝ) * z < (z : ℝ) := by simpa only [one_mul] using h
+  exact hlt.trans (z.2.2.trans_le hn)
 
 /-- Every angular coefficient is strictly increasing in the spectral parameter. -/
 theorem angularCoefficient_strictMono (a : UnitInterval) (n : ℕ) :
@@ -49,7 +51,7 @@ theorem angularCoefficient_strictMono (a : UnitInterval) (n : ℕ) :
   intro x y hxy
   have hxy' : (x : ℝ) < y := hxy
   have hd : (0 : ℝ) < (n : ℝ) + 1 := by positivity
-  have hn : (1 : ℝ) ≤ (n : ℝ) + 1 := by positivity
+  have hn : (1 : ℝ) ≤ (n : ℝ) + 1 := le_add_of_nonneg_left (Nat.cast_nonneg n)
   have h₁ := reflection_input_lt hd hxy' (y.2.2.trans_le hn)
   have h₂ := reflection_input_lt hd (mul_lt_mul_of_pos_left hxy' a.2.1)
     (angularInput_lt_degree a n y)
@@ -61,25 +63,41 @@ theorem angularCoefficient_strictMono (a : UnitInterval) (n : ℕ) :
     (pow_pos a.2.1 _)
 
 /-- Larger harmonic degree delays any level-one crossing. -/
-theorem angularCoefficient_strictAnti (a : UnitInterval) (λ : UnitInterval) :
-    StrictAnti (fun n => angularCoefficient a n λ) := by
+theorem angularCoefficient_strictAnti (a : UnitInterval) (z : UnitInterval) :
+    StrictAnti (fun n => angularCoefficient a n z) := by
   intro m n hmn
-  have hm : (1 : ℝ) ≤ (m : ℝ) + 1 := by positivity
+  have hm : (1 : ℝ) ≤ (m : ℝ) + 1 := le_add_of_nonneg_left (Nat.cast_nonneg m)
   have hmn' : (m : ℝ) + 1 < (n : ℝ) + 1 := by
-    exact add_lt_add_right (by exact_mod_cast hmn) 1
-  have hλ := λ.2.2.trans_le hm
-  have h₁ := reflection_degree_lt λ.2.1 hλ hmn'
-  have h₂ := reflection_degree_lt (mul_pos a.2.1 λ.2.1) (angularInput_lt_degree a m λ) hmn'
-  have hp₁ := reflection_pos λ.2.1 hλ
-  have hp₂ := reflection_pos (mul_pos a.2.1 λ.2.1) (angularInput_lt_degree a n λ)
+    exact_mod_cast Nat.add_lt_add_right hmn 1
+  have hz := z.2.2.trans_le hm
+  have h₁ := reflection_degree_lt z.2.1 hz hmn'
+  have h₂ := reflection_degree_lt (mul_pos a.2.1 z.2.1) (angularInput_lt_degree a m z) hmn'
+  have hp₁ := reflection_pos z.2.1 hz
+  have hp₂ := reflection_pos (mul_pos a.2.1 z.2.1) (angularInput_lt_degree a n z)
   have hpow : (a : ℝ) ^ (2 * (n + 1)) ≤ (a : ℝ) ^ (2 * (m + 1)) :=
     pow_le_pow_of_le_one a.2.1.le a.2.2.le (by omega)
   unfold angularCoefficient
-  exact ((mul_le_mul_of_nonneg_left hpow
-    (mul_pos (reflection_pos λ.2.1 (hλ.trans hmn')) hp₂).le).trans_lt
+  exact (mul_le_mul_of_nonneg_left hpow
+    (mul_pos (reflection_pos z.2.1 (hz.trans hmn')) hp₂).le).trans_lt
       (mul_lt_mul_of_pos_right
         ((mul_lt_mul_of_pos_right h₁ hp₂).trans (mul_lt_mul_of_pos_left h₂ hp₁))
-        (pow_pos a.2.1 _)))
+        (pow_pos a.2.1 _))
+
+/-- Increasing the concentric inner radius increases the boundary response at fixed
+spectral parameter. -/
+theorem angularCoefficient_radius_strictMono (n : ℕ) (z : UnitInterval) :
+    StrictMono (fun a => angularCoefficient a n z) := by
+  intro a b hab
+  have hab' : (a : ℝ) < b := hab
+  have hn : (1 : ℝ) ≤ (n : ℝ) + 1 := le_add_of_nonneg_left (Nat.cast_nonneg n)
+  have hp := reflection_pos z.2.1 (z.2.2.trans_le hn)
+  have h := reflection_input_lt (zero_lt_one.trans_le hn)
+    (mul_lt_mul_of_pos_right hab' z.2.1) (angularInput_lt_degree b n z)
+  have hpow := pow_le_pow_left₀ a.2.1.le hab'.le (2 * (n + 1))
+  unfold angularCoefficient
+  exact (mul_lt_mul_of_pos_right (mul_lt_mul_of_pos_left h hp) (pow_pos a.2.1 _)).trans_le
+    (mul_le_mul_of_nonneg_left hpow
+      (mul_pos hp (reflection_pos (mul_pos b.2.1 z.2.1) (angularInput_lt_degree b n z))).le)
 
 /-- The first angular threshold, in the rationalized form of the smaller root. -/
 def crossing (a : UnitInterval) : UnitInterval := by
@@ -112,11 +130,12 @@ theorem angularCoefficient_crossing (a : UnitInterval) :
     field_simp [hd.ne']
     dsimp only [B]
     linear_combination (1 - A) * hD
-  have hλ : 0 < 1 - L := sub_pos.mpr (crossing a).2.2
-  have haλ : 0 < 1 - A * L := by
+  have hz : 0 < 1 - L := sub_pos.mpr (crossing a).2.2
+  have haz : 0 < 1 - A * L := by
     simpa only [Nat.cast_zero, zero_add] using sub_pos.mpr (angularInput_lt_degree a 0 (crossing a))
+  simp only [angularCoefficient, Nat.cast_zero, zero_add, reflection]
   change (1 + L) / (1 - L) * ((1 + A * L) / (1 - A * L)) * A ^ 2 = 1
-  field_simp [hλ.ne', haλ.ne']
+  rw [div_mul_div_comm, div_mul_eq_mul_div, div_eq_iff (mul_ne_zero hz.ne' haz.ne'), one_mul]
   dsimp only [B] at hpoly
   linear_combination -(1 + A) * hpoly
 
@@ -127,14 +146,25 @@ theorem angularCoefficient_higher_at_crossing (a : UnitInterval) (n : ℕ) :
   exact angularCoefficient_strictAnti a (crossing a) (Nat.zero_lt_succ n)
 
 /-- The first threshold is the unique angular crossing of degree one. -/
-theorem angularCoefficient_eq_one_iff (a λ : UnitInterval) :
-    angularCoefficient a 0 λ = 1 ↔ λ = crossing a := by
+theorem angularCoefficient_eq_one_iff (a z : UnitInterval) :
+    angularCoefficient a 0 z = 1 ↔ z = crossing a := by
   rw [← angularCoefficient_crossing a]
   exact (angularCoefficient_strictMono a 0).injective.eq_iff
+
+/-- Thinner concentric shells cross at strictly smaller spectral parameter. -/
+theorem crossing_strictAnti : StrictAnti crossing := by
+  intro a b hab
+  have h : angularCoefficient a 0 (crossing a) < angularCoefficient b 0 (crossing a) :=
+    angularCoefficient_radius_strictMono 0 (crossing a) hab
+  rw [angularCoefficient_crossing a, ← angularCoefficient_crossing b] at h
+  apply lt_of_not_ge
+  intro hle
+  exact h.not_ge ((angularCoefficient_strictMono b 0).monotone hle)
 
 #print axioms angularCoefficient_strictAnti
 #print axioms angularCoefficient_crossing
 #print axioms angularCoefficient_higher_at_crossing
+#print axioms crossing_strictAnti
 
 end
 
