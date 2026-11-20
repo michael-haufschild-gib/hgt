@@ -60,18 +60,19 @@ theorem pauliSpectralModePolynomial_ne_zero (k : ℕ) (m : ChainEnergyIndex k �
 private theorem abs_orbit_le_one_mode {I : Type*} [Fintype I]
     (m : I → ℤ) (E : I → ℝ) (σ : Equiv.Perm I) (R : ℝ) (hE : ∀ i, |E i| ≤ R) :
     |spectralRelationOrbitValue m E| ≤ |∑ i, (m i:ℝ)*E (σ i)| *
-      ((∑ i, |(m i:ℝ)|)*R)^(Fintype.card (Equiv.Perm I)-1) := by
+      ((∑ i, |(m i:ℝ)|)*R)^((Fintype.card I).factorial-1) := by
   classical
   let F (s : Equiv.Perm I) := |∑ i, (m i:ℝ)*E (s i)|
   let B := (∑ i, |(m i:ℝ)|)*R
   have hF (s) : F s ≤ B := by
     refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
     simp only [abs_mul]
+    dsimp only [B]
     rw [Finset.sum_mul]
     exact Finset.sum_le_sum fun i _ => mul_le_mul_of_nonneg_left (hE _) (abs_nonneg _)
-  have hrest : ∏ s ∈ Finset.univ.erase σ, F s ≤ B^(Fintype.card (Equiv.Perm I)-1) := by
+  have hrest : ∏ s ∈ Finset.univ.erase σ, F s ≤ B^((Fintype.card I).factorial-1) := by
     refine (Finset.prod_le_prod (fun _ _ => abs_nonneg _) (fun s _ => hF s)).trans_eq ?_
-    simp
+    simp [Fintype.card_perm]
   calc
     |spectralRelationOrbitValue m E| = ∏ s, F s := by simp only [spectralRelationOrbitValue,Finset.abs_prod,F]
     _ = (∏ s ∈ Finset.univ.erase σ, F s)*F σ := (Finset.prod_erase_mul _ _ (Finset.mem_univ σ)).symm
@@ -84,7 +85,7 @@ def pauliModeNearResonance (k : ℕ) (m : ChainEnergyIndex k → ℤ) (R r : ℝ
   {x | let E := (isHermitian_spectralEnsembleMatrix (chainPauliFin_isHermitian (k+3)) x).eigenvalues
        let p := pauliSpectralModePolynomial k m
        (∀ i, |E i| ≤ R) ∧ ∃ σ : Equiv.Perm (ChainEnergyIndex k),
-         |∑ i, (m i:ℝ)*E (σ i)| * ((∑ i, |(m i:ℝ)|)*R)^(Fintype.card (Equiv.Perm (ChainEnergyIndex k))-1)
+         |∑ i, (m i:ℝ)*E (σ i)| * ((∑ i, |(m i:ℝ)|)*R)^((2^(k+3)).factorial-1)
            < ‖lexHeadCoefficient p‖*r^p.totalDegree}
 
 /-- For a nonzero balanced mode on the path, the near-resonance probability
@@ -99,7 +100,8 @@ theorem gaussian_pauli_mode_detuning_sublevel (k : ℕ) (m : ChainEnergyIndex k 
   rintro x ⟨he,σ,hs⟩
   change ‖MvPolynomial.eval (fun i => (x i : ℂ)) p‖ < _
   rw [show p = pauliSpectralModePolynomial k m from rfl,pauliSpectralModePolynomial_eval,Complex.norm_real,Real.norm_eq_abs]
-  exact (abs_orbit_le_one_mode m _ σ R he).trans_lt hs
+  apply (abs_orbit_le_one_mode m _ σ R he).trans_lt
+  simpa only [ChainEnergyIndex,Fintype.card_fin] using hs
 
 /-- On the same draw, a finite collection of balanced modes obeys the sum
 of their individual near-resonance bounds. -/

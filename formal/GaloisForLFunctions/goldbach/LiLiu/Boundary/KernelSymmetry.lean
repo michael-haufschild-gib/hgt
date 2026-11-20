@@ -14,9 +14,9 @@ theorem characterKernel_hermitian (N : ℕ) [NeZero N] (s z : ℂ) :
   congr 1
   apply Finset.sum_congr rfl
   intro χ _
-  change conj (characterFeature χ z * conj (characterFeature χ s)) =
+  change conj (characterFeature χ z) * conj (conj (characterFeature χ s)) =
     characterFeature χ s * conj (characterFeature χ z)
-  rw [map_mul, Complex.conj_conj, mul_comm]
+  rw [Complex.conj_conj, mul_comm]
 
 theorem diagonalSeries_conj (N : ℕ) (w : ℂ) : diagonalSeries N (conj w) = conj (diagonalSeries N w) := by
   simp only [diagonalSeries, LSeries, Complex.conj_tsum]
@@ -36,7 +36,7 @@ theorem diagonalSeries_conj (N : ℕ) (w : ℂ) : diagonalSeries N (conj w) = co
 theorem signedBetaGammaFactor_conj (s : ℂ) : signedBetaGammaFactor (conj s) = conj (signedBetaGammaFactor s) := by
   unfold signedBetaGammaFactor
   rw [map_div₀, ← Complex.Gamma_conj, ← Complex.Gamma_conj]
-  simp
+  simp only [map_div₀,map_sub,map_add,map_ofNat]
 
 theorem betaModel_comm (N : ℕ) (s z : ℂ) : betaModel N s z = betaModel N z s := by
   simp only [betaModel, add_comm z s]

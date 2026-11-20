@@ -102,20 +102,21 @@ theorem rectangular_log_gram_error {g : ℝ → ℝ} (hg : ContDiff ℝ ∞ g)
   let entry := fun n m : ℕ => a n * conj (a m) * 𝓕 f (freq n m)
   have hzero : 𝓕 f 0 = ((∫ x, g x : ℝ) : ℂ) := by
     rw [Real.fourier_real_eq_integral_exp_smul]
-    simp [f, integral_ofReal]
+    simp [f, integral_complex_ofReal]
   have hdiag (m : ℕ) : entry m m = ((∫ x, g x : ℝ) : ℂ)*((‖a m‖^2 : ℝ) : ℂ) := by
     simp [entry, freq, hzero, Complex.mul_conj, Complex.normSq_eq_norm_sq, mul_comm]
   have hdiff (n m : ℕ) (hn : n ∈ Icc 1 N) (hm : m ∈ Icc 1 H) (hne : n ≠ m) :
       ‖entry n m‖ ≤ R := by
     have hsp := local_log_spacing (mem_Icc.mp hm).1 (mem_Icc.mp hn).1 hne
     have hil := inv_anti₀ (by positivity : 0 < (m:ℝ)+1)
-      (add_le_add_right (Nat.cast_le.mpr (mem_Icc.mp hm).2) 1)
+      (add_le_add_left ((Nat.cast_le (α := ℝ)).mpr (mem_Icc.mp hm).2) 1)
     have hp : 0 < 2*Real.pi := by positivity
     have hX : 0 < (H:ℝ)+1 := by positivity
     have hfreq : T/(2*Real.pi*((H:ℝ)+1)) ≤ |freq n m| := by
       dsimp only [freq]
       rw [abs_div, abs_mul, abs_of_pos hp, abs_of_pos hT]
-      exact (by ring : T/(2*Real.pi*((H:ℝ)+1)) = T*((H:ℝ)+1)⁻¹/(2*Real.pi)).le.trans
+      exact (by rw [mul_comm (2*Real.pi), ← div_div, div_eq_mul_inv T] :
+          T/(2*Real.pi*((H:ℝ)+1)) = T*((H:ℝ)+1)⁻¹/(2*Real.pi)).le.trans
         (div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left (hil.trans hsp) hT.le) hp.le)
     have hpos := (div_pos hT (mul_pos hp hX)).trans_le hfreq
     have hb := (norm_fourierIntegral_le_div_of_pow_bound hpow (abs_pos.mp hpos)).trans
@@ -123,7 +124,8 @@ theorem rectangular_log_gram_error {g : ℝ → ℝ} (hg : ContDiff ℝ ∞ g)
     have hh : ‖a n * conj (a m)‖ ≤ 1 := by
       rw [norm_mul, Complex.norm_conj]
       exact mul_le_one₀ (ha _ (mem_Icc.mp hn).1) (norm_nonneg _) (ha _ (mem_Icc.mp hm).1)
-    rw [entry, norm_mul]
+    dsimp only [entry]
+    rw [norm_mul]
     calc
       _ ≤ 1 * ‖𝓕 f (freq n m)‖ := mul_le_mul_of_nonneg_right hh (norm_nonneg _)
       _ ≤ C / (T/(2*Real.pi*((H:ℝ)+1)))^k := by simpa only [one_mul] using hb
@@ -156,7 +158,9 @@ private theorem cross_re {g : ℝ → ℝ} (hc : Continuous g) (hs : HasCompactS
     (a : ℕ → ℂ) (N H : ℕ) (T : ℝ) :
     (logWindowCross g a N H T).re =
       ∫ x : ℝ, g x * (logSection a N (T*x)*conj (logSection a H (T*x))).re := by
-  rw [logWindowCross, ← integral_re (weighted_integrable hc hs a N H T)]
+  have h := integral_re (weighted_integrable hc hs a N H T)
+  simp only [RCLike.re_to_complex] at h
+  rw [logWindowCross, ← h]
   simp only [Complex.re_ofReal_mul]
 
 private theorem cross_self {g : ℝ → ℝ} (hc : Continuous g) (hs : HasCompactSupport g)
@@ -172,7 +176,7 @@ private theorem cross_square_completion {g : ℝ → ℝ} (hc : Continuous g)
   have integrableRow (M : ℕ) : Integrable (fun x : ℝ => g x * ‖logSection a M (T*x)‖^2) :=
     (hc.mul (((section_cont a M).comp (continuous_const.mul continuous_id)).norm.pow 2)).integrable_of_hasCompactSupport hs.mul_right
   have mixed := (weighted_integrable hc hs a N H T).re
-  simp only [Complex.re_ofReal_mul] at mixed
+  simp only [RCLike.re_to_complex, Complex.re_ofReal_mul] at mixed
   rw [cross_re hc hs, cross_self hc hs, cross_self hc hs,
     ← integral_const_mul, ← integral_add (integrableRow N) (integrableRow H)]
   refine integral_mono (mixed.const_mul 2) ((integrableRow N).add (integrableRow H)) (fun x => ?_)
@@ -206,11 +210,11 @@ theorem short_diagonal_below_long_energy {g : ℝ → ℝ} (hg : ContDiff ℝ �
   have hgap : C*H*H*((H:ℝ)+1)^k/T^k ≤ E := by
     dsimp only [E]
     gcongr
-    exact_mod_cast hHN
   have hpos := cross_square_completion hg.continuous hs hp a N H T
   rw [cross_self hg.continuous hs a N T] at hpos
   dsimp only [D, E] at *
-  linarith only [hwide, hnarrow, hgap, hpos]
+  have h3 : 3*C*(N:ℝ)*H*((H:ℝ)+1)^k/T^k = 3*(C*N*H*((H:ℝ)+1)^k/T^k) := by ring
+  linarith only [hwide, hnarrow, hgap, hpos, h3]
 
 private theorem error_at_power_cutoffs {η θ : ℝ} (hη : 0 < η) (hη1 : η < 1)
     (hθ : 0 < θ) (r : ℝ) :
@@ -230,7 +234,7 @@ private theorem error_at_power_cutoffs {η θ : ℝ} (hη : 0 < η) (hη1 : η <
   have hlarge := mul_le_mul_of_nonneg_right hbig (Real.rpow_nonneg ht.le (θ+η+η*(k:ℝ)))
   rw [← Real.rpow_add ht] at hlarge
   have heq : b + (θ+η+η*(k:ℝ)) = -r+(k:ℝ) := by dsimp [b]; ring
-  rw [heq, Real.rpow_add ht, Real.rpow_natCast] at hlarge
+  rw [heq, Real.rpow_add ht (-r), Real.rpow_natCast] at hlarge
   refine le_trans ?_ hlarge
   calc
     _ ≤ |C| * T^θ*T^η*(2*T^η)^k := by gcongr <;> first | exact le_abs_self _ | assumption
@@ -253,7 +257,7 @@ theorem long_energy_reads_short_sections {g : ℝ → ℝ} (hg : ContDiff ℝ �
   filter_upwards [eventually_ge_atTop (1:ℝ), hk C] with T hT herror
   intro a ha
   exact (hcomp a ha _ _ (Nat.floor_mono (Real.rpow_le_rpow_of_exponent_le hT hηθ)) T
-    (zero_lt_one.trans_le hT)).trans (add_le_add_left herror _)
+    (zero_lt_one.trans_le hT)).trans (add_le_add_right herror _)
 
 
 /-- A smooth plateau with any prescribed mass below one and support
@@ -288,7 +292,7 @@ private theorem interior_plateau {a : ℝ} (ha : 0 < a) (ha1 : a < 1) :
         obtain ⟨h₁,h₂⟩ := hx
         dsimp only [l,u] at h₁ h₂
         constructor <;> linarith
-    have hmono := setIntegral_le_integral (s := Set.Ioc l u)
+    have hmono := setIntegral_le_integral (μ := volume) (s := Set.Ioc l u)
       (p.continuous.integrable_of_hasCompactSupport p.hasCompactSupport) (.of_forall p.nonneg')
     rw [← intervalIntegral.integral_of_le hlu,hconst] at hmono
     simpa only [l,u,show (1+a)/2-(1-a)/2=a by ring] using hmono
@@ -319,14 +323,14 @@ theorem short_diagonal_below_sharp_long_mean
   have hcomp : (∫ x, g x*f x) ≤ (∫ t in (1:ℝ)..T, ‖logSection a N t‖^2)/T := by
     rw [← setIntegral_eq_integral_of_forall_compl_eq_zero (s := Set.Ioc (1/T) 1)
       (fun x hx => by_contra fun h => hx (hsup' h)), ← intervalIntegral.integral_of_le hcol1]
-    have hmono := intervalIntegral.integral_mono_on hcol1 ((hg.continuous.mul hf).intervalIntegrable _ _)
+    have hmono := intervalIntegral.integral_mono_on (μ := volume) hcol1 ((hg.continuous.mul hf).intervalIntegrable _ _)
       (hf.intervalIntegrable _ _) fun x _ => (mul_le_mul_of_nonneg_right (hpos x).2 (sq_nonneg _)).trans_eq (one_mul _)
     refine hmono.trans_eq ?_
     dsimp only [f]
     rw [intervalIntegral.integral_comp_mul_left (fun t : ℝ => ‖logSection a N t‖^2) hT0.ne',
       mul_one, mul_one_div_cancel hT0.ne', smul_eq_mul, div_eq_inv_mul]
   have hD : 0 ≤ logSectionDiagonal a H := sum_nonneg fun _ _ => sq_nonneg _
-  exact ((mul_le_mul_of_nonneg_right hmass hD).trans hread).trans (add_le_add_right hcomp _)
+  exact ((mul_le_mul_of_nonneg_right hmass hD).trans hread).trans (add_le_add_left hcomp _)
 
 open GaloisForLFunctions.MultiscaleMollifiedZetaField
 open _root_.RHTower.Sieve (squarefreeDensity squarefreeDensity_eq)
@@ -369,14 +373,14 @@ theorem logarithmic_floor_on_translated_moebius_windows {θ q : ℝ} (hθ : 0 < 
     ∀ᶠ T : ℝ in atTop, ∀ A : ℝ, q*T*Real.log T <
       ∫ t in (1+A)..(T+A), ‖moebiusPoly ⌊T^θ⌋₊ (linePoint t)‖^2 := by
   have hd : 0 < squarefreeDensity := by rw [squarefreeDensity_eq]; positivity
-  obtain ⟨η,hη,hηmax⟩ := exists_between (max_lt (lt_min hθ zero_lt_one) ((div_lt_iff₀ hd).mpr
+  obtain ⟨η,hη,hηmax⟩ := _root_.exists_between (max_lt (lt_min hθ zero_lt_one) ((div_lt_iff₀ hd).mpr
     (by linarith only [hq] : q < min θ 1*squarefreeDensity)))
   have he0 := (le_max_left 0 (q/squarefreeDensity)).trans_lt hη
   have hsmall := hηmax.trans_le (min_le_right θ 1)
   have hθ' := hηmax.le.trans (min_le_left θ 1)
   have hqη := (div_lt_iff₀ hd).mp ((le_max_right 0 _).trans_lt hη)
   have hdη : 0 < squarefreeDensity*η := mul_pos hd he0
-  obtain ⟨p,hp,hp1⟩ := exists_between (max_lt zero_lt_one ((div_lt_one hdη).mpr (by linarith only [hqη])))
+  obtain ⟨p,hp,hp1⟩ := _root_.exists_between (max_lt zero_lt_one ((div_lt_one hdη).mpr (by linarith only [hqη] : q < squarefreeDensity*η)))
   have hp0 := (le_max_left 0 (q/(squarefreeDensity*η))).trans_lt hp
   have hprice := (div_lt_iff₀ hdη).mp ((le_max_right 0 _).trans_lt hp)
   have ha (n : ℕ) (hn : 0 < n) : ‖criticalMoebiusAmplitude n‖ ≤ 1 := by
@@ -389,13 +393,15 @@ theorem logarithmic_floor_on_translated_moebius_windows {θ q : ℝ} (hθ : 0 < 
   have hread := short_diagonal_below_sharp_long_mean he0 hsmall hθ' hp0 hp1 0
   have hlim := ((scaled_harmonic_diagonal he0).const_mul p).sub Real.tendsto_log_atTop.inv_tendsto_atTop
   rw [sub_zero] at hlim
-  filter_upwards [hread, hlim.eventually_gt hprice, eventually_gt_atTop (1:ℝ)] with T hread hbig hT
+  filter_upwards [hread, hlim.eventually (lt_mem_nhds hprice), eventually_gt_atTop (1:ℝ)] with T hread hbig hT
   have ht := zero_lt_one.trans hT
   have hl := Real.log_pos hT
   intro A
   let a := fun n => criticalMoebiusAmplitude n * cexp (I*((-Real.log n:ℝ):ℂ)*A)
   have hn (n : ℕ) : ‖a n‖ = ‖criticalMoebiusAmplitude n‖ := by
-    simp [a,norm_mul,Complex.norm_exp,Complex.mul_re,Complex.mul_im]
+    dsimp only [a]
+    rw [norm_mul, show I*((-Real.log n:ℝ):ℂ)*(A:ℂ) = ((-Real.log n*A:ℝ):ℂ)*I by push_cast; ring,
+      Complex.norm_exp_ofReal_mul_I, mul_one]
   specialize hread a (fun n h => (hn n).le.trans (ha n h))
   have hD (N : ℕ) : logSectionDiagonal a N = harmonicMoebiusDiagonal N := by
     simpa only [logSectionDiagonal, hn] using critical_moebius_frequency_diagonal N

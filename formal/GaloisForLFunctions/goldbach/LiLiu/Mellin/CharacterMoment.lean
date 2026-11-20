@@ -53,7 +53,7 @@ theorem characterMoment_integral {n : ℕ} (φ : TestWeight) (h : modulusGRH (n+
   have hn {χ : DirichletCharacter ℂ N} (hχ : χ ∈ X) : χ ≠ 1 := by
     have ho := (mem_filter.mp hχ).2
     rintro rfl
-    exact ho.not_even (MulChar.one_apply (isUnit_neg.mpr isUnit_one))
+    exact ho.not_even (MulChar.one_apply (isUnit_one.neg))
   have hi (χ) (hχ : χ ∈ X) : Integrable (G χ) := by
     have hF := characterIntegrand_integrable φ h (hn hχ) ha ht
     have hconj : Integrable (fun t => conj (F χ t)) := by

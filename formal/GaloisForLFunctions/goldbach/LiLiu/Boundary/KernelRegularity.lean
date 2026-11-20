@@ -11,7 +11,7 @@ theorem odd_ne_principal {N : ℕ} {χ : DirichletCharacter ℂ N} (h : χ.Odd) 
   rintro rfl
   apply h.not_even
   change (1 : DirichletCharacter ℂ N) (-1) = 1
-  exact MulChar.one_apply (isUnit_neg.mpr isUnit_one)
+  exact MulChar.one_apply (isUnit_one.neg)
 
 private theorem gamma_differentiable_pos {z : ℂ} (hz : 0 < z.re) : DifferentiableAt ℂ Gamma z :=
   differentiableAt_Gamma z (fun k he => by
@@ -40,9 +40,9 @@ theorem betaModel_differentiableAt {N : ℕ} (hN : 0 < N) {p : ℂ × ℂ}
     (differentiableAt_const _).mul (hW.const_cpow (Or.inl hp))
   have he := (densityEuler_differentiableAt N hw).comp p hW
   have hzeta := (differentiableAt_riemannZeta hne).comp p ((differentiableAt_const _).sub hW)
-  exact ((((hc.mul he).mul hzeta).mul
-    ((signedBetaGammaFactor_differentiableAt hs).comp p differentiableAt_fst)).mul
-    ((signedBetaGammaFactor_differentiableAt hz).comp p differentiableAt_snd)
+  have hleft := (signedBetaGammaFactor_differentiableAt hs).comp p (f := Prod.fst) (by fun_prop)
+  have hright := (signedBetaGammaFactor_differentiableAt hz).comp p (f := Prod.snd) (by fun_prop)
+  exact (((hc.mul he).mul hzeta).mul hleft).mul hright
 
 private theorem denom_ne {s : ℂ} (hs : 0 < s.re) : 1+s ≠ 0 := by
   intro he
@@ -68,8 +68,10 @@ theorem boundaryKernel_continuousAt {n : ℕ} (h : modulusGRH (n+1)) {p : ℂ ×
     exact (((characterFeature_analyticAt h hn hs.1).continuousAt.comp continuous_fst.continuousAt).mul
       (continuous_conj.continuousAt.comp ((characterFeature_analyticAt h hn hz.1).continuousAt.comp
         continuous_snd.continuousAt)))
-  exact ((hP.sub ((diagonalSeries_differentiableAt (n+1) hw).continuousAt.comp hW.continuousAt)).sub hK).div
-    (by fun_prop) (mul_ne_zero (denom_ne hs.1) (denom_ne (s := conj p.2) hz.1))
+  have hD := (diagonalSeries_differentiableAt (n+1) hw).continuousAt.comp
+    (f := fun q : ℂ × ℂ => q.1+conj q.2) (x := p) hW.continuousAt
+  have hd : Continuous (fun q : ℂ × ℂ => (1+q.1)*(1+conj q.2)) := by fun_prop
+  exact ((hP.sub hD).sub hK).div hd.continuousAt (mul_ne_zero (denom_ne hs.1) (denom_ne (s := conj p.2) hz.1))
 
 theorem boundaryKernel_column_differentiableAt {n : ℕ} (h : modulusGRH (n+1)) {s z : ℂ}
     (hs : s.re ∈ Ioo (0:ℝ) (3/2)) (hz : z.re ∈ Ioo (0:ℝ) (3/2)) :
@@ -82,8 +84,10 @@ theorem boundaryKernel_column_differentiableAt {n : ℕ} (h : modulusGRH (n+1)) 
   have hw : 0 < (s+conj z).re := add_pos hs.1 hz.1
   have hK := (betaModel_differentiableAt (Nat.succ_pos n) (p := (s,conj z)) hs hz).comp s
     (f := fun u : ℂ => (u,conj z)) (by fun_prop)
-  exact ((hP.sub ((diagonalSeries_differentiableAt (n+1) hw).comp s (by fun_prop))).sub hK).div
-    (by fun_prop) (mul_ne_zero (denom_ne hs.1) (denom_ne (s := conj z) hz.1))
+  have hD := (diagonalSeries_differentiableAt (n+1) hw).comp s
+    (f := fun u : ℂ => u+conj z) (by fun_prop)
+  have hd : DifferentiableAt ℂ (fun u : ℂ => (1+u)*(1+conj z)) s := by fun_prop
+  exact ((hP.sub hD).sub hK).div hd (mul_ne_zero (denom_ne hs.1) (denom_ne (s := conj z) hz.1))
 
 #print axioms boundaryKernel_column_differentiableAt
 end

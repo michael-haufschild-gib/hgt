@@ -48,7 +48,8 @@ private theorem mixedBoundary_bound (a b : ℕ → ℂ) (f δ : ℕ → ℝ) (S 
     intro n m he
     by_contra hh
     have h := hgap n n.2 m m.2 (fun h => hh (Subtype.ext h))
-    rw [he,sub_self,abs_zero] at h
+    have he' : f (n:ℕ) = f m := he
+    rw [he',sub_self,abs_zero] at h
     exact (hp n n.2).not_ge h
   have h := RiemannGaussian.MontgomeryVaughan.mvHilbert_twentySix S (fun n => f n)
     (fun n => δ n) (fun n => mixedPhase a f t n) (fun n => mixedPhase b f t n) hinj
@@ -59,7 +60,19 @@ private theorem mixedBoundary_bound (a b : ℕ → ℂ) (f δ : ℕ → ℝ) (S 
     split_ifs with he
     · subst m; simp
     · rfl
-  simpa only [hz,mixedPhase_norm,Finset.sum_coe_sort,mixedBoundary] using h
+  simp only [hz,mixedPhase_norm] at h
+  -- Pass from sums over the subtype of S to sums over S.
+  have hsub (g : ℕ → ℂ) : (∑ r : S, g r) = ∑ n ∈ S, g n :=
+    (Finset.sum_subtype S (fun _ => Iff.rfl) g).symm
+  have hsubR (g : ℕ → ℝ) : (∑ r : S, g r) = ∑ n ∈ S, g n :=
+    (Finset.sum_subtype S (fun _ => Iff.rfl) g).symm
+  have h1 : ∀ r : S, (∑ s : S, mixedPhase a f t r*conj (mixedPhase b f t s)/((f r-f s:ℝ):ℂ)) =
+      ∑ m ∈ S, mixedPhase a f t r*conj (mixedPhase b f t m)/((f r-f m:ℝ):ℂ) := fun r =>
+    hsub (fun m => mixedPhase a f t r*conj (mixedPhase b f t m)/((f r-f m:ℝ):ℂ))
+  rw [Fintype.sum_congr _ _ h1,
+    hsub (fun n => ∑ m ∈ S, mixedPhase a f t n*conj (mixedPhase b f t m)/((f n-f m:ℝ):ℂ)),
+    hsubR (fun n => ‖a n‖^2/δ n), hsubR (fun n => ‖b n‖^2/δ n)] at h
+  exact h
 
 /-- The covariance of two arbitrary finite coefficient rows has a
 location-independent error governed by their individual gap energies. -/
@@ -75,7 +88,7 @@ theorem interval_mixed_gram_error (a b : ℕ → ℂ) (f δ : ℕ → ℝ) (S : 
         (if m=n then (L:ℂ)*(a n*conj (b n)) else 0) + I⁻¹*(D B n m-D A n m) := by
     by_cases hh : m=n
     · subst m; simp [D,oscInt_zero,mul_comm (L:ℂ)]
-    · have hpos := (hp n hn).trans_le (hgap n hn m hm hh.symm)
+    · have hpos := (hp n hn).trans_le (hgap n hn m hm (Ne.symm hh))
       rw [if_neg hh,zero_add,oscInt_eq _ _ _ (abs_pos.mp hpos)]
       dsimp only [D,B]
       rw [mixedPhase_product,mixedPhase_product]
@@ -93,8 +106,9 @@ theorem interval_mixed_gram_error (a b : ℕ → ℂ) (f δ : ℕ → ℝ) (S : 
         congr 1
         exact sum_congr rfl fun n hn => if_pos hn
   rw [hsum,add_sub_cancel_left,norm_mul,norm_inv,Complex.norm_I,inv_one,one_mul]
-  exact (norm_sub_le _ _).trans (by linarith only [mixedBoundary_bound a b f δ S hp hgap B,
-    mixedBoundary_bound a b f δ S hp hgap A])
+  have h1 := mixedBoundary_bound a b f δ S hp hgap B
+  have h2 := mixedBoundary_bound a b f δ S hp hgap A
+  exact (norm_sub_le _ _).trans (by linarith only [h1, h2])
 
 private theorem shifted_frequency_section (N : ℕ) (h t : ℝ) :
     moebiusPoly N (linePoint (t+h)) =
@@ -125,16 +139,20 @@ theorem critical_moebius_covariance_error (N : ℕ) (A L h : ℝ) :
     unfold weightedSquarefree
     rw [Nat.floor_natCast]
     refine sum_congr rfl fun n hn => ?_
-    rw [b,mul_right_comm,Complex.mul_conj,Complex.normSq_eq_norm_sq]
+    dsimp only [b]
+    rw [mul_right_comm,Complex.mul_conj,Complex.normSq_eq_norm_sq]
     rw [show a n=criticalMoebiusAmplitude n by rfl,criticalMoebiusAmplitude_sq (mem_Icc.mp hn).1]
     rw [mul_comm]
     rfl
   have ht := interval_mixed_gram_error b a f δ S (fun _ _ => inv_pos.mpr (by positivity)) hg A L
-  simp only [hb,hd,mul_assoc,Real.mul_self_sqrt (Finset.sum_nonneg (fun n _ =>
-    div_nonneg (sq_nonneg _) (inv_nonneg.mpr (by positivity))))] at ht
+  have hnn : 0 ≤ ∑ n∈S, ‖a n‖^2/δ n := Finset.sum_nonneg fun n _ =>
+    div_nonneg (sq_nonneg _) (inv_nonneg.mpr (by positivity))
+  simp only [hb,hd,mul_assoc,Real.mul_self_sqrt hnn] at ht
   have hsum : (∑ n∈S, ‖a n‖^2/δ n) ≤ 2*N := critical_moebius_gap_energy N
-  simp only [shifted_frequency_section,critical_moebius_frequency_section]
-  exact ht.trans (by linarith only [hsum])
+  simp only [shifted_frequency_section]
+  simp only [critical_moebius_frequency_section]
+  refine ht.trans ?_
+  linarith only [hsum]
 
 
 /-- Mean correlation for the sharp section through X, on an interval
@@ -158,7 +176,7 @@ theorem sharp_covariance_microscopic_estimate {X L : ℝ} (hX : 1<X) (hL : 0<L) 
   rw [hd] at hg
   have he : ‖W-D‖≤104*X/L := by
     dsimp only [W,sharpMoebiusCovariance]
-    rw [div_sub' hlc,norm_div,Complex.norm_real,Real.norm_eq_abs,abs_of_pos hL,mul_comm D]
+    rw [div_sub' hlc,norm_div,Complex.norm_real,Real.norm_eq_abs,abs_of_pos hL]
     exact div_le_div_of_nonneg_right (hg.trans (mul_le_mul_of_nonneg_left
       (Nat.floor_le (zero_lt_one.trans hX).le) (by norm_num))) hL.le
   have ha : ‖D-U-(squarefreeHarmonicConstant:ℂ)‖≤12*X^(-(1/2:ℝ))+24*|h| :=

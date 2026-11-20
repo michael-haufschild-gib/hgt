@@ -32,6 +32,7 @@ tmp/
 .serena/
 computations
 output/
+.cache/
 scratch/
 /scratchpad/
 scratchpade/
