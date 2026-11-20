@@ -43,8 +43,8 @@ theorem projected_order_at_time (C : Finset (ℂ × ℂ)) (τ : ℂ) :
   rw [hf,analyticOrderAt_finset_prod C f τ ha,projectedTimeMass,Finset.sum_filter,Nat.cast_sum]
   apply Finset.sum_congr rfl
   intro p _
-  rw [show f p=(fun z : ℂ => z-p.1)^heatIntersectionMultiplicity p from rfl,
-    analyticOrderAt_pow (analyticAt_id.sub analyticAt_const)]
+  have hA : AnalyticAt ℂ (fun z : ℂ => z-p.1) τ := analyticAt_id.sub analyticAt_const
+  rw [show f p=(fun z : ℂ => z-p.1)^heatIntersectionMultiplicity p from rfl,analyticOrderAt_pow hA]
   by_cases he : p.1=τ
   · rw [if_pos he,he,hlin,nsmul_eq_mul,mul_one]
   · have hz : analyticOrderAt (fun z : ℂ => z-p.1) τ=0 :=
@@ -180,7 +180,10 @@ theorem projected_heat_area_excess (r : ℝ) (hr : 0<r) :
     have hm : projectedTimeMass C τ=2*k := by simpa only [two_mul] using hk
     rw [hm,show 2*k/2=k by omega,Nat.cast_mul,Nat.cast_ofNat,Nat.cast_choose_two]
     ring
-  exact he ▸ h.sub_const (2*(heatBoxWinding r:ℝ))
+  show Tendsto (fun u => logDerivativeDiskArea (projectedHeatDiscriminant C) 0 0 (r+1) u-
+    2*(heatBoxWinding r:ℝ)) atTop (𝓝 (8*∑ τ ∈ C.image Prod.fst, (((projectedTimeMass C τ/2).choose 2):ℝ)))
+  rw [← he]
+  exact h.sub_const (2*(heatBoxWinding r:ℝ))
 
 /-- An observed excess strictly below eight certifies that every
 occupied time contains exactly one real double pair. -/
@@ -203,7 +206,7 @@ theorem projected_excess_below_eight_iff (r : ℝ) (hr : 0<r) :
     have hsmall : (E:ℝ)<1 := by linarith only [he,hb]
     have he0 : E=0 := Nat.lt_one_iff.mp (by exact_mod_cast hsmall)
     have hl : (projectedTimeMass C τ/2).choose 2 ≤ E :=
-      Finset.single_le_sum (fun _ _ => Nat.zero_le _) hτ
+      Finset.single_le_sum (f := fun τ => (projectedTimeMass C τ/2).choose 2) (fun _ _ => Nat.zero_le _) hτ
     have hk := Nat.choose_eq_zero_iff.mp (Nat.eq_zero_of_le_zero (hl.trans_eq he0))
     have hpos := time_mass_pos hτ
     obtain ⟨k,hk₂⟩ := projected_real_heat_mass_even r τ

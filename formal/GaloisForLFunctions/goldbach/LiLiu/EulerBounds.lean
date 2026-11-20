@@ -21,9 +21,7 @@ theorem densityEuler_norm_bound {a : ℝ} (ha : 0 < a) :
   apply Eventually.of_forall
   intro S
   calc
-    ‖∏ p ∈ S, (1 + densityIncrement N p w)‖ ≤ ∏ p ∈ S, ‖1 + densityIncrement N p w‖ :=
-      Finset.norm_prod_le _ _
-    _ ≤ ∏ p ∈ S, Real.exp (m p) := by
+    (∏ p ∈ S, ‖1 + densityIncrement N p w‖) ≤ ∏ p ∈ S, Real.exp (m p) := by
       apply Finset.prod_le_prod (fun _ _ => norm_nonneg _)
       intro p _
       have h := norm_add_le (1 : ℂ) (densityIncrement N p w)

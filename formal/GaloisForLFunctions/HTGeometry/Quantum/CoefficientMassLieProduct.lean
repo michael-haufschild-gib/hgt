@@ -10,11 +10,10 @@ error, including for arbitrarily long lists.
 open NormedSpace
 namespace GaloisForLFunctions.HTGeometry
 noncomputable section
-variable {A : Type*} [CStarAlgebra A] [Nontrivial A]
+variable {A : Type*} [CStarAlgebra A]
 
 local instance : NormedAlgebra ℚ A := .restrictScalars ℚ ℂ A
 
-omit [Nontrivial A] in
 private theorem list_exp_linear_error (z : List A) (hz : ∀ x ∈ z, x ∈ skewAdjoint A) (t : ℝ) :
     ‖(z.map fun x => exp (t • x)).prod - (1 + t • z.sum)‖ ≤
       (z.map norm).sum^2 * |t|^2 / 2 := by
@@ -69,6 +68,8 @@ theorem list_lie_product_mass_error (z : List A) (hz : ∀ x ∈ z, x ∈ skewAd
   have h3 : ‖z.sum‖^2*|t|^2/2 ≤ (z.map norm).sum^2*|t|^2/2 := by
     gcongr; exact norm_list_sum_le z
   linarith only [h0,h1,h2,h3]
+
+variable [Nontrivial A]
 
 /-- Repeating a mass-controlled Lie step r times leaves an error at most
 the square of the integrated mass divided by r. -/

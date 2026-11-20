@@ -26,7 +26,7 @@ private theorem truncatedMellin_step (f : ℝ → ℂ) (hf : ContDiff ℝ ∞ f)
   have hd := (contDiff_infty_iff_deriv.mp hf).1
   have hdc := (contDiff_infty_iff_deriv.mp hf).2.continuous
   have hp : IntervalIntegrable (fun x : ℝ => (x:ℂ)^(s-1)) volume 0 2 :=
-    intervalIntegrable_cpow' (by simpa using hs)
+    intervalIntegral.intervalIntegrable_cpow' (by simp only [Complex.sub_re, Complex.one_re]; linarith only [hs])
   have H := intervalIntegral.integral_mul_deriv_eq_deriv_mul_of_hasDerivAt
     (a := (0:ℝ)) (b := 2) hc.continuousOn hf.continuous.continuousOn
     (u' := fun x : ℝ => s * (x:ℂ)^(s-1)) (v' := deriv f)
@@ -34,7 +34,7 @@ private theorem truncatedMellin_step (f : ℝ → ℂ) (hf : ContDiff ℝ ∞ f)
     (fun x _ => (hd x).hasDerivAt) (hp.const_mul s) (hdc.intervalIntegrable ..)
   simp only [h2, mul_zero, ofReal_zero, zero_cpow hs0, zero_mul, sub_zero, zero_sub,
     mul_assoc, intervalIntegral.integral_const_mul] at H
-  simpa only [truncatedMellin, add_sub_cancel_right] using congrArg Neg.neg H.symm
+  simpa only [truncatedMellin, add_sub_cancel_right, neg_neg] using congrArg Neg.neg H.symm
 
 private def profile (φ : TestWeight) (x : ℝ) : ℂ := signedProfile φ x
 
