@@ -38,7 +38,9 @@ theorem scalar_fraction {N : ℕ} (H : selfAdjoint (Register N)) (hi : Maximally
       orbitCircuitDistance H 0 t ≤ zeroGateArcTolerance (physicalArc ε)
     rw [he]
     exact hasProjectiveCircuitApproximation_iff_infDist _ _ _
-  simpa only [visitFraction,hset,zeroGateArcDensity] using h
+  change Tendsto (fun T => volume.real (visitSet H 0 ε ∩ Icc a T)/(T-a)) atTop _
+  rw [hset]
+  exact h
 
 /-- For a fixed prefix, the affordable fraction of every budget below
 half the qubit count is bounded above and below by fixed multiples of
@@ -46,7 +48,7 @@ half the qubit count is bounded above and below by fixed multiples of
 theorem gaussian_low_gate_occupation_order :
     ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ k : ℕ,
       let N := k+3
-      let D := 2^N
+      let D : ℕ := 2^N
       let H : selfAdjoint (Register N) := ⟨pathHamiltonian (pathPauliDisorderShell ω (k+1)),isSelfAdjoint_pathHamiltonian _⟩
       ∃ A > 0, ∀ ε : ℝ, 0<ε → ε<sqrt 2 → A*ε<sqrt 2 → ∀ a : ℝ, ∀ s : ℕ, 2*s<N →
         ∀ᶠ T : ℝ in atTop, (D:ℝ)/2*(ε/π)^(D-1) < visitFraction H s ε a T ∧
@@ -70,7 +72,7 @@ theorem gaussian_low_gate_occupation_order :
     have hp' := pow_le_pow_left₀ (physicalArc_spec (mul_pos hA hε) hs').1.1.le hu (D-1)
     nlinarith only [mul_le_mul_of_nonneg_left hp' hd.le,mul_pos hd hp]
   filter_upwards [hlow.eventually_const_lt h1,hhigh.eventually_lt_const h2,eventually_ge_atTop a] with T hL hU ht
-  refine ⟨hL.trans_le (visitFraction_mono H (Nat.zero_le s) ε a ht),lt_of_le_of_lt ?_ hU⟩
+  refine ⟨hL.trans_le (visitFraction_mono H (Nat.zero_le s) ε a T ht),lt_of_le_of_lt ?_ hU⟩
   apply div_le_div_of_nonneg_right _ (sub_nonneg.mpr ht)
   apply measureReal_mono _ (measure_ne_top_of_subset inter_subset_right measure_Icc_lt_top.ne)
   exact inter_subset_inter_left _ (fun t ht' => h t ε s hs ht')

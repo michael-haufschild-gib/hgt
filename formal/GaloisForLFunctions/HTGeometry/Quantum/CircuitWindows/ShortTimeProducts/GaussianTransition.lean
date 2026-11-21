@@ -25,7 +25,7 @@ theorem gaussian_linear_budget_occupation_transition :
   obtain ⟨B,hB,hb⟩ := hlarge k
   refine ⟨B,hB,?_⟩
   intro L R hL hR
-  let D := 2^N
+  let D : ℕ := 2^N
   let d := D-1
   let K := 2*π*A*L*B
   have castTop : Tendsto (fun m : ℕ => (m:ℝ)) atTop atTop := tendsto_natCast_atTop_atTop
@@ -33,7 +33,7 @@ theorem gaussian_linear_budget_occupation_transition :
     castTop.eventually_gt_atTop (A*(L*B)),castTop.eventually_gt_atTop (8*R*K^d)] with m hm h1 h2 h3
   intro ε a s hcount
   have hmR : (1:ℝ) ≤ m := by exact_mod_cast hm
-  have hm' : (0:ℝ)<m := zero_lt_one.trans_le hmR
+  have hm' : (0:ℝ) < m := zero_lt_one.trans_le hmR
   have hm2 : (m:ℝ) ≤ (m:ℝ)^2 := by nlinarith only [sq_nonneg ((m:ℝ)-1),hmR]
   have hr : 0<ε := by dsimp only [ε]; positivity
   have hroot : (1:ℝ) < sqrt 2 := by

@@ -227,14 +227,6 @@ def SlopeLemmaRounded : Prop :=
 
 end Round
 
-def RoundUpNeedsTerm : Prop :=
-  ∃ (l sg' tau : Unit → ℝ) (gain F E : Fin 1 → Unit → ℝ) (muMaxM muMaxMu muMaxN : ℝ),
-    (∀ w, 0 ≤ l w) ∧
-    (∀ w, UnitWeightPartition.sgw Finset.univ gain F E w ≤ sg' w ∧ sg' w < UnitWeightPartition.sgw Finset.univ gain F E w + 1) ∧
-    muMaxN ≤ muMaxMu + UnitWeightPartition.Sg Finset.univ l sg' tau ∧ muMaxMu ≤ muMaxM ∧
-    ¬ (muMaxN ≤ muMaxM + UnitWeightPartition.Ga Finset.univ Finset.univ l gain tau
-      + UnitWeightPartition.Fo Finset.univ Finset.univ l F - UnitWeightPartition.Ee Finset.univ Finset.univ l E)
-
 def LatticeSlopeComparison : Prop :=
   ∀ (K V ι : Type) [Field K] [NumberField K] [StarRing K] [IsTotallyComplex K] [AddCommGroup V]
     [Module K V] [Module (𝓞 K) V] [IsScalarTower (𝓞 K) K V] [Fintype ι] [DecidableEq ι]

@@ -26,11 +26,11 @@ with scalar occupation comes from distinct near-identity lags. -/
 theorem gaussian_product_step_occupation :
     ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ k : ℕ,
       let N := k+3
-      let D := 2^N
+      let D : ℕ := 2^N
       let u := pathPauliDisorderShell ω (k+1)
       let H : selfAdjoint (Register N) := ⟨pathHamiltonian u,isSelfAdjoint_pathHamiltonian u⟩
       let J := Fintype.card (PathLabel (k+1))
-      ∃ B > 0, ∀ m : ℕ, 0<m → ∀ a : ℝ, ∀ᶠ T : ℝ in atTop,
+      ∃ B > 0, ∀ m : ℕ, 0 < m → ∀ a : ℝ, ∀ᶠ T : ℝ in atTop,
         (m:ℝ)*D/4*(1/(4*π*(m:ℝ)^2))^(D-1) ≤ visitFraction H J (B/(m:ℝ)^2) a T := by
   filter_upwards [gaussian_path_all_prefixes_maximally_projective] with ω hω k
   intro N D u H J
@@ -42,8 +42,8 @@ theorem gaussian_product_step_occupation :
   intro m hm a
   let r := 1/(4*(m:ℝ)^2)
   let g := π/(W*m)
-  have hm' : (0:ℝ)<m := Nat.cast_pos.mpr hm
-  have h1 : (1:ℝ)≤m := by exact_mod_cast hm
+  have hm' : (0:ℝ) < m := Nat.cast_pos.mpr hm
+  have h1 : (1:ℝ)≤ m := by exact_mod_cast hm
   have hr : 0<r := by dsimp [r]; positivity
   have hs : r<sqrt 2 := by
     have hpow : (1:ℝ)≤(m:ℝ)^2 := one_le_pow₀ h1

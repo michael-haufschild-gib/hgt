@@ -1,5 +1,4 @@
-import GaloisForLFunctions.WindowedLandauTheory.SizeWindowBrackets.RealSlopeBoundsSplit
-import GaloisForLFunctions.WindowedLandauTheory.RankGapBounds.MeanBoundSecondForm
+import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 /-! Logarithmic error bounds in the comparison of a maximal slope with its mean. -/
 
@@ -65,12 +64,6 @@ def Line1Max : Prop :=
     (η + 4 * Real.sqrt e) * HH ≤ 6 * b → ConclF s mu logI del u HH η e →
     s ≤ mu + logI + 5 * phi HH (max u b) + 7 * b
 
-def Line1NeedsDel : Prop :=
-  ∀ del : ℝ, 1 / 7 < del → del < 1 → ∃ s mu logI u HH η e b : ℝ,
-    0 < b ∧ 0 < HH ∧ 0 ≤ u ∧ 0 ≤ η ∧ η ≤ 1 ∧ 0 ≤ e ∧ e ≤ 1 / 4 ∧ 0 ≤ logI ∧ s - mu ≤ HH ∧
-    (η + 4 * Real.sqrt e) * HH ≤ 6 * b ∧ ConclF s mu logI del u HH η e ∧
-    ¬ (s ≤ mu + logI + 5 * phi HH u + 7 * b)
-
 def LogMax : Prop :=
   ∀ sg b HH u : ℝ, 0 < sg → 0 < b → 0 ≤ HH → HH ≤ b / sg →
     Real.log (1 + HH / max u b) ≤ Real.log (1 + 1 / sg)
@@ -135,51 +128,9 @@ def WindowBoundSharp : Prop :=
     ConclF s mu 0 del u HH η e →
     s ≤ mu + 5 * (c + 1) * (cU + 1) * Real.log x * W + 7 * b
 
-def WindowBoundNeedsK : Prop :=
-  ∀ C c : ℝ, 0 < c → ∃ s mu logI k del u W HH η e b x : ℝ,
-    2 ≤ x ∧ 0 < b ∧ 0 < HH ∧ HH ≤ x ^ c * b ∧ 0 ≤ u ∧ u ≤ W ∧ b ≤ W ∧ 0 ≤ del ∧ del ≤ 1 / 20 ∧
-    0 ≤ η ∧ 0 ≤ e ∧ e ≤ 1 / 4 ∧ (η + 4 * Real.sqrt e) * HH ≤ 6 * b ∧ 0 ≤ logI ∧ logI ≤ k ∧
-    s - mu ≤ HH ∧ ConclF s mu logI del u HH η e ∧
-    ¬ (s ≤ mu + C * Real.log x * W + 7 * b)
-
-def WindowBoundNeedsKNotSharp : Prop :=
-  ∀ s mu del u W HH η e b x c C : ℝ, 2 ≤ x → 0 ≤ c → 0 < b → 0 ≤ HH →
-    HH ≤ x ^ c * b → 0 ≤ u → u ≤ W → del ≤ 1 / 7 →
-    (η + 4 * Real.sqrt e) * HH ≤ 6 * b → b ≤ W → 10 * (c + 1) ≤ C →
-    ¬ (s ≤ mu + C * Real.log x * W + 7 * b) → ¬ ConclF s mu 0 del u HH η e
-
 def SlopeExcessBoundExponentZero : Prop :=
   ∀ s mu W HH b x C : ℝ, 2 ≤ x → 0 < b → 0 ≤ W → 0 ≤ C → HH ≤ x ^ (0 : ℝ) * b → s - mu ≤ HH →
     s ≤ mu + C * Real.log x * W + 7 * b
-
-open WindowedLandauTheory.LFunctionChainParameters.WeightedMeanLemmas in
-
-def CorFamily (ι : Type*) [Fintype ι] [Nonempty ι] : Prop :=
-  ∀ (d muMaxN muN muMaxM muM h dr BE : ι → ℝ) (Sg0 A A' V mu del HH η e b x c : ℝ),
-    (∀ u, 0 < d u) → (∀ u, 0 ≤ dr u) → (∀ u, muN u ≤ muMaxN u) →
-    Slopes2ge muMaxN muN muMaxM muM dr BE Sg0 →
-    (∀ u, muMaxM u ≤ A) → (∀ u, -A' ≤ muM u) → (∀ u u', |h u - h u'| ≤ V) →
-    2 ≤ x → 0 ≤ c → 0 < b → 0 ≤ HH → HH ≤ x ^ c * b → del ≤ 1 / 7 →
-    (η + 4 * Real.sqrt e) * HH ≤ 6 * b →
-    ConclF (sF d muN h) mu (Real.log (Fintype.card ι : ℝ)) del (uF d muMaxN muN h) HH η e →
-    sF d muN h ≤ mu + Real.log (Fintype.card ι : ℝ)
-      + 5 * (c + 1) * Real.log x * (A + A' + V + wmean d (fun u => dr u + BE u) + b) + 7 * b
-
-section SizeData₂
-
-open WindowedLandauTheory.RankGapBounds.WeightedMeanData
-
-variable {U0 : Type} [Fintype U0] {W : U0 → Type} [∀ u0, Fintype (W u0)]
-  [∀ u0, Nonempty (W u0)] {Top : Type} [Fintype Top] {m f : ℕ}
-variable (D : Data U0 W Top m f) (C : Consts)
-
-def EntropyBound : Prop :=
-  D.HidaSetting C → D.SlopeIneq → D.HHBound C → D.FParams → D.delBar ≤ 1 / 7 →
-    (D.etaBar + 4 * Real.sqrt D.eBar) * D.x ^ C.cHH ≤ 6 →
-    ∀ u0, D.s u0 ≤ D.muCC u0 + Real.log (Fintype.card (W u0) : ℝ)
-      + 5 * (D.uF u0 * Real.log (1 + D.HH u0 / D.uF u0)) + 7 * D.b
-
-end SizeData₂
 
 end
 
