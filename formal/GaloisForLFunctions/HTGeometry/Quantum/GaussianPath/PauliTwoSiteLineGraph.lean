@@ -10,6 +10,8 @@ two endpoint axes. This identifies the full two-site frustration graph
 with the line graph of K₆ and gives a line graph for any active subset.
 -/
 
+open MeasureTheory
+
 namespace GaloisForLFunctions.HTGeometry
 
 private def otherAxes (a : Fin 3) : Finset (Fin 3) :=
@@ -40,7 +42,7 @@ private theorem disjoint_disjSum_iff {α β : Type*} (A C : Finset α) (B D : Fi
 
 /-- The root-vertex pair of a two-site Pauli term. -/
 def twoSitePauliRootEdge : PathLabel 0 → Finset (Fin 3 ⊕ Fin 3)
-  | .inl (i, a) => if i = 0 then (otherAxes a).disjSum ∅ else ∅.disjSum (otherAxes a)
+  | .inl (i, a) => if i = 0 then (otherAxes a).disjSum ∅ else Finset.disjSum ∅ (otherAxes a)
   | .inr (_, a, b) => ({a} : Finset (Fin 3)).disjSum {b}
 
 theorem card_twoSitePauliRootEdge (p : PathLabel 0) : (twoSitePauliRootEdge p).card = 2 := by
@@ -79,7 +81,7 @@ theorem twoSitePauliRootEdge_injective : Function.Injective twoSitePauliRootEdge
     · exact (single_ne a c he.1).elim
     · exact (single_ne b c he.2).elim
   · simp only [twoSitePauliRootEdge, Finset.disjSum_inj, Finset.singleton_inj] at he
-    rw [Subsingleton.elim e f, he.1, he.2]
+    rw [(Fin.eq_zero e).trans (Fin.eq_zero f).symm, he.1, he.2]
 
 /-- Every edge among the six roots comes from a two-site Pauli label. -/
 theorem exists_twoSitePauliRootEdge {E : Finset (Fin 3 ⊕ Fin 3)} (hE : E.card = 2) :
@@ -89,13 +91,14 @@ theorem exists_twoSitePauliRootEdge {E : Finset (Fin 3 ⊕ Fin 3)} (hE : E.card 
     rw [← Finset.card_disjSum, hsplit, hE]
   have hcomplement (S : Finset (Fin 3)) (hS : S.card = 2) : ∃ a, otherAxes a = S := by
     have hcard : (Finset.univ \ S).card = 1 := by
-      rw [Finset.card_sdiff_of_subset (Finset.subset_univ S), Fintype.card_fin, hS]
+      rw [Finset.card_sdiff_of_subset (Finset.subset_univ S), Finset.card_univ, Fintype.card_fin, hS]
     obtain ⟨a, ha⟩ := Finset.card_eq_one.mp hcard
     refine ⟨a, Finset.ext fun x => ?_⟩
     have hx : x ∉ S ↔ x = a := by
       simpa only [Finset.mem_sdiff, Finset.mem_univ, true_and, Finset.mem_singleton]
         using (Finset.ext_iff.mp ha x)
-    simpa only [otherAxes, Finset.mem_erase, Finset.mem_univ, and_true, ← hx, not_not]
+    simpa only [otherAxes, Finset.mem_erase, Finset.mem_univ, and_true, not_not] using
+      (not_congr hx).symm
   have hcases :
       (E.toLeft.card = 2 ∧ E.toRight.card = 0) ∨
       (E.toLeft.card = 0 ∧ E.toRight.card = 2) ∨
@@ -103,7 +106,7 @@ theorem exists_twoSitePauliRootEdge {E : Finset (Fin 3 ⊕ Fin 3)} (hE : E.card 
   rcases hcases with ⟨hL, hR⟩ | ⟨hL, hR⟩ | ⟨hL, hR⟩
   · obtain ⟨a, ha⟩ := hcomplement _ hL
     refine ⟨.inl (0, a), ?_⟩
-    simpa only [twoSitePauliRootEdge, if_pos rfl, ha, Finset.card_eq_zero.mp hR] using hsplit
+    simpa only [twoSitePauliRootEdge, if_true, ha, Finset.card_eq_zero.mp hR] using hsplit
   · obtain ⟨a, ha⟩ := hcomplement _ hR
     refine ⟨.inl (1, a), ?_⟩
     simpa only [twoSitePauliRootEdge, if_neg (Fin.zero_ne_one.symm), ha,
@@ -121,17 +124,14 @@ private theorem twoSite_onsite_bond_adj (i : Fin 2) (a b c : Fin 3) (e : Fin 1) 
   have hl : (0 : Fin 1).castSucc = 0 := rfl
   have hr : (0 : Fin 1).succ = 1 := rfl
   rcases eq_or_ne i 0 with rfl | hi
-  · simp only [pathWord, commute_onsite_coupling_iff, hl, hr, true_implies,
-      Fin.zero_ne_one, false_implies, and_true, twoSitePauliRootEdge, if_pos rfl,
-      disjoint_disjSum_iff, Finset.empty_disjoint, Finset.disjoint_singleton_right,
-      otherAxes, Finset.mem_erase, Finset.mem_univ, and_true, not_not, eq_comm]
+  · simp only [pathWord, commute_onsite_coupling_iff, hl, hr, twoSitePauliRootEdge,
+      if_true, disjoint_disjSum_iff]
+    simp [otherAxes, eq_comm]
   · have hi' := Fin.eq_one_of_ne_zero i hi
     subst i
-    simp only [pathWord, commute_onsite_coupling_iff, hl, hr, true_implies,
-      Fin.zero_ne_one.symm, false_implies, true_and, twoSitePauliRootEdge,
-      if_neg (Fin.zero_ne_one.symm), disjoint_disjSum_iff, Finset.empty_disjoint,
-      Finset.disjoint_singleton_right, otherAxes, Finset.mem_erase, Finset.mem_univ,
-      and_true, not_not, eq_comm]
+    simp only [pathWord, commute_onsite_coupling_iff, hl, hr, twoSitePauliRootEdge,
+      if_neg (Fin.zero_ne_one.symm : (1 : Fin 2) ≠ 0), disjoint_disjSum_iff]
+    simp [otherAxes, eq_comm]
 
 /-- Distinct terms anticommute precisely when their root edges meet. -/
 theorem twoSitePauliRootEdge_adj_iff (p q : PathLabel 0) (hpq : p ≠ q) :
@@ -145,19 +145,18 @@ theorem twoSitePauliRootEdge_adj_iff (p q : PathLabel 0) (hpq : p ≠ q) :
     · subst j
       have hac : a ≠ c := fun h => hpq (by rw [h])
       by_cases hi : i = 0 <;>
-        simp only [ne_self_iff_false, hac, or_self, not_false_eq_true,
-          true_iff, twoSitePauliRootEdge, hi, if_true, if_false, disjoint_disjSum_iff,
-          Finset.empty_disjoint, true_and, and_true, otherAxes_intersect]
+        simp only [twoSitePauliRootEdge, hi, if_true, if_false, disjoint_disjSum_iff] <;>
+        simp [hac, otherAxes_intersect]
     · have hs : i = 0 ∨ j = 0 := by
         by_contra h
         push Not at h
         exact hij ((Fin.eq_one_of_ne_zero i h.1).trans (Fin.eq_one_of_ne_zero j h.2).symm)
       rcases hs with rfl | rfl
-      · simp only [hij, hij.symm, true_or, not_true_eq_false, twoSitePauliRootEdge,
-          if_true, if_false, disjoint_disjSum_iff, Finset.empty_disjoint,
-          Finset.disjoint_empty, and_self]
-      · simp only [hij, true_or, not_true_eq_false, twoSitePauliRootEdge, if_true,
-          if_false, disjoint_disjSum_iff, Finset.empty_disjoint, Finset.disjoint_empty, and_self]
+      · have hj : j ≠ 0 := Ne.symm hij
+        simp only [twoSitePauliRootEdge, if_true, if_neg hj, disjoint_disjSum_iff]
+        simp [hij]
+      · simp only [twoSitePauliRootEdge, if_true, if_neg hij, disjoint_disjSum_iff]
+        simp [hij]
   · exact twoSite_onsite_bond_adj i a c d f
   · exact (not_congr ⟨Commute.symm, Commute.symm⟩).trans
       ((twoSite_onsite_bond_adj j c a b e).trans (not_congr disjoint_comm))
@@ -167,16 +166,17 @@ theorem twoSitePauliRootEdge_adj_iff (p q : PathLabel 0) (hpq : p ≠ q) :
     subst f
     have hl : (0 : Fin 1).castSucc = 0 := rfl
     have hr : (0 : Fin 1).succ = 1 := rfl
-    simp only [finitePauli_commute_iff_sign, finitePauliConjugationSign, Fin.prod_univ_two,
-      pathWord, couplingWord, hl, hr, if_pos rfl, if_neg (Fin.zero_ne_one.symm),
-      boolPauliConjugationSign, Option.some_ne_none, Option.some.injEq, false_or,
-      twoSitePauliRootEdge, disjoint_disjSum_iff, Finset.disjoint_singleton]
+    simp only [twoSitePauliRootEdge, disjoint_disjSum_iff, Finset.disjoint_singleton]
+    rw [finitePauli_commute_iff_sign]
+    change (¬finitePauliConjugationSign (couplingWord (0 : Fin 1) (a, b))
+      (couplingWord (0 : Fin 1) (c, d)) = 1) ↔ _
+    rw [finitePauliConjugationSign, Fin.prod_univ_two]
     have hneg := neg_ne_self.mpr (one_ne_zero : (1 : ℂ) ≠ 0)
     by_cases hac : a = c <;> by_cases hbd : b = d
     · exact (hpq (by rw [hac, hbd])).elim
-    · simp [hac, hbd, hneg]
-    · simp [hac, hbd, hneg]
-    · simp [hac, hbd]
+    · simp [couplingWord, hl, hr, boolPauliConjugationSign, hac, hbd, hneg]
+    · simp [couplingWord, hl, hr, boolPauliConjugationSign, hac, hbd, hneg]
+    · simp [couplingWord, hl, hr, boolPauliConjugationSign, hac, hbd]
 
 /-- Any active support on the two-site path admits a line graph without
 identifying distinct vertices. -/
@@ -188,10 +188,25 @@ def path_twoSite_twinLineModel (u : PathShell 0) :
   card_rootEdge p := card_twoSitePauliRootEdge p.1
   adj_iff p q hpq := twoSitePauliRootEdge_adj_iff _ _ (fun h => hpq (congrArg _ h))
   twin p q hpq _ _ _ := by
-    rw [Subtype.ext (twoSitePauliRootEdge_injective hpq) : p = q]
+    have he : p = q := Subtype.ext (twoSitePauliRootEdge_injective hpq)
+    rw [he]
+
+/-- On the common Gaussian draw the six-root model exists exactly for the
+two-site prefix. The larger prefixes fail even with arbitrary root sets. -/
+theorem gaussian_path_ae_twinLineModel_iff_twoSite :
+    ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ n,
+      Nonempty (TwinLineModel (fun p q : ActivePathLabels (pathPauliDisorderShell ω n) =>
+        ¬Commute (finitePauliMatrix (pathWord p.1)) (finitePauliMatrix (pathWord q.1)))
+        (Fin 3 ⊕ Fin 3)) ↔ n = 0 := by
+  filter_upwards [gaussian_path_ae_no_twinLineModel (ρ := Fin 3 ⊕ Fin 3)] with ω hω
+  intro n
+  cases n with
+  | zero => exact ⟨fun _ => rfl, fun _ => ⟨path_twoSite_twinLineModel _⟩⟩
+  | succ n =>
+    exact ⟨fun ⟨M⟩ => ((hω n).false M).elim, fun h => (Nat.succ_ne_zero _ h).elim⟩
 
 #print axioms exists_twoSitePauliRootEdge
 #print axioms twoSitePauliRootEdge_adj_iff
-#print axioms path_twoSite_twinLineModel
+#print axioms gaussian_path_ae_twinLineModel_iff_twoSite
 
 end GaloisForLFunctions.HTGeometry

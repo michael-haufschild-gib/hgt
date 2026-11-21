@@ -215,8 +215,12 @@ theorem UpperTheory.Reformulated.B.JumpSetsAlt.hostReal_of :
   have hone : UpperTheory.Reformulated.B.JumpSetsAlt.galE e ζ a b 1 = 1 := by
     have h := hmul 1 1
     rw [mul_one] at h
-    haveI : Group (UpperTheory.Reformulated.B.JumpSetsAlt.HGrp e) := QuotientGroup.Quotient.group _
-    exact (left_eq_mul (a := UpperTheory.Reformulated.B.JumpSetsAlt.galE e ζ a b 1)).mp h
+    set x := UpperTheory.Reformulated.B.JumpSetsAlt.galE e ζ a b 1
+    have h1 : x.1 = x.1 * x.1 := congrArg Prod.fst h
+    have h2 : x.2 = x.2 * x.2 := congrArg Prod.snd h
+    letI : Group (UpperTheory.Reformulated.B.JumpSetsAlt.HGrp e) :=
+      QuotientGroup.Quotient.group (Subgroup.zpowers (-1 : (ZMod (2 ^ (e + 2)))ˣ))
+    exact Prod.ext ((left_eq_mul (a := x.1)).mp h1) ((left_eq_mul (a := x.2)).mp h2)
   have hfix : ∀ x : ↥(UpperTheory.Reformulated.B.JumpSetsAlt.hostE ζ a b), x ∈ UpperTheory.Reformulated.B.JumpSetsAlt.hostF ζ a b ↔ σ₀ x = x := by
     intro x
     rw [NumberField.mem_maximalRealSubfield_iff]

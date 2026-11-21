@@ -33,6 +33,7 @@ theorem krausStack_cinner {α β κ : Type*} [Fintype α] [Fintype β] [Fintype 
     (A : κ → Matrix β α ℂ) (x : α → ℂ) :
     cinner x ((∑ k, (A k)ᴴ * A k) *ᵥ x) =
       (cnormSq (fun p : β × κ => ((A p.2) *ᵥ x) p.1) : ℂ) := by
+  classical
   rw [Matrix.sum_mulVec, cinner_sum_right]
   simp_rw [← Matrix.mulVec_mulVec, ← cinner_rectangular_mulVec, cinner_self]
   rw [← Complex.ofReal_sum]
