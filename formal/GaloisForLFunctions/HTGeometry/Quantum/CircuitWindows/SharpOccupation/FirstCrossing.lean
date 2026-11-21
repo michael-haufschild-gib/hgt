@@ -20,8 +20,9 @@ private theorem dated_crossing {n j : ℕ} (H : selfAdjoint (Register n)) {p G :
     simp [TwoQubitCircuit.one_eval,unitaryEvolution]
   have hwhole (T : ℝ) (hT : 0 ≤ T) (h : ∀ t ∈ Icc 0 T, f t ≤ 1/8) : T ≤ p*(T+G) := by
     have ht := hocc T hT
-    rw [inter_eq_right.mpr (fun t ht => (hasProjectiveCircuitApproximation_iff_infDist _ _ _).mpr (h t ht)),
-      Real.volume_real_Icc_of_le hT,sub_zero] at ht
+    have hsub : Icc 0 T ⊆ visitSet H j (1/8) := fun t ht =>
+      (hasProjectiveCircuitApproximation_iff_infDist _ _ _).mpr (h t ht)
+    rw [inter_eq_right.mpr hsub,Real.volume_real_Icc_of_le hT,sub_zero] at ht
     exact ht
   let R := (p*G+1)/(1-p)
   have hden : 0 < 1-p := sub_pos.mpr hsmall
@@ -69,8 +70,10 @@ theorem gaussian_hilbert_first_crossing :
   filter_upwards [hc] with ω hw
   filter_upwards [hw] with k hk
   intro N D H p G j hj
-  apply dated_crossing H (by dsimp [p]; positivity)
-    (pow_lt_one₀ (by norm_num) (by norm_num) (by dsimp [D]; positivity)) (by dsimp [G]; positivity)
+  have hD : D ≠ 0 := by dsimp [D]; positivity
+  have hp : 0 ≤ p := pow_nonneg (by norm_num : (0:ℝ) ≤ 3/8) D
+  have hsmall : p < 1 := pow_lt_one₀ (by norm_num : (0:ℝ) ≤ 3/8) (by norm_num) hD
+  apply dated_crossing (j := j) (G := G) H hp hsmall (by dsimp [G]; positivity)
   intro T hT
   simpa only [zero_add] using hk j hj 0 T hT
 

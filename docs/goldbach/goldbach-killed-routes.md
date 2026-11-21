@@ -1,6 +1,6 @@
 # Binary Goldbach: killed routes and surviving results
 
-**Lean baseline:** `4c6ee6b232202f44967fa5458c0813c120e5524b`. No new retirements since `bb1367919e8c`. [Live routes and candidates](goldbach-current-frontier-map.md).
+**Lean baseline:** `aa34244d8b80a1d35a2bf646468a50c245d533fa`. No new retirements since `4c6ee6b23220`. [Live routes and candidates](goldbach-current-frontier-map.md).
 
 | Retired mechanism | Obstruction | Surviving result |
 |---|---|---|
@@ -14,5 +14,5 @@
 | Mark divisors of the complement to detect its primes. | A [proper-divisor mark vanishes at primes](../../formal/GaloisForLFunctions/twin-prime/DivisorMarkTransfer.lean#L26). Mark the predecessor or estimate the unmarked residual. |
 | Freeze the affine slope and reuse the short modulus. | For a ≡ r mod m with m > 0 and b ≠ 0, ba−T has least positive period abs(bm). The required long-modulus estimate remains open. [Period theorem](../../formal/GaloisForLFunctions/goldbach/AffineProgressionConductor.lean#L32) |
 | RH boxed averages, positive damping, or Gram positivity force pointwise prime pairs. | [Boxed mass equals θ(x)²](../../formal/GaloisForLFunctions/goldbach/RiemannHypothesisBridge.lean#L159), damping includes composites, and the [odd Gram form](../../formal/GaloisForLFunctions/goldbach/OddCharacterGram.lean#L98) measures diagonal minus reflected mass. DAMP and ODD require strict inequalities at a fixed target. |
-| Symmetry or Hilbert–Schmidt class forces Li–Liu’s zero exclusion. | A rank-one model can have arbitrarily large normalized eigenvalue μ. The sharp single-factor bounds are [4μ²η(1−η) ≤ 1 for exclusion in Re z > 1−η](../../formal/GaloisForLFunctions/goldbach/LiLiu/OperatorSpectralBounds.lean#L24), for 0 < η < 1/2, and [μ² ≤ 1 for critical-line zeros](../../formal/GaloisForLFunctions/goldbach/SpectralSquareProduct.lean#L67). The surviving problem is the small-norm estimate for the actual arithmetic operator. |
+| Symmetry or Hilbert–Schmidt class forces Li–Liu’s zero exclusion. | A rank-one model can have arbitrarily large normalized eigenvalue μ. The sharp single-factor bounds are [4μ²η(1−η) ≤ 1 for exclusion in Re z > 1−η](../../formal/GaloisForLFunctions/goldbach/LiLiu/OperatorSpectralBounds.lean#L24), for 0 < η < 1/2, and [μ² ≤ 1 for critical-line zeros](../../formal/GaloisForLFunctions/goldbach/SpectralSquareProduct.lean#L67). The [Hardy error bound under local GRH](../../formal/GaloisForLFunctions/goldbach/LiLiu/Boundary/CorrelationForm.lean#L54) leaves a small-norm estimate for the arithmetic operator. |
 | The complete product-residue profile gives the prime odd moment. | The profile’s [odd-character moments vanish](../../formal/GaloisForLFunctions/goldbach/ProductResidueOddMoments.lean#L57). Its [additive Ramanujan moments](../../formal/GaloisForLFunctions/goldbach/ProductResidueRamanujanMoments.lean#L21) retain nonunit fibres and give local main terms. |

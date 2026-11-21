@@ -54,13 +54,13 @@ theorem matchingWeight_le_factual (d : SharedHistoryStep σ) (x : σ) (a : Bool)
 theorem matchingWeight_le_counterfactual (d : SharedHistoryStep σ) (x : σ) (a : Bool) :
     matchingWeight d x a ≤ failureLaw (d.counterfactualRate x) a := by
   let C := sharedPairing (d.factualRate x) (d.counterfactualRate x)
-  have h : C.plan a a ≤ ∑ b, C.plan b a := Finset.single_le_sum (fun _ _ => zero_le) (Finset.mem_univ a)
+  have h : C.plan a a ≤ ∑ b, C.plan b a :=
+    Finset.single_le_sum (f := fun b => C.plan b a) (fun _ _ => zero_le) (Finset.mem_univ a)
   exact_mod_cast (h.trans_eq (C.col a))
 
 private theorem pairingExpectation_one {p q : FailureRate} (C : Pairing p q) :
     pairingExpectation C (fun _ _ => 1) = 1 := by
   rw [pairingExpectation_factual]
-  change (∑ a, (failureLaw p a : ℝ) * 1) = 1
   rw [Fintype.sum_bool, mul_one, mul_one]
   change (p.1 : ℝ) + ↑(1 - p.1) = 1
   rw [NNReal.coe_sub p.2, NNReal.coe_one]
@@ -112,8 +112,7 @@ private theorem firstSplitMass_le_budget (rate : SharedHistoryStep σ → σ →
   induction ds generalizing x with
   | nil => exact le_rfl
   | cons d ds ih =>
-    apply add_le_add_left
-    refine Finset.sum_le_sum fun a _ => ?_
+    refine add_le_add (le_refl (splitHazard d x)) (Finset.sum_le_sum fun a _ => ?_)
     have hr := h d (List.mem_cons_self) x a
     have ht := ih (d.next x a) (fun e he => h e (List.mem_cons_of_mem d he))
     exact mul_le_mul hr ht (firstSplitMass_nonneg ds _) (failureLaw (rate d x) a).2
@@ -236,8 +235,8 @@ theorem firstSplitMass_le_one_sub_pow (ds : List (SharedHistoryStep σ)) (x : σ
     have ht : 0 ≤ t := pow_nonneg (sub_nonneg.mpr hδ.2) _
     calc
       firstSplitMass (d :: ds) x ≤ splitHazard d x + ∑ a, matchingWeight d x a * (1 - t) := by
-        apply add_le_add_left
-        exact Finset.sum_le_sum fun a _ => mul_le_mul_of_nonneg_left
+        refine add_le_add (le_refl (splitHazard d x)) (Finset.sum_le_sum fun a _ => ?_)
+        exact mul_le_mul_of_nonneg_left
           (ih (d.next x a) (fun e he => h e (List.mem_cons_of_mem d he))) (matchingWeight_nonneg d x a)
       _ = 1 - (1 - splitHazard d x) * t := by
         rw [← Finset.sum_mul, matchingWeight_sum]
@@ -323,13 +322,16 @@ theorem sharedRescue_tendsto_zero (l : Filter ι) (ds : List (SharedHistoryStepF
     · exact ⟨le_rfl, zero_le_one⟩
   have hdiag (z : σ) : terminalRescueCost f f z z = 0 := by
     cases hz : f z <;> simp [terminalRescueCost, hz]
-  apply squeeze_zero
+  refine squeeze_zero ?_ ?_ (firstSplitMass_tendsto_zero l ds x h)
   · intro s
     exact (trajectoryExpectation_mem_Icc _ hc _ x x).1
   · intro s
-    simpa only [List.map_map, Function.comp_def] using
-      sharedThreshold_payoff_le_firstSplitMass _ hc hdiag (ds.map fun d => d.atParameter s) x
-  · exact firstSplitMass_tendsto_zero l ds x h
+    let steps := ds.map fun d => d.atParameter s
+    have he : steps.map SharedHistoryStep.asStage = ds.map (fun d => (d.atParameter s).asStage) := by
+      simp only [steps, List.map_map, Function.comp_def]
+    have hpay := congrArg (fun stages => trajectoryExpectation (terminalRescueCost f f)
+      (sharedThresholdPolicy stages) x x) he
+    exact hpay.symm.trans_le (sharedThreshold_payoff_le_firstSplitMass _ hc hdiag steps x)
 
 private theorem factualFailureMass_family_eq (ds : List (SharedHistoryStepFamily ι σ))
     (f : σ → Bool) (s t : ι) (x : σ) :

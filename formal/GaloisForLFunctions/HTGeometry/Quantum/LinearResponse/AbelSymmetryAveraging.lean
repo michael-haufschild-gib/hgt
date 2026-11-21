@@ -62,8 +62,6 @@ def abelResponseFixedLinearEquiv (hH : H.IsHermitian) (hfix : H ∈ matrixSymmet
   toFun X := ⟨hamiltonianDampedGapResponse hH 0 ε X,
     (hamiltonianDampedGapResponse_mem_symmetryFixed_iff A hH hfix 0 ε X).mpr X.property⟩
   invFun X := ⟨hamiltonianAbelInverse H ε X, fun g => by
-    change A g (hamiltonianAbelInverse H ε (X : Matrix ι ι ℂ)) =
-      hamiltonianAbelInverse H ε (X : Matrix ι ι ℂ)
     simp only [hamiltonianAbelInverse_eq_sub, map_sub, map_mul, map_smul, hfix g, X.property g]⟩
   left_inv X := Subtype.ext (hamiltonianAbelInverse_leftInverse hH ε X)
   right_inv X := Subtype.ext (hamiltonianAbelInverse_rightInverse hH ε X)
@@ -87,7 +85,6 @@ theorem matrixSymmetryAverage_apply (X : Matrix ι ι ℂ) :
 theorem matrixSymmetryAverage_mem_fixed (X : Matrix ι ι ℂ) :
     matrixSymmetryAverage A X ∈ matrixSymmetryFixed A := by
   intro h
-  change A h (matrixSymmetryAverage A X) = matrixSymmetryAverage A X
   rw [matrixSymmetryAverage_apply, map_smul, map_sum]
   congr 1
   exact Fintype.sum_bijective (fun g => h * g) (Group.mulLeft_bijective h) _ _

@@ -59,6 +59,9 @@ import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PauliCriticalCutoff
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPauliFirstThreshold
 import GaloisForLFunctions.HTGeometry.Quantum.PrescribedClockCircuitOccupation
 import GaloisForLFunctions.HTGeometry.Quantum.SpectralSignReturnClock
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.SharpOccupation.ClockObstruction
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.SharpOccupation.FirstCrossing
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.SharpOccupation.LongWindows
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPauliEarlyLateCircuitLaw
 
 /-! # Circuit complexity along static local Hamiltonian trajectories -/

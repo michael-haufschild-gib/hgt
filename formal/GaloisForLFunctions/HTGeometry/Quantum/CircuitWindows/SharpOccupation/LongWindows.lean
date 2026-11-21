@@ -41,7 +41,7 @@ private theorem window_fraction_bound {n j k : ℕ} {H : selfAdjoint (Register n
     obtain ⟨i,hi⟩ := mem_iUnion.mp hu
     have hh : u+shift i ∈ Icc (a+shift i) (T+shift i) := hi.2
     exact ⟨by linarith only [hh.1],by linarith only [hh.2]⟩
-  have htot := (measureReal_mono hsub (measure_ne_top_of_subset hI measure_Icc_lt_top.ne)).trans
+  have htot := (measureReal_mono (μ := volume) hsub (measure_ne_top_of_subset hI measure_Icc_lt_top.ne)).trans
     (measureReal_iUnion_fintype_le B)
   have heach (i : Fin M) : volume.real (B i)/(T-a) ≤ p := by
     have h := (ht i).le

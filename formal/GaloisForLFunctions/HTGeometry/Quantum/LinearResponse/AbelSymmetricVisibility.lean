@@ -17,6 +17,7 @@ noncomputable section
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι] {H T : Matrix ι ι ℂ}
 
+omit [DecidableEq ι] in
 /-- Hermitian commutator multiplication is self-adjoint for the trace pairing. -/
 theorem trace_conjTranspose_mul_commutator (hH : H.IsHermitian) (W Y : Matrix ι ι ℂ) :
     (Wᴴ * (H * Y - Y * H)).trace = ((H * W - W * H)ᴴ * Y).trace := by
@@ -26,6 +27,7 @@ theorem trace_conjTranspose_mul_commutator (hH : H.IsHermitian) (W Y : Matrix ι
     Matrix.sub_mul, show Hᴴ = H from hH]
   rw [hc, Matrix.mul_assoc Wᴴ H Y]
 
+omit [DecidableEq ι] in
 /-- The real part of the inverse-response pairing is the squared
 Hilbert–Schmidt norm, since its commutator term is skew-adjoint. -/
 theorem re_trace_conjTranspose_mul_abelInverse (hH : H.IsHermitian)
@@ -49,6 +51,7 @@ theorem re_trace_conjTranspose_mul_abelInverse (hH : H.IsHermitian)
   rw [Matrix.mul_sub, Matrix.mul_smul, Matrix.trace_sub, Matrix.trace_smul, Complex.sub_re,
     smul_eq_mul, Complex.mul_re, hγ, him, zero_mul, mul_zero, sub_self, sub_zero]
 
+omit [DecidableEq ι] in
 private theorem eq_zero_of_hsSqRe_eq_zero (W : Matrix ι ι ℂ) (hW : hsSqRe W = 0) : W = 0 := by
   rw [hsSqRe_eq_sum] at hW
   apply Matrix.ext
@@ -78,6 +81,8 @@ theorem abelPerturbationTransfer_twice_eq_zero_iff (hH : H.IsHermitian) (hT : T.
   · intro h
     have hF : γ • (T * W - W * T) = 0 := by
       have he := congrArg (hamiltonianAbelInverse H ε) h
+      change hamiltonianAbelInverse H ε (abelPerturbationTransfer hH ε T W) =
+        hamiltonianAbelInverse H ε 0 at he
       rw [abelPerturbationTransfer_apply, hamiltonianAbelInverse_leftInverse hH ε,
         hamiltonianAbelInverse_eq_sub H ε 0, Matrix.mul_zero, Matrix.zero_mul, sub_self,
         smul_zero, sub_self] at he
