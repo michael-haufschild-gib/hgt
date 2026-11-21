@@ -17,18 +17,18 @@ def emptyRate (n : ℕ) (ε : ℝ) (x : PrefixIndex n → ℝ) : ℝ :=
 
 /-- Every individual coupling, and even the full Euclidean norm, gives a
 deterministic lower bound for the spectral entry flux. -/
-theorem coefficient_rate_floor (n : ℕ) (ε : ℝ) (hε : 0<ε) (hr : ε<sqrt 2) :
+theorem coefficient_rate_floor (n : ℕ) (ε : ℝ) (hε : 0 < ε) (hr : ε < sqrt 2) :
     let D : ℕ := 2^(n+2)
     let J := Fintype.card (PathLabel n)
     let b := (physicalArc ε)^(D-2)*(D:ℝ)^2/(4*π*(J:ℝ))
-    0<b ∧ ∀ x : PrefixIndex n → ℝ, b*coefficientNorm x ≤ emptyRate n ε x := by
+    0 < b ∧ ∀ x : PrefixIndex n → ℝ, b*coefficientNorm x ≤ emptyRate n ε x := by
   intro D J b
   have hx := (physicalArc_spec hε hr).1.1
-  have hj : (0:ℝ)<J := Nat.cast_pos.mpr Fintype.card_pos
-  have hd : (0:ℝ)<D := by dsimp only [D]; positivity
-  have hden : 0<4*π*(J:ℝ) := by positivity
-  have hpow : 0<(physicalArc ε)^(D-2) := pow_pos hx _
-  have hb : 0<b := div_pos (mul_pos hpow (sq_pos_of_pos hd)) hden
+  have hj : (0:ℝ) < J := Nat.cast_pos.mpr Fintype.card_pos
+  have hd : (0:ℝ) < D := by dsimp only [D]; positivity
+  have hden : 0 < 4*π*(J:ℝ) := by positivity
+  have hpow : 0 < (physicalArc ε)^(D-2) := pow_pos hx _
+  have hb : 0 < b := div_pos (mul_pos hpow (sq_pos_of_pos hd)) hden
   refine ⟨hb,?_⟩
   intro x
   let u : PathShell n := WithLp.toLp 2 (fun l => x ((pathCoeffEquiv n).symm l))
@@ -61,7 +61,7 @@ theorem gaussian_prefix_entry_rate :
       let n := k+1
       let x := fun i => pathPauliDisorderShell ω n (pathCoeffEquiv n i)
       let E := fun i => -(prefixGenerator n x).2.isHermitian.eigenvalues i
-      ∀ ε : ℝ, 0<ε → ε<sqrt 2 →
+      ∀ ε : ℝ, 0 < ε → ε < sqrt 2 →
         Tendsto (fun T : ℝ => ((entryDates E (physicalArc ε) T).card:ℝ)/T) atTop (𝓝 (emptyRate n ε x)) := by
   filter_upwards [gaussian_path_all_prefixes_maximally_projective] with ω hg k
   intro n x E ε hε hr

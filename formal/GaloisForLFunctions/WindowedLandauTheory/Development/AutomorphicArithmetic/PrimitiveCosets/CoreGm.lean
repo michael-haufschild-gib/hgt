@@ -37,7 +37,7 @@ theorem UpperTheory.Comparison₂.core_gm :
     refine ⟨hLX.1, le_trans ?_ hLX.2⟩
     unfold KBig
     exact mul_le_mul_of_nonneg_right
-      (mul_le_mul_of_nonneg_left (add_le_add_left hcHH 1) (by positivity))
+      (mul_le_mul_of_nonneg_left (add_le_add (le_refl 1) hcHH) (by positivity))
       (by linarith only [w9])
   have hb : 0 < Dd.b := zero_lt_one.trans_le w4
   have hx0 : 0 < Dd.x := zero_lt_one.trans_le w1

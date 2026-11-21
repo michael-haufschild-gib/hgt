@@ -79,7 +79,7 @@ private theorem square_conjugate {I : Type*} [Fintype I] [DecidableEq I] [Nonemp
     _ = V*(D*D)*star V := by
       simp only [mul_assoc]
       rw [←mul_assoc (star V) V _,(Unitary.mem_iff.mp hV).1,one_mul]
-    _ = _ := by simp only [D,Matrix.diagonal_mul_diagonal,←sq,Complex.ofReal_pow]
+    _ = _ := by simp only [D,sq,Matrix.diagonal_mul_diagonal,Complex.ofReal_mul]
 
 /-- Winding control transverse to the physical generator gives approximation
 by the actual time evolution of its shifted square. -/

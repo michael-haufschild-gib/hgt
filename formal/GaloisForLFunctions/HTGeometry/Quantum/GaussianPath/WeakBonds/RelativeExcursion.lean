@@ -21,10 +21,10 @@ def fluxExcursion (n P : ℕ) (x : PrefixIndex n → ℝ) : ℝ :=
   emptyRate n (1/10) x * min (crossingOrigin n P (9/80) x) (crossingWait n P (P/2) x)
 
 private theorem relative_lower {n P : ℕ} {x : PrefixIndex n → ℝ} {b T : ℝ}
-    (hb : 0<b) (hfloor : ∀ y : PrefixIndex n → ℝ, b*coefficientNorm y ≤ emptyRate n (1/10) y)
-    (hn : 1 ≤ coefficientNorm x) (hT : 0<T)
+    (hb : 0 < b) (hfloor : ∀ y : PrefixIndex n → ℝ, b*coefficientNorm y ≤ emptyRate n (1/10) y)
+    (hn : 1 ≤ coefficientNorm x) (hT : 0 < T)
     (hw : (1+1/b)*T < min (crossingOrigin n P (9/80) x) (crossingWait n P (P/2) x))
-    {q : ℝ} (hq : 0<q) : T < fluxExcursion n P (q • x) := by
+    {q : ℝ} (hq : 0 < q) : T < fluxExcursion n P (q • x) := by
   let J (y : PrefixIndex n → ℝ) := min (crossingOrigin n P (9/80) y) (crossingWait n P (P/2) y)
   have hj : q*J (q • x)=J x := by
     dsimp only [J]
@@ -33,7 +33,7 @@ private theorem relative_lower {n P : ℕ} {x : PrefixIndex n → ℝ} {b T : �
     change ‖q • (WithLp.toLp 2 x : EuclideanSpace ℝ (PrefixIndex n))‖=q*coefficientNorm x
     rw [norm_smul,Real.norm_eq_abs,abs_of_pos hq]
     rfl
-  have hpos : 0<J x := (mul_pos (add_pos zero_lt_one (one_div_pos.mpr hb)) hT).trans hw
+  have hpos : 0 < J x := (mul_pos (add_pos zero_lt_one (one_div_pos.mpr hb)) hT).trans hw
   have hz : 0 < J (q • x) := pos_of_mul_pos_right (hj.symm ▸ hpos) hq.le
   have hscale : T ≤ b*((1+1/b)*T) := by
     rw [show b*((1+1/b)*T)=T+b*T by field_simp; ring]
@@ -64,13 +64,13 @@ theorem gaussian_relative_first_excursion_tail :
   let bulk := Icc (1:ℝ) 2
   let c := (2*gaussianDensityFloor)^18*(gaussianReal 0 1).real bulk^(cutSet a b)ᶜ.card
   have hp : 0 < (gaussianReal 0 1).real bulk :=
-    ENNReal.toReal_pos (gaussianReal_Icc_pos (by norm_num : (1:ℝ)<2)).ne' (measure_ne_top _ _)
-  have hc : 0<c := mul_pos (pow_pos (mul_pos zero_lt_two gaussianDensityFloor_pos) _) (pow_pos hp _)
+    ENNReal.toReal_pos (gaussianReal_Icc_pos (by norm_num : (1:ℝ) < 2)).ne' (measure_ne_top _ _)
+  have hc : 0 < c := mul_pos (pow_pos (mul_pos zero_lt_two gaussianDensityFloor_pos) _) (pow_pos hp _)
   let D : ℕ := 2^(n+2)
   let β := (SharpOccupation.physicalArc (1/10))^(D-2)*(D:ℝ)^2/(4*π*(Fintype.card (PathLabel n):ℝ))
-  have hs : (1/10:ℝ)<sqrt 2 := by nlinarith only [Real.sq_sqrt (by norm_num : (0:ℝ)≤2),Real.sqrt_nonneg 2]
+  have hs : (1/10:ℝ) < sqrt 2 := by nlinarith only [Real.sq_sqrt (by norm_num : (0:ℝ)≤2),Real.sqrt_nonneg 2]
   obtain ⟨hβ,hfloor⟩ := coefficient_rate_floor n (1/10) (by norm_num) hs
-  change 0<β at hβ
+  change 0 < β at hβ
   let L := 1800*(1+1/β)
   have hL : 1≤L := by dsimp only [L]; linarith only [one_div_pos.mpr hβ]
   refine ⟨c/L^18,div_pos hc (pow_pos (zero_lt_one.trans_le hL) _),?_⟩
@@ -84,7 +84,7 @@ theorem gaussian_relative_first_excursion_tail :
     rintro x ⟨hx,hw⟩
     have hn := retained_norm_one a b x hx
     rw [show (L*T)*(1/1800)=(1+1/β)*T by dsimp only [L]; ring] at hw
-    have hf := fun (q : ℝ) (hq : 0<q) => relative_lower hβ hfloor hn (zero_lt_one.trans_le ht) hw hq
+    have hf := fun (q : ℝ) (hq : 0 < q) => relative_lower hβ hfloor hn (zero_lt_one.trans_le ht) hw hq
     refine ⟨by simpa only [one_smul] using hf 1 zero_lt_one,fun r hr => ?_⟩
     exact hf _ (div_pos hr (zero_lt_one.trans_le hn))
   apply (div_le_iff₀ (pow_pos (zero_lt_one.trans_le hL) 18)).mpr

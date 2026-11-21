@@ -48,10 +48,10 @@ theorem gaussian_quadratic_first_crossing :
       let S := (Fintype.card (PathLabel (k+1))+1)^2*9
       let P := nearHilbertContinuousCircuitBudget N
       ∃ σ > 0, orbitCircuitDistance H P σ=9/80 ∧
-        (∀ t ∈ Ico 0 σ, orbitCircuitDistance H P t<9/80) ∧
+        (∀ t ∈ Ico 0 σ, orbitCircuitDistance H P t < 9/80) ∧
         (∃ B > (0:ℝ), ∃ K > (0:ℝ), ∀ ε ∈ Ioc 0 B,
           (firstVisit H σ S ε-σ)^2*ε^(2*D-5) ≤ K) ∧
-        ∀ s : ℕ, 2*s<N →
+        ∀ s : ℕ, 2*s < N →
           Tendsto (fun ε => log (firstVisit H σ s ε-σ)/log (1/ε))
             (𝓝[>] (0:ℝ)) (𝓝 ((D-2:ℕ):ℝ)) := by
   filter_upwards [gaussian_quadratic_first_visit,gaussian_first_crossing_precision_wait] with ω hquad hcross

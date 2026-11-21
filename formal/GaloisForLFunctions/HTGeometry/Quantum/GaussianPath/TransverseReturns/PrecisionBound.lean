@@ -10,12 +10,12 @@ open PrecisionReturns
 /-- A visit to accuracy B/m² by τ m^d at each integer resolution bounds
 the attained first visit throughout the continuum by v(ε)² ε^d ≤ τ²(4B)^d. -/
 theorem uniform_first_deadline {n s d : ℕ} (H : selfAdjoint (Register n))
-    {A B τ : ℝ} (ha : 0<A) (hB : 0<B) (hτ : 0<τ)
-    (h : ∀ m : ℕ, 0<m → ∃ t : ℝ, A<t ∧ t ≤ τ*(m:ℝ)^d ∧
+    {A B τ : ℝ} (ha : 0 < A) (hB : 0 < B) (hτ : 0 < τ)
+    (h : ∀ m : ℕ, 0 < m → ∃ t : ℝ, A < t ∧ t ≤ τ*(m:ℝ)^d ∧
       HasProjectiveCircuitApproximation n (B/(m:ℝ)^2) s (unitaryEvolution H.val t)) :
     ∀ ε ∈ Ioc 0 B, (firstVisit H A s ε)^2*ε^d ≤ τ^2*(4*B)^d := by
   intro ε hε
-  let r := sqrt (B/ε)
+  let r : ℝ := sqrt (B/ε)
   have hepos := hε.1
   have hr2 : r^2=B/ε := Real.sq_sqrt (div_nonneg hB.le hε.1.le)
   have hr : 1≤r := by
@@ -23,8 +23,8 @@ theorem uniform_first_deadline {n s d : ℕ} (H : selfAdjoint (Register n))
     nlinarith only [hr2,h1,Real.sqrt_nonneg (B/ε)]
   let m := ⌈r⌉₊
   have hmr : r≤(m:ℝ) := Nat.le_ceil _
-  have hm : 0<m := Nat.cast_pos.mp (by linarith only [hmr,hr] : (0:ℝ)<m)
-  have hm' : 0<(m:ℝ) := Nat.cast_pos.mpr hm
+  have hm : 0 < m := Nat.cast_pos.mp (by linarith only [hmr,hr] : (0:ℝ) < m)
+  have hm' : 0 < (m:ℝ) := Nat.cast_pos.mpr hm
   have hmr' : (m:ℝ)≤2*r := by linarith only [Nat.ceil_lt_add_one (zero_le_one.trans hr),hr]
   have hle : B/(m:ℝ)^2 ≤ ε := by
     rw [div_le_iff₀ (by positivity)]

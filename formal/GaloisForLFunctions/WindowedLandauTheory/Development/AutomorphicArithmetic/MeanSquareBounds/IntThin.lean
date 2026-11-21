@@ -171,8 +171,10 @@ private lemma thin_integral (ε c B : ℝ) (hε : 0 < ε) (hc : 0 < c) (hB : 0 <
 theorem int_thin :
     ∀ ε c C A c' : ℝ, 0 < ε → 0 < c → 0 < C → 0 < A → 0 < c' → ∃ x₀ : ℝ, ∀ x ≥ x₀, ∀ (y lam : ℝ) (φ : ℝ → ℂ),
       Real.exp (x ^ (ε / 3)) / 3 ≤ y → 1 ≤ lam → lam ≤ A * x ^ (ε / 5) * Real.log x ^ 2 →
+      Measurable φ →
       (∀ u : ℝ, y ≤ u → ‖φ u‖ ≤ C * u * (Real.log u + lam) ^ 2 * Real.exp (-c * Real.log u / (lam + Real.sqrt (Real.log u)))) →
-      ‖(y : ℂ) * ∫ u in Set.Ioi y, φ u / (u : ℂ) ^ 2‖ ≤ y * Real.exp (-(c' * x ^ (ε / 8))) := by
+      MeasureTheory.IntegrableOn (fun u : ℝ => φ u / (u : ℂ) ^ 2) (Set.Ioi y) ∧
+        ‖(y : ℂ) * ∫ u in Set.Ioi y, φ u / (u : ℂ) ^ 2‖ ≤ y * Real.exp (-(c' * x ^ (ε / 8))) := by
   intro ε c C A c' hε hc hC hA hc'
   obtain ⟨c1, x1, hc1, hT⟩ := thin_integral ε c A hε hc hA
   obtain ⟨x2, hN⟩ := Filter.eventually_atTop.1
@@ -182,7 +184,7 @@ theorem int_thin :
   obtain ⟨x3, hx3⟩ := Filter.eventually_atTop.1
     ((Real.tendsto_exp_atTop.comp ((tendsto_rpow_atTop (by positivity : 0 < 13 * ε / 100)).const_mul_atTop
       (by positivity : 0 < c1 / 2))).eventually_ge_atTop C)
-  refine ⟨max x1 (max x2 x3), fun x hx y lam psi0 hy hl1 hlam hpsi => ?_⟩
+  refine ⟨max x1 (max x2 x3), fun x hx y lam psi0 hy hl1 hlam hmeas hpsi => ?_⟩
   have hxx1 : x1 ≤ x := le_trans (le_max_left _ _) hx
   have hxx2 : x2 ≤ x := le_trans (le_trans (le_max_left _ _) (le_max_right _ _)) hx
   have hxx3 : x3 ≤ x := le_trans (le_trans (le_max_right _ _) (le_max_right _ _)) hx
@@ -236,22 +238,23 @@ theorem int_thin :
   have hGval : (∫ u in Set.Ioi y, G u) = ∫ v in Set.Ioi V, F v := by
     rw [← himg, MeasureTheory.integral_image_eq_integral_abs_deriv_smul measurableSet_Ioi
       hderiv hinj, hcomp]
+  have hpt : ∀ u ∈ Set.Ioi y, ‖psi0 u / (u : ℂ) ^ 2‖ ≤ C * G u := by
+    intro u hu
+    have hu0 : 0 < u := lt_trans hy0 hu
+    rw [norm_div, norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hu0,
+      div_le_iff₀ (by positivity)]
+    refine (hpsi u hu.le).trans (le_of_eq ?_)
+    rw [hG, hF]
+    field_simp
+  have hdom := (hGint.const_mul C)
+  have hae := MeasureTheory.ae_restrict_of_forall_mem measurableSet_Ioi hpt
+  refine ⟨MeasureTheory.Integrable.mono' hdom
+    (hmeas.div (Complex.measurable_ofReal.pow_const 2)).aestronglyMeasurable hae, ?_⟩
   have hnorm : ‖∫ u in Set.Ioi y, psi0 u / (u : ℂ) ^ 2‖ ≤ C * ∫ u in Set.Ioi y, G u := by
     calc ‖∫ u in Set.Ioi y, psi0 u / (u : ℂ) ^ 2‖
         ≤ ∫ u in Set.Ioi y, ‖psi0 u / (u : ℂ) ^ 2‖ := MeasureTheory.norm_integral_le_integral_norm _
-      _ ≤ ∫ u in Set.Ioi y, C * G u := by
-          refine MeasureTheory.integral_mono_of_nonneg
-            (Filter.Eventually.of_forall fun _ => norm_nonneg _) (hGint.const_mul C)
-            (MeasureTheory.ae_restrict_of_forall_mem measurableSet_Ioi fun u hu => ?_)
-          have hu' : y < u := hu
-          have hu0 : 0 < u := lt_trans hy0 hu'
-          have h1 := hpsi u hu'.le
-          show ‖psi0 u / (u : ℂ) ^ 2‖ ≤ C * G u
-          rw [norm_div, norm_pow, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hu0,
-            div_le_iff₀ (by positivity)]
-          refine le_trans h1 (le_of_eq ?_)
-          rw [hG, hF]
-          field_simp
+      _ ≤ ∫ u in Set.Ioi y, C * G u := MeasureTheory.integral_mono_of_nonneg
+        (Filter.Eventually.of_forall fun _ => norm_nonneg _) hdom hae
       _ = C * ∫ u in Set.Ioi y, G u := MeasureTheory.integral_const_mul _ _
   rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hy0]
   apply mul_le_mul_of_nonneg_left _ hy0.le

@@ -34,14 +34,15 @@ private theorem logb_le' {x eps Co k p : ℝ} (he : 0 < eps) (he' : eps < 1 / 52
     push_cast
     ring
   have heL : eps * Real.log x ≤ 1 / 52 * Real.log x := mul_le_mul_of_nonneg_right he'.le hL.le
-  have h1 : 4 * Real.log k + 104 * Real.log x ≤ 124 * Real.log x := by nlinarith
+  have h1 : 4 * Real.log k + 104 * Real.log x ≤ 124 * Real.log x := by
+    linarith only [hlk, hl2, heL, hL.le]
   have h2 : 124 * Real.log x = 620 * Co / eps * (eps / (5 * Co) * Real.log x) := by
     field_simp
     ring
   have h3 : 620 * Co / eps * (eps / (5 * Co) * Real.log x) ≤ 620 * Co / eps * Real.log p :=
     mul_le_mul_of_nonneg_left hlp.le (by positivity)
   rw [Real.logb, hnum, div_le_iff₀ hlp0]
-  linarith
+  linarith only [h1, h2, h3]
 
 private theorem ltwo_le' (B : Arith.Base) {eps Co : ℝ} (he : 0 < eps) (he' : eps < 1 / 52) (hCo : 1 ≤ Co) (hx : 16 ≤ B.sc.x)
     (hk : (B.R.k : ℝ) ≤ 2 * B.sc.x ^ (9 / 2 + 10 * eps))

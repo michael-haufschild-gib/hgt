@@ -112,12 +112,12 @@ theorem divinN_at {D : D7} (L : SizeData₂ D) (j : ℕ) (C : ℝ) (hj : j ∈ S
   rw [hP1]
   have h1 : C * (y * L.B0 + Real.log L.sc.x ^ 2 * L.Nc) ≤ |C| * (y * (L.B0 + L.Nc)) :=
     le_trans (mul_le_mul_of_nonneg_right (le_abs_self C) hP0)
-      (mul_le_mul_of_nonneg_left (by rw [mul_add]; exact add_le_add_left hP2 _) (abs_nonneg C))
+      (mul_le_mul_of_nonneg_left (by rw [mul_add]; exact add_le_add le_rfl hP2) (abs_nonneg C))
   have h2 : L.B0 ≤ y * (L.B0 + L.Nc) :=
     (le_add_of_nonneg_right hNc).trans (le_mul_of_one_le_left (add_nonneg hB0 hNc) hy)
   have h3 : (|C| + 1) * y * (L.B0 + L.Nc) = |C| * (y * (L.B0 + L.Nc)) + y * (L.B0 + L.Nc) := by ring
   rw [h3]
-  linarith only [h1, h2]
+  exact add_le_add h1 (hb.trans (hbB.trans h2))
 
 theorem divinN_of_hypV {eps : ℝ} (Fm : FamP eps) (heps : 0 < eps) (hV : HypV Fm.toFamCore) (hN : LinkN Fm) (hR : SmallLevelRankEq Fm) :
     DIVinN Fm := by

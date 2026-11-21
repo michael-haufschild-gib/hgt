@@ -26,8 +26,8 @@ private theorem tg_num (x eps Co δ N o n0 : ℝ) (he : 0 < eps) (hx : 1 ≤ x) 
   have h3 : 32 * o ^ 4 * x ^ 2 ≤ δ * N := by
     have a1 := mul_le_mul_of_nonneg_left hN hδ.le
     have a2 : x ^ 2 * (64 * o ^ 4) ≤ x ^ 2 * x ^ eps :=
-      mul_le_mul_of_nonneg_left (by linarith) (by positivity)
-    nlinarith
+      mul_le_mul_of_nonneg_left (by linarith only [h2, hbig]) (by positivity)
+    linarith only [a1, a2, h1]
   have h4 : Real.sqrt (2 * δ * N) ≤ δ * N / (4 * o ^ 2 * x) := by
     refine Real.sqrt_le_iff.2 ⟨by positivity, ?_⟩
     rw [div_pow, le_div_iff₀ (by positivity)]
