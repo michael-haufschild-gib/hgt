@@ -15,7 +15,8 @@ private theorem earlier_visit {N : ℕ} (H : selfAdjoint (Register N)) (A : ℝ)
   let v := firstVisit H A s ε
   have hs := firstVisit_isLeast H A s hε
   have hd : orbitCircuitDistance H s v ≤ ε := (hasProjectiveCircuitApproximation_iff_infDist _ _ _).mp hs.1.2
-  have hav : A < v := hs.1.1.lt_of_ne fun he => (he ▸ hfar : ε < orbitCircuitDistance H s v).not_ge hd
+  have hav : A < v := hs.1.1.lt_of_ne fun he =>
+    hfar.not_ge ((congrArg (orbitCircuitDistance H s) he).le.trans hd)
   have hh : ∀ᶠ t : ℝ in 𝓝[<] v, orbitCircuitDistance H j t < ε :=
     ((orbitCircuitDistance_lipschitz H j).continuous.continuousAt.eventually_lt continuousAt_const
       (hnear v hd)).filter_mono nhdsWithin_le_nhds
@@ -38,7 +39,7 @@ theorem first_visit_strict {n : ℕ} (x : PathShell n) {ε : ℝ} (hε : 0 < ε)
     simpa only [sub_self,abs_zero,zero_pow (by decide : 2≠0),mul_zero,add_zero] using path_increment x s v v
   apply (hle.trans hv).lt_of_ne
   intro he
-  have hsmall := le_antisymm hv (he ▸ hle)
+  have hsmall := le_antisymm hv (he.ge.trans hle)
   exact hx (mem_iUnion.mpr ⟨s,v,hsmall.trans he.symm,hsmall⟩)
 
 /-- One exceptional set of dimension at most one half works on every

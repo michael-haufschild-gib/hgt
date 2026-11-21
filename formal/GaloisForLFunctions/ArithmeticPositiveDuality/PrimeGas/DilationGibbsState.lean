@@ -83,7 +83,8 @@ private theorem periodic_basis (m : ℕ+) (F : ZMod (m : ℕ) → ℂ)
     rfl
   · simp only [lp.single_apply, Pi.single_eq_of_ne hj, mul_zero]
 
-private theorem trace_coordinates {T : Gas →L[ℂ] Gas} (hT : T ∈ hsTraceIdeal Gas) :
+/-- The occupation-basis diagonal sums to the trace for every trace-ideal operator. -/
+theorem traceIdeal_shell_diagonal {T : Gas →L[ℂ] Gas} (hT : T ∈ hsTraceIdeal Gas) :
     opTrace T = ∑' n : ℕ+, T (lp.single 2 n (1 : ℂ)) n := by
   rw [opTrace_eq_tsum_basis_of_mem hT (HilbertSchmidt.lpBasis ℕ+)]
   exact tsum_congr fun n => by rw [HilbertSchmidt.lpBasis_apply, lp.inner_single_left]; simp
@@ -99,7 +100,7 @@ theorem periodic_shift_trace (m : ℕ+) (F : ZMod (m : ℕ) → ℂ) (a b : ℕ+
   rw [if_neg hab, shiftObservable_trace, residueObservable_comp_gibbs]
   have hT := hsTraceIdeal_comp_left (gibbs_mem_traceIdeal s) (residueObservable m F)
   rw [residueObservable_comp_gibbs] at hT
-  rw [trace_coordinates (hsTraceIdeal_comp_left hT _)]
+  rw [traceIdeal_shell_diagonal (hsTraceIdeal_comp_left hT _)]
   have hzero (i : ℕ+) :
       ((primeCoShift b ∘L (primeShift a).toContinuousLinearMap) ∘L periodicGibbsOperator m F s)
         (lp.single 2 i (1 : ℂ)) i = 0 := by
@@ -150,7 +151,8 @@ theorem range_projection_boundary (a : ℕ+) :
     ext f n
     exact one_mul (f n)
   have h := shifted_periodic_boundary 1 (fun _ => (1 : ℂ)) a a
-  simpa [shiftObservable, hid] using h
+  rw [hid] at h
+  simpa [shiftObservable] using h
 
 /-- A single creation range tests the Born normalization, independently of the choice
 of any cyclic-order readout. The vacuum range has probability one at every temperature. -/

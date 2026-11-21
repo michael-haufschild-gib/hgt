@@ -32,7 +32,7 @@ theorem shared_levels_dimension (f g : ℝ → ℝ) (K : ℝ≥0) (p : ℕ) (hp 
       ←ENNReal.coe_mul,ENNReal.coe_le_coe] using hn
   have hS := (dimH_mono (subset_univ S)).trans_eq Real.dimH_univ
   exact (hh.dimH_image_le (Nat.cast_pos.mpr hp)).trans (by
-    simpa only [ENNReal.coe_natCast] using div_le_div_right' hS (p:ℝ≥0∞))
+    simpa only [ENNReal.coe_natCast] using ENNReal.div_le_div_right hS (p:ℝ≥0∞))
 
 #print axioms shared_levels_dimension
 end

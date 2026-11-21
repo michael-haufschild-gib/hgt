@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.FirstGate.FacePacket
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.FirstGate.SpectralDescent
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.FirstGate.EnergyWitness
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.FirstGate.CenteredWord
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.EmptyVisitFlux.EntryFaces
 
 /-! # Strict one-gate approximation at a scalar entry -/
 open Real Matrix NormedSpace
@@ -9,17 +10,6 @@ open scoped Matrix.Norms.L2Operator
 namespace GaloisForLFunctions.HTGeometry.FirstGate
 noncomputable section
 open SharpOccupation EmptyVisitFlux
-
-private theorem unitary_diagonal {I : Type*} [Fintype I] [DecidableEq I] (u : I → ℂ)
-    (hu : ∀ k, ‖u k‖=1) : Matrix.diagonal u ∈ unitary (Matrix I I ℂ) := by
-  change _ ∈ Matrix.unitaryGroup I ℂ
-  rw [Matrix.mem_unitaryGroup_iff,Matrix.star_eq_conjTranspose,Matrix.diagonal_conjTranspose,
-    Matrix.diagonal_mul_diagonal,←Matrix.diagonal_one]
-  congr 1
-  funext k
-  change u k*(starRingEnd ℂ) (u k)=1
-  rw [Complex.mul_conj,Complex.normSq_eq_norm_sq,hu]
-  norm_num
 
 private theorem diagonal_real {I : Type*} (B : Matrix I I ℂ) (hB : B.IsHermitian) (j : I) :
     B j j=((B j j).re:ℂ) := by
@@ -69,7 +59,8 @@ theorem strict_gate_at_entry {n : ℕ} (p : PathShell n) {ε t : ℝ} (hε : 0 <
     dsimp only [d,q]
     push_cast
     constructor <;> ring
-  obtain ⟨v,_,hv⟩ := spectral_descent u (unitary_diagonal u hu) a b hab hconj him hε hre hint A hA hd hdiag.1 hdiag.2
+  obtain ⟨v,_,hv⟩ := spectral_descent u (StaticLocalLaboratoryComplexityGrowthLaw.mem_unitaryGroup_diagonal_general u hu)
+    a b hab hconj him hε hre hint A hA hd hdiag.1 hdiag.2
   obtain ⟨z,hz,C,hC,hword⟩ := centered_eigenbasis_word V hV l q s v
   have hspec : unitaryEvolution (pathHamiltonian p) t=w • (V*Matrix.diagonal u*star V) := by
     rw [unitaryEvolution_spectral hH,←Matrix.smul_mul,←Matrix.mul_smul]

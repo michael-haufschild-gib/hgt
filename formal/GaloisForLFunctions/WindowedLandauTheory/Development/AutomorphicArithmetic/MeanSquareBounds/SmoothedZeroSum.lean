@@ -20,6 +20,7 @@ theorem zero_distance_of_gap {c lam : ℝ} (hc : 0 < c) (hlam : 1 ≤ lam) {ρ :
       have h := Real.log_le_log (by positivity : 0 < |ρ.im| + 3) (show |ρ.im| + 3 ≤ 4 by linarith)
       have h₄ : Real.log (4 : ℝ) ≤ 2 := by
         rw [show (4 : ℝ) = 2 ^ 2 by norm_num, Real.log_pow]
+        norm_num
         linarith only [Real.log_two_lt_d9]
       exact h.trans h₄
     have hnorm : 1 - ρ.re ≤ ‖1 - ρ‖ := by simpa using Complex.re_le_norm (1 - ρ)
@@ -97,8 +98,8 @@ theorem exp_zeroKernel_sum_le (hχ : χ ≠ 1) (hp : χ.IsPrimitive) {y c lam A 
       _ = Real.exp 2 := by rw [← Real.exp_nat_mul]; norm_num
   have hlog (z : ℝ) (hz : 0 < z) (hz' : z ≤ (T : ℝ) + 4) : Real.log z ≤ 2 + w := by
     calc Real.log z ≤ Real.log (6 * U) := Real.log_le_log hz (by linarith only [hz', hTb, hU₁])
-      _ = Real.log 6 + w := by rw [Real.log_mul (by norm_num) (Real.exp_pos _).ne', hU, Real.log_exp]
-      _ ≤ 2 + w := add_le_add_right hlog₆ _
+      _ = Real.log 6 + w := by rw [hU, Real.log_mul (by norm_num) (Real.exp_pos _).ne', Real.log_exp]
+      _ ≤ 2 + w := by linarith only [hlog₆]
   have hrate (q : LZero χ) (hq : |q.point.im| ≤ T + 1) :
       y ^ (q.point.re - 1) ≤ Real.exp (-(2 * w)) := by
     have hden : 0 < lam + Real.log (|q.point.im| + 3) := by
@@ -116,10 +117,11 @@ theorem exp_zeroKernel_sum_le (hχ : χ ≠ 1) (hp : χ.IsPrimitive) {y c lam A 
         _ ≤ _ := div_le_div_of_nonneg_left hc.le hden h₂
     rw [Real.rpow_def_of_pos hy₀]
     apply Real.exp_le_exp.mpr
-    have hm := mul_le_mul_of_nonneg_left hcmp hv₀.le
-    have hz := mul_le_mul_of_nonneg_left (hgap q) hv₀.le
-    rw [hw]
-    linarith only [hm, hz]
+    have hgap' : q.point.re - 1 ≤ -(2 * (a / d)) := by linarith only [hgap q, hcmp]
+    rw [← hv]
+    calc v * (q.point.re - 1) ≤ v * (-(2 * (a / d))) :=
+          mul_le_mul_of_nonneg_left hgap' hv₀.le
+      _ = -(2 * w) := by rw [hw]; ring
   have hbound := zeroKernel_sum_le hχ hp ((Real.one_le_exp (by norm_num)).trans hy)
     hA (Real.exp_pos _).le hT₁ hweight hrate
   have hlow : ((T : ℝ) + 1) * Real.log (T + 3) * Real.exp (-(2 * w)) ≤
@@ -127,6 +129,8 @@ theorem exp_zeroKernel_sum_le (hχ : χ ≠ 1) (hp : χ.IsPrimitive) {y c lam A 
     have hcoef : (T : ℝ) + 1 ≤ 3 * U := by linarith only [hTb, hU₁]
     have hlogT : Real.log ((T : ℝ) + 3) ≤ 2 + v :=
       (hlog _ (by positivity) (by linarith)).trans (by linarith only [hwv])
+    have hlog₀ : 0 ≤ Real.log ((T : ℝ) + 3) :=
+      Real.log_nonneg (by linarith only [Nat.cast_nonneg (α := ℝ) T])
     calc ((T : ℝ) + 1) * Real.log (T + 3) * Real.exp (-(2 * w))
         ≤ (3 * U) * (2 + v) * Real.exp (-(2 * w)) := by gcongr
       _ = (6 + 3 * v) * (U * Real.exp (-(2 * w))) := by ring

@@ -15,8 +15,12 @@ namespace QH
 private theorem zeta_smoothed_identity {y : ℝ} (hy : 1 < y) :
     (An.G y : ℂ) = lagZeroSum y + (Real.log (2 * Real.pi) : ℂ) - trivialZeroSeries y := by
   have hψ : Chebyshev.psi y = ∑ n ∈ Icc 1 ⌊y⌋₊, vonMangoldt n := by
+    have hIcc : Ioc 0 ⌊y⌋₊ = Icc 1 ⌊y⌋₊ := by
+      ext n
+      simp only [mem_Ioc, mem_Icc]
+      omega
     rw [Chebyshev.psi_eq_sum_Icc, ← Finset.sum_Ioc_add_eq_sum_Icc (Nat.zero_le _)]
-    simp [Icc_one_eq_Ioc_zero]
+    simp [hIcc]
   have hsum : (∑ n ∈ Icc 1 ⌊y⌋₊, An.abelian₂ n * max (y / n - 1) 0) =
       y * (∑ n ∈ Icc 1 ⌊y⌋₊, vonMangoldt n / (n : ℝ)) - Chebyshev.psi y := by
     rw [hψ, mul_sum, ← sum_sub_distrib]
@@ -73,7 +77,7 @@ theorem smoothed_zeta_bound : ∃ K k : ℝ, 0 < K ∧ 0 < k ∧ ∀ y : ℝ, Re
           calc k * s ≤ c * s := mul_le_mul_of_nonneg_right (min_le_left _ _) hs₀.le
             _ = (c / s) * v := by rw [← hss]; field_simp [hs₀.ne']
         have hude : y ^ (ρ.re - 1) ≤ A := by
-          rw [Real.rpow_def_of_pos hy₀, hA]
+          rw [Real.rpow_def_of_pos hy₀, ← hv, hA]
           apply Real.exp_le_exp.mpr
           have h := mul_le_mul_of_nonneg_left hcs (zero_le_one.trans hv₁)
           rw [add_comm 2] at h
@@ -112,7 +116,7 @@ theorem smoothed_zeta_bound : ∃ K k : ℝ, 0 < K ∧ 0 < k ∧ ∀ y : ℝ, Re
   have hL : ‖(Real.log (2 * Real.pi) : ℂ)‖ = L := by rw [Complex.norm_real, Real.norm_eq_abs]
   calc ‖lagZeroSum y + (Real.log (2 * Real.pi) : ℂ) - trivialZeroSeries y‖
       ≤ ‖lagZeroSum y‖ + ‖(Real.log (2 * Real.pi) : ℂ)‖ + ‖trivialZeroSeries y‖ :=
-        (norm_sub_le _ _).trans (add_le_add_right (norm_add_le _ _) _)
+        (norm_sub_le _ _).trans (add_le_add (norm_add_le _ _) le_rfl)
     _ ≤ (A * M) * y + L + 2 := by rw [hL]; linarith only [hZ, htriv]
     _ ≤ (M + L + 2) * y * A := by
       have h := le_mul_of_one_le_right (show 0 ≤ L + 2 by positivity) hA₁

@@ -6,6 +6,7 @@ open MeasureTheory Set Filter
 open scoped Matrix.Norms.L2Operator
 namespace GaloisForLFunctions.HTGeometry.ReturnLevels
 noncomputable section
+open PrecisionReturns (Register)
 
 /-- The first time a larger circuit set reaches the prescribed distance
 is strictly later, simultaneously for every pair of budgets separated by
@@ -32,11 +33,13 @@ theorem gaussian_first_ascent_order :
     simpa only [sub_self,abs_zero,zero_pow (by decide : 2≠0),mul_zero,add_zero] using path_increment x s b b
   have hlt : orbitCircuitDistance H (s+J) b < orbitCircuitDistance H s b := hle.lt_of_ne fun he =>
     hreg (k+1) (mem_iUnion.mpr ⟨s,b,he.symm,he.symm.trans hbe⟩)
+  have hlarge := hbe.ge.trans_lt hlt
   refine ⟨a,b,ha,?_,hae,hprev,hbe,hprev'⟩
   rcases lt_trichotomy a b with h|h|h
   · exact h
-  · exact False.elim ((hbe ▸ hlt).ne' (h ▸ hae))
-  · exact False.elim ((hprev b ⟨hb.le,h⟩).not_ge ((hbe ▸ hlt).le))
+  · subst b
+    exact False.elim (hlarge.ne' hae)
+  · exact False.elim ((hprev b ⟨hb.le,h⟩).not_ge (hlarge.le))
 
 #print axioms gaussian_first_ascent_order
 end

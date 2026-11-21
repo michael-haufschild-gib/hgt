@@ -34,7 +34,7 @@ theorem gaussian_crossing_first_visit_order :
   obtain ⟨z,hz,C,hC,herr⟩ := (hasProjectiveCircuitApproximation_iff_infDist _ s ε).mpr h
   have hp : orbitCircuitDistance H P σ ≤ ε :=
     (hasProjectiveCircuitApproximation_iff_infDist _ P ε).mp ⟨z,hz,C,hC.trans hs,herr⟩
-  exact htol.2.not_ge (he ▸ hp)
+  exact htol.2.not_ge (he.ge.trans hp)
 
 #print axioms gaussian_crossing_first_visit_order
 end

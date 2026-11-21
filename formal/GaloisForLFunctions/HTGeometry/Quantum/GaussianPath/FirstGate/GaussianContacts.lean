@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.FirstGate.SimpleContacts
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrecisionReturns.GapSpectrum
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPauliPrefixPhaseLaw
 
 /-! # Simple endpoint contacts on every Gaussian prefix at a fixed radius -/
 open Matrix MeasureTheory Set

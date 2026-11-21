@@ -1,5 +1,6 @@
-import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.FirstGate.FirstVisit
-import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.ShortTimeProducts.ShiftPacking
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.FirstGate.EntryTransitions
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.ShortTimeProducts.ScalarDensity
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.MaximumOccupation
 
 /-! # Positive time density of strict one-gate improvements -/
 open Real Matrix Set MeasureTheory Filter Topology
@@ -30,7 +31,8 @@ theorem translated_strict_window {N : ℕ} (H : selfAdjoint (Register N))
   have hp : 0 < p := mul_pos (Nat.cast_pos.mpr (pow_pos (by decide) _)) (pow_pos (physicalArc_spec hδ (hδε.trans hs)).1.1 _)
   refine ⟨p/2,half_pos hp,?_⟩
   intro a
-  have htend : Tendsto (fun T : ℝ => T-u) atTop atTop := tendsto_id.atTop_sub_const u
+  have htend : Tendsto (fun T : ℝ => T-u) atTop atTop := tendsto_atTop.mpr fun b =>
+    (eventually_ge_atTop (b+u)).mono fun _ h => (le_sub_iff_add_le).mpr h
   have hlim := (ShortTimeProducts.scalar_fraction H hi hδ (hδε.trans hs) (a-u)).comp htend
   filter_upwards [hlim.eventually_const_lt (half_lt_self hp),eventually_gt_atTop a] with T hT hTa
   let F := visitSet H 0 δ ∩ Icc (a-u) (T-u)

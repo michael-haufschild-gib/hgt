@@ -41,6 +41,7 @@ import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.First
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.FirstReturnBands
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.WeakBonds.FixedRadius
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.WeakBonds.RelativeMoment
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.FirstGate.Occupation
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.WeakBonds.NearDiagonalLaw
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.GaussianPlateau
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.Detuning.CircuitDeadline

@@ -12,10 +12,10 @@ private theorem zero_multiplicity {q : ℕ} [NeZero q] {χ : DirichletCharacter 
     1 ≤ analyticOrderNatAt χ.LFunction ρ ∧
       (deriv χ.LFunction ρ = 0 → 2 ≤ analyticOrderNatAt χ.LFunction ρ) := by
   have han (s : ℂ) : AnalyticAt ℂ χ.LFunction s :=
-    (DirichletCharacter.differentiable_LFunction hχ).analyticAt
+    (DirichletCharacter.differentiable_LFunction hχ).analyticAt s
   have htop : analyticOrderAt χ.LFunction ρ ≠ ⊤ := by
     intro h
-    have he := (analyticOrderAt_eq_top_iff_eq_zero ρ han).1 h
+    have he := (AnalyticOnNhd.analyticOrderAt_eq_top_iff_eq_zero ρ han).1 h
     have htwo : χ.LFunction 2 ≠ 0 := χ.LFunction_ne_zero_of_one_le_re (.inl hχ) (by norm_num)
     exact htwo (congrFun he 2)
   have hcast := Nat.cast_analyticOrderNatAt htop

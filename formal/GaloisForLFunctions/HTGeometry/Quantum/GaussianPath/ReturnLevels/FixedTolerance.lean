@@ -21,7 +21,8 @@ private theorem measurable_time_projection {X : Type*} [TopologicalSpace X]
     have he : F m=Prod.fst '' S := by
       ext x
       exact ⟨fun ⟨t,ht,h⟩ => ⟨(x,⟨t,ht⟩),h,rfl⟩,fun ⟨⟨_,t⟩,ht,rfl⟩ => ⟨t.val,t.property,ht⟩⟩
-    exact he ▸ isClosedMap_fst_of_compactSpace _ hs
+    rw [he]
+    exact isClosedMap_fst_of_compactSpace _ hs
   have he : {x : X | ∃ t : ℝ, (x,t) ∈ Z}=⋃ m, F m := by
     ext x
     constructor
@@ -60,7 +61,7 @@ private theorem measurable_levels_graph (n : ℕ) :
   have he : {p : PathPauliDisorder × ℝ | p.2 ∈ sharedLevels (pathPauliDisorderShell p.1 n)} =
       ⋃ s : ℕ, {p | ∃ t : ℝ, (p,t) ∈ Z s} := by
     ext p
-    exact Iff.rfl.trans (by simp only [sharedLevels,mem_setOf_eq,mem_iUnion,mem_image,Z,chainH])
+    simp only [sharedLevels,mem_setOf_eq,mem_iUnion,mem_image,Z,chainH]
   rw [he]
   exact MeasurableSet.iUnion fun s => measurable_time_projection (hc s)
 

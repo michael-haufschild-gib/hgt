@@ -37,6 +37,6 @@ theorem l_log_deriv_right : LLogDerivRight := by
       (add_le_add le_rfl (le_max_left _ _))
   · rw [← logDeriv_apply]
     exact (RHTower.norm_logDeriv_zeta_le_of_two_le_re (by simpa using h₂.le)).trans
-      ((le_max_right _ _).trans (le_add_of_nonneg_left (by positivity)))
+      ((le_max_right _ _).trans (le_add_of_nonneg_left (one_div_nonneg.mpr (sub_nonneg.mpr hs.le))))
 
 end WindowedLandauTheory.ZeroFreeDirichlet

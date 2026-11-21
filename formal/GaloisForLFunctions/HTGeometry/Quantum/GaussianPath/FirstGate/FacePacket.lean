@@ -16,14 +16,18 @@ private theorem strict_lifts {I : Type*} (E : I → ℝ) (hi : Function.Injectiv
   classical
   let f := flow (fun l => E l/(2*π)) t
   have hij : i≠j := by rintro rfl; exact h.1.false
+  have hji : f j-f i=(x:UnitAddCircle) := h.2.1
   have hh (k : I) (hki : k≠i) (hkj : k≠j) : ∃ y ∈ Ioo (0:ℝ) x, f k-f i=(y:UnitAddCircle) := by
     obtain ⟨y,hy,he⟩ := h.2.2 k hki hkj
     have h0 := simple_contact E hi hp ht i k j hki.symm hij.symm hkj.symm h.2.1
-    have hx : f i-f j=((-x:ℝ):UnitAddCircle) := by rw [AddCircle.coe_neg,←h.2.1,neg_sub]; rfl
+    have hx : f i-f j=((-x:ℝ):UnitAddCircle) := by rw [AddCircle.coe_neg,←hji,neg_sub]
     have h1 := simple_contact E hi hn ht j k i hkj.symm hij hki.symm hx
-    refine ⟨y,⟨hy.1.lt_of_ne (fun hz => h0 (sub_eq_zero.mp (by rw [←he,←hz]; simp))),?_⟩,he.symm⟩
+    have hy0 : y≠0 := by
+      intro hz
+      exact h0 (sub_eq_zero.mp (he.symm.trans (by rw [hz,AddCircle.coe_zero])))
+    refine ⟨y,⟨hy.1.lt_of_ne hy0.symm,?_⟩,he.symm⟩
     refine hy.2.lt_of_ne (fun hz => h1 ?_)
-    exact sub_left_injective (f i) (he.symm.trans ((congrArg (fun z : ℝ => (z:UnitAddCircle)) hz).trans h.2.1.symm))
+    exact sub_left_injective (he.symm.trans ((congrArg (fun z : ℝ => (z:UnitAddCircle)) hz).trans hji.symm))
   let y (k : I) := if hk : k=i then 0 else if hk' : k=j then x else (hh k hk hk').choose
   refine ⟨y,by simp [y],by simp [y,hij.symm],?_,?_⟩
   · intro k hki hkj
@@ -69,12 +73,15 @@ theorem face_packet {I : Type*} (E : I → ℝ) (hi : Function.Injective E)
     rw [heq]
     dsimp only [p]
     rw [←Complex.exp_add,Complex.ofReal_add,add_mul]
-  · rw [hpos,hneg]
-    apply Complex.ext <;> simp [p,Complex.exp_ofReal_mul_I_re,Complex.exp_ofReal_mul_I_im]
-  · rw [hpos]
+  · change p (β i)=star (p (β j))
+    rw [hpos,hneg]
+    apply Complex.ext <;> simp only [p,Complex.star_def,Complex.conj_re,Complex.conj_im,
+      Complex.exp_ofReal_mul_I_re,Complex.exp_ofReal_mul_I_im,Real.cos_neg,Real.sin_neg]
+  · change 0 < (p (β j)).im
+    rw [hpos]
     simpa only [p,Complex.exp_ofReal_mul_I_im] using Real.sin_pos_of_pos_of_lt_pi hα hπ
-  · rw [hpos]
-    change (p α).re=_
+  · change (p (β j)).re=1-ε^2/2
+    rw [hpos]
     rw [show (p α).re=cos α from Complex.exp_ofReal_mul_I_re _,show α=2*(π*x/2) by dsimp [α]; ring,
       Real.cos_two_mul_eq_one_sub,←htol]
     ring
@@ -86,6 +93,7 @@ theorem face_packet {I : Type*} (E : I → ℝ) (hi : Function.Injective E)
       have hr := mul_lt_mul_of_pos_left hkg.2 (by positivity : 0 < 2*π)
       dsimp only [β,α]
       constructor <;> linarith only [hl,hr]
+    change (p (β j)).re < (p (β k)).re
     rw [hpos]
     simpa only [p,Complex.exp_ofReal_mul_I_re,Real.cos_abs] using
       Real.cos_lt_cos_of_nonneg_of_le_pi (abs_nonneg (β k)) hπ.le hβ

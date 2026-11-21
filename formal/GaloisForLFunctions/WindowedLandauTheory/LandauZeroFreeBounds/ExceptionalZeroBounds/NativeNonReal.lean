@@ -27,10 +27,10 @@ theorem noZeroComplex : NoZeroComplex := by
   have hhalf : 1 / 2 < s.re := by
     have hsmall : c / D < 1 / 2 := by
       rw [div_lt_iff₀ hD]
-      have h₀ := min_le_left (1 / 4 : ℝ) (1 / (336 * P))
+      have h₀ : c ≤ 1 / 4 := min_le_left _ _
       linarith only [h₀, hDlog, Real.log_two_gt_d9]
     linarith only [hr, hsmall]
-  have hz := RHTower.zero_free_of_sq_ne_one hχ hχ₂ hhalf
+  have hz := RHTower.zero_free_of_sq_ne_one hχ hχ₂ (β := s.re) (γ := s.im) hhalf
     (by simpa only [Complex.re_add_im] using hzero)
   have hsep : c / D < 1 / (84 * (P * D')) := by
     rw [div_lt_div_iff₀ hD (by positivity)]

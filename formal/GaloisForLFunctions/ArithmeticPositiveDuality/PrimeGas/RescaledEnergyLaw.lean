@@ -22,6 +22,31 @@ def rescaledEnergy (β : TraceTemperature) (n : ℕ+) : ℝ := (β.val - 1) * en
 
 abbrev EnergyLaplaceDomain := {u : ℂ // -1 < u.re}
 
+/-- Absolute convergence of the energy Laplace observable has a sharp boundary,
+already at each individual temperature. -/
+theorem energyMoment_domain_iff (β : TraceTemperature) (u : ℂ) :
+    Summable (fun n => thermalWeight β n * Real.exp (-u.re * rescaledEnergy β n)) ↔
+      -1 < u.re := by
+  let c : ℝ := β.val + u.re * (β.val - 1)
+  have hw (n : ℕ+) : thermalWeight β n * Real.exp (-u.re * rescaledEnergy β n) =
+      ‖heat ((c : ℂ)/2) n‖^2 := by
+    rw [thermalWeight, ← Real.exp_add, norm_heat, Complex.div_ofNat_re, Complex.ofReal_re,
+      sq, ← Real.exp_add]
+    congr 1
+    dsimp only [c, rescaledEnergy]
+    ring
+  simp_rw [hw]
+  rw [summable_heat_sq_iff, Complex.div_ofNat_re, Complex.ofReal_re]
+  have hβ := sub_pos.mpr β.property
+  have hid : c - 1 = (β.val - 1) * (1 + u.re) := by dsimp [c]; ring
+  constructor
+  · intro h
+    have hp : 0 < (β.val - 1) * (1 + u.re) := by rw [← hid]; linarith
+    linarith only [pos_of_mul_pos_right hp hβ.le]
+  · intro h
+    have hp := mul_pos hβ (show 0 < 1 + u.re by linarith)
+    linarith only [hp, hid]
+
 /-- Effective inverse temperature after inserting the energy Laplace observable. -/
 def tiltTemperature (u : EnergyLaplaceDomain) (β : TraceTemperature) : {z : ℂ // 1 < z.re} :=
   ⟨1 + ((β.val : ℂ)-1)*(1+u.val), by
@@ -60,7 +85,8 @@ private theorem tilt_at_pole (u : EnergyLaplaceDomain) :
     ((hb.sub (tendsto_const_nhds (x := (1 : ℂ)))).mul (tendsto_const_nhds (x := 1+u.val)))
   apply tendsto_nhdsWithin_iff.mpr
   constructor
-  · simpa only [sub_self, zero_mul, add_zero] using h
+  · change Tendsto (fun β : TraceTemperature => 1 + ((β.val : ℂ)-1)*(1+u.val)) _ _
+    simpa only [sub_self, zero_mul, add_zero] using h
   · filter_upwards with β
     intro he
     change (tiltTemperature u β).val = 1 at he
@@ -117,13 +143,13 @@ abbrev ResidueEvent (m : ℕ+) := {A : Finset (ZMod (m : ℕ)) // A.Nonempty}
 private theorem eventWeight_total_pos (m : ℕ+) (A : ResidueEvent m) (β : TraceTemperature) :
     0 < ∑' n, eventWeight m A.val β n := by
   obtain ⟨j,hj⟩ := A.property
-  let n : ℕ+ := ⟨j.val + m.val, Nat.add_pos_right m.pos _⟩
+  let n : ℕ+ := ⟨j.val + m.val, Nat.add_pos_right _ m.pos⟩
   have hn : ((n : ℕ) : ZMod (m : ℕ)) = j := by
     change ((j.val + (m : ℕ) : ℕ) : ZMod (m : ℕ)) = j
     rw [Nat.cast_add, ZMod.natCast_zmod_val, ZMod.natCast_self, add_zero]
-  have hw : eventWeight m A.val β n = thermalWeight β n := if_pos (hn ▸ hj)
-  exact (hw ▸ thermalWeight_pos β n).trans_le
-    ((eventWeight_summable m A.val β).le_tsum n (fun i _ => eventWeight_nonneg m A.val β i))
+  have hw : eventWeight m A.val β n = thermalWeight β n := if_pos (by rw [hn]; exact hj)
+  exact (eventWeight_summable m A.val β).tsum_pos (eventWeight_nonneg m A.val β) n
+    (by rw [hw]; exact thermalWeight_pos β n)
 
 private def conditionalWeight (m : ℕ+) (A : ResidueEvent m) (β : TraceTemperature) (n : ℕ+) :=
   eventWeight m A.val β n / ∑' i, eventWeight m A.val β i
@@ -233,6 +259,7 @@ theorem conditionalEnergyLaw_limit (m : ℕ+) (A : ResidueEvent m) :
   rw [he] at h
   exact h.congr' (Eventually.of_forall fun j => (conditionalEnergyLaw_fourier m A (seq j) t).symm)
 
+#print axioms energyMoment_domain_iff
 #print axioms heat_tiltTemperature
 #print axioms energyResidueTransform_series
 #print axioms energyResidueTransform_limit

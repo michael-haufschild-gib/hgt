@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitSynthesis.LocalErrors.PathCircuit
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitSynthesis.LocalPatches.ShortWord
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.MaximumOccupation
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.ReturnLevels.ContactDimension
 
@@ -7,6 +8,7 @@ open Set MeasureTheory
 open scoped ENNReal NNReal Matrix.Norms.L2Operator
 namespace GaloisForLFunctions.HTGeometry.ReturnLevels
 noncomputable section
+open LocalPatches (Register)
 
 private theorem signed_step {n : ℕ} (x : PathShell n) (t : ℝ) :
     HasProjectiveCircuitApproximation (n+2) ((84*‖x‖^2)*|t|^2)

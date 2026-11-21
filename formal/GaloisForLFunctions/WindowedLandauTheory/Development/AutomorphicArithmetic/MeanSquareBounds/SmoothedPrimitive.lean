@@ -129,6 +129,8 @@ theorem smoothed_primitive_bound (c₀ : ℝ) (hc₀ : 0 < c₀) :
       _ = A := by dsimp [A]; field_simp [hd.ne', hlam₀.ne']
   have hCount : localCountConst N ≤ 160 * lam := (localCountConst_le (NeZero.pos N)).trans
     (by linarith only [hN, hlam])
+  have hCountW : localCountConst N ≤ 160 * W :=
+    hCount.trans (mul_le_mul_of_nonneg_left hlamW (by norm_num))
   have hCount₀ : 0 ≤ localCountConst N := localCountConst_nonneg (NeZero.pos N)
   have hcoarse (z : ℝ) (hz : 1 ≤ z) : ‖∑' q : LZero χ, zeroKernel z q.point‖ ≤ B * lam ^ 3 := by
     have hh := zeroKernel_sum_le hχ hp hz hA (E := 1) zero_le_one (T := 1) le_rfl hweight
@@ -162,7 +164,7 @@ theorem smoothed_primitive_bound (c₀ : ℝ) (hc₀ : 0 < c₀) :
     have h2 : A ≤ (W / d) ^ 2 := pow_le_pow_left₀ (by positivity) (div_le_div_of_nonneg_right hlamW hd.le) 2
     calc ‖∑' q : LZero χ, zeroKernel y q.point‖ * y
         ≤ 4 * A * localCountConst N * (14 + 3 * v) * E * y := mul_le_mul_of_nonneg_right hz hy₀.le
-      _ ≤ 4 * (W / d) ^ 2 * (160 * W) * (17 * W) * E * y := by gcongr; linarith only [hlamW, hCount]
+      _ ≤ 4 * (W / d) ^ 2 * (160 * W) * (17 * W) * E * y := by gcongr
       _ = _ := by ring
   have hlog : ‖efGamma χ * Complex.log y‖ ≤ v := by
     rw [norm_mul, ← Complex.ofReal_log hy₀.le, Complex.norm_real, Real.norm_of_nonneg (Real.log_nonneg hy₁.le)]
