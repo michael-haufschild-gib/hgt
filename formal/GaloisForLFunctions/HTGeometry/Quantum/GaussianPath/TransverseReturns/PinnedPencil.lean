@@ -35,13 +35,14 @@ theorem pencil_clock {I : Type*} [Fintype I] [DecidableEq I] (E F : I → ℝ)
       dsimp only [β]
       rw [abs_div,abs_mul,abs_of_pos (by positivity : 0<2*π)]
       ring
-    rw [hβ,←mul_one_div]
-    exact mul_le_mul_of_nonneg_left (hd ()).1.le (by positivity)
+    rw [hβ]
+    calc
+      _ ≤ (2*π/|F c-F a|)*(1/(m:ℝ)) := mul_le_mul_of_nonneg_left (hd ()).1.le (by positivity)
+      _ = _ := by ring
   · intro j
     have he : ((q:ℝ)*τ*(E j-E a)-β*(F j-F a))/(2*π) = (q:ℝ)*X j-G j*d () := by
       dsimp only [β,X,G]
       field_simp
-      ring
     rw [he]
     have hm' : (0:ℝ) < m := Nat.cast_pos.mpr hm
     have hpos : (0:ℝ)<1/(m:ℝ)^2 := by positivity
