@@ -19,7 +19,7 @@ theorem realLargeT : RealLargeT :=
     trivial_log_deriv_bound
 
 theorem realSmallT : RealSmallT :=
-  realCharZeroFreeSmallHeightOfBounds localZeros l_log_deriv_right negLogDerivPositivity realCharConj
+  realCharZeroSmallHeightOfBounds localZeros l_log_deriv_right negLogDerivPositivity realCharConj
 
 theorem twoReal : TwoReal :=
   twoRealCharNoCommonZeroOfBounds localZeros l_log_deriv_right negLogDerivPositivity

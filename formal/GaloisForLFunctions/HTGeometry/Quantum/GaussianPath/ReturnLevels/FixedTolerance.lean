@@ -42,7 +42,7 @@ private theorem continuous_chain_distance (n s : ℕ) :
     Continuous (fun p : PathPauliDisorder × ℝ => orbitCircuitDistance (chainH p.1 n) s p.2) := by
   have hH : Continuous (fun ω : PathPauliDisorder => pathHamiltonian (pathPauliDisorderShell ω n)) := by
     simp_rw [pathHamiltonian_eq_sum]
-    apply continuous_finset_sum
+    apply continuous_finsetSum
     intro l _
     cases l with
     | inl i => exact (Complex.continuous_ofReal.comp (continuous_apply _)).smul continuous_const
@@ -50,20 +50,28 @@ private theorem continuous_chain_distance (n s : ℕ) :
   exact (Metric.continuous_infDist_pt _).comp
     (continuous_unitaryEvolution.comp ((hH.comp continuous_fst).prodMk continuous_snd))
 
-private theorem measurable_levels_graph (n : ℕ) :
-    MeasurableSet {p : PathPauliDisorder × ℝ | p.2 ∈ sharedLevels (pathPauliDisorderShell p.1 n)} := by
-  let Z (s : ℕ) := {p : (PathPauliDisorder × ℝ) × ℝ |
-    orbitCircuitDistance (chainH p.1.1 n) s p.2=orbitCircuitDistance (chainH p.1.1 n) (s+Fintype.card (PathLabel n)) p.2 ∧
-    orbitCircuitDistance (chainH p.1.1 n) s p.2=p.1.2}
-  have hf (s : ℕ) : Continuous (fun p : (PathPauliDisorder × ℝ) × ℝ => orbitCircuitDistance (chainH p.1.1 n) s p.2) :=
-    (continuous_chain_distance n s).comp ((continuous_fst.comp continuous_fst).prodMk continuous_snd)
-  have hc (s : ℕ) : IsClosed (Z s) := (isClosed_eq (hf s) (hf _)).inter (isClosed_eq (hf s) (continuous_snd.comp continuous_fst))
-  have he : {p : PathPauliDisorder × ℝ | p.2 ∈ sharedLevels (pathPauliDisorderShell p.1 n)} =
+private theorem measurable_shared_graph {X : Type*} [TopologicalSpace X] [MeasurableSpace X]
+    [OpensMeasurableSpace (X × ℝ)] (d : ℕ → X × ℝ → ℝ) (hd : ∀ s, Continuous (d s)) (J : ℕ) :
+    MeasurableSet {p : X × ℝ | ∃ s t, d s (p.1,t)=d (s+J) (p.1,t) ∧ d s (p.1,t)=p.2} := by
+  let π (p : (X × ℝ) × ℝ) : X × ℝ := (p.1.1,p.2)
+  have hπ : Continuous π := (continuous_fst.comp continuous_fst).prodMk continuous_snd
+  let Z (s : ℕ) := {p : (X × ℝ) × ℝ | d s (π p)=d (s+J) (π p) ∧ d s (π p)=p.1.2}
+  have hc (s : ℕ) : IsClosed (Z s) :=
+    (isClosed_eq ((hd s).comp hπ) ((hd (s+J)).comp hπ)).inter
+      (isClosed_eq ((hd s).comp hπ) (continuous_snd.comp continuous_fst))
+  have he : {p : X × ℝ | ∃ s t, d s (p.1,t)=d (s+J) (p.1,t) ∧ d s (p.1,t)=p.2} =
       ⋃ s : ℕ, {p | ∃ t : ℝ, (p,t) ∈ Z s} := by
     ext p
-    simp only [sharedLevels,mem_setOf_eq,mem_iUnion,mem_image,Z,chainH]
+    simp only [mem_setOf_eq,mem_iUnion,Z,π]
   rw [he]
   exact MeasurableSet.iUnion fun s => measurable_time_projection (hc s)
+
+private theorem measurable_levels_graph (n : ℕ) :
+    MeasurableSet {p : PathPauliDisorder × ℝ | p.2 ∈ sharedLevels (pathPauliDisorderShell p.1 n)} := by
+  have h := measurable_shared_graph
+    (fun s (p : PathPauliDisorder × ℝ) => orbitCircuitDistance (chainH p.1 n) s p.2)
+    (continuous_chain_distance n) (Fintype.card (PathLabel n))
+  simpa only [sharedLevels,mem_iUnion,mem_image,mem_setOf_eq,chainH] using h
 
 /-- For almost every deterministic choice of error, the whole Gaussian
 chain avoids the exceptional levels almost surely. The choice of error

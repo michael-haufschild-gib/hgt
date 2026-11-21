@@ -26,7 +26,7 @@ private theorem reconstruct {n : ℕ} {s t : Fin (n+1) → Bool}
     have he := congrFun h i
     change xor (s i.castSucc) (s i.succ) = xor (t i.castSucc) (t i.succ) at he
     rw [ih] at he
-    cases t i.castSucc <;> cases s i.succ <;> cases t i.succ <;> simp_all
+    cases hprev : t i.castSucc <;> simpa only [hprev,Bool.false_xor,Bool.true_xor,Bool.not_inj_iff] using he
 
 /-- The full bond record determines the spin configuration up to its global sign. -/
 theorem walls_eq_iff {n : ℕ} (s t : Fin (n+1) → Bool) :
@@ -63,14 +63,17 @@ theorem diagonal_ising (n : ℕ) :
   apply congrArg Complex.ofReal
   have hsite (i : Fin (n+2)) : isingShell n (.inl (i,2)) = 0 := rfl
   have hedge (e : Fin (n+1)) : isingShell n (.inr (e,2,2)) = (3:ℝ)^e.val := by
-    change (if ((2,2) : Fin 3 × Fin 3) = (2,2) then _ else _) = _
+    change (if ((2,2) : Fin 3 × Fin 3) = (2,2) then (3:ℝ)^e.val else 0) = (3:ℝ)^e.val
     rw [if_pos rfl]
   simp only [pathDiagEnergy,hsite,hedge,zero_mul,Finset.sum_const_zero,zero_add,bondEnergy]
   apply Finset.sum_congr rfl
   intro i _
   have hne : i.castSucc ≠ i.succ := fun he => by have hh := congrArg Fin.val he; simp at hh
   simp only [siteSign,walls,zSetSign,Finset.prod_insert (Finset.notMem_singleton.mpr hne),Finset.prod_singleton]
-  cases s i.castSucc <;> cases s i.succ <;> simp
+  have hsign (a b : Bool) : (if a then (-1:ℝ) else 1)*(if b then -1 else 1) =
+      (if xor a b then -1 else 1) := by cases a <;> cases b <;> norm_num
+  rw [hsign]
+  by_cases h : xor (s i.castSucc) (s i.succ) = true <;> simp [h]
 
 /-- Every distinct complementary pair is separated from every other pair
 by an energy gap of at least two, uniformly in the chain length. -/

@@ -21,8 +21,10 @@ def clockEvolution (t : ℝ) : Gas →L[ℂ] Gas :=
   lpDiagonalCLM (fun n => (clockPhase t n : ℂ)) zero_le_one fun _ => (Circle.norm_coe _).le
 
 private theorem clock_contract (t : ℝ) (x : Gas) : ‖clockEvolution t x‖ ≤ ‖x‖ := by
-  simpa only [one_mul] using (le_opNorm _ x).trans
-    (mul_le_mul_of_nonneg_right (norm_lpDiagonalCLM_le _ _ _) (norm_nonneg x))
+  have hU : ‖clockEvolution t‖ ≤ 1 :=
+    norm_lpDiagonalCLM_le (fun n : ℕ+ => (clockPhase t n : ℂ)) zero_le_one (fun _ => (Circle.norm_coe _).le)
+  exact ((clockEvolution t).le_opNorm x).trans ((mul_le_mul_of_nonneg_right hU (norm_nonneg x)).trans_eq
+    (one_mul _))
 
 private def cut (x : Gas) (S : Finset ℕ+) : Gas := ∑ n ∈ S, lp.single 2 n (x n)
 
@@ -139,12 +141,13 @@ private theorem finite_mean (A : Gas →L[ℂ] Gas) (x : Gas) (S : Finset ℕ+) 
     change conj (clockPhase t i : ℂ) * ((clockPhase t j : ℂ) * shellMatrixTerm A x i j) = _
     rw [← mul_assoc, clock_gap, mul_comm]
   have hc : (∑ p ∈ (S ×ˢ S).filter (fun p => θ p = 0), c p) = ∑ i ∈ S, shellMatrixTerm A x i i := by
-    simp only [Finset.sum_filter, Finset.sum_product, θ, energy_gap_zero, c, Finset.sum_ite_eq',
-      Finset.mem_product]
+    simp only [Finset.sum_filter, Finset.sum_product, θ, energy_gap_zero, c, Finset.sum_ite_eq']
     exact Finset.sum_congr rfl fun i hi => if_pos hi
   have h := _root_.RHTower.Weyl.trig_time_average (S ×ˢ S) θ c
   rw [hc] at h
-  simpa only [windowAverage, Complex.real_smul, Complex.ofReal_inv, hex] using h
+  apply h.congr (fun T => ?_)
+  change _ = T⁻¹ • ∫ t in (0:ℝ)..T, orbitExpectation A (cut x S) t
+  simp only [hex, Complex.real_smul, Complex.ofReal_inv]
 
 private theorem diagonal_summable (A : Gas →L[ℂ] Gas) (x : Gas) :
     Summable (fun i => shellMatrixTerm A x i i) := by
@@ -157,7 +160,7 @@ private theorem diagonal_summable (A : Gas →L[ℂ] Gas) (x : Gas) :
   let e : Gas := lp.single 2 i (x i)
   have h := (norm_inner_le_norm (𝕜 := ℂ) e (A e)).trans
     (mul_le_mul_of_nonneg_left (A.le_opNorm _) (norm_nonneg _))
-  simpa only [e, lp.norm_single (by norm_num : (0 : ENNReal) < 2), sq, mul_left_comm] using h
+  simpa only [shellMatrixTerm, e, lp.norm_single (by norm_num : (0 : ENNReal) < 2), sq, mul_left_comm] using h
 
 /-- The mean of any pure-state orbit is its occupation-basis diagonal ensemble. -/
 theorem clock_mean_diagonal (A : Gas →L[ℂ] Gas) (x : Gas) :
@@ -165,7 +168,8 @@ theorem clock_mean_diagonal (A : Gas →L[ℂ] Gas) (x : Gas) :
   have hy := cut_limit x
   have he : Tendsto (fun S => ‖A‖ * (‖x‖+‖cut x S‖) * ‖x-cut x S‖) atTop (𝓝 0) := by
     simpa only [sub_self, norm_zero, mul_zero] using
-      ((tendsto_const_nhds.mul (tendsto_const_nhds.add hy.norm)).mul (tendsto_const_nhds.sub hy).norm)
+      (((tendsto_const_nhds (x := ‖A‖)).mul ((tendsto_const_nhds (x := ‖x‖)).add hy.norm)).mul
+        ((tendsto_const_nhds (x := x)).sub hy).norm)
   have hu : TendstoUniformly (fun S => windowAverage (orbitExpectation A (cut x S)))
       (windowAverage (orbitExpectation A x)) atTop := by
     apply Metric.tendstoUniformly_iff.mpr
@@ -216,7 +220,11 @@ theorem coherent_clock_mean (u : ℕ+ → Circle) (β : TraceTemperature) (A : G
   have hlim := clock_mean_diagonal A x
   rw [gibbsMean, traceIdeal_shell_diagonal (hsTraceIdeal_comp_left (gibbs_mem_traceIdeal s) A),
     partition_eq_zeta, ← tsum_div_const, ← funext hentry]
-  simpa only [coherentReading, horbit, orbitExpectation] using hlim
+  apply hlim.congr (fun T => ?_)
+  apply congrArg (fun f : ℝ → ℂ => windowAverage f T)
+  funext t
+  rw [coherentReading, horbit]
+  rfl
 
 private theorem rotating_shift_reading (χ : ℕ+ →* Circle) (β : TraceTemperature)
     (m : ℕ+) (F : ZMod (m : ℕ) → ℂ) (a b : ℕ+) (t : ℝ) :

@@ -23,10 +23,10 @@ private theorem higher_step {n : ℕ} (u : PathShell n) (j : ℕ) :
   refine ⟨⟨6*K^(j+2),by positivity⟩,?_⟩
   intro t
   change HasProjectiveCircuitApproximation _ (6*K^(j+2)*|t|^(j+2)) _ _
-  have hB : 6*K^(j+2)*|t|^(j+2)=6*(|t|*K)^(j+2) := by rw [mul_pow]; ring
+  have hB : 6*K^(j+2)*|t|^(j+2)=6*(|t| * K)^(j+2) := by rw [mul_pow]; ring
   rw [hB]
-  by_cases ht : |t|*K ≤ 1
-  · have ht' : ‖(t:ℂ)‖*K ≤ 1 := by simpa only [Complex.norm_real,Real.norm_eq_abs] using ht
+  by_cases ht : |t| * K ≤ 1
+  · have ht' : ‖(t:ℂ)‖ * K ≤ 1 := by simpa only [Complex.norm_real,Real.norm_eq_abs] using ht
     have he := ProductFormula.contact_error hw hK hm hz ht'
     have hf (y) (hy : y ∈ w) : ∃ c : ℂ, ‖c‖=1 ∧ ∃ C : TwoQubitCircuit (n+2),
         C.gateCount=1 ∧ exp (t • y)=c • (C.eval : Register (n+2)) := by

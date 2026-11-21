@@ -39,10 +39,13 @@ theorem mixed_fieldEnergy {ι : Type*} [Fintype ι] [DecidableEq ι] (s : ι →
       have ht : Tendsto (fun t : ℂ => z+s i*t) (𝓝 0) (𝓝 z) := by simpa using hline.continuousAt.tendsto
       filter_upwards [ht hf.eventually_analyticAt] with t ht'
       rw [ih _ (by rwa [coordinate_energy]),coordinate_energy]
-    have ha := (analytic_iterate hf w.length).differentiableAt.hasDerivAt
+    have ha : HasDerivAt (iteratedDeriv w.length f) (deriv (iteratedDeriv w.length f) z) z :=
+      (analytic_iterate hf w.length).differentiableAt.hasDerivAt
+    have ha' : HasDerivAt (iteratedDeriv w.length f) (deriv (iteratedDeriv w.length f) z) (z+s i*0) := by
+      simpa only [mul_zero,add_zero] using ha
     have hb : HasDerivAt (fun t : ℂ => iteratedDeriv w.length f (z+s i*t))
-        (deriv (iteratedDeriv w.length f) z * s i) 0 :=
-      (show HasDerivAt (iteratedDeriv w.length f) _ (z+s i*0) by simpa using ha).comp 0 hline
+        (deriv (iteratedDeriv w.length f) z * s i) 0 := by
+      exact HasDerivAt.comp (h₂ := iteratedDeriv w.length f) (h := fun t : ℂ => z+s i*t) 0 ha' hline
     change deriv _ 0 = _
     rw [he.deriv_eq,(hb.mul_const _).deriv,List.length_cons,iteratedDeriv_succ,
       List.map_cons,List.prod_cons,mul_assoc]

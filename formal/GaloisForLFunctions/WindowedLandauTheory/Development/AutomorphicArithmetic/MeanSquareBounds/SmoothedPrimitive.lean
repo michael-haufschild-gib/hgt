@@ -27,7 +27,7 @@ private theorem beta_le (hχ : χ ≠ 1) {B : ℝ} (hB : 0 ≤ B) {β : ℂ}
   have hval (y : ℝ) (hy : 1 < y) (hy' : y < 2) :
       ‖(y : ℂ) * An.logDerivativeAtOne χ - β‖ ≤ 2 * B + 3 := by
     have hy₀ : 0 < y := zero_lt_one.trans hy
-    have hfl : ⌊y⌋₊ = 1 := (Nat.floor_eq_iff hy₀.le).mpr (by push_cast; exact ⟨hy.le, hy'⟩)
+    have hfl : ⌊y⌋₊ = 1 := (Nat.floor_eq_iff hy₀.le).mpr (by norm_num; exact ⟨hy.le, hy'⟩)
     have hsum : An.sumLamChi χ y = 0 := by
       simp [An.sumLamChi, hfl, An.abelian₂]
     have he := hβ y hy
@@ -198,8 +198,8 @@ theorem smoothed_primitive_bound (c₀ : ℝ) (hc₀ : 0 < c₀) :
       apply mul_le_mul (by gcongr <;> exact le_max_right _ _) _ (by positivity) (by positivity)
       rw [hE]
       apply Real.exp_le_exp.mpr
-      exact div_le_div_of_nonneg_right (by linarith only [mul_le_mul_of_nonneg_right
-        (min_le_right kζ a) (zero_le_one.trans hv₁)]) hD.le
+      have h := mul_le_mul_of_nonneg_right (min_le_right kζ a) (zero_le_one.trans hv₁)
+      exact div_le_div_of_nonneg_right (by linarith only [h]) hD.le
 
 end
 

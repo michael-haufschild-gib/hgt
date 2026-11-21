@@ -1,26 +1,13 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.MeanSquareBounds.Thin
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.MeanSquareBounds.realCond
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.CharacterBoxes.PairGood
+import GaloisForLFunctions.RHTower.QuadraticCharacterFourfoldProduct
 
 /-! The thin-scale cancellation bound for the characters of a host. -/
 
 open Finset
 
 namespace QH
-
-private theorem isReal_of_sq {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N) (h2 : χ ^ 2 = 1) (a : ZMod N) :
-    (χ a).im = 0 := by
-  by_cases ha : IsUnit a
-  · have h := congrArg (fun f : DirichletCharacter ℂ N => f a) h2
-    simp only [pow_two, MulChar.one_apply ha] at h
-    rw [MulChar.mul_apply] at h
-    have hz : χ a = 1 ∨ χ a = -1 := by
-      have : (χ a - 1) * (χ a + 1) = 0 := by ring_nf; rw [← pow_two] at h; rw [h]; ring
-      rcases mul_eq_zero.1 this with h1 | h1
-      · left; linear_combination h1
-      · right; linear_combination h1
-    rcases hz with hz | hz <;> simp [hz]
-  · simp [MulChar.map_nonunit χ ha]
 
 private theorem level_dvd {φ : WindowedLandauTheory.HC.Frame} (H : WindowedLandauTheory.HC.HostRaw φ) {N : ℕ} [NeZero N] (χ : DirichletCharacter ℂ N)
     (h : H.IsCharE χ) : N ∣ H.condN := by
@@ -51,10 +38,10 @@ theorem thinH :
   have hq : H.q.Prime := H.hyp.1
   have hd : H.d.Prime := H.hyp.2.1
   by_cases hqd : H.q ∣ N ∨ H.d ∣ N
-  · exact hRB (WindowedLandauTheory.HC.PChar.mk N χ hprim) hχ (isReal_of_sq χ h2) hqd β
+  · exact hRB (WindowedLandauTheory.HC.PChar.mk N χ hprim) hχ
+      (RHTower.im_eq_zero_of_isQuadratic (MulChar.isQuadratic_iff_sq_eq_one.mpr h2)) hqd β
       (by have := min_le_right c₀s (1 / 400); linarith)
-  · push_neg at hqd
-    have hQ0 : H.QS ≠ 0 := (H.QS_pos).ne'
+  · push Not at hqd
     have hsplitQ := Nat.ordProj_mul_ordCompl_eq_self H.QS 2
     have hprimes : ∀ p : ℕ, p.Prime → p ∣ N → p ∣ 8 * (H.QS / 2 ^ H.QS.factorization 2) ∨ p = H.q ∨ p = H.d := by
       intro p hp hpN
@@ -78,9 +65,10 @@ theorem thinH :
     have hcd : Nat.Coprime N H.d := ((Nat.Prime.coprime_iff_not_dvd hd).2 hqd.2).symm
     have hN0 : N ∣ 8 * (H.QS / 2 ^ H.QS.factorization 2) :=
       hcq.dvd_of_dvd_mul_right (hcd.dvd_of_dvd_mul_right hdiv)
-    have hopos : 0 < H.QS / 2 ^ H.QS.factorization 2 := Nat.ordCompl_pos 2 hQ0
     have hofl : H.QS / 2 ^ H.QS.factorization 2 ≤ ⌊B⌋₊ := Nat.le_floor hB
-    have hNle : N ≤ 8 * ⌊B⌋₊ := (Nat.le_of_dvd (by omega) hN0).trans (by omega)
+    have hpos : 0 < 8 * (H.QS / 2 ^ H.QS.factorization 2) :=
+      Nat.mul_pos (by norm_num) (Nat.ordCompl_pos 2 H.QS_pos.ne')
+    have hNle : N ≤ 8 * ⌊B⌋₊ := (Nat.le_of_dvd hpos hN0).trans (Nat.mul_le_mul_left 8 hofl)
     exact hsmall N χ hNle h1 β (by have := min_le_left c₀s (1 / 400); linarith) hβ1
 
 end QH

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.RHTower.DirichletCharacterCoprimePrimitiveProduct
 import GaloisForLFunctions.RHTower.QuadraticJacobiSum
+import Mathlib.NumberTheory.LegendreSymbol.JacobiSymbol
 
 /-! Primitive twists by the quadratic character of a new odd prime. -/
 

@@ -10,7 +10,7 @@ private theorem thin_decay {C k : ℝ} (hC : 0 < C) (hk : 0 < k) :
     ∀ᶠ v : ℝ in atTop, 1 ≤ v ∧ ∀ lam : ℝ, 1 ≤ lam → lam ≤ v ^ (61 / 100 : ℝ) →
       C * (v + lam) ^ 4 * Real.exp (-k * v / (lam + Real.sqrt v)) ≤
         Real.exp (-(k / 4) * v ^ (39 / 100 : ℝ)) := by
-  have hlog := (Real.isLittleO_log_rpow_atTop (by norm_num : (0 : ℝ) < 39 / 100)).bound
+  have hlog := (isLittleO_log_rpow_atTop (by norm_num : (0 : ℝ) < 39 / 100)).bound
     (c := k / 32) (by positivity)
   have hscale := (tendsto_rpow_atTop (by norm_num : (0 : ℝ) < 39 / 100)).eventually_ge_atTop
     (8 * Real.log (16 * C) / k)
@@ -31,7 +31,8 @@ private theorem thin_decay {C k : ℝ} (hC : 0 < C) (hk : 0 < k) :
     calc k / 2 * v ^ (39 / 100 : ℝ) * (lam + Real.sqrt v)
         ≤ k / 2 * v ^ (39 / 100 : ℝ) * (2 * v ^ (61 / 100 : ℝ)) :=
           mul_le_mul_of_nonneg_left hlams (by positivity)
-      _ = k * v := by rw [← hPow]; ring
+      _ = k * (v ^ (39 / 100 : ℝ) * v ^ (61 / 100 : ℝ)) := by ring
+      _ = k * v := by rw [hPow]
   have hpoly : C * (v + lam) ^ 4 ≤ Real.exp (k / 4 * v ^ (39 / 100 : ℝ)) := by
     have h₁ : C * (v + lam) ^ 4 ≤ (16 * C) * v ^ 4 := by
       calc C * (v + lam) ^ 4 ≤ C * (2 * v) ^ 4 := by gcongr; linarith only [hlamv]

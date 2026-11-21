@@ -10,23 +10,23 @@ noncomputable section
 open SharpOccupation
 
 /-- Translating a sufficiently accurate empty-circuit visit preserves the
-two strict error margins at u. The resulting one-gate times have a
+two strict error margins at u. Times lying between the two gate budgets have a
 positive lower density from every observation origin. -/
 theorem translated_strict_window {N : ℕ} (H : selfAdjoint (Register N))
     (hi : MaximallyProjectiveEnergy H.2.isHermitian.eigenvalues)
-    {ε u : ℝ} (hε : 0 < ε) (hs : ε < sqrt 2) (h1 : orbitCircuitDistance H 1 u < ε)
-    (h0 : ε < orbitCircuitDistance H 0 u) :
+    {j s : ℕ} {ε u : ℝ} (hε : 0 < ε) (hs : ε < sqrt 2) (h1 : orbitCircuitDistance H j u < ε)
+    (h0 : ε < orbitCircuitDistance H s u) :
     ∃ c > (0:ℝ), ∀ a : ℝ, ∀ᶠ T : ℝ in atTop,
-      c < volume.real ((visitSet H 1 ε \ visitSet H 0 ε) ∩ Icc a T)/(T-a) := by
-  let δ := min ε (min (ε-orbitCircuitDistance H 1 u) (orbitCircuitDistance H 0 u-ε))/2
+      c < volume.real ((visitSet H j ε \ visitSet H s ε) ∩ Icc a T)/(T-a) := by
+  let δ := min ε (min (ε-orbitCircuitDistance H j u) (orbitCircuitDistance H s u-ε))/2
   have hδ : 0 < δ := half_pos (lt_min hε (lt_min (sub_pos.mpr h1) (sub_pos.mpr h0)))
   have hδε : δ < ε := (half_lt_self (lt_min hε (lt_min (sub_pos.mpr h1) (sub_pos.mpr h0)))).trans_le (min_le_left ..)
   have h₁ := (half_lt_self (lt_min hε (lt_min (sub_pos.mpr h1) (sub_pos.mpr h0)))).trans_le
     ((min_le_right ..).trans (min_le_left _ _))
   have h₀ := (half_lt_self (lt_min hε (lt_min (sub_pos.mpr h1) (sub_pos.mpr h0)))).trans_le
     ((min_le_right ..).trans (min_le_right _ _))
-  change δ < ε-orbitCircuitDistance H 1 u at h₁
-  change δ < orbitCircuitDistance H 0 u-ε at h₀
+  change δ < ε-orbitCircuitDistance H j u at h₁
+  change δ < orbitCircuitDistance H s u-ε at h₀
   let p := ((2^N:ℕ):ℝ)*(physicalArc δ)^(2^N-1:ℕ)
   have hp : 0 < p := mul_pos (Nat.cast_pos.mpr (pow_pos (by decide) _)) (pow_pos (physicalArc_spec hδ (hδε.trans hs)).1.1 _)
   refine ⟨p/2,half_pos hp,?_⟩
@@ -45,20 +45,20 @@ theorem translated_strict_window {N : ℕ} (H : selfAdjoint (Register N))
     exact hc.measurableSet.inter measurableSet_Icc
   have he : volume.real G=volume.real F :=
     congrArg ENNReal.toReal ((measurePreserving_add_right volume (-u)).measure_preimage hm.nullMeasurableSet)
-  have hsub : G ⊆ (visitSet H 1 ε \ visitSet H 0 ε) ∩ Icc a T := by
+  have hsub : G ⊆ (visitSet H j ε \ visitSet H s ε) ∩ Icc a T := by
     intro t hh
     have hnear : HasProjectiveCircuitApproximation N δ 0 (unitaryEvolution H.val (t+-u)) := hh.1
     have hh' : t+-u ∈ Icc (a-u) (T-u) := hh.2
     refine ⟨⟨?_,?_⟩,by constructor <;> linarith only [hh'.1,hh'.2]⟩
-    · have hu := (hasProjectiveCircuitApproximation_iff_infDist (unitaryEvolution H.val u) 1 (ε-δ)).mpr
-        (show orbitCircuitDistance H 1 u ≤ ε-δ by linarith only [h₁])
+    · have hu := (hasProjectiveCircuitApproximation_iff_infDist (unitaryEvolution H.val u) j (ε-δ)).mpr
+        (show orbitCircuitDistance H j u ≤ ε-δ by linarith only [h₁])
       have h := affordable_add_time H hnear hu
       rwa [show t+-u+u=t by ring,show δ+(ε-δ)=ε by ring,zero_add] at h
     · intro hcheap
       have hh' := affordable_add_time H hcheap (hnear.neg_time H)
       rw [show t+ -(t+-u)=u by ring] at hh'
-      have h := (hasProjectiveCircuitApproximation_iff_infDist _ 0 _).mp hh'
-      change orbitCircuitDistance H 0 u ≤ _ at h
+      have h := (hasProjectiveCircuitApproximation_iff_infDist _ s _).mp hh'
+      change orbitCircuitDistance H s u ≤ _ at h
       linarith only [h,h₀]
   change p/2 < volume.real F/(T-u-(a-u)) at hT
   rw [show T-u-(a-u)=T-a by ring,←he] at hT

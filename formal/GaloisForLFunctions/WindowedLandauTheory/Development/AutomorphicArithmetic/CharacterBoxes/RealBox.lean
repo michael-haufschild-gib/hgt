@@ -8,8 +8,7 @@ open WindowedLandauTheory.HC UpperTheory.Top
 private theorem UpperTheory.Top.realBox_level {φ : Frame} (H : HostRaw φ) (χ : PChar)
     (h : H.IsCharE χ.χ) : χ.N ∣ H.QS * H.q * H.d := by
   obtain ⟨θ, hθ⟩ := h
-  rw [H.isPrimOf_iff] at hθ
-  subst hθ
+  rw [(H.isPrimOf_iff θ χ).mp hθ]
   exact DirichletCharacter.conductor_dvd_level _
 
 private theorem UpperTheory.Top.realBox_main (M : ℕ) (φ : Frame) (H : HostRaw φ) (eps Y X : ℝ)
@@ -60,7 +59,7 @@ private theorem UpperTheory.Top.realBox_main (M : ℕ) (φ : Frame) (H : HostRaw
   have hj01 : j = 0 ∨ j = 1 := by fin_cases j <;> simp
   have hij : i ≠ 0 ∨ j ≠ 0 := by
     by_contra hc
-    push_neg at hc
+    push Not at hc
     obtain ⟨rfl, rfl⟩ := hc
     rw [show H.q ^ ((0 : Fin 2) : ℕ) = 1 by simp, show H.d ^ ((0 : Fin 2) : ℕ) = 1 by simp,
       mul_one, mul_one] at hN

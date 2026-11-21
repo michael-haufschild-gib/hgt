@@ -14,8 +14,8 @@ private theorem zeta_log_deriv_high {σ t : ℝ} (hσ : 1 < σ) (hσ₂ : σ ≤
     -(logDeriv riemannZeta ((σ : ℂ) + t * I)).re ≤ Real.log |t| / 2 + 1 / 2 := by
   have h := RHTower.neg_re_logDeriv_riemannZeta_le_half hσ hσ₂ ht
   rcases le_or_gt 0 t with hpos | hneg
-  · rwa [abs_of_nonneg hpos] at h
-  · have hconj : (starRingEnd ℂ) ((σ : ℂ) + (|t| : ℂ) * I) = (σ : ℂ) + t * I := by
+  · simpa only [abs_of_nonneg hpos] using h
+  · have hconj : (starRingEnd ℂ) ((σ : ℂ) + ((|t| : ℝ) : ℂ) * I) = (σ : ℂ) + t * I := by
       apply Complex.ext <;> simp [abs_of_neg hneg]
     rw [← hconj, RHTower.logDeriv_riemannZeta_conj]
     simpa only [Complex.conj_re] using h

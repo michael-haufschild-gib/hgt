@@ -11,6 +11,13 @@ noncomputable section
 and longitudinal off-diagonal entry z, near zero field. -/
 def doubletRoot (z : ℂ) : ℂ := (1+z^2)^(1/2:ℂ)
 
+@[simp] theorem doubletRoot_zero : doubletRoot 0=1 := by
+  simp [doubletRoot]
+
+theorem doubletRoot_sq (z : ℂ) : doubletRoot z ^ 2=1+z^2 := by
+  simpa only [doubletRoot,one_div,Nat.cast_ofNat] using
+    Complex.cpow_nat_inv_pow (1+z^2) (by decide : 2 ≠ 0)
+
 private theorem half_pochhammer (k : ℕ) :
     (descPochhammer ℤ k).smeval (1/2:ℂ) ≠ 0 := by
   induction k with
@@ -24,7 +31,7 @@ private theorem half_pochhammer (k : ℕ) :
       cases k with
       | zero => norm_num at h
       | succ k => push_cast at h; norm_num at h; linarith only [h,Nat.cast_nonneg (α := ℝ) k]
-    simpa using sub_ne_zero.mpr hk
+    simpa only [Polynomial.smeval_sub,Polynomial.smeval_X,Polynomial.smeval_natCast,pow_one,pow_zero,nsmul_eq_mul,mul_one] using sub_ne_zero.mpr hk
 
 private theorem half_choose (k : ℕ) : Ring.choose (1/2:ℂ) k ≠ 0 := by
   rw [Ring.choose_eq_smul,smul_eq_mul]
@@ -35,6 +42,8 @@ private theorem root_series :
       (fun j => if Even j then Ring.choose (1/2:ℂ) (j/2) else 0)) 0 :=
   hasFPowerSeriesAt_comp_sq (g := fun z : ℂ => (1+z)^(1/2:ℂ))
     Complex.one_add_cpow_hasFPowerSeriesOnBall_zero.hasFPowerSeriesAt
+
+theorem analyticAt_doubletRoot_zero : AnalyticAt ℂ doubletRoot 0 := root_series.analyticAt
 
 /-- Every even-order scalar response survives at the avoided crossing. -/
 theorem even_root_derivative {m : ℕ} (hm : Even m) : iteratedDeriv m doubletRoot 0 ≠ 0 := by

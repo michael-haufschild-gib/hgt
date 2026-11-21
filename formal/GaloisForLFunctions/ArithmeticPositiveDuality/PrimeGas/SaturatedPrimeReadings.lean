@@ -31,10 +31,15 @@ private theorem measured_eigenvector (v y : E) (hv : ‖v‖ = 1)
     (h : ‖inner ℂ v y‖ = ‖y‖) : y = inner ℂ v y • v := by
   have hv' : v ≠ 0 := by
     intro he
-    simpa [he] using hv
+    rw [he, norm_zero] at hv
+    exact zero_ne_one hv
   have hcs : ‖inner ℂ v y‖ = ‖v‖ * ‖y‖ := by rw [hv, one_mul, h]
-  have hy := (((norm_inner_eq_norm_tfae ℂ v y).out 0 1).mp hcs).resolve_left hv'
-  simpa only [inner_self_eq_norm_sq_to_K, hv, Complex.ofReal_one, one_pow, div_one] using hy
+  have hor : v = 0 ∨ y = (inner ℂ v y / inner ℂ v v) • v :=
+    ((norm_inner_eq_norm_tfae ℂ v y).out 0 1).mp hcs
+  have hunit : inner ℂ v v = 1 := by
+    rw [inner_self_eq_norm_sq_to_K, hv]
+    simp
+  simpa only [hunit, div_one] using hor.resolve_left hv'
 
 private theorem extend_prime_equations (T : ℕ+ →* (E →L[ℂ] E)) (v : E) (χ : ℕ+ →* Circle)
     (hp : ∀ p : Nat.Primes, T (p : ℕ+) v = singletonAmplitude χ (p : ℕ+) • v) (n : ℕ+) :
@@ -47,7 +52,7 @@ private theorem extend_prime_equations (T : ℕ+ →* (E →L[ℂ] E)) (v : E) (
       change T a v = _ at ha
       change T b v = _ at hb
       change T (a*b) v = _ • v
-      rw [map_mul, ContinuousLinearMap.mul_apply, hb, map_smul, ha, smul_smul, coherentFactor_mul χ 1 a b,
+      rw [map_mul, mul_apply_eq_comp, hb, map_smul, ha, smul_smul, coherentFactor_mul χ 1 a b,
         mul_comm (coherentFactor χ 1 b)]
   }
   have hall : n ∈ S := by
