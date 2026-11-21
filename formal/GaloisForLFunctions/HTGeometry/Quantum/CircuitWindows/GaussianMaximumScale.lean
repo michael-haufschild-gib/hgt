@@ -36,7 +36,9 @@ private theorem cap_le_excursion_powers {n : ℕ} (hn : 256 ≤ n) :
     apply le_trans _ (poly n hn)
     dsimp [F]
     calc
-      _ ≤ 160*(2*(n+1))*(128*(n+1))^5 := by gcongr <;> omega
+      _ ≤ 160*(2*(n+1))*(128*(n+1))^5 := by
+        gcongr
+        omega
       _ = _ := by ring
   have h16 : (16:ℕ)^n = (2^n)^4 := by rw [← pow_mul, mul_comm n 4,pow_mul]; norm_num
   constructor

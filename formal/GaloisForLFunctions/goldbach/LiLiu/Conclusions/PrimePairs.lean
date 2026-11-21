@@ -2,6 +2,7 @@ import GaloisForLFunctions.goldbach.LiLiu.Conclusions.Hypotheses
 import GaloisForLFunctions.goldbach.LiLiu.Boundary.CorrelationForm
 import GaloisForLFunctions.goldbach.LiLiu.Spectral.RelativeScale
 import GaloisForLFunctions.goldbach.LiLiu.RepresentationBound
+import Mathlib.Analysis.Asymptotics.AsymptoticEquivalent
 
 /-! # Conditional binary Goldbach estimates of Li and Liu -/
 
@@ -70,6 +71,18 @@ theorem conditional_relative_error (φ : TestWeight) (hg : eventualEvenGRH)
     exact (he hEven).trans ((div_le_iff₀ (singularSeries_pos N)).mp
       (by simpa only [mul_div_assoc] using hb.le))
 
+/-- The weighted Goldbach correlation is asymptotic to its varying main term along the even integers. -/
+theorem conditional_weighted_asymptotic (φ : TestWeight) (hg : eventualEvenGRH)
+    (hs : (∃ h, admissibleWidth h ∧ hypothesisS h) ∨ hypothesisR) :
+    Asymptotics.IsEquivalent (atTop ⊓ Filter.principal {N : ℕ | Even N})
+      (correlation φ) (fun N => φ.mass * singularSeries N) := by
+  rw [Asymptotics.IsEquivalent, Asymptotics.isLittleO_iff]
+  intro ε hε
+  apply eventually_inf_principal.mpr
+  filter_upwards [conditional_relative_error φ hg hs (mul_pos hε φ.mass_pos)] with N he hEven
+  simpa only [Pi.sub_apply, Real.norm_eq_abs, abs_of_pos (mul_pos φ.mass_pos (singularSeries_pos N)),
+    mul_assoc] using he hEven
+
 private theorem conditional_weighted_lower (φ : TestWeight) (hg : eventualEvenGRH)
     (hs : (∃ h, admissibleWidth h ∧ hypothesisS h) ∨ hypothesisR) :
     ∀ᶠ N : ℕ in atTop, Even N → φ.mass/2 * singularSeries N ≤ correlation φ N := by
@@ -92,6 +105,7 @@ theorem conditional_goldbach (hg : eventualEvenGRH)
   prime_pair_of_eventual_weighted_lower centralBump (conditional_weighted_lower centralBump hg hs)
 
 #print axioms conditional_weighted_estimates
+#print axioms conditional_weighted_asymptotic
 #print axioms conditional_goldbach_count
 #print axioms conditional_goldbach
 end

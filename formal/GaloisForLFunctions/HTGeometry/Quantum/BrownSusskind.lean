@@ -1,3 +1,4 @@
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.GaussianMaximumScale
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.GaussianMaximumQuantiles
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.GaussianMeanReturns
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.ShortArcHaar

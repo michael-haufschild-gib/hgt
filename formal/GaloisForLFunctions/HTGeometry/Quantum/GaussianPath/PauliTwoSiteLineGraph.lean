@@ -68,7 +68,7 @@ theorem twoSitePauliRootEdge_injective : Function.Injective twoSitePauliRootEdge
     · rw [hi, hj, otherAxes_injective he.1]
     · exact (empty_ne c he.2).elim
     · exact (empty_ne c he.1).elim
-    · have hij : i = j := (Fin.eq_one_of_ne_zero hi).trans (Fin.eq_one_of_ne_zero hj).symm
+    · have hij : i = j := (Fin.eq_one_of_ne_zero i hi).trans (Fin.eq_one_of_ne_zero j hj).symm
       rw [hij, otherAxes_injective he.2]
   · by_cases hi : i = 0 <;>
       simp only [twoSitePauliRootEdge, hi, if_true, if_false, Finset.disjSum_inj] at he
@@ -84,9 +84,7 @@ theorem twoSitePauliRootEdge_injective : Function.Injective twoSitePauliRootEdge
 /-- Every edge among the six roots comes from a two-site Pauli label. -/
 theorem exists_twoSitePauliRootEdge {E : Finset (Fin 3 ⊕ Fin 3)} (hE : E.card = 2) :
     ∃ p, twoSitePauliRootEdge p = E := by
-  have hsplit : E.toLeft.disjSum E.toRight = E := by
-    ext x
-    cases x <;> simp
+  have hsplit : E.toLeft.disjSum E.toRight = E := Finset.toLeft_disjSum_toRight
   have hcards : E.toLeft.card + E.toRight.card = 2 := by
     rw [← Finset.card_disjSum, hsplit, hE]
   have hcomplement (S : Finset (Fin 3)) (hS : S.card = 2) : ∃ a, otherAxes a = S := by
@@ -118,6 +116,7 @@ private theorem twoSite_onsite_bond_adj (i : Fin 2) (a b c : Fin 3) (e : Fin 1) 
     (¬Commute (finitePauliMatrix (pathWord (.inl (i, a) : PathLabel 0)))
       (finitePauliMatrix (pathWord (.inr (e, b, c))))) ↔
       ¬Disjoint (twoSitePauliRootEdge (.inl (i, a))) (twoSitePauliRootEdge (.inr (e, b, c))) := by
+  have he : e = 0 := Fin.eq_zero e
   subst e
   have hl : (0 : Fin 1).castSucc = 0 := rfl
   have hr : (0 : Fin 1).succ = 1 := rfl
@@ -126,7 +125,7 @@ private theorem twoSite_onsite_bond_adj (i : Fin 2) (a b c : Fin 3) (e : Fin 1) 
       Fin.zero_ne_one, false_implies, and_true, twoSitePauliRootEdge, if_pos rfl,
       disjoint_disjSum_iff, Finset.empty_disjoint, Finset.disjoint_singleton_right,
       otherAxes, Finset.mem_erase, Finset.mem_univ, and_true, not_not, eq_comm]
-  · have hi' := Fin.eq_one_of_ne_zero hi
+  · have hi' := Fin.eq_one_of_ne_zero i hi
     subst i
     simp only [pathWord, commute_onsite_coupling_iff, hl, hr, true_implies,
       Fin.zero_ne_one.symm, false_implies, true_and, twoSitePauliRootEdge,
@@ -151,8 +150,8 @@ theorem twoSitePauliRootEdge_adj_iff (p q : PathLabel 0) (hpq : p ≠ q) :
           Finset.empty_disjoint, true_and, and_true, otherAxes_intersect]
     · have hs : i = 0 ∨ j = 0 := by
         by_contra h
-        push_neg at h
-        exact hij ((Fin.eq_one_of_ne_zero h.1).trans (Fin.eq_one_of_ne_zero h.2).symm)
+        push Not at h
+        exact hij ((Fin.eq_one_of_ne_zero i h.1).trans (Fin.eq_one_of_ne_zero j h.2).symm)
       rcases hs with rfl | rfl
       · simp only [hij, hij.symm, true_or, not_true_eq_false, twoSitePauliRootEdge,
           if_true, if_false, disjoint_disjSum_iff, Finset.empty_disjoint,
@@ -160,7 +159,7 @@ theorem twoSitePauliRootEdge_adj_iff (p q : PathLabel 0) (hpq : p ≠ q) :
       · simp only [hij, true_or, not_true_eq_false, twoSitePauliRootEdge, if_true,
           if_false, disjoint_disjSum_iff, Finset.empty_disjoint, Finset.disjoint_empty, and_self]
   · exact twoSite_onsite_bond_adj i a c d f
-  · exact (not_congr commute_symm_iff).trans
+  · exact (not_congr ⟨Commute.symm, Commute.symm⟩).trans
       ((twoSite_onsite_bond_adj j c a b e).trans (not_congr disjoint_comm))
   · have he : e = 0 := Fin.eq_zero e
     have hf : f = 0 := Fin.eq_zero f

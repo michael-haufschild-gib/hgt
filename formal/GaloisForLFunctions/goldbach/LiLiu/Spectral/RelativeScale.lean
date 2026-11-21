@@ -18,7 +18,8 @@ theorem spectralScale_div_singularSeries_tendsto :
     simpa only [Function.comp_def, ← Real.rpow_natCast, Nat.cast_ofNat, Real.rpow_one] using
       hlog.comp tendsto_natCast_atTop_atTop
   have hlim : Tendsto (fun N : ℕ => Real.sqrt ((Real.log N ^ 3 / N) / c)) atTop (𝓝 0) := by
-    simpa using Real.continuous_sqrt.continuousAt.tendsto.comp (hnat.div_const c)
+    simpa only [Function.comp_def, zero_div, Real.sqrt_zero] using
+      Real.continuous_sqrt.continuousAt.tendsto.comp (hnat.div_const c)
   apply squeeze_zero (fun N => div_nonneg (Real.sqrt_nonneg _) (singularSeries_pos N).le) _ hlim
   intro N
   have hS := singularSeries_pos N
@@ -31,6 +32,7 @@ theorem spectralScale_div_singularSeries_tendsto :
         sq, mul_div_mul_left _ _ hS.ne']
     exact le_antisymm (le_of_sq_le_sq hsq.le (Real.sqrt_nonneg _))
       (le_of_sq_le_sq hsq.ge (div_nonneg (Real.sqrt_nonneg _) hS.le))
+  change spectralScale N / singularSeries N ≤ _
   rw [he]
   exact Real.sqrt_le_sqrt (div_le_div_of_nonneg_left hn hc (two_mul_twinPrimeConstant_le N))
 

@@ -133,9 +133,17 @@ theorem integrated_ordinate_tail {F : ℝ → ℝ} (hs : Summable (fun q : onLin
   let a := fun q : onLineCopies => if R q≤L then R q*w q else 0
   let b := fun q : onLineCopies => if L<R q then w q else 0
   have ha : Summable a := (hs.mul_left L).of_nonneg_of_le
-    (fun q => by dsimp [a]; split_ifs <;> positivity)
-    (fun q => by dsimp [a]; split_ifs with h; exact mul_le_mul_of_nonneg_right h (hw q); positivity)
-  have hb : Summable b := hs.of_nonneg_of_le (fun q => by split <;> first | exact le_rfl | exact hw q) (fun q => by split <;> first | exact le_rfl | exact hw q)
+    (fun q => by
+      dsimp only [a]; split_ifs
+      · exact mul_nonneg (hR q) (hw q)
+      · exact le_rfl)
+    (fun q => by
+      dsimp only [a]; split_ifs with h
+      · exact mul_le_mul_of_nonneg_right h (hw q)
+      · exact mul_nonneg hL (hw q))
+  have hb : Summable b := hs.of_nonneg_of_le
+    (fun q => by dsimp only [b]; split_ifs; exacts [hw q, le_rfl])
+    (fun q => by dsimp only [b]; split_ifs; exacts [le_rfl, hw q])
   change _=2*((∑' q,a q)+L*∑' q,b q)
   rw [←tsum_mul_left,←ha.tsum_add (hb.mul_left L),←tsum_mul_left]
   apply tsum_congr

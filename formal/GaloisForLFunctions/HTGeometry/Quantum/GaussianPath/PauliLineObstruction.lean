@@ -31,7 +31,7 @@ theorem finset_two_cannot_meet_three {ρ : Type*} [DecidableEq ρ]
     Disjoint S A ∨ Disjoint S B ∨ Disjoint S C := by
   classical
   by_contra h
-  push_neg at h
+  push Not at h
   obtain ⟨a, ha, haA⟩ := Finset.not_disjoint_iff.mp h.1
   obtain ⟨b, hb, hbB⟩ := Finset.not_disjoint_iff.mp h.2.1
   obtain ⟨c, hc, hcC⟩ := Finset.not_disjoint_iff.mp h.2.2
@@ -50,7 +50,8 @@ theorem finset_two_cannot_meet_three {ρ : Type*} [DecidableEq ρ]
 
 /-- An induced claw with pairwise distinguishable leaves survives identification of twins. -/
 theorem isEmpty_twinLineModel_of_claw {ι ρ : Type*} [DecidableEq ρ]
-    (adj : ι → ι → Prop) (symm : Symmetric adj) (irrefl : Irreflexive adj)
+    (adj : ι → ι → Prop) (symm : ∀ {x y}, adj x y → adj y x)
+    (irrefl : ∀ x, ¬adj x x)
     (o a b c : ι) (h₁ : adj o a) (h₂ : adj o b) (h₃ : adj o c)
     (hab : ¬adj a b) (hac : ¬adj a c) (hbc : ¬adj b c)
     (wab : ∃ w, adj a w ∧ ¬adj b w)
@@ -104,10 +105,10 @@ theorem commute_onsite_coupling_iff (i : Fin (n + 2)) (a : Fin 3)
   have hneg := neg_ne_self.mpr (one_ne_zero : (1 : ℂ) ≠ 0)
   by_cases hl : i = e.castSucc
   · subst i
-    simp [couplingWord, boolPauliConjugationSign, edge_endpoint_ne e, apply_ite, hneg]
+    simp [couplingWord, boolPauliConjugationSign, edge_endpoint_ne e, hneg]
   · by_cases hr : i = e.succ
     · subst i
-      simp [couplingWord, boolPauliConjugationSign, hl, apply_ite, hneg]
+      simp [couplingWord, boolPauliConjugationSign, hl, hneg]
     · simp [couplingWord, boolPauliConjugationSign, hl, hr]
 
 /-- Consecutive bonds commute exactly when their shared-site axes agree. -/
@@ -122,8 +123,7 @@ theorem commute_consecutive_coupling_iff (e f : Fin (n + 1)) (hef : e.succ = f.c
       (hef ▸ (show f.castSucc < f.succ from Nat.lt_succ_self f.val)))
   rw [Finset.prod_eq_single e.succ]
   · have hneg := neg_ne_self.mpr (one_ne_zero : (1 : ℂ) ≠ 0)
-    simp [couplingWord, boolPauliConjugationSign, (edge_endpoint_ne e).symm, hef,
-      hleft.symm, apply_ite, hneg]
+    simp [couplingWord, boolPauliConjugationSign, hef, hleft.symm, hneg]
   · intro j _ hj
     by_cases hl : j = e.castSucc
     · subst j
@@ -182,7 +182,7 @@ theorem path_no_twinLineModel_of_first_three {ρ : Type*} [DecidableEq ρ]
   have hc₂ : adj c z₂ := fun h => haxis
     (((commute_onsite_coupling_iff 2 2 e₁ (0, 0)).mp h.symm).2 he₁r.symm).symm
   have hb₂ : Commute (A b) (A z₂) := (commute_onsitePauli_iff 1 2 0 2).mpr (Or.inl h12)
-  exact isEmpty_twinLineModel_of_claw adj (fun h hc => h hc.symm)
+  exact isEmpty_twinLineModel_of_claw adj (fun {_ _} h hc => h hc.symm)
     (fun x h => h (Commute.refl (A x))) o a c b h₁ h₃ h₂'
     (fun h => h hac) (fun h => h hab) (fun h => h hbc.symm)
     ⟨z₀, ha₀, fun h => h hc₀⟩ ⟨z₀, ha₀, fun h => h hb₀⟩ ⟨z₂, hc₂, fun h => h hb₂⟩
