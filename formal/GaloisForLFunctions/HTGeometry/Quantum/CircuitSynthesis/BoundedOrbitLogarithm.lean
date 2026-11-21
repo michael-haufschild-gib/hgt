@@ -28,11 +28,11 @@ theorem exists_bounded_unit_time_generator {d : Type*} [Fintype d] [DecidableEq 
     let D : Matrix d d ℂ := Matrix.diagonal (fun i => (θ i:ℂ))
     have hD : IsSelfAdjoint D := by
       change Dᴴ = D
-      simp [D,Matrix.conjTranspose_diagonal]
+      exact Matrix.isHermitian_diagonal_of_self_adjoint _ (funext fun _ => Complex.conj_ofReal _)
     let K : Matrix d d ℂ := (V : Matrix d d ℂ)*D*star (V : Matrix d d ℂ)
     have hK : IsSelfAdjoint K := by
       change star ((V : Matrix d d ℂ)*D*star (V : Matrix d d ℂ)) = _
-      rw [star_mul,star_mul,star_star,hD.star_eq,mul_assoc]
+      rw [star_mul,star_mul,star_star,hD.star_eq,← mul_assoc]
     refine ⟨⟨K,hK⟩,?_,?_⟩
     · change ‖(V : Matrix d d ℂ)*D*star (V : Matrix d d ℂ)‖ ≤ _
       rw [l2_opNorm_unitary_conj_eq V.2]
@@ -43,6 +43,7 @@ theorem exists_bounded_unit_time_generator {d : Type*} [Fintype d] [DecidableEq 
       simpa [θ] using Complex.abs_arg_le_pi (p i)
     · change unitaryEvolution ((V : Matrix d d ℂ)*Matrix.diagonal (fun i => (θ i:ℂ))*star (V : Matrix d d ℂ)) 1 = _
       rw [unitaryEvolution_conj_diagonal _ V.2,unitaryEvolution_spectral H.2.isHermitian]
+      simp only [Complex.ofReal_one]
       suffices he : (fun i => Complex.exp (-(Complex.I*((1:ℂ)*(θ i:ℂ))))) = p by rw [he]
       funext i
       have hp : ‖p i‖ = 1 := by simp [p,Complex.norm_exp]

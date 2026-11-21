@@ -4,6 +4,7 @@ import Mathlib.LinearAlgebra.Complex.Module
 /-! # Complex slices cover quaternion space -/
 
 namespace GaloisForLFunctions.Goldbach.LiLiu
+open scoped Quaternion
 noncomputable section
 
 /-- Normalize the pure imaginary part to obtain a square root of −1.
@@ -18,10 +19,13 @@ theorem quaternion_mem_complex_slice (q : ℍ) : ∃ (f : ℂ →ₐ[ℝ] ℍ) (
   let J := r⁻¹ • q.im
   have hJ : J*J=-1 := by
     have hsq : q.im*q.im = -(algebraMap ℝ ℍ (r*r)) := by
-      simpa only [← sq,Quaternion.normSq_eq_norm_mul_self,r] using Quaternion.im_sq q
+      simpa only [sq,Quaternion.normSq_eq_norm_mul_self,r] using Quaternion.im_sq q
+    have hr' : (r⁻¹*r⁻¹)*(r*r)=1 := calc
+      _ = (r⁻¹*r)*(r⁻¹*r) := by ac_rfl
+      _ = 1 := by rw [inv_mul_cancel₀ hr,one_mul]
     rw [show J*J=(r⁻¹*r⁻¹) • (q.im*q.im) by exact smul_mul_smul_comm ..,hsq,smul_neg,
       Algebra.algebraMap_eq_smul_one (r*r),smul_smul]
-    rw [show (r⁻¹*r⁻¹)*(r*r)=1 by field_simp [hr],one_smul]
+    rw [hr',one_smul]
   refine ⟨Complex.liftAux J hJ,⟨q.re,r⟩,?_⟩
   change (q.re : ℍ) + r • (r⁻¹ • q.im)=q
   rw [smul_smul,mul_inv_cancel₀ hr,one_smul,Quaternion.re_add_im]

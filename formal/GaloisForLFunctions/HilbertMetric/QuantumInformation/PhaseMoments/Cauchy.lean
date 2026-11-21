@@ -195,7 +195,7 @@ theorem exists_finite_equatorial_decomposition (w : σ → ℝ) :
     by_cases h : (e j).1
     · simp only [h, if_true]
       exact (Complex.imCLM.integral_comp_comm hint).trans (congrArg Complex.im hentry)
-    · simp only [h, if_false]
+    · simp only [h]
       exact (Complex.reCLM.integral_comp_comm hint).trans (congrArg Complex.re hentry)
   have hHull : (∫ z, f z ∂μ) ∈ closure (convexHull ℝ S) :=
     (convex_convexHull ℝ S).closure.integral_mem isClosed_closure

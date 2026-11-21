@@ -6,7 +6,7 @@ import GaloisForLFunctions.goldbach.LiLiu.Spectral.SpectralScales
 
 namespace GaloisForLFunctions.Goldbach.LiLiu
 open Filter
-open scoped Topology
+open scoped Topology Quaternion
 noncomputable section
 
 theorem leftEdge_bounds {N : ℕ} (h : 10 < Real.log N) : 0 < leftEdge N ∧ leftEdge N < 1/8 := by

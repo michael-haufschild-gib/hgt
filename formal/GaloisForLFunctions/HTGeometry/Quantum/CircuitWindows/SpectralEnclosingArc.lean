@@ -75,6 +75,20 @@ theorem spectralEnclosingArcLength_lt_two_pi (θ : ι → ℝ) :
   rw [hi]
   exact (Finset.sup'_lt_iff Finset.univ_nonempty).mpr fun j _ => (forwardPhaseGap_mem (θ i) (θ j)).2
 
+/-- An arc of length `L` covers the phases exactly when some spectral cut has
+all forward displacements at most `L`. -/
+theorem spectralEnclosingArcLength_le_iff (θ : ι → ℝ) (L : ℝ) :
+    spectralEnclosingArcLength θ ≤ L ↔ ∃ i, ∀ j, forwardPhaseGap (θ i) (θ j) ≤ L := by
+  constructor
+  · intro h
+    obtain ⟨i, _, hi⟩ := Finset.exists_mem_eq_inf' Finset.univ_nonempty (phaseSpanFrom θ)
+    change spectralEnclosingArcLength θ = phaseSpanFrom θ i at hi
+    exact ⟨i, fun j => (Finset.le_sup' (fun k => forwardPhaseGap (θ i) (θ k))
+      (Finset.mem_univ j)).trans (hi ▸ h)⟩
+  · rintro ⟨i, hi⟩
+    exact (Finset.inf'_le (phaseSpanFrom θ) (Finset.mem_univ i)).trans
+      (Finset.sup'_le Finset.univ_nonempty (fun j => forwardPhaseGap (θ i) (θ j)) fun j _ => hi j)
+
 /-- The midpoint of a shortest cut encloses all phases at half the arc length. -/
 theorem exists_spectralEnclosingArc_center (θ : ι → ℝ) : ∃ c : ℝ, ∀ j,
     circDist (θ j) c ≤ spectralEnclosingArcLength θ / 2 := by
@@ -84,7 +98,7 @@ theorem exists_spectralEnclosingArc_center (θ : ι → ℝ) : ∃ c : ℝ, ∀ 
   refine ⟨θ i + L / 2, fun j => ?_⟩
   have hj : forwardPhaseGap (θ i) (θ j) ≤ L := by
     rw [show L = phaseSpanFrom θ i from hi]
-    exact Finset.le_sup' _ (Finset.mem_univ j)
+    exact Finset.le_sup' (fun k => forwardPhaseGap (θ i) (θ k)) (Finset.mem_univ j)
   obtain ⟨k, hk⟩ := forwardPhaseGap_repr (θ i) (θ j)
   apply (circDist_le _ _ k).trans
   rw [abs_le]
@@ -122,7 +136,8 @@ theorem abs_spectralEnclosingArcLength_sub_le (θ ψ : ι → ℝ) :
     |spectralEnclosingArcLength θ - spectralEnclosingArcLength ψ| ≤
       2 * Finset.univ.sup' Finset.univ_nonempty (fun j => circDist (θ j) (ψ j)) := by
   let δ := Finset.univ.sup' Finset.univ_nonempty (fun j => circDist (θ j) (ψ j))
-  have hδ (j : ι) : circDist (θ j) (ψ j) ≤ δ := Finset.le_sup' _ (Finset.mem_univ j)
+  have hδ (j : ι) : circDist (θ j) (ψ j) ≤ δ :=
+    Finset.le_sup' (fun k => circDist (θ k) (ψ k)) (Finset.mem_univ j)
   have enlarge (φ χ : ι → ℝ) (h : ∀ j, circDist (φ j) (χ j) ≤ δ) :
       spectralEnclosingArcLength φ ≤ spectralEnclosingArcLength χ + 2 * δ := by
     obtain ⟨c, hc⟩ := exists_spectralEnclosingArc_center χ
@@ -207,7 +222,8 @@ theorem orbitCircuitDistance_zeroGate_eq_enclosingArc {n : ℕ} (H : selfAdjoint
     have harg : Complex.exp ((c : ℂ) * Complex.I) = z := by
       simpa only [c, hz, Complex.ofReal_one, one_mul] using Complex.norm_mul_exp_arg_mul_I z
     let R := Finset.univ.sup' Finset.univ_nonempty fun j => circDist (θ j) c
-    have hrad (j : Fin n → Bool) : circDist (θ j) c ≤ R := Finset.le_sup' _ (Finset.mem_univ j)
+    have hrad (j : Fin n → Bool) : circDist (θ j) c ≤ R :=
+      Finset.le_sup' (fun k => circDist (θ k) c) (Finset.mem_univ j)
     have hR : R ≤ Real.pi := Finset.sup'_le Finset.univ_nonempty _ fun j _ => circDist_le_pi (θ j) c
     have hle : L / 2 ≤ R := by
       have h : L ≤ 2 * R := spectralEnclosingArcLength_le_twice_radius θ c R hrad
@@ -256,6 +272,7 @@ theorem zeroGateApproximation_iff_enclosingArc {n : ℕ} (H : selfAdjoint (Reg n
       (Real.le_arcsin_iff_sin_le ha hε).symm
     _ ↔ _ := by constructor <;> intro h <;> linarith only [h]
 
+#print axioms spectralEnclosingArcLength_le_iff
 #print axioms exists_spectralEnclosingArc_center
 #print axioms spectralEnclosingArcLength_le_twice_radius
 #print axioms abs_spectralEnclosingArcLength_sub_le

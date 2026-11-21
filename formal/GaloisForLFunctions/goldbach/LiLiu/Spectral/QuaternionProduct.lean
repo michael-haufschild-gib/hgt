@@ -11,7 +11,7 @@ Square summability gives a common limit independent of the slice.
 
 namespace GaloisForLFunctions.Goldbach.LiLiu
 open Filter Polynomial HTGeometry
-open scoped Topology Polynomial
+open scoped Topology Polynomial Quaternion
 noncomputable section
 variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
 variable (T : H →L[ℂ] H) [Fact (IsCompactOperator T)]

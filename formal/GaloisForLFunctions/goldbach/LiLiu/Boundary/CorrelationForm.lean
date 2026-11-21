@@ -64,8 +64,8 @@ theorem goldbach_error_le_hardyOperator (φ : TestWeight) :
   rw [Complex.norm_real,Real.norm_eq_abs,abs_sub_comm] at e
   calc
     _ = ‖⟪v,T v⟫_ℂ‖ := e.symm
-    _ ≤ ‖v‖*‖T v‖ := norm_inner_le_norm _ _
-    _ ≤ ‖v‖*(‖T‖*‖v‖) := mul_le_mul_of_nonneg_left (T.le_opNorm v) (norm_nonneg _)
+    _ ≤ ‖v‖*‖T v‖ := norm_inner_le_norm (𝕜 := ℂ) v (T v)
+    _ ≤ ‖v‖*(‖T‖*‖v‖) := mul_le_mul_of_nonneg_left (T.le_opNorm v) (norm_nonneg v)
     _ = ‖v‖^2*‖T‖ := by ring
     _ ≤ _ := mul_le_mul_of_nonneg_right hn (norm_nonneg T)
 

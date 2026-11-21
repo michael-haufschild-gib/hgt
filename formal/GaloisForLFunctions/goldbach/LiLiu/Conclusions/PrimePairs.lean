@@ -7,7 +7,7 @@ import GaloisForLFunctions.goldbach.LiLiu.RepresentationBound
 
 namespace GaloisForLFunctions.Goldbach.LiLiu
 open Filter
-open scoped Topology
+open scoped Topology Quaternion
 noncomputable section
 
 /-- The constants in both weighted estimates depend only on the test. The

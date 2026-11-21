@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.Quantum.CoefficientMassLieProduct
 import GaloisForLFunctions.HTGeometry.PathHamiltonianSiteRestriction
-import GaloisForLFunctions.HTGeometry.TwoLocalProjectiveTrotterCompilerLaw
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitSynthesis.OneGate
 
 /-! # A sparse product formula for physical nearest-neighbour circuits -/
 open Matrix NormedSpace
@@ -25,18 +25,6 @@ private def pathGateLabel {n : ℕ} (l : PathLabel n) : PauliTracelessLabel (n+2
     by_contra hn
     have h : i ≠ e.castSucc ∧ i ≠ e.succ := by simpa using hn
     simpa [pathWord,couplingWord,h.1,h.2] using (Finset.mem_filter.mp hi).2
-
-private def singlePair {n : ℕ} (a b : Fin n) (h : a ≠ b)
-    (G : Matrix.specialUnitaryGroup (Bool × Bool) ℂ) : TwoQubitCircuit n where
-  gateCount := 1
-  architecture := {sites := fun _ => (a,b),distinct := fun _ => h}
-  gates := fun _ => G
-
-private theorem singlePair_eval {n : ℕ} (a b : Fin n) (h : a ≠ b)
-    (G : Matrix.specialUnitaryGroup (Bool × Bool) ℂ) :
-    (singlePair a b h G).eval = twoQubitLift a b h G := by
-  simp [singlePair,TwoQubitCircuit.eval,TwoQubitArchitecture.contraction,
-    TwoQubitArchitecture.gateLift,List.ofFn_succ]
 
 private theorem compile_steps {n : ℕ} (z : List (Reg n)) (t : ℝ)
     (hz : ∀ x ∈ z, ∃ c : ℂ, ‖c‖ = 1 ∧ ∃ C : TwoQubitCircuit n, C.gateCount = 1 ∧
@@ -97,8 +85,8 @@ theorem exists_sparse_path_circuit {n : ℕ} (u : PathShell n) (t : ℝ) (r : �
     let P := pathGateLabel l
     have hn : 2 ≤ n+2 := by omega
     obtain ⟨c,hc,G,hG⟩ := exists_projective_twoQubitGate_eq_exp_twoLocalSkewGenerator hn (H l) P h
-    refine ⟨c,hc,singlePair _ _ (P.coveringPair_distinct hn) G,rfl,?_⟩
-    rwa [singlePair_eval]
+    refine ⟨c,hc,TwoQubitCircuit.singleOn _ _ (P.coveringPair_distinct hn) G,rfl,?_⟩
+    rwa [TwoQubitCircuit.singleOn_eval]
   obtain ⟨c,hc,C,hC,he⟩ := compile_steps Z h hs
   refine ⟨c^r,by simp [norm_pow,hc],C.pow r,?_,?_⟩
   · simp only [TwoQubitCircuit.pow_gateCount,hC,Z,List.length_ofFn]
