@@ -153,11 +153,31 @@ lemma phiE_ker (s : ℕ) : (phiE s).ker = Subgroup.zpowers ((-1, 1, 1) : GalL (s
   simp only [Prod.ext_iff, Prod.fst_one, Prod.snd_one]
   tauto
 
+/-- `phiE` followed by the identification `QQ s ≃* ℤ/2^s`. -/
+noncomputable def phiF (s : ℕ) : GalL (s + 2) →* Multiplicative (ZMod (2 ^ s)) × ℤˣ × ℤˣ :=
+  MonoidHom.prodMap ((eQQ s).toMonoidHom.comp (QuotientGroup.mk' _)) (MonoidHom.id _)
+
+lemma phiF_surj (s : ℕ) : Function.Surjective (phiF s) := by
+  rintro ⟨q, b⟩
+  obtain ⟨u, hu⟩ := QuotientGroup.mk'_surjective (Subgroup.zpowers (-1 : (ZMod (2 ^ (s + 2)))ˣ))
+    ((eQQ s).symm q)
+  refine ⟨(u, b), ?_⟩
+  show ((eQQ s) (QuotientGroup.mk' _ u), b) = (q, b)
+  rw [hu, MulEquiv.apply_symm_apply]
+
+lemma phiF_ker (s : ℕ) : (phiF s).ker = Subgroup.zpowers ((-1, 1, 1) : GalL (s + 2)) := by
+  ext ⟨u, b⟩
+  rw [MonoidHom.mem_ker, mem_zpowers_sq gen_sq]
+  change ((eQQ s) (QuotientGroup.mk' _ u), b) = 1 ↔ _
+  rw [Prod.mk_eq_one, MulEquiv.map_eq_one_iff, QuotientGroup.mk'_apply, QuotientGroup.eq_one_iff,
+    mem_zpowers_sq neg_one_sq_units]
+  simp only [Prod.ext_iff, Prod.fst_one, Prod.snd_one]
+  tauto
+
+/-- `Γ_E ≅ ℤ/2^s × {±1}²`, induced by `phiF`. -/
 noncomputable def eGamE (s : ℕ) : GamE s ≃* Multiplicative (ZMod (2 ^ s)) × ℤˣ × ℤˣ :=
-  ((QuotientGroup.quotientMulEquivOfEq (phiE_ker s).symm).trans
-    (QuotientGroup.quotientKerEquivOfSurjective (G := GalL (s + 2)) (H := QQ s × ℤˣ × ℤˣ)
-      (phiE s) (phiE_surj s))).trans
-    (MulEquiv.prodCongr (eQQ s) (MulEquiv.refl _))
+  (QuotientGroup.quotientMulEquivOfEq (phiF_ker s).symm).trans
+    (QuotientGroup.quotientKerEquivOfSurjective (phiF s) (phiF_surj s))
 
 private lemma card_int_units_eq_two : Nat.card ℤˣ = 2 := by
   rw [Nat.card_eq_fintype_card, Fintype.card_units_int]

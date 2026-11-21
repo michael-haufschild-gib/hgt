@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.Thermofield.ReturnLawResolution
 import GaloisForLFunctions.HTGeometry.ReplicaOperatorCovarianceCrowdingLaw
 import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
+import Mathlib.RingTheory.Int.Basic
 import Mathlib.RingTheory.Noetherian.Basic
 
 /-!
@@ -160,7 +161,8 @@ theorem gibbsAffineReturnLaw_generic_instability (β : ℝ) (E : α → ℝ) :
   rw [hset]
   have hproper : returnLawStablePerturbations E ≠ ⊤ :=
     fun ht => h ((returnLawStablePerturbations_eq_top_iff E).mp ht)
-  have hzero := addHaar_submodule (volume : Measure (α → ℝ)) (returnLawStablePerturbations E) hproper
+  letI : Measure.IsAddHaarMeasure (volume : Measure (α → ℝ)) := isAddHaarMeasure_volume_pi α
+  have hzero := Measure.addHaar_submodule (volume : Measure (α → ℝ)) (returnLawStablePerturbations E) hproper
   refine ⟨hzero, (isClosed_returnLawStablePerturbations E).isOpen_compl, ?_⟩
   apply interior_eq_empty_iff_dense_compl.mp
   by_contra hne

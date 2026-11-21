@@ -62,6 +62,7 @@ private theorem cnormSq_branch (b : Bool) (x : F → ℂ) : cnormSq (branch b x)
 
 private theorem cnormSq_matching_le (R : Recovery F K) (b : Bool) (x : F → ℂ) :
     cnormSq (matching R b x) ≤ cnormSq x := by
+  classical
   rw [← cnormSq_branch b x, ← R.norm_preserving, cnormSq_product]
   cases b
   · exact le_add_of_nonneg_right (cnormSq_nonneg _)
@@ -74,7 +75,6 @@ private theorem cnormSq_add (u v : K → ℂ) :
   congr 1
   refine Finset.sum_congr rfl fun k _ => ?_
   rw [mul_comm (u k)]
-  rfl
 
 private theorem re_cinner_le (u v : K → ℂ) :
     (cinner u v).re ≤ Real.sqrt (cnormSq u) * Real.sqrt (cnormSq v) := by
@@ -172,25 +172,32 @@ private def captureLinear (u : F → ℂ) : (F → ℂ) →ₗ[ℂ] (Option F �
       simp only [cinner, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
       exact Finset.sum_congr rfl fun i _ => by ring
     funext k
-    cases k <;> simp only [capture, hm, Pi.smul_apply, smul_eq_mul]
-    ring
+    cases k <;> (simp only [capture, hm, Pi.smul_apply, smul_eq_mul, RingHom.id_apply]; ring)
+
+private def captureDilation (u : Bool → F → ℂ) :
+    ((Bool × F) → ℂ) →ₗ[ℂ] (Bool × Option F → ℂ) where
+  toFun x p := captureLinear (u p.1) (fun f => x (p.1, f)) p.2
+  map_add' x y := by
+    funext p
+    exact congrFun ((captureLinear (u p.1)).map_add (fun f => x (p.1,f))
+      (fun f => y (p.1,f))) p.2
+  map_smul' c x := by
+    funext p
+    exact congrFun ((captureLinear (u p.1)).map_smul c (fun f => x (p.1,f))) p.2
+
+private theorem captureDilation_apply (u : Bool → F → ℂ)
+    (x : Bool × F → ℂ) (b : Bool) (k : Option F) :
+    captureDilation u x (b, k) = capture (u b) (fun f => x (b,f)) k := rfl
+
+private theorem norm_captureDilation (u : Bool → F → ℂ)
+    (hu : ∀ b, cnormSq (u b) = 1 ∨ u b = 0) (x : Bool × F → ℂ) :
+    cnormSq (captureDilation u x) = cnormSq x := by
+  rw [cnormSq_product (captureDilation u x), cnormSq_product x]
+  simp only [captureDilation_apply, capture_norm _ _ (hu false), capture_norm _ _ (hu true)]
 
 private def captureRecovery (u : Bool → F → ℂ)
-    (hu : ∀ b, cnormSq (u b) = 1 ∨ u b = 0) : Recovery F (Option F) where
-  apply := {
-    toFun := fun x p => captureLinear (u p.1) (fun f => x (p.1, f)) p.2
-    map_add' := by
-      intro x y
-      funext p
-      exact congrFun ((captureLinear (u p.1)).map_add (fun f => x (p.1,f))
-        (fun f => y (p.1,f))) p.2
-    map_smul' := by
-      intro c x
-      funext p
-      exact congrFun ((captureLinear (u p.1)).map_smul c (fun f => x (p.1,f))) p.2 }
-  norm_preserving x := by
-    rw [cnormSq_product, cnormSq_product]
-    exact congrArg₂ (· + ·) (capture_norm _ _ (hu false)) (capture_norm _ _ (hu true))
+    (hu : ∀ b, cnormSq (u b) = 1 ∨ u b = 0) : Recovery F (Option F) :=
+  ⟨captureDilation u, norm_captureDilation u hu⟩
 
 private theorem matching_captureRecovery (u : Bool → F → ℂ)
     (hu : ∀ b, cnormSq (u b) = 1 ∨ u b = 0) (b : Bool) (x : F → ℂ) :
@@ -205,6 +212,7 @@ private def normalized (x : F → ℂ) : F → ℂ :=
 private theorem normalized_spec (x : F → ℂ) :
     (cnormSq (normalized x) = 1 ∨ normalized x = 0) ∧
       cinner (normalized x) x = (Real.sqrt (cnormSq x) : ℂ) := by
+  classical
   let s := Real.sqrt (cnormSq x)
   have hs : s * s = cnormSq x := Real.mul_self_sqrt (cnormSq_nonneg x)
   by_cases h : cnormSq x = 0
@@ -216,18 +224,21 @@ private theorem normalized_spec (x : F → ℂ) :
     refine ⟨Or.inr hn, ?_⟩
     rw [hn, ← show (s : ℂ) = (Real.sqrt (cnormSq x) : ℂ) from rfl, hs0]
     simp only [cinner, Pi.zero_apply, map_zero, zero_mul, Finset.sum_const_zero, Complex.ofReal_zero]
-  · have hpos : 0 < s := Real.sqrt_pos.mpr (lt_of_le_of_ne (cnormSq_nonneg x) h.symm)
+  · have hpos : 0 < s := Real.sqrt_pos.mpr (lt_of_le_of_ne (cnormSq_nonneg x) (Ne.symm h))
     have hne : (s : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hpos.ne'
     constructor
     · left
-      simp only [cnormSq, normalized, Complex.sq_norm, Complex.normSq_div, Complex.normSq_ofReal,
-        ← Finset.sum_div]
-      change (∑ i, Complex.normSq (x i)) / (s * s) = 1
+      change (∑ i, ‖x i / (s : ℂ)‖ ^ 2) = 1
+      simp only [Complex.sq_norm, Complex.normSq_div, Complex.normSq_ofReal, ← Finset.sum_div]
       rw [hs, show (∑ i, Complex.normSq (x i)) = cnormSq x by simp only [cnormSq, Complex.sq_norm]]
       exact div_self h
     · have he : cinner (normalized x) x = cinner x x / (s : ℂ) := by
-        simp only [cinner, normalized, map_div₀, Complex.conj_ofReal, ← Finset.sum_div]
-        exact Finset.sum_congr rfl fun i _ => by ring
+        rw [cinner, cinner, Finset.sum_div]
+        refine Finset.sum_congr rfl fun i _ => ?_
+        change (starRingEnd ℂ) (x i / (s : ℂ)) * x i =
+          ((starRingEnd ℂ) (x i) * x i) / (s : ℂ)
+        rw [map_div₀, Complex.conj_ofReal]
+        ring
       rw [he, cinner_self]
       change ((cnormSq x : ℝ) : ℂ) / (s : ℂ) = (s : ℂ)
       rw [← hs, Complex.ofReal_mul, mul_div_cancel_right₀ _ hne]
@@ -237,6 +248,7 @@ auxiliary label and a register for the complementary amplitudes. -/
 theorem exists_optimal_recovery [DecidableEq L] (W : Encoding F L) :
     ∃ R : Recovery F (Option F),
       fidelity W R = (1 + Real.sqrt (cnormSq (W.signal W.ready))) / 2 := by
+  classical
   let u : Bool → F → ℂ
     | false => W.reference
     | true => normalized (W.signal W.ready)
@@ -257,7 +269,8 @@ theorem exists_optimal_recovery [DecidableEq L] (W : Encoding F L) :
     have hzero (i : F) : capture (u false) W.reference (some i) = 0 := by
       change W.reference i - W.reference i * cinner W.reference W.reference = 0
       rw [href, mul_one, sub_self]
-    simp only [hzero, mul_zero, Finset.sum_const_zero, add_zero, capture]
+    simp only [hzero, mul_zero, Finset.sum_const_zero, add_zero]
+    dsimp only [capture]
     change ((starRingEnd ℂ) (cinner (normalized (W.signal W.ready)) (W.signal W.ready)) *
       cinner W.reference W.reference).re = _
     rw [(normalized_spec _).2, href, mul_one, Complex.conj_ofReal, Complex.ofReal_re]

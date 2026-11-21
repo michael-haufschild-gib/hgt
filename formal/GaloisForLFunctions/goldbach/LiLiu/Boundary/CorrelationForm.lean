@@ -13,7 +13,7 @@ uniformly bounded squared norm. The vector is the normalized projection
 of the Mellin test supported on the left edge. -/
 theorem exists_hardy_error_vector (φ : TestWeight) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (k : ℕ) (hN : 4 ≤ k+2) (hg : modulusGRH (k+2))
-      (ha : 0 < leftEdge (k+2)) (ht : leftEdge (k+2) < 1/8) (hl : 1 ≤ Real.log (k+2 : ℕ)),
+      (ha : 0 < leftEdge (k+2)) (ht : leftEdge (k+2) < 1/8) (_ : 1 ≤ Real.log (k+2 : ℕ)),
       ∃ v : hardySpace (leftEdge (k+2)) (1/8), ‖v‖^2 ≤ C ∧
         ⟪v,hardyOperator hN hg ha ht.le v⟫_ℂ =
           ((φ.mass*singularSeries (k+2)-correlation φ (k+2) : ℝ) : ℂ) := by
@@ -67,7 +67,7 @@ theorem goldbach_error_le_hardyOperator (φ : TestWeight) :
     _ ≤ ‖v‖*‖T v‖ := norm_inner_le_norm _ _
     _ ≤ ‖v‖*(‖T‖*‖v‖) := mul_le_mul_of_nonneg_left (T.le_opNorm v) (norm_nonneg _)
     _ = ‖v‖^2*‖T‖ := by ring
-    _ ≤ _ := mul_le_mul_of_nonneg_right hn (norm_nonneg _)
+    _ ≤ _ := mul_le_mul_of_nonneg_right hn (norm_nonneg T)
 
 #print axioms exists_hardy_error_vector
 #print axioms goldbach_error_le_hardyOperator

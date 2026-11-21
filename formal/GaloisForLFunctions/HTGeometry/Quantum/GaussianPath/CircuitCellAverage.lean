@@ -276,7 +276,8 @@ theorem orbitCircuitDistance_lipschitz_spectralWidth {n : ℕ} (H : selfAdjoint 
   rw [← orbitCircuitDistance_scalarCentered H P c]
   exact orbitCircuitDistance_lipschitz _ P
 
-private theorem zeroGateCircuit_eval {n : ℕ} (C : TwoQubitCircuit n) (hC : C.gateCount ≤ 0) :
+/-- A circuit of zero gate count evaluates to the identity. -/
+theorem zeroGateCircuit_eval {n : ℕ} (C : TwoQubitCircuit n) (hC : C.gateCount ≤ 0) :
     (C.eval : Reg n) = 1 := by
   obtain ⟨m, A, G⟩ := C
   have hm : m = 0 := Nat.eq_zero_of_le_zero hC
@@ -431,7 +432,8 @@ private theorem norm_phase_sub_midpoint_le {u θ : ℝ} (hu : |u| ≤ |θ|) (hθ
   simp only [Complex.one_re, Complex.one_im, mul_one, mul_zero, add_zero]
   linarith only [hcos]
 
-private theorem norm_evolution_sub_scalar {n : ℕ} (H : selfAdjoint (Reg n)) (s : ℝ) (z : ℂ) :
+/-- The operator distance to a scalar is the largest spectral chord to that scalar. -/
+theorem norm_evolution_sub_scalar {n : ℕ} (H : selfAdjoint (Reg n)) (s : ℝ) (z : ℂ) :
     ‖unitaryEvolution (H : Reg n) s - z • (1 : Reg n)‖ =
       ‖fun i => anchorPhase H.2.isHermitian.eigenvalues i s - z‖ := by
   let V := (H.2.isHermitian.eigenvectorUnitary : Reg n)

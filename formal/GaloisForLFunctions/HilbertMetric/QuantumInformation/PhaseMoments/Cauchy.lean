@@ -1,6 +1,8 @@
 import GaloisForLFunctions.HilbertMetric.QuantumInformation.ToeplitzPartialTranspose
+import GaloisForLFunctions.HTGeometry.FiniteAtomicCubature
 import GaloisForLFunctions.RHTower.XiCosineShiftSechHandoff
 import Mathlib.Analysis.Complex.Circle
+import Mathlib.Analysis.Convex.Integral
 
 /-!
 # Positive phase moments for the Cauchy charge state
@@ -63,7 +65,7 @@ def character (n : σ → ℤ) (z : σ → Circle) : ℂ := ∏ i, (z i : ℂ) ^
 
 private theorem continuous_character (n : σ → ℤ) : Continuous (character n) := by
   unfold character
-  apply continuous_finset_prod
+  apply continuous_finsetProd
   intro i _
   have h : Continuous (fun z : σ → Circle => (z i) ^ n i) := (continuous_apply i).zpow _
   simpa only [Circle.coe_zpow] using continuous_subtype_val.comp h
@@ -94,6 +96,8 @@ private theorem charge_difference (w : σ → ℝ) (x y : σ → Bool) :
   rw [bitCharge, bitCharge, ← Finset.sum_sub_distrib]
   refine Finset.sum_congr rfl fun i _ => ?_
   cases hx : x i <;> cases hy : y i <;> simp [bitDifference, hx, hy]
+
+variable [DecidableEq σ]
 
 /-- An equatorial product-state matrix, obtained by multiplying the local
 one-qubit phase entries and dividing by the dimension. -/
@@ -138,9 +142,85 @@ theorem cauchyChargeState_apply_integral (w : σ → ℝ) (x y : σ → Bool) :
   simp only [cauchyChargeState, chargeDifferenceMatrix, Complex.ofReal_mul, Complex.ofReal_inv,
     Complex.ofReal_natCast]
 
+/-- Real and imaginary coordinates for the kernel on the qubit basis. -/
+private abbrev Entry (σ : Type*) := Bool × ((σ → Bool) × (σ → Bool))
+
+private def coord (M : (σ → Bool) → (σ → Bool) → ℂ) (i : Entry σ) : ℝ :=
+  if i.1 then (M i.2.1 i.2.2).im else (M i.2.1 i.2.2).re
+
+private theorem continuous_equatorialProduct (x y : σ → Bool) :
+    Continuous fun z : σ → Circle => equatorialProduct z x y :=
+  continuous_const.mul (continuous_character (bitDifference x y))
+
+/-- The Cauchy charge state has a finite positive equatorial decomposition.
+The atom bound is the number of real matrix coordinates plus one. -/
+theorem exists_finite_equatorial_decomposition (w : σ → ℝ) :
+    ∃ (p : Fin (Fintype.card (Entry σ) + 1) → ℝ)
+      (z : Fin (Fintype.card (Entry σ) + 1) → σ → Circle),
+      (∀ i, 0 ≤ p i) ∧ (∑ i, p i = 1) ∧
+      ∀ x y, (∑ i, (p i : ℂ) * equatorialProduct (z i) x y) = cauchyChargeState w x y := by
+  classical
+  let n := Fintype.card (Entry σ)
+  let e : Fin n ≃ Entry σ := (Fintype.equivFin (Entry σ)).symm
+  let f : (σ → Circle) → Fin n → ℝ := fun z j => coord (equatorialProduct z) (e j)
+  let S : Set (Fin n → ℝ) := Set.range f
+  let μ : Measure (σ → Circle) := phaseLaw w
+  haveI : IsProbabilityMeasure μ := by dsimp only [μ]; infer_instance
+  have hf : Continuous f := by
+    apply continuous_pi
+    intro j
+    change Continuous fun z : σ → Circle => coord (equatorialProduct z) (e j)
+    unfold coord
+    split
+    · exact Complex.continuous_im.comp (continuous_equatorialProduct _ _)
+    · exact Complex.continuous_re.comp (continuous_equatorialProduct _ _)
+  have hfi : Integrable f μ := hf.integrable_of_hasCompactSupport (HasCompactSupport.of_compactSpace _)
+  have hm : (∫ z, f z ∂μ) = fun j => coord (cauchyChargeState w) (e j) := by
+    funext j
+    let L : (Fin n → ℝ) →L[ℝ] ℝ := ContinuousLinearMap.proj j
+    change L (∫ z, f z ∂μ) = _
+    rw [← L.integral_comp_comm hfi]
+    change (∫ z, coord (equatorialProduct z) (e j) ∂μ) =
+      coord (cauchyChargeState w) (e j)
+    let x := (e j).2.1
+    let y := (e j).2.2
+    have hint : Integrable (fun z => equatorialProduct z x y) μ :=
+      (continuous_equatorialProduct x y).integrable_of_hasCompactSupport
+        (HasCompactSupport.of_compactSpace _)
+    have hentry : (∫ z, equatorialProduct z x y ∂μ) = cauchyChargeState w x y :=
+      (cauchyChargeState_apply_integral w x y).symm
+    unfold coord
+    by_cases h : (e j).1
+    · simp only [h, if_true]
+      exact (Complex.imCLM.integral_comp_comm hint).trans (congrArg Complex.im hentry)
+    · simp only [h, if_false]
+      exact (Complex.reCLM.integral_comp_comm hint).trans (congrArg Complex.re hentry)
+  have hHull : (∫ z, f z ∂μ) ∈ closure (convexHull ℝ S) :=
+    (convex_convexHull ℝ S).closure.integral_mem isClosed_closure
+      (Eventually.of_forall fun z => subset_closure (subset_convexHull ℝ S ⟨z, rfl⟩)) hfi
+  obtain ⟨p, atoms, hp, hsum, ha, heq⟩ :=
+    HTGeometry.exists_atomic_of_mem_closure_convexHull (isCompact_range hf)
+      ⟨f (fun _ => 1), ⟨_, rfl⟩⟩ hHull
+  have ha' (i : Fin (n+1)) : ∃ z : σ → Circle, f z = atoms i := ha i
+  choose z hz using ha'
+  simp_rw [← hz, hm] at heq
+  refine ⟨p, z, hp, hsum, fun x y => ?_⟩
+  have hcoord (b : Bool) := congrFun heq (e.symm (b, x, y))
+  simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul, f, Equiv.apply_symm_apply] at hcoord
+  apply Complex.ext
+  · have hr := hcoord false
+    simp only [coord, Bool.false_eq_true, if_false] at hr
+    simpa only [Complex.re_sum, Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
+      zero_mul, sub_zero] using hr
+  · have hi := hcoord true
+    simp only [coord, if_true] at hi
+    simpa only [Complex.im_sum, Complex.mul_im, Complex.ofReal_re, Complex.ofReal_im,
+      zero_mul, add_zero] using hi
+
 #print axioms integral_character_phaseLaw
 #print axioms equatorialProduct_eq_local
 #print axioms cauchyChargeState_apply_integral
+#print axioms exists_finite_equatorial_decomposition
 
 end
 
