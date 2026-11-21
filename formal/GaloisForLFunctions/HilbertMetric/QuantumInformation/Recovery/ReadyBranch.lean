@@ -172,7 +172,10 @@ private def captureLinear (u : F → ℂ) : (F → ℂ) →ₗ[ℂ] (Option F �
       simp only [cinner, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
       exact Finset.sum_congr rfl fun i _ => by ring
     funext k
-    cases k <;> (simp only [capture, hm, Pi.smul_apply, smul_eq_mul, RingHom.id_apply]; ring)
+    cases k
+    · simp only [capture, hm, Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
+    · simp only [capture, hm, Pi.smul_apply, smul_eq_mul, RingHom.id_apply]
+      ring
 
 private def captureDilation (u : Bool → F → ℂ) :
     ((Bool × F) → ℂ) →ₗ[ℂ] (Bool × Option F → ℂ) where

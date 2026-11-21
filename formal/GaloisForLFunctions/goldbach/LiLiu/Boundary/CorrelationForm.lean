@@ -53,7 +53,7 @@ theorem exists_hardy_error_vector (φ : TestWeight) :
 /-- One constant works for every admissible modulus and depends only on the weight. -/
 theorem goldbach_error_le_hardyOperator (φ : TestWeight) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ (k : ℕ) (hN : 4 ≤ k+2) (hg : modulusGRH (k+2))
-      (ha : 0 < leftEdge (k+2)) (ht : leftEdge (k+2) < 1/8) (hl : 1 ≤ Real.log (k+2 : ℕ)),
+      (ha : 0 < leftEdge (k+2)) (ht : leftEdge (k+2) < 1/8) (_ : 1 ≤ Real.log (k+2 : ℕ)),
       |correlation φ (k+2) - φ.mass * singularSeries (k+2)| ≤ C * ‖hardyOperator hN hg ha ht.le‖ := by
   obtain ⟨C,hC,hv⟩ := exists_hardy_error_vector φ
   refine ⟨C,hC,?_⟩

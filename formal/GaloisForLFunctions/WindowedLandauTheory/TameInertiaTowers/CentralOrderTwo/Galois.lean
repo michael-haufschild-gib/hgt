@@ -317,7 +317,7 @@ theorem layerExists : LayerExists := by
       cyclotomic (2 ^ n) F * (X ^ 2 + C (q : F)) * (X ^ 2 + C (d : F)) := by
     intro φ
     simp only [hf, Polynomial.map_mul, Polynomial.map_add, Polynomial.map_pow, Polynomial.map_X,
-      Polynomial.map_C, map_cyclotomic, map_natCast]
+      Polynomial.map_C, map_cyclotomic, map_natCast, Polynomial.map_natCast, Polynomial.C_eq_natCast]
   have hmap := hmap' (algebraMap ℚ F)
   have hsp : Splits (f.map (algebraMap ℚ F)) := SplittingField.splits f
   rw [hmap] at hsp

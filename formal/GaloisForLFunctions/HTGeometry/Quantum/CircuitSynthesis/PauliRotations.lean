@@ -22,7 +22,7 @@ private theorem rotate_short_word {n : ℕ} (hn : 2 ≤ n) (P : Fin n → Option
       ext x y
       exact finitePauliMatrix_pauliIdentityLabel x y
     let z := (t : ℂ) * (-Complex.I)
-    refine ⟨Complex.exp z,by simp [z,Complex.norm_exp],TwoQubitCircuit.one n,by decide,?_⟩
+    refine ⟨Complex.exp z,by simp [z,Complex.norm_exp],TwoQubitCircuit.one n,Nat.zero_le 1,?_⟩
     rw [hI,TwoQubitCircuit.one_eval,unitaryEvolution]
     change NormedSpace.exp (t • ((-Complex.I) • (1 : Reg n))) = Complex.exp z • 1
     rw [← exp_complex_smul_one_matrix]
@@ -49,7 +49,7 @@ theorem exists_projective_pauli_rotation_circuit {n : ℕ} (hn : 2 ≤ n)
   induction hw : pauliWeight P using Nat.strong_induction_on generalizing P t with
   | h w ih =>
     by_cases hs : w ≤ 2
-    · obtain ⟨z,hz,C,hC,h⟩ := rotate_short_word hn P (hw.trans_le hs) t
+    · obtain ⟨z,hz,C,hC,h⟩ := rotate_short_word hn P (by omega) t
       exact ⟨z,hz,C,by omega,h⟩
     let S := Finset.univ.filter fun i => P i ≠ none
     have hcard : S.card = w := hw

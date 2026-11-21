@@ -24,7 +24,7 @@ private theorem mass_sq_le {n : ℕ} (K : selfAdjoint (Reg n)) :
   have hl := le_opNorm_pauliCombination (pauliCoeff K.val)
   rw [sum_pauliCoeff_smul] at hl
   have hs : 0 ≤ ∑ P : Words n, f P ^ 2 := Finset.sum_nonneg fun _ _ => sq_nonneg _
-  have hsq := sq_le_sq' ((neg_nonpos.mpr (Real.sqrt_nonneg _)).trans (norm_nonneg _)) hl
+  have hsq := sq_le_sq' ((neg_nonpos.mpr (norm_nonneg _)).trans (Real.sqrt_nonneg _)) hl
   rw [Real.sq_sqrt hs] at hsq
   have hcs := Finset.sum_mul_sq_le_sq_mul_sq Finset.univ (fun _ : Words n => (1:ℝ)) f
   have hcard := congrArg (fun i : ℕ => (i:ℝ)) (card_words n)
@@ -65,8 +65,8 @@ theorem exists_full_pauli_product_circuit {n : ℕ} (hn : 2 ≤ n) (K : selfAdjo
     rw [List.sum_ofFn,Equiv.sum_comp e X]
     unfold X
     rw [← Finset.smul_sum]
-    congr 1
-    simpa only [← pauliCoeff_eq_realPauliCoefficient] using sum_pauliCoeff_smul K.val
+    rw [show (∑ P : Words n, (realPauliCoefficient K P : ℂ) • finitePauliMatrix P) = K.val by
+      simpa only [pauliCoeff_eq_realPauliCoefficient] using sum_pauliCoeff_smul K.val]
   have hmass : (Z.map norm).sum = ∑ P : Words n, |realPauliCoefficient K P| := by
     simp only [Z,List.map_ofFn,Function.comp_apply,List.sum_ofFn]
     rw [Equiv.sum_comp e (fun P => ‖X P‖)]
@@ -121,7 +121,7 @@ theorem evolution_uniform_projective_gate_cap {n : ℕ} (hn : 2 ≤ n) (H : self
   rw [← hU]
   apply he.trans
   apply (div_le_iff₀ (by exact_mod_cast hr : (0:ℝ)<r)).mpr
-  have h2 := sq_le_sq' ((neg_nonpos.mpr (norm_nonneg _)).trans (by norm_num : (0:ℝ) ≤ 4))
+  have h2 := sq_le_sq' ((by norm_num : -(4:ℝ) ≤ 0).trans (norm_nonneg _))
     (hK.trans Real.pi_lt_four.le)
   push_cast [r]
   nlinarith only [mul_le_mul_of_nonneg_left h2 (by positivity : 0 ≤ (4:ℝ)^n)]

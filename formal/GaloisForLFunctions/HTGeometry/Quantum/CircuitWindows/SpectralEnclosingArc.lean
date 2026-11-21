@@ -83,8 +83,9 @@ theorem spectralEnclosingArcLength_le_iff (θ : ι → ℝ) (L : ℝ) :
   · intro h
     obtain ⟨i, _, hi⟩ := Finset.exists_mem_eq_inf' Finset.univ_nonempty (phaseSpanFrom θ)
     change spectralEnclosingArcLength θ = phaseSpanFrom θ i at hi
+    have hspan : phaseSpanFrom θ i ≤ L := by rwa [← hi]
     exact ⟨i, fun j => (Finset.le_sup' (fun k => forwardPhaseGap (θ i) (θ k))
-      (Finset.mem_univ j)).trans (hi ▸ h)⟩
+      (Finset.mem_univ j)).trans hspan⟩
   · rintro ⟨i, hi⟩
     exact (Finset.inf'_le (phaseSpanFrom θ) (Finset.mem_univ i)).trans
       (Finset.sup'_le Finset.univ_nonempty (fun j => forwardPhaseGap (θ i) (θ j)) fun j _ => hi j)

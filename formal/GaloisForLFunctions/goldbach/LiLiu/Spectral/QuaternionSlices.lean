@@ -18,14 +18,13 @@ theorem quaternion_mem_complex_slice (q : ℍ) : ∃ (f : ℂ →ₐ[ℝ] ℍ) (
   have hr : r ≠ 0 := norm_ne_zero_iff.mpr h
   let J := r⁻¹ • q.im
   have hJ : J*J=-1 := by
-    have hsq : q.im*q.im = -(algebraMap ℝ ℍ (r*r)) := by
+    have hsq : q.im*q.im = -((r*r : ℝ) : ℍ) := by
       simpa only [sq,Quaternion.normSq_eq_norm_mul_self,r] using Quaternion.im_sq q
     have hr' : (r⁻¹*r⁻¹)*(r*r)=1 := calc
       _ = (r⁻¹*r)*(r⁻¹*r) := by ac_rfl
       _ = 1 := by rw [inv_mul_cancel₀ hr,one_mul]
     rw [show J*J=(r⁻¹*r⁻¹) • (q.im*q.im) by exact smul_mul_smul_comm ..,hsq,smul_neg,
-      Algebra.algebraMap_eq_smul_one (r*r),smul_smul]
-    rw [hr',one_smul]
+      Quaternion.smul_coe,hr',Quaternion.coe_one]
   refine ⟨Complex.liftAux J hJ,⟨q.re,r⟩,?_⟩
   change (q.re : ℍ) + r • (r⁻¹ • q.im)=q
   rw [smul_smul,mul_inv_cancel₀ hr,one_smul,Quaternion.re_add_im]

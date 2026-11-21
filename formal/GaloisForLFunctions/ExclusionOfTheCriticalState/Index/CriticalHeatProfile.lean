@@ -29,8 +29,9 @@ theorem inverse_tail_convolution_error {f K : ℝ → ℝ} {M B D L : ℝ}
   have hk : Integrable k := (hK.comp_sub_left y).comp_div hL.ne'
   have hk₀ (x : ℝ) : 0≤k x := hK₀ _
   have hmass : (∫ x, k x)=L*∫ z, K z := by
-    change (∫ x : ℝ, (fun u => K (y-u)) (x/L))=_
-    rw [Measure.integral_comp_div,integral_sub_left_eq_self K volume,abs_of_pos hL,smul_eq_mul]
+    simp only [k]
+    rw [Measure.integral_comp_div (fun u => K (y-u)) L,integral_sub_left_eq_self K volume,abs_of_pos hL,
+      smul_eq_mul]
   have hfK : Integrable (fun x => f x*k x) := (hk.const_mul M).mono'
     (hm.aestronglyMeasurable.mul hk.aestronglyMeasurable) (Eventually.of_forall fun x => by
       rw [Real.norm_of_nonneg (mul_nonneg (hf _) (hk₀ _))]
@@ -76,12 +77,12 @@ theorem inverse_tail_convolution_error {f K : ℝ → ℝ} {M B D L : ℝ}
   rw [show ∀ a b c : ℝ, a+b-c=(a-c)+b by intros; ring]
   exact ha.trans (by linarith only [hin,hout])
 
-private theorem tail_data {F : ℝ → ℝ} (hs : Summable (zeroValueMass F)) :
+private theorem tail_data {F : ℝ → ℝ} (hs : Summable (fun q : onLineCopies => zeroValueMass F q)) :
     Antitone (ordinateTailMass F) ∧
-    (∀ u, 0≤ordinateTailMass F u) ∧ (∀ u, ordinateTailMass F u≤∑' q,zeroValueMass F q) := by
+    (∀ u, 0≤ordinateTailMass F u) ∧ (∀ u, ordinateTailMass F u≤∑' q : onLineCopies,zeroValueMass F q) := by
   have hn := zeroValueMass_nonneg F
   have hsum (u : ℝ) : Summable (fun q : onLineCopies =>
-      if u<|(centredZero q).im| then zeroValueMass F q else 0) :=
+      if u < |(centredZero q).im| then zeroValueMass F q else 0) :=
     hs.of_nonneg_of_le (fun q => by split <;> first | exact le_rfl | exact hn q) (fun q => by split <;> first | exact le_rfl | exact hn q)
   refine ⟨fun a b hab => (hsum b).tsum_le_tsum (fun q => ?_) (hsum a),
     fun u => tsum_nonneg fun q => by split <;> first | exact le_rfl | exact hn q,
@@ -94,7 +95,7 @@ private theorem tail_data {F : ℝ → ℝ} (hs : Summable (zeroValueMass F)) :
 
 /-- Symmetric truncated integral of the ordinate tail, a layer-cake
 identity which also retains the mass above the cutoff. -/
-theorem integrated_ordinate_tail {F : ℝ → ℝ} (hs : Summable (zeroValueMass F))
+theorem integrated_ordinate_tail {F : ℝ → ℝ} (hs : Summable (fun q : onLineCopies => zeroValueMass F q))
     {L : ℝ} (hL : 0≤L) :
     (∫ x in Icc (-L) L, ordinateTailMass F |x|)=
       2*((∑' q : onLineCopies, if |(centredZero q).im|≤L then
@@ -118,7 +119,7 @@ theorem integrated_ordinate_tail {F : ℝ → ℝ} (hs : Summable (zeroValueMass
   have ht (q) : (∫ x in S,g q x) = 2*(min L (R q))*w q := by
     rw [show g q=(Ioo (-(R q)) (R q)).indicator (fun _ => w q) from rfl,setIntegral_indicator measurableSet_Ioo]
     simp only [S,Ioo_inter_Ioo,max_neg_neg,setIntegral_const,Real.volume_real_Ioo_of_le
-      (show -(min L (R q))≤min L (R q) by have := le_min hL (hR q); linarith),smul_eq_mul]
+      (show -(min L (R q))≤ min L (R q) by have := le_min hL (hR q); linarith),smul_eq_mul]
     ring
   have hg (u : ℝ) : ordinateTailMass F |u|=∑' q, g q u :=
     tsum_congr fun q => (hp q u).symm
@@ -142,7 +143,7 @@ theorem integrated_ordinate_tail {F : ℝ → ℝ} (hs : Summable (zeroValueMass
   · simp only [a,b,if_pos h,if_neg (not_lt.mpr h),min_eq_right h,mul_zero,add_zero]; ring
   · simp only [a,b,if_neg h.not_ge,if_pos h,min_eq_left h.le,zero_add]; ring
 
-private theorem gaussian_peak (x : ℝ) : stateHeatKernel 1 x≤stateHeatKernel 1 0 := by
+private theorem gaussian_peak (x : ℝ) : stateHeatKernel 1 x≤ stateHeatKernel 1 0 := by
   let a := (2*Real.pi)⁻¹*Real.sqrt (Real.pi/1)
   change a*Real.exp (-(x^2/(4*1)))≤a*Real.exp (-(0^2/(4*1)))
   simp only [zero_pow (by decide : 2≠0),zero_div,neg_zero,Real.exp_zero,mul_one]
@@ -152,7 +153,7 @@ private theorem gaussian_lipschitz :
     ∀ x y : ℝ, |stateHeatKernel 1 x-stateHeatKernel 1 y|≤(stateHeatKernel 1 0/2)*|x-y| := by
   let K := stateHeatKernel 1
   have hK := stateHeatKernel_pos (by norm_num : 0<(1:ℝ))
-  let D : ℝ≥0 := ⟨K 0/2,by dsimp [K]; positivity [hK 0]⟩
+  let D : NNReal := ⟨K 0/2,by dsimp [K]; positivity [hK 0]⟩
   have hLip : LipschitzWith D K := by
     apply lipschitzWith_of_nnnorm_deriv_le (fun x => (hasDerivAt_stateHeatKernel 1 x).differentiableAt)
     intro x
@@ -177,7 +178,7 @@ def ordinateHeatReadout (F : ℝ → ℝ) (t y : ℝ) := ∫ x : ℝ,
 
 private theorem scaled_gaussian {L : ℝ} (hL : 0<L) (x y : ℝ) :
     L*stateHeatKernel (L^2) (L*y-x)=stateHeatKernel 1 (y-x/L) := by
-  have hp : (L*y-x)^2/(4*L^2)=(y-x/L)^2/(4*1) := by field_simp; ring
+  have hp : (L*y-x)^2/(4*L^2)=(y-x/L)^2/(4*1) := by field_simp
   simp only [stateHeatKernel,hp,Real.sqrt_div Real.pi_pos.le,Real.sqrt_sq hL.le,Real.sqrt_one,div_one]
   field_simp
 
@@ -192,7 +193,7 @@ theorem critical_ordinate_heat_profile {W : ℝ} (hW : 0<W)
   let C := ordinateCuspConstant W F
   let f := fun x : ℝ => ordinateTailMass F |x|
   let K := stateHeatKernel 1
-  let M := ∑' q,zeroValueMass F q
+  let M := ∑' q : onLineCopies,zeroValueMass F q
   let J := fun L => ∫ x in Icc (-L) L,f x
   have hs := (domain_zeroParseval_of_finiteOffLine (criticalHalfLineEnergyDomain_of_groundState hF) hf).1
   obtain ⟨hanti,hpos,hbound⟩ := tail_data hs
@@ -211,7 +212,7 @@ theorem critical_ordinate_heat_profile {W : ℝ} (hW : 0<W)
     ring
   obtain ⟨U,hU⟩ := eventually_atTop.mp (htlim.eventually_lt_const (show C<C+1 by linarith))
   let B := max (C+1) (max U 0*M)
-  have hM : 0≤M := tsum_nonneg (zeroValueMass_nonneg F)
+  have hM : 0≤M := tsum_nonneg (fun q => zeroValueMass_nonneg F q)
   have hB (x : ℝ) : |x| * f x≤B := by
     rcases le_or_gt U |x| with hu | hu
     · exact (hU _ hu).le.trans (le_max_left _ _)
@@ -223,9 +224,11 @@ theorem critical_ordinate_heat_profile {W : ℝ} (hW : 0<W)
   let A := B*(2*(K 0/2)+1)
   have he (L : ℝ) (hL : 0<L) (y : ℝ) :
       |(∫ x : ℝ, f x*K (y-x/L))-J L*K y|≤A := by
-    simpa only [K,integral_stateHeatKernel_one] using inverse_tail_convolution_error
+    have h := inverse_tail_convolution_error
       (hanti.measurable.comp continuous_abs.measurable) (fun x => hpos |x|) (fun x => hbound |x|)
       hB hKi (fun x => (hK₀ x).le) hhD gaussian_lipschitz hL y
+    simp only [K,integral_stateHeatKernel_one] at h
+    exact h
   have hnorm : Tendsto (fun L : ℝ => A/(2*Real.log L)+|J L/(2*Real.log L)-C| * K 0) atTop (𝓝 0) := by
     have h₁ : Tendsto (fun L : ℝ => A/(2*Real.log L)) atTop (𝓝 0) :=
       tendsto_const_nhds.div_atTop (Real.tendsto_log_atTop.const_mul_atTop (by norm_num))
@@ -320,11 +323,14 @@ theorem critical_heat_vanishing_iff_escape {W : ℝ} (hW : 0<W)
     apply gaussian_vanishes_iff.mp
     have hg := (hz.sub he).div_const C
     simp only [sub_zero,zero_div] at hg
-    exact hg.congr fun n => by change (m n-(m n-C*g n))/C=g n; field_simp
+    exact hg.congr fun n => by change (m n-(m n-C*g n))/C=g n; field_simp; ring
   · intro hy
     have hg := (gaussian_vanishes_iff.mpr hy).const_mul C
     have hz := he.add hg
-    simpa only [mul_zero,zero_add,sub_add_cancel] using hz
+    rw [mul_zero,zero_add] at hz
+    refine hz.congr (fun n => ?_)
+    show m n-C*g n+C*stateHeatKernel 1 (y n) = m n
+    simp only [g]; ring
 
 /-- A vanishing heat reading along a sequence whose similarity centers
 do not escape rules out every finite, nonempty off-line divisor. -/
