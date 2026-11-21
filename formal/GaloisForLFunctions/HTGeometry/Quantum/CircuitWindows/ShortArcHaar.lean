@@ -201,6 +201,7 @@ private theorem isOpen_strictEnclosingUnitArc (r : ℝ) :
   exact isOpen_iUnion fun i => isOpen_iInter_of_finite fun j =>
     ho.preimage ((continuous_apply (j : ι)).sub (continuous_apply i))
 
+omit [Fintype ι] in
 private theorem strictEnclosingUnitArc_subset (r : ℝ) :
     strictEnclosingUnitArc (ι := ι) r ⊆ enclosingUnitArc r := by
   intro x hx
@@ -246,6 +247,7 @@ def relativeUnitPhasePacket (i : ι) (x : {j : ι // j ≠ i} → UnitAddCircle)
   classical
   exact fun j => if hj : j ≠ i then x ⟨j, hj⟩ else 0
 
+omit [Fintype ι] in
 private theorem continuous_relativeUnitPhasePacket (i : ι) : Continuous (relativeUnitPhasePacket i) := by
   classical
   refine continuous_pi fun j => ?_
@@ -261,6 +263,8 @@ def relativeEnclosingUnitArc (i : ι) (r : ℝ) : Set ({j : ι // j ≠ i} → U
 
 theorem isClosed_relativeEnclosingUnitArc (i : ι) (r : ℝ) : IsClosed (relativeEnclosingUnitArc i r) :=
   (isClosed_enclosingUnitArc r).preimage (continuous_relativeUnitPhasePacket i)
+
+variable [DecidableEq ι]
 
 private theorem measurePreserving_relativeUnitPhases (i : ι) :
     MeasurePreserving (fun (x : ι → UnitAddCircle) (j : {j : ι // j ≠ i}) => x j - x i)
@@ -279,6 +283,7 @@ private theorem measurePreserving_relativeUnitPhases (i : ι) :
   rw [hf]
   exact hπ.comp (hsplit.comp (measurePreserving_anchorShear i))
 
+omit [Fintype ι] [DecidableEq ι] in
 private theorem relativeUnitPhasePacket_of_sub (i : ι) (x : ι → UnitAddCircle) (j : ι) :
     relativeUnitPhasePacket i (fun k => x k - x i) j = x j - x i := by
   classical

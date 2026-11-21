@@ -9,10 +9,11 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 private abbrev Reg (n : ℕ) := Matrix (Fin n → Bool) (Fin n → Bool) ℂ
 
-/-- Above a fixed register size the fifth power of the first excluded
-budget dominates the uniform synthesis bound. -/
-private theorem cap_le_excursion_power {n : ℕ} (hn : 256 ≤ n) :
-    160*(2*n+1)*16^n ≤ (excursionGateBudget n + 1)^5 := by
+/-- The synthesis bound is at most a polynomial in register size times the
+fourth power of the first excluded budget. Its fifth power suffices alone. -/
+private theorem cap_le_excursion_powers {n : ℕ} (hn : 256 ≤ n) :
+    160*(2*n+1)*16^n ≤ (excursionGateBudget n + 1)^5 ∧
+      160*(2*n+1)*16^n ≤ 160*(2*n+1)*(128*(n+1)*(excursionGateBudget n + 1))^4 := by
   let F := 128*(n+1)
   let r := excursionGateBudget n
   have hF : 0 < F := by dsimp [F]; positivity
@@ -38,24 +39,29 @@ private theorem cap_le_excursion_power {n : ℕ} (hn : 256 ≤ n) :
       _ ≤ 160*(2*(n+1))*(128*(n+1))^5 := by gcongr <;> omega
       _ = _ := by ring
   have h16 : (16:ℕ)^n = (2^n)^4 := by rw [← pow_mul, mul_comm n 4,pow_mul]; norm_num
-  refine Nat.le_of_mul_le_mul_right ?_ (show 0 < F^5 by positivity)
-  calc
-    160*(2*n+1)*16^n*F^5 = (160*(2*n+1)*F^5)*(2^n)^4 := by rw [h16]; ring
-    _ ≤ (2^n)*(2^n)^4 := Nat.mul_le_mul_right _ hc
-    _ = (2^n)^5 := by ring
-    _ ≤ (F*(r+1))^5 := Nat.pow_le_pow_left hD.le _
-    _ = _ := by rw [mul_pow,mul_comm]
+  constructor
+  · refine Nat.le_of_mul_le_mul_right ?_ (show 0 < F^5 by positivity)
+    calc
+      160*(2*n+1)*16^n*F^5 = (160*(2*n+1)*F^5)*(2^n)^4 := by rw [h16]; ring
+      _ ≤ (2^n)*(2^n)^4 := Nat.mul_le_mul_right _ hc
+      _ = (2^n)^5 := by ring
+      _ ≤ (F*(r+1))^5 := Nat.pow_le_pow_left hD.le _
+      _ = _ := by rw [mul_pow,mul_comm]
+  · rw [h16]
+    exact Nat.mul_le_mul_left _ (Nat.pow_le_pow_left hD.le 4)
 
 /-- At physical error 1/10 the actual maximum m has explicit exponential
-upper and lower bounds. Budgets with s⁵ < m occur for at most a doubly
-exponentially small fraction of time, uniformly over interval origins. -/
-theorem gaussian_pauli_physical_maximum_and_fifth_power_occupation :
+upper and lower bounds. Outside a doubly exponentially small upper time
+fraction, cost reaches m to the one-fifth power, and reaches its fourth
+root divided by an explicit polynomial factor. -/
+theorem gaussian_pauli_physical_maximum_and_power_occupation :
     ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ k : ℕ in atTop,
       let N := k+3
       let H : selfAdjoint (Reg N) := ⟨pathHamiltonian (pathPauliDisorderShell ω (k+1)),isSelfAdjoint_pathHamiltonian _⟩
       ∃ m : ℕ, nearHilbertContinuousCircuitBudget N < m ∧ m ≤ 160*(2*N+1)*16^N ∧
         IsRecurrentOrbitCircuitMaximumAt H (1/10) m ∧
-        ∃ S : ℝ, 0 ≤ S ∧ ∀ s : ℕ, s^5 < m → ∀ a T : ℝ, 0 ≤ T →
+        ∃ S : ℝ, 0 ≤ S ∧ ∀ s : ℕ, (s^5 < m ∨ 160*(2*N+1)*(128*(N+1)*s)^4 < m) →
+          ∀ a T : ℝ, 0 ≤ T →
           (2:ℝ)^(2^N/1024) * volume.real ({t | HasProjectiveCircuitApproximation N (1/10:ℝ) s
             (unitaryEvolution H.val t)} ∩ Icc a (a+T)) ≤ T+S := by
   obtain ⟨_,_,_,_,_,_,_,_,_,hwin⟩ := gaussian_pauli_chain_early_cost_excursions_and_returns
@@ -74,10 +80,13 @@ theorem gaussian_pauli_physical_maximum_and_fifth_power_occupation :
   obtain ⟨⟨S,hS,hmeasure⟩,_⟩ := hex
   refine ⟨m,hlow,hupper,hmax,S,hS,?_⟩
   intro s hs a T hT
-  have hm' := hupper.trans (cap_le_excursion_power (by dsimp [N]; omega))
+  have hc := cap_le_excursion_powers (by dsimp [N]; omega : 256 ≤ N)
   have hr : s ≤ r := by
     by_contra! h
-    exact (not_lt_of_ge ((Nat.pow_le_pow_left h 5))) (hs.trans_le hm')
+    rcases hs with hs | hs
+    · exact (not_lt_of_ge ((hupper.trans hc.1).trans (Nat.pow_le_pow_left h 5))) hs
+    · have hp := Nat.pow_le_pow_left (Nat.mul_le_mul_left (128*(N+1)) h) 4
+      exact (not_lt_of_ge ((hupper.trans hc.2).trans (Nat.mul_le_mul_left _ hp))) hs
   have hW : 0 ≤ W := by
     dsimp [W,translatedExcursionWidth]
     positivity
@@ -91,6 +100,6 @@ theorem gaussian_pauli_physical_maximum_and_fifth_power_occupation :
     exact_mod_cast (circuit_return_spacing_factor_bounds (by dsimp [N]; omega : 64 ≤ N)).1
   exact (mul_le_mul hpow hf ENNReal.toReal_nonneg (by positivity)).trans (hmeasure a T hT)
 
-#print axioms gaussian_pauli_physical_maximum_and_fifth_power_occupation
+#print axioms gaussian_pauli_physical_maximum_and_power_occupation
 end
 end GaloisForLFunctions.HTGeometry

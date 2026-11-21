@@ -9,7 +9,7 @@ namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 private abbrev Reg (n : ℕ) := Matrix (Fin n → Bool) (Fin n → Bool) ℂ
 private abbrev Words (n : ℕ) := Fin n → Option (Fin 3)
-local instance (n : ℕ) : CStarAlgebra (Reg n) where
+local instance pauliSynthesisCStarAlgebra (n : ℕ) : CStarAlgebra (Reg n) where
 
 private theorem card_words (n : ℕ) : Fintype.card (Words n) = 4^n := by
   simp [Words,Fintype.card_option]
@@ -38,11 +38,11 @@ private theorem product_circuit {n b : ℕ} (A : List (Reg n))
     ∃ z : ℂ, ‖z‖ = 1 ∧ ∃ C : TwoQubitCircuit n, C.gateCount ≤ A.length*b ∧
       A.prod = z • (C.eval : Reg n) := by
   induction A with
-  | nil => exact ⟨1,norm_one,TwoQubitCircuit.one n,le_rfl,by simp [TwoQubitCircuit.one_eval]⟩
+  | nil => exact ⟨1,norm_one,TwoQubitCircuit.one n,Nat.zero_le _,by simp [TwoQubitCircuit.one_eval]⟩
   | cons x A ih =>
     obtain ⟨u,hu,C,hC,he⟩ := h x List.mem_cons_self
     obtain ⟨v,hv,D,hD,hf⟩ := ih (fun y hy => h y (List.mem_cons_of_mem _ hy))
-    refine ⟨u*v,by simp [norm_mul,hu,hv],C.mul D,?_,?_⟩
+    refine ⟨u*v,by rw [norm_mul,hu,hv,mul_one],C.mul D,?_,?_⟩
     · rw [TwoQubitCircuit.mul_gateCount,List.length_cons,Nat.add_mul,Nat.one_mul]
       omega
     simp only [List.prod_cons,he,hf,TwoQubitCircuit.mul_eval]

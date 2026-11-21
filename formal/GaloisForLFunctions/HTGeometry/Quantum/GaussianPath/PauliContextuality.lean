@@ -136,13 +136,9 @@ theorem path_noncontextual_forbids_two_multiaxis_sites (u : PathShell n) :
       (commute_onsitePauli_iff i j a b).mpr (Or.inl hij),
       (commute_onsitePauli_iff i j a b').mpr (Or.inl hij)⟩ h
 
-/-- The same Gaussian realization has contextual support on every open prefix
-with at least two sites. Only the first two sites are needed as witnesses. -/
-theorem gaussian_path_ae_contextual :
-    ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ n,
-      ¬ PauliNoncontextual
-        (fun l : ActivePathLabels (pathPauliDisorderShell ω n) =>
-          finitePauliMatrix (pathWord l.1)) := by
+/-- Every coordinate of the common Gaussian disorder draw is nonzero almost surely. -/
+theorem gaussian_path_ae_nonzero_coordinates :
+    ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ k, ω k ≠ 0 := by
   have h (k : ℕ × PathPauliDirections) :
       ∀ᵐ ω ∂pathPauliDisorderLaw, ω k ≠ 0 := by
     letI : NullSingletonClass (gaussianReal 0 1) := nullSingletonClass_gaussianReal one_ne_zero
@@ -154,7 +150,16 @@ theorem gaussian_path_ae_contextual :
       exact measure_singleton (0 : ℝ)
     exact (measurePreserving_eval_infinitePi
       (fun _ : ℕ × PathPauliDirections => gaussianReal 0 1) k).quasiMeasurePreserving.ae hnormal
-  filter_upwards [ae_all_iff.mpr h] with ω hω
+  exact ae_all_iff.mpr h
+
+/-- The same Gaussian realization has contextual support on every open prefix
+with at least two sites. Only the first two sites are needed as witnesses. -/
+theorem gaussian_path_ae_contextual :
+    ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ n,
+      ¬ PauliNoncontextual
+        (fun l : ActivePathLabels (pathPauliDisorderShell ω n) =>
+          finitePauliMatrix (pathWord l.1)) := by
+  filter_upwards [gaussian_path_ae_nonzero_coordinates] with ω hω
   intro n hc
   have hm := path_noncontextual_forbids_two_multiaxis_sites (pathPauliDisorderShell ω n) hc
   have member (s : Fin (n + 2)) :

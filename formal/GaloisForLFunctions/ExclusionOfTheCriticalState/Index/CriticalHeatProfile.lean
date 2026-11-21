@@ -113,7 +113,9 @@ theorem integrated_ordinate_tail {F : ℝ → ℝ} (hs : Summable (fun q : onLin
   have hnorm (q) : (∫ x in S, ‖g q x‖)≤(2*L)*w q := by
     have HH := setIntegral_mono_on (hgi q).norm
       (integrableOn_const (hs:=measure_Ioo_lt_top.ne) (C:=w q)) measurableSet_Ioo (fun x _ => by
-        rw [hp q x]; split_ifs <;> simp [Real.norm_of_nonneg (hw q),hw q])
+        rw [hp q x]; split_ifs
+        · exact (Real.norm_of_nonneg (hw _)).le
+        · rw [norm_zero]; exact hw _)
     rw [setIntegral_const,show volume.real S=L-(-L) from Real.volume_real_Ioo_of_le (by linarith),smul_eq_mul] at HH
     exact HH.trans_eq (by ring)
   have ht (q) : (∫ x in S,g q x) = 2*(min L (R q))*w q := by
@@ -126,7 +128,7 @@ theorem integrated_ordinate_tail {F : ℝ → ℝ} (hs : Summable (fun q : onLin
   rw [integral_Icc_eq_integral_Ioo]
   simp_rw [hg]
   change (∫ x in S, ∑' q, g q x)=_
-  rw [setIntegral_tsum_of_summable_integral_norm hgi ((hs.mul_left (2*L)).of_nonneg_of_le
+  rw [← integral_tsum_of_summable_integral_norm hgi ((hs.mul_left (2*L)).of_nonneg_of_le
     (fun q => integral_nonneg fun _ => norm_nonneg _) hnorm)]
   let a := fun q : onLineCopies => if R q≤L then R q*w q else 0
   let b := fun q : onLineCopies => if L<R q then w q else 0
@@ -147,7 +149,7 @@ private theorem gaussian_peak (x : ℝ) : stateHeatKernel 1 x≤ stateHeatKernel
   let a := (2*Real.pi)⁻¹*Real.sqrt (Real.pi/1)
   change a*Real.exp (-(x^2/(4*1)))≤a*Real.exp (-(0^2/(4*1)))
   simp only [zero_pow (by decide : 2≠0),zero_div,neg_zero,Real.exp_zero,mul_one]
-  exact mul_le_of_le_one_right (by dsimp [a]; positivity) (Real.exp_le_one_iff.mpr (by positivity))
+  exact mul_le_of_le_one_right (by dsimp [a]; positivity) (Real.exp_le_one_iff.mpr (neg_nonpos.mpr (by positivity)))
 
 private theorem gaussian_lipschitz :
     ∀ x y : ℝ, |stateHeatKernel 1 x-stateHeatKernel 1 y|≤(stateHeatKernel 1 0/2)*|x-y| := by
@@ -167,10 +169,13 @@ private theorem gaussian_lipschitz :
       rw [Real.exp_neg,←div_eq_mul_inv]
       exact (div_le_one (Real.exp_pos _)).mpr haux
     have he (s : ℝ) : K s=K 0*Real.exp (-(s^2/4)) := by simp [K,stateHeatKernel]
-    rw [he x]
+    rw [show stateHeatKernel 1 x = K 0*Real.exp (-(x^2/4)) from he x]
     have hh := mul_le_mul_of_nonneg_left hsmall' (hK 0).le
     nlinarith only [hh]
-  exact fun x y => by simpa only [Real.dist_eq] using hLip.dist_le_mul x y
+  intro x y
+  have h := hLip.dist_le_mul x y
+  rw [Real.dist_eq,Real.dist_eq] at h
+  exact h
 
 /-- Heat evolution of the even ordinate tail at similarity coordinate y. -/
 def ordinateHeatReadout (F : ℝ → ℝ) (t y : ℝ) := ∫ x : ℝ,

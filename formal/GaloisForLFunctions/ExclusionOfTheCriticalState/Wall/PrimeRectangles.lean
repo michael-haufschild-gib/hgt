@@ -135,13 +135,15 @@ private theorem one_layer_price {ι : Type*} (S : Finset ι) (f μ : ι → ℝ)
     apply continuousOn_const.mul
     exact continuousOn_id.inv₀ fun u hu => (hb.trans_le ((Set.uIcc_of_le hM ▸ hu).1)).ne'
   have hWI : IntervalIntegrable W volume b M := by
-    simpa only [W,Finset.sum_apply] using IntervalIntegrable.sum S (fun i _ => hi i)
+    have h := IntervalIntegrable.sum S (fun i _ => hi i)
+    have hfun : (∑ i ∈ S,χ i) = W := by funext u; simp only [W,Finset.sum_apply]
+    rwa [hfun] at h
   have hmon := intervalIntegral.integral_mono_on hM hWI
     hinv.intervalIntegrable (fun u hu => (by
       rw [←div_eq_mul_inv,le_div_iff₀ (hb.trans_le hu.1),mul_comm]
       exact (hprice u hu).le : W u≤A*u⁻¹))
   change (∫ u in b..M,W u) ≤ ∫ u in b..M,A*u⁻¹ at hmon
-  rw [intervalIntegral.integral_const_mul,intervalIntegral.integral_inv_of_pos hb (hb.trans_le hM)] at hmon
+  rw [intervalIntegral.integral_const_mul,integral_inv_of_pos hb (hb.trans_le hM)] at hmon
   have hA : A*D = ∑ i ∈ S,μ i*f i := div_mul_cancel₀ _ hD.ne'
   dsimp only [D] at hA
   linarith only [hA,hprice b ⟨le_rfl,hM⟩,htotal,hmon]
@@ -167,7 +169,7 @@ theorem logarithmic_rectangle_capture {ι : Type*} (S : Finset ι) (f g μ : ι 
   rw [hsum,he] at h₂
   have hupper := mul_le_mul_of_nonneg_left h₂ hlow
   rw [← mul_assoc] at h₁
-  refine le_trans (le_of_eq (sum_congr rfl fun i _ => by ring)) ?_
+  rw [show (∑ i ∈ S,μ i*f i*g i) = ∑ i ∈ S,μ i*g i*f i from sum_congr rfl fun i _ => by ring]
   exact (h₁.trans hupper).trans_eq (by unfold jointRectangle; ring)
 
 
@@ -266,7 +268,7 @@ theorem opposite_prime_rectangle (left : Bool) {s a : ℝ} (hs : s=1 ∨ s= -1)
     let R := ⌊Real.logb 2 ((1+Real.log 4)*L/b)⌋₊+1
     let mass := (L:ℝ)*∑ H ∈ largeOppositePrimeNumerators left s a g d T k L,oppositePrimeProduct left s k L H
     ∃ i<R, ∃ j<R, let price := (L:ℝ)*primeRectangle left s a g d T k L (b*2^i) (b*2^j)
-      mass≤4*(R:ℝ)^2*price ∧ price≤mass := by
+      mass≤4*(R:ℝ)^2*price ∧ price≤ mass := by
   intro b R mass
   let S := largeOppositePrimeNumerators left s a g d T k L
   let f := fun H => signedAmplitude s (Ioc k L) H
@@ -278,7 +280,7 @@ theorem opposite_prime_rectangle (left : Bool) {s a : ℝ} (hs : s=1 ∨ s= -1)
     obtain ⟨he,hx,_⟩ := mem_filter.mp he
     exact ⟨Nat.cast_pos.mp ((Real.exp_pos _).trans_le hx),mem_range.mp he⟩
   have hlower {y : ℝ} {H : ℕ} (h : H∈S) (hy : b*Real.sqrt H<y) :
-      b≤max 0 y/Real.sqrt H := (le_div_iff₀ (Real.sqrt_pos.mpr (Nat.cast_pos.mpr (hH h).1))).mpr
+      b≤ max 0 y/Real.sqrt H := (le_div_iff₀ (Real.sqrt_pos.mpr (Nat.cast_pos.mpr (hH h).1))).mpr
         (hy.le.trans (le_max_right _ _))
   have hf (H : ℕ) (h : H∈S) : f H ∈ Set.Icc b ((1+Real.log 4)*L) :=
     ⟨hlower h (mem_filter.mp h).2.1,amplitude_bound (hH h).2 (hH h).1 hsign _⟩

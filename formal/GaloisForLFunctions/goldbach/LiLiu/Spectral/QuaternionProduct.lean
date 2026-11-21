@@ -20,7 +20,8 @@ def spectralPolynomial (μ : ℝ) : ℝ[X] := 1-C (4*μ^2)*X*(1-X)
 
 theorem aeval_spectralPolynomial (μ : ℝ) (q : ℍ) :
     aeval q (spectralPolynomial μ) = 1-(4*(μ:ℍ)^2)*q*(1-q) := by
-  simp [spectralPolynomial]
+  have hfour : ((4 : ℝ) : ℍ) = 4 := rfl
+  simp [spectralPolynomial,hfour]
 
 private theorem eval_spectralPolynomial (μ : ℝ) (z : ℂ) :
     aeval z (spectralPolynomial μ) = spectralSquareFactor μ z := by

@@ -47,7 +47,8 @@ def prefixEncoding {k r : ℕ} (A : ChainAmplitudes k r) :
     rw [Fintype.sum_option]
     change cnormSq (fun j => A.1 (.inl j)) +
       (∑ l, cnormSq (fun j => if j = Fin.last k then A.1 (.inr l) else 0)) = 1
-    simpa only [cnormSq_basis, cnormSq] using h
+    simp_rw [cnormSq_basis]
+    simpa only [cnormSq] using h
 
 /-- The squared mass of configurations whose ones all fit in the prefix. -/
 def prefixMass {k r : ℕ} (A : ChainAmplitudes k r) : ℝ :=
