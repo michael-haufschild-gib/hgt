@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.AssociativeComposition
+import Mathlib.Data.PNat.Factors
 
 /-!
 # Quantum amplitudes of nested outcome classes
@@ -56,13 +57,13 @@ def refinementAmplitude (χ : ℕ+ →* Circle) (m n : ℕ+) :=
 theorem refinement_born_weight (χ : ℕ+ →* Circle) (m n : ℕ+) :
     ‖refinementAmplitude χ m n‖^2 = ((m : ℕ) : ℝ) / (n : ℕ) := by
   rw [refinementAmplitude, norm_div, div_pow, singleton_norm_sq, singleton_norm_sq]
-  simp only [one_div, div_inv_eq_mul, div_eq_inv_mul]
-
-private theorem vacuum_le (n : ℕ+) : (1 : ℕ+) ≤ n := n.pos
+  simp only [one_div, inv_div_inv]
 
 theorem refinementAmplitude_coherent (χ : ℕ+ →* Circle) : coherentRefinement (refinementAmplitude χ) := by
   refine ⟨fun n => ?_, fun i j k _ _ => ?_, fun i j k l _ _ => ?_⟩
-  · rw [refinement_born_weight, PNat.coe_one, Nat.cast_one, mul_one_div_cancel (by exact_mod_cast n.ne_zero)]
+  · rw [refinement_born_weight]
+    rw [show ((1 : ℕ+) : ℕ) = 1 from rfl, Nat.cast_one]
+    exact mul_one_div_cancel (Nat.cast_ne_zero.mpr n.ne_zero)
   · unfold refinementAmplitude
     field_simp [singleton_ne]
   · simp only [refinementAmplitude, singleton_mul, div_mul_div_comm]
@@ -80,7 +81,7 @@ theorem coherentRefinement_iff (A : ℕ+ → ℕ+ → ℂ) :
       change ((n : ℕ) : ℝ) * ‖B n‖^2 = 1 at h
       simp [hz] at h
     have hmul (m n : ℕ+) : B (m*n) = B m * B n := by
-      simpa only [B, one_mul] using hprod 1 m 1 n (vacuum_le _) (vacuum_le _)
+      simpa only [B, one_mul] using hprod 1 m 1 n one_le one_le
     have h1 : B 1 = 1 := by
       apply mul_left_cancel₀ (hne 1)
       simpa only [mul_one] using (hmul 1 1).symm
@@ -101,19 +102,19 @@ theorem coherentRefinement_iff (A : ℕ+ → ℕ+ → ℂ) :
     refine ⟨χ, ?_, ?_⟩
     · intro m n hmn
       rw [refinementAmplitude, hχ, hχ, eq_div_iff (hne _), mul_comm]
-      exact hchain 1 m n (vacuum_le _) hmn
+      exact hchain 1 m n one_le hmn
     · intro ψ hψ
       apply MonoidHom.ext
       intro n
       apply Circle.ext
-      have he := hψ 1 n (vacuum_le n)
+      have he := hψ 1 n one_le
       rw [refinementAmplitude, singleton_one, div_one] at he
       have h : singletonAmplitude ψ n = singletonAmplitude χ n := he.symm.trans (hχ n).symm
       exact (div_left_inj' (sizeRoot_ne n)).mp h
   · rintro ⟨χ, hχ, _⟩
     obtain ⟨hu, hc, hp⟩ := refinementAmplitude_coherent χ
     refine ⟨fun n => ?_, fun i j k hij hjk => ?_, fun i j k l hij hkl => ?_⟩
-    · rw [hχ 1 n (vacuum_le _)]
+    · rw [hχ 1 n one_le]
       exact hu n
     · rw [hχ i j hij, hχ j k hjk, hχ i k (hij.trans hjk)]
       exact hc _ _ _ hij hjk
@@ -128,6 +129,33 @@ theorem partition_born_sum {ι : Type*} [Fintype ι] [Nonempty ι] (χ : ℕ+ �
   intro total
   simp only [refinement_born_weight, ← Finset.sum_div, ← Nat.cast_sum]
   exact div_self (by exact_mod_cast total.ne_zero)
+
+/-- Giving a character is exactly giving one independent unit phase per prime mode. -/
+theorem prime_phase_coordinates :
+    Function.Bijective (fun χ : ℕ+ →* Circle => fun p : Nat.Primes => χ (p : ℕ+)) := by
+  let extend (ω : Nat.Primes → Circle) : ℕ+ →* Circle := {
+    toFun n := (n.factorMultiset.map ω).prod
+    map_one' := by rw [PNat.factorMultiset_one]; rfl
+    map_mul' := fun m n => by
+      rw [PNat.factorMultiset_mul]
+      exact (congrArg Multiset.prod (Multiset.map_add ω (m.factorMultiset : Multiset Nat.Primes)
+        (n.factorMultiset : Multiset Nat.Primes))).trans (Multiset.prod_add _ _) }
+  have recover (χ : ℕ+ →* Circle) (n : ℕ+) :
+      extend (fun p : Nat.Primes => χ (p : ℕ+)) n = χ n := by
+    have h := χ.map_multiset_prod (n.factorMultiset.map ((↑) : Nat.Primes → ℕ+))
+    rw [Multiset.map_map] at h
+    exact h.symm.trans (congrArg χ n.prod_factorMultiset)
+  constructor
+  · intro χ ψ h
+    apply MonoidHom.ext
+    intro n
+    exact (recover χ n).symm.trans ((congrArg (fun ω => extend ω n) h).trans (recover ψ n))
+  · intro ω
+    refine ⟨extend ω, funext fun p => ?_⟩
+    change (((p : ℕ+).factorMultiset).map ω).prod = ω p
+    rw [PNat.factorMultiset_ofPrime]
+    change (({p} : Multiset Nat.Primes).map ω).prod = ω p
+    rw [Multiset.map_singleton, Multiset.prod_singleton]
 
 /-- Relative heat amplitude of a class of m microscopic states in a shell of size n. -/
 def heatRefinement (s : ℂ) (m n : ℕ+) := heat s n / heat s m
@@ -160,14 +188,20 @@ theorem compositionAmplitude_eq_refinement (s : ℂ) (F G : Profile) (a b : ℕ+
       ⟨(F*G).val ((a : ℕ)*(b : ℕ)), (F*G).property _ (Nat.mul_pos a.pos b.pos)⟩ := by
   have hf : (0 : ℝ) < F.val a := Nat.cast_pos.mpr (F.property _ a.pos)
   have hg : (0 : ℝ) < G.val b := Nat.cast_pos.mpr (G.property _ b.pos)
-  simp only [compositionAmplitude, multiplicityPower, heatRefinement, heat, energy, Nat.cast_mul,
-    Real.log_mul hf.ne' hg.ne', Complex.ofReal_add, mul_add, neg_mul, Complex.exp_neg,
-    ← Complex.exp_add, inv_div_inv]
+  have inv (k : ℕ+) : heat s k = (multiplicityPower s k)⁻¹ := by
+    rw [heat, energy, multiplicityPower, neg_mul, Complex.exp_neg]
+  simp only [compositionAmplitude, heatRefinement, inv, inv_div_inv]
+  have hprod : multiplicityPower s (F.val a * G.val b) =
+      multiplicityPower s (F.val a) * multiplicityPower s (G.val b) := by
+    simp only [multiplicityPower, Nat.cast_mul, Real.log_mul hf.ne' hg.ne', Complex.ofReal_add,
+      mul_add, Complex.exp_add]
+  exact congrArg (fun z => z / multiplicityPower s ((F*G).val ((a : ℕ)*(b : ℕ)))) hprod.symm
 
 #print axioms refinement_born_weight
 #print axioms refinementAmplitude_coherent
 #print axioms coherentRefinement_iff
 #print axioms partition_born_sum
+#print axioms prime_phase_coordinates
 #print axioms heatRefinement_coherent_iff
 #print axioms compositionAmplitude_eq_refinement
 

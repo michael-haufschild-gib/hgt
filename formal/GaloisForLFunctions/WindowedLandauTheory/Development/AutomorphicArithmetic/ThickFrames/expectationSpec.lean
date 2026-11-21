@@ -1,6 +1,6 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.ThickFrames.MarkedLow
 
-/-! First and second moments of the local Bernoulli weights. -/
+/-! Identities for independent finite Bernoulli choices. -/
 
 open Finset UpperTheory.BernoulliSumsFrobeniusOrbits WindowedLandauTheory.G0
 
@@ -55,7 +55,8 @@ private theorem ex_mul_left (S : Finset ℕ) (c : ℝ) (f : Finset ℕ → ℝ) 
   rw [Finset.mul_sum]
   exact Finset.sum_congr rfl fun T _ => by ring
 
-private theorem ex_sum {ι : Type*} (S : Finset ℕ) (I : Finset ι) (f : ι → Finset ℕ → ℝ) :
+theorem UpperTheory.BernoulliSumsFrobeniusOrbits.ex_sum {ι : Type*}
+    (S : Finset ℕ) (I : Finset ι) (f : ι → Finset ℕ → ℝ) :
     exP p S (fun T => ∑ i ∈ I, f i T) = ∑ i ∈ I, exP p S (f i) := by
   unfold exP
   rw [Finset.sum_comm]

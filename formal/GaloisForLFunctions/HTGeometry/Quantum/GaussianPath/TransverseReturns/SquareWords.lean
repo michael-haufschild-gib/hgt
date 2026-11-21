@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.TransverseReturns.WordStep
-import GaloisForLFunctions.HTGeometry.Quantum.CircuitSynthesis.ProductFormulas.PathFactors
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitSynthesis.LocalErrors.PathOverlap
 import GaloisForLFunctions.HTGeometry.PauliProductLaw
 
 /-! # Real four-site Pauli expansion of a shifted path Hamiltonian squared -/
@@ -15,28 +15,15 @@ private theorem weight_product {n : ℕ} (P Q : Word n) :
   classical
   unfold pauliWeight
   refine (Finset.card_le_card (t := (Finset.univ.filter fun i => P i ≠ none) ∪
-    (Finset.univ.filter fun i => Q i ≠ none)) ?_).trans Finset.card_union_le
+    (Finset.univ.filter fun i => Q i ≠ none)) ?_).trans (Finset.card_union_le _ _)
   intro i hi
   by_contra h
   have hz : P i=none ∧ Q i=none := by simpa only [Finset.mem_union,Finset.mem_filter,Finset.mem_univ,
     true_and,not_or,not_not] using h
-  exact (Finset.mem_filter.mp hi).2 (by rw [hz.1,hz.2]; rfl)
-
-private theorem path_weight {n : ℕ} (l : PathLabel n) : pauliWeight (pathWord l) ≤ 2 := by
-  classical
-  rw [pauliWeight]
-  rcases l with ⟨s,a⟩ | ⟨e,ab⟩
-  · apply (Finset.card_le_card (t := {s}) ?_).trans (by simp)
-    intro i hi
-    by_contra hn
-    have h : i ≠ s := by simpa using hn
-    simpa [pathWord,onsiteWord,h] using (Finset.mem_filter.mp hi).2
-  · apply (Finset.card_le_card (t := {e.castSucc,e.succ}) ?_).trans
-      ((Finset.card_insert_le _ _).trans (by simp))
-    intro i hi
-    by_contra hn
-    have h : i ≠ e.castSucc ∧ i ≠ e.succ := by simpa using hn
-    simpa [pathWord,couplingWord,h.1,h.2] using (Finset.mem_filter.mp hi).2
+  apply (Finset.mem_filter.mp hi).2
+  change optMul (P i) (Q i)=none
+  rw [hz.1,hz.2]
+  rfl
 
 /-- Hermitian symmetrization of a complex Pauli expansion replaces
 each coefficient by its real part, also when the labels repeat. -/
@@ -53,7 +40,7 @@ private theorem real_parts {I : Type*} [Fintype I] {n : ℕ} (P : I → Word n) 
         ←add_smul,smul_smul,←algebraMap_smul ℂ (z i).re]
       congr 1
       change (1/2:ℂ)*(z i+star (z i))=((z i).re:ℂ)
-      rw [show z i+star (z i)=(2:ℂ)*(z i).re by apply Complex.ext <;> simp <;> ring]
+      rw [show z i+star (z i)=(2:ℂ)*(z i).re by apply Complex.ext <;> simp; ring]
       ring
 
 /-- Squaring an offset path generator gives at most (J+1)² real Pauli
@@ -70,7 +57,7 @@ theorem shifted_square_words {n : ℕ} (u : PathShell n) (a : ℝ) :
   have hb : ∀ i, pauliWeight (B i) ≤ 2 := by
     rintro (_|l)
     · simp [B,pauliWeight]
-    · exact path_weight l
+    · exact pathWord_support_card_le_two l
   have he : H=∑ i : L, (b i:ℂ) • finitePauliMatrix (B i) := by
     rw [Fintype.sum_option]
     simp only [B,b,Option.elim_none,Option.elim_some,Complex.ofReal_neg,finitePauliMatrix_const_none,neg_smul]

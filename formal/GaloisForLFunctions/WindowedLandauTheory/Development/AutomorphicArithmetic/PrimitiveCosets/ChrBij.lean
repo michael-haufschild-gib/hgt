@@ -12,7 +12,7 @@ private theorem chr_val (φ : Frame) (ψ : AddChar (E0 × φ.A) ℂ) (g : φ.GG)
 private theorem sgn_val (s : ℤˣ) :
     (if Multiplicative.toAdd (LFunctionChainParameters.LHost.sgn2 s) = 0 then (1 : ℂ) else -1) = ((s : ℤ) : ℂ) := by
   rcases Int.units_eq_one_or s with rfl | rfl
-  · rw [if_pos (sign_character_zero_iff 1).mp rfl]
+  · rw [if_pos ((sign_character_zero_iff 1).mp rfl)]
     simp
   · have hne : (-1 : ℤˣ) ≠ 1 := by
       intro h

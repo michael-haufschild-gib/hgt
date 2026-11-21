@@ -20,8 +20,8 @@ private theorem compile_word {n : ℕ} (Z : List (Reg n)) (t : ℝ) (B : ℕ)
     obtain ⟨a,ha,C,hC,he⟩ := hc X List.mem_cons_self
     obtain ⟨b,hb,F,hF,hf⟩ := ih (fun z hz => hc z (List.mem_cons_of_mem _ hz))
     refine ⟨a*b,by rw [norm_mul,ha,hb,mul_one],C.mul F,?_,?_⟩
-    · rw [TwoQubitCircuit.mul_gateCount,List.length_cons,Nat.succ_mul,add_comm (Z.length*B)]
-      exact Nat.add_le_add hC hF
+    · rw [TwoQubitCircuit.mul_gateCount,List.length_cons,Nat.succ_mul]
+      exact Nat.add_le_add hF hC
     · simp only [List.map_cons,List.prod_cons,he,hf,TwoQubitCircuit.mul_eval]
       change (a • (C.eval : Reg n))*(b • (F.eval : Reg n)) = (a*b) • ((C.eval : Reg n)*(F.eval : Reg n))
       rw [Matrix.smul_mul,Matrix.mul_smul,smul_smul]
