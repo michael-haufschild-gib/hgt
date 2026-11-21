@@ -4,9 +4,10 @@ import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.ShortArcHaar
 open Set
 namespace GaloisForLFunctions.HTGeometry.HarmonicRuns
 noncomputable section
-variable {I : Type*} [Fintype I]
+variable {I : Type*}
 
-private theorem lifts {θ : I → UnitAddCircle} {r : ℝ} (hr : 0 ≤ r) (h : θ ∈ enclosingUnitArc r) :
+/-- A left endpoint gives simultaneous representatives between zero and r. -/
+theorem exists_anchor_lifts {θ : I → UnitAddCircle} {r : ℝ} (hr : 0 ≤ r) (h : θ ∈ enclosingUnitArc r) :
     ∃ i : I, ∀ j, ∃ u ∈ Icc (0:ℝ) r, (u:UnitAddCircle) = θ j-θ i := by
   obtain ⟨i,hi⟩ := mem_iUnion.mp h
   refine ⟨i,fun j => ?_⟩
@@ -18,7 +19,7 @@ private theorem lifts {θ : I → UnitAddCircle} {r : ℝ} (hr : 0 ≤ r) (h : �
 private theorem difference_lift {θ : I → UnitAddCircle} {r : ℝ} (hr : 0 ≤ r)
     (h : θ ∈ enclosingUnitArc r) (i j : I) :
     ∃ v ∈ Icc (-r) r, (v:UnitAddCircle) = θ j-θ i := by
-  obtain ⟨b,hb⟩ := lifts hr h
+  obtain ⟨b,hb⟩ := exists_anchor_lifts hr h
   obtain ⟨u,hu,hi⟩ := hb i
   obtain ⟨w,hw,hj⟩ := hb j
   refine ⟨w-u,⟨by linarith only [hw.1,hu.2],by linarith only [hw.2,hu.1]⟩,?_⟩
@@ -30,7 +31,7 @@ private theorem coe_multiple (k : ℕ) (u : ℝ) :
 
 /-- Each new multiple lies between zero and 2r before reduction. When
 3r<1 the allowed interval [−r,r] has no other lift in that range. -/
-private theorem lift_multiples {u r : ℝ} (hu : u ∈ Icc (0:ℝ) r) (hr : 3*r < 1)
+theorem lift_multiples {u r : ℝ} (hu : u ∈ Icc (0:ℝ) r) (hr : 3*r < 1)
     (m : ℕ) (ht : ∀ k ≤ m, ∃ v ∈ Icc (-r) r, (v:UnitAddCircle) = (((k:ℝ)*u:ℝ):UnitAddCircle)) :
     (m:ℝ)*u ≤ r := by
   have h (k : ℕ) : k ≤ m → (k:ℝ)*u ≤ r := by
@@ -57,7 +58,7 @@ theorem consecutive_powers_iff (θ : I → UnitAddCircle) {r : ℝ} (hr : 0 ≤ 
   constructor
   · intro hall
     have h1 : θ ∈ enclosingUnitArc r := by simpa only [one_smul] using hall 1 hm
-    obtain ⟨i,hi⟩ := lifts hr h1
+    obtain ⟨i,hi⟩ := exists_anchor_lifts hr h1
     refine mem_iUnion.mpr ⟨i,fun j _ => ?_⟩
     obtain ⟨u,hu,he⟩ := hi j
     refine ⟨u,⟨hu.1,(le_div_iff₀ hm').mpr ?_⟩,he⟩
@@ -69,7 +70,7 @@ theorem consecutive_powers_iff (θ : I → UnitAddCircle) {r : ℝ} (hr : 0 ≤ 
     rw [coe_multiple,he,nsmul_sub]
     exact hvθ
   · intro h k hk
-    obtain ⟨i,hi⟩ := lifts (div_nonneg hr hm'.le) h
+    obtain ⟨i,hi⟩ := exists_anchor_lifts (div_nonneg hr hm'.le) h
     refine mem_iUnion.mpr ⟨i,fun j _ => ?_⟩
     obtain ⟨u,hu,he⟩ := hi j
     refine ⟨(k:ℝ)*u,⟨mul_nonneg (Nat.cast_nonneg _) hu.1,?_⟩,?_⟩

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.HarmonicRuns.Itineraries
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.HarmonicRuns.SharpRate
 
 /-! # The price of a long run at physical gate error one tenth -/
 open Filter Set MeasureTheory Topology
@@ -6,19 +6,6 @@ open scoped Matrix.Norms.L2Operator
 namespace GaloisForLFunctions.HTGeometry.HarmonicRuns
 noncomputable section
 open SharpOccupation
-
-private theorem itinerary_entropy (n s m : ℕ) (hs : s ≤ 2^n) :
-    (((s:ℝ)+1)*((((n:ℝ)+1)^2)*(1+4*(s:ℝ)/(1/40))^32)^s)^m ≤
-      Real.exp ((36+128/(1/40))*((n:ℝ)+1)*((m*(s+1):ℕ)+1:ℝ)) := by
-  let C : ℝ := 36+128/(1/40)
-  have hh := net_envelope_le_exp n s (1/40) (by norm_num) hs
-  apply (pow_le_pow_left₀ (by positivity) hh m).trans
-  rw [←Real.exp_nat_mul]
-  apply Real.exp_le_exp.mpr
-  push_cast
-  have hc : 0 ≤ C*((n:ℝ)+1) := by dsimp [C]; positivity
-  dsimp [C] at hc
-  nlinarith only [hc]
 
 /-- If m(s+1)=o(D/N), persisting at s gates for the first m multiples pays
 the factor m to the power 1−D, between two explicit exponential factors.
@@ -34,47 +21,26 @@ theorem gaussian_physical_run_rate :
           isSelfAdjoint_pathHamiltonian _⟩
         ∀ a : ℝ, ∀ᶠ T : ℝ in atTop,
           let f := volume.real (circuitRunSet H (s N) M (1/10) ∩ Icc a T)/(T-a)
-          ((D:ℝ)/2)*((1/64:ℝ)/(M:ℝ))^(D-1) < f ∧ f < (1/4:ℝ)^D/(M:ℝ)^(D-1) := by
-  filter_upwards [gaussian_path_all_prefixes_maximally_projective] with ω hω
-  intro s m hpos hsub
-  have he := enlarged_arc_eventually_lt hsub (36+128/(1/40)) (1/8) (1/4) (by norm_num) (by norm_num)
-  have hh := (tendsto_add_atTop_nat 3).eventually (he.and (budget_le_dimension_eventually hsub))
-  filter_upwards [hh] with k hk
-  intro N D M H a
-  have hm : 0 < M := hpos N
-  have hm' : 0 < (M:ℝ) := by exact_mod_cast hm
-  have hs : s N ≤ D := (Nat.le_succ _).trans ((Nat.le_mul_of_pos_left _ hm).trans hk.2)
-  have hx : 2*((1/10:ℝ)+1/40) ≤ zeroGateArcTolerance (1/8) :=
-    (by norm_num : 2*((1/10:ℝ)+1/40) ≤ 3*(1/8)).trans (three_mul_le_arcTolerance (by norm_num) (by norm_num))
-  have hmax : MaximallyProjectiveEnergy H.2.isHermitian.eigenvalues := hω k
-  have hu := circuit_run_bound H hmax (s N) M hm (δ := 1/40) (by norm_num)
-    (by norm_num : (0:ℝ) ≤ 1/8) (by norm_num) hx a ((1/4:ℝ)^D/(M:ℝ)^(D-1)) (by
-      simp only [zeroGateArcDensity,div_pow,←mul_div_assoc]
-      apply (div_lt_div_iff_of_pos_right (pow_pos hm' _)).mpr
-      rw [mul_assoc]
-      have hcost := itinerary_entropy N (s N) M hs
-      apply (mul_le_mul_of_nonneg_right hcost (by positivity)).trans_lt
-      simpa only [Nat.cast_pow,Nat.cast_ofNat,D,N,M] using hk.1)
-  let r : Icc (0:ℝ) (1/2) := ⟨(1/64:ℝ)/(M:ℝ),by positivity,
-    (div_le_self (by norm_num) (by exact_mod_cast hm)).trans (by norm_num)⟩
-  have hr : zeroGateArcTolerance (1/64) ≤ (1/10:ℝ) := by
+          (1/64:ℝ)^D/(M:ℝ)^(D-1) < f ∧ f < (1/4:ℝ)^D/(M:ℝ)^(D-1) := by
+  filter_upwards [gaussian_sharp_run_rate] with ω hω
+  intro s m hm hsub
+  have hε : (1/10:ℝ) < Real.sqrt 2 := by
+    have h := Real.sq_sqrt (by norm_num : (0:ℝ) ≤ 2)
+    nlinarith only [h,Real.sqrt_nonneg 2]
+  obtain ⟨hx,htol⟩ := physicalArc_spec (by norm_num : (0:ℝ)<1/10) hε
+  have hsmall : zeroGateArcTolerance (1/64) < (1/10:ℝ) := by
     have hsin := Real.sin_le (show 0 ≤ Real.pi*(1/64)/2 by positivity)
     dsimp only [zeroGateArcTolerance]
     linarith only [hsin,Real.pi_lt_four]
-  have hinc : zeroGateReturnSet H r ⊆ circuitRunSet H (s N) M (1/10) := by
-    rw [show zeroGateReturnSet H r = runSet H (zeroGateArcTolerance (1/64)) M from
-      (runSet_eq H (by norm_num) (by norm_num) M hm).symm]
-    intro t ht i
-    obtain ⟨c,hc,C,hC,herr⟩ := ht (i.val+1) i.isLt
-    exact ⟨c,hc,C,hC.trans (Nat.zero_le _),by simpa only [Nat.cast_add_one] using herr.trans hr⟩
-  have hd : (0:ℝ) < D := by dsimp [D]; positivity
-  have hlow : ((D:ℝ)/2)*((1/64:ℝ)/(M:ℝ))^(D-1) < zeroGateArcDensity D r :=
-    mul_lt_mul_of_pos_right (by linarith only [hd]) (pow_pos (div_pos (by norm_num) hm') _)
-  have hl := (maximallyProjective_zeroGateOccupation_from_start H hmax r a).eventually_const_lt hlow
-  filter_upwards [hu,hl,eventually_gt_atTop a] with T hhi hlo hT
-  refine ⟨hlo.trans_le ?_,hhi⟩
-  apply div_le_div_of_nonneg_right _ (sub_nonneg.mpr hT.le)
-  exact measureReal_mono (inter_subset_inter_left _ hinc) (measure_ne_top_of_subset inter_subset_right measure_Icc_lt_top.ne)
+  have hlarge : (1/10:ℝ) < zeroGateArcTolerance (1/8) :=
+    (by norm_num : (1/10:ℝ) < 3*(1/8)).trans_le (three_mul_le_arcTolerance (by norm_num) (by norm_num))
+  have hl : 1/64 < physicalArc (1/10) := (strictMonoOn_zeroGateArcTolerance.lt_iff_lt
+    (by norm_num) ⟨hx.1.le,hx.2.le⟩).mp (by rw [htol]; exact hsmall)
+  have hu : physicalArc (1/10) < 1/8 := (strictMonoOn_zeroGateArcTolerance.lt_iff_lt
+    ⟨hx.1.le,hx.2.le⟩ (by norm_num)).mp (by rw [htol]; exact hlarge)
+  have h := hω s m hm hsub _ ⟨hx.1,hu.trans (by norm_num)⟩ (1/64) (1/4)
+    (by norm_num) hl (hu.trans (by norm_num))
+  rwa [htol] at h
 
 private theorem half_exponential_schedule (p : ℕ) :
     subcriticalBudget (fun n => (2^(n/2))*(n^p+1)) := by
@@ -110,7 +76,7 @@ private theorem half_exponential_schedule (p : ℕ) :
   push_cast
   rw [hfull]
   apply (div_le_iff₀ (mul_pos halfpos halfpos)).mpr
-  exact hnum.trans_eq (by field_simp <;> ring)
+  exact hnum.trans_eq (by field_simp)
 
 /-- For any polynomial gate budget, requiring affordability for 2^⌊N/2⌋
 harmonics has long-time fraction between two explicit multiples of
@@ -124,9 +90,11 @@ theorem gaussian_polynomial_exponential_runs :
         isSelfAdjoint_pathHamiltonian _⟩
       ∀ a : ℝ, ∀ᶠ T : ℝ in atTop,
         let f := volume.real (circuitRunSet H (N^p) M (1/10) ∩ Icc a T)/(T-a)
-        ((D:ℝ)/2)*((1/64:ℝ)/(M:ℝ))^(D-1) < f ∧ f < (1/4:ℝ)^D/(M:ℝ)^(D-1) := by
+        (1/64:ℝ)^D/(M:ℝ)^(D-1) < f ∧ f < (1/4:ℝ)^D/(M:ℝ)^(D-1) := by
   filter_upwards [gaussian_physical_run_rate] with ω hω
-  exact fun p => hω _ _ (fun n => pow_pos (by decide : 0 < (2:ℕ)) (n/2)) (half_exponential_schedule p)
+  intro p
+  exact hω (fun n => n^p) (fun n => 2^(n/2))
+    (fun n => Nat.pow_pos (by decide : 0 < 2)) (half_exponential_schedule p)
 
 #print axioms gaussian_polynomial_exponential_runs
 #print axioms gaussian_physical_run_rate

@@ -23,7 +23,7 @@ private theorem affordable_iff_distance (H : selfAdjoint (Reg n)) (s : ℕ) (t �
   hasProjectiveCircuitApproximation_iff_infDist _ _ _
 
 /-- Concatenating projective approximations adds their circuit budgets and errors. -/
-private theorem affordable_add_time {n i j : ℕ} (H : selfAdjoint (Reg n)) {x y e f : ℝ}
+theorem affordable_add_time {n i j : ℕ} (H : selfAdjoint (Reg n)) {x y e f : ℝ}
     (hx : HasProjectiveCircuitApproximation n e i (unitaryEvolution H.val x))
     (hy : HasProjectiveCircuitApproximation n f j (unitaryEvolution H.val y)) :
     HasProjectiveCircuitApproximation n (e+f) (i+j) (unitaryEvolution H.val (x+y)) := by

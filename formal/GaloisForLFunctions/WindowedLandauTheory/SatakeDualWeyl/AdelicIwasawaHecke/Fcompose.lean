@@ -1,0 +1,10 @@
+import GaloisForLFunctions.WindowedLandauTheory.SatakeDualWeyl.AdelicIwasawaHecke.FSatake
+import GaloisForLFunctions.WindowedLandauTheory.SatakeDualWeyl.AdelicIwasawaHecke.FIwasawa
+
+namespace WindowedLandauTheory.UG.P
+
+theorem satake_inert : WindowedLandauTheory.UG.SatakeInert := satake_transform_inert_prime exists_spherical_function_unitary
+
+theorem satake_mul : WindowedLandauTheory.UG.SatMul := satake_transform_multiplicative exists_spherical_function_unitary
+
+end WindowedLandauTheory.UG.P

@@ -1,0 +1,18 @@
+import GaloisForLFunctions.WindowedLandauTheory.HyperbolicPlaceProducts.Statement
+import GaloisForLFunctions.WindowedLandauTheory.HyperbolicPlaceProducts.SubgroupIndexCounts.CardEqCardRangeNsmulMulCardKer
+import GaloisForLFunctions.WindowedLandauTheory.HyperbolicPlaceProducts.SubgroupIndexCounts.SesquilinearDeterminantHolds
+import Mathlib
+import GaloisForLFunctions.WindowedLandauTheory.HyperbolicPlaceProducts.SubgroupIndexCounts.SubgroupCount
+import GaloisForLFunctions.WindowedLandauTheory.HyperbolicPlaceProducts.SubgroupIndexCounts.OmegaPow
+import GaloisForLFunctions.WindowedLandauTheory.HyperbolicPlaceProducts.SubgroupIndexCounts.CountO
+import GaloisForLFunctions.WindowedLandauTheory.HyperbolicPlaceProducts.SubgroupIndexCounts.DedekindLFunctions
+
+namespace WindowedLandauTheory.SLP.Final
+
+theorem torsionIndex : WindowedLandauTheory.SLP.TorsionIndex := WindowedLandauTheory.SLP.P.card_range_nsmul_mul_card_le
+theorem sesqDet : WindowedLandauTheory.SLP.SesqDet := WindowedLandauTheory.SLP.P.sesquilinear_determinant_holds
+theorem omegaPow : WindowedLandauTheory.SLP.OmegaPow := WindowedLandauTheory.SLP.P.pow_primeFactors_length_le
+theorem submoduleIndexCountO : WindowedLandauTheory.SLP.SubmoduleIndexCountO := WindowedLandauTheory.SLP.P.card_submodules_of_index_le
+theorem submoduleCountDed : WindowedLandauTheory.SLP.SubmoduleCountDed := WindowedLandauTheory.SLP.P.card_submodules_le_of_dedekind
+
+end WindowedLandauTheory.SLP.Final

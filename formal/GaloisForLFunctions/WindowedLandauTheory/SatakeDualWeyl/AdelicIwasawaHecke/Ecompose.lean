@@ -1,0 +1,13 @@
+import GaloisForLFunctions.WindowedLandauTheory.SatakeDualWeyl.AdelicIwasawaHecke.Heckecomm
+import GaloisForLFunctions.WindowedLandauTheory.SatakeDualWeyl.AdelicIwasawaHecke.Cartan
+import GaloisForLFunctions.WindowedLandauTheory.SatakeDualWeyl.AdelicIwasawaHecke.Satake
+import GaloisForLFunctions.WindowedLandauTheory.SatakeDualWeyl.AdelicIwasawaHecke.Spherical
+import GaloisForLFunctions.WindowedLandauTheory.SatakeDualWeyl.AdelicIwasawaHecke.Tjcosets
+
+namespace WindowedLandauTheory.UG.P
+
+theorem hecke_algebra_GL_commutative : WindowedLandauTheory.UG.HeckeCommGL := hecke_algebra_GL_comm_of_cartan cartan_decomposition_holds
+
+theorem satake_transform_hecke_operator_Tj : WindowedLandauTheory.UG.SatakeTj := satake_Tj_of_spherical_cosets exists_spherical_function Tj_double_coset_decomposition
+
+end WindowedLandauTheory.UG.P

@@ -43,11 +43,9 @@ theorem itinerary_difference {n m : ℕ} (H : selfAdjoint (Register n)) (hm : 0 
   cases k with
   | zero =>
     refine ⟨1,by simp,TwoQubitCircuit.one n,le_rfl,?_⟩
-    simp only [Nat.cast_zero,zero_mul,unitaryEvolution,zero_smul,NormedSpace.exp_zero,one_smul,
-      TwoQubitCircuit.one_eval,Unitary.val_one,sub_self,norm_zero]
     have hpos := strictMonoOn_zeroGateArcTolerance.monotoneOn (by norm_num : (0:ℝ) ∈ Icc 0 (1/2))
       ⟨hx,by linarith only [hshort]⟩ hx
-    simpa only [zeroGateArcTolerance,mul_zero,zero_div,Real.sin_zero] using hpos
+    simpa [unitaryEvolution,TwoQubitCircuit.one_eval,zeroGateArcTolerance] using hpos
   | succ k =>
     let i : Fin m := ⟨k,hk⟩
     obtain ⟨c,hc,hs'⟩ := hs i
@@ -74,10 +72,41 @@ private theorem translated_return_density {n : ℕ} (H : selfAdjoint (Register n
       (fun t : ℝ => t+(-u)) ⁻¹' (Z ∩ Icc (a-u) (T-u)) := by
     ext t
     simp only [mem_preimage,mem_inter_iff,mem_Icc,sub_eq_add_neg,add_le_add_iff_right]
-  have hv := (measurePreserving_add_right volume (-u)).measureReal_preimage
+  have hv := (measurePreserving_add_right volume (-u)).measureReal_preimage (s := Z ∩ Icc (a-u) (T-u))
     (hZ.inter measurableSet_Icc).nullMeasurableSet
   change volume.real (Z ∩ Icc (a-u) (T+-u))/((T+-u)-(a-u)) = volume.real _/(T-a)
   rw [←sub_eq_add_neg,sub_sub_sub_cancel_right,he,hv]
+
+/-- Rounding the circuit separately at each observation covers every run
+by the itineraries of the finite net. -/
+theorem circuitRun_subset_words {n m s : ℕ} (H : selfAdjoint (Register n)) (ε δ : ℝ)
+    (F : Finset (Matrix.unitaryGroup (Fin n → Bool) ℂ))
+    (hcover : ∀ C : TwoQubitCircuit n, C.gateCount ≤ s → ∃ W ∈ F,
+      ‖(C.eval : Register n)-(W : Register n)‖ ≤ δ) :
+    circuitRunSet H s m ε ⊆ ⋃ f : Fin m → F, itinerary H (fun i => (f i).val) (ε+δ) := by
+  intro t ht
+  have hsel (i : Fin m) : ∃ w : F, ∃ c : ℂ, ‖c‖=1 ∧
+      ‖unitaryEvolution H.val (((i.val:ℝ)+1)*t)-c • (w.val:Register n)‖ ≤ ε+δ := by
+    obtain ⟨c,hc,C,hC,herr⟩ := ht i
+    obtain ⟨w,hw,hclose⟩ := hcover C hC
+    refine ⟨⟨w,hw⟩,c,hc,(norm_sub_le_norm_sub_add_norm_sub _ (c • (C.eval : Register n)) _).trans
+      (add_le_add herr ?_)⟩
+    rwa [←smul_sub,norm_smul,hc,one_mul]
+  choose f c hc hclose using hsel
+  exact mem_iUnion.mpr ⟨f,fun i => ⟨c i,hc i,hclose i⟩⟩
+
+private theorem itinerary_subset_translate {n m : ℕ} (H : selfAdjoint (Register n)) (hm : 0 < m)
+    (W : Fin m → Matrix.unitaryGroup (Fin n → Bool) ℂ) {η x : ℝ} (hx : 0 ≤ x)
+    (hshort : 3*x < 1) (he : 2*η ≤ zeroGateArcTolerance x) :
+    ∃ u : ℝ, itinerary H W η ⊆ (fun t : ℝ => t-u) ⁻¹' zeroGateReturnSet H (x/(m:ℝ)) := by
+  classical
+  by_cases h : (itinerary H W η).Nonempty
+  · obtain ⟨u,hu⟩ := h
+    refine ⟨u,?_⟩
+    intro t ht
+    change t-u ∈ zeroGateReturnSet H (x/(m:ℝ))
+    exact itinerary_difference H hm W (η := η) (s := t) (t := u) hx hshort he ht hu
+  · exact ⟨0,fun _ ht => (h ⟨_,ht⟩).elim⟩
 
 /-- The net cardinality is raised to m because the circuit can change at
 every harmonic. The exponent D−1 on the shrinking angular tolerance comes
@@ -91,27 +120,12 @@ theorem circuit_run_bound {n : ℕ} (H : selfAdjoint (Register n))
     ∀ᶠ T : ℝ in atTop, volume.real (circuitRunSet H s m ε ∩ Icc a T)/(T-a) < b := by
   classical
   obtain ⟨F,hcover,hcard⟩ := exists_budget_net n s δ hδ
-  let word (f : Fin m → F) := fun i => (f i).val
-  let A (f : Fin m → F) := itinerary H (word f) (ε+δ)
+  let word (f : Fin m → F) : Fin m → Matrix.unitaryGroup (Fin n → Bool) ℂ := fun i => (f i).val
   let Z := zeroGateReturnSet H (x/(m:ℝ))
-  have htranslate (f : Fin m → F) : ∃ u : ℝ, A f ⊆ (fun t : ℝ => t-u) ⁻¹' Z := by
-    by_cases hn : (A f).Nonempty
-    · obtain ⟨u,hu⟩ := hn
-      exact ⟨u,fun _ ht => itinerary_difference H hm _ hx hshort he ht hu⟩
-    · exact ⟨0,fun t ht => (hn ⟨t,ht⟩).elim⟩
-  choose u hu using htranslate
+  choose u hu using fun f : Fin m → F => itinerary_subset_translate H hm (word f) hx hshort he
   let B (f : Fin m → F) := (fun t : ℝ => t-u f) ⁻¹' Z
-  have hsub : circuitRunSet H s m ε ⊆ ⋃ f, B f := by
-    intro t ht
-    have hsel (i : Fin m) : ∃ w : F, ∃ c : ℂ, ‖c‖=1 ∧
-        ‖unitaryEvolution H.val (((i.val:ℝ)+1)*t)-c • (w.val:Register n)‖ ≤ ε+δ := by
-      obtain ⟨c,hc,C,hC,herr⟩ := ht i
-      obtain ⟨w,hw,hclose⟩ := hcover C hC
-      refine ⟨⟨w,hw⟩,c,hc,(norm_sub_le_norm_sub_add_norm_sub _ (c • (C.eval : Register n)) _).trans
-        (add_le_add herr ?_)⟩
-      rwa [←smul_sub,norm_smul,hc,one_mul]
-    choose f c hc hclose using hsel
-    exact mem_iUnion.mpr ⟨f,hu f (fun i => ⟨c i,hc i,hclose i⟩)⟩
+  have hsub : circuitRunSet H s m ε ⊆ ⋃ f, B f :=
+    (circuitRun_subset_words H ε δ F hcover).trans (iUnion_mono hu)
   have hm1 : (1:ℝ) ≤ m := by exact_mod_cast hm
   let r : Icc (0:ℝ) (1/2) := ⟨x/(m:ℝ),div_nonneg hx (Nat.cast_nonneg _),
     (div_le_self hx hm1).trans (by linarith only [hshort])⟩
