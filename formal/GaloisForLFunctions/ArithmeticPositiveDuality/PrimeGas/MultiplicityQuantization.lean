@@ -34,7 +34,7 @@ theorem branch_norm_iff (s : ℂ) (n : ℕ+) (D : ℕ) (phase : Fin D → Circle
     ‖(WithLp.toLp 2 (fun i => (phase i : ℂ) * heat s n) : EuclideanSpace ℂ (Fin D))‖ = 1 ↔
       conserves s n D := by
   rw [← sq_eq_sq₀ (norm_nonneg _) zero_le_one, EuclideanSpace.norm_sq_eq, one_pow]
-  simp only [WithLp.toLp_apply, norm_mul, Circle.norm_coe, one_mul, Finset.sum_const,
+  simp only [norm_mul, Circle.norm_coe, one_mul, Finset.sum_const,
     Finset.card_univ, Fintype.card_fin, nsmul_eq_mul, conserves]
 
 private theorem algebraic_prime_value (α : ℝ) {p D : ℕ} (hp : 0 < p)
@@ -178,8 +178,6 @@ theorem binary_ternary_resolution_iff (s : {z : ℂ // 0 < z.re ∧ z.re < 1}) :
       rw [conserves_iff_count, hs, show (2 : ℝ) * (1 / 2) = 1 by norm_num, Real.rpow_one]
     exact ⟨⟨_, fit 2⟩, ⟨_, fit 3⟩⟩
 
-#print axioms binary_ternary_resolution_iff
-
 /-- With unspecified multiplicities the dyadic probe alone has an off-line realization. -/
 theorem dyadic_three_outcomes :
     ∃ s : ℂ, 1/2 < s.re ∧ s.re < 1 ∧ conserves s 2 3 := by
@@ -196,11 +194,11 @@ theorem dyadic_three_outcomes :
   rw [conserves_iff_count, Complex.ofReal_re, show 2 * (α / 2) = α by ring]
   exact hv.symm
 
-#print axioms dyadic_three_outcomes
-
 #print axioms branch_norm_iff
 #print axioms three_prime_quantization
 #print axioms all_shells_quantization
 #print axioms strip_resolution_iff
+#print axioms binary_ternary_resolution_iff
+#print axioms dyadic_three_outcomes
 
 end GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas

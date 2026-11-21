@@ -286,10 +286,6 @@ def Cst.admitted (C : Cst) : Prop :=
 abbrev base (N : NumDatum) : Base :=
   { R := N.R, sc := N.sc, q := N.q, d := N.d, cls := N.cls, TT := N.TT, Sc := N.Sc, eta := N.eta }
 
-/-- The orbit component of Frobenius at a rational prime. -/
-def hHost {φ : WindowedLandauTheory.HC.Frame} (H : WindowedLandauTheory.HC.HostRaw φ) (p : ℕ) :
-    φ.A := ((arithOf H).frob p).2
-
 section Datum
 
 variable (N : NumDatum) (C : Cst)
@@ -345,9 +341,6 @@ def TTp (p : ℕ) : Finset (N.R.A) := TTAt N C (aZ N) (bZ N) p
 def vonMangoldtClassSum (p j : ℕ) (t : N.R.A) : ℝ := askAt N (aZ N) (bZ N) p j t
 
 def DGamM (N : NumDatum) : ℕ := minkM (2 * N.R.f * N.R.N N.R.m)
-
-def MinkowskiThm : Prop :=
-  ∀ (n : ℕ) (G : Subgroup (Matrix.GeneralLinearGroup (Fin n) ℤ)), Finite G → Nat.card G ∣ minkM n
 
 structure Lev (N : NumDatum) where
   Ws : Finset (Code N)

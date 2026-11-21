@@ -74,6 +74,7 @@ import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.HarmonicRuns.Condit
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.HarmonicRuns.RunLengthRate
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.FirstClockIndex.GaussianLaw
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.ShortTimeProducts.GaussianTransition
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.EmptyVisitFlux.CrossingWindows
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.HarmonicRuns.RecordRebound
 import GaloisForLFunctions.HTGeometry.Quantum.SpectralSignReturnClock
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.SharpOccupation.ClockObstruction

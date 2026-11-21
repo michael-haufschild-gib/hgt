@@ -115,6 +115,7 @@ theorem dirichlet_character_spec : DirCharSpec H := by
   rw [MulChar.ofUnitHom_coe, MonoidHom.coe_toHomUnits]
   rfl
 
+omit [Fintype H] [DecidableEq H] in
 lemma dirChar_unit {N : ℕ} (r : (ZMod N)ˣ →* Multiplicative (E0 × H)) (ψ : AddChar (E0 × H) ℂ) (u : (ZMod N)ˣ) :
     dirChar r ψ (u : ZMod N) = ψ (Multiplicative.toAdd (r u)) := (dirichlet_character_spec N r ψ).1 u
 

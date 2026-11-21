@@ -40,7 +40,7 @@ theorem channel_order_count (a b : ℕ+) :
 /-- Projection of the uniform residue wave onto the normalized constant vector of
 one order class gives exactly the corresponding two-copy coefficient. -/
 theorem uniform_order_projection (s : ℂ) (a b : ℕ+) :
-    (∑ j ∈ Finset.univ.filter (fun j : ZMod ((a * b : ℕ+) : ℕ) => addOrderOf j = (a : ℕ)),
+    (∑ _j ∈ Finset.univ.filter (fun j : ZMod ((a * b : ℕ+) : ℕ) => addOrderOf j = (a : ℕ)),
       heat s (a * b) / (Real.sqrt (a : ℕ).totient : ℂ)) = channel s (a * b) a := by
   rw [Finset.sum_const, nsmul_eq_mul, channel_order_count, channel]
   have hpos : 0 < ((a : ℕ).totient : ℝ) := by exact_mod_cast Nat.totient_pos.mpr a.pos
@@ -49,7 +49,7 @@ theorem uniform_order_projection (s : ℂ) (a b : ℕ+) :
   have hs : (Real.sqrt (a : ℕ).totient : ℂ) ^ 2 = (a : ℕ).totient := by
     exact_mod_cast Real.sq_sqrt hpos.le
   rw [← hs, div_eq_mul_inv]
-  field_simp [hn] <;> ring
+  field_simp [hn]
 
 theorem channel_norm_sq (s : ℂ) (n : ℕ+) (a : ℕ) :
     ‖channel s n a‖ ^ 2 = a.totient * ‖heat s n‖ ^ 2 := by

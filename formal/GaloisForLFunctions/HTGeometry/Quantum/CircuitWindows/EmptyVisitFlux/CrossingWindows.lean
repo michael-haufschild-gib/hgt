@@ -38,7 +38,6 @@ theorem entries_after_rate {I : Type*} [Fintype I] [DecidableEq I] (E : I â†’ â„
   rw [Finset.card_sdiff_of_subset hsub,Nat.cast_sub (Finset.card_le_card hsub)]
   dsimp only [C]
   field_simp [h0.ne',(sub_pos.mpr hT').ne']
-  ring
 
 /-- At the first robust near-Hilbert-budget crossing on the same actual
 draw, the limiting count per unit time of continuous empty-circuit entries
