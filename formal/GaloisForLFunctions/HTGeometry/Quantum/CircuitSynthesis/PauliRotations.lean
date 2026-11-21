@@ -33,7 +33,7 @@ private theorem rotate_short_word {n : ℕ} (hn : 2 ≤ n) (P : Fin n → Option
     let H := finitePauliSelfAdjointBasis (Fin n) P
     have hc : realPauliCoefficient H Q.val = 1 := by
       change (finitePauliSelfAdjointBasis (Fin n)).repr ((finitePauliSelfAdjointBasis (Fin n)) P) P = 1
-      simp
+      rw [Module.Basis.repr_self,Finsupp.single_eq_same]
     obtain ⟨z,hz,G,hG⟩ := exists_projective_twoQubitGate_eq_exp_twoLocalSkewGenerator hn H Q t
     refine ⟨z,hz,TwoQubitCircuit.singleOn _ _ (Q.coveringPair_distinct hn) G,le_rfl,?_⟩
     rw [TwoQubitCircuit.singleOn_eval]
@@ -96,7 +96,8 @@ theorem exists_projective_pauli_rotation_circuit {n : ℕ} (hn : 2 ≤ n)
         _ = (star V * V) * A * (star V * V) := by simp only [mul_assoc]
         _ = _ := by simp only [(Unitary.mem_iff.mp hV).1,one_mul,mul_one]
     change star V * (V * _ * star V) * V = star V * (z • (C.eval : Reg n)) * V at hback
-    simpa only [hcanc,Matrix.mul_smul,Matrix.smul_mul,mul_assoc] using hback
+    rw [hcanc] at hback
+    simpa only [Matrix.mul_smul,Matrix.smul_mul,mul_assoc] using hback
 
 #print axioms exists_projective_pauli_rotation_circuit
 end

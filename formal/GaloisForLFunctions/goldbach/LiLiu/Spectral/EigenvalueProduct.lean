@@ -28,14 +28,15 @@ theorem summable_eigenvalue_sq (hs : T.IsSymmetric) (hT : IsHilbertSchmidt T) :
   intro S
   have h := _root_.RHTower.sum_norm_sq_apply_le_hsNormSq hT
     (horth.comp (fun i : S => (i : EigenIndex T)) Subtype.val_injective)
-  simpa only [Function.comp_apply, he, Finset.sum_coe_sort] using h
+  rw [← Finset.sum_coe_sort S (fun i : EigenIndex T => i.1.1.re ^ 2)]
+  simpa only [Function.comp_apply, he] using h
 
 /-- Square summability of the normalized list, with every eigenspace counted in full. -/
 def scaledEigenvalues (hs : T.IsSymmetric) (hT : IsHilbertSchmidt T) (δ : ℝ) :
     lp (fun _ : EigenIndex T => ℝ) 2 :=
   ⟨fun i => i.1.1.re / δ, (memℓp_gen_iff (by norm_num)).mpr (by
-    simpa only [ENNReal.toReal_ofNat, Real.rpow_two, Real.norm_eq_abs, sq_abs, div_pow,
-      div_eq_mul_inv] using (summable_eigenvalue_sq hs hT).mul_right (δ ^ 2)⁻¹)⟩
+    simpa only [ENNReal.toReal_ofNat, Real.rpow_two, Real.norm_eq_abs, sq_abs,
+      div_eq_mul_inv, mul_pow, inv_pow] using (summable_eigenvalue_sq hs hT).mul_right (δ ^ 2)⁻¹)⟩
 
 theorem spectralProduct_differentiable (hs : T.IsSymmetric) (hT : IsHilbertSchmidt T) (δ : ℝ) :
     Differentiable ℂ (spectralProduct T δ) :=
