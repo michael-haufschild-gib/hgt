@@ -1,0 +1,31 @@
+import GaloisForLFunctions.WindowedLandauTheory.LandauZeroFreeBounds.ExceptionalZeroBounds.NativeLocalZeros
+import GaloisForLFunctions.WindowedLandauTheory.LandauZeroFreeBounds.ExceptionalZeroBounds.NativeNonReal
+import GaloisForLFunctions.WindowedLandauTheory.LandauZeroFreeBounds.ExceptionalZeroBounds.NativeRightBound
+import GaloisForLFunctions.WindowedLandauTheory.LandauZeroFreeBounds.ExceptionalZeroBounds.NativeTrivReal
+import GaloisForLFunctions.WindowedLandauTheory.LandauZeroFreeBounds.ExceptionalZeroBounds.Positivity
+import GaloisForLFunctions.WindowedLandauTheory.LandauZeroFreeBounds.ExceptionalZeroBounds.RealLargeTOf
+import GaloisForLFunctions.WindowedLandauTheory.LandauZeroFreeBounds.ExceptionalZeroBounds.RealSmallTOf
+import GaloisForLFunctions.WindowedLandauTheory.LandauZeroFreeBounds.ExceptionalZeroBounds.TrivLogDeriv
+import GaloisForLFunctions.WindowedLandauTheory.LandauZeroFreeBounds.ExceptionalZeroBounds.TwoRealOf
+import GaloisForLFunctions.WindowedLandauTheory.LandauZeroFreeBounds.ExceptionalZeroBounds.ZFRDirichletOf
+import GaloisForLFunctions.WindowedLandauTheory.ZeroFreeRegion.NativeZeroFreeRegion
+
+/-! A logarithmic zero-free region with at most one simple real Dirichlet zero. -/
+
+namespace WindowedLandauTheory.ZeroFreeDirichlet
+
+theorem realLargeT : RealLargeT :=
+  realCharZeroFreeLargeHeightOfBounds localZeros l_log_deriv_right negLogDerivPositivity
+    trivial_log_deriv_bound
+
+theorem realSmallT : RealSmallT :=
+  realCharZeroFreeSmallHeightOfBounds localZeros l_log_deriv_right negLogDerivPositivity realCharConj
+
+theorem twoReal : TwoReal :=
+  twoRealCharNoCommonZeroOfBounds localZeros l_log_deriv_right negLogDerivPositivity
+
+theorem zFRDirichlet : ZFRDirichlet :=
+  zeroFreeRegionExceptionalZeroOfBounds ZF.zeroFreeRegion trivialCharZerosOfZeta noZeroComplex
+    realLargeT realSmallT twoReal
+
+end WindowedLandauTheory.ZeroFreeDirichlet

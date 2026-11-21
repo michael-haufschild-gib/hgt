@@ -11,6 +11,7 @@ noncomputable section
 variable {I : Type*} [Fintype I] [DecidableEq I] [Nonempty I]
 private abbrev Mat (I : Type*) := Matrix I I ℂ
 local instance : CStarAlgebra (Mat I) where
+local instance : NormedAlgebra ℚ (Mat I) := .restrictScalars ℚ ℂ _
 
 /-- An observable with opposite, positive and negative endpoint
 expectations after centering moves a genuine unitary gate strictly
@@ -27,17 +28,21 @@ theorem spectral_descent (u : I → ℂ) (hu : Matrix.diagonal u ∈ unitary (Ma
   let V (t : ℝ) := exp (t • K)
   have hsk : K ∈ skewAdjoint (Mat I) := by
     rw [skewAdjoint.mem_iff,show star K=star Complex.I • star A from star_smul _ _]
-    simp [K,hA.eq]
+    rw [show star A=A from hA.eq]
+    simp [K]
   have hV (t) : V t ∈ unitary (Mat I) := exp_mem_unitary_of_mem_skewAdjoint (skewAdjoint.smul_mem t hsk)
   let j := Classical.choice (inferInstance : Nonempty I)
   letI : Nonempty (sphere (0 : EuclideanSpace ℂ I) 1) :=
     ⟨⟨PiLp.single 2 j (1:ℂ),mem_sphere_zero_iff_norm.mpr (by simp)⟩⟩
   have hr (t : ℝ) : ‖Φ (V t)-ContinuousLinearMap.id ℂ _-(t:ℂ) • Φ K‖ ≤ (‖K‖^2/2)*t^2 := by
     have hh : ‖V t-(1+t • K)‖ ≤ ‖K‖^2*|t|^2/2 := by
-      simpa only [V,cstarExponentialTaylor_one] using norm_exp_sub_cstarExponentialTaylor_le K hsk 1 t
+      simpa [V,cstarExponentialTaylor_one] using norm_exp_sub_cstarExponentialTaylor_le K hsk 1 t
     have he : Φ (V t)-ContinuousLinearMap.id ℂ _-(t:ℂ) • Φ K=Φ (V t-(1+t • K)) := by
-      rw [map_sub,map_add,map_one,←Complex.coe_smul t K,map_smul]
-      abel
+      have hone : Φ 1=ContinuousLinearMap.id ℂ _ := map_one Φ
+      have hscale : Φ (t • K)=(t:ℂ) • Φ K := by
+        rw [←Complex.coe_smul t K]
+        exact map_smul Φ (t:ℂ) K
+      rw [map_sub,map_add,hone,hscale,sub_add_eq_sub_sub]
     rw [he,Matrix.l2_opNorm_toEuclideanCLM]
     rw [sq_abs] at hh
     linarith only [hh]
@@ -55,7 +60,7 @@ theorem spectral_descent (u : I → ℂ) (hu : Matrix.diagonal u ∈ unitary (Ma
       intro v hv hzero
       have hz := (hm v hv).2 (hzero.trans hbase.symm)
       apply endpoint_variation u A a b hab hb hs hd haA hbA _ v hv (fun k hka hkb => hz k (hint k hka hkb))
-      exact (congrFun (congrFun hA.eq a) b).symm)
+      exact (hA.apply b a).symm)
   refine ⟨t,ht,?_⟩
   have he' : ‖Φ (Matrix.diagonal u-V t)‖ < ε := by rwa [map_sub]
   exact he'

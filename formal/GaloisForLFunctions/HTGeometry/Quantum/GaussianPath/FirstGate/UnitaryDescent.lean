@@ -39,14 +39,16 @@ theorem unitary_descent {E : Type*} [NormedAddCommGroup E] [InnerProductSpace �
       rw [hnorm,mul_one] at h
       exact h.trans (hrem t)
     have he : V t v.val=v.val+(t:ℂ) • K v.val+A v.val := by
-      simp only [A,ContinuousLinearMap.sub_apply,ContinuousLinearMap.id_apply,ContinuousLinearMap.smul_apply]
+      simp only [A,sub_apply,ContinuousLinearMap.id_apply,smul_apply]
       abel
     have hinner : (⟪U v.val,V t v.val⟫_ℂ).re =
         (⟪U v.val,v.val⟫_ℂ).re+t*g v+(⟪U v.val,A v.val⟫_ℂ).re := by
       rw [he,inner_add_right,inner_add_right,inner_smul_right]
-      simp only [g,Complex.add_re,Complex.ofReal_mul_re]
+      simp only [g,Complex.add_re,Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,zero_mul,sub_zero]
     apply (sq_lt_sq₀ (norm_nonneg _) hε.le).mp
-    rw [ContinuousLinearMap.sub_apply,norm_sub_sq (𝕜 := ℂ),hU,hV,hnorm,hinner]
+    rw [sub_apply,norm_sub_sq (𝕜 := ℂ),hU,hV,hnorm]
+    change 1^2-2*(⟪U v.val,V t v.val⟫_ℂ).re+1^2 < ε^2
+    rw [hinner]
     dsimp only [f] at hlin
     linarith only [hlin,(abs_le.mp hR).1,mul_pos hc ht]
   obtain ⟨w,_,hw⟩ := isCompact_univ.exists_isMaxOn (univ_nonempty : (univ : Set S).Nonempty)

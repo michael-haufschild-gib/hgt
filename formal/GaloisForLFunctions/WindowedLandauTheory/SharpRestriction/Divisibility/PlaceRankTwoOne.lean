@@ -113,7 +113,7 @@ structure Loc (D : D7) (X : DivX D) where
   ellIso_lat : ∀ τ, (ell τ).L = (idMul (idOf D τ (D.host.AA0 * ddEK D)) lieCK.L).map
       ((ellIso τ).toLinearMap.restrictScalars (𝓞 D.what₂.LL))
   ellIso_norm : ∀ τ v (z : lieCK.V),
-    WindowedLandauTheory.HermitianLatticeCounting.normAt (ell τ).b (ell τ).X v (ellIso τ z) = WindowedLandauTheory.HermitianLatticeCounting.normAt lieCK.b lieCK.X v z
+    WindowedLandauTheory.HermitianLatticesTheory.normAt (ell τ).b (ell τ).X v (ellIso τ z) = WindowedLandauTheory.HermitianLatticesTheory.normAt lieCK.b lieCK.X v z
 
   ell_Om : ∀ τ, D.gx.logOmMean τ = (ell τ).mu
 

@@ -40,6 +40,7 @@ import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.Delay
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.FirstWaitTails
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.FirstReturnBands
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.WeakBonds.FixedRadius
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.WeakBonds.RelativeMoment
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.WeakBonds.NearDiagonalLaw
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.GaussianPlateau
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.Detuning.CircuitDeadline
@@ -69,6 +70,7 @@ import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PassageMoments.Positi
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PassageMoments.ScaleComparison
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.UntouchedSites.FiniteWindows
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrecisionReturns.GaussianLaw
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.TransverseReturns.FirstWaitSeparation
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.AdaptiveSampling.ReturnWindows
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.HarmonicRuns.ConditionalEscape
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.HarmonicRuns.RunLengthRate

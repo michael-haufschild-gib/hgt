@@ -65,8 +65,8 @@ def PeterssonBoundAtEmbedding (D : D7) (Z : DivX D) (A : AmbForm D (RowSide.shar
     D.jEE x = D.what₂.iota D.what₂.mu0 (A.jAmb D.what₂.mu0 q) →
     Z.kapR s * Real.exp (⨅ σ : Fin D.what₂.Drows, ∑ j ∈ SizeData₂.lifts D, Z.logLam j (D.what₂.ft σ) s) *
         qn A (InfinitePlace.mk s) q ^ 2 ≤
-      WindowedLandauTheory.HermitianLatticeCounting.normAt D.div.RR.b D.div.RR.X (InfinitePlace.mk s) x ^ 2 ∧
-    WindowedLandauTheory.HermitianLatticeCounting.normAt D.div.RR.b D.div.RR.X (InfinitePlace.mk s) x ^ 2 ≤
+      WindowedLandauTheory.HermitianLatticesTheory.normAt D.div.RR.b D.div.RR.X (InfinitePlace.mk s) x ^ 2 ∧
+    WindowedLandauTheory.HermitianLatticesTheory.normAt D.div.RR.b D.div.RR.X (InfinitePlace.mk s) x ^ 2 ≤
       Z.kapR s * Real.exp (⨆ σ : Fin D.what₂.Drows, ∑ j ∈ SizeData₂.lifts D, Z.logLam j (D.what₂.ft σ) s) *
         qn A (InfinitePlace.mk s) q ^ 2
 
@@ -181,7 +181,7 @@ theorem all_embeddings_of_bounds {D : D7} {Z : DivX D} {A : AmbForm D (RowSide.s
       · rw [he]
       · rw [he]
         exact hLC c s j hj
-    have hmet : WindowedLandauTheory.HermitianLatticeCounting.normAt D.div.RR.b D.div.RR.X (InfinitePlace.mk s) x ^ 2 =
+    have hmet : WindowedLandauTheory.HermitianLatticesTheory.normAt D.div.RR.b D.div.RR.X (InfinitePlace.mk s) x ^ 2 =
         ∑ c, Z.kapR s * Real.exp (∑ j ∈ SizeData₂.lifts D, logLamC E j c s) *
           qn A (InfinitePlace.mk s) (qs c) ^ 2 := by
       rw [← hxs, hm (InfinitePlace.mk s) hs xs qs (fun c => (hpart c).1.1) (fun c => (hpart c).2)

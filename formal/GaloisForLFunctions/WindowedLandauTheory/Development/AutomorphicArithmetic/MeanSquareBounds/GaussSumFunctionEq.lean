@@ -1,4 +1,5 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.MeanSquareBounds.Thin
+import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.MeanSquareBounds.realCond
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.CharacterBoxes.PairGood
 
 /-! The thin-scale cancellation bound for the characters of a host. -/

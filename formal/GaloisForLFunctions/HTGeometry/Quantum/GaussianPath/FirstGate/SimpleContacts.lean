@@ -36,8 +36,7 @@ theorem ae_avoids_tie {m D : ℕ} (P : Fin m → Matrix (Fin D) (Fin D) ℂ)
     have hne : w≠0 := by
       intro he
       have he' := congrFun he c
-      simp only [w,if_pos rfl,if_neg ha,if_neg hb,sub_zero,add_zero,Pi.zero_apply,Int.cast_eq_zero] at he'
-      exact hz he'
+      exact hz (by simpa [w,ha,hb] using he')
     filter_upwards [ae_no_fixed_real_relation P hs w hw hne] with θ hθ _ _ _ e hi hr he
     apply hθ e hi hr
     have hsum : ∑ i, w i*e i = (z:ℝ)*(e c-e a)-((l:ℝ)+r)*(e b-e a) := by

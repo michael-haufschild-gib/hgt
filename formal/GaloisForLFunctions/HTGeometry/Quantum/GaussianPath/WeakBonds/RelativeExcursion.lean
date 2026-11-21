@@ -6,14 +6,23 @@ namespace GaloisForLFunctions.HTGeometry.WeakBonds
 open PrescribedTimes
 noncomputable section
 
-private theorem retained_norm_one {n : ℕ} (a b : Fin (n+1)) (x : PrefixIndex n → ℝ)
+private theorem retained_value {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (S : Finset ι) (B : Set ℝ) (x : ι → ℝ) (hx : x ∈ retainedSector S B)
+    (i : ι) (hi : i ∉ S) : x i ∈ B := by
+  have h := hx i (mem_univ i)
+  change x i ∈ (if i ∈ S then univ else B) at h
+  rwa [if_neg hi] at h
+
+/-- An uncut onsite coefficient in [1,2] keeps the full coupling norm at least one. -/
+theorem retained_coefficient_norm {n : ℕ} (a b : Fin (n+1)) (x : PrefixIndex n → ℝ)
     (hx : x ∈ retainedSector (cutSet a b) (Icc 1 2)) : 1 ≤ coefficientNorm x := by
   let site : Fin (n+2) × Fin 3 := (0,0)
-  let i := (pathCoeffEquiv n).symm (Sum.inl site)
-  have h := hx i (mem_univ i)
-  change x i ∈ (if i ∈ cutSet a b then univ else Icc (1:ℝ) 2) at h
-  rw [if_neg (onsite_not_in_cutSet a b site)] at h
-  exact h.1.trans ((le_abs_self _).trans (abs_coord_le_norm (WithLp.toLp 2 x) i))
+  let i : PrefixIndex n := (pathCoeffEquiv n).symm (Sum.inl site)
+  have h : x i ∈ Icc (1:ℝ) 2 :=
+    retained_value (cutSet a b) (Icc 1 2) x hx i (onsite_not_in_cutSet a b site)
+  have hnorm : x i ≤ ‖(WithLp.toLp 2 x : EuclideanSpace ℝ (PrefixIndex n))‖ :=
+    (le_abs_self (x i)).trans (abs_coord_le_norm (WithLp.toLp 2 x) i)
+  exact h.1.trans hnorm
 
 /-- The shorter of the true first crossing time and its first subsequent
 half-budget wait, in the unit set by the spectral entry flux. -/
@@ -47,10 +56,53 @@ private theorem relative_lower {n P : ℕ} {x : PrefixIndex n → ℝ} {b T : �
     _ = (b*q)*J (q • x) := by rw [mul_assoc,hj]
     _ ≤ _ := mul_le_mul_of_nonneg_right hrate hz.le
 
-/-- At fixed physical error 1/10, no bounded multiple of the true mean
-spacing bounds the first excursion on a full-measure set of draws. The
-same positive-probability exceptions work at every positive radial
-normalization. The constant depends on the prefix. -/
+private theorem retained_to_flux {n P : ℕ} (a b : Fin (n+1)) {β T : ℝ}
+    (hβ : 0 < β) (ht : 0 < T)
+    (hfloor : ∀ x : PrefixIndex n → ℝ, β*coefficientNorm x ≤ emptyRate n (1/10) x)
+    (x : PrefixIndex n → ℝ) (hx : x ∈ retainedSector (cutSet a b) (Icc 1 2))
+    (hw : (1+1/β)*T < min (crossingOrigin n P (9/80) x) (crossingWait n P (P/2) x)) :
+    T < fluxExcursion n P x ∧ ∀ r > (0:ℝ), T < fluxExcursion n P (atRadius r x) := by
+  have hn : 1 ≤ coefficientNorm x := retained_coefficient_norm (n := n) a b x hx
+  have hf (q : ℝ) (hq : 0 < q) : T < fluxExcursion n P (q • x) :=
+    relative_lower (n := n) (P := P) (x := x) hβ hfloor hn ht hw hq
+  refine ⟨by simpa only [one_smul] using hf 1 zero_lt_one,fun r hr => ?_⟩
+  exact hf _ (div_pos hr (zero_lt_one.trans_le hn))
+
+private theorem rescale_survival {X : Type*} [MeasurableSpace X] (μ : Measure X) [IsFiniteMeasure μ]
+    (Q : Set X) (J : X → ℝ) (F : ℝ → Set X) {c β : ℝ} (hc : 0 < c) (hβ : 0 < β)
+    (h : ∀ v ≥ (1:ℝ), c ≤ v^18*μ.real {x | x∈Q ∧ v*(1/1800) < J x})
+    (hf : ∀ T > (0:ℝ), ∀ x ∈ Q, (1+1/β)*T < J x → x ∈ F T) :
+    ∃ b > (0:ℝ), ∀ T ≥ (1:ℝ), b ≤ T^18*μ.real (F T) := by
+  let L := 1800*(1+1/β)
+  have hL : 1≤L := by dsimp only [L]; linarith only [one_div_pos.mpr hβ]
+  refine ⟨c/L^18,div_pos hc (pow_pos (zero_lt_one.trans_le hL) _),?_⟩
+  intro T ht
+  have hv := one_le_mul_of_one_le_of_one_le hL ht
+  have he : (L*T)*(1/1800)=(1+1/β)*T := by dsimp only [L]; ring
+  have hsub : {x | x∈Q ∧ (L*T)*(1/1800) < J x} ⊆ F T :=
+    fun x hx => hf T (zero_lt_one.trans_le ht) x hx.1 (he ▸ hx.2)
+  have hm := measureReal_mono (μ := μ) hsub (measure_ne_top _ _)
+  have hh := (h (L*T) hv).trans (mul_le_mul_of_nonneg_left hm (pow_nonneg (zero_le_one.trans hv) 18))
+  rw [mul_pow] at hh
+  apply (div_le_iff₀ (pow_pos (zero_lt_one.trans_le hL) 18)).mpr
+  linarith only [hh]
+
+private theorem retained_tail {n P : ℕ} (a b : Fin (n+1)) (μ : Measure (PrefixIndex n → ℝ))
+    [IsFiniteMeasure μ] {c : ℝ} (hc : 0 < c)
+    (h : ∀ v ≥ (1:ℝ), c ≤ v^18*μ.real {x | x ∈ retainedSector (cutSet a b) (Icc 1 2) ∧
+      v*(1/1800) < min (crossingOrigin n P (9/80) x) (crossingWait n P (P/2) x)}) :
+    ∃ c' > (0:ℝ), ∀ T ≥ (1:ℝ), c' ≤ T^18*μ.real {x |
+      T < fluxExcursion n P x ∧ ∀ r > (0:ℝ), T < fluxExcursion n P (atRadius r x)} := by
+  have hs : (1/10:ℝ) < sqrt 2 := by nlinarith only [sq_sqrt (by norm_num : (0:ℝ)≤2),sqrt_nonneg 2]
+  obtain ⟨hβ,hfloor⟩ := coefficient_rate_floor n (1/10) (by norm_num) hs
+  exact rescale_survival μ (retainedSector (cutSet a b) (Icc 1 2))
+    (fun x => min (crossingOrigin n P (9/80) x) (crossingWait n P (P/2) x))
+    (fun T => {x | T < fluxExcursion n P x ∧ ∀ r > (0:ℝ), T < fluxExcursion n P (atRadius r x)})
+    hc hβ h (fun _ ht => retained_to_flux a b hβ ht hfloor)
+
+/-- At fixed physical error 1/10, the true first excursion divided by the
+mean empty-entry spacing has a power-law lower tail. The same exceptional
+draws work at every positive radial normalization. -/
 theorem gaussian_relative_first_excursion_tail :
     ∀ᶠ k : ℕ in atTop,
       let n := k+1
@@ -61,37 +113,11 @@ theorem gaussian_relative_first_excursion_tail :
   filter_upwards [gaussian_two_weak_bonds_joint_survival] with k hg
   intro n P μ
   obtain ⟨a,b,_,h⟩ := hg
-  let bulk := Icc (1:ℝ) 2
-  let c := (2*gaussianDensityFloor)^18*(gaussianReal 0 1).real bulk^(cutSet a b)ᶜ.card
-  have hp : 0 < (gaussianReal 0 1).real bulk :=
+  have hp : 0 < (gaussianReal 0 1).real (Icc (1:ℝ) 2) :=
     ENNReal.toReal_pos (gaussianReal_Icc_pos (by norm_num : (1:ℝ) < 2)).ne' (measure_ne_top _ _)
-  have hc : 0 < c := mul_pos (pow_pos (mul_pos zero_lt_two gaussianDensityFloor_pos) _) (pow_pos hp _)
-  let D : ℕ := 2^(n+2)
-  let β := (SharpOccupation.physicalArc (1/10))^(D-2)*(D:ℝ)^2/(4*π*(Fintype.card (PathLabel n):ℝ))
-  have hs : (1/10:ℝ) < sqrt 2 := by nlinarith only [Real.sq_sqrt (by norm_num : (0:ℝ)≤2),Real.sqrt_nonneg 2]
-  obtain ⟨hβ,hfloor⟩ := coefficient_rate_floor n (1/10) (by norm_num) hs
-  change 0 < β at hβ
-  let L := 1800*(1+1/β)
-  have hL : 1≤L := by dsimp only [L]; linarith only [one_div_pos.mpr hβ]
-  refine ⟨c/L^18,div_pos hc (pow_pos (zero_lt_one.trans_le hL) _),?_⟩
-  intro T ht
-  have hv : 1 ≤ L*T := one_le_mul_of_one_le_of_one_le hL ht
-  have htail := h bulk measurableSet_Icc (P/2) le_rfl (L*T) hv
-  let F := {x : PrefixIndex n → ℝ | T < fluxExcursion n P x ∧
-    ∀ r > (0:ℝ), T < fluxExcursion n P (atRadius r x)}
-  have hsub : {x | x ∈ retainedSector (cutSet a b) bulk ∧
-      (L*T)*(1/1800) < min (crossingOrigin n P (9/80) x) (crossingWait n P (P/2) x)} ⊆ F := by
-    rintro x ⟨hx,hw⟩
-    have hn := retained_norm_one a b x hx
-    rw [show (L*T)*(1/1800)=(1+1/β)*T by dsimp only [L]; ring] at hw
-    have hf := fun (q : ℝ) (hq : 0 < q) => relative_lower hβ hfloor hn (zero_lt_one.trans_le ht) hw hq
-    refine ⟨by simpa only [one_smul] using hf 1 zero_lt_one,fun r hr => ?_⟩
-    exact hf _ (div_pos hr (zero_lt_one.trans_le hn))
-  apply (div_le_iff₀ (pow_pos (zero_lt_one.trans_le hL) 18)).mpr
-  have hh := htail.trans (mul_le_mul_of_nonneg_left (measureReal_mono (μ := μ) hsub (measure_ne_top _ _)) (pow_nonneg (zero_le_one.trans hv) _))
-  rw [mul_pow] at hh
-  change c ≤ (T^18*μ.real F)*L^18
-  linarith only [hh]
+  exact retained_tail (n := k+1) (P := P) a b μ
+    (mul_pos (pow_pos (mul_pos zero_lt_two gaussianDensityFloor_pos) _) (pow_pos hp _))
+    (fun v hv => h (Icc 1 2) measurableSet_Icc (P/2) le_rfl v hv)
 
 #print axioms gaussian_relative_first_excursion_tail
 end

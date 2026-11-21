@@ -24,7 +24,7 @@ theorem energy_from_local_expectations {n : ℕ} (u : PathShell n) :
   rw [pathHamiltonian_eq_sum,Finset.mul_sum,Finset.sum_mul] at h
   have he := congrArg (fun B : Register (n+2) => (B i i).re) h
   simpa only [D,Matrix.diagonal_apply_eq,Matrix.mul_smul,Matrix.smul_mul,Matrix.sum_apply,Matrix.smul_apply,
-    smul_eq_mul,Complex.re_sum,Complex.ofReal_re,Complex.ofReal_mul_re] using he
+    smul_eq_mul,Complex.re_sum,Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,zero_mul,sub_zero] using he
 
 /-- A difference of energies forces a distinct first-order response to at
 least one physical single-gate direction. -/

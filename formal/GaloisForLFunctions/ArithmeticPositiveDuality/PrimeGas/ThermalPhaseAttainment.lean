@@ -33,17 +33,17 @@ private theorem half_sq (β : TraceTemperature) (n : ℕ+) : ‖halfHeat β n‖
   congr 1
   ring
 
-private theorem weight_summable (β : TraceTemperature) : Summable (thermalWeight β) :=
+theorem thermalWeight_summable (β : TraceTemperature) : Summable (thermalWeight β) :=
   (summable_half β).congr (half_sq β)
 
-private theorem weight_pos (β : TraceTemperature) (n : ℕ+) : 0 < thermalWeight β n := Real.exp_pos _
+theorem thermalWeight_pos (β : TraceTemperature) (n : ℕ+) : 0 < thermalWeight β n := Real.exp_pos _
 
 private theorem half_product (β : TraceTemperature) (n : ℕ+) :
     halfHeat β n * halfHeat β n = (thermalWeight β n : ℂ) := by
   rw [halfHeat, ← heat_add, add_halves, heat, thermalWeight, Complex.ofReal_exp, Complex.ofReal_mul,
     Complex.ofReal_neg]
 
-private theorem weight_partition (β : TraceTemperature) :
+theorem thermalWeight_partition (β : TraceTemperature) :
     ((∑' n, thermalWeight β n : ℝ) : ℂ) = riemannZeta β.val := by
   rw [← partition_eq_zeta ⟨(β.val : ℂ), β.2⟩, gibbsOperator,
     HilbertSchmidt.opTrace_diagOp_comp, Complex.ofReal_tsum]
@@ -71,15 +71,15 @@ theorem thermalPhaseOperator_trace (β : TraceTemperature) (u : ℕ+ → Circle)
   rw [thermalPhaseOperator, HilbertSchmidt.opTrace_diagOp_comp]
   exact tsum_congr fun n => by rw [mul_assoc, half_product]
 
-private theorem summable_twist (β : TraceTemperature) (u : ℕ+ → Circle) :
+theorem thermalWeight_twist_summable (β : TraceTemperature) (u : ℕ+ → Circle) :
     Summable (fun n => (u n : ℂ)*(thermalWeight β n : ℂ)) := by
   apply Summable.of_norm
   simpa only [norm_mul, Circle.norm_coe, one_mul, Complex.norm_real, Real.norm_eq_abs,
-    abs_of_pos (weight_pos β _)] using weight_summable β
+    abs_of_pos (thermalWeight_pos β _)] using thermalWeight_summable β
 
 theorem thermalReading_eq (β : TraceTemperature) (u : ℕ+ → Circle) :
     thermalReading β u = ∑' n, thermalWeight β n * (u n : ℂ).re := by
-  rw [thermalReading, thermalPhaseOperator_trace, Complex.re_tsum (summable_twist β u)]
+  rw [thermalReading, thermalPhaseOperator_trace, Complex.re_tsum (thermalWeight_twist_summable β u)]
   exact tsum_congr fun n => by simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im,
     mul_zero, sub_zero, mul_comm]
 
@@ -89,11 +89,11 @@ def clockReading (β : TraceTemperature) (χ : ℕ+ →* Circle) (t : ℝ) :=
 
 private theorem partition_re (β : TraceTemperature) :
     (riemannZeta β.val).re = ∑' n, thermalWeight β n :=
-  (congrArg Complex.re (weight_partition β)).symm
+  (congrArg Complex.re (thermalWeight_partition β)).symm
 
 private theorem summable_real_twist (β : TraceTemperature) (u : ℕ+ → Circle) :
     Summable (fun n => thermalWeight β n * (u n : ℂ).re) := by
-  apply (Complex.hasSum_re (summable_twist β u).hasSum).summable.congr
+  apply (Complex.hasSum_re (thermalWeight_twist_summable β u).hasSum).summable.congr
   intro n
   simp only [Complex.mul_re, Complex.ofReal_re, Complex.ofReal_im, mul_zero, sub_zero, mul_comm]
 
@@ -101,8 +101,8 @@ private theorem circle_distance (a b : Circle) :
     dist a b ^ 2 = 2 * (1 - ((a/b : Circle) : ℂ).re) := by
   have h : (a : ℂ) - (b : ℂ) = (((a/b : Circle) : ℂ)-1) * (b : ℂ) := by
     rw [sub_mul, one_mul, ← Circle.coe_mul, div_mul_cancel]
-  change ‖(a : ℂ)-(b : ℂ)‖ ^ 2 = _
-  rw [h, norm_mul, Circle.norm_coe, mul_one, ← Complex.normSq_eq_norm_sq]
+  change dist (a : ℂ) (b : ℂ) ^ 2 = _
+  rw [dist_eq_norm, h, norm_mul, Circle.norm_coe, mul_one, ← Complex.normSq_eq_norm_sq]
   have hz := Circle.normSq_coe (a/b)
   simp only [Complex.normSq_apply, Complex.sub_re, Complex.one_re, Complex.sub_im,
     Complex.one_im, sub_zero] at hz ⊢
@@ -114,12 +114,15 @@ theorem relative_phase_defect (β : TraceTemperature) (u v : ℕ+ → Circle) :
       (2 * ((riemannZeta β.val).re - thermalReading β (fun n => u n / v n))) := by
   let r (n : ℕ+) := u n / v n
   rw [partition_re, thermalReading_eq]
-  have h := ((weight_summable β).hasSum.sub (summable_real_twist β r).hasSum).mul_left 2
-  convert h using 1
-  funext n
-  rw [circle_distance]
-  dsimp only [r]
-  ring
+  have h := ((thermalWeight_summable β).hasSum.sub (summable_real_twist β r).hasSum).mul_left 2
+  have eqfun : (fun n => thermalWeight β n * dist (u n) (v n)^2) =
+      (fun n => 2 * (thermalWeight β n - thermalWeight β n * (r n : ℂ).re)) := by
+    funext n
+    rw [circle_distance]
+    dsimp only [r]
+    ring
+  rw [eqfun]
+  exact h
 
 theorem thermal_defect_hasSum (β : TraceTemperature) (χ : ℕ+ →* Circle) (t : ℝ) :
     HasSum (fun n => thermalWeight β n * dist (χ n) (clockPhase t n)^2)
@@ -132,13 +135,13 @@ theorem shell_phase_defect_le (β : TraceTemperature) (χ : ℕ+ →* Circle) (t
       2 * ((riemannZeta β.val).re - clockReading β χ t) := by
   have hs := thermal_defect_hasSum β χ t
   rw [← hs.tsum_eq]
-  exact hs.summable.le_tsum n (fun k _ => mul_nonneg (weight_pos β k).le (sq_nonneg _))
+  exact hs.summable.le_tsum n (fun k _ => mul_nonneg (thermalWeight_pos β k).le (sq_nonneg _))
 
 theorem clockReading_le_zeta (β : TraceTemperature) (χ : ℕ+ →* Circle) (t : ℝ) :
     clockReading β χ t ≤ (riemannZeta β.val).re := by
   have h := (thermal_defect_hasSum β χ t).tsum_eq
   have hz : 0 ≤ ∑' n, thermalWeight β n * dist (χ n) (clockPhase t n)^2 :=
-    tsum_nonneg (fun n => mul_nonneg (weight_pos β n).le (sq_nonneg _))
+    tsum_nonneg (fun n => mul_nonneg (thermalWeight_pos β n).le (sq_nonneg _))
   linarith
 
 private theorem reading_eq_iff (β : TraceTemperature) (u v : ℕ+ → Circle) :
@@ -149,9 +152,9 @@ private theorem reading_eq_iff (β : TraceTemperature) (u v : ℕ+ → Circle) :
     have hsum := hs.tsum_eq
     rw [ht, sub_self, mul_zero] at hsum
     funext n
-    have hle := hs.summable.le_tsum n (fun i _ => mul_nonneg (weight_pos β i).le (sq_nonneg _))
+    have hle := hs.summable.le_tsum n (fun i _ => mul_nonneg (thermalWeight_pos β i).le (sq_nonneg _))
     rw [hsum] at hle
-    have hz := nonpos_of_mul_nonpos_right hle (weight_pos β n)
+    have hz := nonpos_of_mul_nonpos_right hle (thermalWeight_pos β n)
     exact dist_eq_zero.mp (sq_eq_zero_iff.mp (le_antisymm hz (sq_nonneg _)))
   · rintro rfl
     rw [thermalReading_eq, partition_re]
@@ -171,7 +174,7 @@ theorem thermal_trace_norm_eq_iff (β : TraceTemperature) (u : ℕ+ → Circle) 
   let z := ContinuousLinearMap.opTrace (thermalPhaseOperator β u)
   have hB : 0 < B := by
     rw [show B = ∑' n, thermalWeight β n from partition_re β]
-    exact (weight_pos β 1).trans_le ((weight_summable β).le_tsum 1 (fun n _ => (weight_pos β n).le))
+    exact (thermalWeight_pos β 1).trans_le ((thermalWeight_summable β).le_tsum 1 (fun n _ => (thermalWeight_pos β n).le))
   have rotate (a : Circle) : ContinuousLinearMap.opTrace (thermalPhaseOperator β (fun n => u n / a)) =
       z / (a : ℂ) := by
     unfold z
@@ -186,7 +189,9 @@ theorem thermal_trace_norm_eq_iff (β : TraceTemperature) (u : ℕ+ → Circle) 
       apply (div_eq_iff (Circle.coe_ne_zero a)).mpr
       change z = (B : ℂ) * (z / (B : ℂ))
       field_simp [Complex.ofReal_ne_zero.mpr hB.ne']
-    have hu := (reading_eq_iff β u (fun _ => a)).mp (congrArg Complex.re ((rotate a).trans he))
+    have eqc := (rotate a).trans he
+    have hre := congrArg Complex.re eqc
+    have hu := (reading_eq_iff β u (fun _ => a)).mp hre
     exact fun n => (congrFun hu n).trans (congrFun hu 1).symm
   · intro hu
     have hconst : (fun n => u n / u 1) = (fun _ => (1 : Circle)) := by
@@ -206,7 +211,7 @@ theorem clock_trace_norm_eq_zeta_iff (β : TraceTemperature) (χ : ℕ+ →* Cir
       (riemannZeta β.val).re ↔ χ = clockPhase t := by
   rw [thermal_trace_norm_eq_iff]
   simp only [map_one, div_one, div_eq_one]
-  exact ⟨MonoidHom.ext, fun h n => DFunLike.congr_fun h n⟩
+  exact ⟨fun h => MonoidHom.ext h, fun h n => DFunLike.congr_fun h n⟩
 
 /-- A single trace-class temperature suffices to test the energy-continuity law. -/
 theorem thermal_attainment_iff (β : TraceTemperature) (χ : ℕ+ →* Circle) :
@@ -244,16 +249,17 @@ private def torusReading (β : TraceTemperature) (χ : ℕ+ →* Circle) (ω : N
 
 private theorem continuous_torusReading (β : TraceTemperature) (χ : ℕ+ →* Circle) :
     Continuous (torusReading β χ) := by
-  simp only [torusReading, thermalReading_eq]
-  apply continuous_tsum (u := thermalWeight β) _ (weight_summable β)
+  change Continuous (fun ω => thermalReading β (fun n => χ n * primeProductPhase ω n))
+  simp only [thermalReading_eq]
+  refine continuous_tsum (u := thermalWeight β) ?_ (thermalWeight_summable β) ?_
   · intro n
     exact continuous_const.mul (Complex.continuous_re.comp (continuous_subtype_val.comp
       (continuous_const.mul (continuous_primeProductPhase n))))
   · intro n ω
-    rw [norm_mul, Real.norm_eq_abs, abs_of_pos (weight_pos β n), Real.norm_eq_abs]
+    rw [norm_mul, Real.norm_eq_abs, abs_of_pos (thermalWeight_pos β n), Real.norm_eq_abs]
     have hz := Complex.abs_re_le_norm (χ n * primeProductPhase ω n : Circle)
     rw [Circle.norm_coe] at hz
-    simpa only [mul_one] using mul_le_mul_of_nonneg_left hz (weight_pos β n).le
+    simpa only [mul_one] using mul_le_mul_of_nonneg_left hz (thermalWeight_pos β n).le
 
 private theorem torusReading_at_inverse (β : TraceTemperature) (χ : ℕ+ →* Circle) :
     torusReading β χ (fun p : Nat.Primes => χ⁻¹ (p : ℕ+)) = (riemannZeta β.val).re := by
@@ -301,7 +307,11 @@ theorem clockReading_near_zeta_positive_density (β : TraceTemperature) (χ : �
       volume ({t | (riemannZeta β.val).re - ε < clockReading β χ t} ∩ Icc 0 T) := by
   let U := {ω | (riemannZeta β.val).re - ε < torusReading β χ ω}
   have hU : IsOpen U := isOpen_lt continuous_const (continuous_torusReading β χ)
-  have hn : U.Nonempty := ⟨_, (torusReading_at_inverse β χ).symm ▸ sub_lt_self _ hε⟩
+  have hn : U.Nonempty := by
+    refine ⟨fun p => χ⁻¹ (p : ℕ+), ?_⟩
+    change _ < torusReading β χ _
+    rw [torusReading_at_inverse]
+    exact sub_lt_self _ hε
   have hset : circlePhaseFlow _root_.RHTower.primeFrequency ⁻¹' U =
       {t | (riemannZeta β.val).re - ε < clockReading β χ t} := by
     ext t

@@ -25,7 +25,7 @@ theorem compact_contact_margin {X : Type*} [TopologicalSpace X] [CompactSpace X]
   have hmono : Monotone U := by
     intro i j hij v hv
     have h := mul_le_mul_of_nonneg_right (Nat.cast_le.mpr hij : (i:ℝ)≤j) (hn v)
-    exact lt_of_lt_of_le hv (add_le_add_right h _)
+    exact lt_of_lt_of_le hv (add_le_add h le_rfl)
   obtain ⟨A,hA⟩ := isCompact_univ.elim_directed_cover U hopen hcover hmono.directed_le
   let F := fun v => (A:ℝ)*f v+g v
   obtain ⟨w,_,hw⟩ := isCompact_univ.exists_isMinOn (univ_nonempty : (univ : Set X).Nonempty)

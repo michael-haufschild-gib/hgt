@@ -18,7 +18,7 @@ def UL (A : AmbForm D (RowSide.sharp D)) : Set (A.MtH D.what₂.mu0).V :=
   {u | A.jAmb D.what₂.mu0 u ∈ (RowSide.sharp D).Usp D.what₂.mu0}
 
 def quotNorm (A : AmbForm D (RowSide.sharp D)) (v : InfinitePlace D.what₂.LL) (x : (A.MtH D.what₂.mu0).V) : ℝ :=
-  ⨅ u : UL A, WindowedLandauTheory.HermitianLatticeCounting.normAt (A.MtH D.what₂.mu0).b (A.MtH D.what₂.mu0).X v (x + u)
+  ⨅ u : UL A, WindowedLandauTheory.HermitianLatticesTheory.normAt (A.MtH D.what₂.mu0).b (A.MtH D.what₂.mu0).X v (x + u)
 
 end DV
 
@@ -53,7 +53,7 @@ def RRMetricDef (D : D7) (X : DivX D) (A : AmbForm D (RowSide.sharp D)) (E : Eig
       (∀ c, A.jAmb D.what₂.mu0 (q c) ∈ (RowSide.sharp D).V0 D.what₂.mu0) →
       (∀ c, D.jEE (x c) = (RowSide.sharp D).iota D.what₂.mu0 (A.jAmb D.what₂.mu0 (q c))) →
       (∀ c, D.jEE (x c) ∈ DV.EEcpart D E c) →
-        WindowedLandauTheory.HermitianLatticeCounting.normAt D.div.RR.b D.div.RR.X v (∑ c, x c) ^ 2 =
+        WindowedLandauTheory.HermitianLatticesTheory.normAt D.div.RR.b D.div.RR.X v (∑ c, x c) ^ 2 =
           ∑ c, X.kapR v.embedding * Real.exp (∑ j ∈ SizeData₂.lifts D, DV.logLamC E j c v.embedding) *
             DV.quotNorm A v (q c) ^ 2
 

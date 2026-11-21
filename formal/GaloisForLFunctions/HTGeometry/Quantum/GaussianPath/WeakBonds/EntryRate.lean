@@ -46,13 +46,15 @@ theorem coefficient_rate_floor (n : ℕ) (ε : ℝ) (hε : 0 < ε) (hr : ε < sq
         (Finset.sum_sq_le_sq_sum_of_nonneg (s := Finset.univ) (f := fun i => |x i|) (fun _ _ => abs_nonneg _))⟩
   have hgap := FluxOccupation.path_pair_turn_lower u
   rw [hmass] at hgap
-  rw [emptyRate,he]
+  let R (H : selfAdjoint (Register (n+2))) := pairTurnRate (fun j => -H.2.isHermitian.eigenvalues j)
+  change b*coefficientNorm x ≤ (physicalArc ε)^(D-2)*R (prefixGenerator n x)
+  rw [he]
   apply (mul_le_mul_of_nonneg_left hnorm hb.le).trans
   dsimp only [b]
   rw [div_mul_eq_mul_div,div_le_iff₀ hden]
   calc
     _ = (physicalArc ε)^(D-2)*((D:ℝ)^2*M) := by ring
-    _ ≤ _ := (mul_le_mul_of_nonneg_left hgap hpow.le).trans_eq (by ring)
+    _ ≤ _ := (mul_le_mul_of_nonneg_left hgap hpow.le).trans_eq (by dsimp only [R,D,J]; ring)
 
 /-- The rate is the limiting count of distinct continuous entries for the
 same finite-dimensional Gaussian law used by the first-wait statistics. -/

@@ -8,7 +8,7 @@ noncomputable section
 open PrecisionReturns
 
 private theorem separate_waits {u v : ℝ → ℝ} {d : ℕ} {B K b : ℝ}
-    (hB : 0 < B) (hK : 0 < K) (hd : (d:ℝ) < 2*b)
+    (hB : 0 < B) (hd : (d:ℝ) < 2*b)
     (hu : ∀ ε ∈ Ioc 0 B, 0≤u ε ∧ 0≤v ε ∧ (u ε)^2*ε^d ≤ K)
     (hv : Tendsto (fun ε => log (v ε)/log (1/ε)) (𝓝[>] (0:ℝ)) (𝓝 b))
     {R : ℝ} (hR : 0 < R) : ∀ᶠ ε : ℝ in 𝓝[>] (0:ℝ), R*u ε < v ε := by
@@ -55,13 +55,13 @@ theorem gaussian_first_wait_separation :
   filter_upwards [gaussian_quadratic_first_crossing] with ω hw
   filter_upwards [hw] with k hk
   intro N H S P
-  obtain ⟨σ,hσ,he,hbefore,⟨B,hB,K,hK,h⟩,hsmall⟩ := hk
+  obtain ⟨σ,hσ,he,hbefore,⟨B,hB,K,_,h⟩,hsmall⟩ := hk
   refine ⟨σ,hσ,he,hbefore,?_⟩
   intro s hs R hR
   let D : ℕ := 2^N
   have hdim : 3≤D := (by decide : 3≤2^3).trans (Nat.pow_le_pow_right (by decide) (by dsimp only [N]; omega))
   have hgap : ((2*D-5:ℕ):ℝ) < 2*((D-2:ℕ):ℝ) := by exact_mod_cast (show 2*D-5 < 2*(D-2) by omega)
-  apply separate_waits hB hK hgap _ (hsmall s hs) hR
+  apply separate_waits (K := K) hB hgap _ (hsmall s hs) hR
   intro ε hε
   exact ⟨sub_nonneg.mpr (firstVisit_isLeast H σ S hε.1).1.1,sub_nonneg.mpr (firstVisit_isLeast H σ s hε.1).1.1,h ε hε⟩
 

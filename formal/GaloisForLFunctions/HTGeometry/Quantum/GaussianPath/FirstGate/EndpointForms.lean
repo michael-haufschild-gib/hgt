@@ -42,7 +42,8 @@ theorem endpoint_mass (u : I → ℂ) (v : EuclideanSpace ℂ I) (hv : ‖v‖=1
   intro h k hk
   rw [h,sub_self] at hcalc
   have hz := (Finset.sum_eq_zero_iff_of_nonneg (fun j _ => hn j)).mp hcalc k (Finset.mem_univ _)
-  exact norm_eq_zero.mp (pow_eq_zero ((mul_eq_zero.mp hz).resolve_left (sub_pos.mpr hk).ne'))
+  by_contra hvk
+  exact (mul_pos (sub_pos.mpr hk) (pow_pos (norm_pos_iff.mpr hvk) 2)).ne' hz
 
 private theorem endpoint_algebra (u p q w : ℂ) (d : ℝ) :
     ((Complex.I*((d:ℂ)*p+w*q))*star (u*p)).re+
@@ -67,10 +68,9 @@ theorem endpoint_variation (u : I → ℂ) (A : Matrix I I ℂ) (a b : I) (hab :
   let f (j : I) := (Complex.I*((A *ᵥ WithLp.ofLp v) j))*star (u j*v j)
   have hinner : (⟪U v,K v⟫_ℂ).re=(∑ j, f j).re := by
     rw [EuclideanSpace.inner_eq_star_dotProduct]
-    change ((Complex.I • A *ᵥ WithLp.ofLp v) ⬝ᵥ star (Matrix.diagonal u *ᵥ WithLp.ofLp v)).re=_
+    change (((Complex.I • A) *ᵥ WithLp.ofLp v) ⬝ᵥ star (Matrix.diagonal u *ᵥ WithLp.ofLp v)).re=_
     simp only [Matrix.smul_mulVec,Matrix.mulVec_diagonal,dotProduct,Pi.star_apply,Pi.smul_apply,
       smul_eq_mul,f]
-    rfl
   have hsum : ∑ j, f j=f a+f b := sum_pair a b hab f (by
     intro j hja hjb
     simp only [f,hz j hja hjb,mul_zero,star_zero])

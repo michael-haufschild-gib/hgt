@@ -40,7 +40,7 @@ end FReq
 
 def ExD (𝒜 : FamClass) (cT : ℝ → ℝ → ℝ) : Prop :=
   ∀ (la : ℝ) (G : FReq), 1 < la → HostExW la G.req →
-    DC.DesignChoices (DC.WithTw fun Fm => 𝒜 Fm ∧ G.cls la Fm) 3 cT
+    DesignChoices (WithTw fun Fm => 𝒜 Fm ∧ G.cls la Fm) 3 cT
 
 def GChi (ψ : PChar) : FReq := fun s _ H TT t =>
   EAtH (Level.cyc ψ) H.toHostRaw TT s.x s.eps 4 ∧ VVle H.E t (Real.sqrt s.b)
