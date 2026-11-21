@@ -44,9 +44,9 @@ private theorem edge_partition {n : ℕ} {a b : Fin (n+1)} (hab : a < b) (g : Fi
 theorem sub_three_packets {n : ℕ} (u : PathShell n) {a b : Fin (n+1)} (hab : a < b) :
     pathHamiltonian u - (packet u (leftBlock a) + packet u (middleBlock a b) + packet u (rightBlock b)) =
       edgePart u a + edgePart u b := by
-  have hs := Finset.sum_congr (s := Finset.univ) rfl
+  have hs := Finset.sum_congr (s₁ := Finset.univ) rfl
     (fun (i : Fin (n+2)) _ => site_partition hab i (onsiteAt u i))
-  have he := Finset.sum_congr (s := Finset.univ) rfl
+  have he := Finset.sum_congr (s₁ := Finset.univ) rfl
     (fun (g : Fin (n+1)) _ => edge_partition hab g (edgePart u g))
   simp only [Finset.sum_add_distrib,Finset.sum_ite_eq',Finset.mem_univ,if_true] at hs he
   have ho : onsitePart u = ∑ i, onsiteAt u i := by

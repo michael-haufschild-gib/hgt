@@ -9,6 +9,7 @@ open Subregister
 private theorem packetCost_mono {i j : ℕ} (h : i ≤ j) : packetCost i ≤ packetCost j := by
   unfold packetCost
   gcongr
+  omega
 
 private theorem thirds_polynomial (h : ℕ) (hh : 64 ≤ h) : 2^18*(h+3)^3 ≤ 2^h := by
   induction h,hh using Nat.le_induction with
@@ -25,7 +26,7 @@ private theorem three_small_cost {N h : ℕ} (hh : 64 ≤ h) (hlo : 3*h ≤ N) (
     6*packetCost (h+2) ≤ nearHilbertContinuousCircuitBudget N := by
   apply (Nat.le_div_iff_mul_le (by positivity : 0 < 64*(N+1))).2
   have hp : (2^(h+2):ℕ)^2 = 16*2^(2*h) := by
-    rw [←pow_mul,show (h+2)*2=4+2*h by omega,pow_add]
+    rw [←pow_mul,show (h+2)*2=4+2*h by omega,pow_add,show (2:ℕ)^4=16 by norm_num]
   calc
     _ = 6144*((4*(h+2)+1)*(2*(h+2)+2)*(N+1))*2^(2*h) := by unfold packetCost; rw [hp]; ring
     _ ≤ 6144*((4*(h+3))*(2*(h+3))*(3*(h+3)))*2^(2*h) := by gcongr <;> omega
