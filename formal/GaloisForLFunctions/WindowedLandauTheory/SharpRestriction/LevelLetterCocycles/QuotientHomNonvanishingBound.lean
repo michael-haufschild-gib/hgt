@@ -716,6 +716,15 @@ def vecS (k : ℕ) : (Fin k → FractionRing O) →ₛₗ[Bw.eO.toRingHom] (Fin 
     simp only [Pi.smul_apply, Algebra.smul_def, map_mul, toLLK_alg]
     rfl
 
+/-- `Ow`-module structures used below, fixed once (instance search is slow through the subring). -/
+instance modVec (k : ℕ) : Module (Ow Bw) (Fin k → LLw Bw) := Pi.module _ _ _
+
+instance modQuot (k : ℕ) : Module (Ow Bw) ((Fin k → LLw Bw) ⧸ stdG (Ow Bw) (LLw Bw) k) :=
+  Submodule.Quotient.module _
+
+instance modQuotFun (k : ℕ) :
+    Module (Ow Bw) (↥(GK Bw.Kw) → (Fin k → LLw Bw) ⧸ stdG (Ow Bw) (LLw Bw) k) := Pi.module _ _ _
+
 def phi (k : ℕ) : KOG O k →ₛₗ[Bw.eO.toRingHom] ((Fin k → LLw Bw) ⧸ stdG (Ow Bw) (LLw Bw) k) :=
   Submodule.mapQ _ _ (vecS Bw k) (by
     rintro _ ⟨u, rfl⟩
