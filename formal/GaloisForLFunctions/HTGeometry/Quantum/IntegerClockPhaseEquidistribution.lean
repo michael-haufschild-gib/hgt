@@ -27,7 +27,7 @@ def integerClockPrefixLaw {X : Type*} [MeasurableSpace X] (x : ℕ → X) (N : �
   u.map (f := fun i => x i.1) (measurable_of_finite _).aemeasurable
 
 /-- The integral of a continuous character over an empirical law is its sample average. -/
-private theorem integral_integerClockPrefixLaw {X : Type*} [MeasurableSpace X]
+theorem integral_integerClockPrefixLaw {X : Type*} [MeasurableSpace X]
     (x : ℕ → X) (N : ℕ) (f : X → ℂ) (hf : Measurable f) :
     ∫ z, f z ∂(integerClockPrefixLaw x N : Measure X) =
       ((N+1:ℕ):ℂ)⁻¹ * ∑ j ∈ Finset.range (N+1), f (x j) := by

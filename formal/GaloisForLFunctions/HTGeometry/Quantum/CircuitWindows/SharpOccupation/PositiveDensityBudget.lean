@@ -10,7 +10,7 @@ noncomputable section
 /-- The gate entropy divided by dimension is at most 32 log(2)/q in
 the limit for budgets D/[q(N+1)]. The architecture and mesh contributions
 are lower order in D. -/
-private theorem positive_budget_exponent (q : ℕ) (hq : 0 < q) (δ y b : ℝ) (hδ : 0 < δ)
+theorem positive_budget_exponent (q : ℕ) (hq : 0 < q) (δ y b : ℝ) (hδ : 0 < δ)
     (hy : 0 < y) (hb : 0 < b) (hr : Real.log y+32*Real.log 2/q < Real.log b) :
     ∀ᶠ n : ℕ in atTop,
       let s := 2^n/(q*(n+1))
