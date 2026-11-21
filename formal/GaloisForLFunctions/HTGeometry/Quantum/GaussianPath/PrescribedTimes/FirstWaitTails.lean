@@ -86,10 +86,10 @@ theorem gaussian_first_passage_joint_tail_floor (p : ℝ) (hp : p < 1) :
 /-- A uniform polynomial survival floor rules out integrability even at the
 boundary exponent. Under integrability the moment over each receding tail
 would tend to zero. -/
-private theorem not_integrable_boundary_moment {X : Type*} [MeasurableSpace X]
+theorem not_integrable_boundary_moment {X : Type*} [MeasurableSpace X]
     (μ : Measure X) [IsProbabilityMeasure μ] (J : X → ℝ) (hJ : Measurable J)
-    (m : ℕ) {B : ℝ} (hB : 0 < B)
-    (htail : ∀ a : ℝ, 1 ≤ a → 1/2 < a^m * μ.real {x | a*B < J x}) :
+    (m : ℕ) {B p : ℝ} (hB : 0 < B) (hp : 0 < p)
+    (htail : ∀ a : ℝ, 1 ≤ a → p < a^m * μ.real {x | a*B < J x}) :
     ¬ Integrable (fun x => |J x|^m) μ := by
   intro hint
   let f := fun x => |J x|^m
@@ -111,8 +111,8 @@ private theorem not_integrable_boundary_moment {X : Type*} [MeasurableSpace X]
       · rw [indicator_of_notMem hx,norm_zero]
         exact pow_nonneg (abs_nonneg _) _)
     (ae_of_all _ hlim)
-  have ht := hc.eventually_lt_const (show (∫ _ : X, (0:ℝ) ∂μ) < B^m/2 by
-    rw [integral_zero]; positivity)
+  have ht := hc.eventually_lt_const (show (∫ _ : X, (0:ℝ) ∂μ) < B^m*p by
+    rw [integral_zero]; exact mul_pos (pow_pos hB m) hp)
   obtain ⟨l,hl⟩ := ht.exists
   rw [integral_indicator (hS l)] at hl
   have ha : 1 ≤ a l := by dsimp [a]; linarith only [Nat.cast_nonneg (α := ℝ) l]
@@ -124,7 +124,7 @@ private theorem not_integrable_boundary_moment {X : Type*} [MeasurableSpace X]
         ((le_of_lt hx).trans (le_abs_self (J x))) m)
     simpa only [setIntegral_const,smul_eq_mul,mul_comm (μ.real (S l))] using h
   rw [mul_pow] at hfloor
-  change B^m*(1/2) < B^m*((a l)^m*μ.real (S l)) at hprice
+  change B^m*p < B^m*((a l)^m*μ.real (S l)) at hprice
   linarith only [hprice,hfloor,hl]
 
 /-- For all sufficiently large prefixes, even the smaller of the onset time
@@ -142,7 +142,7 @@ theorem gaussian_first_passage_critical_moment :
   intro N P m μ s hs
   apply not_integrable_boundary_moment μ _
     ((measurable_crossingOrigin _ _ _).min (measurable_crossingWait _ _ _))
-    m (B := localCrossingWidth N) (by unfold localCrossingWidth; positivity)
+    m (B := localCrossingWidth N) (by unfold localCrossingWidth; positivity) (p := 1/2) (by norm_num)
   intro a ha
   simpa only [lt_min_iff] using hk s hs a ha
 

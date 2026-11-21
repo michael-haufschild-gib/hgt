@@ -38,6 +38,7 @@ import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.RampObstructi
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.LateWindows
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.DelayedCrossing
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.FirstWaitTails
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.FirstReturnBands
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.Detuning.CircuitDeadline
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.Detuning.MaximumOccupation
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.Detuning.OccupationOverhead
