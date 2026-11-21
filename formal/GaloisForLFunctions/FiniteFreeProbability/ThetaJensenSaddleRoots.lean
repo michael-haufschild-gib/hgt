@@ -77,7 +77,7 @@ theorem tendsto_thetaSaddleJensen (d : ℕ) (x : ℝ) :
   have h := tendsto_finsetSum (range (d+1)) (fun j _ =>
     (((tendsto_xiThetaExpectation_fluctuation j).const_mul (d.choose j : ℝ)).mul
       (hA.pow j)).mul_const (x^(d-j)))
-  simpa [thetaSaddleJensen_expansion, mul_ite, ite_mul] using h
+  simpa [thetaSaddleJensen_expansion, mul_ite, ite_mul, eval_finsetSum] using h
 
 /-- Hermite coordinate of the unique odd root. -/
 def thetaOddRootCoordinate (k n : ℕ) : ℝ :=
@@ -90,6 +90,7 @@ private theorem odd_coordinate_root (k n : ℕ) :
       thetaOddRoot n k := by
     unfold thetaOddRootCoordinate
     field_simp [(xiJensenDelta_pos n).ne', (thetaJensenSaddle_pos n).ne']
+    ring
   rw [ha, thetaOddRoot_spec, mul_zero]
 
 private theorem saddle_odd_mono (k n : ℕ) : StrictMono (thetaSaddleJensen (2*k+1) n).eval := by
@@ -105,9 +106,11 @@ private theorem saddle_odd_mono (k n : ℕ) : StrictMono (thetaSaddleJensen (2*k
 theorem tendsto_thetaOddRootCoordinate (k : ℕ) : Tendsto (thetaOddRootCoordinate k) atTop (𝓝 0) := by
   apply Metric.tendsto_nhds.mpr
   intro ε hε
-  have hneg : (-ε)^(2*k+1) < 0 := by rw [pow_succ]; exact mul_neg_of_pos_of_neg
-    (lt_of_le_of_ne ((even_two_mul k).pow_nonneg _) (pow_ne_zero _ (neg_ne_zero.mpr hε.ne')).symm)
-    (neg_neg_of_pos hε)
+  have hneg : (-ε)^(2*k+1) < 0 := by
+    rw [pow_succ]
+    exact mul_neg_of_pos_of_neg
+      (lt_of_le_of_ne ((even_two_mul k).pow_nonneg _) (pow_ne_zero _ (neg_ne_zero.mpr hε.ne')).symm)
+      (neg_neg_of_pos hε)
   filter_upwards [(tendsto_thetaSaddleJensen (2*k+1) (-ε)).eventually_lt_const hneg,
     (tendsto_thetaSaddleJensen (2*k+1) ε).eventually_const_lt (pow_pos hε _)] with n hlo hhi
   rw [Real.dist_eq, sub_zero, abs_lt]
@@ -127,7 +130,8 @@ private theorem saddle_reciprocal {z : ℂ} (hz : z ≠ 0) (d n : ℕ) :
   simp only [Polynomial.map_sum, Polynomial.map_mul, Polynomial.map_pow, Polynomial.map_sub,
     Polynomial.map_X, Polynomial.map_one, Polynomial.map_C, eval_finsetSum, eval_mul, eval_C,
     eval_pow, eval_sub, eval_X, eval_one]
-  have hf : (xiJensenDelta n : ℂ)*z-1 = ((xiJensenDelta n : ℂ)-z⁻¹)*z := by
+  have hf : Complex.ofRealHom (xiJensenDelta n)*z-1 = ((xiJensenDelta n : ℂ)-z⁻¹)*z := by
+    rw [Complex.ofRealHom_eq_coe]
     field_simp
   rw [hf]
   have hterm (j : ℕ) (hj : j ∈ range (d+1)) :

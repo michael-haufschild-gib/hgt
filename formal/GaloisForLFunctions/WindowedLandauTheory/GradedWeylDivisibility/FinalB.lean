@@ -1,0 +1,31 @@
+import GaloisForLFunctions.WindowedLandauTheory.GradedWeylDivisibility.DualWeylDominanceOf
+import GaloisForLFunctions.WindowedLandauTheory.GradedWeylDivisibility.FockSpaceTableaux.HWLine
+import GaloisForLFunctions.WindowedLandauTheory.GradedWeylDivisibility.FockSpaceTableaux.HWLineTall
+import GaloisForLFunctions.WindowedLandauTheory.GradedWeylDivisibility.FockSpaceTableaux.FockQPos
+import GaloisForLFunctions.WindowedLandauTheory.GradedWeylDivisibility.FockSpaceTableaux.FockQBilin
+import GaloisForLFunctions.WindowedLandauTheory.GradedWeylDivisibility.FockSpaceTableaux.FockQRowDivAdj
+import GaloisForLFunctions.WindowedLandauTheory.GradedWeylDivisibility.FockSpaceTableaux.RowDivClosedGraded
+import GaloisForLFunctions.WindowedLandauTheory.GradedWeylDivisibility.FockSpaceTableaux.HWInClosed
+import GaloisForLFunctions.WindowedLandauTheory.GradedWeylDivisibility.FockSpaceTableaux.NablaTallZero
+import GaloisForLFunctions.WindowedLandauTheory.GradedWeylDivisibility.FockSpaceTableaux.ClosedEqNabla
+import GaloisForLFunctions.WindowedLandauTheory.GradedWeylDivisibility.FockSpaceTableaux.WeylEqNablaQ
+import GaloisForLFunctions.WindowedLandauTheory.GradedWeylDivisibility.FockSpaceTableaux.WeylRationalOf
+
+
+
+namespace WindowedLandauTheory.GradedWeylDivisibility
+
+theorem hwLine : HWLine := highest_weight_line
+theorem hwLineTall : HWLineTall := highest_weight_line_tall
+theorem fockQPos : FockQPos := fischerInnerRatPos
+theorem fockQBilin : FockQBilin := fischerInnerRatBilinear
+theorem fockQRowDivAdj : FockQRowDivAdj := fock_space_row_divided_adjoint
+theorem rowDivClosedGraded : RowDivClosedGraded := row_divided_closed_graded
+theorem hwInClosed : HWInClosed := hwInClosed_of hwLine rowDivClosedGraded
+theorem closedEqNabla : ClosedEqNabla := closedEqNabla_of hwInClosed fockQPos fockQBilin fockQRowDivAdj
+theorem weylEqNablaQ : WeylEqNablaQ := weylEqNablaQ_of closedEqNabla
+
+theorem weylRational : WeylRational := weyl_module_rational weylEqNablaQ
+
+end WindowedLandauTheory.GradedWeylDivisibility
+

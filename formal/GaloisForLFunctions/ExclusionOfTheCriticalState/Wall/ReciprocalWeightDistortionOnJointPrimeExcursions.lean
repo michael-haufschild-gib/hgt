@@ -135,7 +135,6 @@ theorem numerator_regression_remainder (S : Finset ℕ) (hS : ∀ H ∈ S, 0 < H
     have he : (g H-c-t*(Q*(H:ℝ)^2-n))/(H:ℝ) = x H-t*y H := by
       dsimp only [x,y]
       field_simp [show (H:ℝ)≠0 from Nat.cast_ne_zero.mpr (hS H hh).ne']
-      ring
     rw [he]
     ring
   rw [sum_congr rfl site,sum_add_distrib,sum_sub_distrib,←mul_sum,←mul_sum,dot,cost]
@@ -147,7 +146,7 @@ private theorem numerator_regression_spread_pos (S : Finset ℕ) (hS : ∀ H ∈
   have hq : 0 < numeratorInverseMass S := by
     apply lt_of_lt_of_le (show 0 < 1/(i:ℝ)^2 by
       exact div_pos one_pos (pow_pos (Nat.cast_pos.mpr (hS i hi)) 2))
-    exact single_le_sum (fun k _ => by positivity) hi
+    exact single_le_sum (f := fun H : ℕ => 1/(H:ℝ)^2) (fun k _ => by positivity) hi
   apply mul_pos hq
   have ni : 0 < (i:ℝ) := Nat.cast_pos.mpr (hS i hi)
   have nj : 0 < (j:ℝ) := Nat.cast_pos.mpr (hS j hj)

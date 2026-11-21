@@ -1,7 +1,6 @@
 import Mathlib
 
 
-namespace WindowedLandauTheory
 
 namespace Bl.general_b_fact_right_ter_form
 

@@ -1,7 +1,6 @@
 import Mathlib
 
 
-namespace WindowedLandauTheory
 
 open scoped IntermediateField TensorProduct Matrix Pointwise NumberField Topology ContDiff NNReal ENNReal Polynomial DirectSum BigOperators InnerProductSpace Manifold
 open scoped Classical

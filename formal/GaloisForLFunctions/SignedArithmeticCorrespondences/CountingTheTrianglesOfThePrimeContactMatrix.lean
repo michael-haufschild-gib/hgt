@@ -15,19 +15,19 @@ open scoped ArithmeticFunction.vonMangoldt
 namespace GaloisForLFunctions.SignedArithmeticCorrespondences.PrimeContactMoments
 
 private theorem edge_comm (i j : ℕ) : edge i j=edge j i := add_comm _ _
-private theorem diag_zero {i : ℕ} (hi : 0<i) : edge i i=0 := by simp [edge,contactW,Nat.div_self hi]
-private theorem edge_above {i j : ℕ} (hi : 0<i) (hij : i<j) :
-    edge i j=if i∣j then Λ (j/i) else 0 := by
+private theorem diag_zero {i : ℕ} (hi : 0< i) : edge i i=0 := by simp [edge,contactW,Nat.div_self hi]
+private theorem edge_above {i j : ℕ} (hi : 0< i) (hij : i<j) :
+    edge i j=if i∣j then ArithmeticFunction.vonMangoldt (j/i) else 0 := by
   have hn : ¬j∣i := fun h => hij.not_ge (Nat.le_of_dvd hi h)
   simp [edge,contactW,hn]
-private theorem mul_contact {i r : ℕ} (hi : 0<i) (hr : 1<r) :
-    edge i (i*r)=Λ r := by
-  have hlt : i<i*r := by simpa using Nat.mul_lt_mul_of_pos_left hr hi
+private theorem mul_contact {i r : ℕ} (hi : 0< i) (hr : 1<r) :
+    edge i (i*r)=ArithmeticFunction.vonMangoldt r := by
+  have hlt : i< i*r := by simpa using Nat.mul_lt_mul_of_pos_left hr hi
   rw [edge_above hi hlt,if_pos (dvd_mul_right _ _),Nat.mul_div_cancel_left _ hi]
 
 /-- Each ordered triangle has all three edges in the same prime direction.
 Conversely every choice of two positive exponent gaps gives a triangle. -/
-theorem ordered_prime_triangle {i j k : ℕ} (hi : 0<i) (hij : i<j) (hjk : j<k) :
+theorem ordered_prime_triangle {i j k : ℕ} (hi : 0< i) (hij : i<j) (hjk : j<k) :
     edge i j*edge j k*edge k i ≠ 0 ↔
       ∃ p a b : ℕ,p.Prime ∧ 0<a ∧ a<b ∧ j=i*p^a ∧ k=i*p^b := by
   constructor
@@ -70,20 +70,20 @@ private theorem reflect (i j k : ℕ) : triangle i k j=triangle i j k := by
   unfold triangle
   rw [edge_comm i k,edge_comm k j,edge_comm j i]; ring
 
-private theorem split_six {i j k : ℕ} (hi : 0<i) (hj : 0<j) (hk : 0<k) :
+private theorem split_six {i j k : ℕ} (hi : 0< i) (hj : 0<j) (hk : 0<k) :
     triangle i j k=ordered i j k+ordered i k j+ordered j i k+
       ordered j k i+ordered k i j+ordered k j i := by
   by_cases h₁ : i=j
   · subst j
-    have hh : ¬(i<k ∧ k<i) := by omega
+    have hh : ¬(i<k ∧ k< i) := by omega
     simp [ordered,triangle,diag_zero hi,hh]
   by_cases h₂ : j=k
   · subst k
-    have hh : ¬(j<i ∧ i<j) := by omega
+    have hh : ¬(j< i ∧ i<j) := by omega
     simp [ordered,triangle,diag_zero hj,hh]
   by_cases h₃ : i=k
   · subst k
-    have hh : ¬(i<j ∧ j<i) := by omega
+    have hh : ¬(i<j ∧ j< i) := by omega
     simp [ordered,triangle,diag_zero hi,hh]
   have ht₁ := reflect i j k
   have ht₂ := rotate i j k
@@ -113,7 +113,7 @@ theorem cubic_trace_ordered (N B : ℕ) :
     cubicTrace (Ioc N B)=6*∑ i∈Ioc N B,∑ j∈Ioc N B,∑ k∈Ioc N B,
       (if i<j ∧ j<k then edge i j*edge j k*edge k i else 0) := by
   let S := Ioc N B
-  have hs {i : ℕ} (hi : i∈S) : 0<i := Nat.zero_lt_of_lt (mem_Ioc.mp hi).1
+  have hs {i : ℕ} (hi : i∈S) : 0< i := Nat.zero_lt_of_lt (mem_Ioc.mp hi).1
   have h : cubicTrace S=sumThree S (fun i j k => ordered i j k+ordered i k j+ordered j i k+
       ordered j k i+ordered k i j+ordered k j i) :=
     sum_congr rfl fun _ hi => sum_congr rfl fun _ hj => sum_congr rfl fun _ hk => split_six (hs hi) (hs hj) (hs hk)
@@ -128,13 +128,13 @@ theorem cubic_trace_ordered (N B : ℕ) :
   rw [h₁,h₂,h₄,h₅,h₆]
   ring
 
-private theorem divides_of_contact {i j : ℕ} (hi : 0<i) (hij : i<j)
+private theorem divides_of_contact {i j : ℕ} (hi : 0< i) (hij : i<j)
     (h : edge i j≠0) : i∣j := by
   by_contra hn
   exact h (by rw [edge_above hi hij,if_neg hn])
 
 /-- Price attached to an outer ratio. It is supported on proper prime powers. -/
-def trianglePrice (r : ℕ) : ℝ := (Λ*Λ) r*Λ r
+def trianglePrice (r : ℕ) : ℝ := (ArithmeticFunction.vonMangoldt*ArithmeticFunction.vonMangoldt) r*ArithmeticFunction.vonMangoldt r
 
 theorem trianglePrice_prime_power {p b : ℕ} (hp : p.Prime) (hb : 0<b) :
     trianglePrice (p^b)=((b:ℝ)-1)*Real.log p^3 := by
@@ -167,7 +167,7 @@ private theorem ordered_ratio {N B i r : ℕ} (hi : i∈Ioc N B) (hk : i*r∈Ioc
   rw [←sum_subset sub hz]
   dsimp only [T]
   rw [sum_image (fun _ _ _ _ he => Nat.eq_of_mul_eq_mul_left hi0 he)]
-  have price (d : ℕ) (hd : d∈r.divisors) : ordered i (i*d) (i*r)=Λ d*Λ (r/d)*Λ r := by
+  have price (d : ℕ) (hd : d∈r.divisors) : ordered i (i*d) (i*r)=ArithmeticFunction.vonMangoldt d*ArithmeticFunction.vonMangoldt (r/d)*ArithmeticFunction.vonMangoldt r := by
     have hd0 := Nat.pos_of_mem_divisors hd
     by_cases h1 : d=1
     · simp [h1,ordered]
@@ -179,12 +179,12 @@ private theorem ordered_ratio {N B i r : ℕ} (hi : i∈Ioc N B) (hk : i*r∈Ioc
     have heq : i*r=(i*d)*(r/d) := by rw [Nat.mul_assoc,hdraw]
     have he1 : 1<r/d := by
       apply Nat.lt_of_mul_lt_mul_left (show d*1<d*(r/d) by simpa only [Nat.mul_one,hdraw] using hlt)
-    have hleft : i<i*d := by simpa using Nat.mul_lt_mul_of_pos_left hd1 hi0
+    have hleft : i< i*d := by simpa using Nat.mul_lt_mul_of_pos_left hd1 hi0
     have hright := Nat.mul_lt_mul_of_pos_left hlt hi0
     rw [ordered,if_pos ⟨hleft,hright⟩,triangle,edge_comm (i*r) i,mul_contact hi0 hr,
       mul_contact hi0 hd1,heq,mul_contact (Nat.mul_pos hi0 hd0) he1]
   rw [sum_congr rfl price,trianglePrice,ArithmeticFunction.mul_apply,
-    Nat.sum_divisorsAntidiagonal (fun a b => Λ a*Λ b),sum_mul]
+    Nat.sum_divisorsAntidiagonal (fun a b => ArithmeticFunction.vonMangoldt a*ArithmeticFunction.vonMangoldt b),sum_mul]
 
 private theorem sum_middle {N B i k : ℕ} (hi : i∈Ioc N B) (hk : k∈Ioc N B) :
     (∑ j∈Ioc N B,ordered i j k)=if i<k ∧ i∣k then trianglePrice (k/i) else 0 := by
@@ -192,7 +192,7 @@ private theorem sum_middle {N B i k : ℕ} (hi : i∈Ioc N B) (hk : k∈Ioc N B)
   split_ifs with h
   · obtain ⟨r,hr⟩ := h.2
     subst k
-    have hlt : 1<r := Nat.lt_of_mul_lt_mul_left (by simpa using h.1 : i*1<i*r)
+    have hlt : 1<r := Nat.lt_of_mul_lt_mul_left (by simpa using h.1 : i*1< i*r)
     rw [Nat.mul_div_cancel_left _ hi0]
     exact ordered_ratio hi hk hlt
   · apply sum_eq_zero
@@ -218,7 +218,7 @@ private theorem sum_ratios {N B i : ℕ} (hi : i∈Ioc N B) :
   let V := (Icc 2 B).filter (fun r => i*r≤B)
   let T := V.image (fun r => i*r)
   have hi0 := Nat.zero_lt_of_lt (mem_Ioc.mp hi).1
-  have hlt {r : ℕ} (hr : r∈V) : i<i*r := by
+  have hlt {r : ℕ} (hr : r∈V) : i< i*r := by
     have hh := (mem_Icc.mp (mem_filter.mp hr).1).1
     simpa using Nat.mul_lt_mul_of_pos_left (show 1<r from hh) hi0
   have hs : T ⊆ Ioc N B := by
@@ -229,12 +229,14 @@ private theorem sum_ratios {N B i : ℕ} (hi : i∈Ioc N B) :
       (if i<k ∧ i∣k then trianglePrice (k/i) else 0)=0 := by
     apply if_neg
     rintro ⟨hlt,⟨r,rfl⟩⟩
-    have hr : 1<r := Nat.lt_of_mul_lt_mul_left (by simpa using hlt : i*1<i*r)
+    have hr : 1<r := Nat.lt_of_mul_lt_mul_left (by simpa using hlt : i*1< i*r)
     exact ht (mem_image.mpr ⟨r,mem_filter.mpr ⟨mem_Icc.mpr
       ⟨hr,(Nat.le_mul_of_pos_left _ hi0).trans (mem_Ioc.mp hk).2⟩,(mem_Ioc.mp hk).2⟩,rfl⟩)
-  rw [←sum_subset hs hz,←sum_filter]
+  rw [←sum_subset hs hz]
   dsimp only [T]
   rw [sum_image (fun _ _ _ _ he => Nat.eq_of_mul_eq_mul_left hi0 he)]
+  rw [show (∑ r ∈ Icc 2 B, if i*r ≤ B then trianglePrice r else 0) = ∑ r ∈ V, trianglePrice r from
+    (sum_filter _ _).symm]
   exact sum_congr rfl fun r hr => by rw [if_pos ⟨hlt hr,dvd_mul_right i r⟩,Nat.mul_div_cancel_left _ hi0]
 
 /-- Exact floor sum for the cubic moment, including all proper powers of every prime.
@@ -298,7 +300,7 @@ private theorem price_nonneg (r : ℕ) : 0≤trianglePrice r := by
   exact sum_nonneg fun _ _ => mul_nonneg vonMangoldt_nonneg vonMangoldt_nonneg
 
 private theorem price_in_squarefree {r : ℕ} (hs : Squarefree r) : trianglePrice r=0 := by
-  by_cases hp : Λ r=0
+  by_cases hp : ArithmeticFunction.vonMangoldt r=0
   · simp [trianglePrice,hp]
   obtain ⟨p,b,hp',hb,rfl⟩ := (isPrimePow_nat_iff _).mp (vonMangoldt_ne_zero_iff.mp hp)
   have hb1 : b=1 := by
@@ -325,6 +327,11 @@ theorem squarefree_iff_cubic_prefix_unchanged (B : ℕ) :
     rw [trianglePrice_prime_power hp (by decide : 0<2)] at he
     have hl := Real.log_pos (show (1:ℝ)<p by exact_mod_cast hp.one_lt)
     norm_num at he
-    exact hl.ne' he
+    have h2 := hp.two_le
+    rcases he with h | h | h
+    · omega
+    · omega
+    · have h0 : (0:ℝ) ≤ p := Nat.cast_nonneg p
+      linarith
 
 end GaloisForLFunctions.SignedArithmeticCorrespondences.PrimeContactMoments

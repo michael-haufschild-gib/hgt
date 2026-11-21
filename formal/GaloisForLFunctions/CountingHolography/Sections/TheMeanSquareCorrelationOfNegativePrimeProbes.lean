@@ -29,7 +29,8 @@ theorem neg_trace_sq_le_negative_index_energy {m : ℕ} {H : Matrix (Fin m) (Fin
   let e := hH.eigenvalues
   let S := univ.filter (fun i => e i < 0)
   have htr : ∑ i, e i = H.trace.re := by
-    simpa only [Complex.re_sum,Complex.ofReal_re] using (congrArg Complex.re hH.trace_eq_sum_eigenvalues).symm
+    rw [hH.trace_eq_sum_eigenvalues,Complex.re_sum]
+    exact sum_congr rfl fun i _ => by simp [e]
   have hpart := sum_filter_add_sum_filter_not univ (fun i => e i < 0) e
   have hrest : 0 ≤ ∑ i ∈ univ.filter (fun i => ¬e i < 0), e i :=
     sum_nonneg fun i hi => le_of_not_gt (mem_filter.mp hi).2
@@ -74,7 +75,7 @@ theorem probe_negative_index_energy {m N : ℕ} (a : Fin m → (Fin N → ℤ))
     isUnit_iff_ne_zero.mpr (Complex.ofReal_ne_zero.mpr (inv_ne_zero (hd' i).ne')))
   have hH := isHermitian_conjTranspose_mul_mul D (probeGramMatrix_isHermitian N a)
   have he (i j : Fin m) : H i j = (probeCorrelation a i j : ℂ) := by
-    simp only [H,D,conjTranspose_diagonal,diagonal_mul,mul_diagonal,probeGramMatrix,Matrix.of_apply,
+    simp only [H,D,diagonal_conjTranspose,diagonal_mul,mul_diagonal,probeGramMatrix,Matrix.of_apply,
       Function.comp_apply,Pi.star_apply,Complex.star_def,Complex.conj_ofReal]
     rw [probeCorrelation,←hden,div_eq_mul_inv]
     push_cast
@@ -86,7 +87,7 @@ theorem probe_negative_index_energy {m N : ℕ} (a : Fin m → (Fin N → ℤ))
     rw [probePairing_symm N (a i) (a j),mul_comm]
   have htr : H.trace.re = -(m:ℝ) := by
     simp only [Matrix.trace,Matrix.diag_apply,Complex.re_sum,he,heq,Complex.ofReal_re,sum_const,
-      card_univ,Fintype.card_fin,nsmul_eq_mul,mul_neg_one]
+      card_univ,Fintype.card_fin,nsmul_eq_mul,mul_neg_one] <;> simp
   have hsum (i : Fin m) : ∑ j, (probeCorrelation a i j)^2 =
       1+∑ j ∈ univ.erase i, (probeCorrelation a i j)^2 := by
     rw [←add_sum_erase univ _ (mem_univ i),heq]
@@ -140,7 +141,7 @@ theorem exists_correlated_pair_of_finite_right_support {r m N : ℕ} (hm : 2 ≤
   have hcast : ((m-1:ℕ):ℝ) = (m:ℝ)-1 := by rw [Nat.cast_sub (by omega : 1 ≤ m),Nat.cast_one]
   simp only [←mul_sum,sum_const,card_erase_of_mem (mem_univ _),card_univ,Fintype.card_fin,
     nsmul_eq_mul,hcast] at he
-  change r*((m:ℝ)-1)*distinctProbeEnergy a < m*(((m:ℝ)-1)*(m-r)) at he
+  change r*((m:ℝ)-1)*distinctProbeEnergy a < ((m:ℝ)-1)*(m*(m-r)) at he
   have hpos : (0:ℝ) ≤ (m:ℝ)-1 := sub_nonneg.mpr (by exact_mod_cast (show 1 ≤ m by omega))
   linarith only [he,mul_le_mul_of_nonneg_left (finite_right_support_forces_probe_energy hr a hd) hpos]
 
@@ -157,7 +158,7 @@ theorem rightZeros_ge_iff_distinct_probe_energy (r P : ℕ) :
   · intro h
     let ε : ℝ := ((r:ℝ)+1)⁻¹
     have hε : 0 < ε := inv_pos.mpr (by positivity)
-    have hε₁ : ε ≤ 1 := inv_le_one_of_one_le₀ (by dsimp [ε]; linarith only [Nat.cast_nonneg (α := ℝ) r])
+    have hε₁ : ε ≤ 1 := inv_le_one_of_one_le₀ (by linarith only [Nat.cast_nonneg (α := ℝ) r])
     obtain ⟨N,a,hN,hs,hgt,hdis,hd,hrow⟩ :=
       (disjoint_signedPrimeProbes_gershgorin_iff_rightZeros_ge (r+1) P hε hε₁).1.mp h
     refine ⟨N,a,hN,hs,hgt,hdis,hd,?_⟩
@@ -178,7 +179,8 @@ theorem rightZeros_ge_iff_distinct_probe_energy (r P : ℕ) :
     linarith only [mul_le_mul_of_nonneg_left ht (Nat.cast_nonneg (α := ℝ) r)]
   · rintro ⟨N,a,_,_,_,_,hd,he⟩
     by_contra! hn
-    have hc : (rightZeros zetaZeroConfig).encard ≤ r := Order.le_of_lt_succ hn
+    have hc : (rightZeros zetaZeroConfig).encard ≤ r :=
+      (ENat.lt_add_one_iff (ENat.coe_ne_top r)).mp (by exact_mod_cast hn)
     have h := finite_right_support_forces_probe_energy hc a hd
     push_cast at h
     linarith only [h,he]

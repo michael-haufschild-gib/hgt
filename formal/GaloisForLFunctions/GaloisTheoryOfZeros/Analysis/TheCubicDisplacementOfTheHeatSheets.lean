@@ -32,7 +32,8 @@ private theorem normalized_ray {τ z : ℂ} {m : ℕ} (hc : IsCollision τ z m) 
     exact_mod_cast (fun h => Nat.factorial_ne_zero (m+j) (by rw [←hfac,h,zero_mul]) : n ≠ 0)
   apply mul_left_cancel₀ hn
   change (n:ℂ) * _ = _
-  rw [show (n:ℂ) * iteratedDeriv j _ 0 = _ from hj,heatSpatialCoefficient]
+  rw [show (n:ℂ) * iteratedDeriv j (fun s : ℂ => collisionBlowup τ z m (s,y)) 0 =
+    parabolicRayPolynomial (m+j) y * iteratedDeriv (m+j) (complexHeat τ) z from hj,heatSpatialCoefficient]
   have hF : ((m+j).factorial : ℂ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero (m+j)
   field_simp [hF]
   have id : (n:ℂ) * j.factorial = (m+j).factorial := by exact_mod_cast hfac
@@ -47,7 +48,8 @@ private theorem acceleration (G : ℂ × ℂ → ℂ) (hG : ∀ p, AnalyticAt �
     filter_upwards [hv] with t ht
     exact ((hG _).differentiableAt.hasFDerivAt.comp_hasDerivAt t ht).deriv
   rw [he.deriv_eq]
-  exact ((((hG _).fderiv.differentiableAt.hasFDerivAt.comp_hasDerivAt x hv.self_of_nhds).clm_apply hw).deriv
+  have h1 := (hG _).fderiv.differentiableAt.hasFDerivAt.comp_hasDerivAt x hv.self_of_nhds
+  exact (h1.clm_apply hw).deriv
 
 private theorem ray_second {G : ℂ × ℂ → ℂ} (hG : ∀ p, AnalyticAt ℂ G p)
     (P : ℂ → ℂ × ℂ) (x : ℂ) (v : ℂ × ℂ) (hp : ∀ t, HasDerivAt P v t) :
@@ -68,8 +70,11 @@ private theorem hermite_second_at_root (m : ℕ) (ρ : ℂ) (h : parabolicRayPol
   have eq := congrArg (fun f : ℂ → ℂ => deriv f ρ) (funext (parabolic_ray_raise m))
   rw [parabolic_ray_lower,h,mul_zero] at eq
   change 0 = deriv (fun y => y*q y - 2*deriv q y) ρ at eq
-  rw [raised,show q ρ = 0 from h] at eq
+  have raised' : deriv (fun y => y*q y - 2*deriv q y) ρ = 1 * q ρ + id ρ * deriv q ρ - 2 * deriv (deriv q) ρ :=
+    raised
+  rw [raised',show q ρ = 0 from h] at eq
   change 2*deriv (deriv q) ρ = ρ*deriv q ρ
+  simp only [id_eq] at eq
   linear_combination eq
 
 /-- The common relative cubic coefficient of all sheet differences. -/
@@ -141,13 +146,15 @@ theorem IsCollision.branch_second_displacement {τ z ρ : ℂ} {m : ℕ} (hc : I
     rw [show iteratedDeriv 2 (fun t : ℂ => G (t,ρ)) 0 =
       deriv (deriv (fun t : ℂ => G (t,ρ))) 0 by rw [iteratedDeriv_succ,iteratedDeriv_one],
       sec,show m+2=(m+1)+1 by omega,parabolic_ray_raise,parabolic_ray_lower,
-      parabolic_ray_raise,hq,mul_zero,zero_sub] at eq
+      parabolic_ray_raise,show parabolicRayPolynomial m ρ = 0 from hq,mul_zero,zero_sub] at eq
     have can : B*c m = c (m+2) := div_mul_cancel₀ _ cm
     rw [space]
     change H x x = _ at eq
     rw [eq]
     norm_num [Nat.factorial]
-    linear_combination 4*ρ*deriv q ρ*can
+    have hinv : c m * (c m)⁻¹ = 1 := mul_inv_cancel₀ cm
+    linear_combination 4*ρ*deriv q ρ*can -
+      8*heatSpatialCoefficient τ z (m+1+1)*ρ*deriv (parabolicRayPolynomial m) ρ*hinv
   have drift : deriv Y 0 = 2*A := by
     rw [hc.all_branches_have_one_drift hr]
     dsimp only [A,c,heatSpatialCoefficient,collisionDrift]
@@ -163,7 +170,8 @@ theorem IsCollision.branch_second_displacement {τ z ρ : ℂ} {m : ℕ} (hc : I
   have acc := acceleration G an P V 0 (0,deriv (deriv Y) 0) vel
     ((hasDerivAt_const (0:ℂ) (1:ℂ)).prodMk hdY.differentiableAt.hasDerivAt)
   have hconst : deriv (deriv (fun t => G (P t))) 0 = 0 :=
-    hzero.deriv.deriv_eq.trans (by simp)
+    have hz' : (fun s => G (P s)) =ᶠ[𝓝 0] fun _ => (0:ℂ) := hzero
+    hz'.deriv.deriv_eq.trans (by simp)
   have p0 : P 0 = p := Prod.ext rfl hY0
   have v0 : V 0 = x + (2*A) • y := by ext <;> simp [V,x,y,drift]
   rw [hconst,p0,v0] at acc
@@ -254,8 +262,9 @@ theorem IsCollision.regularized_discriminant_log_derivative {τ z : ℂ} {m : �
     rw [disc_factor] at hd
     exact (mul_left_cancel₀ (pow_ne_zero _ (pow_ne_zero 2 hs)) hd).symm.trans (prod s)
   have left : ContinuousAt (fun s : ℂ => V (s^2)) 0 := by
-    simpa only [zero_pow (by decide : 2 ≠ 0)] using hV.continuousAt.comp
-      (continuousAt_id.pow 2 : ContinuousAt (fun s : ℂ => s^2) 0)
+    have h2 : ContinuousAt (fun s : ℂ => s^2) 0 := continuousAt_id.pow 2
+    have hV0 : ContinuousAt V ((fun s : ℂ => s^2) 0) := by simpa using hV.continuousAt
+    exact ContinuousAt.comp (f := fun s : ℂ => s^2) (x := 0) hV0 h2
   have right : ContinuousAt (fun s : ℂ => A*(1+b*s^2)+s^3*R s) 0 := by
     have := hR.continuousAt
     fun_prop

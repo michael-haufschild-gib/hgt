@@ -53,7 +53,7 @@ theorem xi_left_profile (w : ℂ) {L : ℝ} (hL : 0≤L) :
   have hC : ‖logDeriv g w‖<C := by dsimp [C]; linarith
   have hb := hlog.norm.tendsto.eventually_lt_const hC
   obtain ⟨s,hs,hs'⟩ := Metric.eventually_nhds_iff.mp hb
-  have hsmall : 0<min R s/(1+L) := div_pos (lt_min hR hs) (by linarith)
+  have hsmall : 0 < min R s/(1+L) := div_pos (lt_min hR hs) (by linarith)
   refine ⟨C,(norm_nonneg _).trans_lt hC,?_⟩
   filter_upwards [self_mem_nhdsWithin, (eventually_lt_nhds hsmall).filter_mono nhdsWithin_le_nhds]
     with h hh₀ hh u hu
@@ -62,7 +62,7 @@ theorem xi_left_profile (w : ℂ) {L : ℝ} (hL : 0≤L) :
   have hd : z-w=(h:ℂ)*leftVector u := by dsimp only [z,leftSegment]; ring
   have hdist : dist z w < min R s := by
     rw [dist_eq_norm,hd,norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_pos hh]
-    exact (mul_le_mul_of_nonneg_left ((norm_leftVector u).trans (add_le_add_left hu 1)) hh.le).trans_lt
+    exact (mul_le_mul_of_nonneg_left ((norm_leftVector u).trans (add_le_add_right hu 1)) hh.le).trans_lt
       ((lt_div_iff₀ (by linarith only [hL] : 0<1+L)).mp ‹h < min R s / (1+L)›)
   have hz : z ∈ ball w R := hdist.trans_le (min_le_left _ _)
   have hz' : z≠w := by
@@ -75,8 +75,12 @@ theorem xi_left_profile (w : ℂ) {L : ℝ} (hL : 0≤L) :
   have hax := xi_analyticOnNhd_univ z (mem_univ _)
   have hcl : ContinuousAt (logDeriv xi) z := hax.deriv.continuousAt.div hax.continuousAt hxi
   have hpath : Continuous (fun v => leftSegment w h v) := by unfold leftSegment leftVector; fun_prop
-  refine ⟨((continuousAt_const.mul (Complex.continuous_re.continuousAt.comp
-    (hcl.comp hpath.continuousAt))).neg.max continuousAt_const),?_⟩
+  have hc1 : ContinuousAt (fun v => logDeriv xi (leftSegment w h v)) u :=
+    ContinuousAt.comp (f := fun v => leftSegment w h v) hcl hpath.continuousAt
+  have hc2 : ContinuousAt (fun v => (logDeriv xi (leftSegment w h v)).re) u :=
+    Complex.continuous_re.continuousAt.comp hc1
+  refine ⟨show ContinuousAt (fun v => max (-(h*(logDeriv xi (leftSegment w h v)).re)) 0) u from
+    (continuousAt_const.mul hc2).neg.max continuousAt_const,?_⟩
   have he : (h:ℂ)*logDeriv xi z=(m:ℂ)/leftVector u+(h:ℂ)*logDeriv g z := by
     rw [logDeriv_xi_eq_pole_add ha hg hfact hz hz',hd]
     dsimp only [m]
@@ -88,8 +92,9 @@ theorem xi_left_profile (w : ℂ) {L : ℝ} (hL : 0≤L) :
     rw [show -(h*(logDeriv xi z).re)-(m:ℝ)/(1+u^2) = -(h*(logDeriv g z).re) by linarith only [hre],
       abs_neg,abs_mul,abs_of_pos hh]
     exact mul_le_mul_of_nonneg_left ((Complex.abs_re_le_norm _).trans (hs' (hdist.trans_le (min_le_right _ _))).le) hh.le
-  exact (by simpa only [max_eq_left hm₀] using
-    abs_max_sub_max_le_abs (-(h*(logDeriv xi z).re)) ((m:ℝ)/(1+u^2)) 0).trans herr
+  have hmax := abs_max_sub_max_le_abs (-(h*(logDeriv xi z).re)) ((m:ℝ)/(1+u^2)) 0
+  rw [max_eq_left hm₀] at hmax
+  exact hmax.trans herr
 
 /-- Integrated negative slope on the left segment with endpoints at
 relative heights a,b, written in the scaled ordinate. -/
@@ -103,11 +108,13 @@ theorem xi_left_mass (w : ℂ) (a b : ℝ) :
   let m := (analyticOrderAt xi w).toNat
   let k := fun u : ℝ => (m:ℝ)*(1+u^2)⁻¹
   have hk : Continuous k := continuous_const.mul
-    ((continuous_const.add (continuous_id.pow 2)).inv₀ (fun u => by positivity))
+    ((by fun_prop : Continuous fun u : ℝ => 1+u^2).inv₀ (fun u => by positivity))
   have hi : (∫ u in a..b,k u)=(m:ℝ)*(Real.arctan b-Real.arctan a) := by
     dsimp only [k]
-    rw [intervalIntegral.integral_const_mul,intervalIntegral.integral_inv_one_add_sq]
-  have hu (u : ℝ) (hx : u ∈ uIcc a b) : |u|≤max |a| |b| := by
+    rw [intervalIntegral.integral_const_mul]
+    congr 1
+    simpa using integral_inv_one_add_sq (a := a) (b := b)
+  have hu (u : ℝ) (hx : u ∈ uIcc a b) : |u| ≤ max |a| |b| := by
     rw [abs_le]
     rcases le_total a b with h|h
     · rw [uIcc_of_le h] at hx
@@ -118,16 +125,16 @@ theorem xi_left_mass (w : ℂ) (a b : ℝ) :
         hx.2.trans ((le_abs_self _).trans (le_max_left _ _))⟩
   obtain ⟨C,_,he⟩ := xi_left_profile w (L := max |a| |b|) ((abs_nonneg a).trans (le_max_left _ _))
   apply tendsto_iff_norm_sub_tendsto_zero.mpr
-  apply squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _)
+  apply squeeze_zero' (g := fun h => h*C*|b-a|) (Eventually.of_forall fun _ => norm_nonneg _)
   · filter_upwards [he] with h hh
     have hf : IntervalIntegrable (leftDensity w h) volume a b :=
       (show ContinuousOn (leftDensity w h) (uIcc a b) from fun u hx =>
         (hh u (hu u hx)).1.continuousWithinAt).intervalIntegrable
-    rw [leftMass,←hi,←intervalIntegral.integral_sub hf hk.intervalIntegrable]
+    rw [leftMass,←hi,←intervalIntegral.integral_sub hf (hk.intervalIntegrable a b)]
     apply intervalIntegral.norm_integral_le_of_norm_le_const
     intro u hj
     simpa only [Real.norm_eq_abs,k,←div_eq_mul_inv,m] using (hh u (hu u (uIoc_subset_uIcc hj))).2
-  · simpa only [zero_mul] using
+  · simpa only [zero_mul,id_eq] using
       (((tendsto_id.mono_left nhdsWithin_le_nhds : Tendsto id (𝓝[>] (0:ℝ)) (𝓝 0)).mul_const C).mul_const |b-a|)
 
 /-- On the symmetric segment each zero contributes exactly π/2 per copy. -/

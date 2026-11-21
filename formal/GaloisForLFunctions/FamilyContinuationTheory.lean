@@ -77,6 +77,7 @@ import GaloisForLFunctions.FamilyContinuationTheory.TheCubicCoverSpecializationO
 import GaloisForLFunctions.FamilyContinuationTheory.TheTrueVertexBelowSevenEighths
 import GaloisForLFunctions.FamilyContinuationTheory.CyclotomicParityAndTwistCouplingObstructions
 import GaloisForLFunctions.FamilyContinuationTheory.TheCubicProbeOnAThreeHalvesPowerMesh
+import GaloisForLFunctions.FamilyContinuationTheory.CubicDyadicSampling
 
 /-!
 # Family continuation theory

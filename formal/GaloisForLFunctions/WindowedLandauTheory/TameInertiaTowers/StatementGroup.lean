@@ -1,12 +1,11 @@
 import Mathlib
 
 
-namespace WindowedLandauTheory
 
 open Subgroup
 open scoped commutatorElement
 
-namespace TwoAdicCyclotomicDecomposition
+namespace WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
 abbrev GalL (n : ℕ) : Type := (ZMod (2 ^ n))ˣ × ℤˣ × ℤˣ
 
@@ -139,7 +138,6 @@ def GenusAbelian : Prop :=
     Nat.card G = Nat.card A * Nat.card B * Nat.card C →
     ∀ a ∈ A, ∀ b ∈ B, ∀ c ∈ C, a * b * c = 1 → a = 1 ∧ b = 1 ∧ c = 1
 
-end TwoAdicCyclotomicDecomposition
+end WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
 
-end WindowedLandauTheory

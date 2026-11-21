@@ -34,7 +34,8 @@ theorem pole_scale_prime_trace {ι : Type*} {l : Filter ι} {H U : ι → ℝ} {
     tendsto_const_nhds.add ((Complex.continuous_ofReal.tendsto u).comp hu |>.mul_const I)
   have hH := (Complex.continuous_ofReal.tendsto 0).comp (tendsto_nhdsWithin_iff.mp hh).1
   have hz : Tendsto z l (𝓝 (1:ℂ)) := by
-    simpa only [z,Complex.ofReal_zero,zero_mul,add_zero] using (tendsto_const_nhds (x:=(1:ℂ))).add (hH.mul hv)
+    simpa only [z,Complex.ofReal_zero,zero_mul,add_zero,Function.comp_apply] using
+      (tendsto_const_nhds (x:=(1:ℂ))).add (hH.mul hv)
   have hpos : ∀ᶠ i in l, 0<H i := hh.eventually self_mem_nhdsWithin
   have hz' : Tendsto z l (𝓝[≠] (1:ℂ)) := by
     refine tendsto_nhdsWithin_iff.mpr ⟨hz,?_⟩
@@ -132,7 +133,7 @@ theorem equilibriumMiddle_eventual_activation {ι : Type*} {l : Filter ι} {H U 
     change max (middleContrast _ _) 0/_=0
     rw [max_eq_right hm.le,zero_div]
   · intro h
-    apply (equilibriumMiddle_pole_scale hh hu hune).eventually_gt_const
+    apply (equilibriumMiddle_pole_scale hh hu hune).eventually_const_lt
     rw [max_eq_left (sub_nonneg.mpr h.le)]
     exact div_pos (sub_pos.mpr h) (mul_pos (by norm_num) (sq_pos_of_ne_zero hune))
 

@@ -70,7 +70,7 @@ theorem thetaTiltVariance_lt_iff (a b : ℝ) : thetaTiltVariance a < thetaTiltVa
     · rw [abs_of_nonneg h]
     · rw [abs_of_nonpos h, hneg]
   rw [← habs a, ← habs b, ← susceptibility, ← susceptibility]
-  exact susceptibility_strictAntiOn.lt_iff_gt (abs_nonneg _) (abs_nonneg _)
+  exact susceptibility_strictAntiOn.lt_iff_gt (mem_Ici.mpr (abs_nonneg a)) (mem_Ici.mpr (abs_nonneg b))
 
 /-- Antisymmetric information cost for two packets equally spaced about a fixed tilt. -/
 private def direction (m h : ℝ) := tiltGap (m-h) (m+h) - tiltGap (m+h) (m-h)
@@ -84,11 +84,10 @@ private theorem direction_deriv (m h : ℝ) :
   have H := ((((hpart _).comp h hp).sub ((hpart _).comp h hn)).const_mul 2).sub
     (((hasDerivAt_id h).const_mul 2).mul
       (((hasDerivAt_thetaTiltMean_global _).comp h hp).add ((hasDerivAt_thetaTiltMean_global _).comp h hn)))
-  convert H using 1
-  · funext t
-    dsimp [direction, tiltGap]
+  refine (H.congr_deriv ?_).congr_of_eventuallyEq (Eventually.of_forall fun t => ?_)
+  · simp only [Pi.add_apply, Function.comp_apply, id_eq]
     ring
-  · dsimp
+  · simp only [direction, tiltGap, Pi.sub_apply, Pi.mul_apply, Pi.add_apply, Function.comp_apply, id_eq]
     ring
 
 private theorem direction_pos {m h : ℝ} (hm : 0 < m) (hh : 0 < h) : 0 < direction m h := by
@@ -100,10 +99,11 @@ private theorem direction_pos {m h : ℝ} (hm : 0 < m) (hh : 0 < h) : 0 < direct
     rw [(direction_deriv m t).deriv]
     apply mul_pos (mul_pos two_pos ht)
     apply sub_pos.mpr ((thetaTiltVariance_lt_iff _ _).mpr ?_)
+    have ht' : (0:ℝ) < t := ht
     rw [abs_of_pos (add_pos hm ht), abs_lt]
     constructor <;> linarith
   have hz : direction m 0 = 0 := by simp [direction]
-  exact hz ▸ hs (le_refl _) hh.le hh
+  exact hz ▸ hs (mem_Ici.mpr le_rfl) (mem_Ici.mpr hh.le) hh
 
 private theorem gap_reflect (a b : ℝ) : tiltGap (-a) (-b) = tiltGap a b := by
   simp only [tiltGap, thetaTiltLogPartition_neg, thetaTiltMean_neg]
@@ -196,12 +196,14 @@ theorem thetaJeffreys_strict_reverse_triangle (a : ℝ≥0) (u v : {x : ℝ // 0
   have hbc : b < c := lt_add_of_pos_right _ v.property
   have hc : c ∈ Ici (0 : ℝ) := a.2.trans (hab.trans hbc).le
   have H := strictConcaveOn_xiRealLogDeriv.slope_anti_adjacent a.2 hc hab hbc
-  rw [div_lt_div_iff₀ (sub_pos.mpr hbc) (sub_pos.mpr hab)] at H
+  have H' : (xiRealLogDeriv c - xiRealLogDeriv b) * (b - (a:ℝ)) <
+      (xiRealLogDeriv b - xiRealLogDeriv (a:ℝ)) * (c - b) :=
+    (div_lt_div_iff₀ (sub_pos.mpr hbc) (sub_pos.mpr hab)).mp H
   have hUV : 0 ≤ (b-a)*(xiRealLogDeriv c-xiRealLogDeriv b) :=
     mul_nonneg (sub_nonneg.mpr hab.le) (sub_nonneg.mpr (strictMono_xiRealLogDeriv hbc).le)
   have hh : Real.sqrt ((b-a)*(xiRealLogDeriv c-xiRealLogDeriv b)) <
       Real.sqrt ((c-b)*(xiRealLogDeriv b-xiRealLogDeriv a)) :=
-    Real.sqrt_lt_sqrt hUV (by linarith only [H])
+    Real.sqrt_lt_sqrt hUV (by linarith only [H'])
   have he := segment_defect hab.le hbc.le
   have hs := sq_pos_of_ne_zero (sub_ne_zero.mpr hh.ne)
   change thetaJeffreysLength a b + thetaJeffreysLength b c < thetaJeffreysLength a c

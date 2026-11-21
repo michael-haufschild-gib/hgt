@@ -5,13 +5,12 @@ import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.CentralOrderTw
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.IntegralCasts.CapelliIdentities.JumpSets
 
 
-namespace WindowedLandauTheory
 
 open NumberField IntermediateField
 
 noncomputable section
 
-namespace FrobeniusOrbits
+namespace WindowedLandauTheory.FrobeniusOrbits
 
 open WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
@@ -86,7 +85,7 @@ theorem hostConj_of (hGal : HostGalois) (hSpec : HostGalSpec) : HostConj := by
     exact hconj φ
 
 theorem hostReal_of (hGal : HostGalois) (hSpec : HostGalSpec) (hConj : HostConj) : HostReal :=
-  _root_.WindowedLandauTheory.UpperTheory.Reformulated.B.JumpSetsAlt.hostReal_of hGal hSpec hConj
+  _root_.UpperTheory.Reformulated.B.JumpSetsAlt.hostReal_of hGal hSpec hConj
 
-end FrobeniusOrbits
+end WindowedLandauTheory.FrobeniusOrbits
 

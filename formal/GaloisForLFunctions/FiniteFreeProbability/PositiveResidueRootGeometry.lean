@@ -56,11 +56,11 @@ repeated pole locations. -/
 theorem residue_zero_mem_hull (z : ℂ) (hs : s.Nonempty) (ha : ∀ i ∈ s, 0 < a i)
     (hz : ∀ i ∈ s, z ≠ r i) (hzero : residueField s r a z = 0) :
     z ∈ convexHull ℝ (r '' (s : Set ι)) := by
-  calc
-    z = _ := residue_zero_eq_centerMass s r a z hs ha hz hzero
-    _ ∈ _ := s.centerMass_mem_convexHull
+  have hmem : s.centerMass (poleWeight r a z) r ∈ convexHull ℝ (r '' (s : Set ι)) :=
+    s.centerMass_mem_convexHull
       (fun i hi => div_nonneg (ha i hi).le (sq_nonneg _)) (weight_sum_pos s r a z hs ha hz)
       (fun i hi => ⟨i, hi, rfl⟩)
+  rwa [← residue_zero_eq_centerMass s r a z hs ha hz hzero] at hmem
 
 /-- At a regular zero the weighted excess in squared distance to any center equals
 the total residue. The identity also holds for signed residues. -/
@@ -69,10 +69,10 @@ theorem residue_zero_radial_identity (z c : ℂ) (hz : ∀ i ∈ s, z ≠ r i)
     ∑ i ∈ s, poleWeight r a z i * (‖r i-c‖^2-‖z-c‖^2) = ∑ i ∈ s, a i := by
   have hf := pole_force s r a z hz
   rw [hzero, map_zero] at hf
-  have hinner := congrArg (fun v : ℂ => ⟪z-c,v⟫_ℝ) hf
+  have hinner := congrArg (fun v : ℂ => ⟪z-c,v⟫) hf
   simp only [inner_sum, real_inner_smul_right, inner_zero_right] at hinner
   have hterm (i : ι) (hi : i ∈ s) : poleWeight r a z i * (‖r i-c‖^2-‖z-c‖^2) =
-      a i - 2 * (poleWeight r a z i * ⟪z-c,z-r i⟫_ℝ) := by
+      a i - 2 * (poleWeight r a z i * ⟪z-c,z-r i⟫) := by
     rw [show r i-c = (z-c)-(z-r i) by abel, norm_sub_sq_real]
     have he : poleWeight r a z i * ‖z-r i‖^2 = a i :=
       div_mul_cancel₀ _ (pow_ne_zero _ (norm_ne_zero_iff.mpr (sub_ne_zero.mpr (hz i hi))))

@@ -2,12 +2,11 @@ import Mathlib
 import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.StatementGroup
 
 
-namespace WindowedLandauTheory
 
 open Subgroup
 open scoped commutatorElement
 
-namespace TwoAdicCyclotomicDecomposition
+namespace WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
 theorem centralExtAbelian : CentralExtAbelian := by
   intro H G _ _ π _hsurj hker D hD hcase x y
@@ -156,5 +155,5 @@ theorem rankBound : RankBound := by
   · intro h
     interval_cases r <;> decide
 
-end TwoAdicCyclotomicDecomposition
+end WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 

@@ -22,12 +22,12 @@ private theorem edge_symm (m n : ℕ) : edge m n=edge n m := add_comm _ _
 private theorem edge_nonneg (m n : ℕ) : 0 ≤ edge m n := by
   unfold edge contactW
   split_ifs <;> positivity
-private theorem edge_diag {m : ℕ} (hm : 0<m) : edge m m=0 := by
+private theorem edge_diag {m : ℕ} (hm : 0< m) : edge m m=0 := by
   simp [edge,contactW,Nat.div_self hm]
 
 /-- The sign of the Liouville function, acting on real comb profiles. -/
 def paritySign (m : ℕ) : ℝ := liouville m
-private theorem sign_sq {m : ℕ} (hm : 0<m) : paritySign m^2=1 := by
+private theorem sign_sq {m : ℕ} (hm : 0< m) : paritySign m^2=1 := by
   simp only [paritySign,liouville_apply hm.ne',Int.cast_pow,Int.cast_neg,Int.cast_one]
   rw [←pow_mul,Nat.mul_comm, pow_mul]
   norm_num
@@ -36,8 +36,8 @@ private theorem sign_prime {p : ℕ} (hp : p.Prime) (m : ℕ) :
   have hw := cardFactors_eq_one_iff_prime.mpr hp
   simp [paritySign,liouville_apply_mul,liouville_apply hp.ne_zero,hw]
 
-private theorem edge_mul {m k : ℕ} (hm : 0<m) (hk : 1<k) :
-    edge m (m*k)=Λ k := by
+private theorem edge_mul {m k : ℕ} (hm : 0< m) (hk : 1<k) :
+    edge m (m*k)=ArithmeticFunction.vonMangoldt k := by
   have hn : ¬m*k∣m := fun hd => (Nat.not_lt_of_ge (Nat.le_of_dvd hm hd))
     (by simpa using Nat.mul_lt_mul_of_pos_left hk hm)
   simp only [edge,contactW,dvd_mul_right,if_true,if_neg hn,add_zero,Nat.mul_div_cancel_left _ hm]
@@ -48,7 +48,7 @@ private theorem short_flip_ordered {N B m n : ℕ} (hm : m∈Ioc N B) (hn : n∈
   · obtain ⟨k,rfl⟩ := hd
     have hm0 := (Nat.zero_le _).trans_lt (mem_Ioc.mp hm).1
     have hk : 1<k := by
-      have h' : m*1<m*k := by simpa using hmn
+      have h' : m*1< m*k := by simpa using hmn
       exact Nat.lt_of_mul_lt_mul_left h'
     have hk' : k<4 := by
       have h' : m*k < m*4 := calc
@@ -74,11 +74,11 @@ private theorem short_flip {N B : ℕ} (hB : B<4*(N+1)) {m n : ℕ}
   · rw [edge_diag ((Nat.zero_le _).trans_lt (mem_Ioc.mp hm).1),mul_zero,neg_zero]
   · simpa only [edge_symm n m,mul_comm (paritySign n) (paritySign m)] using short_flip_ordered hn hm h hB
 
-private theorem double_edge {m : ℕ} (h : 0<m) : edge m (2*m)=Real.log 2 := by
-  rw [Nat.mul_comm 2,edge_mul h (by decide),vonMangoldt_apply_prime Nat.prime_two]
-private theorem quadruple_edge {m : ℕ} (h : 0<m) : edge m (4*m)=Real.log 2 := by
+private theorem double_edge {m : ℕ} (h : 0< m) : edge m (2*m)=Real.log 2 := by
+  rw [Nat.mul_comm 2,edge_mul h (by decide),vonMangoldt_apply_prime Nat.prime_two,Nat.cast_ofNat]
+private theorem quadruple_edge {m : ℕ} (h : 0< m) : edge m (4*m)=Real.log 2 := by
   rw [Nat.mul_comm 4,edge_mul h (by decide),show 4=2^2 by norm_num,
-    vonMangoldt_apply_pow (by decide),vonMangoldt_apply_prime Nat.prime_two]
+    vonMangoldt_apply_pow (by decide),vonMangoldt_apply_prime Nat.prime_two,Nat.cast_ofNat]
 
 /-- The first nonzero odd moment of the contact adjacency on a finite comb. -/
 def cubicTrace (S : Finset ℕ) : ℝ :=
@@ -86,11 +86,11 @@ def cubicTrace (S : Finset ℕ) : ℝ :=
 
 /-- This is the ordinary trace of the cube of the finite contact matrix. -/
 theorem cubicTrace_eq_matrix (S : Finset ℕ) :
-    cubicTrace S = Matrix.trace ((fun i j : S => edge i.val j.val : Matrix S S ℝ)^3) := by
+    cubicTrace S = Matrix.trace ((Matrix.of fun i j : S => edge i.val j.val)^3) := by
   classical
   simp only [cubicTrace,pow_succ,pow_zero,one_mul,Matrix.mul_apply,Matrix.trace,
-    Matrix.diag_apply,Finset.sum_mul]
-  simp only [Finset.sum_coe_sort]
+    Matrix.diag_apply,Matrix.of_apply,Finset.sum_mul]
+  simp_rw [← Finset.sum_coe_sort S]
   apply sum_congr rfl
   intro i _
   rw [sum_comm]
@@ -101,8 +101,9 @@ theorem cubic_prime_contact_matrix (N B : ℕ) :
 
 private theorem cube_mono {S : Finset ℕ} {i j k : ℕ} (hj : j∈S) (hk : k∈S) :
     edge i j*edge j k*edge k i ≤ ∑ u∈S,∑ v∈S,edge i u*edge u v*edge v i :=
-  (single_le_sum (fun v _ => mul_nonneg (mul_nonneg (edge_nonneg _ _) (edge_nonneg _ _)) (edge_nonneg _ _)) hk).trans
-    (single_le_sum (fun u _ => sum_nonneg fun _ _ => mul_nonneg
+  (single_le_sum (f := fun v => edge i j*edge j v*edge v i)
+      (fun v _ => mul_nonneg (mul_nonneg (edge_nonneg _ _) (edge_nonneg _ _)) (edge_nonneg _ _)) hk).trans
+    (single_le_sum (f := fun u => ∑ v∈S,edge i u*edge u v*edge v i) (fun u _ => sum_nonneg fun _ _ => mul_nonneg
       (mul_nonneg (edge_nonneg _ _) (edge_nonneg _ _)) (edge_nonneg _ _)) hj)
 
 /-- Each possible start of a 1:2:4 triple contributes to the trace even

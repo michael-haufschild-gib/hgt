@@ -36,7 +36,7 @@ private theorem iterate_difference {U : ℝ → ℂ} {d C T : ℝ} (hd : 0<d) (h
     | zero => simp
     | succ j ih =>
       rw [Nat.cast_succ,←add_assoc]
-      calc ‖U (y+j+1)-U y‖ ≤ ‖U (y+j+1)-U (y+j)‖+‖U (y+j)-U y‖ := norm_sub_le _ _ _
+      calc ‖U (y+j+1)-U y‖ ≤ ‖U (y+j+1)-U (y+j)‖+‖U (y+j)-U y‖ := norm_sub_le_norm_sub_add_norm_sub _ _ _
            _ ≤ _ := add_le_add (hinc j) ih
            _ = _ := by
              dsimp only [A]
@@ -189,7 +189,7 @@ theorem power_bound_iff_dyadic_and_triadic {F : ℝ → ℂ} (hf : ContinuousOn 
       apply squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _)
       · exact htime.eventually (eventually_atTop.mpr ⟨T,hb⟩)
       · have hdec := Real.tendsto_exp_atBot.comp ((tendsto_const_mul_atBot_of_neg (neg_lt_zero.mpr hd)).mpr htime)
-        simpa only [mul_zero] using hdec.const_mul C'
+        simpa only [mul_zero,Function.comp_apply] using hdec.const_mul C'
   · rintro ⟨⟨C,T,hC,hstep⟩,hs⟩
     simp_rw [← hpoint] at hs
     let B := C/(1-Real.exp (-d))
@@ -294,7 +294,7 @@ theorem two_thirds_of_dyadic_probe_sampling :
     refine ⟨cubicProbeReading η S,max C 0,Z,hZ,fun z hz => ?_,fun z hz => ?_⟩
     · exact (hbound z hz).trans (mul_le_mul_of_nonneg_right (le_max_left _ _)
         (Real.rpow_nonneg (by linarith only [hZ,hz]) _))
-    · simp only [Complex.ofReal_zero,sub_zero,←cubicProbeReading,sub_self,norm_zero]
+    · simp only [cubicProbeReading,Complex.ofReal_zero,sub_zero,sub_self,norm_zero]
       exact mul_nonneg (le_max_right _ _) (Real.rpow_nonneg (by linarith only [hZ,hz]) _)
 
   exact ⟨hHP,zetaZeroAbscissa_le_of_heckeHalfPlane_thirdCyclotomic hHP⟩

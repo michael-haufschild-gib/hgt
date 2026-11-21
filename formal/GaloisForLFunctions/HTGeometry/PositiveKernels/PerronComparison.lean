@@ -39,7 +39,7 @@ private theorem mulVec_pos (A : EntrywisePositiveKernel ι) (x : stdSimplex ℝ 
 /-- A strictly positive kernel has a positive eigenvalue with a normalized
 strictly positive eigenvector. -/
 theorem exists_positive_eigenpair (A : EntrywisePositiveKernel ι) :
-    ∃ λ : ℝ, 0 < λ ∧ ∃ x ∈ stdSimplex ℝ ι, (∀ i, 0 < x i) ∧ A.val *ᵥ x = λ • x := by
+    ∃ lam : ℝ, 0 < lam ∧ ∃ x ∈ stdSimplex ℝ ι, (∀ i, 0 < x i) ∧ A.val *ᵥ x = lam • x := by
   let a (x : stdSimplex ℝ ι) := ∑ i, (A.val *ᵥ x.val) i
   have ha (x : stdSimplex ℝ ι) : 0 < a x :=
     sum_pos (fun i _ => mulVec_pos A x i) univ_nonempty
@@ -82,16 +82,16 @@ private theorem sum_mulVec_eq_sum_vecMul (A : Matrix ι ι ℝ) (w x : ι → �
   exact sum_congr rfl fun j _ => sum_congr rfl fun i _ => (mul_assoc _ _ _).symm
 
 omit [Nonempty ι] in
-private theorem sum_mulVec_of_leftEigen (A : Matrix ι ι ℝ) (w x : ι → ℝ) (λ : ℝ)
-    (hw : w ᵥ* A = λ • w) :
-    ∑ i, w i * (A *ᵥ x) i = λ * ∑ i, w i * x i := by
+private theorem sum_mulVec_of_leftEigen (A : Matrix ι ι ℝ) (w x : ι → ℝ) (lam : ℝ)
+    (hw : w ᵥ* A = lam • w) :
+    ∑ i, w i * (A *ᵥ x) i = lam * ∑ i, w i * x i := by
   rw [sum_mulVec_eq_sum_vecMul, hw, mul_sum]
   exact sum_congr rfl fun i _ => mul_assoc _ _ _
 
 omit [Nonempty ι] in
-private theorem sum_mulVec_of_rightEigen (A : Matrix ι ι ℝ) (w x : ι → ℝ) (λ : ℝ)
-    (hx : A *ᵥ x = λ • x) :
-    ∑ i, w i * (A *ᵥ x) i = λ * ∑ i, w i * x i := by
+private theorem sum_mulVec_of_rightEigen (A : Matrix ι ι ℝ) (w x : ι → ℝ) (lam : ℝ)
+    (hx : A *ᵥ x = lam • x) :
+    ∑ i, w i * (A *ᵥ x) i = lam * ∑ i, w i * x i := by
   rw [hx, mul_sum]
   exact sum_congr rfl fun i _ => mul_left_comm _ _ _
 
@@ -135,16 +135,16 @@ theorem perronRoot_bounds (A : EntrywisePositiveKernel ι) (x : ι → ℝ) (hx 
 
 /-- A strictly positive eigenvector determines its eigenvalue uniquely. -/
 theorem eq_perronRoot_of_positive_eigenvector (A : EntrywisePositiveKernel ι) (x : ι → ℝ)
-    (hx : ∀ i, 0 < x i) (λ : ℝ) (h : A.val *ᵥ x = λ • x) : λ = A.perronRoot := by
-  have he (i : ι) : (A.val *ᵥ x) i = λ * x i := congrFun h i
-  obtain ⟨hlo, hhi⟩ := perronRoot_bounds A x hx λ λ (fun i => (he i).ge) (fun i => (he i).le)
+    (hx : ∀ i, 0 < x i) (lam : ℝ) (h : A.val *ᵥ x = lam • x) : lam = A.perronRoot := by
+  have he (i : ι) : (A.val *ᵥ x) i = lam * x i := congrFun h i
+  obtain ⟨hlo, hhi⟩ := perronRoot_bounds A x hx lam lam (fun i => (he i).ge) (fun i => (he i).le)
   exact le_antisymm hlo hhi
 
 /-- No eigenvalue of the complexified kernel has modulus above the Perron
 root. A maximal coordinate in the weighted sup norm gives the estimate. -/
-theorem norm_eigenvalue_le_perronRoot (A : EntrywisePositiveKernel ι) (z : ι → ℂ) (λ : ℂ)
-    (hz : z ≠ 0) (he : A.val.map (fun a : ℝ => (a : ℂ)) *ᵥ z = λ • z) :
-    ‖λ‖ ≤ A.perronRoot := by
+theorem norm_eigenvalue_le_perronRoot (A : EntrywisePositiveKernel ι) (z : ι → ℂ) (lam : ℂ)
+    (hz : z ≠ 0) (he : A.val.map (fun a : ℝ => (a : ℂ)) *ᵥ z = lam • z) :
+    ‖lam‖ ≤ A.perronRoot := by
   obtain ⟨_, x, _, hxp, hx⟩ := perronRoot_spec A
   let f (i : ι) := ‖z i‖ / x i
   let M := univ.sup' univ_nonempty f
@@ -156,10 +156,10 @@ theorem norm_eigenvalue_le_perronRoot (A : EntrywisePositiveKernel ι) (z : ι �
     exact (div_pos (norm_pos_iff.mpr hj) (hxp j)).trans_le (hle j)
   have hw (j : ι) : ‖z j‖ ≤ M * x j := (div_le_iff₀ (hxp j)).mp (hle j)
   have hi' : ‖z i‖ = M * x i := (div_eq_iff (hxp i).ne').mp hi.symm
-  have he' : (A.val.map (fun a : ℝ => (a : ℂ)) *ᵥ z) i = λ * z i := congrFun he i
+  have he' : (A.val.map (fun a : ℝ => (a : ℂ)) *ᵥ z) i = lam * z i := congrFun he i
   apply (mul_le_mul_iff_of_pos_right (mul_pos hM (hxp i))).mp
   calc
-    ‖λ‖ * (M * x i) = ‖λ * z i‖ := by rw [norm_mul, hi']
+    ‖lam‖ * (M * x i) = ‖lam * z i‖ := by rw [norm_mul, hi']
     _ = ‖(A.val.map (fun a : ℝ => (a : ℂ)) *ᵥ z) i‖ := by rw [he']
     _ ≤ ∑ j, A.val i j * ‖z j‖ := by
       change ‖∑ j, (A.val i j : ℂ) * z j‖ ≤ _

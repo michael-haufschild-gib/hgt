@@ -2,11 +2,10 @@ import Mathlib
 import GaloisForLFunctions.WindowedLandauTheory.FrobeniusOrbits.Statement
 
 
-namespace WindowedLandauTheory
 
 noncomputable section
 
-namespace HC
+namespace WindowedLandauTheory.HC
 
 open WindowedLandauTheory.FrobeniusOrbits
 
@@ -148,7 +147,7 @@ theorem natCard_GG : Nat.card φ.GG = 4 * φ.ord := by
 
 end Frame
 
-end HC
+end WindowedLandauTheory.HC
 
 end
 

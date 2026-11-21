@@ -3,9 +3,8 @@ import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.StatementGroup
 import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.CentralOrderTwo.TwoAdic
 
 
-namespace WindowedLandauTheory
 
-namespace TwoAdicCyclotomicDecomposition
+namespace WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
 theorem normalOrderTwoCentral : NormalOrderTwoCentral := by
   intro H _ N hN h2 z hz
@@ -128,5 +127,5 @@ theorem pGroupGen : PGroupGen := by
   rw [hS] at this
   exact hMx.1 (top_le_iff.mp this)
 
-end TwoAdicCyclotomicDecomposition
+end WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 

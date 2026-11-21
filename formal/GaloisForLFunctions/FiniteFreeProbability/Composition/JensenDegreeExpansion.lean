@@ -75,7 +75,7 @@ private theorem moment_geometric {w : ℕ → ℝ} (hw : ∀ j, w j ≤ 1) (n k 
   have hnat : k+1 ≤ 2^k := k.lt_two_pow_self
   have hk : (k:ℝ)+1 ≤ 2^k := by exact_mod_cast hnat
   refine ((moment_mono hw n k).trans (moment_bound n k)).trans ?_
-  rw [←pow_mul, Nat.mul_comm (2*n) k, pow_mul]
+  rw [←pow_mul (2:ℝ) (2*n) k, Nat.mul_comm (2*n) k, pow_mul (2:ℝ) k (2*n)]
   exact pow_le_pow_left₀ (by positivity) hk _
 
 private theorem prefix_difference {d : ℕ} (hd : 0 < d) (n k : ℕ) :
@@ -88,7 +88,11 @@ private theorem prefix_difference {d : ℕ} (hd : 0 < d) (n k : ℕ) :
     | zero => simp [damping]
     | succ k ih => rw [Finset.sum_range_succ,← ih]; linear_combination damping_step hd k
   | succ n ih =>
-    simp only [prefixMoment,←Finset.sum_sub_distrib,Finset.mul_sum]
+    have e (w : ℕ → ℝ) (m : ℕ) :
+        prefixMoment (n+1) w m = ∑ j ∈ Finset.range m,(j:ℝ)*prefixMoment n w j := rfl
+    have e2 : prefixMoment (n+2) (damping d) k =
+        ∑ j ∈ Finset.range k,(j:ℝ)*prefixMoment (n+1) (damping d) j := rfl
+    rw [e2,e (fun _ => 1) k,e (damping d) k,←Finset.sum_sub_distrib,Finset.mul_sum]
     apply Finset.sum_congr rfl
     intro j _
     rw [← ih j]
@@ -189,8 +193,12 @@ theorem observation_tendsto {f : ℕ → ℂ} (hf : ∀ R : ℝ, Summable fun k 
     exact (tendsto_const_nhds.mul hw).mul (hu.pow k)
   · exact hr.mono fun d hd k => term_bound (damping_mem d) hd.le n f k
 
+private theorem coeff_xiSeries (k : ℕ) : PowerSeries.coeff k xiSeries = xiCoeff k := by
+  rw [← mk_xiCoeff, PowerSeries.coeff_mk]
+
 private theorem xi_summable : ∀ R : ℝ, Summable fun k => ‖xiCoeff k‖*R^k :=
-  summable_norm_mul_pow_of_summable fun z => (hasSum_xiSeries z).summable
+  summable_norm_mul_pow_of_summable fun z => by
+    simpa only [coeff_xiSeries] using (hasSum_xiSeries z).summable
 
 private theorem first_multiplier (k : ℕ) :
     prefixMoment 1 (fun _ => 1) k=(k:ℝ)*(k-1)/2 := by
@@ -201,7 +209,7 @@ private theorem first_multiplier (k : ℕ) :
 
 private theorem xi_coefficient_zero (z : ℂ) : coefficient 0 xiCoeff z=XiC z := by
   simpa only [coefficient,observation,prefixMoment,Complex.ofReal_one,mul_one] using (show
-    (∑' k, xiCoeff k*z^k) = XiC z from (hasSum_xiSeries z).tsum_eq)
+    (∑' k, xiCoeff k*z^k) = XiC z by simpa only [coeff_xiSeries] using (hasSum_xiSeries z).tsum_eq)
 
 /-- The first correction is the second derivative times half the squared
 coordinate. The constant and linear Taylor terms contribute zero. -/
@@ -246,7 +254,8 @@ theorem scaled_simple_zero_displacement {a : ℂ} (ha : XiC a=0) (hsimple : deri
   have hv : (u d-a)*dslope XiC a (u d)=XiC (u d) := by
     simpa only [smul_eq_mul,ha,sub_zero] using sub_smul_dslope XiC a (u d)
   change observation 1 (damping d) xiCoeff (u d)/dslope XiC a (u d) = _
-  rw [←he,←hv,div_eq_iff hd',mul_assoc]
+  have hd'' : dslope XiC a (u d) ≠ 0 := hd'
+  rw [←he,←hv,div_eq_iff hd'',mul_assoc]
 
 /-- In the reversed polynomial the error is bounded and has a universal
 limit. It is minus the logarithmic derivative of Ξ′ divided by two. -/
@@ -258,10 +267,14 @@ theorem reversed_simple_zero_intercept {a : ℂ} (ha : XiC a=0) (hsimple : deriv
   have ha₀ : a ≠ 0 := fun h => XiC_zero_ne (h ▸ ha)
   have hd := scaled_simple_zero_displacement ha hsimple hu hroot
   have hh := hd.neg.div (hu.mul_const a) (mul_ne_zero ha₀ ha₀)
-  convert hh.congr' (g := fun d : ℕ => (d:ℂ)/u d-d/a) ?_ using 1
-  · field_simp [hsimple,ha₀]; ring
-  · filter_upwards [hu.eventually_ne ha₀] with d hd
-    field_simp [hd,ha₀]; ring
+  have hlim : -(a^2*iteratedDeriv 2 XiC a/(2*deriv XiC a))/(a*a) =
+      -iteratedDeriv 2 XiC a/(2*deriv XiC a) := by
+    field_simp <;> ring
+  rw [hlim] at hh
+  refine hh.congr' ?_
+  filter_upwards [hu.eventually_ne ha₀] with d hd
+  simp only [Pi.div_apply]
+  field_simp <;> ring
 
 
 /-- Each simple Ξ zero supplies an extreme root at every sufficiently
@@ -286,7 +299,7 @@ theorem exists_reversed_root_with_intercept {a : ℂ} (ha : XiC a=0) (hsimple : 
   have near (ε : ℝ) (hε : 0 < ε) :
       ∀ᶠ d : ℕ in atTop,u d ∈ S d ∧ dist (u d) a < ε := by
     have he := eventually_exists_zero_scaledJensen xi_summable h₀
-      ((show (∑' k,xiCoeff k*a^k)=XiC a from (hasSum_xiSeries a).tsum_eq).trans ha)
+      ((show (∑' k,xiCoeff k*a^k)=XiC a by simpa only [coeff_xiSeries] using (hasSum_xiSeries a).tsum_eq).trans ha)
       (lt_min hε zero_lt_one)
     filter_upwards [he] with d ⟨w,hw,hz⟩
     have hw' : dist w a < min ε 1 := hw

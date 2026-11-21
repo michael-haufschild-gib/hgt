@@ -6,9 +6,8 @@ import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.CentralOrderTw
 import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.CentralOrderTwo.NormalOrderTwoCentral
 
 
-namespace WindowedLandauTheory
 
-namespace TwoAdicCyclotomicDecomposition
+namespace WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
 theorem tower_group_foundations :
     UnitsTwoPow ∧ QuotCyclic ∧ TwoAdicOrder ∧ TwoAdicVal ∧ DecompModel ∧ GmRank ∧ GensModel ∧
@@ -18,5 +17,5 @@ theorem tower_group_foundations :
    gamEModel, ggModel, centralExtAbelian, commGen, rankBound,
    normalOrderTwoCentral, twistVal, coinvLength, pGroupGen, genusModel, genusAbelian⟩
 
-end TwoAdicCyclotomicDecomposition
+end WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 

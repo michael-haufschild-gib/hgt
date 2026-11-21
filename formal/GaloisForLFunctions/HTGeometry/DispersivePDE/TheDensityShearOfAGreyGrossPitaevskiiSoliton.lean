@@ -86,7 +86,7 @@ theorem grey_current_density (θ t x : ℝ) :
   change (star (greyProfile a s t x)*deriv (greyProfile a s t) x).im =
     s*(1+ -(a^2)*solitonQ z-1)
   rw [(grey_derivatives a s t x).2.1]
-  simp [greyProfile,Complex.mul_im,z]
+  simp [greyProfile,Complex.mul_im,Complex.mul_re,z,sq]
   <;> ring
 
 private theorem grey_speed_defect (θ : ℝ) :
@@ -128,7 +128,7 @@ theorem grey_kdv_density_error (θ t x : ℝ) :
     ring
   rw [er,abs_mul,abs_neg,abs_pow]
   have h := mul_le_mul_of_nonneg_left (profile_variation u v) (sq_nonneg |a|)
-  rw [diff,abs_mul,abs_mul,abs_of_nonneg (sq_nonneg _)] at h
+  rw [diff,abs_mul,abs_mul,abs_of_nonneg (sq_nonneg (1-s))] at h
   linarith only [h]
 
 /-- At the true center the discrepancy has an exact hyperbolic tangent
@@ -166,7 +166,9 @@ theorem grey_fifth_power_observation (θ u : ℝ) (ha : Real.sin θ≠0) :
   have phase : a*(1-s)^2*t=u := by
     dsimp only [t]
     field_simp [show a≠0 from ha]
-    linear_combination a*u*((1-s)*(1+s)+a^2)*prod
+    first
+      | linear_combination u*((1-s)*(1+s)+a^2)*prod
+      | linear_combination a*u*((1-s)*(1+s)+a^2)*prod
   change a^2*(solitonT (a*(1-s)^2*t))^2=_
   rw [phase]
 

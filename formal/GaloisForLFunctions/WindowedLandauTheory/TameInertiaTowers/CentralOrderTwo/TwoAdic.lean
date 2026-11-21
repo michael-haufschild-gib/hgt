@@ -2,9 +2,8 @@ import Mathlib
 import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.StatementGroup
 
 
-namespace WindowedLandauTheory
 
-namespace TwoAdicCyclotomicDecomposition.TwoAdicValuation
+namespace WindowedLandauTheory.TwoAdicCyclotomicDecomposition.TwoAdicValuation
 
 lemma vEq (z : ℤ) (hz : z ≠ 0) : (padicValInt 2 z : ℕ∞) = emultiplicity (2 : ℤ) z := by
   haveI : Fact (Nat.Prime 2) := ⟨Nat.prime_two⟩
@@ -82,9 +81,9 @@ lemma powEq (N m : ℕ) (a : ℤ) (hz : a ^ m - 1 ≠ 0) :
   push_cast at h2 ⊢
   rw [h2, or_iff_right hz]
 
-end TwoAdicCyclotomicDecomposition.TwoAdicValuation
+end WindowedLandauTheory.TwoAdicCyclotomicDecomposition.TwoAdicValuation
 
-namespace TwoAdicCyclotomicDecomposition
+namespace WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
 open TwoAdicValuation in
 theorem twoAdicVal : TwoAdicVal := by
@@ -130,5 +129,5 @@ theorem twoAdicOrder : TwoAdicOrder := by
       have := hv (n + 1) (by omega)
       omega
 
-end TwoAdicCyclotomicDecomposition
+end WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 

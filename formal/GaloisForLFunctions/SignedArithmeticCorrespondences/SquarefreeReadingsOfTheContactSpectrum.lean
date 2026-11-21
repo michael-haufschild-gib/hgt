@@ -20,16 +20,15 @@ def flatSites (N : ℕ) : Finset ℕ :=
     Matrix.trace ((primeContactMatrix 0 n)^3) = Matrix.trace ((primeContactMatrix 0 (n-1))^3)
 
 theorem flatSites_eq (N : ℕ) : flatSites N=(Icc 1 N).filter Squarefree := by
-  classical
   ext n
   simp only [flatSites,mem_filter]
   constructor
   · rintro ⟨hn,he⟩
-    obtain ⟨m,rfl⟩ := Nat.exists_eq_succ_of_ne_zero ((mem_Icc.mp hn).1.ne')
-    exact ⟨hn,(squarefree_iff_cubic_prefix_unchanged m).mpr (by simpa using he)⟩
+    obtain ⟨m,rfl⟩ := Nat.exists_eq_add_one_of_ne_zero (Nat.one_le_iff_ne_zero.mp (mem_Icc.mp hn).1)
+    exact ⟨hn,(squarefree_iff_cubic_prefix_unchanged m).mpr (by rw [Nat.add_sub_cancel] at he; exact he)⟩
   · rintro ⟨hn,h⟩
-    obtain ⟨m,rfl⟩ := Nat.exists_eq_succ_of_ne_zero ((mem_Icc.mp hn).1.ne')
-    exact ⟨hn,by simpa using (squarefree_iff_cubic_prefix_unchanged m).mp h⟩
+    obtain ⟨m,rfl⟩ := Nat.exists_eq_add_one_of_ne_zero (Nat.one_le_iff_ne_zero.mp (mem_Icc.mp hn).1)
+    exact ⟨hn,by rw [Nat.add_sub_cancel]; exact (squarefree_iff_cubic_prefix_unchanged m).mp h⟩
 
 /-- Proportion of consecutive cubic spectra which agree, with square-root error. -/
 theorem flat_site_count (N : ℕ) : |((flatSites N).card:ℝ)-(N:ℝ)*(6/Real.pi^2)|≤2*Real.sqrt N+1 := by

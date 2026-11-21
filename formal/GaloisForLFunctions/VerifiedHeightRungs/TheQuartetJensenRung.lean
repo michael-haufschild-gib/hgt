@@ -20,7 +20,7 @@ namespace GaloisForLFunctions.VerifiedHeightRungs
 noncomputable section
 
 private theorem approx_even (n : ℕ) : (xiRealApprox n).comp (-X) = xiRealApprox n := by
-  apply Polynomial.map_injective Complex.ofRealHom.injective
+  apply Polynomial.map_injective Complex.ofRealHom Complex.ofRealHom.injective
   rw [Polynomial.map_comp, Polynomial.map_neg, Polynomial.map_X, map_xiRealApprox]
   apply Polynomial.funext
   intro z
@@ -33,7 +33,8 @@ private theorem approx_even (n : ℕ) : (xiRealApprox n).comp (-X) = xiRealAppro
       intro q _
       rw [xiSpectralPoint_reflect, div_neg, neg_div]
     _ = ∏ q ∈ S.image xiZeroCopyReflectEquiv, (1-z/xiSpectralPoint q) :=
-      (prod_image xiZeroCopyReflectEquiv.injective.injOn).symm
+      (prod_image (s := S) (f := fun q => 1-z/xiSpectralPoint q)
+        xiZeroCopyReflectEquiv.injective.injOn).symm
     _ = _ := by rw [xiPairedCopyFinset_image_reflect]
 
 private theorem recover_even (n : ℕ) :
@@ -53,7 +54,7 @@ private theorem approx_root (n : ℕ) {z : ℂ} (hz : aeval z (xiRealApprox n) =
   rw [← eval_map_algebraMap] at hz
   change ((xiRealApprox n).map Complex.ofRealHom).eval z = 0 at hz
   rw [map_xiRealApprox, eval_mul, eval_C, eval_xiZeroPoly, mul_eq_zero] at hz
-  obtain ⟨q,-,hq⟩ := prod_eq_zero_iff.mp (hz.resolve_left XiC_zero_ne_zero)
+  obtain ⟨q,-,hq⟩ := prod_eq_zero_iff.mp (hz.resolve_left RHTower.XiC_zero_ne_zero)
   exact ⟨q,(div_eq_one_iff_eq (xiSpectralPoint_ne_zero q)).mp (sub_eq_zero.mp hq).symm⟩
 
 /-- The square-coordinate Jensen condition transfers through the full Hadamard
@@ -81,7 +82,9 @@ theorem jensenNonrealCount_eq_zero_of_quartet_sector (k : ℕ)
     by_cases hj : j ≤ d
     · simp only [P, xiJensenReal_eq, jensenRev, coeff_diffOp_X_pow _ hj, PowerSeries.coeff_trunc,
         if_pos (by omega : d-j < d+1), PowerSeries.coeff_mk]
-      exact (tendsto_coeff_xiRealApprox (d-j)).mul_const _
+      have hr := (Complex.continuous_re.tendsto _).comp (tendsto_coeff_xiRealApprox (d-j))
+      simp only [Function.comp_def, Complex.ofReal_re] at hr
+      exact hr.mul_const _
     · simp only [coeff_eq_zero_of_natDegree_lt ((hdeg _).trans_lt (lt_of_not_ge hj)),
         coeff_eq_zero_of_natDegree_lt (by rw [natDegree_xiJensenReal]; omega : (xiJensenReal d).natDegree < j)]
       exact tendsto_const_nhds

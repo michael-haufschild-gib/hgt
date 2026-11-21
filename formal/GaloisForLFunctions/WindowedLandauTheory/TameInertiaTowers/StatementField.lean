@@ -2,14 +2,13 @@ import Mathlib
 import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.StatementGroup
 
 
-namespace WindowedLandauTheory
 
 open NumberField Ideal
 open scoped Pointwise
 
 noncomputable section
 
-namespace TwoAdicCyclotomicDecomposition
+namespace WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
 def IsLayer (n q d : ℕ) {L : Type*} [Field L] [Algebra ℚ L] (ζ a b : L) : Prop :=
   IsPrimitiveRoot ζ (2 ^ n) ∧ a ^ 2 = -(q : L) ∧ b ^ 2 = -(d : L) ∧
@@ -97,5 +96,5 @@ def LayerEFGTwo : Prop :=
     (span {(2 : ℤ)}).ramificationIdxIn (𝓞 (maximalRealSubfield L)) = 2 ^ (n - 1) ∧
     (span {(2 : ℤ)}).inertiaDegIn (𝓞 (maximalRealSubfield L)) = 2
 
-end TwoAdicCyclotomicDecomposition
+end WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 

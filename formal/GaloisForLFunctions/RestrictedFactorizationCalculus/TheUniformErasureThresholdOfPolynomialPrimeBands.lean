@@ -88,9 +88,12 @@ theorem arbitrarily_small_errors_erase_a_polynomial_band {δ : ℝ} (hδ : 0 < �
     change _*Real.log ((y^j:ℕ):ℝ) ≤ (Z:ℝ)*_ at h
     rw [Nat.cast_pow,Real.log_pow] at h
     have jbound := (div_lt_iff₀ hδ).mp hj
-    have num := h.trans (mul_le_mul_of_nonneg_left (show Real.log y+C ≤ 2*Real.log y by linarith) zp.le)
+    have past' : C ≤ Real.log y := past
+    have num := h.trans (mul_le_mul_of_nonneg_left (show Real.log y+C ≤ 2*Real.log y by linarith)
+      (by positivity : (0:ℝ) ≤ (y:ℝ)^j))
     have cut : ((RHTower.Sieve.smoothUpTo (Nat.primesLE y) Z).card:ℝ)*j ≤ 2*Z := by
       apply (mul_le_mul_iff_left₀ ly).mp
+      rw [show (Z:ℝ) = (y:ℝ)^j from Nat.cast_pow y j]
       linarith only [num]
     apply (div_le_iff₀ zp).mpr
     apply (mul_le_mul_iff_left₀ (Nat.cast_pos.mpr jp : 0 < (j:ℝ))).mp

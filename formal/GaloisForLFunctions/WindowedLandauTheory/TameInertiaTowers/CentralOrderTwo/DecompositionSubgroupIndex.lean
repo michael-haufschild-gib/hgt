@@ -4,14 +4,13 @@ import GaloisForLFunctions.WindowedLandauTheory.Lemmata.FirstBlockLemmaE.Imports
 import GaloisForLFunctions.WindowedLandauTheory.Lemmata.GeneralBFactRightTerForm.Imports
 
 
-namespace WindowedLandauTheory
 
 open NumberField Ideal
 open scoped Pointwise
 
 noncomputable section
 
-namespace TwoAdicCyclotomicDecomposition
+namespace WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
 theorem two_intCast_mem_iff {L : Type} [Field L] [NumberField L]
     (P : Ideal (𝓞 L)) [P.LiesOver (span {(2 : ℤ)})] (m : ℤ) :
@@ -435,5 +434,5 @@ theorem layerEFGTwo_of (hG : LayerGalois) (hR : LayerReal) : LayerEFGTwo := by
   rw [he2] at hfundK
   exact Nat.eq_of_mul_eq_mul_left hpk hfundK
 
-end TwoAdicCyclotomicDecomposition
+end WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 

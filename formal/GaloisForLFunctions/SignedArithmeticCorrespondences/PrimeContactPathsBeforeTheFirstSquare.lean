@@ -90,9 +90,8 @@ theorem short_mangoldt_contact_entry {N B x y : ℕ} (short : B < 4*(N+1))
     have step : y=2*x ∨ y=3*x := by cases u <;> simp only [FourfoldPath.hasEdge] at h <;> omega
     rw [if_pos dv]
     rcases step with rfl|rfl
-    · simp only [if_pos rfl,Nat.mul_div_cancel _ xp,vonMangoldt_apply_prime Nat.prime_two]
-    · simp only [if_neg (show 3*x ≠ 2*x by omega),if_pos rfl,Nat.mul_div_cancel _ xp,
-        vonMangoldt_apply_prime Nat.prime_three]
+    · simp [Nat.mul_div_cancel _ xp,vonMangoldt_apply_prime Nat.prime_two]
+    · simp [show 3*x ≠ 2*x by omega,Nat.mul_div_cancel _ xp,vonMangoldt_apply_prime Nat.prime_three]
   · have absent (d : ℕ) : y ≠ d*x := fun e => dv (by rw [e];exact dvd_mul_left ..)
     rw [if_neg dv,if_neg (absent 2),if_neg (absent 3)]
 
@@ -105,10 +104,12 @@ def fourSitePrimeBlock (i : ℕ) : Matrix (Fin 2) (Fin 2) ℝ :=
 
 private theorem double_entry {N B x : ℕ} (short : B < 4*(N+1)) (lo : N < x) (hi : 2*x ≤ B) :
     entry x (2*x)=Real.log 2 := by
+  dsimp only [entry]
   rw [short_mangoldt_contact_entry short lo (by omega) hi,if_pos rfl]
 
 private theorem triple_entry {N B x : ℕ} (short : B < 4*(N+1)) (lo : N < x) (hi : 3*x ≤ B) :
     entry x (3*x)=Real.log 3 := by
+  dsimp only [entry]
   rw [short_mangoldt_contact_entry short lo (by omega) hi,if_neg (by omega : 3*x≠2*x),if_pos rfl]
 
 /-- The three-vertex component has one nonzero singular value, the
@@ -125,6 +126,7 @@ private theorem four_site_block {N B i : ℕ} (short : B < 4*(N+1))
     fourSitePrimeBlock i = !![Real.log 2, Real.log 3;0, Real.log 2] := by
   obtain ⟨lo,hi⟩ := valid
   have nz : entry (3*i) (4*i)=0 := by
+    dsimp only [entry]
     rw [short_mangoldt_contact_entry short (by omega : N < 3*i) (by omega : 3*i<4*i) (by omega : 4*i≤B),
       if_neg (by omega),if_neg (by omega)]
   have d1 := double_entry short lo (by omega : 2*(2*i)≤B)

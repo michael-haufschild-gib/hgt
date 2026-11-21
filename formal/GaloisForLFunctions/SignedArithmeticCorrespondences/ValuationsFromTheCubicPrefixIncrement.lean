@@ -20,13 +20,15 @@ def jump (n : ℕ) : ℝ := Matrix.trace ((primeContactMatrix 0 n)^3)-
   Matrix.trace ((primeContactMatrix 0 (n-1))^3)
 
 private theorem jump_divisors {n : ℕ} (hn : n≠0) : jump n=6*∑ t∈n.divisors,trianglePrice t := by
-  obtain ⟨B,rfl⟩ := Nat.exists_eq_succ_of_ne_zero hn
-  simpa [jump] using cubic_prefix_increment B
+  obtain ⟨B,rfl⟩ := Nat.exists_eq_add_one_of_ne_zero hn
+  unfold jump
+  rw [Nat.add_sub_cancel]
+  exact cubic_prefix_increment B
 
 private theorem split_by_prime {n t : ℕ} (hn : n≠0) (ht : t∈n.divisors) :
     trianglePrice t=∑ p∈n.primeFactors,if p∣t then trianglePrice t else 0 := by
   classical
-  by_cases h : Λ t=0
+  by_cases h : ArithmeticFunction.vonMangoldt t=0
   · simp [trianglePrice,h]
   obtain ⟨p,b,hp,hb,hpow⟩ := (isPrimePow_nat_iff _).mp (vonMangoldt_ne_zero_iff.mp h)
   have hpdiv : p∣t := hpow ▸ dvd_pow_self p hb.ne'
@@ -44,15 +46,16 @@ private def triangular (v : ℝ) := v*(v-1)/2
 private theorem sum_first_powers (n : ℕ) : (∑ j∈range n,(j:ℝ))=triangular n := by
   induction n with
   | zero => simp [triangular]
-  | succ n ih => rw [sum_range_succ,ih]; push_cast; unfold triangular; ring
+  | succ n ih => rw [Finset.sum_range_succ,ih]; push_cast; unfold triangular; ring
 
 private theorem prime_share {p n : ℕ} (hp : p.Prime) (hn : n≠0) :
     (∑ t∈n.divisors,if p∣t then trianglePrice t else 0)=
       triangular (n.factorization p)*Real.log p^3 := by
   rw [show (∑ t∈n.divisors,if p∣t then trianglePrice t else 0)=
-      ∑ j∈range (n.factorization p),(Λ*Λ) (p^(j+1))*Real.log p from
-    sum_divisors_primePower_mangoldt hp hn (Λ*Λ)]
-  have hterm (j : ℕ) : (Λ*Λ) (p^(j+1))*Real.log p=(j:ℝ)*Real.log p^3 := by
+      ∑ j∈range (n.factorization p),(ArithmeticFunction.vonMangoldt*ArithmeticFunction.vonMangoldt) (p^(j+1))*Real.log p from
+    sum_divisors_primePower_mangoldt hp hn
+      (fun t => (ArithmeticFunction.vonMangoldt*ArithmeticFunction.vonMangoldt : ArithmeticFunction ℝ) t)]
+  have hterm (j : ℕ) : (ArithmeticFunction.vonMangoldt*ArithmeticFunction.vonMangoldt) (p^(j+1))*Real.log p=(j:ℝ)*Real.log p^3 := by
     rw [GaloisForLFunctions.HTGeometry.vonMangoldt_mul_self_prime_pow hp (Nat.succ_pos j)]
     push_cast;ring
   simp_rw [hterm]
@@ -109,7 +112,7 @@ theorem cubic_jump_additive_iff_coprime {m n : ℕ} (hm : m≠0) (hn : n≠0) :
     obtain ⟨p,hp,hdm,hdn⟩ := Nat.Prime.not_coprime_iff_dvd.mp hnc
     have hmem : p∈P := mem_union_left _ (Nat.mem_primeFactors.mpr ⟨hp,hdm,hm⟩)
     have hterm := (sum_eq_zero_iff_of_nonneg hnon).mp hz p hmem
-    have hmp : (0:ℝ)<m.factorization p := Nat.cast_pos.mpr (hp.factorization_pos_of_dvd hm hdm)
+    have hmp : (0:ℝ)< m.factorization p := Nat.cast_pos.mpr (hp.factorization_pos_of_dvd hm hdm)
     have hnp : (0:ℝ)<n.factorization p := Nat.cast_pos.mpr (hp.factorization_pos_of_dvd hn hdn)
     have hl := Real.log_pos (show (1:ℝ)<p by exact_mod_cast hp.one_lt)
     exact (mul_pos (mul_pos hmp hnp) (pow_pos hl 3)).ne' hterm

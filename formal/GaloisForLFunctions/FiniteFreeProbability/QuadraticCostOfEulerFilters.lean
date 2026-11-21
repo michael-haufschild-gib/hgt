@@ -55,14 +55,16 @@ private theorem keep_loss {u : ℝ} (hu : 0 ≤ u) (hu' : u ≤ 1) (j : ℕ) :
       have hdrop := keep_drop u j
       have hle := mul_le_mul_of_nonneg_left hpow
         (mul_nonneg (by positivity : 0 ≤ (j : ℝ)+1) (sq_nonneg u))
-      rw [Nat.choose_succ_succ (j+1) 1, Nat.choose_one, Nat.cast_add, Nat.cast_succ]
+      rw [Nat.choose_succ_succ (j+1) 1, Nat.choose_one_right, Nat.cast_add, Nat.cast_succ]
       linarith only [ih, hdrop, hle]
 
 /-- Reciprocal of the linear eigenvalue of one positive Euler filter. -/
 def eulerTrialRate (s : ℕ) : ℝ := ((s : ℝ)+2)⁻¹
 
 private theorem rate_bounds (s : ℕ) : 0 ≤ eulerTrialRate s ∧ eulerTrialRate s ≤ 1 :=
-  ⟨by unfold eulerTrialRate; positivity, by unfold eulerTrialRate; rw [inv_le_one₀ (by positivity)]; positivity⟩
+  ⟨by unfold eulerTrialRate; positivity, by
+    unfold eulerTrialRate
+    exact inv_le_one_of_one_le₀ (by have := Nat.cast_nonneg (α := ℝ) s; linarith)⟩
 
 private theorem normalized_eigenvalue (s j : ℕ) :
     ((s : ℝ)+1)⁻¹ * ((s : ℝ)+1+j) * (((s : ℝ)+1)/((s : ℝ)+2))^j = eulerRetention (eulerTrialRate s) j := by

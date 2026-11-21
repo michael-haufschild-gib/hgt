@@ -118,7 +118,7 @@ theorem opposite_prime_single_superlevel (left : Bool) (s a g d T : ℝ) (k L : 
   have hlog := Real.log_le_log (Nat.cast_pos.mpr (card_pos.mpr hn)) (Nat.cast_le.mpr hcard : (S.card:ℝ) ≤ (L^2:ℕ))
   rw [Nat.cast_pow,Real.log_pow,Nat.cast_ofNat] at hlog
   have hh : (harmonic S.card:ℝ) ≤ 1+2*Real.log L :=
-    (harmonic_le_one_add_log _).trans (add_le_add_left hlog _)
+    (harmonic_le_one_add_log _).trans (add_le_add_right hlog _)
   let n : ℝ := (oppositePrimeSuperlevel left s a g d T k L H).card
   change (∑ j ∈ S, f j) ≤ (harmonic S.card:ℝ)*(f H*n) at he
   change (L:ℝ)*(∑ j ∈ S, f j) ≤ (1+2*Real.log L)*((L:ℝ)*f H)*n

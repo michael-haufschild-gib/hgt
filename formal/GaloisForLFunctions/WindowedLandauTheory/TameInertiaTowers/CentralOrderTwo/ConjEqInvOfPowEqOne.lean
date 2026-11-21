@@ -2,13 +2,12 @@ import Mathlib
 import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.StatementField
 
 
-namespace WindowedLandauTheory
 
 open NumberField
 
 noncomputable section
 
-namespace TwoAdicCyclotomicDecomposition
+namespace WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
 namespace UnitConjugation
 
@@ -167,5 +166,5 @@ theorem layerReal_of (hG : LayerGalois) (hC : LayerConj) : LayerReal := by
     omega
   exact ⟨hCM, h5, h4⟩
 
-end TwoAdicCyclotomicDecomposition
+end WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 

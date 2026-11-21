@@ -22,7 +22,7 @@ private theorem core_free {p n : ℕ} (hn : ¬p ∣ n) : ordCompl[p] n=n := by
   change n/p^(n.factorization p)=n
   rw [Nat.factorization_eq_zero_of_not_dvd hn,pow_zero,Nat.div_one]
 
-private theorem lift_core {p m : ℕ} (hp : p.Prime) (hm : 0<m) (hd : p ∣ m) :
+private theorem lift_core {p m : ℕ} (hp : p.Prime) (hm : 0< m) (hd : p ∣ m) :
     ∃ j : ℕ, 0<j ∧ m=(ordCompl[p] m)*p^j := by
   refine ⟨m.factorization p,hp.factorization_pos_of_dvd hm.ne' hd,?_⟩
   rw [mul_comm]
@@ -30,7 +30,7 @@ private theorem lift_core {p m : ℕ} (hp : p.Prime) (hm : 0<m) (hd : p ∣ m) :
 
 /-- The full Mangoldt contact across the cut has at most one nonzero
 column in each row. This holds for every prime and every pair of sites. -/
-theorem cross_contact {p m n : ℕ} (hp : p.Prime) (hm : 0<m) (hn : 0<n)
+theorem cross_contact {p m n : ℕ} (hp : p.Prime) (hm : 0< m) (hn : 0<n)
     (hpm : p ∣ m) (hpn : ¬p ∣ n) :
     contactW vonMangoldt m n = if ordCompl[p] m=n then Real.log p else 0 := by
   have hmn : ¬m ∣ n := fun h => hpn (hpm.trans h)
@@ -153,7 +153,7 @@ private theorem degree_upper {p Q N k n : ℕ} (hp : p.Prime) (hQ : Q ≤ p^(k+1
   rw [interval_degree hp hn]
   have hm := mem_Ioc.mp (mem_filter.mp hn).1
   have hn₀ := (Nat.zero_le N).trans_lt hm.1
-  change Nat.log p (Q*N/n) < k+1
+  rw [← Nat.lt_add_one_iff]
   rw [Nat.log_lt_iff_lt_pow hp.one_lt (Nat.div_pos hm.2 hn₀).ne',Nat.div_lt_iff_lt_mul hn₀]
   exact (Nat.mul_le_mul_right N hQ).trans_lt (Nat.mul_lt_mul_of_pos_left hm.1 (pow_pos hp.pos _))
 
@@ -190,7 +190,8 @@ theorem sharp_interval_norm {p Q k N : ℕ} (hp : p.Prime) (hlo : p^k<Q)
       rw [interval_degree hp hnW]
       exact (Nat.le_log_iff_pow_le hp.one_lt (Nat.div_pos (mem_Ioc.mp (mem_filter.mp hnW).1).2 hn₀).ne').mpr
         ((Nat.le_div_iff_mul_le hn₀).mpr hfit)
-    simpa only [hdeg] using h n hnW
+    have hdeg' : degree p (Ioc N (Q*N)) n = k := hdeg
+    simpa only [hdeg'] using h n hnW
   · intro h n hn
     exact (mul_le_mul_of_nonneg_left (Nat.cast_le.mpr (degree_upper hp hhi hn)) (sq_nonneg _)).trans h
 
@@ -240,7 +241,7 @@ private theorem divisible_floor (p Q : ℕ) (hp : p.Prime) (B : ℝ) :
     intro j hj
     obtain ⟨m,hm,rfl⟩ := mem_image.mp hj
     have hw := mem_Ioc.mp (mem_filter.mp hm).1
-    have h₁ : N/p<m/p := by
+    have h₁ : N/p< m/p := by
       by_contra! ht
       have h := (Nat.mul_le_mul_left p ht).trans (Nat.mul_div_le N p)
       rw [he m hm] at h

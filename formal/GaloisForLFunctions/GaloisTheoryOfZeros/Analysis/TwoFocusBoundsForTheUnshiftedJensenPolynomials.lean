@@ -67,7 +67,7 @@ theorem focal_half_plane_factors (z : UpperHalfPlane) :
   apply (eq_div_iff (Real.exp_ne_zero _)).mpr
   apply mul_left_cancel₀ hy.ne'
   calc _ = focalDifference z*(Real.sqrt z.im*Real.exp (dist z UpperHalfPlane.I/2)) := by ring
-       _ = z.im := by rw [←E,focal_product,abs_of_pos z.im_pos]
+       _ = z.im := by rw [←E,focal_product]; exact abs_of_pos z.im_pos
        _ = _ := (Real.mul_self_sqrt z.im_pos.le).symm
 
 /-- A boundary root distorts between the focal difference and the focal
@@ -127,7 +127,7 @@ def rationalFocalPoint (v : ℚ × ℚ) : ℂ := ⟨v.1,v.2⟩
 private theorem rational_focal_dense : DenseRange rationalFocalPoint := by
   let F (p : ℝ × ℝ) : ℂ := ⟨p.1,p.2⟩
   have hF : Function.Surjective F := fun z => ⟨(z.re,z.im),Complex.ext rfl rfl⟩
-  have hc : Continuous F := by fun_prop
+  have hc : Continuous F := Complex.equivRealProdCLM.symm.continuous
   have hrat : DenseRange (fun q : ℚ => (q:ℝ)) := Rat.denseRange_cast
   exact hF.denseRange.comp (hrat.prodMap hrat) hc
 
@@ -177,7 +177,7 @@ theorem rh_iff_cofinal_rational_focal_bounds :
         intro z hz
         obtain ⟨hz,_,hp⟩ := Multiset.mem_filter.mp hz
         exact hp.ne' (hr z hz)
-      simp [jensenQuartetCount,emp]
+      rw [jensenQuartetCount,emp,Multiset.card_zero]
     have H := (offLine_count_le_iff_quartet_count 0).mpr no
     norm_num only [Nat.mul_zero,Nat.cast_zero,nonpos_iff_eq_zero,Set.encard_eq_zero,
       Set.eq_empty_iff_forall_notMem,Set.mem_setOf_eq,not_not] at H

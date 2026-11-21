@@ -20,18 +20,24 @@ open ArithmeticHodgeTheoryOfDegenerations ArithmeticCastelnuovoSeveri
 def ordinateBand (F : ℝ → ℝ) (b u v T : ℝ) (n : ℕ) : ℝ :=
   ordinateBandMass F (u*b^n*T) (v*b^n*T)
 
-private theorem band_eq {F : ℝ → ℝ} (hs : Summable (zeroValueMass F)) {b u v T : ℝ}
+private theorem band_eq {F : ℝ → ℝ} (hs : Summable (fun q : onLineCopies => zeroValueMass F q)) {b u v T : ℝ}
     (hb : 0≤b) (ht : 0≤T) (huv : u≤v) (n : ℕ) :
     ordinateBand F b u v T n = ordinateTailMass F (u*b^n*T) - ordinateTailMass F (v*b^n*T) := by
   have hsum (x : ℝ) : Summable (fun q : onLineCopies =>
       if x < |(centredZero q).im| then zeroValueMass F q else 0) :=
-    hs.of_nonneg_of_le (fun q => ite_zero_nonneg (zeroValueMass_nonneg F q))
-      (fun q => ite_zero_le (zeroValueMass_nonneg F q))
+    hs.of_nonneg_of_le (fun q => by split_ifs; exacts [zeroValueMass_nonneg F q, le_rfl])
+      (fun q => by split_ifs; exacts [le_rfl, zeroValueMass_nonneg F q])
   have horder := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right huv (pow_nonneg hb n)) ht
   rw [ordinateTailMass,ordinateTailMass,← (hsum _).tsum_sub (hsum _),ordinateBand,ordinateBandMass]
   apply tsum_congr
   intro q
-  split_ifs <;> first | ring | (exfalso; order)
+  split_ifs <;> first
+    | ring1
+    | (exfalso; rename_i h1 h2 h3
+       first
+        | linarith [h1.1, h1.2]
+        | exact h1 ⟨h2, le_of_not_gt h3⟩
+        | linarith)
 
 /-- Uniform geometric domination of every dilation tail at once. -/
 private theorem dilated_tail_error {f : ℝ → ℝ} {C b u ε : ℝ}
@@ -62,7 +68,7 @@ total absolute error tending to zero. The two endpoints may lie anywhere
 inside one multiplicative period. -/
 theorem critical_shell_total_variation {W : ℝ} (hW : 0<W)
     (ht : (⨅ (A : ℝ) (_ : 0≤A),windowThreshold A)=(W:EReal)) {F : ℝ → ℝ}
-    (hF : IsCriticalHalfLineGroundState W F) (hf : BacklundConverse.FiniteOffLine)
+    (hF : IsCriticalHalfLineGroundState W F) (hf : RHTower.BacklundConverse.FiniteOffLine)
     {b u v : ℝ} (hb : 1<b) (hu : 0<u) (huv : u≤v) :
     let C := ordinateCuspConstant W F
     let err := fun (T : ℝ) (n : ℕ) =>
@@ -104,14 +110,14 @@ theorem critical_shell_total_variation {W : ℝ} (hW : 0<W)
   refine ⟨L,fun T hT => ?_⟩
   rw [Real.dist_eq,sub_zero,abs_of_nonneg (tsum_nonneg (fun _ => abs_nonneg _))]
   refine (hL T hT).2.trans_lt ?_
-  have heq : ε/(2*A)*A=ε/2 := by field_simp; ring
+  have heq : ε/(2*A)*A=ε/2 := by field_simp
   rw [heq]; linarith only [he]
 
 /-- A single mask on the logarithmic shells has limiting mass equal to
 its geometric series. The mask may include negative signs. -/
 theorem critical_shell_reading {W : ℝ} (hW : 0<W)
     (ht : (⨅ (A : ℝ) (_ : 0≤A),windowThreshold A)=(W:EReal)) {F : ℝ → ℝ}
-    (hF : IsCriticalHalfLineGroundState W F) (hf : BacklundConverse.FiniteOffLine)
+    (hF : IsCriticalHalfLineGroundState W F) (hf : RHTower.BacklundConverse.FiniteOffLine)
     {b u v : ℝ} (hb : 1<b) (hu : 0<u) (huv : u≤v) (w : ℕ → ℝ) (hw : ∀ n, |w n|≤1) :
     Tendsto (fun T : ℝ => ∑' n : ℕ, w n*(T*ordinateBand F b u v T n)) atTop
       (𝓝 (ordinateCuspConstant W F*(u⁻¹-v⁻¹)*(∑' n : ℕ,w n*(b⁻¹)^n))) := by
@@ -154,7 +160,7 @@ in the ratio two to one. Taking b=4 selects each parity without an
 oscillatory subtraction. -/
 theorem alternating_dyadic_octaves {W : ℝ} (hW : 0<W)
     (ht : (⨅ (A : ℝ) (_ : 0≤A),windowThreshold A)=(W:EReal)) {F : ℝ → ℝ}
-    (hF : IsCriticalHalfLineGroundState W F) (hf : BacklundConverse.FiniteOffLine) :
+    (hF : IsCriticalHalfLineGroundState W F) (hf : RHTower.BacklundConverse.FiniteOffLine) :
     Tendsto (fun T : ℝ => T*∑' n : ℕ,ordinateBand F 4 1 2 T n) atTop (𝓝 (2*ordinateCuspConstant W F/3)) ∧
     Tendsto (fun T : ℝ => T*∑' n : ℕ,ordinateBand F 4 2 4 T n) atTop (𝓝 (ordinateCuspConstant W F/3)) := by
   have read (u v : ℝ) (hu : 0<u) (huv : u≤v) := critical_shell_reading hW ht hF hf
@@ -186,12 +192,12 @@ when its geometric series is nonzero. For a mask of zero geometric
 mean the measured tail tends to zero for every admissible ground state. -/
 theorem sequential_shell_vanishing_iff {b u v : ℝ} (hb : 1<b) (hu : 0<u) (huv : u<v)
     (w : ℕ → ℝ) (hw : ∀ n, |w n|≤1) :
-    (BacklundConverse.FiniteOffLine →
-      ∀ W (F : ℝ → ℝ), 0<W → (⨅ (A : ℝ) (_ : 0≤A),windowThreshold A)=(W:EReal) →
+    (RHTower.BacklundConverse.FiniteOffLine →
+      ∀ (W : ℝ) (F : ℝ → ℝ), 0<W → (⨅ (A : ℝ) (_ : 0≤A),windowThreshold A)=(W:EReal) →
         IsCriticalHalfLineGroundState W F →
         ∃ t : ℕ → ℝ, Tendsto t atTop atTop ∧
           Tendsto (fun k => ∑' n : ℕ,w n*(t k*ordinateBand F b u v (t k) n)) atTop (𝓝 0)) ↔
-      (∑' n : ℕ,w n*(b⁻¹)^n)=0 ∨ (BacklundConverse.FiniteOffLine → RiemannHypothesis) := by
+      (∑' n : ℕ,w n*(b⁻¹)^n)=0 ∨ (RHTower.BacklundConverse.FiniteOffLine → RiemannHypothesis) := by
   have hn := zetaBeyondTheWallPrimeContinuation_iff_riemannHypothesis.symm.trans
     zetaBeyondTheWallPrimeContinuation_iff_no_criticalState
   constructor
@@ -209,7 +215,7 @@ theorem sequential_shell_vanishing_iff {b u v : ℝ} (hb : 1<b) (hu : 0<u) (huv 
     · refine ⟨fun n => n,tendsto_natCast_atTop_atTop,?_⟩
       have hlim := (critical_shell_reading hW ht hF hf hb hu huv.le w hw).comp
         (tendsto_natCast_atTop_atTop (R := ℝ))
-      simpa only [Function.comp_apply,hz,mul_zero] using hlim
+      simpa only [Function.comp_def,hz,mul_zero] using hlim
     · exact ((hn.mp (h hf)) ⟨W,F,hW,ht,hF⟩).elim
 
 

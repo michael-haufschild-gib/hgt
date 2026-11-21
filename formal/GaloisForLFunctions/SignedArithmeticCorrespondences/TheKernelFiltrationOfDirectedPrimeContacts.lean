@@ -114,7 +114,8 @@ theorem directed_dilation_power_kernel {w : ℕ → ℝ} {d : ℕ} (hd : 0 < d) 
     have existsSite : S.Nonempty := ⟨z,mem_filter.mpr ⟨mem_univ _,zne⟩⟩
     let j := S.min' existsSite
     have jS := min'_mem S existsSite
-    have jB : j.val ≤ B/d^k := (min'_le S z (mem_filter.mpr ⟨mem_univ _,zne⟩)).trans zB
+    have jB : j.val ≤ B/d^k :=
+      (show j.val ≤ z.val from min'_le S z (mem_filter.mpr ⟨mem_univ _,zne⟩)).trans zB
     have jpos := (mem_Ioc.mp j.property).1
     have pre : j.val ≤ d^k*j.val := by simpa using Nat.mul_le_mul_right j.val (pow_pos hd k)
     let i : Site N B := ⟨d^k*j.val,mem_Ioc.mpr ⟨jpos.trans_le pre,

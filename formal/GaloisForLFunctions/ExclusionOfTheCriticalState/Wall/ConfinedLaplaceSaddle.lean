@@ -31,6 +31,7 @@ private theorem domain_up {v : ℝ → ℝ} (hm : Measurable v) {s c : ℝ}
     (hs : s ∈ waveLaplaceDomain v) (hsc : s ≤ c) : c ∈ waveLaplaceDomain v := by
   apply hs.mono' (((by fun_prop : Measurable fun t : ℝ => Real.exp (-c*t)).mul hm.abs).aestronglyMeasurable)
   filter_upwards [ae_restrict_mem measurableSet_Ioi] with t (ht : t ∈ Ioi (0:ℝ))
+  simp only [Pi.mul_apply]
   rw [Real.norm_of_nonneg (mul_nonneg (Real.exp_pos _).le (abs_nonneg _))]
   exact mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr
     (mul_le_mul_of_nonneg_right (neg_le_neg hsc) ht.le)) (abs_nonneg _)
@@ -40,9 +41,11 @@ private theorem gamma_difference {v : ℝ → ℝ} (hm : Measurable v)
     gammaSignMass v n-gammaSignMass (fun t => -v t) n = ∫ t in Ioi (0:ℝ),primeGammaWeight n t*v t := by
   have hi' : IntegrableOn (fun t => primeGammaWeight n t*(-v t)) (Ioi 0) :=
     (hi n).neg.congr (Eventually.of_forall fun t => (mul_neg ..).symm)
-  rw [gammaSignMass,gammaSignMass,←integral_sub (sign_integrable hm (hi n)) (sign_integrable hm.neg hi')]
+  rw [gammaSignMass,gammaSignMass,←integral_sub (sign_integrable hm (hi n))
+    (sign_integrable (show Measurable (fun t => -v t) from hm.neg) hi')]
   apply setIntegral_congr_fun measurableSet_Ioi
   intro t _
+  dsimp only
   rw [←mul_sub]
   congr 1
   rcases le_total 0 (v t) with h|h
@@ -83,6 +86,7 @@ private theorem gamma_at_every_order {v : ℝ → ℝ} (hm : Measurable v)
     apply hno
     have hseries := (summable_geometric_of_lt_one (mul_nonneg hr.le hq0.le) hrq).mul_left (|M|+K)
     apply Summable.of_norm_bounded_eventually hseries
+    rw [Nat.cofinite_eq_atTop]
     filter_upwards [not_frequently.mp h] with n hn
     rw [Real.norm_of_nonneg (mul_nonneg (pow_nonneg hr.le _) (mass_nonneg _ _)),mul_pow]
     exact (mul_le_mul_of_nonneg_left (le_of_not_gt hn) (pow_nonneg hr.le _)).trans_eq (by ring)
@@ -122,13 +126,15 @@ private theorem choose_tilts {B U V s : ℝ} (hB₀ : 0 < B) (hB : B < 1) (hs : 
   let f := fun x : ℝ => Real.exp (x*U)/(A+x)
   let g := fun x : ℝ => Real.exp (-x*V)/(A-x)
   have hf : HasDerivAt f ((U*A-1)/A^2) 0 := by
-    convert (((hasDerivAt_id (0:ℝ)).mul_const U).exp.div ((hasDerivAt_id (0:ℝ)).const_add A) (by simpa using hA.ne')) using 1 <;> simp [f]
+    exact (((hasDerivAt_id (0:ℝ)).mul_const U).exp.div ((hasDerivAt_id (0:ℝ)).const_add A)
+      (by simpa using hA.ne')).congr_deriv (by simp <;> ring)
   have hg : HasDerivAt g ((1-V*A)/A^2) 0 := by
-    convert ((((hasDerivAt_id (0:ℝ)).neg.mul_const V).exp).div
-      ((hasDerivAt_const (0:ℝ) A).sub (hasDerivAt_id (0:ℝ))) (by simpa using hA.ne')) using 1 <;> simp [g] <;> ring
-  obtain ⟨η,hfη,hgη,hηA,hη⟩ := (((strict_drop (div_neg_of_neg_of_pos (sub_neg.mpr h₁) (sq_pos_of_pos hA)) hf).and
+    exact ((((hasDerivAt_id (0:ℝ)).neg.mul_const V).exp).div
+      ((hasDerivAt_const (0:ℝ) A).sub (hasDerivAt_id (0:ℝ))) (by simpa using hA.ne')).congr_deriv
+      (by simp <;> ring)
+  obtain ⟨η,⟨hfη,hgη⟩,hηA,hη⟩ := (((strict_drop (div_neg_of_neg_of_pos (sub_neg.mpr h₁) (sq_pos_of_pos hA)) hf).and
     (strict_drop (div_neg_of_neg_of_pos (sub_neg.mpr h₂) (sq_pos_of_pos hA)) hg)).and
-    (((Iio_mem_nhds hA).filter_mono nhdsWithin_le_nhds).and self_mem_nhdsWithin)).exists
+    ((Filter.Eventually.filter_mono nhdsWithin_le_nhds (Iio_mem_nhds hA)).and self_mem_nhdsWithin)).exists
   have hfη' : Real.exp (η*U)/(1-B+η) < (1-B)⁻¹ := by simpa [f,A] using hfη
   have hgη' : Real.exp (-η*V)/(1-B-η) < (1-B)⁻¹ := by simpa [g,A] using hgη
   have hsmall : η < 1-B := hηA
@@ -140,7 +146,9 @@ private theorem choose_tilts {B U V s : ℝ} (hB₀ : 0 < B) (hB : B < 1) (hs : 
   have c₃ : ContinuousAt (fun b : ℝ => 1-b-η) B := by fun_prop
   have hcg := ((c₁.eventually_lt continuousAt_const hfη').and
       ((c₂.eventually_lt continuousAt_const hgη').and
-        (continuousAt_const.eventually_lt c₃ (by linarith only [hsmall])))).filter_mono nhdsWithin_le_nhds
+        ((show ContinuousAt (fun _ : ℝ => (0:ℝ)) B from continuousAt_const).eventually_lt c₃
+          (by show (0:ℝ) < 1-B-η; linarith only [hsmall])))).filter_mono
+        (nhdsWithin_le_nhds (s := Ioi B))
   obtain ⟨c,⟨hc₁,hc₂,hc₃⟩,hc⟩ := (hcg.and (self_mem_nhdsWithin (s := Ioi B))).exists
   have hsinv : (1-s)⁻¹ < (1-B)⁻¹ := (inv_lt_inv₀ (by linarith only [hs,hB]) hA).mpr (by linarith only [hs])
   have hlevel := max_lt (max_lt hc₁ hc₂) hsinv
@@ -236,7 +244,7 @@ theorem opposite_excursions_at_the_laplace_saddle {v : ℝ → ℝ} (hm : Measur
     have h := quiet_window_bound hm hi hd hη hk (zero_lt_one.trans hq) hδs (hsB.trans hB) hM hlo hhi hmid n quiet
     exact hp.not_ge (by simpa only [C,mul_comm] using h)
   · by_contra! quiet
-    have he := quiet_window_bound hm.neg hi' hd' hη hk (zero_lt_one.trans hq) hδs (hsB.trans hB) hM hlo hhi hmid n
+    have he := quiet_window_bound (show Measurable (fun t => -v t) from hm.neg) hi' hd' hη hk (zero_lt_one.trans hq) hδs (hsB.trans hB) hM hlo hhi hmid n
       (fun t ht => neg_le_of_neg_le (quiet t ht))
     rw [hcn,mul_comm] at he
     exact hn.not_ge he
@@ -244,7 +252,7 @@ theorem opposite_excursions_at_the_laplace_saddle {v : ℝ → ℝ} (hm : Measur
 private theorem prime_wave_upper_damping {H : ℝ → ℝ} (hH : CriticalHalfLineEnergyDomain H) :
     (7/8:ℝ) ∈ waveLaplaceDomain (fun t => (ordinaryPrimeWave H t).re) := by
   obtain ⟨P,hP,_⟩ := ordinaryPrimeWave_hilbert hH
-  have hI := (integrableOn_laplaceRay (φ := (P:ℝ → ℂ)) P.memLp (w := 1/8) (by norm_num)).norm
+  have hI := (integrableOn_laplaceRay (φ := (P:ℝ → ℂ)) (Lp.memLp P) (w := 1/8) (by norm_num)).norm
   have hm : Measurable (fun t => (ordinaryPrimeWave H t).re) := by
     apply Complex.continuous_re.measurable.comp
     apply Measurable.tsum
@@ -253,6 +261,7 @@ private theorem prime_wave_upper_damping {H : ℝ → ℝ} (hH : CriticalHalfLin
       (hH.meas.comp (measurable_id.sub_const _)))
   apply hI.mono' ((Measurable.mul (by fun_prop) hm.abs).aestronglyMeasurable)
   filter_upwards [hP] with t ht
+  simp only [Pi.mul_apply]
   rw [Real.norm_of_nonneg (mul_nonneg (Real.exp_pos _).le (abs_nonneg _)),ht,norm_mul,norm_mul]
   have he : ‖cexp (-(3/4)*(t:ℂ))‖*‖expRay (1/8) t‖=Real.exp (-(7/8)*t) := by
     rw [Complex.norm_exp,norm_expRay,← Real.exp_add]
@@ -292,6 +301,7 @@ theorem IsCriticalLadder.exists_same_relative_window_excursions {R : Fin 3 → �
     apply hpos
     apply h.mono' (((by fun_prop : Measurable fun t : ℝ => Real.exp (-b*t)).mul (hm.max measurable_const)).aestronglyMeasurable)
     exact Eventually.of_forall fun t => by
+      simp only [Pi.mul_apply]
       rw [Real.norm_of_nonneg (mul_nonneg (Real.exp_pos _).le (le_max_right _ _))]
       exact mul_le_mul_of_nonneg_left (max_le (le_abs_self _) (abs_nonneg _)) (Real.exp_pos _).le
   have hlow : ∀ s ∈ waveLaplaceDomain v,b ≤ s := fun s hs => le_of_not_gt fun h => h₀ (domain_up hm hs h.le)

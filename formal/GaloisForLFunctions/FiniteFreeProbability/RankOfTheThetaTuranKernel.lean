@@ -66,9 +66,10 @@ private theorem factorization {m n : ℕ} (d : ℕ) (r : Fin m → ℕ) (s : Fin
     thetaTuranMatrix d r s = momentRows d r * central d * (momentRows d s)ᵀ := by
   rw [Matrix.mul_assoc]
   ext i j
-  simp only [thetaTuranMatrix, thetaTuranForm, Matrix.mul_apply (momentRows d r),
-    core_times_rows, momentRows, binomWeights]
-  rw [Fin.sum_univ_eq_sum_range]
+  rw [Matrix.mul_apply]
+  simp only [thetaTuranMatrix, thetaTuranForm, core_times_rows, momentRows, binomWeights]
+  rw [Fin.sum_univ_eq_sum_range (fun k => thetaCuspRawEvenMoment (r i + k) *
+    ((-1 : ℝ) ^ k * (d.choose k : ℝ) * thetaCuspRawEvenMoment (s j + (d - k)))) (d+1)]
   apply sum_congr rfl
   intro k _
   ring
@@ -115,7 +116,7 @@ theorem thetaTuran_rectangular_rank (p q a b d : ℕ) :
   let I (t : ℕ) (i : Fin (d+1)) : Fin (d+1+t) := ⟨i.val, by have := i.isLt; omega⟩
   apply (thetaTuran_rank_le _ _ d).antisymm
   have h := K.rank_submatrix_le (I p) (I q)
-  have hu : IsUnit (K.submatrix (I p) (I q)) := Matrix.isUnit_iff_isUnit_det.mpr
+  have hu : IsUnit (K.submatrix (I p) (I q)) := (Matrix.isUnit_iff_isUnit_det _).mpr
       (isUnit_iff_ne_zero.mpr (thetaTuran_consecutive_det_pos a b d).ne')
   rwa [Matrix.rank_of_isUnit _ hu, Fintype.card_fin] at h
 
@@ -142,6 +143,7 @@ theorem thetaTuran_reconstruct {m n : ℕ} (r : Fin m → ℕ) (s : Fin n → �
   change _ = (momentRows d r * J * B) * (A * J * B)⁻¹ * (A * J * (momentRows d s)ᵀ)
   simp only [Matrix.mul_inv_rev, Matrix.mul_assoc, Matrix.mul_nonsing_inv_cancel_left B _ hB,
     Matrix.nonsing_inv_mul_cancel_left A _ hA, Matrix.nonsing_inv_mul_cancel_left J _ hJ]
+  rfl
 
 
 end

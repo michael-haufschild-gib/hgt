@@ -2,9 +2,8 @@ import Mathlib
 import GaloisForLFunctions.WindowedLandauTheory.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.EvalFrameOrd
 
 
-namespace WindowedLandauTheory
 
-namespace BasicNotions
+namespace WindowedLandauTheory.BasicNotions
 
 structure Ranks extends WindowedLandauTheory.HC.Frame where
   k : ℕ
@@ -125,5 +124,5 @@ theorem factHCMono : FactHCMono := by
   · have := P.gap_eb j h
     linarith
 
-end BasicNotions
+end WindowedLandauTheory.BasicNotions
 

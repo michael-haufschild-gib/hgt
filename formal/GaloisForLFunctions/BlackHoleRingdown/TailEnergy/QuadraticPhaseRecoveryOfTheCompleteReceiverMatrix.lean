@@ -89,7 +89,7 @@ private theorem row_sum (a : Bool → ZMod p) (v : ZMod p) :
       ZMod.stdAddChar (v*a true)*(if a false=0 then (p:ℂ) else 0) := by
   simp only [torsionPhase,Fintype.prod_bool,pulseChirpGridPoint,←Finset.mul_sum]
   congr 1
-  simpa only [ZMod.card] using AddChar.sum_mulShift (a false) (ZMod.isPrimitive_stdAddChar p)
+  simpa only [ZMod.card, Nat.cast_ite, Nat.cast_zero] using AddChar.sum_mulShift (a false) (ZMod.isPrimitive_stdAddChar p)
 
 /-- Every row integrates to p copies of the incoherent sum, independently
 of the chosen quadratic phase. -/
@@ -98,7 +98,8 @@ theorem chirp_row_trace (f : ZMod p → CompactPulse) (W : Set ℝ) (v : ZMod p)
       (p:ℂ)*∑ i, (reflectedWindowEnergy (f i) W:ℂ) := by
   simp only [chirp_expansion,torsionPolynomial]
   rw [Finset.sum_comm]
-  simp only [←Finset.mul_sum,row_sum,Fintype.sum_prod_type,Finset.mul_sum]
+  simp only [←Finset.mul_sum,row_sum]
+  simp only [Fintype.sum_prod_type,Finset.mul_sum]
   refine sum_congr rfl fun i _ => ?_
   rw [Finset.sum_eq_single i]
   · simp [pulseChirpDifference,coefficients,pulseChirpMark,reflectedWindowGram_self,mul_comm]
@@ -119,7 +120,7 @@ theorem chirp_settings_cardinality :
     (chirpSettings p).card=(p-1)*p+1 ∧ (chirpSettings p).card+(p-1)=p^2 := by
   classical
   have hp : 1≤p := (Fact.out : p.Prime).one_lt.le
-  have form : chirpSettings p=insert (0,0) (((univ : Finset (ZMod p)).erase 0) ×ˢ univ) := by
+  have form : chirpSettings p=insert (0,0) (((univ : Finset (ZMod p)).erase 0) ×ˢ (univ : Finset (ZMod p))) := by
     ext q
     obtain ⟨u,v⟩ := q
     simp only [chirpSettings,mem_filter,mem_univ,true_and,mem_insert,Prod.mk.injEq,
@@ -192,6 +193,6 @@ theorem chirp_settings_determine_receiver_matrix (hp : 2 < p) (f g : ZMod p → 
   · have eq := chirp_recovers_cross_energy hp f W hne
     simp_rw [whole] at eq
     rw [chirp_recovers_cross_energy hp g V hne] at eq
-    exact mul_left_cancel₀ (pow_ne_zero _ (Nat.cast_ne_zero.mpr (Fact.out : p.Prime).ne_zero)) eq
+    exact mul_left_cancel₀ (pow_ne_zero _ (Nat.cast_ne_zero.mpr (Fact.out : p.Prime).ne_zero)) eq.symm
 
 end GaloisForLFunctions.BlackHoleRingdown

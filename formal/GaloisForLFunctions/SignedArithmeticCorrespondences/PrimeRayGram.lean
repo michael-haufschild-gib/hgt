@@ -27,7 +27,7 @@ private theorem ordered_ray {p : Nat.Primes} {m n : ℕ+} (hmn : m<n) :
     have hlt : a<b := by
       by_contra! hh
       have hs : (p:ℕ)^b ≤ (p:ℕ)^a := Nat.pow_le_pow_right p.2.pos hh
-      have hbad : n≤m := by
+      have hbad : n≤ m := by
         rw [←he₁,←he₂]
         exact mul_le_mul_right' (show primePNat p^b≤primePNat p^a from hs) _
       exact hmn.not_ge hbad
@@ -42,14 +42,18 @@ private theorem ordered_ray {p : Nat.Primes} {m n : ℕ+} (hmn : m<n) :
     simp only [core,PNat.mk_coe,PNat.mul_coe,PNat.pow_coe,primePNat_coe,Nat.ordCompl_mul,
       Nat.ordCompl_self_pow p.2,mul_one]
 
+open scoped Classical in
 /-- Projection of an actual Mangoldt contact onto the selected primes. -/
 def selectedWeight (P : Finset Nat.Primes) (k : ℕ) : ℝ :=
-  if ∃ p∈P, ∃ j : ℕ,0<j ∧ k=(p:ℕ)^j then Λ k else 0
+  if ∃ p∈P, ∃ j : ℕ,0<j ∧ k=(p:ℕ)^j then ArithmeticFunction.vonMangoldt k else 0
 
 private def clique (p : Nat.Primes) (m n : ℕ+) : ℝ :=
   if m≠n ∧ core p m=core p n then Real.log p else 0
 private theorem clique_comm (p : Nat.Primes) (m n : ℕ+) : clique p m n=clique p n m := by
-  simp [clique,ne_comm m n,eq_comm (core p m) (core p n)]
+  unfold clique
+  by_cases h : m ≠ n ∧ core p m = core p n
+  · rw [if_pos h,if_pos ⟨Ne.symm h.1,h.2.symm⟩]
+  · rw [if_neg h,if_neg (fun h' => h ⟨Ne.symm h'.1,h'.2.symm⟩)]
 
 /-- Each selected contact is the sum of its prime-ray clique entries. -/
 theorem selected_entry (P : Finset Nat.Primes) (m n : ℕ+) :
@@ -83,7 +87,8 @@ theorem selected_entry (P : Finset Nat.Primes) (m n : ℕ+) :
         exact dvd_pow_self _ hk.ne'
       exact hqp (Subtype.ext ((Nat.prime_dvd_prime_iff_eq q.2 p.2).mp (q.2.dvd_of_dvd_pow hd)))
     · exact fun h => False.elim (h hp)
-  · rw [sum_eq_zero (fun q hq => if_neg (show ¬(m≠n ∧ core q m=core q n) from fun e => hw ⟨q,hq,e.2⟩) : clique q m n=0)]
+  · rw [sum_eq_zero (f := fun q => clique q m n) (fun q hq =>
+      if_neg (show ¬(m≠n ∧ core q m=core q n) from fun e => hw ⟨q,hq,e.2⟩))]
     split_ifs with hd
     · rw [selectedWeight,if_neg]
       rintro ⟨p,hp,j,hj,h⟩
@@ -115,7 +120,8 @@ private theorem ray_square (p : Nat.Primes) (c : Profile) :
   refine sum_congr rfl fun m hm' => ?_
   rw [mul_sum,sum_filter]
   refine sum_congr rfl fun n _ => ?_
-  rw [(mem_filter.mp hm').2,eq_comm u]
+  rw [(mem_filter.mp hm').2]
+  exact if_congr eq_comm rfl rfl
 
 private theorem ray_square_zero_iff (p : Nat.Primes) (c : Profile) : raySquare p c=0 ↔ ray p c=0 := by
   constructor
@@ -143,8 +149,7 @@ private theorem clique_gram (p : Nat.Primes) (c : Profile) :
       split_ifs <;> ring
   simp_rw [hterm]
   rw [ray_square,profileSquare]
-  simp_rw [←mul_sum,sum_sub_distrib,Finset.sum_ite_eq']
-  rw [←mul_sum,sum_sub_distrib]
+  simp_rw [←mul_sum,sum_sub_distrib,Finset.sum_ite_eq]
   congr 2
   exact sum_congr rfl fun m hm => if_pos hm
 
@@ -154,12 +159,12 @@ theorem contact_energy_decomposition (P : Finset Nat.Primes) (c : Profile) :
     contactEnergy P c+(∑ p∈P,Real.log p)*profileSquare c=
       ∑ p∈P,Real.log p*raySquare p c := by
   unfold contactEnergy
-  simp_rw [selected_entry,sum_mul,sum_mul]
+  simp_rw [selected_entry,sum_mul]
   -- Move the prime index outside both conductor indices.
   have hswap (m : ℕ+) :
       (∑ n∈c.support,∑ p∈P,clique p m n*c m*c n)=∑ p∈P,∑ n∈c.support,clique p m n*c m*c n := sum_comm
   simp_rw [hswap]
-  rw [sum_comm,sum_mul,←sum_add_distrib]
+  rw [sum_comm,←sum_add_distrib]
   apply sum_congr rfl
   intro p _
   rw [clique_gram];ring
@@ -170,7 +175,7 @@ theorem contact_floor_equality (P : Finset Nat.Primes) (c : Profile) :
   have he : (contactEnergy P c= -(∑ p∈P,Real.log p)*profileSquare c) ↔
       ∑ p∈P,Real.log p*raySquare p c=0 := by constructor <;> intro hh <;> linarith only [h,hh]
   rw [he,sum_eq_zero_iff_of_nonneg (fun p _ => mul_nonneg
-    (Real.log_nonneg (by exact_mod_cast p.2.one_le)) (sum_nonneg fun _ _ => sq_nonneg _))]
+    (Real.log_nonneg (by exact_mod_cast p.2.one_le)) (show 0 ≤ raySquare p c from sum_nonneg fun _ _ => sq_nonneg _))]
   exact forall₂_congr fun p _ => by rw [mul_eq_zero,or_iff_right
     (Real.log_pos (by exact_mod_cast p.2.one_lt)).ne',ray_square_zero_iff]
 
@@ -187,10 +192,13 @@ theorem attainable_contact_floor (P : List Nat.Primes) (hP : P.Nodup) (A B : ℕ
 def primesThrough (k : ℕ) : Finset Nat.Primes := (range (k+1)).subtype Nat.Prime
 
 @[simp] private theorem in_primes (p : Nat.Primes) (k : ℕ) :
-    p∈primesThrough k ↔ (p:ℕ)≤k := by simp [primesThrough,Nat.lt_succ_iff]
+    p∈primesThrough k ↔ (p:ℕ)≤k := by
+  have h := @Finset.mem_subtype ℕ Nat.Prime _ (range (k+1)) p
+  rw [mem_range,Nat.lt_succ_iff] at h
+  exact h
 
 private theorem full_weight {r k : ℕ} (hk : r≤k) :
-    selectedWeight (primesThrough k) r=Λ r := by
+    selectedWeight (primesThrough k) r=ArithmeticFunction.vonMangoldt r := by
   by_cases h : IsPrimePow r
   · obtain ⟨p,j,hp,hj,he⟩ := (isPrimePow_nat_iff _).mp h
     let q : Nat.Primes := ⟨p,hp⟩
@@ -213,7 +221,7 @@ private theorem full_on_window {c : Profile} {A B : ℕ} (h : inside A B 1 c) :
     exact Nat.div_le_div_left (h n hn).1 (Nat.succ_pos _)
   simp only [contactW,full_weight (hquot m hm n hn),full_weight (hquot n hn m hm)]
 
-private theorem prime_product_pos (P : List Nat.Primes) : 0<modulus P := by
+private theorem prime_product_pos (P : List Nat.Primes) : 0< modulus P := by
   induction P with
   | nil => exact Nat.zero_lt_one
   | cons p P ih => exact Nat.mul_pos p.2.pos ih
@@ -221,7 +229,7 @@ private theorem prime_product_pos (P : List Nat.Primes) : 0<modulus P := by
 private theorem prime_product_dvd {P : List Nat.Primes} {p : Nat.Primes} (h : p∈P) :
     (p:ℕ) ∣ modulus P := by
   unfold modulus
-  exact List.dvd_prod (List.mem_map_of_mem h)
+  exact List.dvd_prod (by simp; exact ⟨p,h,rfl⟩)
 
 /-- Once the quotient cutoff includes 3, the full prime block never
 attains the sum of its individual prime lower bounds. Every nonzero
@@ -239,12 +247,12 @@ theorem strict_full_prime_floor {A B : ℕ} (hB : 3*(A+1)≤B) {c : Profile} (hc
   have hdiv (p : Nat.Primes) (hp : (p:ℕ)≤k) : (p:ℕ)∣modulus P := by
     apply prime_product_dvd
     exact Finset.mem_toList.mpr ((in_primes p k).mpr hp)
-  have h3 : 3≤modulus P := Nat.le_of_dvd hpos (hdiv ⟨3,Nat.prime_three⟩ hk)
-  have hwide : k<modulus P := by
+  have h3 : 3≤ modulus P := Nat.le_of_dvd hpos (hdiv ⟨3,Nat.prime_three⟩ hk)
+  have hwide : k< modulus P := by
     by_contra! hsmall
     obtain ⟨q,hq,hd⟩ := Nat.exists_prime_and_dvd (show modulus P-1 ≠1 by omega)
-    have hqle := Nat.le_of_dvd (show 0<modulus P-1 by omega) hd
-    have hqP := hdiv ⟨q,hq⟩ (by omega)
+    have hqle := Nat.le_of_dvd (show 0< modulus P-1 by omega) hd
+    have hqP := hdiv ⟨q,hq⟩ (by show q ≤ k; omega)
     have hone : q∣1 := by
       have he := Nat.dvd_sub hqP hd
       rwa [show modulus P-(modulus P-1)=1 by omega] at he

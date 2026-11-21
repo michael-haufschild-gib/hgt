@@ -3,13 +3,12 @@ import GaloisForLFunctions.WindowedLandauTheory.FrobeniusOrbits.Statement
 import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.TowerFieldFoundations
 
 
-namespace WindowedLandauTheory
 
 open NumberField IntermediateField
 
 noncomputable section
 
-namespace FrobeniusOrbits
+namespace WindowedLandauTheory.FrobeniusOrbits
 
 open WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
@@ -423,5 +422,5 @@ theorem hostGalSpec : HostGalSpec := by
 
 theorem hostGaloisCore : HostFixed ∧ HostGalois ∧ HostGalSpec := ⟨hostFixed, hostGalois, hostGalSpec⟩
 
-end FrobeniusOrbits
+end WindowedLandauTheory.FrobeniusOrbits
 

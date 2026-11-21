@@ -2,11 +2,10 @@ import Mathlib
 import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.StatementGroup
 
 
-namespace WindowedLandauTheory
 
 open Subgroup
 
-namespace TwoAdicCyclotomicDecomposition
+namespace WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
 namespace ModelEmbedding
 
@@ -451,5 +450,5 @@ theorem gmRank : GmRank := by
       _ = 8 := by norm_num
   · exact (h8 h).le
 
-end TwoAdicCyclotomicDecomposition
+end WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 

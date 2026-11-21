@@ -59,6 +59,7 @@ private theorem rat_gain (m n : ℕ) (p : ℝ[X]) :
     roots_pow, roots_pow] at h
   simp only [Multiset.card_add, Multiset.card_nsmul, Multiset.card_singleton, Multiset.card_zero,
     mul_one, add_zero, Nat.add_mul, one_mul] at h
+  change p.roots.card ≤ q.roots.card
   omega
 
 private def numerator (a : ℝ) (n : ℕ) : ℕ := ⌊a*((n : ℝ)+1)⌋₊
@@ -75,7 +76,7 @@ private theorem approx_tendsto {a : ℝ} (ha : 0 ≤ a) : Tendsto (approx a) atT
   · intro n
     unfold approx numerator
     rw [div_le_iff₀ (by positivity : 0 < (n : ℝ)+1), add_mul, div_mul_cancel₀ _ (by positivity)]
-    exact add_le_add_right (Nat.floor_le (mul_nonneg ha (by positivity))) _
+    exact add_le_add_left (Nat.floor_le (mul_nonneg ha (by positivity : (0:ℝ) ≤ (n:ℝ)+1))) _
 
 /-- Every nonnegative real Euler weight decreases or preserves the total nonreal
 multiplicity. The zero weight is included, even for a constant input. -/
@@ -89,7 +90,7 @@ theorem weightedEuler_nonreal_le (a : ℝ≥0) (p : ℝ[X]) :
   refine nonrealRootCount_le_of_tendsto hz (fun n => filter_nonzero (hap n) hp)
     (S := S) (fun n => ?_) ?_
   · unfold nonrealRootCount
-    exact Nat.sub_le_sub (degree_le _ p) (rat_gain (numerator a n) n p)
+    exact tsub_le_tsub (degree_le _ p) (rat_gain (numerator a n) n p)
   · apply tendstoLocallyUniformly_eval_of_coeff (D := p.natDegree)
     · intro n
       exact natDegree_map_le.trans (degree_le _ p)

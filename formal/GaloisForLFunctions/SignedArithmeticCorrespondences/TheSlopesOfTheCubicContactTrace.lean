@@ -88,7 +88,8 @@ theorem cubic_dilation_profile_difference {k : ℕ} {x y : ℝ} (xl : (k:ℝ) �
     cubicDilationProfile y-cubicDilationProfile x = (y-x)*cubicDilationSlope k := by
   rw [profile_on_band yl yh,profile_on_band xl xh,←mul_sub,←sum_sub_distrib,cubicDilationSlope,
     mul_left_comm (y-x) 6,mul_sum]
-  exact congrArg ((6:ℝ)*·) (sum_congr rfl fun _ _ => by ring)
+  rw [mul_sum,mul_sum]
+  exact sum_congr rfl fun _ _ => by ring
 
 /-- At a proper prime power the right slope exceeds the left slope by
 six times the triangle weight divided by the outer ratio. -/

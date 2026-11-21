@@ -105,7 +105,8 @@ theorem critical_ordinate_coalescing_heat_rates {W : ℝ} (hW : 0<W)
   let w₀ := fun z : ℝ => z^(p-1)*Real.exp (-r*z^p)
   have hpower {z : ℝ} (hz : 0<z) : z^p/z=z^(p-1) := by rw [Real.rpow_sub hz,Real.rpow_one]
   have hm (L : ℝ) : AEStronglyMeasurable (w L) (volume.restrict (Ioi 0)) := by
-    dsimp only [w,secant]; fun_prop
+    have hmeas : Measurable (w L) := by dsimp only [w,secant]; fun_prop
+    exact hmeas.aestronglyMeasurable
   have hdom : ∀ᶠ L in atTop,∀ᵐ z ∂volume.restrict (Ioi 0),‖w L z‖≤M z := by
     filter_upwards [hab,ha.eventually_const_lt (show r/2<r by linarith)] with L h hr'
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with z hz

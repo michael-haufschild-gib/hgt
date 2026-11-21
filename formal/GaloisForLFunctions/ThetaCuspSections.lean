@@ -15,6 +15,8 @@ import GaloisForLFunctions.ThetaCuspSections.FifthEvenCoherentRepair
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenEndpointBounds
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenCoupledEndpointGap
 import GaloisForLFunctions.ThetaCuspSections.FifthEvenCrossLoadContinuation
+import GaloisForLFunctions.ThetaCuspSections.CurvatureOfTheXiSusceptibility
+import GaloisForLFunctions.ThetaCuspSections.DirectionOfThetaRelativeEntropy
 
 /-!
 # Finite signed sections of the theta cusp

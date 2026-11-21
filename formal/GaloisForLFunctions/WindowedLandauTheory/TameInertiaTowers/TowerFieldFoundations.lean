@@ -5,9 +5,8 @@ import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.CentralOrderTw
 import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.CentralOrderTwo.OddEqOneOfSubOneMem
 
 
-namespace WindowedLandauTheory
 
-namespace TwoAdicCyclotomicDecomposition
+namespace WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
 theorem layerConj : LayerConj := layerConj_of layerGalois
 theorem layerReal : LayerReal := layerReal_of layerGalois layerConj
@@ -35,5 +34,5 @@ theorem towerProperties :
       normalOrderTwoCentral, twistVal, coinvLength, pGroupGen, genusModel, genusAbelian⟩,
     invLength, tower_field_foundations⟩
 
-end TwoAdicCyclotomicDecomposition
+end WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 

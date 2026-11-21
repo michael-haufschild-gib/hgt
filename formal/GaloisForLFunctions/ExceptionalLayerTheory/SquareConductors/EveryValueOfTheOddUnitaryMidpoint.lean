@@ -63,7 +63,7 @@ private def price (p U t a : ℕ) : ℤ := if a=p then centerPrice U t else base
 private theorem price_on_leaves {p U t : ℕ} {A : Finset ℕ} (hp : p ∉ A) :
     ∑ a ∈ A, price p U t a = base U*A.card+score A := by
   calc _ = ∑ a ∈ A, (base U+(2:ℤ)^a) := sum_congr rfl fun a ha =>
-             if_neg (fun he => hp (he ▸ ha))
+             if_neg (fun he : a = p => hp (he ▸ ha))
        _ = _ := by simp only [score,sum_add_distrib,sum_const,nsmul_eq_mul,Nat.cast_sum,Nat.cast_pow,
                         Nat.cast_ofNat,mul_comm (A.card:ℤ)]
 
@@ -73,7 +73,7 @@ private theorem price_total {P : Finset ℕ} {p r U t : ℕ} (hp : p ∈ P) (hc 
   have he := add_sum_erase P (price p U t) hp
   rw [←he,price_on_leaves (notMem_erase _ _),hU,card_erase_of_mem hp,hc]
   simp only [Nat.add_sub_cancel,Nat.cast_mul,Nat.cast_add,Nat.cast_one,Nat.cast_ofNat,
-    price,if_pos rfl,centerPrice]
+    price,↓reduceIte,centerPrice]
   ring
 
 private theorem leaf_test {P A : Finset ℕ} {p r U t : ℕ} (hp : p ∉ A)
@@ -85,7 +85,7 @@ private theorem leaf_test {P A : Finset ℕ} {p r U t : ℕ} (hp : p ∉ A)
   have hB : 0 ≤ base U := by unfold base; positivity
   have hB' : base U=4*((U:ℤ)+2) := rfl
   rw [price_on_leaves hp]
-  linarith only [mul_le_mul_of_nonneg_left hcard hB,hsc,ht',hB',Nat.cast_nonneg (R:=ℤ) U]
+  linarith only [mul_le_mul_of_nonneg_left hcard hB,hsc,ht',hB',Nat.cast_nonneg (α:=ℤ) U]
 
 private theorem center_test {P A : Finset ℕ} {p r U t : ℕ} (hA : A ⊆ P.erase p)
     (hU : score (P.erase p)=U) (ht : t ≤ U+1) (hc : A.card ≤ r) :
@@ -104,7 +104,7 @@ private theorem center_test {P A : Finset ℕ} {p r U t : ℕ} (hA : A ⊆ P.era
     · intro h
       have hm := mul_le_mul_of_nonneg_left hc' hB
       exfalso
-      linarith only [h,hm,hsc,hB',Nat.cast_nonneg (R:=ℤ) U,Nat.cast_nonneg (R:=ℤ) t]
+      linarith only [h,hm,hsc,hB',Nat.cast_nonneg (α:=ℤ) U,Nat.cast_nonneg (α:=ℤ) t]
     · rintro ⟨h,_⟩
       exact (he h).elim
 
@@ -134,18 +134,26 @@ theorem realize_odd_unitary_midpoint {P : Finset ℕ} {p r : ℕ} (hp : p ∈ P)
     have hpar : (2*(r:ℤ)+4)*base U = 2*((r+2)*base U) := by ring
     rw [hpar] at h
     omega
-  obtain ⟨k,hk,hPk,hC⟩ := unitary_chamber_cofinal ⟨_,hp⟩ hP w (fun a _ => by exact_mod_cast hpos a)
-    (fun S hS he => hodd S hS (by exact_mod_cast he)) B
+  obtain ⟨k,hk,hPk,hC⟩ := unitary_chamber_cofinal ⟨_,hp⟩ hP w
+    (fun a _ => show (0:ℝ) ≤ (price p U t a : ℝ) by exact_mod_cast hpos a)
+    (fun S hS he => hodd S hS (by
+      have he' : (∑ a ∈ S, (price p U t a : ℝ)) = ∑ a ∈ P \ S, (price p U t a : ℝ) := he
+      exact_mod_cast he')) B
   let G := F.filter fun S => t ≤ score S
   have hsmall {S : Finset ℕ} (hS : S ⊆ P) :
       S ∉ smallUnitarySubsets k ↔ (2*(r:ℤ)+4)*base U+2*U+1-2*t < 2*(∑ a ∈ S,price p U t a) := by
     rw [hC,logChamber,mem_filter,mem_powerset,and_iff_right hS]
     change ¬(∑ a ∈ S, (price p U t a:ℝ)) < ∑ a ∈ P \ S, (price p U t a:ℝ) ↔ _
-    norm_cast
-    have h := sum_sdiff hS (f := price p U t)
-    rw [htot] at h
+    rw [←Int.cast_sum,←Int.cast_sum,Int.cast_lt]
+    have h : ∑ a ∈ P \ S, price p U t a + ∑ a ∈ S, price p U t a = (2*(r:ℤ)+4)*base U+2*U+1-2*t :=
+      (sum_sdiff hS).trans htot
     have hn := hodd S hS
-    omega
+    constructor
+    · intro hml
+      have hlt := lt_of_le_of_ne (not_lt.mp hml) (Ne.symm hn)
+      linarith
+    · intro hT hml
+      linarith
   have heq : unitaryRankDefects k (r+1) = G.image (insert p) := by
     ext S
     have hmem : S ∈ unitaryRankDefects k (r+1) ↔ S ⊆ P ∧ S.card ≤ r+1 ∧ S ∉ smallUnitarySubsets k := by

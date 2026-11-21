@@ -28,7 +28,7 @@ private theorem bit_change (H k : ℕ) (hk : 0<k) :
   · have hlt := lt_of_le_of_ne hm he
     have step : (↑(H/(k+1)):ℝ)+1 ≤ (H/k:ℕ) := by exact_mod_cast Nat.succ_le_of_lt hlt
     simp only [bit]
-    split_ifs <;> norm_num <;> linarith only [step]
+    split_ifs <;> norm_num <;> first | linarith only [step] | exact hm
 
 private theorem coeff_eq_step (n : ℕ) : ordinaryPrimeExcessCoeff (n+1)=err (n+1)-err n := by
   have hs : Ioc n (n+1) = {n+1} := by ext i; simp only [mem_Ioc,mem_singleton]; omega

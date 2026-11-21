@@ -62,7 +62,7 @@ theorem coalescing_prime_difference {h : ℝ} (hh : 0<h) (m : ℕ) :
   have hne : t≠0 := ht
   rw [primeDifferenceEnergy,←tsum_div_const]
   refine tsum_congr fun n => ?_
-  rw [diff_eq_sinc,div_eq_iff (pow_ne_zero _ hne)]
+  rw [diff_eq_sinc,eq_div_iff (pow_ne_zero _ hne)]
   simp only [μ,mul_pow,pow_mul]
   ring
 
@@ -169,9 +169,11 @@ theorem coalescing_sign_constraint_price {h : ℝ} (hh : 0<h) :
   simp only [neg_sq] at hlim
   rw [show 2*(RHTower.vonMangoldtWeightLogMoment 4 (1+h)/2)=RHTower.vonMangoldtWeightLogMoment 4 (1+h) by ring] at hlim
   apply hlim.congr'
-  filter_upwards [hF.eventually_lt_const (neg_neg.mpr h₂),self_mem_nhdsWithin] with t hsmall ht
+  filter_upwards [hF.eventually_lt_const (neg_lt_zero.mpr h₂),self_mem_nhdsWithin] with t hsmall ht
   have hn : t≠0 := ht
-  have hf : fDiff h t<0 := (div_neg_iff_of_pos (sq_pos_of_ne_zero hn)).mp hsmall
+  have hf : fDiff h t<0 := by
+    by_contra hc
+    exact (not_lt.mpr (div_nonneg (le_of_not_gt hc) (sq_nonneg t))) hsmall
   have hzero : equilibriumMiddle h t=0 := by
     change max (fDiff h t) 0/_=0
     rw [max_eq_right hf.le,zero_div]

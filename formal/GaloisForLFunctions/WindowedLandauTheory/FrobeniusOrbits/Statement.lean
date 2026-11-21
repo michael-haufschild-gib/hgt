@@ -2,14 +2,13 @@ import Mathlib
 import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.StatementField
 
 
-namespace WindowedLandauTheory
 
 open NumberField IntermediateField Ideal
 open scoped Pointwise
 
 noncomputable section
 
-namespace FrobeniusOrbits
+namespace WindowedLandauTheory.FrobeniusOrbits
 
 open WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
@@ -26,6 +25,9 @@ theorem HostHyp.toHypOdd {q d : ℕ} (h : HostHyp q d) : HypOdd q d := by
 
 abbrev HGrp (e : ℕ) : Type :=
   (ZMod (2 ^ (e + 2)))ˣ ⧸ Subgroup.zpowers (-1 : (ZMod (2 ^ (e + 2)))ˣ)
+
+/-- The group structure of `HGrp e`, fixed once so that every later statement uses the same one. -/
+instance (e : ℕ) : CommGroup (HGrp e) := QuotientGroup.Quotient.commGroup _
 
 abbrev G0 : Type := ℤˣ × ℤˣ
 
@@ -258,5 +260,5 @@ def HostCMType : Prop :=
     ∀ φ ∈ cmType ζ a b d, ∀ σ : hostE ζ a b ≃ₐ[ℚ] hostE ζ a b,
       φ.comp (σ : hostE ζ a b →+* hostE ζ a b) ∈ cmType ζ a b d ↔ galE e ζ a b σ ∈ Psi e
 
-end FrobeniusOrbits
+end WindowedLandauTheory.FrobeniusOrbits
 

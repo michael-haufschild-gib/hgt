@@ -64,7 +64,7 @@ private theorem grid_cos (p q N : ℕ) (r u : ℝ) :
       Complex.ofReal_inv,Complex.ofReal_natCast]
     ring
   rw [eq]
-  simp only [primeGridMean,Complex.re_sum,Complex.ofReal_mul_re,clock,_root_.HTGeometry.phaseClockValue,
+  simp only [primeGridMean,Complex.re_sum,Complex.re_ofReal_mul,clock,_root_.HTGeometry.phaseClockValue,
     Complex.exp_ofReal_mul_I_re]
 
 private def blur (p q N : ℕ) (h : ℝ) :=
@@ -212,8 +212,9 @@ private theorem insert_energy {m : ℕ} (x a : Fin m → ℝ) {h : ℝ} (hh : 0 
     intro i _
     rw [sym]
     ring
-  change (∑ i, (Fin.cons t (fun i => (1-t)*a i)) i *
-    sitePotential h (Fin.cons u x) (Fin.cons t (fun i => (1-t)*a i)) ((Fin.cons u x) i)) = _
+  change (∑ i, (Fin.cons t (fun i => (1-t)*a i) : Fin (m+1) → ℝ) i *
+    sitePotential h (Fin.cons u x) (Fin.cons t (fun i => (1-t)*a i))
+      ((Fin.cons u x : Fin (m+1) → ℝ) i)) = _
   rw [Fin.sum_univ_succ]
   simp only [Fin.cons_zero,Fin.cons_succ,row,sub_self,rest]
   dsimp only [f];ring

@@ -3,9 +3,8 @@ import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.StatementGroup
 import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.CentralOrderTwo.TwoAdic
 
 
-namespace WindowedLandauTheory
 
-namespace TwoAdicCyclotomicDecomposition
+namespace WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
 namespace AdmissibleUnits
 
@@ -245,5 +244,5 @@ theorem quotCyclic : QuotCyclic := by
     rw [orderOf_mk_eq neg_one_sq (neg_not_mem_three n)]
     exact orderOf_three_units_two_pow n
 
-end TwoAdicCyclotomicDecomposition
+end WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 

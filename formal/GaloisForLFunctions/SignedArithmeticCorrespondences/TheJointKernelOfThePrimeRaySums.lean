@@ -69,7 +69,9 @@ private theorem diff_atom (p : Nat.Primes) (u : ℕ+) (a : ℝ) :
   have he (j : ℕ) : Finsupp.mapDomain (fun n => primePNat p*n) (f j)=f (j+1) := by
     dsimp only [f]; rw [Finsupp.mapDomain_single,pow_succ',mul_assoc]
   simp_rw [he]
-  rw [sum_range_sub, f, f, pow_zero,one_mul,core_power]
+  rw [Finset.sum_range_sub]
+  dsimp only [f]
+  rw [pow_zero,one_mul,core_power]
 
 /-- Division by a prime difference is possible on finitely supported
 profiles exactly when every full ray sum vanishes. -/
@@ -116,7 +118,7 @@ theorem inside_difference (A B d : ℕ) (p : Nat.Primes) (b : Profile) :
     have hsl : shift p b l=0 := by
       by_contra hh
       obtain ⟨v,hv,he⟩ := shift_mem hh
-      exact (not_lt_of_ge (b.support.min'_le v hv)) (he ▸ grows p v)
+      exact (not_lt_of_ge (b.support.min'_le v hv)) (lt_of_lt_of_eq (grows p v) he)
     have hsu : b (primePNat p*u)=0 := by
       by_contra hh
       exact (grows p u).not_ge (b.support.le_max' _ (Finsupp.mem_support_iff.mpr hh))
@@ -200,10 +202,10 @@ private theorem mixed_range (P : List Nat.Primes) (hP : P.Nodup) (c : Profile) :
       obtain ⟨b,hb⟩ := (ih hn.2 u).mp htail
       exact ⟨b,by rw [mixedDifference,hb,hu]⟩
     · rintro ⟨b,rfl⟩ q hq
-      rcases List.mem_cons.mp hq with rfl|hq
+      rcases List.mem_cons.mp hq with rfl|hq'
       · exact ray_difference_self _ _
-      · rw [mixedDifference,ray_difference_other (show q≠p by rintro rfl; exact hn.1 hq),
-          (ih hn.2 _).mpr ⟨b,rfl⟩ q hq]
+      · rw [mixedDifference,ray_difference_other (show q≠p by rintro rfl; exact hn.1 hq'),
+          (ih hn.2 _).mpr ⟨b,rfl⟩ q hq']
         simp [difference,shift]
 
 private theorem inside_mixed (P : List Nat.Primes) (A B d : ℕ) (b : Profile) :
@@ -246,7 +248,7 @@ theorem nonzero_joint_ray_kernel_iff (P : List Nat.Primes) (hP : P.Nodup) (A B :
     have hi : inside A B (modulus P) b := by
       intro n hn
       have he : n=a := by simpa [b] using hn
-      subst n; exact ⟨by dsimp only [a];omega,h⟩
+      subst n; exact ⟨by show A < A+1; omega,h⟩
     refine ⟨mixedDifference P b,fun hz => hb (mixed_injective P (hz.trans (mixed_zero P).symm)),
       (inside_mixed P A B 1 b).mpr (by simpa only [one_mul] using hi),(mixed_range P hP _).mpr ⟨b,rfl⟩⟩
 
@@ -278,7 +280,9 @@ private def residualMap (P : List Nat.Primes) (hP : P.Nodup) (A B : ℕ) :
   (((mixedMap P).comp (box A B (modulus P)).subtype).codRestrict (cancellationSpace P A B)
     (fun x => by
       rw [LinearMap.comp_apply,Submodule.subtype_apply,mixedMap_apply,mem_cancel]
-      exact ⟨(inside_mixed P A B 1 _).mpr (by simpa only [one_mul] using x.property),
+      exact ⟨(inside_mixed P A B 1 _).mpr (by
+          rw [one_mul]
+          exact fun n hn => ((Finsupp.mem_supported (R := ℝ) _).mp x.property) hn),
         (mixed_range P hP _).mpr ⟨x.val,rfl⟩⟩))
 
 private theorem box_dimension (A B d : ℕ) (hd : 0<d) :
@@ -291,13 +295,13 @@ private theorem box_dimension (A B d : ℕ) (hd : 0<d) :
         (by simpa only [Nat.mul_comm] using n.property.2)⟩⟩
       invFun := fun n => ⟨⟨n.val,(Nat.zero_le _).trans_lt (mem_Ioc.mp n.property).1⟩,
         (mem_Ioc.mp n.property).1,by
-          simpa only [Nat.mul_comm] using (Nat.le_div_iff_mul_le hd).mp (mem_Ioc.mp n.property).2⟩
+          simpa only [Nat.mul_comm,PNat.mk_coe] using (Nat.le_div_iff_mul_le hd).mp (mem_Ioc.mp n.property).2⟩
       left_inv := fun _ => rfl
       right_inv := fun _ => rfl }
   letI : Fintype S := Fintype.ofEquiv T e.symm
   calc Module.finrank ℝ (box A B d) = Module.finrank ℝ (S →₀ ℝ) :=
          (Finsupp.supportedEquivFinsupp (R:=ℝ) (M:=ℝ) S).finrank_eq
-       _ = Fintype.card S := Module.finrank_finsupp_self
+       _ = Fintype.card S := Module.finrank_finsupp_self ℝ
        _ = Fintype.card T := Fintype.card_congr e
        _ = B/d-A := by simp [T]
 
@@ -318,7 +322,8 @@ theorem dimension_joint_ray_kernel (P : List Nat.Primes) (hP : P.Nodup) (A B : �
     intro c
     obtain ⟨b,⟨hb,he⟩,_⟩ := (joint_ray_kernel P hP A B c).mp (mem_cancel.mp c.property)
     exact ⟨⟨b,hb⟩,Subtype.ext ((hval _).trans he)⟩
-  have hp : 0<modulus P := by
+  have hp : 0< modulus P := by
+    clear hs hi hval f
     induction P with
     | nil => exact Nat.zero_lt_one
     | cons p P ih => exact Nat.mul_pos p.2.pos (ih (List.nodup_cons.mp hP).2)

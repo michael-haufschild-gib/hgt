@@ -21,13 +21,13 @@ private abbrev C₁ := _root_.RHTower.Sieve.mertensIntervalConst
 private abbrev gap := 1-((1/2:ℝ)^(1/2:ℝ))
 private theorem gap_pos : 0 < gap := sub_pos.mpr (Real.rpow_lt_one (by norm_num) (by norm_num) (by norm_num))
 
-private theorem exponential_increment {u rate : ℝ} (hu : 0 ≤ u) (hλ : u ≤ rate) :
+private theorem exponential_increment {u rate : ℝ} (hu : 0 ≤ u) (hlam : u ≤ rate) :
     Real.exp u-1 ≤ Real.exp rate*u := by
   have h := Real.add_one_le_exp (-u)
   rw [Real.exp_neg] at h
   have h' := (le_div_iff₀ (Real.exp_pos u)).mp (by simpa only [one_div] using h :
     -u+1 ≤ 1/Real.exp u)
-  have h'' := mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr hλ) hu
+  have h'' := mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr hlam) hu
   linarith only [h',h'']
 
 private theorem tilted_factor {p : ℕ} (hp : p.Prime) {δ rate : ℝ}
@@ -42,6 +42,7 @@ private theorem tilted_factor {p : ℕ} (hp : p.Prime) {δ rate : ℝ}
   have ap : 0 < a := one_div_pos.mpr pp
   have ha : a ≤ 1/2 := one_div_le_one_div_of_le (by norm_num) p2
   have wa : w=Real.exp (δ*Real.log p)*a := by
+    dsimp only [w]
     rw [show 1-δ=(-δ)+1 by ring,Real.rpow_add ap,Real.rpow_one,Real.rpow_def_of_pos ap]
     dsimp only [a]
     rw [one_div,Real.log_inv,neg_mul_neg,mul_comm (Real.log (p:ℝ)) δ]
@@ -56,13 +57,15 @@ private theorem tilted_factor {p : ℕ} (hp : p.Prime) {δ rate : ℝ}
     have hl := mul_le_mul_of_nonneg_right inc ap.le
     rw [wa]
     dsimp only [a] at hl ⊢
-    linarith only [hl]
+    rw [show Real.log p / (p:ℝ) = Real.log p * (1/(p:ℝ)) by ring]
+    nlinarith only [hl]
   have e0 : 0 ≤ E := mul_nonneg (mul_nonneg (div_nonneg (Real.exp_pos _).le gap_pos.le) hδ)
     (div_nonneg (Real.log_natCast_nonneg p) pp.le)
   have hbound : 1-a ≤ (1-w)*(1+E) := by
     have add := mul_le_mul_of_nonneg_right gw e0
     have eq : gap*E=(Real.exp rate*δ)*(Real.log p/(p:ℝ)) := by
-      dsimp only [E];field_simp [gap_pos.ne']
+      calc gap*E = (gap*gap⁻¹)*((Real.exp rate*δ)*(Real.log p/(p:ℝ))) := by dsimp only [E]; ring
+        _ = _ := by rw [mul_inv_cancel₀ gap_pos.ne',one_mul]
     rw [eq] at add
     linarith only [hdiff,add]
   have strong := hbound.trans (mul_le_mul_of_nonneg_left (by simpa only [add_comm] using Real.add_one_le_exp E) gpos.le)
@@ -90,7 +93,7 @@ theorem price_of_a_critical_euler_tilt {y : ℕ} (hy : 1 ≤ y) {δ rate : ℝ}
     (fun p hp => tilted_factor (Nat.mem_primesLE.mp hp).2 hd hh (big p hp))
   have hsub : P ⊆ Nat.primesLE y \ Nat.primesLE 1 := by
     intro p hp
-    apply mem_sdiff.mpr
+    apply Finset.mem_sdiff.mpr
     exact ⟨hp,fun h => by have h₁ := (Nat.mem_primesLE.mp h).1;have h₂ := (Nat.mem_primesLE.mp h).2.two_le;omega⟩
   have first := _root_.RHTower.Sieve.sum_log_div_prime_interval_le (a:=1) le_rfl hy hsub
   rw [Nat.cast_one,Real.log_one,sub_zero] at first
@@ -109,10 +112,10 @@ theorem price_of_a_critical_euler_tilt {y : ℕ} (hy : 1 ≤ y) {δ rate : ℝ}
 private theorem untilted {y : ℕ} : deletionPrice 1 y=(_root_.RHTower.mertensPrimeProduct y)⁻¹ := by
   rw [deletionPrice,_root_.RHTower.mertensPrimeProduct,←prod_inv_distrib]
   simp only [Real.rpow_one]
-  congr 1
-  change (∏ p∈(range (y+1)).filter Nat.Prime,(1-1/(p:ℝ)))=_
+  change (∏ p∈(range (y+1)).filter Nat.Prime,(1-1/(p:ℝ))⁻¹)=_
   rw [prod_filter,Nat.range_succ_eq_Icc_zero]
-  simp only [one_div]
+  refine prod_congr rfl fun n _ => ?_
+  split_ifs <;> simp [one_div]
 
 private theorem ordinary_price : ∃ C : ℝ,0 < C ∧ ∀ y : ℕ, deletionPrice 1 y ≤ C*(1+Real.log y) := by
   let b := Real.exp (-Real.eulerMascheroniConstant)/2
@@ -138,7 +141,7 @@ private theorem ordinary_price : ∃ C : ℝ,0 < C ∧ ∀ y : ℕ, deletionPric
 /-- Exponential decay in the ratio of the endpoint logarithm to the
 logarithmic prime cutoff. The constant and the shift in the denominator
 can depend on the chosen decay rate but are uniform in both endpoints. -/
-theorem exponential_rough_prefix_at_every_prime_wall {rate : ℝ} (hλ : 0 < rate) :
+theorem exponential_rough_prefix_at_every_prime_wall {rate : ℝ} (hlam : 0 < rate) :
     ∃ C : ℝ,0 < C ∧ ∀ X y t : ℕ, 1 ≤ X → 1 ≤ y → t ≤ X →
       |coprimeMoebiusSum (primorial y) t| ≤
         C*(1+Real.log y)*(X:ℝ)*Real.exp (-(rate*Real.log X/(16*(1+rate)+Real.log y))) := by
@@ -152,11 +155,11 @@ theorem exponential_rough_prefix_at_every_prime_wall {rate : ℝ} (hλ : 0 < rat
   let L := 16*(1+rate)+Real.log y
   let δ := rate/L
   have logy := Real.log_natCast_nonneg y
-  have hl : 0 < L := by dsimp only [L];linarith only [hλ,logy]
-  have hd : 0 ≤ δ := div_nonneg hλ.le hl.le
+  have hl : 0 < L := by dsimp only [L];linarith only [hlam,logy]
+  have hd : 0 ≤ δ := div_nonneg hlam.le hl.le
   have hd16 : δ ≤ 1/16 := (div_le_iff₀ hl).mpr (by dsimp only [L];linarith only [logy])
   have hsmall : δ*Real.log y ≤ rate := by
-    have hr : Real.log y ≤ L := by dsimp only [L];linarith only [hλ]
+    have hr : Real.log y ≤ L := by dsimp only [L];linarith only [hlam]
     exact (mul_le_mul_of_nonneg_left hr hd).trans_eq (div_mul_cancel₀ _ hl.ne')
   have hpos : 0 < 1-δ := by linarith only [hd16]
   have base (n : ℕ) : |coprimeMoebiusSum 1 n| ≤ (B+1)*(n:ℝ)^(1-δ) := by
@@ -199,8 +202,8 @@ theorem logarithmic_savings_through_subpower_prime_walls (p : ℕ) {K : ℝ} (hk
   let m := (p:ℝ)+2
   let rate := 2*(K+1)*m
   have hm : 0 < m := by dsimp only [m];positivity
-  have hλ : 0 < rate := by dsimp only [rate];positivity
-  obtain ⟨C,hC,estimate⟩ := exponential_rough_prefix_at_every_prime_wall hλ
+  have hlam : 0 < rate := by dsimp only [rate];positivity
+  obtain ⟨C,hC,estimate⟩ := exponential_rough_prefix_at_every_prime_wall hlam
   refine ⟨2*C,by positivity,?_⟩
   have grow := Real.tendsto_log_atTop.comp (tendsto_natCast_atTop_atTop (R:=ℝ))
   have loglog := Real.tendsto_log_atTop.comp grow
@@ -218,14 +221,14 @@ theorem logarithmic_savings_through_subpower_prime_walls (p : ℕ) {K : ℝ} (hk
   change K+1 ≤ Real.log L at hLL
   change Real.log L/L < 1/(16*(1+rate)) at hsmall
   change w*Real.log L ≤ K*L at hwall
-  have d0 : 0 < D := by dsimp only [D];linarith only [hλ,w0]
+  have d0 : 0 < D := by dsimp only [D];linarith only [hlam,w0]
   have tiny := (div_lt_div_iff₀ lp (show 0 < 16*(1+rate) by positivity)).mp hsmall
   have wL : w ≤ L := by
     have hmul := mul_le_mul_of_nonneg_left (show K ≤ Real.log L by linarith only [hLL]) w0
     by_cases hzero : K=0
     · rw [hzero,zero_mul] at hwall
       have hpos : 0 < Real.log L := by linarith only [hLL,hzero]
-      have := (mul_nonpos_iff_of_pos_right hpos).mp hwall
+      have : w ≤ 0 := by nlinarith only [hwall,hpos]
       linarith only [this,L1]
     · exact (mul_le_mul_iff_left₀ (lt_of_le_of_ne hk (Ne.symm hzero))).mp
         (hmul.trans (by simpa only [mul_comm K L] using hwall))
@@ -250,7 +253,7 @@ theorem logarithmic_savings_through_subpower_prime_walls (p : ℕ) {K : ℝ} (hk
   apply fin.trans
   change C*(2*L)*(X:ℝ)*(1/L^(p+2))*L^p ≤ 2*C*(X:ℝ)
   have eq : C*(2*L)*(X:ℝ)*(1/L^(p+2))*L^p=(2*C*(X:ℝ))/L := by
-    rw [pow_add];field_simp [lp.ne'];ring
+    rw [pow_add];field_simp [lp.ne']
   rw [eq]
   exact div_le_self (by positivity) L1
 

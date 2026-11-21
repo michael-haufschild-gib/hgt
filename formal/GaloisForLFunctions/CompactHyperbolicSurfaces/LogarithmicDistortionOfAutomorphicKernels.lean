@@ -144,7 +144,7 @@ private theorem radial_transport_limit (D : ℝ) :
     Filter.Tendsto (fun r => radialTransport r D) Filter.atTop (nhds (Real.exp D)) := by
   have expdec := Real.tendsto_exp_neg_atTop_nhds_zero
   have ht : Filter.Tendsto (fun r : ℝ => Real.tanh (r/2)) Filter.atTop (nhds 1) := by
-    have rat := (tendsto_const_nhds.sub expdec).div (tendsto_const_nhds.add expdec)
+    have rat := ((tendsto_const_nhds (x := (1:ℝ))).sub expdec).div ((tendsto_const_nhds (x := (1:ℝ))).add expdec)
       (by norm_num : (1:ℝ)+0≠0)
     have eq (r : ℝ) : Real.tanh (r/2)=(1-Real.exp (-r))/(1+Real.exp (-r)) := by
       have prod : Real.exp (r/2)*Real.exp (-(r/2))=1 := by rw [←Real.exp_add,add_neg_cancel,Real.exp_zero]
@@ -154,7 +154,9 @@ private theorem radial_transport_limit (D : ℝ) :
       apply (div_eq_div_iff (Real.cosh_pos _).ne' (by positivity)).mpr
       rw [Real.sinh_eq,Real.cosh_eq]
       linear_combination Real.exp (-(r/2))*prod
-    simpa only [sub_zero,add_zero,div_one,←eq] using rat
+    have rat' : Filter.Tendsto (fun r : ℝ => (1-Real.exp (-r))/(1+Real.exp (-r))) Filter.atTop (nhds 1) := by
+      simpa only [sub_zero,add_zero,div_one,Pi.div_def] using rat
+    exact rat'.congr fun r => (eq r).symm
   have limit := ((ht.mul_const (Real.sinh (D/2))).const_add (Real.cosh (D/2))).pow 2
   have ee : (Real.exp (D/2))^2 = Real.exp D := by
     rw [pow_two,←Real.exp_add]; congr 1; ring

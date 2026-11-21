@@ -53,7 +53,8 @@ private theorem descent (d m s : ℕ) (h : (eulerFilter s (xiJensenReal (d+m))).
   | zero => exact h
   | succ m ih =>
     have hl : (eulerFilter (s+1) (xiJensenReal (d+m))).Splits := descent_one h
-    simpa [Nat.add_right_comm, Nat.add_assoc, Nat.add_comm] using ih (s+1) hl
+    have h2 := ih (s+1) hl
+    rwa [show s+1+m = s+(m+1) by omega] at h2
 
 private def normalizedFilter (p : ℝ[X]) (s : ℕ) :=
   C (((s : ℝ)+1)⁻¹) * eulerFilter s p
@@ -103,7 +104,7 @@ theorem riemannHypothesis_iff_cofinal_eulerFilter :
     intro d
     refine ⟨0, ?_⟩
     have h := eulerFilter_real_root_gain 0 (xiJensenReal d)
-    have h0 := (JensenStrict.jensenReverse_splits (riemannHypothesis_iff_laguerrePolya_XiC.mp hRH)
+    have h0 : (xiJensenReal d).natDegree = (xiJensenReal d).roots.card := (JensenStrict.jensenReverse_splits (riemannHypothesis_iff_laguerrePolya_XiC.mp hRH)
       XiC_conj d).natDegree_eq_card_roots
     have h1 := Polynomial.card_roots' (eulerFilter 0 (xiJensenReal d))
     rw [splits_iff_card_roots, eulerFilter_natDegree]

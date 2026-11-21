@@ -1,7 +1,6 @@
 import Mathlib
 
 
-namespace WindowedLandauTheory
 
 namespace Bl.FirstBlockLemmaE
 

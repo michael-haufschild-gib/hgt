@@ -17,6 +17,11 @@ noncomputable section
 /-- Even quartic with its quadratic coefficient written as minus twice the middle parameter. -/
 private def biquad (A B D : ℝ) : ℝ[X] := C A * X^4 - C (2*B)*X^2 + C D
 
+private theorem biquad_coeff (A B D : ℝ) (j : ℕ) :
+    (biquad A B D).coeff j = if j = 4 then A else if j = 2 then -(2*B) else if j = 0 then D else 0 := by
+  simp only [biquad, coeff_add, coeff_sub, coeff_C_mul, coeff_X_pow, coeff_C]
+  split_ifs <;> first | omega | ring
+
 private theorem even_quadratic_splits {u : ℝ} (hu : 0 ≤ u) :
     ((X : ℝ[X])^2 - C u).Splits := by
   have he : (X : ℝ[X])^2-C u = (X-C (Real.sqrt u))*(X+C (Real.sqrt u)) := by
@@ -34,9 +39,9 @@ private theorem biquad_splits_iff {A B D : ℝ} (hA : 0 < A) (hD : 0 < D) :
   constructor
   · intro hs
     have hd : (biquad A B D).degree ≠ 0 := by
-      have htop := le_natDegree_of_ne_zero (show (biquad A B D).coeff 4 ≠ 0 by simpa [biquad] using hA.ne')
+      have htop := le_natDegree_of_ne_zero (show (biquad A B D).coeff 4 ≠ 0 by rw [biquad_coeff]; simpa using hA.ne')
       intro hzero
-      have hz := natDegree_eq_zero_of_degree_le_zero hzero.le
+      have hz := natDegree_eq_zero_iff_degree_le_zero.mpr hzero.le
       omega
     obtain ⟨x,hx⟩ := hs.exists_eval_eq_zero hd
     have he : A*x^4-2*B*x^2+D = 0 := by simpa only [biquad, eval_add, eval_sub, eval_mul,
@@ -59,7 +64,8 @@ private theorem biquad_splits_iff {A B D : ℝ} (hA : 0 < A) (hD : 0 < D) :
     have hp : A*t*u = D := by
       dsimp [t,u]; field_simp; nlinarith only [hv]
     have he : biquad A B D = C A*((X^2-C t)*(X^2-C u)) := by
-      rw [biquad, ← hs, ← hp, map_add, map_mul, map_mul, map_mul]
+      rw [biquad, ← hs, ← hp]
+      simp only [map_mul, map_add]
       ring
     rw [he]
     exact ((even_quadratic_splits ht).mul (even_quadratic_splits hu)).C_mul _
@@ -74,11 +80,17 @@ private theorem diffOp_biquad (A B D : ℝ) (k : ℕ) :
   have hdeg : (biquad A B D).natDegree ≤ 4 := by
     apply natDegree_le_iff_coeff_eq_zero.mpr
     intro j hj
-    simp [biquad, coeff_X_pow, show j ≠ 4 by omega, show j ≠ 2 by omega, show j ≠ 0 by omega,
-      show 4 ≠ j by omega, show 2 ≠ j by omega, show 0 ≠ j by omega, coeff_C]
+    rw [biquad_coeff]
+    simp [show j ≠ 4 by omega, show j ≠ 2 by omega, show j ≠ 0 by omega]
   rw [diffOp_eq_sum _ _ (n := 5) (by omega)]
-  simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add, iterate_derivative_X_pow_eq_C_mul]
-  norm_num [biquad, coeff_X_pow, Nat.descFactorial_succ, Nat.cast_succ, map_mul, pow_add]
+  have e1 : k+4-1 = k+3 := by omega
+  have e2 : k+4-2 = k+2 := by omega
+  have e3 : k+4-3 = k+1 := by omega
+  have e4 : k+4-4 = k := by omega
+  simp only [Finset.sum_range_succ, Finset.sum_range_zero, zero_add, iterate_derivative_X_pow_eq_C_mul,
+    biquad_coeff, e1, e2, e3, e4, Nat.sub_zero]
+  norm_num [biquad, Nat.descFactorial_succ, Nat.cast_succ, map_mul, map_add, map_sub, map_neg,
+    map_natCast, map_ofNat, pow_add]
   <;> ring
 
 /-- The exact sector for a quartet, in the squared spectral coordinate. -/
@@ -104,7 +116,8 @@ theorem squaredPairSymbol_splits_iff (k : ℕ) {w : ℂ} (hw : w ≠ 0) :
   have hn : biquad (Complex.normSq w) (w.re*A*B) (A*B*D*E) ≠ 0 := by
     intro hz
     have he := congrArg (fun q : ℝ[X] => q.coeff 4) hz
-    simpa [biquad, hN.ne'] using he
+    simp only [biquad_coeff, coeff_zero, ↓reduceIte] at he
+    exact hN.ne' he
   rw [splits_mul (pow_ne_zero _ X_ne_zero) hn, and_iff_right (Splits.X_pow k),
     biquad_splits_iff hN (by positivity), InSquaredJensenSector]
   push_cast
@@ -150,8 +163,8 @@ private theorem irreducible_expand_splits (k : ℕ) {p : ℝ[X]} (hi : Irreducib
       have he : (p.map Complex.ofRealHom).eval (w.re : ℂ) = 0 := by
         rw [hw']
         exact (eval_map_algebraMap p w).trans hw
-      rw [eval_map_apply] at he
-      exact Complex.ofReal_injective he
+      rw [show (w.re : ℂ) = Complex.ofRealHom w.re from rfl, eval_map_apply] at he
+      simpa [Polynomial.IsRoot] using he
     obtain ⟨c,hc⟩ := irreducible_factor hi (not_isUnit_X_sub_C w.re) (dvd_iff_isRoot.mpr hval)
     rw [hc, map_mul, expand_C, map_sub, expand_X, expand_C, diffOp_C_mul_left]
     apply Splits.C_mul
@@ -159,10 +172,14 @@ private theorem irreducible_expand_splits (k : ℕ) {p : ℝ[X]} (hi : Irreducib
     have hdeg : ((X : ℝ[X])^2-C w.re).natDegree ≤ 2 :=
       (natDegree_sub_le _ _).trans (max_le (natDegree_X_pow_le _) (by simp))
     apply (splits_diffOp_X_pow_iff_of_natDegree_le_two hdeg h₀ (k+2)).mpr
-    simp only [coeff_sub, coeff_C, coeff_X_pow, ↓reduceIte, sub_zero, zero_sub, sub_self,
-      zero_pow (by decide : 2 ≠ 0), mul_zero, mul_one]
+    have hq0 : ((X : ℝ[X])^2-C w.re).coeff 0 = -w.re := by simp [coeff_X_pow, coeff_C]
+    have hq1 : ((X : ℝ[X])^2-C w.re).coeff 1 = 0 := by simp [coeff_X_pow, coeff_C]
+    have hq2 : ((X : ℝ[X])^2-C w.re).coeff 2 = 1 := by simp [coeff_X_pow, coeff_C]
+    rw [hq0, hq1, hq2]
     have hpos := h.1
-    positivity
+    have hk : (0:ℝ) ≤ (k:ℝ) := Nat.cast_nonneg k
+    push_cast
+    nlinarith
   · have hd : pairSymbol w ∣ p := by
       simpa only [pairSymbol, Complex.normSq_eq_norm_sq] using
         p.quadratic_dvd_of_aeval_eq_zero_im_ne_zero hw hr

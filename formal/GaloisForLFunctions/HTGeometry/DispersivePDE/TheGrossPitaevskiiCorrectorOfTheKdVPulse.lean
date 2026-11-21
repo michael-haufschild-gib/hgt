@@ -103,8 +103,11 @@ theorem acousticCorrector_peak_locations {k : ℝ} (hk : k ≠ 0) (z : ℝ) :
   constructor
   · intro he
     field_simp [hc.ne'] at he
-    have hs : (k^2)*((Real.cosh (k*z))^2-2)=0 := by linarith only [he]
-    have heq := sub_eq_zero.mp ((mul_eq_zero.mp hs).resolve_left (pow_ne_zero 2 hk))
+    have heq : Real.cosh (k*z)^2 = 2 := by
+      first
+        | linarith only [he]
+        | exact sub_eq_zero.mp ((mul_eq_zero.mp
+            (show (k^2)*((Real.cosh (k*z))^2-2)=0 by linarith only [he])).resolve_left (pow_ne_zero 2 hk))
     have hv := (sq_eq_sq_iff_eq_or_eq_neg.mp (heq.trans hr.symm)).resolve_right
       (by linarith only [hc,hh])
     calc |k*z| = Real.arcosh (Real.cosh |k*z|) := (Real.arcosh_cosh (abs_nonneg _)).symm

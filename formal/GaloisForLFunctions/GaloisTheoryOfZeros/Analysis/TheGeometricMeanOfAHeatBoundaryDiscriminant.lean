@@ -77,11 +77,11 @@ theorem rh_iff_equal_heat_boundary_means :
     let D := fun w : ℂ => heatBoundaryDiscriminant ((t:ℂ)+w) l u
     have h₀ : D 0 ≠ 0 := by
       change heatBoundaryDiscriminant ((t:ℂ)+0) l u ≠ 0
-      rw [add_zero,heatBoundaryDiscriminant_eq_zero_iff _ _ _ hl hu hreg]
+      rw [add_zero,Ne,heatBoundaryDiscriminant_eq_zero_iff _ _ _ hl hu hreg]
       rintro ⟨z,_,hz⟩
       exact h t ht ⟨((t:ℂ),z),hz,rfl⟩
     have hk : analyticOrderAt D 0 = (0:ℕ∞) :=
-      hD.analyticOrderAt_eq_natCast.mpr ⟨D,hD,h₀,by simp⟩
+      hD.analyticOrderAt_eq_natCast.mpr ⟨D,hD,h₀,Filter.Eventually.of_forall fun z => by simp [D]⟩
     obtain ⟨R,hR,b,h⟩ := affine_log_mean hD hk
     let r := min R ε/4
     have hr : 0<r := div_pos (lt_min hR hε) (by norm_num)
@@ -144,7 +144,7 @@ private theorem real_slice_power_integrability {D : ℂ → ℂ} {k : ℕ}
   constructor
   · intro h
     have hh := h.mul_continuousOn_of_subset (cont.inv₀ hU) measurableSet_Ioo isCompact_Icc Ioo_subset_Icc_self
-    exact hh.congr_fun (fun t ht => by rw [factor t ht]; exact mul_inv_cancel_right₀ (hU t (Ioo_subset_Icc_self ht)) _) measurableSet_Ioo
+    exact hh.congr_fun (fun t ht => by simp only [Pi.inv_apply]; rw [factor t ht]; exact mul_inv_cancel_right₀ (hU t (Ioo_subset_Icc_self ht)) _) measurableSet_Ioo
   · intro h
     exact (h.mul_continuousOn_of_subset cont measurableSet_Ioo isCompact_Icc Ioo_subset_Icc_self).congr_fun
       (fun t ht => (factor t ht).symm) measurableSet_Ioo
@@ -166,7 +166,8 @@ theorem heat_boundary_reciprocal_pair (τ z : ℂ) :
   obtain ⟨R,hR,h⟩ := real_slice_power_integrability hD hk
   refine ⟨l,u,hin,hreg,R,hR,fun r hr hrR α => ?_⟩
   dsimp only
-  rw [h r hr hrR α,h r hr hrR (-α),abs_lt,mul_neg]
+  have hm : (heatIntersectionMultiplicity (τ,z) : ℝ) = ((analyticOrderNatAt (complexHeat τ) z).choose 2 : ℕ) := rfl
+  rw [h r hr hrR α,h r hr hrR (-α),abs_lt,mul_neg,hm]
   constructor <;> rintro ⟨h₁,h₂⟩ <;> exact ⟨h₁,by linarith only [h₂]⟩
 
 /-- A single inverse-modulus integral on a short real-time segment is a
@@ -183,11 +184,11 @@ theorem rh_iff_locally_integrable_inverse_heat_boundary :
     let D := fun w : ℂ => heatBoundaryDiscriminant ((t:ℂ)+w) l u
     have h₀ : D 0 ≠ 0 := by
       change heatBoundaryDiscriminant ((t:ℂ)+0) l u ≠ 0
-      rw [add_zero,heatBoundaryDiscriminant_eq_zero_iff _ _ _ hl hu hreg]
+      rw [add_zero,Ne,heatBoundaryDiscriminant_eq_zero_iff _ _ _ hl hu hreg]
       rintro ⟨z,_,hz⟩
       exact h t ht ⟨((t:ℂ),z),hz,rfl⟩
     have hk : analyticOrderAt D 0 = (0:ℕ∞) :=
-      hD.analyticOrderAt_eq_natCast.mpr ⟨D,hD,h₀,by simp⟩
+      hD.analyticOrderAt_eq_natCast.mpr ⟨D,hD,h₀,Filter.Eventually.of_forall fun z => by simp [D]⟩
     obtain ⟨R,hR,H⟩ := real_slice_power_integrability hD hk
     refine ⟨R/2,half_pos hR,?_⟩
     simpa only [Real.rpow_neg_one] using
@@ -204,7 +205,7 @@ theorem rh_iff_locally_integrable_inverse_heat_boundary :
     let r := min R s/2
     have hr : 0<r := half_pos (lt_min hR hs)
     have hrR : r<R := (half_lt_self (lt_min hR hs)).trans_le (min_le_left _ _)
-    have hrs : r≤s := ((half_lt_self (lt_min hR hs)).le).trans (min_le_right _ _)
+    have hrs : r ≤ s := ((half_lt_self (lt_min hR hs)).le).trans (min_le_right _ _)
     have htest := (H r hr hrR (-1)).mp (by
       simpa only [Real.rpow_neg_one] using hint.mono_set (Ioo_subset_Ioo_right hrs))
     have hpos := (heatIntersectionMultiplicity_ne_zero_iff _).mpr hc

@@ -1,5 +1,6 @@
 import GaloisForLFunctions.FiniteFreeProbability.CofinalEulerJensenTest
 import GaloisForLFunctions.FiniteFreeProbability.QuadraticCostOfEulerFilters
+import GaloisForLFunctions.FiniteFreeProbability.JensenCountsOffLineZeros
 
 /-!
 # Cofinal Xi tests with variable lists of Euler weights
@@ -72,7 +73,7 @@ private theorem cost_tail (w : List ℕ) {d m : ℕ} (hd : d ≤ m) :
     have hinv : (((s+m : ℕ) : ℝ)+2)⁻¹ ≤ 2*(((s+(m+d) : ℕ) : ℝ)+2)⁻¹ := by
       rw [← one_div, ← div_eq_mul_inv, div_le_div_iff₀ hpos hpos']
       push_cast
-      linarith only [show (d : ℝ) ≤ m by exact_mod_cast hd, Nat.cast_nonneg s]
+      linarith only [show (d : ℝ) ≤ m by exact_mod_cast hd, Nat.cast_nonneg (α := ℝ) s]
     have hs := pow_le_pow_left₀ (inv_nonneg.mpr hpos.le) hinv 2
     nlinarith only [hs,ih]
 
@@ -85,7 +86,7 @@ theorem eulerCollisionCost_degree_bound (w : List ℕ) (m : ℕ) :
     change eulerCollisionCost ((s+m)::raisedEulerWeights w m) ≤ _
     rw [cost_cons, List.length_cons, Nat.cast_succ]
     have hs : (((s+m : ℕ) : ℝ)+2)⁻¹ ≤ ((m : ℝ)+2)⁻¹ :=
-      inv_anti₀ (by positivity) (by push_cast; linarith only [Nat.cast_nonneg s])
+      inv_anti₀ (by positivity) (by push_cast; linarith only [Nat.cast_nonneg (α := ℝ) s])
     have hh := pow_le_pow_left₀ (by positivity) hs 2
     linarith only [ih,hh]
 
@@ -134,7 +135,8 @@ theorem riemannHypothesis_iff_vanishing_euler_cost :
         (fun _ => norm_degree _ _) le_rfl (xiJensenReal_ne_zero d) (norm_limit v hv _ ) hb
       obtain ⟨i,hi,hbadi⟩ := (hd.and hbad).exists
       have hs' : (eulerWord (w i) (xiJensenReal (d+(n i-d)))).Splits := by
-        rwa [Nat.add_sub_of_le (show d ≤ n i by omega)]
+        rw [Nat.add_sub_of_le (show d ≤ n i by omega)]
+        exact hs i
       exact hbadi (normalizedEulerWord_splits _ _ (word_descend _ _ _ hs'))
     rw [← reflect_jensenReverse]
     exact Splits.reflect hsplit (natDegree_jensenReverse_le _ _)

@@ -2,13 +2,12 @@ import Mathlib
 import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.StatementField
 
 
-namespace WindowedLandauTheory
 
 open NumberField Ideal Polynomial
 
 noncomputable section
 
-namespace TwoAdicCyclotomicDecomposition
+namespace WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
 theorem not_sq_in_cyclotomic_ring (K : Type*) [Field K] [NumberField K] (N : ℕ) [NeZero N]
     [IsCyclotomicExtension {N} ℚ K] (p : ℕ) [hp : Fact p.Prime] (hpN : ¬ p ∣ N)
@@ -369,5 +368,5 @@ theorem layerExists : LayerExists := by
     · exact Algebra.subset_adjoin (by simp)
     · exact neg_mem (Algebra.subset_adjoin (by simp))
 
-end TwoAdicCyclotomicDecomposition
+end WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 

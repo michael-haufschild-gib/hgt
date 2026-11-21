@@ -103,7 +103,7 @@ squared-increment cost and the unoccupied tail capacity at each site. -/
 theorem floor_tail_capacity_identity (c : ℕ →₀ ℤ) (m B M : ℕ) (P : ℝ) :
     let R := floorExcessTail c m B M
     let e := IsProducer.excessTerm m B c
-    (∑ i ∈ range M, (R i)^2+((i:ℝ)+1)*(e i)^2 + 2*e i*(P-((i:ℝ)+1)*R i)) =
+    (∑ i ∈ range M, ((R i)^2+((i:ℝ)+1)*(e i)^2 + 2*e i*(P-((i:ℝ)+1)*R i))) =
       2*P*R 0 := by
   intro R e
   let v (i : ℕ) := (i:ℝ)*(R i)^2
@@ -119,6 +119,7 @@ theorem floor_tail_capacity_identity (c : ℕ →₀ ℤ) (m B M : ℕ) (P : ℝ
   dsimp only [v]
   simp only [hM,Nat.cast_zero,zero_mul,ne_eq,OfNat.ofNat_ne_zero,not_false_eq_true,zero_pow,
     mul_zero,sub_zero,add_zero,R,floorExcessTail,range_zero,sum_empty]
+  rfl
 
 private theorem producer_pronic_cap {c : ℕ →₀ ℤ} {m B : ℕ} (hP : IsProducer c m B) (i : ℕ) :
     IsProducer.excessTerm m B c i ≤ (peak c:ℝ)/(((i:ℝ)+1)*((i:ℝ)+2)) := by
@@ -145,7 +146,7 @@ private theorem finite_tail_capacity {c : ℕ →₀ ℤ} {m B : ℕ} (hP : IsPr
 /-- Positivity and the actual site cap improve the Hardy constant from four
 to two, while also paying for the squared pronic increments. -/
 theorem producer_tail_energy_and_increments {c : ℕ →₀ ℤ} {m B : ℕ} (hP : IsProducer c m B) (M : ℕ) :
-    (∑ i ∈ range M, (floorExcessTail c m B M i)^2+((i:ℝ)+1)*(IsProducer.excessTerm m B c i)^2)
+    (∑ i ∈ range M, ((floorExcessTail c m B M i)^2+((i:ℝ)+1)*(IsProducer.excessTerm m B c i)^2))
       ≤ 2*(peak c:ℝ)*floorExcessTail c m B M 0 := by
   rw [← floor_tail_capacity_identity c m B M (peak c)]
   apply sum_le_sum
@@ -162,8 +163,8 @@ theorem producer_tail_energy_and_increments {c : ℕ →₀ ℤ} {m B : ℕ} (hP
 uniformly bounded on every finite window. -/
 theorem producer_infinite_energy_and_increments {c : ℕ →₀ ℤ} {m B : ℕ} (hP : IsProducer c m B) (K : ℕ) :
     (∑ i ∈ range K,
-      (excess c m B-∑ j ∈ range i, IsProducer.excessTerm m B c j)^2+
-        ((i:ℝ)+1)*(IsProducer.excessTerm m B c i)^2) ≤ 2*(peak c:ℝ)*excess c m B := by
+      ((excess c m B-∑ j ∈ range i, IsProducer.excessTerm m B c j)^2+
+        ((i:ℝ)+1)*(IsProducer.excessTerm m B c i)^2)) ≤ 2*(peak c:ℝ)*excess c m B := by
   let e := IsProducer.excessTerm m B c
   have ht : Filter.Tendsto (fun M => ∑ i ∈ range M, e i) Filter.atTop (nhds (excess c m B)) :=
     hP.hasSum_excess.tendsto_sum_nat

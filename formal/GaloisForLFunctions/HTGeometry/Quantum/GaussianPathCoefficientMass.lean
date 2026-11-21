@@ -1,6 +1,5 @@
 import GaloisForLFunctions.HTGeometry.PathShellDelayFloor
-import Mathlib.Probability.StrongLaw
-import Mathlib.Probability.Independence.InfinitePi
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.LocalSimulation.CoordinateLaw
 import Mathlib.Probability.Distributions.Gaussian.Real
 
 /-!
@@ -32,19 +31,7 @@ private theorem gaussian_direction_slln (d : PathPauliDirections) (f : ℝ → �
     ∀ᵐ ω ∂pathPauliDisorderLaw, Tendsto
       (fun N : ℕ => (∑ i ∈ Finset.range N, f (ω (i,d))) / N)
       atTop (𝓝 (∫ x, f x ∂gaussianReal 0 1)) := by
-  let X (i : ℕ) (ω : PathPauliDisorder) := f (ω (i,d))
-  have hident (i : ℕ) : IdentDistrib (X i) f pathPauliDisorderLaw (gaussianReal 0 1) := by
-    have h := measurePreserving_eval_infinitePi (fun _ : ℕ × PathPauliDirections => gaussianReal 0 1) (i,d)
-    have h' : IdentDistrib (Function.eval (i,d)) id pathPauliDisorderLaw (gaussianReal 0 1) :=
-      ⟨h.measurable.aemeasurable,measurable_id.aemeasurable,by rw [Measure.map_id]; exact h.map_eq⟩
-    exact h'.comp hf
-  have hindep : iIndepFun X pathPauliDisorderLaw := by
-    have h := iIndepFun_infinitePi (P := fun _ : ℕ × PathPauliDirections => gaussianReal 0 1)
-      (X := fun _ x => f x) (fun _ => hf)
-    exact h.precomp (g := fun i : ℕ => (i,d)) (fun _ _ e => congrArg Prod.fst e)
-  have h := strong_law_ae_real X ((hident 0).integrable_iff.mpr hi)
-    (fun _ _ hij => hindep.indepFun hij) (fun i => (hident i).trans (hident 0).symm)
-  rwa [(hident 0).integral_eq] at h
+  exact LocalPatches.coordinate_strong_law (gaussianReal 0 1) d f hf hi
 
 private def gaussianAbsMean : ℝ := ∫ x : ℝ, |x| ∂gaussianReal 0 1
 private def gaussianSquareMean : ℝ := ∫ x : ℝ, x^2 ∂gaussianReal 0 1

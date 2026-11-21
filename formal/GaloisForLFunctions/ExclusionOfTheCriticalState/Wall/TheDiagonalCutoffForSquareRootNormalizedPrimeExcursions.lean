@@ -21,7 +21,7 @@ private theorem triangular_layer_mass (K : ℕ) :
   induction K with
   | zero => norm_num [dyadicRelativeJump]
   | succ K ih =>
-    rw [sum_range_succ]
+    rw [Finset.sum_range_succ]
     have step r (hr : r ∈ range (K+1)) :
         dyadicRelativeJump r*(1+((K+1-r:ℕ):ℝ)/2) =
           dyadicRelativeJump r*(1+((K-r:ℕ):ℝ)/2)+dyadicRelativeJump r*(1/2) := by
@@ -180,7 +180,7 @@ theorem middle_endpoint_power_above_abscissa {b : ℝ} (hw : _root_.RHTower.zero
       rw [←Real.rpow_mul lp.le]
       calc _ = (L:ℝ)^(1:ℝ)*(L:ℝ)^((2-b)*(c-1)) := by rw [Real.rpow_one]
            _ = _ := by rw [←Real.rpow_add lp,show 1+(2-b)*(c-1)=b by linarith only [idc]]
-    have cap := mul_le_mul_of_nonneg_left fall (mul_nonneg (mul_nonneg (by norm_num) hD.le) lp.le)
+    have cap := mul_le_mul_of_nonneg_left fall (mul_nonneg (mul_nonneg (by norm_num : (0:ℝ) ≤ 4) hD.le) lp.le)
     calc _ ≤ _ := price.trans (min_le_left ..)
          _ ≤ _ := cap
          _ = (4*D)*(L:ℝ)^b := by rw [mul_assoc,id]
@@ -223,8 +223,8 @@ theorem opposite_prime_moment_at_one_diagonal_rectangle (left : Bool) {s a g d T
   have sign : |s|=1 := by rcases hs with rfl|rfl <;> norm_num
   have top : primeDiagonalCeiling L/A^2 < (2:ℝ)^(K+1) := by
     apply (Nat.lt_floor_add_one _).trans_le
-    exact_mod_cast Nat.succ_le_of_lt
-      (Nat.lt_pow_succ_log_self (by decide : 1<2) ⌊primeDiagonalCeiling L/A^2⌋₊)
+    exact_mod_cast (show ⌊primeDiagonalCeiling L/A^2⌋₊ + 1 ≤ 2^(K+1) from Nat.succ_le_of_lt
+      (Nat.lt_pow_succ_log_self (by decide : 1<2) ⌊primeDiagonalCeiling L/A^2⌋₊))
   have posH (H : ℕ) (hi : H ∈ S) : 0 < (H:ℝ) :=
     (Real.exp_pos _).trans_le (mem_filter.mp (mem_filter.mp hi).1).2.1
   have lower (H : ℕ) (hi : H ∈ S) : 1 ≤ F H ∧ 1 ≤ G H := by
@@ -242,7 +242,7 @@ theorem opposite_prime_moment_at_one_diagonal_rectangle (left : Bool) {s a g d T
     by_contra! h
     have high := pow_le_pow_right₀ (by norm_num : 1 ≤ (2:ℝ)) (show K+1 ≤ r+t by omega)
     have low := mul_le_mul hf hg (by positivity) ((by positivity : 0 ≤ (2:ℝ)^r).trans hf)
-    rw [pow_add] at high
+    rw [pow_add (2:ℝ) r t] at high
     exact (prod H).not_ge (high.trans low)
   let J := ((range (K+1)) ×ˢ (range (K+1))).filter (fun j : ℕ × ℕ => j.1+j.2 ≤ K)
   have ne : J.Nonempty := ⟨(0,0),mem_filter.mpr ⟨mem_product.mpr

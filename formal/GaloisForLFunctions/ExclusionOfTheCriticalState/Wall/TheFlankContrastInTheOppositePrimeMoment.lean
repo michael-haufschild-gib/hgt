@@ -116,7 +116,7 @@ theorem prime_price_contrast_error :
   rw [max_eq_left hA,show A-u*(u+v+w)-A= -(u*(u+v+w)) by ring,abs_neg,abs_mul] at close
   rw [largest_opposite_prime_price_exact]
   change |max 0 (A-u*(u+v+w))/(H:ℝ)^2-A/(H:ℝ)^2| ≤ _
-  rw [←sub_div,abs_div,abs_of_nonneg (sq_nonneg _),max_comm 0]
+  rw [←sub_div,abs_div,abs_of_nonneg (sq_nonneg (H:ℝ)),max_comm 0]
   apply div_le_div_of_nonneg_right _ (sq_nonneg _)
   exact close.trans ((mul_le_mul_of_nonneg_left bound (abs_nonneg u)).trans_eq (mul_comm ..))
 
@@ -270,7 +270,7 @@ theorem signed_prime_moment_le_middle_contrast :
   have cover : S⊆D := by
     intro H hH
     obtain ⟨hn,hm,_⟩ := mem_filter.mp hH
-    apply mem_filter.mpr ⟨hn,hm.trans_le ?_⟩
+    refine mem_filter.mpr ⟨hn,hm.trans_le ?_⟩
     rcases hs with rfl|rfl
     · simpa only [one_mul] using le_abs_self (oddQuotientPrimeExcess (Ioc k L) H)
     · simpa only [neg_one_mul] using neg_le_abs (oddQuotientPrimeExcess (Ioc k L) H)

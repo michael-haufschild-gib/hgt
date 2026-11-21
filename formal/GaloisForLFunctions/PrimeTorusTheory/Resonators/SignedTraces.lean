@@ -22,7 +22,7 @@ def unitDefect (a b c : ℂ) : ℝ := ‖a+b+c‖^2-1
 def area (a b : ℂ) : ℝ := (a*conj b).im
 
 private theorem unit_mul_conj {a : ℂ} (ha : ‖a‖=1) : a*conj a=1 := by
-  rw [Complex.mul_conj',ha,one_pow,Complex.ofReal_one]
+  rw [Complex.mul_conj',ha,Complex.ofReal_one,one_pow]
 
 private theorem square_diff_area {a b : ℂ} (ha : ‖a‖=1) (hb : ‖b‖=1) :
     a^2-b^2=(2*I*(area a b:ℂ))*(a*b) := by
@@ -150,7 +150,7 @@ open Filter MeasureTheory
 private theorem area_phase (p q : ℕ) (t : ℝ) :
     area (nPhase p t) (nPhase q t) = Real.sin ((Real.log p-Real.log q)*t) := by
   rw [area,conj_nPhase,nPhase,← Complex.exp_add]
-  have he : I*((Real.log p:ℂ)*(t:ℂ))+I*((-(Real.log q):ℂ)*(t:ℂ)) =
+  have he : I*((Real.log p:ℂ)*(t:ℂ))+I*(((-Real.log q:ℝ):ℂ)*(t:ℂ)) =
       (((Real.log p-Real.log q)*t:ℝ):ℂ)*I := by push_cast; ring
   rw [he,Complex.exp_ofReal_mul_I_im]
 
@@ -160,7 +160,9 @@ private theorem ae_nonparallel {p q : ℕ} (hp : 0<p) (hpq : p<q) :
   have hw : w≠0 := (sub_neg.mpr (Real.log_lt_log (Nat.cast_pos.mpr hp) (Nat.cast_lt.mpr hpq))).ne
   have hs : {t | area (nPhase p t) (nPhase q t)=0} ⊆ Set.range (fun k : ℤ => k*Real.pi/w) := by
     intro t ht
-    obtain ⟨k,hk⟩ := Real.sin_eq_zero_iff.mp ((area_phase p q t) ▸ ht)
+    have ht' : area (nPhase p t) (nPhase q t) = 0 := ht
+    rw [area_phase] at ht'
+    obtain ⟨k,hk⟩ := Real.sin_eq_zero_iff.mp ht'
     exact ⟨k,(div_eq_iff hw).mpr (by dsimp only [w]; linarith only [hk])⟩
   rw [ae_iff]
   simpa only [not_ne_iff] using ((Set.countable_range _).mono hs).measure_zero volume

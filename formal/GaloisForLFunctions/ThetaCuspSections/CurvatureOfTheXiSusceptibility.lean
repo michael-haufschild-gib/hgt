@@ -29,7 +29,8 @@ private theorem concave_remainder (n : ℕ) : ConcaveOn ℝ (Ici (17/2)) (remain
   let g (y : ℝ) := (Complex.digamma ((y : ℝ) : ℂ)).re
   have hg : ConcaveOn ℝ (Ioi 0) (fun y : ℝ => g (y+n)) :=
     (concaveOn_re_digamma.translate_left (n : ℝ)).subset
-      (fun y hy => show 0 < y+n from add_pos_of_pos_of_nonneg hy (Nat.cast_nonneg n)) (convex_Ioi 0)
+      (fun y (hy : 0 < y) => show 0 < (n:ℝ)+y from add_pos_of_nonneg_of_pos (Nat.cast_nonneg n) hy)
+      (convex_Ioi 0)
   have hc := (((concaveOn_ghsFinitePart.add
     (concaveOn_const (𝕜 := ℝ) (-(Real.log Real.pi / 2)) (convex_Ici (9 : ℝ)))).add
     (concaveOn_half_comp_affine hg)).add (concaveOn_re_logDeriv_riemannZeta.subset
@@ -117,7 +118,7 @@ private theorem sum_poles_lower {w : ℝ} (hw : 0 < w) (n : ℕ) :
     have h₂ : ((y^2)⁻¹-((y+2)^2)⁻¹)/2 ≤ 2*(y^3)⁻¹ := by
       field_simp
       nlinarith only [hy, sq_nonneg y, pow_nonneg hy.le 3, pow_nonneg hy.le 4]
-    rw [sum_range_succ, sum_range_succ, hs]
+    rw [Finset.sum_range_succ, Finset.sum_range_succ, hs]
     exact ⟨by linarith only [ih.1,h₁], by linarith only [ih.2,h₂]⟩
 
 private theorem tendsto_inv_shift (w : ℝ) :
@@ -145,7 +146,7 @@ theorem xi_third_cumulant_upper {w : ℝ} (hw : 17/2 < w) :
   have ht := ((tendsto_const_nhds (x := ((w+poleShift 0)^2)⁻¹)).sub
     ((tendsto_inv_shift w).pow 2)).div_const 2
   have h := le_of_tendsto ht (b := -deriv (deriv xiRealLogDeriv) w) (Eventually.of_forall fun n => by
-    rw [← inv_pow]
+    rw [inv_pow]
     linarith only [(sum_poles_lower hw' n).2, finite_curvature n hw])
   simp [poleShift,one_div,mul_inv_rev,div_eq_mul_inv] at h ⊢
   linarith only [h]
@@ -156,7 +157,8 @@ theorem xi_third_cumulant_negative (w : {x : ℝ // 0 < x}) :
   by_cases h : w.val ≤ 9
   · apply deriv2_xiRealLogDeriv_neg w.property
     nlinarith only [mul_self_le_mul_self w.property.le h]
-  · exact (xi_third_cumulant_upper (by linarith : 17/2 < w.val)).trans_lt (by positivity)
+  · exact (xi_third_cumulant_upper (by linarith : 17/2 < w.val)).trans_lt
+      (neg_neg_of_pos (div_pos one_pos (mul_pos two_pos (pow_pos (by linarith [w.property]) 2))))
 
 /-- Under pure scale control the heat capacity is at least linear in the field asymptotically. -/
 theorem tiltCapacity_lower (u v : ℝ) (h : 17/2 ≤ Real.exp (u-v)) :

@@ -3,9 +3,8 @@ import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.StatementGroup
 import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.CentralOrderTwo.TwoAdic
 
 
-namespace WindowedLandauTheory
 
-namespace TwoAdicCyclotomicDecomposition
+namespace WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
 lemma pv24 : padicValInt 2 ((5:ℤ) ^ 2 - 1) = 3 := by
   have h : ((5:ℤ) ^ 2 - 1) = ((2 ^ 3 * 3 : ℕ) : ℤ) := by norm_num
@@ -349,5 +348,5 @@ theorem gamEModel : GamEModel := by
       · have h2 : (-1 : ℤˣ) = 1 := congrArg (fun x : GalL (s + 2) => x.2.1) h1
         exact absurd h2 (by decide)
 
-end TwoAdicCyclotomicDecomposition
+end WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 

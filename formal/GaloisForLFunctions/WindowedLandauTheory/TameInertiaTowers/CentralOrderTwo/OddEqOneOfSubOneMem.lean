@@ -4,13 +4,12 @@ import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.InvLength
 import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.CentralOrderTwo.NormalOrderTwoCentral
 
 
-namespace WindowedLandauTheory
 
 open NumberField Ideal
 
 noncomputable section
 
-namespace TwoAdicCyclotomicDecomposition
+namespace WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
 theorem odd_intCast_mem_iff {L : Type} [Field L] [NumberField L] (p : ℕ)
     (P : Ideal (𝓞 L)) [P.LiesOver (span {(p : ℤ)})] (n : ℤ) :
@@ -428,5 +427,5 @@ theorem invLength : InvLength := by
   rw [hcard, hker, gcd_two_pow N k hk]
   rfl
 
-end TwoAdicCyclotomicDecomposition
+end WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
