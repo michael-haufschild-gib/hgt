@@ -48,7 +48,7 @@ private theorem forwardPhaseGap_le_of_repr {a b x : ℝ} (k : ℤ) (hx : 0 ≤ x
     forwardPhaseGap a b = Int.fract (x / P) * P := by
       change Int.fract ((b - a) / P) * P = _
       rw [hquot, Int.fract_sub_intCast]
-    _ ≤ (x / P) * P := mul_le_mul_of_nonneg_right (sub_le_self _ (Int.cast_nonneg.mpr hfloor)) hP.le
+    _ ≤ (x / P) * P := mul_le_mul_of_nonneg_right (sub_le_self _ (Int.cast_nonneg hfloor)) hP.le
     _ = x := div_mul_cancel₀ _ hP.ne'
 
 section Finite
@@ -73,7 +73,7 @@ theorem spectralEnclosingArcLength_lt_two_pi (θ : ι → ℝ) :
   obtain ⟨i, _, hi⟩ := Finset.exists_mem_eq_inf' Finset.univ_nonempty (phaseSpanFrom θ)
   change spectralEnclosingArcLength θ = phaseSpanFrom θ i at hi
   rw [hi]
-  exact Finset.sup'_lt_iff.mpr fun j _ => (forwardPhaseGap_mem (θ i) (θ j)).2
+  exact (Finset.sup'_lt_iff Finset.univ_nonempty).mpr fun j _ => (forwardPhaseGap_mem (θ i) (θ j)).2
 
 /-- The midpoint of a shortest cut encloses all phases at half the arc length. -/
 theorem exists_spectralEnclosingArc_center (θ : ι → ℝ) : ∃ c : ℝ, ∀ j,

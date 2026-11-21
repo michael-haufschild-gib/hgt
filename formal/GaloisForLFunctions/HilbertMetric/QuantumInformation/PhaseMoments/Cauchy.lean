@@ -51,6 +51,7 @@ variable {σ : Type*} [Fintype σ]
 def phaseCurve (w : σ → ℝ) (t : ℝ) : σ → Circle :=
   fun i => Circle.exp (-(t * w i))
 
+omit [Fintype σ] in
 private theorem continuous_phaseCurve (w : σ → ℝ) : Continuous (phaseCurve w) := by
   apply continuous_pi
   intro i
@@ -58,7 +59,8 @@ private theorem continuous_phaseCurve (w : σ → ℝ) : Continuous (phaseCurve 
 
 /-- Positive representing measure on the entire site phase torus. -/
 def phaseLaw (w : σ → ℝ) : ProbabilityMeasure (σ → Circle) :=
-  (⟨noise, inferInstance⟩ : ProbabilityMeasure ℝ).map (continuous_phaseCurve w).aemeasurable
+  ProbabilityMeasure.map (f := phaseCurve w) (⟨noise, inferInstance⟩ : ProbabilityMeasure ℝ)
+    (continuous_phaseCurve w).aemeasurable
 
 /-- The torus character at any integer multidegree. -/
 def character (n : σ → ℤ) (z : σ → Circle) : ℂ := ∏ i, (z i : ℂ) ^ n i
@@ -68,7 +70,7 @@ private theorem continuous_character (n : σ → ℤ) : Continuous (character n)
   apply continuous_finsetProd
   intro i _
   have h : Continuous (fun z : σ → Circle => (z i) ^ n i) := (continuous_apply i).zpow _
-  simpa only [Circle.coe_zpow] using continuous_subtype_val.comp h
+  simpa only [Function.comp_def, Circle.coe_zpow] using continuous_subtype_val.comp h
 
 private theorem character_phaseCurve (w : σ → ℝ) (n : σ → ℤ) (t : ℝ) :
     character n (phaseCurve w t) =
