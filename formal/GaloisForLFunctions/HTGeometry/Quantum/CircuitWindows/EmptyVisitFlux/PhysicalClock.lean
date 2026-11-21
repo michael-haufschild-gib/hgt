@@ -14,7 +14,7 @@ theorem mem_tickIndices {a τ T : ℝ} (hτ : 0<τ) (k : ℕ) :
     k ∈ tickIndices a τ T ↔ a+(k:ℝ)*τ ≤ T := by
   by_cases h : T<a
   · rw [tickIndices,if_pos h]
-    have hnon := mul_nonneg (Nat.cast_nonneg k (R := ℝ)) hτ.le
+    have hnon := mul_nonneg (Nat.cast_nonneg (α := ℝ) k) hτ.le
     simp only [Finset.notMem_empty,false_iff]
     linarith only [hnon,h]
   · rw [tickIndices,if_neg h,Finset.mem_range,Nat.lt_succ_iff,Nat.le_floor_iff

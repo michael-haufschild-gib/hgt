@@ -2,7 +2,7 @@ import GaloisForLFunctions.WindowedLandauTheory.LocalToGlobal.Divisibility.Numbe
 import GaloisForLFunctions.WindowedLandauTheory.LocalRingCardinality.DataErr
 import GaloisForLFunctions.WindowedLandauTheory.LocalRingCardinality.DataMink
 import GaloisForLFunctions.WindowedLandauTheory.SharpRestriction.GrowthBounds.DefsInst
-import GaloisForLFunctions.WindowedLandauTheory.SizeWindowBrackets.GaloisToProductIsIso
+import GaloisForLFunctions.WindowedLandauTheory.SharpRestriction.GlobalSchurBounds.TieGlobal
 import GaloisForLFunctions.WindowedLandauTheory.SizeWindowBrackets.Chain2aCoreNoAnalytic
 
 /-! Prime classes, local orbit weights, and arithmetic tests for the global gain estimate. -/
@@ -286,27 +286,16 @@ def Cst.admitted (C : Cst) : Prop :=
 abbrev base (N : NumDatum) : Base :=
   { R := N.R, sc := N.sc, q := N.q, d := N.d, cls := N.cls, TT := N.TT, Sc := N.Sc, eta := N.eta }
 
-def hostRec {φ : WindowedLandauTheory.HC.Frame} (H : WindowedLandauTheory.HC.HostRaw φ) : (ZMod H.condN)ˣ →* Multiplicative (WindowedLandauTheory.D5.E0 × φ.A) where
-  toFun u := Multiplicative.ofAdd
-    ((Multiplicative.toAdd (WindowedLandauTheory.LFunctionChainParameters.LHost.sgn2 (H.art u).1.2), Multiplicative.toAdd (WindowedLandauTheory.LFunctionChainParameters.LHost.sgn2 (H.art u).1.1)),
-      φ.iotaInv (H.art u).2)
-  map_one' := by
-    simp only [Prod.snd_one, Prod.fst_one, map_one]
-    rfl
-  map_mul' u v := by
-    simp only [Prod.snd_mul, Prod.fst_mul, map_mul]
-    rfl
-
-def hostArith {φ : WindowedLandauTheory.HC.Frame} (H : WindowedLandauTheory.HC.HostRaw φ) : WindowedLandauTheory.LFunctionChainParameters.characterSumData.ArithData φ.A :=
-  WindowedLandauTheory.LFunctionChainParameters.LHost.cftData H.q H.d (hostRec H)
-
-def hHost {φ : WindowedLandauTheory.HC.Frame} (H : WindowedLandauTheory.HC.HostRaw φ) (p : ℕ) : φ.A := ((hostArith H).frob p).2
+/-- The orbit component of Frobenius at a rational prime. -/
+def hHost {φ : WindowedLandauTheory.HC.Frame} (H : WindowedLandauTheory.HC.HostRaw φ) (p : ℕ) :
+    φ.A := ((arithOf H).frob p).2
 
 section Datum
 
 variable (N : NumDatum) (C : Cst)
 
-def host : WindowedLandauTheory.LFunctionChainParameters.characterSumData.ArithData N.R.A := hostArith N.H.toHostRaw
+def host : WindowedLandauTheory.LFunctionChainParameters.characterSumData.ArithData N.R.A :=
+  arithOf N.H.toHostRaw
 
 abbrev ins0 : Ins (base N) := ins (base N) C.K C.Ce
 

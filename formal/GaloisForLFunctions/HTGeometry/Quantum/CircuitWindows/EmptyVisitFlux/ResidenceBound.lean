@@ -55,7 +55,7 @@ theorem longest_visit {I : Type*} [Fintype I] [Nonempty I] (w : I → ℝ) {r : 
     (hr : 0 ≤ r) (hs : r < 1/2) :
     let W := Finset.univ.sup' Finset.univ_nonempty w-Finset.univ.inf' Finset.univ_nonempty w
     (∀ a b : ℝ, a≤b → (∀ t ∈ Icc a b, flow w t ∈ enclosingUnitArc r) → (b-a)*W ≤ 2*r) ∧
-      (∀ t : ℝ, |t|*W ≤ r → flow w t ∈ enclosingUnitArc r) := by
+      (∀ t : ℝ, |t| *W ≤ r → flow w t ∈ enclosingUnitArc r) := by
   intro W
   obtain ⟨i,_,hi⟩ := Finset.exists_mem_eq_sup' Finset.univ_nonempty w
   obtain ⟨j,_,hj⟩ := Finset.exists_mem_eq_inf' Finset.univ_nonempty w

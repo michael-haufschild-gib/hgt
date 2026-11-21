@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.EmptyVisitFlux.EntryCount
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.EmptyVisitFlux.ResidenceBound
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.ShortTimeProducts.ScalarDensity
 
 /-! # Entry frequency and mean duration of actual Gaussian empty-circuit visits -/
@@ -8,7 +9,8 @@ namespace GaloisForLFunctions.HTGeometry.EmptyVisitFlux
 noncomputable section
 open SharpOccupation
 
-private theorem physical_visit {N : ℕ} (H : selfAdjoint (Register N)) {ε : ℝ}
+/-- The enclosing arc in turns is exactly the physical projective error ball. -/
+theorem physical_visit {N : ℕ} (H : selfAdjoint (Register N)) {ε : ℝ}
     (hε : 0<ε) (hsmall : ε<sqrt 2) (t : ℝ) :
     flow (fun j => -H.2.isHermitian.eigenvalues j/(2*π)) t ∈ enclosingUnitArc (physicalArc ε) ↔
     t ∈ visitSet H 0 ε := by
@@ -29,7 +31,23 @@ private theorem physical_visit {N : ℕ} (H : selfAdjoint (Register N)) {ε : �
   change spectralEnclosingArcLength θ ≤ 2*π*(physicalArc ε) ↔ spectralEnclosingArcLength θ ≤ 4*arcsin (ε/2)
   rw [show 2*π*physicalArc ε=4*arcsin (ε/2) by unfold physicalArc; field_simp; ring]
 
-private theorem pair_rate_pos {I : Type*} [Fintype I] [Nontrivial I] (E : I → ℝ)
+/-- The interval centered on the identity has maximal empty-circuit
+residence length, twice the enclosing width divided by the velocity width. -/
+theorem physical_longest_residence {N : ℕ} (H : selfAdjoint (Register N)) {ε : ℝ}
+    (hε : 0<ε) (hsmall : ε<sqrt 2) :
+    let w := fun j => -H.2.isHermitian.eigenvalues j/(2*π)
+    let W := Finset.univ.sup' Finset.univ_nonempty w-Finset.univ.inf' Finset.univ_nonempty w
+    (∀ a b : ℝ, a≤b → Icc a b ⊆ visitSet H 0 ε → (b-a)*W ≤ 2*physicalArc ε) ∧
+      (∀ t : ℝ, |t| *W ≤ physicalArc ε → t∈visitSet H 0 ε) := by
+  intro w W
+  have hx := (physicalArc_spec hε hsmall).1
+  obtain ⟨hb,hi⟩ := longest_visit w hx.1.le hx.2
+  exact ⟨fun a b hab hv => hb a b hab fun t ht => (physical_visit H hε hsmall t).mpr (hv ht),
+    fun t ht => (physical_visit H hε hsmall t).mp (hi t ht)⟩
+
+/-- A packet with independent projective gaps and at least two levels
+has strictly positive inward flux. -/
+theorem pair_rate_pos {I : Type*} [Fintype I] [Nontrivial I] (E : I → ℝ)
     (hi : MaximallyProjectiveEnergy E) : 0 < pairTurnRate E := by
   classical
   obtain ⟨i,j,hij⟩ := exists_pair_ne I
@@ -46,7 +64,7 @@ The occupation divided by their count gives the mean time per visit. -/
 theorem gaussian_empty_visit_flux :
     ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ k : ℕ,
       let N := k+3
-      let D := 2^N
+      let D : ℕ := 2^N
       let H : selfAdjoint (Register N) := ⟨pathHamiltonian (pathPauliDisorderShell ω (k+1)),isSelfAdjoint_pathHamiltonian _⟩
       let E := fun j => -H.2.isHermitian.eigenvalues j
       ∀ ε : ℝ, 0<ε → ε<sqrt 2 →
@@ -77,6 +95,7 @@ theorem gaussian_empty_visit_flux :
     change volume.real (visitSet H 0 ε ∩ Icc 0 T)/(T-0)/(((F T).card:ℝ)/T) = _
     rw [sub_zero,div_div_div_cancel_right₀ hT.ne']
 
+#print axioms physical_longest_residence
 #print axioms gaussian_empty_visit_flux
 end
 end GaloisForLFunctions.HTGeometry.EmptyVisitFlux

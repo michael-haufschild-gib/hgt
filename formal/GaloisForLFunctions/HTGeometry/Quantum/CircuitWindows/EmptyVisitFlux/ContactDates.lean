@@ -21,7 +21,7 @@ private theorem exists_tick {I : Type*} (E : I → ℝ) {r t : ℝ} {i j : I}
     rw [AddCircle.coe_add,←hn,AddCircle.coe_neg,add_neg_cancel]
   obtain ⟨m,hm⟩ := (AddCircle.coe_eq_zero_iff 1).mp hper
   rw [zsmul_eq_mul,mul_one] at hm
-  have hmpos : (0:ℝ)<m := by rw [hm]; exact add_pos_of_pos_of_nonneg (mul_pos ht hd) hr
+  have hmpos : (0:ℝ) < m := by rw [hm]; exact add_pos_of_pos_of_nonneg (mul_pos ht hd) hr
   have hm' : 0 < m := by exact_mod_cast hmpos
   lift m to ℕ using hm'.le
   cases m with

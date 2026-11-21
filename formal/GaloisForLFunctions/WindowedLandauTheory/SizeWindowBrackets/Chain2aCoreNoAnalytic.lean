@@ -12,7 +12,12 @@ noncomputable section
 
 namespace WindowedLandauTheory.LFunctionChainParameters.LChain2
 
-open Formalism WindowedLandauTheory.D5 WindowedLandauTheory.RankGapBounds.WeightedMeanData WindowedLandauTheory.LFunctionChainParameters.WeightedSlopeBounds WindowedLandauTheory.LFunctionChainParameters.characterSumData WindowedLandauTheory.LFunctionChainParameters.ThickSetMeanBounds WindowedLandauTheory.LFunctionChainParameters.LErr WindowedLandauTheory.LFunctionChainParameters.LChain
+open WindowedLandauTheory.D5 WindowedLandauTheory.RankGapBounds.WeightedMeanData
+  WindowedLandauTheory.LFunctionChainParameters.WeightedSlopeBounds
+  WindowedLandauTheory.LFunctionChainParameters.characterSumData
+  WindowedLandauTheory.LFunctionChainParameters.ThickSetMeanBounds
+  WindowedLandauTheory.LFunctionChainParameters.LErr
+  WindowedLandauTheory.LFunctionChainParameters.LChain
 
 instance decFinPl (K : Type) [Field K] [NumberField K] : DecidableEq (slopeLatticeData.FinPl K) := Classical.decEq _
 
