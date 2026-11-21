@@ -1,0 +1,18 @@
+import GaloisForLFunctions.WindowedLandauTheory.SuccessiveMinima.MinkCore
+import GaloisForLFunctions.WindowedLandauTheory.SuccessiveMinima.GjLevel
+import GaloisForLFunctions.WindowedLandauTheory.SuccessiveMinima.GjScale
+import GaloisForLFunctions.WindowedLandauTheory.SuccessiveMinima.SuccMin
+import GaloisForLFunctions.WindowedLandauTheory.SuccessiveMinima.AdaptedBasis
+import GaloisForLFunctions.WindowedLandauTheory.SuccessiveMinima.MeasureEqCovolumeMulVolumeImage
+import GaloisForLFunctions.WindowedLandauTheory.SuccessiveMinima.NewtonSlope
+import GaloisForLFunctions.WindowedLandauTheory.SuccessiveMinima.MinkowskiIILowerOf
+import GaloisForLFunctions.WindowedLandauTheory.SuccessiveMinima.NPWDivision
+import GaloisForLFunctions.WindowedLandauTheory.SuccessiveMinima.NPUnit
+
+namespace WindowedLandauTheory.FN
+
+theorem minkowskiIIUpper : MinkowskiIIUpper :=
+  minkowskiIIUpper_of (minkCore_of partialBoxVolumeMonotoneStep partialBoxVolumeScaling) existsSuccessiveMinimaVectors
+    existsAdaptedBasis
+
+end WindowedLandauTheory.FN
