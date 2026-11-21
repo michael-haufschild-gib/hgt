@@ -50,8 +50,9 @@ theorem gaussian_fixed_error_occupation_gain :
   have hy' : y ∈ Icc (0:ℝ) (1/2) := ⟨hy.le,(hyx.trans hx.2).le⟩
   have hx' : x ∈ Icc (0:ℝ) (1/2) := Ioo_subset_Icc_self hx
   have hδ : 0<δ := by
-    simpa only [zeroGateArcTolerance,mul_zero,zero_div,Real.sin_zero] using
-      strictMonoOn_zeroGateArcTolerance (show (0:ℝ)∈Icc (0:ℝ) (1/2) by constructor <;> norm_num) hy' hy
+    change 0 < zeroGateArcTolerance y
+    rw [show (0:ℝ)=zeroGateArcTolerance 0 by simp [zeroGateArcTolerance]]
+    exact strictMonoOn_zeroGateArcTolerance (show (0:ℝ)∈Icc (0:ℝ) (1/2) by constructor <;> norm_num) hy' hy
   have hδε : δ<ε := (strictMonoOn_zeroGateArcTolerance hy' hx' hyx).trans_eq hxtol
   have hsmall := hδε.trans hsqrt
   obtain ⟨hδx,hδe⟩ := physicalArc_spec hδ hsmall

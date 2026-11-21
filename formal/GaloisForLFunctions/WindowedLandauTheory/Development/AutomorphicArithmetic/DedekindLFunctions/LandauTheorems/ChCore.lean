@@ -21,6 +21,7 @@ def Th (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) (T2 : Finset H) (
   (1 / ((PhiSet (H := H)).card : ℂ)) * ∑ s ∈ T2, ∑ ψ : AddChar (E0 × H) ℂ,
     ψ (-(e1 (s + u0 - t))) * ((b : ℂ) * GPsi D ell ψ y)
 
+omit [DecidableEq H] in
 lemma mem_psi (A0 : AddSubgroup H) (ψ : AddChar (E0 × H) ℂ) : ψ ∈ PsiA A0 ↔ ∀ s ∈ A0, ψ (0, s) = 1 := by
   classical
   unfold PsiA
@@ -83,12 +84,12 @@ lemma th_le (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) (T2 : Finset
     (Th D ell T2 b (A / b) u0 t).re ≤ (De D ell A t w).re + 2 * fPl H * (3 * (x + 1) * (η + 1) + (x + 1) * b * θ) := by
   obtain ⟨h1, h2⟩ := abs_le.1 hA
   have hA1 : (x - 1) * b ≤ A := by
-    have : x - 1 ≤ A / b := by linarith
+    have : x - 1 ≤ A / b := by linarith only [h1]
     rwa [le_div_iff₀ hb] at this
   have hA2 : A ≤ (x + 1) * b := by
-    have : A / b ≤ x + 1 := by linarith
+    have : A / b ≤ x + 1 := by linarith only [h2]
     rwa [div_le_iff₀ hb] at this
-  have hA0 : 0 < A := lt_of_lt_of_le (by nlinarith) hA1
+  have hA0 : 0 < A := (mul_pos (by linarith only [hx]) hb).trans_le hA1
   have hTh : Th D ell T2 b (A / b) u0 t = (1 / ((PhiSet (H := H)).card : ℂ)) *
       ∑ g ∈ univ.filter (fun g : E0 × H => ¬ InPhi (g + topPl t)), ∑ ψ : AddChar (E0 × H) ℂ,
         ψ (-g) * (if IsThickAt T2 u0 (cconj + g + topPl t) then (b : ℂ) * GPsi D ell ψ (A / b) else 0) := by
@@ -117,19 +118,22 @@ lemma th_le (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) (T2 : Finset
       · simp only [if_pos hth]
         obtain ⟨k1, k2⟩ := hwthick _ hth
         have hl := hLip ψ A (w (cconj + g + topPl t)) b hA0 hw0 hb
-        rw [min_eq_right k1, abs_of_nonneg (by linarith)] at hl
+        rw [min_eq_right k1, abs_of_nonneg (sub_nonneg.mpr k1)] at hl
         have e1 : 3 * A / b ≤ 3 * (x + 1) := by
-          rw [div_le_iff₀ hb]; nlinarith
+          rw [div_le_iff₀ hb]
+          linarith only [hA2]
         have e2 : 3 * A / b * (w (cconj + g + topPl t) - b) ≤ 3 * (x + 1) * (η + 1) :=
-          mul_le_mul e1 (by linarith) (by linarith) (by positivity)
-        linarith
+          mul_le_mul e1 (by linarith only [k2]) (sub_nonneg.mpr k1) (by positivity)
+        linarith only [hl, e2, p2]
       · simp only [if_neg hth, sub_zero]
         have hw2 := hwthin _ hρ hth
         have hy : X' / 3 ≤ A / w (cconj + g + topPl t) := by
           rw [le_div_iff₀ hw0]
           have k1 : X' / 3 * w (cconj + g + topPl t) ≤ X' / 3 * (2 * b') :=
             mul_le_mul_of_nonneg_left hw2 (by positivity)
-          nlinarith
+          have k2 := mul_le_mul_of_nonneg_right
+            (show 2 / 3 * x ≤ x - 1 by linarith only [hx]) hb.le
+          linarith only [k1, k2, hbX, hA1]
         have ht' := hThin ψ _ hy
         rw [norm_mul, Complex.norm_real, Real.norm_eq_abs, abs_of_pos hw0]
         have : w (cconj + g + topPl t) * ‖GPsi D ell ψ (A / w (cconj + g + topPl t))‖ ≤ (x + 1) * b * θ :=
@@ -138,7 +142,7 @@ lemma th_le (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) (T2 : Finset
               mul_le_mul_of_nonneg_left ht' hw0.le
           _ = A * θ := by field_simp
           _ ≤ (x + 1) * b * θ := mul_le_mul_of_nonneg_right hA2 hθ
-        linarith)
+        linarith only [this, p1])
   have hre := (abs_le.1 (le_trans (Complex.abs_re_le_norm _) hn)).1
   have e : (De D ell A t w).re - (Th D ell T2 b (A / b) u0 t).re = ((1 / ((PhiSet (H := H)).card : ℂ)) *
       ∑ g ∈ univ.filter (fun g : E0 × H => ¬ InPhi (g + topPl t)), ∑ ψ : AddChar (E0 × H) ℂ,
@@ -151,7 +155,7 @@ lemma th_le (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) (T2 : Finset
     rw [← Finset.sum_sub_distrib]
     exact Finset.sum_congr rfl fun ψ _ => by rw [CR.GC_host]; ring
   rw [← e] at hre
-  linarith
+  linarith only [hre]
 
 lemma move (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) {x Cd y : ℝ} (hx : 3 ≤ x) (hCd : 0 ≤ Cd)
     (hy : |y - x| ≤ 1) (hDer : DerivInt D ell Cd) (ψ : AddChar (E0 × H) ℂ) (hψ0 : ψ ≠ 0) :
@@ -164,7 +168,7 @@ lemma move (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) {x Cd y : ℝ
   have hlog0 : 0 ≤ Real.log (max y x) := Real.log_nonneg hmax1
   have hs : 0 ≤ Real.log (max y x) + Cd + ‖ell ψ‖ := by positivity
   have h1 := mul_le_mul_of_nonneg_right hy hs
-  linarith
+  linarith only [hd, h1, hlog]
 
 lemma triv (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) {x Cd : ℝ} (hx : 3 ≤ x) (hCd : 0 ≤ Cd)
     (hDer : DerivInt D ell Cd) (ψ : AddChar (E0 × H) ℂ) (hψ0 : ψ ≠ 0) :
@@ -178,7 +182,7 @@ lemma triv (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ) {x Cd : ℝ} 
   have h2 : ‖GPsi D ell ψ x‖ ≤ ‖GPsi D ell ψ x - ell ψ‖ + ‖ell ψ‖ := by
     simpa using norm_add_le (GPsi D ell ψ x - ell ψ) (ell ψ)
   have h3 : 0 ≤ Real.log x := Real.log_nonneg (by linarith)
-  nlinarith
+  linarith only [hd, h2, h3, hCd]
 
 open Classical in
 
@@ -204,7 +208,7 @@ lemma sum_vv (A0 : AddSubgroup H) (Kp : Finset (AddChar (E0 × H) ℂ)) (hKp : �
 lemma one_char (A0 : AddSubgroup H) (Kp : Finset (AddChar (E0 × H) ℂ)) (D : ArithData H) (ell : AddChar (E0 × H) ℂ → ℂ)
     (TT : Finset H) (y : H → ℝ)
     {x Cd c ρ Ko L R : ℝ} (hx : 3 ≤ x) (hCd : 0 ≤ Cd) (hy : ∀ t ∈ TT, |y t - x| ≤ 1) (hDer : DerivInt D ell Cd)
-    (hρ : 0 ≤ ρ) (hKo : 0 ≤ Ko) (h0K : 0 ∈ Kp) (hsg : ∀ ψ ∈ Kp, ψ sgc0 = 1)
+    (hρ : 0 ≤ ρ) (h0K : 0 ∈ Kp) (hsg : ∀ ψ ∈ Kp, ψ sgc0 = 1)
     (h2 : ∀ ψ ∈ Kp, (¬ ∀ h : H, ψ (0, h) = 1) → ‖(∑ t ∈ TT, ψ (0, t)) - (c : ℂ) * (TT.card : ℂ)‖ ≤ ρ * (TT.card : ℝ))
     (hK : ∀ ψ ∈ Kp, ψ ≠ 0 → ‖ell ψ‖ ≤ Ko)
     (h3 : ∀ ψ ∈ PsiA A0, ψ ∉ Kp → ‖ell ψ‖ ≤ L)
@@ -268,7 +272,7 @@ lemma one_char (A0 : AddSubgroup H) (Kp : Finset (AddChar (E0 × H) ℂ)) (D : A
       rw [show (c : ℂ) * (TT.card : ℂ) = ((c * TT.card : ℝ) : ℂ) by push_cast; ring, Complex.re_ofReal_mul]
     rw [Complex.sub_re, e2, Complex.re_sum] at n4
     have n5 := mul_le_mul_of_nonneg_left r2 (Nat.cast_nonneg (α := ℝ) TT.card)
-    nlinarith
+    linarith only [n4, n5]
   · unfold vv
     rw [if_neg hX, ← nsmul_eq_mul, ← Finset.sum_const]
     refine Finset.sum_le_sum fun t ht => ?_
@@ -292,15 +296,15 @@ lemma core (A0 : AddSubgroup H) (D : ArithData H) (S : Finset ℕ) (hD : HostFac
   classical
   obtain ⟨hη, hX', hb', hbX, hθ, ha, hwpos, hwthick, hwthin, hN⟩ := hS
   have hapos : ∀ t ∈ TT, 0 < a t := fun t ht => by
-    have h1 : x - 1 ≤ a t / b := by linarith [(abs_le.1 (ha t ht)).1]
+    have h1 : x - 1 ≤ a t / b := by linarith only [(abs_le.1 (ha t ht)).1]
     rw [le_div_iff₀ hb] at h1
-    nlinarith
+    exact (mul_pos (by linarith only [hx]) hb).trans_le h1
   have hK : 2 * fPl H * (3 * (x + 1) * (η + 1) + (x + 1) * b * θ) ≤ 2 * b / x := by
     have h1 := mul_le_mul_of_nonneg_left hC.1 hb.le
     have h2 := hC.2
     have e : 2 * b / x = b * (1 / x) + b / x := by ring
     rw [e]
-    nlinarith
+    linarith only [h1, h2]
   have hu : ∀ u0 ∈ A0, ∑ t ∈ TT, ∑ _j : Fin m, (Th D ell T2 b (a t / b) u0 t).re ≤ Err + 2 * (TT.card : ℝ) * m * b / x := by
     intro u0 hu0
     have h1 : ∑ t ∈ TT, ∑ _j : Fin m, (Th D ell T2 b (a t / b) u0 t).re
@@ -311,7 +315,7 @@ lemma core (A0 : AddSubgroup H) (D : ArithData H) (S : Finset ℕ) (hD : HostFac
       have k2 := congrArg Complex.re (ch_balance D S hD ell (a t) t (w u0 j) (hapos t ht) (hwpos u0 hu0 j) N
         (fun ρ hρ => hN u0 hu0 j t ρ ht hρ))
       rw [Complex.sub_re, Complex.ofReal_re] at k2
-      linarith
+      linarith only [k1, k2, hK]
     simp only [Finset.sum_add_distrib] at h1
     have e : ∑ _t ∈ TT, ∑ _j : Fin m, 2 * b / x = 2 * (TT.card : ℝ) * m * b / x := by
       simp only [Finset.sum_const, nsmul_eq_mul, Finset.card_univ, Fintype.card_fin]
@@ -337,12 +341,12 @@ lemma core (A0 : AddSubgroup H) (D : ArithData H) (S : Finset ℕ) (hD : HostFac
   have h3 := le_of_mul_le_mul_left h1 hA
   have h4 : 0 ≤ (m : ℝ) * b * (delta2 T2 / 2) := by unfold delta2; positivity
   have h5 := mul_le_mul_of_nonneg_left hY h4
-  nlinarith
+  linarith only [h3, h5]
 
 end CharacterBalanceMoves
 
 /-- The translate-averaged gap controls the retained character sum up to the discarded part. -/
-theorem ch_core (C ε CE Ko c M : ℝ) (hC : 0 ≤ C) (hε : 0 < ε) (hc : |c| ≤ 1) : ∃ x1 : ℝ, ∀ x ≥ x1,
+theorem ch_core (C ε CE Ko c M : ℝ) (hC : 0 ≤ C) (hε : 0 < ε) : ∃ x1 : ℝ, ∀ x ≥ x1,
     ∀ (H : Type) [AddCommGroup H] [Fintype H] [DecidableEq H] (m : ℕ) (D : ArithData H) (S : Finset ℕ)
       (ell : AddChar (E0 × H) ℂ → ℂ) (N : ℕ) (TT T2 : Finset H) (a : H → ℝ) (w : H → Fin m → E0 × H → ℝ)
       (b b' k aE η X' θ : ℝ) (A0 : AddSubgroup H) (Kp : Finset (AddChar (E0 × H) ℂ)),
@@ -420,7 +424,7 @@ theorem ch_core (C ε CE Ko c M : ℝ) (hC : 0 ≤ C) (hε : 0 < ε) (hc : |c| �
       mul_le_mul_of_nonneg_left (by linarith only [hl, hse]) (abs_nonneg CE)
     linarith only [hR, hl1, hse, up Cd hCd, hKe, hMe, e1]
   have hone := CharacterBalanceMoves.one_char A0 Kp D ell TT (fun t => a t / b) (c := c) (ρ := |M| * x ^ (-1 + ε)) (Ko := |Ko|)
-    (L := |CE| * Real.log x) hx3 hCd hS.2.2.2.2.2.1 (hDer H D ell) (by positivity) (abs_nonneg _) h0K
+    (L := |CE| * Real.log x) hx3 hCd hS.2.2.2.2.2.1 (hDer H D ell) (by positivity) h0K
     (fun ψ h => (hKp ψ h).2)
     (fun ψ h h' => (hE2 ψ h h').trans (by gcongr; exact le_abs_self M))
     (fun ψ h h' => (hKo ψ h h').trans (le_abs_self Ko))

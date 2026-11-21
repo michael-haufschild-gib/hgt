@@ -72,7 +72,7 @@ private theorem square_conjugate {I : Type*} [Fintype I] [DecidableEq I] [Nonemp
   have hb : (b:ℂ) • (1 : Matrix I I ℂ) = V*Matrix.diagonal (fun _ : I => (b:ℂ))*star V := by
     rw [←smul_one_eq_diagonal_const,Matrix.mul_smul,Matrix.mul_one,Matrix.smul_mul,(Unitary.mem_iff.mp hV).2]
   have hs : V*Matrix.diagonal (fun i => (E i:ℂ))*star V-(b:ℂ) • (1 : Matrix I I ℂ) = V*D*star V := by
-    rw [hb,←Matrix.sub_mul,←Matrix.mul_sub,←Matrix.diagonal_sub]
+    rw [hb,←Matrix.sub_mul,←Matrix.mul_sub,Matrix.diagonal_sub]
     simp only [D,Complex.ofReal_sub]
   rw [hs,sq]
   calc

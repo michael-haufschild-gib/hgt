@@ -33,13 +33,15 @@ theorem sheared_dirichlet {I K : Type*} [Fintype I] [Fintype K]
   have hq : (q:ℝ)=(l.val:ℝ)-k.val := Nat.cast_sub hkl.le
   refine ⟨q,Nat.sub_pos_of_lt hkl,(Nat.sub_le _ _).trans (Nat.lt_succ_iff.mp l.isLt),d,?_,?_⟩
   · intro j
-    have hbin := congrArg Fin.val (congrFun (congrArg Prod.fst hf.symm) j)
+    have hbin : boxIndex m ((l.val:ℝ)*v j)=boxIndex m ((k.val:ℝ)*v j) :=
+      congrArg Fin.val (congrFun (congrArg Prod.fst hf.symm) j)
     refine ⟨abs_fract_sub_lt_of_boxIndex_eq hm hbin,⌊(l.val:ℝ)*v j⌋-⌊(k.val:ℝ)*v j⌋,?_⟩
     dsimp only [d,x,Int.fract]
     rw [hq,Int.cast_sub]
     ring
   · intro i
-    have hbin := congrArg Fin.val (congrFun (congrArg Prod.snd hf.symm) i)
+    have hbin : boxIndex (m^2) (y l i)=boxIndex (m^2) (y k i) :=
+      congrArg Fin.val (congrFun (congrArg Prod.snd hf.symm) i)
     have hclose := abs_fract_sub_lt_of_boxIndex_eq h2 hbin
     refine ⟨⌊y l i⌋-⌊y k i⌋,?_⟩
     have hd : (q:ℝ)*w i-∑ j, c i j*d j = y l i-y k i := by

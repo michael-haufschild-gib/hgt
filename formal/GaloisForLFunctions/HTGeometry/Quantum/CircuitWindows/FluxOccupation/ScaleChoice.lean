@@ -65,7 +65,6 @@ theorem flux_gain {D : ℕ} (hD : 2≤D) {x M J R : ℝ}
       rw [hxpow]
       dsimp only [h]
       field_simp
-      ring
     _ ≤ (x^(D-2)*(4*π*J*R))*(2*h) := mul_le_mul_of_nonneg_right
       (mul_le_mul_of_nonneg_left hgap (pow_nonneg hx.le _)) (by positivity)
     _ ≤ ((2*y^(D-2))*(4*π*J*R))*(2*h) := mul_le_mul_of_nonneg_right

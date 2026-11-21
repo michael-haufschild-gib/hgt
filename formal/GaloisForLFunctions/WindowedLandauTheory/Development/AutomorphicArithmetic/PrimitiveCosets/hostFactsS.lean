@@ -100,8 +100,7 @@ private theorem hostFactsS_pf :
       rw [mem_localUnits_iff, hcomp] at hu
       rcases H.art_d u hu with h | h
       · left
-        simpa [recH, WindowedLandauTheory.MainNotions.recOf, h] using
-          (rfl : φ.iotaInv 1 = 0)
+        simp [recH, WindowedLandauTheory.MainNotions.recOf, h, Frame.iotaInv]
       · right
         show Multiplicative.toAdd (toE φ (H.toHostRaw.art u)) = sgc0
         rw [h]

@@ -16,12 +16,8 @@ theorem UpperTheory.Comparison₂.core_gm :
       EAtH Λ H.toHostRaw TT x eps C → CoreAtH H.toHostRaw TT eD eL K cHH eK eps x →
         Λ.Gm x ≤ x ^ ((1 : ℝ) / 2 + (eD + eL + 7) * eps) := by
   intro Λ eD eL K cHH eK C eps heps
-  have ho : (0 : ℝ) ≤ Λ.o := Nat.cast_nonneg _
-  have hc : |(3 * (Λ.o : ℝ) + 1)⁻¹| ≤ 1 := by
-    rw [abs_of_nonneg (by positivity)]
-    exact inv_le_one_of_one_le₀ (by linarith only [ho])
   obtain ⟨x₁, hx₁⟩ := Deduction.ch_core (max (eD + eL) 0 + 3) eps C (koOf Λ) (3 * (Λ.o : ℝ) + 1)⁻¹ (4 * (Λ.o : ℝ))
-    (by positivity) heps hc
+    (by positivity) heps
   obtain ⟨x₂, hx₂⟩ := large_x_eventually eps K cHH eK heps
   obtain ⟨x₃, hx₃⟩ := Filter.eventually_atTop.1
     ((tendsto_rpow_atTop heps).eventually_ge_atTop (1 + 4 * (Λ.o : ℝ)))
