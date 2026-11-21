@@ -66,16 +66,19 @@ theorem longitudinal_rank_right (n : ℕ) :
   refine ⟨hsimple,f,fun s => ⟨?_,?_⟩,?_,?_⟩
   · unfold f
     apply analyticAt_const.add (analyticAt_const.mul _)
-    exact (hga s).fun_comp_of_eq (analyticAt_id.const_smul _) (smul_zero _)
+    let L : (Fin (n+2) → ℂ) →L[ℂ] (Fin (n+2) → ℂ) := (r s)⁻¹ • ContinuousLinearMap.id ℂ _
+    exact (hga s).fun_comp_of_eq (L.analyticAt _) L.map_zero
   · have ht : Tendsto (fun h : Fin (n+2) → ℂ => (r s)⁻¹ • h) (𝓝 0) (𝓝 0) := by
       simpa only [smul_zero] using ((continuous_const_smul (r s)⁻¹).continuousAt (x := (0:Fin (n+2) → ℂ))).tendsto
     filter_upwards [ht.eventually (hgz s)] with h hh
     have hi := eval_physicalPolynomial v e (hE v) s ((r s)⁻¹ • h) (g s ((r s)⁻¹ • h))
-    change r s^2*onRoot (p s) (g s) ((r s)⁻¹ • h)=2*matrixCharpolyRelation (_,f s h) at hi
+    change r s^2*onRoot (p s) (g s) ((r s)⁻¹ • h)=
+      2*matrixCharpolyRelation (fieldHamiltonian n v (r s • ((r s)⁻¹ • h)),f s h) at hi
     rw [hh,mul_zero] at hi
     simpa only [smul_smul,mul_inv_cancel₀ (hr s),one_smul] using
       (mul_eq_zero.mp hi.symm).resolve_left (by norm_num : (2:ℂ)≠0)
   · intro s t hst
+    change f s 0=f t 0 at hst
     rw [hf0,hf0] at hst
     have ht := hinj hst
     exact funext (fun i => by simpa [representative] using congrFun ht i.succ)

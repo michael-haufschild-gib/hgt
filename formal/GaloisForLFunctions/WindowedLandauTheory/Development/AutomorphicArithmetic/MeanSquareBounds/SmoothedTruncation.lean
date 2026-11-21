@@ -34,6 +34,7 @@ theorem gChi_eq_truncated (hχ : χ ≠ 1) {y z : ℝ} (hy : 1 ≤ y) (hyz : y �
       unfold An.sumLamChi
       refine (sum_congr rfl (fun n _ => ?_)).trans (sum_subset (Icc_subset_Icc_right hf) ?_)
       · simp only [twistedVM, An.abelian₂]
+        rw [mul_comm (vonMangoldt n : ℂ)]
       · intro n hn hny
         have hn' : ⌊y⌋₊ < n := by
           have := (mem_Icc.mp hn).1
@@ -104,6 +105,7 @@ theorem norm_ramp_difference_sub (hχ : χ ≠ 1) {z h : ℝ} (hz : 1 < z) (hh :
         _ ≤ h / z := div_le_div_of_nonneg_left hh.le (by linarith only [hz]) hzn.le
     have hVM : ‖twistedVM χ n‖ ≤ Real.log t := by
       rw [twistedVM, norm_mul, norm_real, Real.norm_of_nonneg vonMangoldt_nonneg]
+      rw [mul_comm ‖χ (n : ZMod N)‖]
       exact (mul_le_of_le_one_right vonMangoldt_nonneg (χ.norm_le_one _)).trans
         (vonMangoldt_le_log.trans (Real.log_le_log hn₀ hnt))
     rw [norm_mul, ← ofReal_natCast, ← ofReal_div, ← ofReal_one, ← ofReal_sub,

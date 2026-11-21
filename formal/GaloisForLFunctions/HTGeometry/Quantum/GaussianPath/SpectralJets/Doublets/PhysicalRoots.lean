@@ -25,8 +25,9 @@ private theorem field_reflection (n : ℕ) (v : ℝ) (x r : ℂ) (h : Fin (n+2) 
   have hg (j) : g (reverseSpins j)= -g j := by
     simp [g,spinVector_rev,fieldEnergy,Finset.sum_neg_distrib]
   have he : Matrix.reindex e e (scalar _ x-H+r • diagonal g)=scalar _ x-H+(-r) • diagonal g := by
-    ext i j
-    change (scalar _ x-H+r • diagonal g) (reverseSpins i) (reverseSpins j)=_
+    apply Matrix.ext
+    intro i j
+    change (scalar (Fin (n+2) → Bool) x-H+r • diagonal g) (reverseSpins i) (reverseSpins j)=_
     have hij : reverseSpins i=reverseSpins j ↔ i=j := e.injective.eq_iff
     simp only [Matrix.add_apply,Matrix.sub_apply,Matrix.smul_apply,Matrix.scalar_apply,
       Matrix.diagonal_apply,hij,smul_eq_mul,H,reversed_split,hg]
@@ -34,7 +35,7 @@ private theorem field_reflection (n : ℕ) (v : ℝ) (x r : ℂ) (h : Fin (n+2) 
   rw [←he,Matrix.det_reindex_self]
 
 theorem eval_physicalPolynomial {n : ℕ} (v : ℝ) (E : (Fin (n+2) → Bool) → ℂ)
-    (hE : (pathHamiltonian (splitShell n v)).charpoly = ∏ j, Polynomial.X-Polynomial.C (E j))
+    (hE : (pathHamiltonian (splitShell n v)).charpoly = ∏ j : Fin (n+2) → Bool, (Polynomial.X-Polynomial.C (E j)))
     (s : Fin (n+1) → Bool) (h : Fin (n+2) → ℂ) (z : ℂ) :
     let j := representative s
     let t := reverseSpins j
@@ -45,7 +46,7 @@ theorem eval_physicalPolynomial {n : ℕ} (v : ℝ) (E : (Fin (n+2) → Bool) �
   intro j t b r
   let H := pathHamiltonian (splitShell n v)
   let g (i) := -fieldEnergy (spinVector i) h
-  have hchar : (scalar _ (b+r*z)-H).det=∏ i, b+r*z-E i := by
+  have hchar : (scalar _ (b+r*z)-H).det=∏ i : Fin (n+2) → Bool, (b+r*z-E i) := by
     rw [←Matrix.eval_charpoly,hE,Polynomial.eval_prod]
     simp
   have he : MvPolynomial.eval (fun o : Option (Fin (n+2)) => o.elim z h) (physicalPolynomial v E s) =
@@ -55,12 +56,12 @@ theorem eval_physicalPolynomial {n : ℕ} (v : ℝ) (E : (Fin (n+2) → Bool) �
     rfl
   rw [he,rescaled_identity _ _ _ _ _ (reversed_ne j) _ _ _ (by dsimp [b,r]; ring)
     (by dsimp [b,r]; ring) hchar (field_reflection n v _ _ h)]
-  apply congrArg (fun A => 2*A.det)
+  apply congrArg (fun A : Matrix (Fin (n+2) → Bool) (Fin (n+2) → Bool) ℂ => 2*A.det)
   ext i k
   by_cases hik : i=k
   · subst k
     simp only [fieldHamiltonian,Matrix.add_apply,Matrix.sub_apply,Matrix.diagonal_apply_eq,
-      Matrix.smul_apply,Pi.smul_apply,smul_eq_mul,g,H,fieldEnergy]
+      Matrix.smul_apply,Pi.smul_apply,smul_eq_mul,H,fieldEnergy]
     simp_rw [mul_left_comm _ r]
     rw [←Finset.mul_sum]
     ring

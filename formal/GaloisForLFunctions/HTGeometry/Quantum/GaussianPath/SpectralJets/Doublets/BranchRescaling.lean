@@ -31,7 +31,7 @@ theorem field_branch {n : ℕ} (p : MvPolynomial (Option (Fin n)) ℂ) (z : ℂ)
       AnalyticAt ℂ (fun q => eval (x q) P) ((0:Fin n → ℂ),z) := by
     induction P using MvPolynomial.induction_on with
     | C c => simpa only [eval_C] using (analyticAt_const (v := c))
-    | add P Q hP hQ => simpa only [map_add] using hP.add hQ
+    | add P Q hP hQ => simpa only [map_add,Pi.add_def] using hP.add hQ
     | mul_X P i hP =>
       simp only [map_mul,eval_X]
       apply hP.mul

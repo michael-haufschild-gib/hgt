@@ -75,10 +75,11 @@ theorem norm_partialLogDerivative_error_le (hχ : χ ≠ 1) (hp : χ.IsPrimitive
       _ ≤ _ := mul_le_mul_of_nonneg_left hInv (by norm_num)
   let Z (t : ℝ) := ∑' q : LZero χ, (t : ℂ) ^ q.point / (q.point * (q.point - 1))
   have hZ : ‖Z (z + h) - Z z‖ / h ≤ 269000 * localCountConst N * v ^ 2 * E := by
-    have hZ₀ := norm_smoothed_zero_difference_le hχ hp hbox hz₁.le hh hT hTl
+    have hZ₀ := norm_smoothed_zero_difference_le hχ hp hbox hz₁ hh hT hTl
     refine hZ₀.trans ?_
     have hL (t : ℝ) (ht : 1 ≤ t) : 0 ≤ Real.log t := Real.log_nonneg ht
-    have hL₀ : 0 ≤ Real.log ((T : ℝ) + 3) := hL _ (by positivity)
+    have hL₀ : 0 ≤ Real.log ((T : ℝ) + 3) :=
+      hL _ (by linarith only [Nat.cast_nonneg T])
     have hL₁ : 0 ≤ 2 + Real.log T := by
       have := hL T (by exact_mod_cast hT)
       linarith
@@ -113,8 +114,7 @@ theorem norm_partialLogDerivative_error_le (hχ : χ ≠ 1) (hp : χ.IsPrimitive
     rw [← Real.log_div (by positivity : z + h ≠ 0) hz₀.ne']
     have hl := Real.log_le_sub_one_of_pos (show 0 < (z + h) / z by positivity)
     convert hl using 1
-    field_simp [hz₀.ne']
-    ring
+    field_simp [hz₀.ne'] <;> ring
   have hw := norm_ramp_difference_sub hχ hz₁ hh
   let D := partialLogDerivative χ z + An.logDerivativeAtOne χ
   have hn : ‖D‖ ≤ ‖Z (z + h) - Z z‖ / h + 5 / z + (h + 1) * Real.log (z + h) / z := by

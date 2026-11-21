@@ -47,8 +47,7 @@ import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.ReturnLevels.HigherOr
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.ReturnLevels.ReturnBands
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.WeakBonds.NearDiagonalLaw
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.GaussianPlateau
-import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.Doublets.LimitBlock
-import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.Doublets.RescaledCharacteristic
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.Doublets.PhysicalMinor
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.Detuning.CircuitDeadline
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.Detuning.MaximumOccupation
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.Detuning.OccupationOverhead

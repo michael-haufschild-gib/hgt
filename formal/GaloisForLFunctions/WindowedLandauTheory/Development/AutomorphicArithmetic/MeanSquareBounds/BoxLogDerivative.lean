@@ -15,6 +15,7 @@ private theorem norm_partialLogDerivative_le {N : ℕ} (χ : DirichletCharacter 
     (WindowedLandauTheory.sum_Icc_vonMangoldt_div_le hz))
   rw [twistedVM, norm_div, norm_mul, Complex.norm_real, Real.norm_of_nonneg vonMangoldt_nonneg,
     Complex.norm_natCast]
+  rw [mul_comm ‖χ (n : ZMod N)‖]
   exact div_le_div_of_nonneg_right
     (mul_le_of_le_one_right vonMangoldt_nonneg (χ.norm_le_one _)) (Nat.cast_nonneg n)
 

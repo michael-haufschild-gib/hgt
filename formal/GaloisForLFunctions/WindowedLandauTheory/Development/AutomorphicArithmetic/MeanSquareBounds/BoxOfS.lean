@@ -12,6 +12,7 @@ private theorem eventually_box_truncation {ε K : ℝ} (hε : 0 < ε) (hK : 1 �
       100000000 * (1 + Real.log ((Y ^ K) ^ (400 : ℕ))) ^ 2 ≤ Y ^ (3 * ε / 4) := by
   let D := 3200 * K + 1
   let C := 100000000 * (1 + 400 * K) ^ 2
+  have hK₀ : 0 < K := zero_lt_one.trans_le hK
   have hD : 0 < D := by dsimp [D]; linarith only [hK]
   have hC : 0 < C := by dsimp [C]; positivity
   have hb := (isLittleO_log_rpow_atTop (by positivity : (0 : ℝ) < ε / 6)).bound
@@ -106,7 +107,7 @@ theorem box_of_S :
     linarith only [h, hεlog, hlogQ, hconst]
   let X := Y ^ K
   let z := X ^ (400 : ℕ)
-  have hX : 1 ≤ X := Real.one_le_rpow hY₁ (by positivity)
+  have hX : 1 ≤ X := Real.one_le_rpow hY₁ (zero_le_one.trans hK)
   have hy₁ := hY₁.trans hy.1
   have hyz : y ≤ z := hy.2.trans (le_self_pow₀ hX (by norm_num))
   have hQ := hzQ.trans ((Real.le_log_iff_exp_le hQ₀).mp hlo)

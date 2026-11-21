@@ -80,8 +80,7 @@ theorem physical_minor_near_zero (n : ℕ) :
     pairPolynomial A E u j t ((E j+E t)*half) ((E j-E t)*half)
   have he (v : ℝ) (s) : MvPolynomial.map (specialize v) (p s) =
       physicalPolynomial v (fun j => E j v) s := by
-    unfold p physicalPolynomial
-    rw [map_pairPolynomial,map_mul,map_mul,map_add,map_sub,div_eq_mul_inv,div_eq_mul_inv]
+    simp only [p,physicalPolynomial,map_pairPolynomial,map_mul,map_add,map_sub,div_eq_mul_inv]
     rfl
   let q (s : Fin (n+1) → Bool) := 2 * ∏ j ∈
     (univ.erase (representative s)).erase (reverseSpins (representative s)),

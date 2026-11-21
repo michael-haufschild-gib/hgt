@@ -222,7 +222,9 @@ theorem parity_pole_iff_split_isometric (s : {w : ℂ // 0 < w.re}) :
   by_cases h : s.val.re=1/2
   · rw [if_pos h]
     refine iff_of_true ?_ h
-    rw [← WithTop.LinearOrderedAddCommGroup.coe_neg (1 : ℤ)]
+    have hn : -(1 : WithTop ℤ) = ((-1 : ℤ) : WithTop ℤ) :=
+      (WithTop.LinearOrderedAddCommGroup.coe_neg (1 : ℤ)).symm
+    rw [hn]
     exact WithTop.coe_lt_coe.mpr (neg_one_lt_zero : (-1 : ℤ) < 0)
   · rw [if_neg h]
     refine iff_of_false ?_ h
