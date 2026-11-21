@@ -24,6 +24,7 @@ theorem free_when_pinned {I : Type*} [Fintype I] [DecidableEq I] (ω : I → ℝ
     rw [Finset.sum_eq_single j (fun i _ hij => by simp only [c,if_neg hij,Int.cast_zero,zero_mul])
       (fun hj => (hj (Finset.mem_univ j)).elim)]
     simp only [c,if_pos rfl,Int.cast_one,one_mul]
+    rfl
   have hz := hs c l (hdet.symm ▸ hl)
   have hfalse := congrFun hz j
   simp [c] at hfalse

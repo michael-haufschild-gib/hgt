@@ -77,7 +77,7 @@ theorem gaussian_late_product_returns :
   intro L hL
   filter_upwards [h L 1 hL zero_lt_one] with m hM
   intro a
-  obtain ⟨T,hT,ht⟩ := ((hM a 0 (by dsimp only [N]; omega)).and (eventually_ge_atTop a)).exists
+  obtain ⟨T,hT,ht⟩ := ((hM a 0 (by omega)).and (eventually_ge_atTop a)).exists
   rw [one_mul] at hT
   by_contra! hall
   apply hT.not_ge

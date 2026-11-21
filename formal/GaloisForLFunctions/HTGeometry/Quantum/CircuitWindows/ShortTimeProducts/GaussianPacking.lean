@@ -47,7 +47,10 @@ theorem gaussian_product_step_occupation :
   have hr : 0<r := by dsimp [r]; positivity
   have hs : r<sqrt 2 := by
     have hpow : (1:ℝ)≤(m:ℝ)^2 := one_le_pow₀ h1
-    have hsmall : r≤1/4 := by dsimp only [r]; gcongr
+    have hsmall : r≤1/4 := by
+      dsimp only [r]
+      gcongr
+      linarith only [hpow]
     have hroot := Real.sq_sqrt (by norm_num : (0:ℝ)≤2)
     nlinarith only [hroot,Real.sqrt_nonneg 2,hsmall]
   have hW : 0 < W := hw

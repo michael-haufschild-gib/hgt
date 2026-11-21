@@ -8,11 +8,15 @@ noncomputable section
 /-- Evolution of phases with velocities measured in turns per unit time. -/
 def flow {I : Type*} (w : I → ℝ) (t : ℝ) (i : I) : UnitAddCircle := ((t*w i:ℝ):UnitAddCircle)
 
+/-- Ordered endpoint contact with the remaining phases in a specified arc. -/
+def pairFace {I : Type*} (A : Set UnitAddCircle) (w : I → ℝ) (r t : ℝ) (i j : I) : Prop :=
+  w j < w i ∧ flow w t j-flow w t i = (r:UnitAddCircle) ∧
+    ∀ k, k≠i → k≠j → flow w t k-flow w t i ∈ A
+
 /-- The right endpoint is moving towards the left endpoint. All other
 phases are strictly between the two endpoints. -/
 def inwardFace {I : Type*} (w : I → ℝ) (r t : ℝ) (i j : I) : Prop :=
-  w j < w i ∧ flow w t j-flow w t i = (r:UnitAddCircle) ∧
-    ∀ k, k≠i → k≠j → flow w t k-flow w t i ∈ ((↑) : ℝ → UnitAddCircle) '' Ioo 0 r
+  pairFace (((↑) : ℝ → UnitAddCircle) '' Ioo 0 r) w r t i j
 
 private theorem lifts_at_visit {I : Type*} [Fintype I] {p : I → UnitAddCircle} {r : ℝ}
     (hr : 0≤r) (h : p ∈ enclosingUnitArc r) :
