@@ -4,6 +4,9 @@ import GaloisForLFunctions.WindowedLandauTheory.LatticeSlopes.DiscreteTopologyOf
 import GaloisForLFunctions.WindowedLandauTheory.LatticeSlopes.CovolEqGram
 import GaloisForLFunctions.WindowedLandauTheory.LatticeSlopes.SlopeInequality
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Module Submodule
 
 noncomputable section

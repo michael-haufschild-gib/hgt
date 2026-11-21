@@ -2,6 +2,9 @@ import GaloisForLFunctions.WindowedLandauTheory.SharpRestriction.ParConsts
 import GaloisForLFunctions.WindowedLandauTheory.LocalRingCardinality.DataNChTie
 import GaloisForLFunctions.WindowedLandauTheory.SharpRestriction.LevelLetterCocycles.IntegralHeckeForms
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 noncomputable section
 
 namespace WindowedLandauTheory.MainNotions.IntegralHeckeForms

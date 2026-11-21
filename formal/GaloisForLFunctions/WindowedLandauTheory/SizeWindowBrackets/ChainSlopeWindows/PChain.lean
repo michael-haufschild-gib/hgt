@@ -3,6 +3,9 @@ import GaloisForLFunctions.WindowedLandauTheory.SizeWindowBrackets.ChainSlopeWin
 import GaloisForLFunctions.WindowedLandauTheory.SizeWindowBrackets.ChainSlopeWindows.LipschitzWeightAndMinimum
 import GaloisForLFunctions.WindowedLandauTheory.SizeWindowBrackets.ChainSlopeWindows.SubThreeMulLogTwoLe
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Finset
 
 noncomputable section

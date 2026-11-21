@@ -10,6 +10,9 @@ import GaloisForLFunctions.WindowedLandauTheory.SharpRestriction.RamificationFro
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open NumberField WindowedLandauTheory.FrobeniusOrbits WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 open scoped Pointwise
 

@@ -2,6 +2,9 @@ import GaloisForLFunctions.WindowedLandauTheory.GradedWeylDivisibility.Statement
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Finset
 
 noncomputable section

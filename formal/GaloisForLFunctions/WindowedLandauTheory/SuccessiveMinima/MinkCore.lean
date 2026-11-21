@@ -1,5 +1,8 @@
 import GaloisForLFunctions.WindowedLandauTheory.SuccessiveMinima.DefsMink
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open MeasureTheory Module Metric Set
 open scoped Pointwise ENNReal
 

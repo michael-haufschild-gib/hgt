@@ -2,6 +2,9 @@ import GaloisForLFunctions.WindowedLandauTheory.SizeWindowBrackets.PowerBoundGiv
 import GaloisForLFunctions.WindowedLandauTheory.ZetaNonvanishing.ZetaLandau
 import GaloisForLFunctions.WindowedLandauTheory.ZetaNonvanishing.RHofHalfPlane
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 namespace WindowedLandauTheory.LFunctionChainParameters.ConditionalMainTheorem
 
 open WindowedLandauTheory

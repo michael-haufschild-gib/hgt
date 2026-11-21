@@ -12,6 +12,9 @@ import GaloisForLFunctions.WindowedLandauTheory.HarderNarasimhan.DegSupermodZPro
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Module NumberField
 
 noncomputable section

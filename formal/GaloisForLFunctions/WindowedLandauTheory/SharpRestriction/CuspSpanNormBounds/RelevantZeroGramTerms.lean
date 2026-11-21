@@ -8,6 +8,9 @@ import GaloisForLFunctions.WindowedLandauTheory.SharpRestriction.CuspSpanNormBou
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open MeasureTheory Matrix Finset
 open scoped InnerProductSpace ContDiff
 

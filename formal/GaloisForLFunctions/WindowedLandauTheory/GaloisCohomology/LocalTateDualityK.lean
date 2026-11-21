@@ -3,6 +3,9 @@ import GaloisForLFunctions.WindowedLandauTheory.GaloisCohomology.StatementLoc
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 noncomputable section
 
 open NumberField IsDedekindDomain Representation ReciprocityTheory.Gal WindowedLandauTheory.ConjugateSelfDual

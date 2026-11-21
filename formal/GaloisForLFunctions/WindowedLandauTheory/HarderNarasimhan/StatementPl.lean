@@ -2,6 +2,9 @@ import Mathlib
 import GaloisForLFunctions.WindowedLandauTheory.HarderNarasimhan.Statement
 import GaloisForLFunctions.WindowedLandauTheory.HermitianLattices.StatementMaj
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Module NumberField
 
 noncomputable section

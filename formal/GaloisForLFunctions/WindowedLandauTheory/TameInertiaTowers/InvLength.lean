@@ -2,6 +2,9 @@ import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.StatementGroup
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 namespace WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
 def InvLength : Prop :=

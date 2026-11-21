@@ -7,6 +7,9 @@ import GaloisForLFunctions.WindowedLandauTheory.ZetaNonvanishing.ZetaRealNonvani
 import GaloisForLFunctions.WindowedLandauTheory.ZetaNonvanishing.LogDerivZeroFree
 import GaloisForLFunctions.WindowedLandauTheory.ZetaNonvanishing.MellinDeriv
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Complex MeasureTheory Set Filter Topology
 
 noncomputable section

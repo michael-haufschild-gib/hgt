@@ -4,6 +4,9 @@ import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.TowerFieldFoun
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open NumberField IntermediateField
 
 noncomputable section

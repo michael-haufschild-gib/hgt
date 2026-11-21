@@ -5,6 +5,9 @@ import GaloisForLFunctions.WindowedLandauTheory.Lemmata.GeneralBFactRightTerForm
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open NumberField Ideal
 open scoped Pointwise
 

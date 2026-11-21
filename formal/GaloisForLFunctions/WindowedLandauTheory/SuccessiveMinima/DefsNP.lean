@@ -1,5 +1,8 @@
 import GaloisForLFunctions.WindowedLandauTheory.SuccessiveMinima.StatementNP
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Filter Topology
 
 noncomputable section

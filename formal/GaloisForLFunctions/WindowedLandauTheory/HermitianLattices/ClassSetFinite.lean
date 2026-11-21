@@ -1,0 +1,14 @@
+import GaloisForLFunctions.WindowedLandauTheory.HermitianLattices.ClassSetAssembly
+import GaloisForLFunctions.WindowedLandauTheory.HermitianLattices.TraceReal
+import GaloisForLFunctions.WindowedLandauTheory.HermitianLattices.GenusCovolBoundProof
+import GaloisForLFunctions.WindowedLandauTheory.HermitianLattices.ShortVectors
+import GaloisForLFunctions.WindowedLandauTheory.HermitianLattices.GenusScale
+import GaloisForLFunctions.WindowedLandauTheory.HermitianLattices.FinIntermediate
+import GaloisForLFunctions.WindowedLandauTheory.HermitianLattices.IsomOfTrace
+
+namespace WindowedLandauTheory.HermitianLatticesTheory
+
+theorem classSetFinite : ClassSetFinite :=
+  classSetFinite_of traceReal genusCovolBound shortVectors genusScale finIntermediate isomOfTrace
+
+end WindowedLandauTheory.HermitianLatticesTheory

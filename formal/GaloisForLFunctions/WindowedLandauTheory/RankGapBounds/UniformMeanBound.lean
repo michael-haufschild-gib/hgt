@@ -1,5 +1,8 @@
 import GaloisForLFunctions.WindowedLandauTheory.RankGapBounds.MeanBoundSecondForm
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Real
 
 namespace WindowedLandauTheory.RankGapBounds.UniformMeanTopLine

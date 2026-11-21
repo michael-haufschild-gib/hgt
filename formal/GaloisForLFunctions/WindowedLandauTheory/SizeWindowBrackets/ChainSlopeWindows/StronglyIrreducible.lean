@@ -1,6 +1,9 @@
 import GaloisForLFunctions.WindowedLandauTheory.SizeWindowBrackets.FirstPrimeNeSecondPrime
 import GaloisForLFunctions.WindowedLandauTheory.ThickAverageLoss.Balance
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Finset ArithmeticFunction
 
 noncomputable section

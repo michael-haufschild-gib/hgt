@@ -4,6 +4,9 @@ import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.CentralOrderTw
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 namespace WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
 lemma pv24 : padicValInt 2 ((5:ℤ) ^ 2 - 1) = 3 := by

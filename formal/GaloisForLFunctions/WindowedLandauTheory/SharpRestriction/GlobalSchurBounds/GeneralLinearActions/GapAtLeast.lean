@@ -3,6 +3,9 @@ import GaloisForLFunctions.WindowedLandauTheory.LocalRingCardinality.RhoDetPrime
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 noncomputable section
 
 namespace WindowedLandauTheory.MainNotions.StandardLattice

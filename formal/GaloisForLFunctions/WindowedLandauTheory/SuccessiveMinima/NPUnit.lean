@@ -1,6 +1,9 @@
 import GaloisForLFunctions.WindowedLandauTheory.SuccessiveMinima.DefsNP
 import GaloisForLFunctions.WindowedLandauTheory.SuccessiveMinima.NewtonSlope
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 namespace WindowedLandauTheory.FN
 open Filter Topology
 

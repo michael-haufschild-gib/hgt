@@ -3,6 +3,9 @@ import GaloisForLFunctions.WindowedLandauTheory.HarderNarasimhan.DualPl
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Module NumberField IsDedekindDomain Pointwise
 
 noncomputable section

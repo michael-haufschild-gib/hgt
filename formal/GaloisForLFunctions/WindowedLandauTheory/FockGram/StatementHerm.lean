@@ -1,5 +1,8 @@
 import GaloisForLFunctions.WindowedLandauTheory.FockGram.StatementLat
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Matrix LinearMap Module
 
 noncomputable section

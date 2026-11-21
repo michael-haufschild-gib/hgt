@@ -2,6 +2,9 @@ import Mathlib
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 noncomputable def UpperTheory.Reformulated.B.InvolutionInvariants.Jm :
     {n : Nat} → (Fin n → Bool) → Matrix (Fin n) (Fin n) Complex :=
     fun {n : Nat} (ε : Fin n → Bool) ↦

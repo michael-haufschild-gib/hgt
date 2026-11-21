@@ -4,6 +4,9 @@ import GaloisForLFunctions.WindowedLandauTheory.CorankShare.StatementFR
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Module NumberField WindowedLandauTheory.CorankShareLayerCake.FR
 
 noncomputable section

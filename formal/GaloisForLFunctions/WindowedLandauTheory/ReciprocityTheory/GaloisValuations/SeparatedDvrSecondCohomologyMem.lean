@@ -2,6 +2,9 @@ import Mathlib
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 namespace ReciprocityTheory.Gal
 
 set_option linter.unusedVariables false

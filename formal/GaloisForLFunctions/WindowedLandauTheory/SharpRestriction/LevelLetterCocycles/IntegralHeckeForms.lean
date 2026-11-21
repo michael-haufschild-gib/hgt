@@ -3,6 +3,9 @@ import GaloisForLFunctions.WindowedLandauTheory.LocalRingCardinality.RhoDetPrime
 import GaloisForLFunctions.WindowedLandauTheory.SharpRestriction.LevelLetterCocycles.BlochKatoPhases
 import GaloisForLFunctions.WindowedLandauTheory.SharpRestriction.LevelLetterCocycles.ArithmeticCylinders
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 noncomputable section
 
 open NumberField IsDedekindDomain WindowedLandauTheory.ConjugateSelfDual ReciprocityTheory.Gal WindowedLandauTheory.BasicNotions

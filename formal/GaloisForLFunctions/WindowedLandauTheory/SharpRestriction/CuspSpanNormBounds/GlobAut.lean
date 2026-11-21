@@ -3,6 +3,9 @@ import GaloisForLFunctions.WindowedLandauTheory.LocalRingCardinality.DataSpaces
 import GaloisForLFunctions.WindowedLandauTheory.SatakeDualWeyl.Statement
 import GaloisForLFunctions.WindowedLandauTheory.RealPlaceAnalysis.InstMeasurableSpaceUJ
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 noncomputable section
 
 namespace WindowedLandauTheory.MainNotions.S

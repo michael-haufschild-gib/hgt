@@ -4,6 +4,9 @@ import GaloisForLFunctions.WindowedLandauTheory.WeaklyAdmissibleFiltrations.Stat
 import GaloisForLFunctions.WindowedLandauTheory.GaloisCohomology.Statement
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 namespace WindowedLandauTheory
 
 noncomputable section

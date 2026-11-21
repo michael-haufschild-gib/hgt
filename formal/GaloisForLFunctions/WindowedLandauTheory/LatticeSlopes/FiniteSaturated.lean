@@ -6,6 +6,9 @@ import GaloisForLFunctions.WindowedLandauTheory.LatticeSlopes.DegQuot
 import GaloisForLFunctions.WindowedLandauTheory.LatticeSlopes.SaturationProperties
 import GaloisForLFunctions.WindowedLandauTheory.LatticeSlopes.MuMaxAttained
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Module Submodule
 
 noncomputable section

@@ -2,6 +2,9 @@ import GaloisForLFunctions.WindowedLandauTheory.LocalRingCardinality.DataKap
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 noncomputable section
 
 namespace WindowedLandauTheory.BasicNotions.DV

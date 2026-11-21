@@ -1,6 +1,9 @@
 import Mathlib
 import GaloisForLFunctions.WindowedLandauTheory.HermitianLattices.StatementTheta
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open scoped BigOperators
 open Matrix
 

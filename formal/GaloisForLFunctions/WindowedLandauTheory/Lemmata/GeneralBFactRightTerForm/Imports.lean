@@ -2,6 +2,9 @@ import Mathlib
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 namespace Bl.general_b_fact_right_ter_form
 
 theorem goal1 :

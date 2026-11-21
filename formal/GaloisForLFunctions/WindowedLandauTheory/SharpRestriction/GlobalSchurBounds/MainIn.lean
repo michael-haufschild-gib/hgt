@@ -3,6 +3,9 @@ import GaloisForLFunctions.WindowedLandauTheory.SharpRestriction.GlobalSchurBoun
 import GaloisForLFunctions.WindowedLandauTheory.SharpRestriction.GlobalSchurBounds.GeneralLinearActions.FiltrationCocycleLiftCriterion
 import GaloisForLFunctions.WindowedLandauTheory.SharpRestriction.GlobalSchurBounds.Chosen
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 noncomputable section
 
 namespace WindowedLandauTheory.MainNotions

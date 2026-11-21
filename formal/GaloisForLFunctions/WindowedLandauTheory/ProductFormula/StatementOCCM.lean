@@ -3,6 +3,9 @@ import GaloisForLFunctions.WindowedLandauTheory.StatementU
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Finset ArithmeticFunction
 
 noncomputable section

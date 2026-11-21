@@ -2,6 +2,9 @@ import GaloisForLFunctions.WindowedLandauTheory.CyclotomicNorms.StatementI
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Polynomial
 
 noncomputable section

@@ -4,6 +4,9 @@ import GaloisForLFunctions.WindowedLandauTheory.SizeWindowBrackets.PowerBoundGiv
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Finset ArithmeticFunction
 
 noncomputable section

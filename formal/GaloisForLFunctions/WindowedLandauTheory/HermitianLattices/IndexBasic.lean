@@ -3,6 +3,9 @@ import GaloisForLFunctions.WindowedLandauTheory.HermitianLattices.StatementLat
 import GaloisForLFunctions.WindowedLandauTheory.HermitianLattices.LocBasic
 import GaloisForLFunctions.WindowedLandauTheory.HermitianLattices.DualBasic
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Module
 
 noncomputable section

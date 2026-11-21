@@ -2,7 +2,7 @@
 
 **Open for even N ≥ 4.** Lean identifies [prime-pair existence with G(N) > 0](../../formal/GaloisForLFunctions/goldbach/RiemannHypothesisBridge.lean#L82), where G(N) counts ordered prime pairs with log weights. The [diagonal term](../../formal/GaloisForLFunctions/goldbach/CoprimePrimePairCorrection.lean#L65) covers N = 2p for prime p, including 4. Targets with composite N/2 require distinct primes. An eventual theorem leaves an initial range to verify.
 
-**Lean baseline:** `aa34244d8b80a1d35a2bf646468a50c245d533fa`. Since `4c6ee6b23220`, ODD advanced. No new routes, candidates, or retirements. [Killed mechanisms and survivors](goldbach-killed-routes.md).
+**Lean baseline:** `6b6eb094c948dc2e0229e6ea0de88f5b17fe093e`. No route changes, additions, or retirements since `aa34244d8b80`. [Killed mechanisms and survivors](goldbach-killed-routes.md).
 
 ## Live routes
 

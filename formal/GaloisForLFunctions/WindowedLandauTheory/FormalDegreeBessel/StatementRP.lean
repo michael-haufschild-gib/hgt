@@ -4,6 +4,9 @@ import GaloisForLFunctions.WindowedLandauTheory.FormalDegreeBessel.StatementWR
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open scoped ContDiff
 open MeasureTheory Matrix
 

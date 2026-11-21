@@ -4,6 +4,9 @@ import GaloisForLFunctions.WindowedLandauTheory.ThetaLiftIndependence.Statement
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 namespace WindowedLandauTheory.BasicNotions
 
 open scoped BigOperators

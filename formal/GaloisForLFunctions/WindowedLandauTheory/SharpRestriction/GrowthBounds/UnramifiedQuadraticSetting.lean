@@ -3,6 +3,9 @@ import GaloisForLFunctions.WindowedLandauTheory.SubspaceCounting.GoodOrbitInterv
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open MvPolynomial
 
 noncomputable section

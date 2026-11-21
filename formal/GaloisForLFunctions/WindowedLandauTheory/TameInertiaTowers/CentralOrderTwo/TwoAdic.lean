@@ -3,6 +3,9 @@ import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.StatementGroup
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 namespace WindowedLandauTheory.TwoAdicCyclotomicDecomposition.TwoAdicValuation
 
 lemma vEq (z : ℤ) (hz : z ≠ 0) : (padicValInt 2 z : ℕ∞) = emultiplicity (2 : ℤ) z := by

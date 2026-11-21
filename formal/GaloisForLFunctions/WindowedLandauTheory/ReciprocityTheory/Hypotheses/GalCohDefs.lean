@@ -3,6 +3,9 @@ import GaloisForLFunctions.WindowedLandauTheory.ReciprocityTheory.GaloisValuatio
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 noncomputable section
 
 open NumberField IsDedekindDomain Representation

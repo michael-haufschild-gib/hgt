@@ -3,6 +3,9 @@ import GaloisForLFunctions.WindowedLandauTheory.RealPlaceAnalysis.RealPlaceTaylo
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Matrix
 open scoped Matrix.Norms.L2Operator
 

@@ -6,6 +6,9 @@ import GaloisForLFunctions.WindowedLandauTheory.ThickAverageLoss.ThickAverage
 import GaloisForLFunctions.WindowedLandauTheory.ZetaNonvanishing.GzLipschitz
 import Mathlib.NumberTheory.Chebyshev
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Finset ArithmeticFunction
 
 noncomputable section

@@ -8,6 +8,9 @@ import GaloisForLFunctions.WindowedLandauTheory.LatticeLocalGlobal.LatticeLocalG
 
 
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Module NumberField IsDedekindDomain
 
 noncomputable section

@@ -3,6 +3,9 @@ import GaloisForLFunctions.WindowedLandauTheory.HermitianLattices.StatementLat
 import GaloisForLFunctions.WindowedLandauTheory.HermitianLattices.DefsCS
 import GaloisForLFunctions.WindowedLandauTheory.GelfandTransference.EnergyIdentity
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open NumberField
 
 noncomputable section

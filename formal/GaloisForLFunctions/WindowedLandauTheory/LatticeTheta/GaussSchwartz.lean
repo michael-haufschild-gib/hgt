@@ -1,5 +1,8 @@
 import GaloisForLFunctions.WindowedLandauTheory.LatticeTheta.LatticeSummableDecay
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open MeasureTheory Filter Asymptotics Complex
 open scoped FourierTransform RealInnerProductSpace SchwartzMap
 

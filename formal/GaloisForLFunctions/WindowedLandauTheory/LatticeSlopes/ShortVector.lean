@@ -2,6 +2,9 @@ import GaloisForLFunctions.WindowedLandauTheory.LatticeSlopes.CovolAntiSameRank
 import GaloisForLFunctions.WindowedLandauTheory.LatticeSlopes.DiscreteTopologyOfLe
 import GaloisForLFunctions.WindowedLandauTheory.LatticeSlopes.CovolEqGram
 
+-- Powers in `ℤˣ` (also inside products) are monoid powers here, as the proofs assume.
+attribute [-instance] Int.instUnitsPow
+
 open Module Submodule MeasureTheory
 
 noncomputable section
