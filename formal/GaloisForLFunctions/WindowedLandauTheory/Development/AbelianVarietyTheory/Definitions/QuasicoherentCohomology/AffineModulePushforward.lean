@@ -49,24 +49,21 @@ private theorem pushforward_localization [IsAffineHom f] [M.IsQuasicoherent]
 /-- Affine direct image preserves localization on the basic opens of an affine cover. -/
 theorem pushforward_isQuasicoherent [IsAffineHom f] [M.IsQuasicoherent] :
     ((Scheme.Modules.pushforward f).obj M).IsQuasicoherent := by
-  let U : {V : X.Opens // IsAffineOpen V} → X.Opens := Subtype.val
-  have hcov : IsOpenCover U := by
-    rw [IsOpenCover, eq_top_iff]
-    intro x _
-    obtain ⟨_, ⟨V, hV, rfl⟩, hx, -⟩ :=
-      X.isBasis_affineOpens.exists_subset_of_mem_open (Set.mem_univ x) isOpen_univ
-    exact Opens.mem_iSup.mpr ⟨⟨V, hV⟩, hx⟩
-  exact isQuasicoherent_of_affineCover_localization ((Scheme.Modules.pushforward f).obj M) U hcov
-    (fun i => i.property) (fun i a => pushforward_localization f M i.property a)
+  exact isQuasicoherent_of_affineCover_localization ((Scheme.Modules.pushforward f).obj M)
+    (fun U : X.affineOpens => U.1) (IsOpenCover.mk (iSup_affineOpens_eq_top X))
+    (fun U => U.2) (fun U a => pushforward_localization f M U.2 a)
 
 /-- A closed immersion gives a quotient on affine section rings, so sections finite
 over the source ring also form a finite module over the target ring. -/
 theorem pushforward_sections_finite [IsClosedImmersion f] {U : X.Opens}
-    (hU : IsAffineOpen U) [Module.Finite Γ(Y, f ⁻¹ᵁ U) Γ(M, f ⁻¹ᵁ U)] :
+    (hU : IsAffineOpen U) [hM : Module.Finite Γ(Y, f ⁻¹ᵁ U) Γ(M, f ⁻¹ᵁ U)] :
     Module.Finite Γ(X, U) Γ((Scheme.Modules.pushforward f).obj M, U) := by
   letI : Algebra Γ(X, U) Γ(Y, f ⁻¹ᵁ U) := (f.app U).hom.toAlgebra
   haveI : Module.Finite Γ(X, U) Γ(Y, f ⁻¹ᵁ U) :=
     Module.Finite.of_surjective (Algebra.linearMap Γ(X, U) Γ(Y, f ⁻¹ᵁ U)) (f.app_surjective U hU)
+  letI : Module Γ(Y, f ⁻¹ᵁ U) Γ((Scheme.Modules.pushforward f).obj M, U) :=
+    inferInstanceAs (Module Γ(Y, f ⁻¹ᵁ U) Γ(M, f ⁻¹ᵁ U))
+  letI : Module.Finite Γ(Y, f ⁻¹ᵁ U) Γ((Scheme.Modules.pushforward f).obj M, U) := hM
   letI : IsScalarTower Γ(X, U) Γ(Y, f ⁻¹ᵁ U)
       Γ((Scheme.Modules.pushforward f).obj M, U) :=
     .of_algebraMap_smul fun _ _ => rfl

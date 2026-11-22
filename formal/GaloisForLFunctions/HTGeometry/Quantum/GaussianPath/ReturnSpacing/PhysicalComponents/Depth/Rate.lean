@@ -24,7 +24,7 @@ theorem fraction_of_count_bounds (A B M : ℝ → ℕ) (a p q : ℝ) (hp : 0<p)
     filter_upwards [eventually_gt_atTop a] with T hT
     change (B (T+1):ℝ)/(T+1-a)*(1+1/(T-a))=_
     field_simp [(sub_pos.mpr hT).ne',(show 0<T+1-a by linarith only [hT]).ne']
-    <;> ring
+    ring
   have hm : Tendsto (fun T => (M T:ℝ)/(T-a)) atTop (𝓝 q) := by
     apply tendsto_of_tendsto_of_tendsto_of_le_of_le' hB hh
     · filter_upwards [eventually_gt_atTop a] with T hT

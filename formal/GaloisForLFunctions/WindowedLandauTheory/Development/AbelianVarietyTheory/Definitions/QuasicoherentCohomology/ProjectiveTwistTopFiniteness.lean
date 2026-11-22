@@ -27,7 +27,7 @@ private abbrev comparison := pspaceTwistCechMap K (p + 1) m
 private def degreeEquiv (q : ℕ) :
     (D K p m).degreeCochains q ≃+ (E K p m).degreeCochains q :=
   AddEquiv.ofBijective ((comparison K p m).cochainMap.f q).hom
-    (cochainMap_bijective_of_nonempty _ (fun a => pspaceTwistCechMap_bijective K (p + 1) m) q)
+    (cochainMap_bijective_of_nonempty _ (fun _ => pspaceTwistCechMap_bijective K (p + 1) m) q)
 
 private abbrev topShortComplex :=
   (E K p m).cochainComplex.sc' p (p + 1) (p + 2)
@@ -40,8 +40,13 @@ private def chartCoefficients : (topShortComplex K p m).X₂ ⟶ coeffSpace K p 
 
 private theorem degreeEquiv_d (b : (D K p m).degreeCochains p) :
     (E K p m).cochainComplex.d p (p + 1) (degreeEquiv K p m p b) =
-      degreeEquiv K p m (p + 1) ((D K p m).cochainComplex.d p (p + 1) b) :=
-  ConcreteCategory.congr_hom ((comparison K p m).cochainMap.comm p (p + 1)) b
+      degreeEquiv K p m (p + 1) ((D K p m).cochainComplex.d p (p + 1) b) := by
+  let C := (D K p m).cochainComplex
+  let C' := (E K p m).cochainComplex
+  let f := (comparison K p m).cochainMap
+  change (C'.d p (p + 1)).hom ((f.f p).hom b) =
+    (f.f (p + 1)).hom ((C.d p (p + 1)).hom b)
+  exact congrArg (fun a : C.X p ⟶ C'.X (p + 1) => a.hom b) (f.comm p (p + 1))
 
 private theorem chartCoefficients_exact : Function.Exact (topShortComplex K p m).f
     (chartCoefficients K p m) := by
@@ -82,7 +87,9 @@ private theorem degreeEquiv_scale (r : K) (b : (D K p m).degreeCochains (p + 1))
   · have hc : a.card ≠ p + 2 := by
       rw [Finset.not_nonempty_iff_eq_empty.mp ha]
       simp
-    rw [b.2 a hc, map_zero, map_zero, map_zero, smul_zero]
+    rw [b.2 a hc, map_zero, map_zero, map_zero]
+    exact (show restrictGlobal (X K p) W (algebraMap K Γ(X K p, ⊤) r) •
+      (0 : Γ(F K p m, W)) = 0 from smul_zero _)
 
 private abbrev scFunctor :=
   HomologicalComplex.shortComplexFunctor' AddCommGrpCat.{0} (ComplexShape.up ℕ) p (p + 1) (p + 2)
@@ -124,7 +131,9 @@ theorem pspaceTwist_topCech_finite :
   letI := Module.compHom H (algebraMap K Γ(X K p, ⊤))
   let f := homologyCoefficients K p m
   let L : H →ₗ[K] (TopLaurentExponents (Fin (p + 2)) m → K) :=
-    { f.hom with map_smul' := fun r x => by
+    { f.hom with
+      map_smul' := by
+        intro r x
         let g := scalarComplexMap K p m r
         let e := (homologyIso p).app (E K p m).cochainComplex
         let a := descHomologyOfExact _ (chartCoefficients K p m) (chartCoefficients_exact K p m)
@@ -134,12 +143,19 @@ theorem pspaceTwist_topCech_finite :
           (homologyIso p).hom.naturality g
         have h₂ : ShortComplex.homologyMap ((scFunctor p).map g) ≫ a = a ≫ b :=
           descHomologyOfExact_natural _ _ _ _ _ (chartCoefficients_scale K p m r)
-        have hh : HomologicalComplex.homologyMap g (p + 1) ≫ f = f ≫ b := by
-          change HomologicalComplex.homologyMap g (p + 1) ≫ e.hom ≫ a = (e.hom ≫ a) ≫ b
-          rw [← Category.assoc, h₁, Category.assoc, h₂, Category.assoc]
-        exact ConcreteCategory.congr_hom hh x }
+        have hh : HomologicalComplex.homologyMap g (p + 1) ≫ f = f ≫ b := calc
+          _ = (HomologicalComplex.homologyMap g (p + 1) ≫ e.hom) ≫ a :=
+            (Category.assoc _ _ _).symm
+          _ = (e.hom ≫ ShortComplex.homologyMap ((scFunctor p).map g)) ≫ a :=
+            congrArg (· ≫ a) h₁
+          _ = e.hom ≫ ShortComplex.homologyMap ((scFunctor p).map g) ≫ a :=
+            Category.assoc _ _ _
+          _ = e.hom ≫ a ≫ b := congrArg (e.hom ≫ ·) h₂
+          _ = _ := (Category.assoc _ _ _).symm
+        exact congrArg (fun a : (E K p m).cochainComplex.homology (p + 1) ⟶ coeffSpace K p m =>
+          a.hom x) hh }
   apply Module.Finite.of_injective L
   exact (descHomologyOfExact_injective _ _ (chartCoefficients_exact K p m)).comp
-    ((AddCommGrpCat.mono_iff_injective _).mp inferInstance)
+    ((AddCommGrpCat.mono_iff_injective ((homologyIso p).app (E K p m).cochainComplex).hom).mp inferInstance)
 
 end GlobalTheory.SchemeCohomology

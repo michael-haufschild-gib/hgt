@@ -37,6 +37,7 @@ private def chartLocalization (s : Finset ι) :
   map_zero' := funext fun _ => map_zero _
   map_add' z z' := funext fun _ => map_add _ z z'
 
+include hw in
 private theorem chartLocalization_mem (s : Finset ι) (e : ℕ) (z : twPart 𝒜 w s e) :
     chartLocalization s z.1 ∈ sectionsSubgroup (-(e : ℤ)) (Proj.basicOpen 𝒜 (wProd w s)) := by
   refine (AddSubgroup.closure_le ((sectionsSubgroup (-(e : ℤ))
@@ -56,14 +57,23 @@ private def chartSections (s : Finset ι) (e : ℕ) :
   map_zero' := ProjTwist.ext (map_zero (chartLocalization s))
   map_add' z z' := ProjTwist.ext (map_add (chartLocalization s) z.1 z'.1)
 
+private def awayFraction {s : Finset ι} (hs : s.Nonempty) (e : ℕ) (z : twPart 𝒜 w s e) :
+    awayDeg 𝒜 (wProd_mem hw s) (Finset.card_pos.mpr hs) (-(e : ℤ)) :=
+  ⟨z.1, (mem_awayDeg_iff hw hs e z.1).2 z.2⟩
+
+private theorem awayFraction_bijective {s : Finset ι} (hs : s.Nonempty) (e : ℕ) :
+    Function.Bijective (awayFraction hw hs e) := by
+  constructor
+  · intro a b h
+    have he := congrArg (fun z : awayDeg 𝒜 (wProd_mem hw s) (Finset.card_pos.mpr hs) (-(e : ℤ)) =>
+      z.1) h
+    exact Subtype.ext he
+  · intro z
+    exact ⟨⟨z.1, (mem_awayDeg_iff hw hs e z.1).1 z.2⟩, Subtype.ext rfl⟩
+
 /-- A nonempty intersection has a degree-one factor in its defining product. -/
-private theorem chartSections_bijective {s : Finset ι} (hs : s.Nonempty) (e : ℕ) :
-    Function.Bijective (chartSections hw s e) := by
-  let m : twPart 𝒜 w s e → awayDeg 𝒜 (wProd_mem hw s) (Finset.card_pos.mpr hs) (-(e : ℤ)) :=
-    fun z => ⟨z.1, (mem_awayDeg_iff hw hs e z.1).2 z.2⟩
-  have hm : Function.Bijective m :=
-    ⟨fun a b eq => Subtype.ext (congrArg (fun z => z.1) (show m a = m b from eq)), fun z =>
-      ⟨⟨z.1, (mem_awayDeg_iff hw hs e z.1).1 z.2⟩, Subtype.ext rfl⟩⟩
+private theorem toSection_wProd_bijective {s : Finset ι} (hs : s.Nonempty) (k : ℤ) :
+    Function.Bijective (toSection (wProd_mem hw s) (Finset.card_pos.mpr hs) k) := by
   obtain ⟨i, hi⟩ := hs
   let t := s.erase i
   have heq := Finset.insert_erase hi
@@ -75,10 +85,21 @@ private theorem chartSections_bijective {s : Finset ι} (hs : s.Nonempty) (e : �
     (Finset.card_insert_of_notMem (Finset.notMem_erase i s)).symm.trans
       (congrArg Finset.card heq)
   have hb (d : ℕ) (hd : d = t.card + 1) (hf' : wProd w s ∈ 𝒜 d) :
-      Function.Bijective (toSection hf' (show 0 < d by omega) (-(e : ℤ))) := by
+      Function.Bijective (toSection hf' (show 0 < d by omega) k) := by
     subst d
     exact toSection_bijective (hw i) (wProd_mem hw t) hf hf' _
-  exact (hb s.card hc.symm (wProd_mem hw s)).comp hm
+  exact hb s.card hc.symm (wProd_mem hw s)
+
+private theorem chartSections_eq {s : Finset ι} (hs : s.Nonempty) (e : ℕ) :
+    (chartSections hw s e : _ → _) =
+      (toSection (wProd_mem hw s) (Finset.card_pos.mpr hs) (-(e : ℤ))) ∘ awayFraction hw hs e := by
+  funext z
+  exact ProjTwist.ext rfl
+
+private theorem chartSections_bijective {s : Finset ι} (hs : s.Nonempty) (e : ℕ) :
+    Function.Bijective (chartSections hw s e) := by
+  rw [chartSections_eq hw hs]
+  exact (toSection_wProd_bijective hw hs (-(e : ℤ))).comp (awayFraction_bijective hw hs e)
 
 variable [LinearOrder ι]
 
@@ -93,7 +114,7 @@ private abbrev intersection_le (s : Finset ι) :
 private def chartCechApp (s : Finset ι) (e : ℕ) :
     twPart 𝒜 w s e →+ (chartCech (𝒜 := 𝒜) (w := w) e).obj s :=
   ((twistingSheaf 𝒜 (-(e : ℤ))).presheaf.map
-    (homOfLE (intersection_le (𝒜 := 𝒜) (w := w) s)).op).hom.toAddMonoidHom.comp
+    (homOfLE (intersection_le (𝒜 := 𝒜) (w := w) s)).op).hom.comp
     (chartSections hw s e)
 
 /-- The localized homogeneous Čech datum compares to actual sections of the negative twist. -/
@@ -104,14 +125,16 @@ def twistCechComparison (e : ℕ) : (twCech 𝒜 w hw e).Hom (chartCech (𝒜 :=
     funext x
     let xt : Proj.basicOpen 𝒜 (wProd w t) := ⟨x.1, intersection_le t x.2⟩
     let xs : Proj.basicOpen 𝒜 (wProd w s) := ⟨x.1, intersection_le s (coverInter_anti h x.2)⟩
-    exact (locMap_comp (resLoc w h) (RingHom.ext (resLoc_algebraMap w h))
+    exact (locMap_comp (resLoc w h) (RingHom.ext (resLoc_algebraMap h))
       x.1 (nmem_of_mem xt) (nmem_of_mem xs) z.1).symm
 
+omit [LinearOrder ι] in
 theorem twistCechComparison_app_val (s : Finset ι) (e : ℕ) (z : (twCech 𝒜 w hw e).obj s)
     (x : coverInter ⊤ (projCover (𝒜 := 𝒜) w) s) :
     val ((twistCechComparison hw e).app s z) x =
       locMap x.1 (nmem_of_mem ⟨x.1, intersection_le s x.2⟩) z.1 := rfl
 
+omit [LinearOrder ι] in
 theorem twistCechComparison_bijective {s : Finset ι} (hs : s.Nonempty) (e : ℕ) :
     Function.Bijective ((twistCechComparison hw e).app s) := by
   have he := coverInter_projCover (𝒜 := 𝒜) (w := w) s

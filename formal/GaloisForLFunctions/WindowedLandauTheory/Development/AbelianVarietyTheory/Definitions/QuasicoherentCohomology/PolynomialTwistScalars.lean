@@ -16,14 +16,14 @@ variable {K : Type*} [Field K] {ι ν : Type} [Fintype ι] [DecidableEq ι] [Lin
 
 private theorem constant_mem_twPart (r : K) {I : Finset ι} {e : ℕ}
     {z : LocAt (projCoord K ι ν) I} (hz : z ∈ twPart (projGrading K ι ν) (projCoord K ι ν) I e) :
-    algebraMap _ (LocAt (projCoord K ι ν) I) (MvPolynomial.C r) * z ∈
+    algebraMap (MvPolynomial (ι ⊕ ν) K) (LocAt (projCoord K ι ν) I) (MvPolynomial.C r) * z ∈
       twPart (projGrading K ι ν) (projCoord K ι ν) I e := by
   let w := projCoord K ι ν
-  let c := algebraMap _ (LocAt w I) (MvPolynomial.C r)
+  let c := algebraMap (MvPolynomial (ι ⊕ ν) K) (LocAt w I) (MvPolynomial.C r)
   refine (AddSubgroup.closure_le ((twPart (projGrading K ι ν) w I e).comap
     (AddMonoidHom.mulLeft c))).mpr ?_ hz
   rintro _ ⟨m, d, x, hx, hd, rfl⟩
-  change algebraMap _ (LocAt w I) (MvPolynomial.C r) * frac w I m x ∈
+  change algebraMap (MvPolynomial (ι ⊕ ν) K) (LocAt w I) (MvPolynomial.C r) * frac w I m x ∈
     twPart (projGrading K ι ν) w I e
   rw [algebraMap_mul_frac]
   have hc : MvPolynomial.C r ∈ projGrading K ι ν 0 := MvPolynomial.isWeightedHomogeneous_C _ _
@@ -33,7 +33,8 @@ private theorem constant_mem_twPart (r : K) {I : Finset ι} {e : ℕ}
 
 private def constantApp (e : ℕ) (r : K) (I : Finset ι) :
     (polyTwCech K ι ν e).obj I →+ (polyTwCech K ι ν e).obj I :=
-  ((AddMonoidHom.mulLeft (algebraMap _ (LocAt (projCoord K ι ν) I) (MvPolynomial.C r))).comp
+  ((AddMonoidHom.mulLeft (algebraMap (MvPolynomial (ι ⊕ ν) K)
+      (LocAt (projCoord K ι ν) I) (MvPolynomial.C r))).comp
     (twPart (projGrading K ι ν) (projCoord K ι ν) I e).subtype).codRestrict _
     (fun z => constant_mem_twPart r z.2)
 
@@ -43,15 +44,21 @@ def polynomialTwistScale (e : ℕ) (r : K) : (polyTwCech K ι ν e).Hom (polyTwC
   comm {s t} h z := by
     apply twVal_injective projCoord_mem
     change resLoc (projCoord K ι ν) h
-      (algebraMap _ (LocAt (projCoord K ι ν) s) (MvPolynomial.C r) * z.1) =
-      algebraMap _ (LocAt (projCoord K ι ν) t) (MvPolynomial.C r) *
+      (algebraMap (MvPolynomial (ι ⊕ ν) K) (LocAt (projCoord K ι ν) s) (MvPolynomial.C r) * z.1) =
+      algebraMap (MvPolynomial (ι ⊕ ν) K) (LocAt (projCoord K ι ν) t) (MvPolynomial.C r) *
         resLoc (projCoord K ι ν) h z.1
     rw [map_mul, resLoc_algebraMap]
 
 theorem polynomialTwistScale_val (e : ℕ) (r : K) (I : Finset ι) (z : (polyTwCech K ι ν e).obj I) :
     twVal projCoord_mem ((polynomialTwistScale e r).app I z) =
-      algebraMap _ (LocAt (projCoord K ι ν) I) (MvPolynomial.C r) * twVal projCoord_mem z := rfl
+      algebraMap (MvPolynomial (ι ⊕ ν) K) (LocAt (projCoord K ι ν) I) (MvPolynomial.C r) *
+        twVal projCoord_mem z := rfl
 
+theorem polynomialTwistScale_coe (e : ℕ) (r : K) (I : Finset ι) (z : (polyTwCech K ι ν e).obj I) :
+    ((polynomialTwistScale e r).app I z).1 =
+      algebraMap (MvPolynomial (ι ⊕ ν) K) (LocAt (projCoord K ι ν) I) (MvPolynomial.C r) * z.1 := rfl
+
+omit [Fintype ι] [DecidableEq ι] [LinearOrder ι] [Fintype ν] [DecidableEq ν] in
 private theorem laurentEmb_constant (r : K) :
     laurentEmb K ι ν (MvPolynomial.C r) = algebraMap K (LaurentRing K ι ν) r := by
   change laurentEmb K ι ν (MvPolynomial.monomial 0 r) = _

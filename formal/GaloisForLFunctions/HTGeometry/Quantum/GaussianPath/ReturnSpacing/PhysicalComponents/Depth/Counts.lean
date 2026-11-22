@@ -1,6 +1,4 @@
-import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.ReturnSpacing.PhysicalComponents.RecordCount
-import Mathlib.Topology.Order.Monotone
-import Mathlib.Topology.Instances.Real.Lemmas
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.ReturnSpacing.PhysicalComponents.Depth.ComponentCounts
 
 /-! # Marking a continuous visit by the deepest tube it reaches -/
 open Set
@@ -12,18 +10,6 @@ leaving the outer set. -/
 def marked (E F : Set ℝ) (entries : Finset ℝ) : Finset ℝ := by
   classical
   exact entries.filter (fun u => ∃ w ∈ Icc u (u+1), w∈F ∧ Icc u w ⊆ E)
-
-private theorem first_after {E : Set ℝ} (hc : IsClosed E) {a w : ℝ}
-    (ha : a∉E) (haw : a≤w) (hw : w∈E) : ∃ u ∈ Ioc a w, Entry E u := by
-  let S := Icc a w ∩ E
-  have hs : w∈S := ⟨⟨haw,le_rfl⟩,hw⟩
-  have hm := (isClosed_Icc.inter hc).isLeast_csInf ⟨w,hs⟩ ⟨a,fun _ h => h.1.1⟩
-  let u := sInf S
-  have hu : u ∈ S := hm.1
-  have hau : a<u := lt_of_le_of_ne hu.1.1 (fun h => ha (h ▸ hu.2))
-  refine ⟨u,⟨hau,hu.1.2⟩,hu.2,u-a,sub_pos.mpr hau,?_⟩
-  intro z hz he
-  exact hz.2.not_ge (hm.2 ⟨⟨by linarith only [hz.1],hz.2.le.trans hu.1.2⟩,he⟩)
 
 private theorem segment {E : Set ℝ} (hc : IsClosed E)
     (hg : ∀ v ∈ E, ∀ w, Entry E w → v<w → 1<w-v)

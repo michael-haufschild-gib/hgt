@@ -35,7 +35,9 @@ theorem gaussian_release_field {b h δ : ℝ} (hb : 0<b) (hh : 0<h) (hδ : 0<δ)
     ((isClosed_le continuous_const hc'.abs).measurableSet.inter (isClosed_le hc.abs continuous_const).measurableSet))
   intro x
   obtain ⟨f,hf,he,hg⟩ := ha x
-  simp only [mem_setOf_eq,update_self,update_idem]
+  change volume {t : ℝ | update x i t i∈Ioo (-b) b ∧ h≤|F (update (update x i t) i u)| ∧
+    |F (update x i t)|≤ε} ≤ ENNReal.ofReal δ
+  simp only [update_self,update_idem]
   by_cases hx : h≤|F (update x i u)|
   · simp only [hx,true_and]
     have hv := hs f hf (fun t => by rw [he]; rfl) hg u hu (by simpa only [he,Complex.ofReal_re] using hx)

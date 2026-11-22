@@ -78,13 +78,15 @@ theorem gaussian_field_box (n : ℕ) {b h δ : ℝ} (hb : 0<b) (hh : 0<h) (hδ :
       · rintro x ⟨hx,hsig⟩
         rcases le_total |F (release k u x)| r with hr'|hr'
         · exact Or.inl ⟨hx,hr'⟩
-        · exact Or.inr ⟨hx i,by simpa only [G,Function.comp_apply,release_calibration i u x] using hr',hsig⟩
+        · refine Or.inr ⟨hx i,?_,hsig⟩
+          change r ≤ |F (release (i.val+1) u (update x i (u i)))|
+          rwa [release_calibration]
       · rw [Nat.cast_succ,add_mul,one_mul]
   obtain ⟨ε,hε,ht⟩ := steps n le_rfl
   refine ⟨ε,hε,?_⟩
   intro F hc hf u hu hcal
   have he (x : Fin n → ℝ) : release n u x=x := by funext j; simp only [release,if_pos j.isLt]
-  simpa only [he] using ht F hc hf u hu hcal
+  simpa only [he,μ,B,Set.mem_setOf_eq] using ht F hc hf u hu hcal
 
 end
 end GaloisForLFunctions.HTGeometry.SpanningDensity.FixedHorizon

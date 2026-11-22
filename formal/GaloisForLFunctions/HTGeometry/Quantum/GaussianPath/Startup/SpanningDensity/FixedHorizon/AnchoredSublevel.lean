@@ -32,7 +32,7 @@ private theorem taylor_bound {b q M : ℝ} (hb : 0<b) (hq : 1≤q) (hM : 0≤M)
     rw [←entireRealTaylorPolynomial_map_eval hf hr,Polynomial.eval_map]
     exact (Polynomial.eval₂_at_apply Complex.ofRealHom x).symm
   have ht := entire_cauchyPowerSeries_partialSum_remainder_le_of_sphere_bound hf hR hbound (hn.trans_lt hbr) k
-  have hreal := Complex.abs_re_le_norm (((entireRealTaylorPolynomial f k).eval x:ℂ)-f x)
+  have hreal := Complex.abs_re_le_norm (Complex.ofReal ((entireRealTaylorPolynomial f k).eval x)-f x)
   simp only [Complex.sub_re,Complex.ofReal_re] at hreal
   rw [he] at hreal
   calc
@@ -54,7 +54,7 @@ theorem anchored_sublevel {b h δ : ℝ} (hb : 0<b) (hh : 0<h) (hδ : 0<δ)
   have hq : 1≤q := by exact le_add_of_nonneg_right (by positivity)
   have hq' : 0<q := zero_lt_one.trans_le hq
   let B := M (2*q*b)
-  obtain ⟨k,hk⟩ := exists_pow_gt_of_one_lt (8*B/h) (by norm_num : (1:ℝ)<2)
+  obtain ⟨k,hk⟩ := ((tendsto_pow_atTop_atTop_of_one_lt (by norm_num : (1:ℝ)<2)).eventually (Filter.eventually_gt_atTop (8*B/h))).exists
   let ε := h/(4*q^k)
   have hε : 0<ε := by dsimp only [ε]; positivity
   have hk' := (div_lt_iff₀ hh).mp hk
@@ -74,7 +74,7 @@ theorem anchored_sublevel {b h δ : ℝ} (hb : 0<b) (hh : 0<h) (hδ : 0<δ)
   have ha : (2*ε)*q^k < |P.eval u| := by
     have hdiff := abs_sub_abs_le_abs_sub ((f u).re) (P.eval u)
     rw [abs_sub_comm ((f u).re)] at hdiff
-    have hv : (2*ε)*q^k=h/2 := by dsimp only [ε]; field_simp
+    have hv : (2*ε)*q^k=h/2 := by dsimp only [ε]; field_simp; norm_num
     rw [hv]
     linarith only [hdiff,hnear u hu,hcal,hsmall,hh]
   have hfar (x : ℝ) (hx : x∈Ioo (-b) b) : |u-x| ≤ 2*b := by
@@ -93,7 +93,7 @@ theorem anchored_sublevel {b h δ : ℝ} (hb : 0<b) (hh : 0<h) (hδ : 0<δ)
     exact ⟨hx.1,by linarith only [ht,he,hx.2]⟩
   · rw [one_mul,div_le_iff₀ hq']
     dsimp only [q]
-    rw [mul_add,mul_one,mul_div_cancel₀' _ hδ.ne']
+    rw [mul_add,mul_one,show δ*(8*Real.exp 1*b/δ)=8*Real.exp 1*b by field_simp]
     linarith only [hδ]
 
 end

@@ -1,6 +1,8 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.QuasicoherenceOnAffines
+import Mathlib.Algebra.Category.Grp.FilteredColimits
 import Mathlib.Algebra.Category.ModuleCat.Biproducts
 import Mathlib.Algebra.Category.ModuleCat.Sheaf.Abelian
+import Mathlib.Algebra.Category.ModuleCat.Sheaf.Limits
 import Mathlib.CategoryTheory.Preadditive.Biproducts
 
 /-! Finite direct sums of modules preserve finite sections and the basic-open
@@ -14,16 +16,28 @@ namespace GlobalTheory.SchemeCohomology
 
 universe u
 
-variable {X : Scheme.{u}} {I : Type u} [Fintype I] (F : I → X.Modules)
+scoped instance schemeModulesHasFiniteBiproducts (X : Scheme.{u}) : HasFiniteBiproducts X.Modules :=
+  HasFiniteBiproducts.of_hasFiniteProducts
+
+variable {X : Scheme.{u}} {I : Type} [Fintype I] (F : I → X.Modules)
 
 private abbrev sectionEvaluation (U : X.Opens) : X.Modules ⥤ ModuleCat Γ(X, U) :=
-  SheafOfModules.forget X.ringCatSheaf ⋙ PresheafOfModules.evaluation X.ringCatSheaf.obj (op U)
+  SheafOfModules.evaluation X.ringCatSheaf (op U)
+
+local instance (U : X.Opens) : (sectionEvaluation U).PreservesZeroMorphisms :=
+  ⟨fun _ _ => rfl⟩
+
+private def sectionsPreserveBiproduct (U : X.Opens) :
+    PreservesBiproduct F (sectionEvaluation U) := by
+  letI : PreservesLimit (Discrete.functor F) (sectionEvaluation U) :=
+    SheafOfModules.evaluationPreservesLimit (Discrete.functor F) (op U)
+  exact preservesBiproduct_of_preservesProduct (sectionEvaluation U)
 
 private def sectionsBiproductIso (U : X.Opens) :
     (sectionEvaluation U).obj (⨁ F) ≅ ModuleCat.of Γ(X, U) (∀ i, Γ(F i, U)) :=
   let A := sectionEvaluation U
-  letI : PreservesBiproduct F A := preservesBiproduct_of_preservesProduct A
-  mapBiproduct A F ≪≫ ModuleCat.biproductIsoPi (A.obj ∘ F)
+  letI : PreservesBiproduct F A := sectionsPreserveBiproduct F U
+  A.mapBiproduct F ≪≫ ModuleCat.biproductIsoPi (A.obj ∘ F)
 
 /-- Sections of a finite biproduct identify with the product by the projections. -/
 def sectionsBiproductEquiv (U : X.Opens) :
@@ -33,13 +47,20 @@ def sectionsBiproductEquiv (U : X.Opens) :
 theorem sectionsBiproductEquiv_apply (U : X.Opens) (x : Γ(⨁ F, U)) (i : I) :
     sectionsBiproductEquiv F U x i = (biproduct.π F i).app U x := by
   let A := sectionEvaluation U
-  letI : PreservesBiproduct F A := preservesBiproduct_of_preservesProduct A
-  have h : (sectionsBiproductIso F U).hom ≫
-      ModuleCat.ofHom (LinearMap.proj i) = A.map (biproduct.π F i) := by
-    change (mapBiproduct A F).hom ≫ (ModuleCat.biproductIsoPi _).hom ≫
-      ModuleCat.ofHom (LinearMap.proj i) = _
-    rw [← ModuleCat.biproductIsoPi_inv_comp_π, Iso.hom_inv_id_assoc,
-      mapBiproduct_hom, biproduct.lift_π]
+  letI : PreservesBiproduct F A := sectionsPreserveBiproduct F U
+  let π : ModuleCat.of Γ(X, U) (∀ j, Γ(F j, U)) ⟶ A.obj (F i) :=
+    ModuleCat.ofHom (LinearMap.proj i)
+  have h : (sectionsBiproductIso F U).hom ≫ π = A.map (biproduct.π F i) := by
+    let e := ModuleCat.biproductIsoPi (A.obj ∘ F)
+    let a := (A.mapBiproduct F).hom
+    let b := biproduct.π (A.obj ∘ F) i
+    change a ≫ e.hom ≫ π = _
+    have hπ : π = e.inv ≫ b :=
+      (ModuleCat.biproductIsoPi_inv_comp_π (A.obj ∘ F) i).symm
+    calc
+      _ = a ≫ e.hom ≫ e.inv ≫ b := congrArg (fun p => a ≫ e.hom ≫ p) hπ
+      _ = a ≫ b := congrArg (a ≫ ·) (e.hom_inv_id_assoc b)
+      _ = _ := (congrArg (· ≫ b) (Functor.mapBiproduct_hom A F)).trans (biproduct.lift_π _ _)
   exact ConcreteCategory.congr_hom h x
 
 theorem biproduct_sections_finite (U : X.Opens)
@@ -78,10 +99,11 @@ theorem biproduct_isQuasicoherent (hF : ∀ i, (F i).IsQuasicoherent) :
     refine ⟨N, x, ?_⟩
     apply (sectionsBiproductEquiv F W).injective
     funext i
-    simp only [sectionsBiproductEquiv_apply, Scheme.Modules.Hom.app_smul, hnat]
+    simp only [sectionsBiproductEquiv_apply, Scheme.Modules.Hom.app_smul]
     have hx : (π i).app U x = t i := by
       rw [← sectionsBiproductEquiv_apply, LinearEquiv.apply_symm_apply]
-    rw [hx]
+    change q ^ N • (π i).app W z = (π i).app W (G.presheaf.map j.op x)
+    rw [hnat i x, hx]
     change q ^ N • (π i).app W z = (F i).presheaf.map j.op (f ^ (N - n i) • y i)
     rw [(F i).map_smul j, map_pow, ← hy, smul_smul, ← pow_add,
       Nat.sub_add_cancel (Finset.le_sup (f := n) (Finset.mem_univ i))]

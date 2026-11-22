@@ -34,6 +34,16 @@ private theorem exterior_commutes (u : PathShell n) (e : Fin (n+1))
       not_not.mp (mt mem_pathOverlaps.mpr h)
     exact (commute_finitePauliMatrix_of_disjoint (hd.symm.mono_right hq)).smul_left _
 
+/-- The endpoint reporter anticommutes with the longitudinal bond. -/
+theorem bond_reporter_anticommutes (e : Fin (n+1)) :
+    let P := finitePauliMatrix (pathWord (bondLabel e))
+    let Y := finitePauliMatrix (bondReporter e)
+    P*Y=-(Y*P) := by
+  apply finitePauliMatrix_anticommute_of_not_commute
+  intro h
+  have hz := (commute_onsite_coupling_iff e.castSucc 0 e (2,2)).mp h.symm
+  exact (by decide : (0:Fin 3)≠2) (hz.1 rfl)
+
 /-- Varying at most 42 Gaussian coordinates suffices to set the Choi
 correlation to one at any nonzero time, for every choice of the exterior. -/
 theorem path_bond_calibration (u : PathShell n) (e : Fin (n+1)) (t : ℝ) (ht : t≠0) :
@@ -54,10 +64,7 @@ theorem path_bond_calibration (u : PathShell n) (e : Fin (n+1)) (t : ℝ) (ht : 
       exact hh (by simp only [bondReporter,onsiteWord,if_neg hn])
     rw [he,mem_labelSupport]
     simp [bondLabel,pathWord,couplingWord]
-  · apply finitePauliMatrix_anticommute_of_not_commute
-    intro h
-    have hz := (commute_onsite_coupling_iff e.castSucc 0 e (2,2)).mp h.symm
-    exact (by decide : (0:Fin 3)≠2) (hz.1 rfl)
+  · exact bond_reporter_anticommutes e
 
 end
 end GaloisForLFunctions.HTGeometry.SpanningDensity.FixedHorizon

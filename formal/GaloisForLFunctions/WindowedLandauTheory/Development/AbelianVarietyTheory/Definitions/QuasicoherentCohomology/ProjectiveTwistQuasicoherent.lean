@@ -25,9 +25,13 @@ private theorem basicOpen_localization {v : A} (hv : v ∈ 𝒜 1) (k : ℤ)
   let b := coordinatePower hv k
   have hb := coordinatePower_basis hv k (X.basicOpen_le f)
   have hbU : Function.Bijective (fun r : Γ(X, U) => r • b) := by
-    have h : (homOfLE (le_refl U)).op = 𝟙 (op U) := rfl
-    simpa only [h, T.presheaf.map_id, ConcreteCategory.id_apply] using
+    let b' : Γ(T, U) := T.presheaf.map (homOfLE (le_refl U)).op b
+    have h : T.presheaf.map (homOfLE (le_refl U)).op = 𝟙 (T.presheaf.obj (op U)) :=
+      T.presheaf.map_id (op U)
+    have he : b' = b := congrArg (fun u : Γ(T, U) ⟶ Γ(T, U) => u.hom b) h
+    have hb' : Function.Bijective (fun r : Γ(X, U) => r • b') :=
       coordinatePower_basis hv k (le_refl U)
+    exact he ▸ hb'
   letI := (Proj.isAffineOpen_basicOpen 𝒜 v hv Nat.one_pos).isLocalization_basicOpen f
   have mul_loc (r : Γ(X, U)) : algebraMap Γ(X, U) Γ(X, D) r = X.presheaf.map i.op r := rfl
   constructor
@@ -53,8 +57,11 @@ private theorem basicOpen_localization {v : A} (hv : v ∈ 𝒜 1) (k : ℤ)
       exact hz
     obtain ⟨d, hd⟩ := (IsLocalization.map_eq_zero_iff (Submonoid.powers f) Γ(X, D) r).mp hr
     obtain ⟨n, hn⟩ := d.2
+    have he : f ^ n * r = 0 :=
+      (congrArg (fun a : Γ(X, U) => a * r) hn).trans hd
     refine ⟨n, ?_⟩
-    rw [smul_smul, hn, hd, zero_smul]
+    exact (smul_smul (f ^ n) r b).trans
+      ((congrArg (fun a : Γ(X, U) => a • b) he).trans (zero_smul _ _))
 
 /-- Degree-one coordinates covering Proj exhibit each twist as quasi-coherent. -/
 theorem twistingSheaf_isQuasicoherent {ι : Type u} {v : ι → A} (hv : ∀ i, v i ∈ 𝒜 1)

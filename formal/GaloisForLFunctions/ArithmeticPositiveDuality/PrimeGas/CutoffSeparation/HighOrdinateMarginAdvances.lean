@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.CutoffSeparation.ZetaFreeTruncationMargin
+import GaloisForLFunctions.VerifiedHeightRungs.HadamardBudget.TheVerifiedHeightEightyFour
 import GaloisForLFunctions.RHTower.XiWindowZeroCount
 import GaloisForLFunctions.ExceptionalLayerTheory.NonrealZeroRepulsionAndCoMovingRemainders
 
@@ -741,5 +742,93 @@ theorem five_point_repulsion_forces_zetaFree_margin (t : ExceptionalTime) (j : �
 #print axioms exists_point_with_zetaFree_margin_of_card_gt
 #print axioms infinite_zetaFree_margin_on_horizontal_interval
 #print axioms five_point_repulsion_forces_zetaFree_margin
+
+/-! ### Part 4: Bohman height `169/2` (`84.5`) zero-exception cutoff margins and single-exception rigidity -/
+
+/-- Unconditional nonvanishing of `ζ(w)` across `1/2 < Re w < 1` for all `|Im w| ≤ 169/2` (`84.5`). -/
+theorem riemannZeta_ne_zero_of_strip_abs_im_le_eightyFour_and_half {w : ℂ}
+    (hlo : 1 / 2 < w.re) (hhi : w.re < 1) (him : |w.im| ≤ 169 / 2) :
+    riemannZeta w ≠ 0 := by
+  intro hz
+  have hw0 : 0 < w.re := by linarith
+  have hw1 : w ≠ 1 := fun he => hhi.ne (by rw [he, Complex.one_re])
+  have hxi : _root_.RHTower.xi w = 0 := (_root_.RHTower.xi_eq_zero_iff hw0 hw1).mpr hz
+  have hgt := VerifiedHeightRungs.lt_abs_im_of_rhVerifiedThrough
+    VerifiedHeightRungs.HadamardBudget.rhVerifiedThrough_oneHundredSixtyNine_halves
+    hxi hw0 hhi (by linarith)
+  linarith
+
+/-- Zero-exception `|ζ(w)|`-free single-cutoff margin for the actual shell weights across the entire
+band `1/2 < Re w < 1`, `|Im w| ≤ 169/2` (`84.5`), obtained via the positive-definite Bohman kernel
+at `L = 9/2`. -/
+theorem exists_zetaFree_margin_of_abs_im_le_eightyFour_and_half (t : ExceptionalTime) (j : ℕ)
+    {w : ℂ} (hlo : 1 / 2 < w.re) (hhi : w.re < 1) (him : |w.im| ≤ 169 / 2) :
+    ∃ X₀ : ℕ, 1 ≤ X₀ ∧ zetaFreeTruncationBound t j X₀ w < ‖renormalizedCutoff t j X₀ w‖ := by
+  have hw0 : 0 < w.re := by linarith
+  have hw1 : w ≠ 1 := fun he => hhi.ne (by rw [he, Complex.one_re])
+  exact (exists_zetaFree_margin_iff_zeta_ne_zero t j hw0 hw1).mpr
+    (riemannZeta_ne_zero_of_strip_abs_im_le_eightyFour_and_half hlo hhi him)
+
+/-- Zero-exception `|ζ(w)|`-free single-cutoff margin across `1/2 < Re w < 1`, `|Im w| ≤ 84`. -/
+theorem exists_zetaFree_margin_of_abs_im_le_eightyFour (t : ExceptionalTime) (j : ℕ)
+    {w : ℂ} (hlo : 1 / 2 < w.re) (hhi : w.re < 1) (him : |w.im| ≤ 84) :
+    ∃ X₀ : ℕ, 1 ≤ X₀ ∧ zetaFreeTruncationBound t j X₀ w < ‖renormalizedCutoff t j X₀ w‖ :=
+  exists_zetaFree_margin_of_abs_im_le_eightyFour_and_half t j hlo hhi (by linarith)
+
+/-- Exact zero-exception reduction of `RiemannHypothesis` to the `|ζ(w)|`-free single-cutoff margin
+above Bohman height `169/2 = 84.5`: `1/2 < Re w ≤ 20999 / 24000` and `169/2 < |Im w|`. -/
+theorem rh_iff_zetaFree_margin_above_eightyFour_and_half (t : ExceptionalTime) (j : ℕ) :
+    RiemannHypothesis ↔
+      ∀ w : ℂ, 1 / 2 < w.re → w.re ≤ 20999 / 24000 → 169 / 2 < |w.im| →
+        ∃ X₀ : ℕ, 1 ≤ X₀ ∧ zetaFreeTruncationBound t j X₀ w < ‖renormalizedCutoff t j X₀ w‖ := by
+  rw [_root_.RHTower.riemannHypothesis_iff_riemannZeta_ne_zero_of_mem_upper_strip]
+  constructor
+  · intro hRH w hlo hhi _
+    have hw0 : 0 < w.re := by linarith
+    have hw_lt1 : w.re < 1 := by linarith
+    have hw1 : w ≠ 1 := fun he => hw_lt1.ne (by rw [he, Complex.one_re])
+    exact (exists_zetaFree_margin_iff_zeta_ne_zero t j hw0 hw1).mpr (hRH w hlo hw_lt1)
+  · intro hmarg w hlo hhi
+    rcases lt_or_ge (20999 / 24000 : ℝ) w.re with hright | hstrip
+    · exact MetaplecticMobiusDescent.CubicEisenstein.riemannZeta_ne_zero_of_sub_seven_eighths_lt_re
+        hright
+    · rcases le_or_gt |w.im| (169 / 2) with hlow | hhigh
+      · exact riemannZeta_ne_zero_of_strip_abs_im_le_eightyFour_and_half hlo hhi hlow
+      · have hw0 : 0 < w.re := by linarith
+        have hw1 : w ≠ 1 := fun he => hhi.ne (by rw [he, Complex.one_re])
+        exact (exists_zetaFree_margin_iff_zeta_ne_zero t j hw0 hw1).mp (hmarg w hlo hstrip hhigh)
+
+/-- Exact zero-exception reduction of `RiemannHypothesis` above integer height `84`. -/
+theorem rh_iff_zetaFree_margin_above_eightyFour (t : ExceptionalTime) (j : ℕ) :
+    RiemannHypothesis ↔
+      ∀ w : ℂ, 1 / 2 < w.re → w.re ≤ 20999 / 24000 → 84 < |w.im| →
+        ∃ X₀ : ℕ, 1 ≤ X₀ ∧ zetaFreeTruncationBound t j X₀ w < ‖renormalizedCutoff t j X₀ w‖ := by
+  rw [rh_iff_zetaFree_margin_above_eightyFour_and_half t j]
+  constructor
+  · intro h w hlo hhi him84
+    rcases le_or_gt |w.im| (169 / 2) with hle | hgt
+    · exact exists_zetaFree_margin_of_abs_im_le_eightyFour_and_half t j hlo (by linarith) hle
+    · exact h w hlo hhi hgt
+  · exact fun h w hlo hhi him => h w hlo hhi (by linarith)
+
+/-- **Even one exception matters:** `¬RiemannHypothesis` holds if and only if there exists a single
+exceptional point `w` in `{1/2 < Re w ≤ 20999/24000 ∧ 169/2 < |Im w|}` where no finite cutoff
+`X₀ ≥ 1` exceeds `zetaFreeTruncationBound` (and any such single exception is automatically an
+off-line zero of `ζ`). -/
+theorem not_riemannHypothesis_iff_exists_single_exception (t : ExceptionalTime) (j : ℕ) :
+    ¬RiemannHypothesis ↔
+      ∃ w : ℂ, 1 / 2 < w.re ∧ w.re ≤ 20999 / 24000 ∧ 169 / 2 < |w.im| ∧
+        ¬∃ X₀ : ℕ, 1 ≤ X₀ ∧ zetaFreeTruncationBound t j X₀ w < ‖renormalizedCutoff t j X₀ w‖ := by
+  rw [rh_iff_zetaFree_margin_above_eightyFour_and_half t j]
+  constructor
+  · intro hnot
+    by_contra hnone
+    exact hnot fun w h1 h2 h3 => by_contra fun hno => hnone ⟨w, h1, h2, h3, hno⟩
+  · rintro ⟨w, h1, h2, h3, hno⟩ hall
+    exact hno (hall w h1 h2 h3)
+
+#print axioms exists_zetaFree_margin_of_abs_im_le_eightyFour_and_half
+#print axioms rh_iff_zetaFree_margin_above_eightyFour_and_half
+#print axioms not_riemannHypothesis_iff_exists_single_exception
 
 end GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.CutoffSeparation

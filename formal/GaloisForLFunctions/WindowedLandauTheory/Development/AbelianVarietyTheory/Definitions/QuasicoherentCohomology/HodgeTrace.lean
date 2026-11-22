@@ -12,9 +12,10 @@ namespace GlobalTheory.SchemeCohomology
 
 variable {k : Type} [CommRing k] {X Y : Scheme.{0}}
   {s : X ⟶ Spec (CommRingCat.of k)} {t : Y ⟶ Spec (CommRingCat.of k)}
-  {f : Y ⟶ X} [IsFinite f] [Etale f]
+  {f : Y ⟶ X}
 
-private abbrev PushforwardFormsCohomology (t : Y ⟶ Spec (CommRingCat.of k)) (f : Y ⟶ X) (p q : ℕ) :=
+/-- Cohomology on the target of the direct image of the relative forms. -/
+abbrev PushforwardFormsCohomology (t : Y ⟶ Spec (CommRingCat.of k)) (f : Y ⟶ X) (p q : ℕ) :=
   CohomologyOn ((Scheme.Modules.pushforward f).obj (relativeForms t p)) ⊤ q
 
 private abbrev pushforwardFormsModule (s : X ⟶ Spec (CommRingCat.of k))
@@ -23,7 +24,8 @@ private abbrev pushforwardFormsModule (s : X ⟶ Spec (CommRingCat.of k))
   letI : Algebra k Γ(X, ⊤) := sectionAlgebra s ⊤
   Module.compHom _ (algebraMap k Γ(X, ⊤))
 
-private def formsPushforwardEquiv (hf : f ≫ s = t) (p q : ℕ) :
+/-- Along affine morphisms the direct image computes Hodge cohomology, with base scalars. -/
+def formsPushforwardEquiv [IsAffineHom f] (hf : f ≫ s = t) (p q : ℕ) :
     letI := pushforwardFormsModule s t f p q
     PushforwardFormsCohomology t f p q ≃ₗ[k] HodgeCohomology t p q := by
   letI := pushforwardFormsModule s t f p q
@@ -37,6 +39,8 @@ private def formsPushforwardEquiv (hf : f ≫ s = t) (p q : ℕ) :
         exact (C.map_smulₛₗ (algebraMap k Γ(X, ⊤) r) x).trans
           (congrArg (fun a : Γ(Y, ⊤) => a • C x) ((sectionPullback hf ⊤).commutes r)) }
   exact LinearEquiv.ofBijective L (relativeForms_pushforwardComparison_bijective f t p q ⊤)
+
+variable [IsFinite f] [Etale f]
 
 /-- Trace on Hodge cohomology is the trace on the direct image of relative forms. -/
 def hodgeTrace (hf : f ≫ s = t) (p q : ℕ) : HodgeCohomology t p q →ₗ[k] HodgeCohomology s p q := by

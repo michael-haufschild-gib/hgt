@@ -33,12 +33,11 @@ private def coordEquiv :=
 private theorem coordEquiv_X (i : Fin (N + 1)) :
     coordEquiv K N (projCoord K (Fin (N + 1)) PEmpty i) = MvPolynomial.X i := by
   change MvPolynomial.rename _ (MvPolynomial.X (Sum.inl i)) = MvPolynomial.X i
-  rw [MvPolynomial.rename_X]
-  rfl
+  exact MvPolynomial.rename_X _ _
 
 private theorem coordEquiv_symm_X (i : Fin (N + 1)) :
     (coordEquiv K N).symm (MvPolynomial.X i) = projCoord K (Fin (N + 1)) PEmpty i :=
-  (AlgEquiv.symm_apply_eq _).mpr (coordEquiv_X K N i)
+  (AlgEquiv.symm_apply_eq _).mpr (coordEquiv_X K N i).symm
 
 private theorem coordEquiv_graded (d : ℕ) (p : MvPolynomial (Fin (N + 1) ⊕ PEmpty) K)
     (hp : p ∈ projGrading K (Fin (N + 1)) PEmpty d) : coordEquiv K N p ∈ standardGrading K N d := by
@@ -78,8 +77,8 @@ def pspaceTwistCechMap (m : ℕ) : (polyTwCech K (Fin (N + 1)) PEmpty m).Hom (tw
   let f := twRename K N m
   let g := twistCechComparison (MvPolynomial.isHomogeneous_X K) m
   { app := fun a => (g.app a).comp (f.app a)
-    comm := fun hs c => by
-      simp only [AddMonoidHom.comp_apply, g.comm, f.comm] }
+    comm := fun hs c =>
+      (g.comm hs (f.app _ c)).trans (congrArg (fun z => g.app _ z) (f.comm hs c)) }
 
 theorem pspaceTwistCechMap_bijective (m : ℕ) {a : Finset (Fin (N + 1))} (ha : a.Nonempty) :
     Function.Bijective ((pspaceTwistCechMap K N m).app a) :=
@@ -94,7 +93,7 @@ theorem pspaceTwistCechMap_scale (m : ℕ) (r : K) {a : Finset (Fin (N + 1))} (h
     let W := coverInter ⊤ (PSpace.coordinateOpen K N) a
     (pspaceTwistCechMap K N m).app a ((polynomialTwistScale m r).app a z) =
       restrictGlobal (PSpace K N) W (algebraMap K Γ(PSpace K N, ⊤) r) •
-        ((pspaceTwistCechMap K N m).app a z) := by
+        (show Γ(pspaceTwist K N (-(m : ℤ)), W) from (pspaceTwistCechMap K N m).app a z) := by
   let P := PSpace K N
   let W := coverInter ⊤ (PSpace.coordinateOpen K N) a
   letI := sectionAlgebra (PSpace.str K N) ⊤
@@ -107,16 +106,33 @@ theorem pspaceTwistCechMap_scale (m : ℕ) (r : K) {a : Finset (Fin (N + 1))} (h
   have hr (Z : P.Opens) (hZ : Z = Proj.basicOpen (standardGrading K N) g) (x : Z) :
       letI := sectionAlgebra (PSpace.str K N) Z
       ((algebraMap K Γ(P, Z) r).1 x).val =
-        algebraMap _ (Localization x.1.asHomogeneousIdeal.toIdeal.primeCompl) (MvPolynomial.C r) := by
+        algebraMap (MvPolynomial (Fin (N + 1)) K)
+          (Localization x.1.asHomogeneousIdeal.toIdeal.primeCompl) (MvPolynomial.C r) := by
     subst Z
     exact pspace_algebraMap_basicOpen_val N hg (Finset.card_pos.mpr ha) r x
   have he : coordEquiv K N (MvPolynomial.C r) = MvPolynomial.C r := MvPolynomial.rename_C _ _
   apply ProjTwist.ext
   funext x
-  rw [val_smul, hres, hr W hW]
-  simp only [pspaceTwistCechMap, AddMonoidHom.comp_apply, twistCechComparison_app_val, twRename,
-    twMap, twMapApp_coe, polynomialTwistScale, polynomialTwistScale_val, map_mul,
-    HTGeometry.locMap_algebraMap, he, ProjTwist.locMap_algebraMap]
+  let y : Proj.basicOpen (standardGrading K N) g := ⟨x.1, hW.le x.2⟩
+  let ρ := HTGeometry.locMap (coordEquiv K N).toRingHom (coordEquiv_X K N) a
+  let stalkMap := ProjTwist.locMap y.1 (nmem_of_mem y)
+  have hcmp (u : (polyTwCech K (Fin (N + 1)) PEmpty m).obj a) :
+      val ((pspaceTwistCechMap K N m).app a u) x = stalkMap (ρ u.1) :=
+    twistCechComparison_app_val (MvPolynomial.isHomogeneous_X K) a m ((twRename K N m).app a u) x
+  let c := algebraMap (MvPolynomial (Fin (N + 1)) K)
+    (LocAt (MvPolynomial.X (R := K)) a) (MvPolynomial.C r)
+  have hρ : ρ (algebraMap (MvPolynomial (Fin (N + 1) ⊕ PEmpty) K)
+      (LocAt (projCoord K (Fin (N + 1)) PEmpty) a) (MvPolynomial.C r)) = c := by
+    change HTGeometry.locMap (coordEquiv K N).toRingHom (coordEquiv_X K N) a _ = _
+    rw [HTGeometry.locMap_algebraMap]
+    exact congrArg (algebraMap (MvPolynomial (Fin (N + 1)) K)
+      (LocAt (MvPolynomial.X (R := K)) a)) he
+  have hstalk : stalkMap c = ((algebraMap K Γ(P, W) r).1 x).val :=
+    (ProjTwist.locMap_algebraMap y.1 (nmem_of_mem y) (MvPolynomial.C r)).trans (hr W hW x).symm
+  change val ((pspaceTwistCechMap K N m).app a ((polynomialTwistScale m r).app a z)) x =
+    ((restrictGlobal P W (algebraMap K Γ(P, ⊤) r)).1 x).val *
+      val ((pspaceTwistCechMap K N m).app a z) x
+  rw [hres, hcmp, hcmp, polynomialTwistScale_coe, map_mul, hρ, map_mul, hstalk]
 
 theorem pspaceTwistCech_exactAt_below_top (m q : ℕ) (hq : q + 1 < N) :
     (twistSheafCech K N m).ExactAt (q + 1) :=

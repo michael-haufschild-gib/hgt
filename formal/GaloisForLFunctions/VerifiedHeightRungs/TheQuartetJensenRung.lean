@@ -1,15 +1,15 @@
 import GaloisForLFunctions.FiniteFreeProbability.JensenSectorOfASymmetricQuartet
 import GaloisForLFunctions.VerifiedHeightRungs.WeightedJensenRoots
+import GaloisForLFunctions.VerifiedHeightRungs.HadamardBudget.TheVerifiedHeightEightyFour
 import GaloisForLFunctions.RHTower.XiGaussianHeatTestPolynomialBasis
 import GaloisForLFunctions.HTGeometry.HeatEscapeNonreal
 
 /-!
-# The verified Jensen rung from whole symmetric quartets
+# The verified Jensen rung from whole symmetric quartets and the Bohman height
 
-The real Hadamard polynomials of Xi are even. Contracting them to the
-squared coordinate applies the quartet sector to every orbit, including
-real pairs on the critical line. At verified height 67 and width
-8999/24000 the quartet inequality still holds in degree 31930.
+Contracting the real even Hadamard polynomials of Xi to the squared coordinate
+applies the quartet sector to every orbit (`31930` at height `67`); Bohman
+height `169/2` (`84.5`) advances the verified Jensen rung to degree `50787`.
 -/
 
 open Polynomial Finset Filter Topology Complex RHTower RHTower.DeBruijn FiniteFreeProbability
@@ -155,6 +155,65 @@ theorem quartet_above_verified_height_fails_every_higher_degree :
     (31927+n+4)*(31927+n+4-1)*((67+1/1000000)^2-(8999/24000-1/100000000)^2)^2 at hh
   nlinarith only [hh, Nat.cast_nonneg (α := ℝ) n, sq_nonneg (n : ℝ)]
 
+/-! ## Bohman height `169/2` (`84.5`) upgrades the Jensen rung to degree `50787` -/
+
+/-- Exact largest degree paid by width `8999/24000` at Bohman verified height `169/2`. -/
+theorem jensen_sector_at_oneHundredSixtyNine_halves_iff (d : ℕ) :
+    ((d : ℝ) - 1) * (8999 / 24000 : ℝ) ^ 2 ≤ (169 / 2) ^ 2 ↔ d ≤ 50787 := by
+  constructor
+  · intro h
+    by_contra! hd
+    have hn : 50788 ≤ d := by omega
+    have h' : (50788 : ℝ) ≤ d := by exact_mod_cast hn
+    linarith
+  · intro h
+    have h' : (d : ℝ) ≤ 50787 := by exact_mod_cast h
+    linarith
+
+/-- The unshifted Xi Jensen polynomial has only real zeros through degree `50787`. -/
+theorem jensenNonrealCount_eq_zero_through_50787 (d : Fin 50788) :
+    jensenNonrealCount d.val = 0 := by
+  apply jensenNonrealCount_eq_zero_of_rhVerifiedThrough_width (T := 169 / 2) (by norm_num)
+    HadamardBudget.rhVerifiedThrough_oneHundredSixtyNine_halves
+  have h := (jensen_sector_at_oneHundredSixtyNine_halves_iff d).2 (by omega)
+  rcases le_or_gt ((d.val : ℝ) - 1) 0 with hd | hd
+  · exact (mul_nonpos_of_nonpos_of_nonneg hd (sq_nonneg _)).trans (sq_nonneg _)
+  · exact (mul_le_mul_of_nonneg_left
+      (pow_le_pow_left₀ zetaZeroWidth_nonneg zetaZeroWidth_le_8999_div_24000 2) hd.le).trans h
+
+/-- All positive-integer Euler weights preserve real-rootedness through degree `50787`. -/
+theorem weightedXiJensen_splits_through_50787 (w : List ℕ) (d : Fin 50788) :
+    (eulerWord w (xiJensenReal d.val)).Splits := by
+  have h := weightedXiJensen_nonreal_le w d
+  rw [jensenNonrealCount_eq_zero_through_50787 d, nonrealRootCount] at h
+  have hc := Polynomial.card_roots' (eulerWord w (xiJensenReal d))
+  rw [splits_iff_card_roots]
+  omega
+
+/-- Sharpness at Bohman height `169/2` and width `8999/24000`: one symmetric quartet just above
+`169/2` fails to split in every degree `50788 + n`. -/
+theorem quartet_above_bohman_height_fails_every_higher_degree :
+    ∃ z : ℂ, 169 / 2 < z.re ∧ 0 < z.im ∧ z.im < 8999 / 24000 ∧
+      ∀ n : ℕ, ¬ (diffOp (squaredPairSymbol (z ^ 2)) (X ^ (50788 + n))).Splits := by
+  let z : ℂ := ⟨169 / 2 + 1 / 1000000, 8999 / 24000 - 1 / 100000000⟩
+  refine ⟨z, by norm_num [z], by norm_num [z], by norm_num [z], ?_⟩
+  intro n h
+  have h0 : z ^ 2 ≠ 0 := pow_ne_zero _ (fun he => by
+    have := congrArg Complex.re he
+    norm_num [z] at this)
+  have hs := (squaredPairSymbol_splits_iff (50784 + n) h0).mp
+    (by simpa only [show 50784 + n + 4 = 50788 + n by omega] using h)
+  have hh := ((squaredJensenSector_square _ z).mp hs).2
+  push_cast at hh
+  change ((50784 + (n : ℝ) + 4) - 2) * ((50784 + n + 4) - 3) *
+      ((169 / 2 + 1 / 1000000) ^ 2 + (8999 / 24000 - 1 / 100000000) ^ 2) ^ 2 ≤
+    (50784 + n + 4) * (50784 + n + 4 - 1) *
+      ((169 / 2 + 1 / 1000000) ^ 2 - (8999 / 24000 - 1 / 100000000) ^ 2) ^ 2 at hh
+  nlinarith only [hh, Nat.cast_nonneg (α := ℝ) n, sq_nonneg (n : ℝ)]
+
+#print axioms jensenNonrealCount_eq_zero_through_50787
+#print axioms weightedXiJensen_splits_through_50787
+#print axioms quartet_above_bohman_height_fails_every_higher_degree
 
 end
 

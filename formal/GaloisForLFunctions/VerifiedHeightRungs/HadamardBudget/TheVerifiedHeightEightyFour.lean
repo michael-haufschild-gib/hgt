@@ -38,6 +38,10 @@ def bohmanP9 (u : ℝ) : ℝ :=
 def bohmanP11 (u : ℝ) : ℝ :=
   bohmanP9 u + u ^ 11 / 3991680
 
+/-- Degree-13 lower Taylor polynomial for `sin u - u cos u` on `u ≥ 0`. -/
+def bohmanP13 (u : ℝ) : ℝ :=
+  bohmanP11 u - u ^ 13 / 518918400
+
 private theorem nonneg_of_deriv_nonneg {f f' : ℝ → ℝ} (hf0 : f 0 = 0)
     (hd : ∀ x : ℝ, HasDerivAt f (f' x) x) (hpos : ∀ x : ℝ, 0 ≤ x → 0 ≤ f' x)
     {u : ℝ} (hu : 0 ≤ u) : 0 ≤ f u := by
@@ -46,7 +50,7 @@ private theorem nonneg_of_deriv_nonneg {f f' : ℝ → ℝ} (hf0 : f 0 = 0)
       (fun x _ => (hd x).continuousAt.continuousWithinAt)
       (fun x _ => (hd x).hasDerivWithinAt)
       (fun x hx => hpos x (interior_subset hx))
-  simpa only [hf0] using hmono left_mem_Ici hu hu
+  simpa only [hf0] using hmono self_mem_Ici hu hu
 
 private theorem hasDerivAt_monomial_div (n : ℕ) (c x : ℝ) :
     HasDerivAt (fun y : ℝ => y ^ n / c) ((n : ℝ) * x ^ (n - 1) / c) x := by
@@ -119,10 +123,60 @@ private theorem sin_taylor_bounds_of_nonneg {u : ℝ} (hu : 0 ≤ u) :
       (fun y hy => h8 y hy) hx
   exact ⟨sub_nonneg.mp (h7 u hu), sub_nonneg.mp (h9 u hu)⟩
 
+private theorem sin_taylor11_le_of_nonneg {u : ℝ} (hu : 0 ≤ u) :
+    u - u ^ 3 / 6 + u ^ 5 / 120 - u ^ 7 / 5040 + u ^ 9 / 362880 - u ^ 11 / 39916800 ≤
+      Real.sin u := by
+  have h9 : ∀ x : ℝ, 0 ≤ x →
+      0 ≤ x - x ^ 3 / 6 + x ^ 5 / 120 - x ^ 7 / 5040 + x ^ 9 / 362880 - Real.sin x :=
+    fun x hx => sub_nonneg.mpr (sin_taylor_bounds_of_nonneg hx).2
+  have h10 : ∀ x : ℝ, 0 ≤ x →
+      0 ≤ Real.cos x -
+        (1 - x ^ 2 / 2 + x ^ 4 / 24 - x ^ 6 / 720 + x ^ 8 / 40320 - x ^ 10 / 3628800) :=
+    fun x hx => nonneg_of_deriv_nonneg (by norm_num)
+      (fun y => ((Real.hasDerivAt_cos y).sub
+        ((((((hasDerivAt_const y 1).sub (hasDerivAt_monomial_div 2 2 y)).add
+          (hasDerivAt_monomial_div 4 24 y)).sub
+          (hasDerivAt_monomial_div 6 720 y)).add
+          (hasDerivAt_monomial_div 8 40320 y)).sub
+          (hasDerivAt_monomial_div 10 3628800 y))).congr_deriv
+        (by norm_num; ring))
+      (fun y hy => h9 y hy) hx
+  have h11 : ∀ x : ℝ, 0 ≤ x →
+      0 ≤ Real.sin x -
+        (x - x ^ 3 / 6 + x ^ 5 / 120 - x ^ 7 / 5040 + x ^ 9 / 362880 - x ^ 11 / 39916800) :=
+    fun x hx => nonneg_of_deriv_nonneg (by norm_num)
+      (fun y => ((Real.hasDerivAt_sin y).sub
+        ((((((hasDerivAt_id y).sub (hasDerivAt_monomial_div 3 6 y)).add
+          (hasDerivAt_monomial_div 5 120 y)).sub
+          (hasDerivAt_monomial_div 7 5040 y)).add
+          (hasDerivAt_monomial_div 9 362880 y)).sub
+          (hasDerivAt_monomial_div 11 39916800 y))).congr_deriv
+        (by norm_num; ring))
+      (fun y hy => h10 y hy) hx
+  exact sub_nonneg.mp (h11 u hu)
+
 private theorem hasDerivAt_sin_sub_mul_cos (x : ℝ) :
     HasDerivAt (fun y : ℝ => Real.sin y - y * Real.cos y) (x * Real.sin x) x := by
   refine ((Real.hasDerivAt_sin x).sub ((hasDerivAt_id x).mul (Real.hasDerivAt_cos x))).congr_deriv ?_
-  ring
+  dsimp only [id]; ring
+
+private theorem bohmanP13_le {u : ℝ} (hu : 0 ≤ u) :
+    bohmanP13 u ≤ Real.sin u - u * Real.cos u := by
+  have hd13 : ∀ x : ℝ, HasDerivAt bohmanP13
+      (x * (x - x ^ 3 / 6 + x ^ 5 / 120 - x ^ 7 / 5040 + x ^ 9 / 362880 - x ^ 11 / 39916800)) x :=
+    fun x => by
+      unfold bohmanP13 bohmanP11 bohmanP9
+      refine ((((((hasDerivAt_monomial_div 3 3 x).sub
+          (hasDerivAt_monomial_div 5 30 x)).add
+          (hasDerivAt_monomial_div 7 840 x)).sub
+          (hasDerivAt_monomial_div 9 45360 x)).add
+          (hasDerivAt_monomial_div 11 3991680 x)).sub
+          (hasDerivAt_monomial_div 13 518918400 x)).congr_deriv ?_
+      norm_num; ring
+  have hlo := nonneg_of_deriv_nonneg (by simp [bohmanP13, bohmanP11, bohmanP9])
+    (fun x => ((hasDerivAt_sin_sub_mul_cos x).sub (hd13 x)).congr_deriv (by ring))
+    (fun x hx => mul_nonneg hx (sub_nonneg.mpr (sin_taylor11_le_of_nonneg hx))) hu
+  exact sub_nonneg.mp hlo
 
 private theorem bohmanP9_le_and_le_bohmanP11 {u : ℝ} (hu : 0 ≤ u) :
     bohmanP9 u ≤ Real.sin u - u * Real.cos u ∧ Real.sin u - u * Real.cos u ≤ bohmanP11 u := by
@@ -342,15 +396,19 @@ private theorem nine_halves_le_log {n : ℕ} (hn : 91 ≤ n) : (9 / 2 : ℝ) ≤
 
 private theorem exp_neg_nine_quarters_bounds :
     (0.105399 : ℝ) ≤ Real.exp (-(9 / 2 / 2)) ∧ Real.exp (-(9 / 2 / 2)) ≤ 0.105400 := by
+  have he9 : Real.exp 9 = Real.exp 1 ^ 9 := by rw [← Real.exp_nat_mul]; norm_num
+  have he9_lo : (2.7182818283 : ℝ) ^ 9 ≤ Real.exp 9 := by
+    rw [he9]; exact pow_le_pow_left₀ (by norm_num) Real.exp_one_gt_d9.le 9
+  have he9_hi : Real.exp 9 ≤ (2.7182818286 : ℝ) ^ 9 := by
+    rw [he9]; exact pow_le_pow_left₀ (Real.exp_pos 1).le Real.exp_one_lt_d9.le 9
   have he4 : Real.exp (-(9 / 2 / 2)) ^ 4 = (Real.exp 9)⁻¹ := by
     rw [← Real.exp_nat_mul, show ((4 : ℕ) : ℝ) * -(9 / 2 / 2) = -9 by norm_num, Real.exp_neg]
-  obtain ⟨he9_lo, he9_hi⟩ := exp_nine_bounds
   have hlo4 : (0.105399 : ℝ) ^ 4 ≤ Real.exp (-(9 / 2 / 2)) ^ 4 := by
     rw [he4, le_inv_comm₀ (by norm_num) (Real.exp_pos 9)]
     exact he9_hi.trans (by norm_num)
   have hhi4 : Real.exp (-(9 / 2 / 2)) ^ 4 ≤ (0.105400 : ℝ) ^ 4 := by
     rw [he4, inv_le_comm₀ (Real.exp_pos 9) (by norm_num)]
-    exact (by norm_num : (0.105400 ^ 4 : ℝ)⁻¹ ≤ 89 ^ 2).trans he9_lo
+    exact (by norm_num : (0.105400 ^ 4 : ℝ)⁻¹ ≤ 2.7182818283 ^ 9).trans he9_lo
   exact ⟨(pow_le_pow_iff_left₀ (by norm_num) (Real.exp_pos _).le (by norm_num : 4 ≠ 0)).mp hlo4,
     (pow_le_pow_iff_left₀ (Real.exp_pos _).le (by norm_num) (by norm_num : 4 ≠ 0)).mp hhi4⟩
 
@@ -472,7 +530,6 @@ private theorem bohman_block0 (γ : ℝ) :
     p2, p3, p4, p5, p7, p8, p9, p11, p13, p16, p17, p19, p23, p25, p27, p29,
     zero_div, zero_mul, zero_add, add_zero, one_mul, l4, l8, l9, l16, l25, l27]
   simp only [show ∀ (k a : ℝ), γ * (k * a) = k * (γ * a) from fun k a => by ring]
-  ring
 
 private theorem bohman_block1 (γ : ℝ) :
     ∑ n ∈ Finset.range 30,
@@ -525,7 +582,6 @@ private theorem bohman_block1 (γ : ℝ) :
     z56, z57, z58, p31, p32, p37, p41, p43, p47, p49, p53, p59,
     zero_div, zero_mul, zero_add, add_zero, one_mul, l32, l49]
   simp only [show ∀ (k a : ℝ), γ * (k * a) = k * (γ * a) from fun k a => by ring]
-  ring
 
 private theorem bohman_block2 (γ : ℝ) :
     ∑ n ∈ Finset.range 31,
@@ -579,7 +635,6 @@ private theorem bohman_block2 (γ : ℝ) :
     z86, z87, z88, z90, p61, p64, p67, p71, p73, p79, p81, p83, p89,
     zero_div, zero_mul, zero_add, add_zero, one_mul, l64, l81]
   simp only [show ∀ (k a : ℝ), γ * (k * a) = k * (γ * a) from fun k a => by ring]
-  ring
 
 theorem bohman_prime_sum_eq_phaseForm (γ : ℝ) :
     ∑ n ∈ Finset.range 91,
@@ -881,7 +936,7 @@ private theorem neg_ub_le_mul_cos {c ub θ : ℝ} (hc0 : 0 ≤ c) (hc : c ≤ ub
 
 /-- **Phase-free lower bound across all independent prime phases `θ : ℕ → ℝ`.** -/
 theorem bohmanPhaseForm_ge (θ : ℕ → ℝ) :
-    -(0.935733 : ℝ) ≤ bohmanPhaseForm θ := by
+    -(0.935816 : ℝ) ≤ bohmanPhaseForm θ := by
   obtain ⟨⟨b2_1l, b2_1u⟩, ⟨b2_2l, b2_2u⟩, ⟨b2_3l, b2_3u⟩, ⟨b2_4l, b2_4u⟩, ⟨b2_5l, b2_5u⟩,
     ⟨b2_6l, b2_6u⟩, ⟨b3_1l, b3_1u⟩, ⟨b3_2l, b3_2u⟩, ⟨b3_3l, b3_3u⟩, ⟨b3_4l, b3_4u⟩,
     ⟨b5_1l, b5_1u⟩, ⟨b5_2l, b5_2u⟩, ⟨b7_1l, b7_1u⟩, ⟨b7_2l, b7_2u⟩,
@@ -980,7 +1035,7 @@ theorem bohmanPhaseForm_ge (θ : ℕ → ℝ) :
     s83, s89]
 
 theorem bohman_poly_ge (γ : ℝ) :
-    -(0.935733 : ℝ) ≤ ∑ n ∈ Finset.range 91,
+    -(0.935816 : ℝ) ≤ ∑ n ∈ Finset.range 91,
       vonMangoldt n / n * bohmanFn (9 / 2) (Real.log n) * Real.cos (γ * Real.log n) := by
   rw [bohman_prime_sum_eq_phaseForm]
   exact bohmanPhaseForm_ge _
@@ -1092,6 +1147,39 @@ theorem rhVerifiedThrough_eightyFour : RHVerifiedThrough 84 := fun _ hzero hre0 
 
 /-! ## Exact phase-free saturation at integer height `85` -/
 
+private theorem bohman_coeff_lb_p13 {p lp_lo lp_hi u_lo c_lo : ℝ}
+    (hp : 0 < p) (hlp0 : 0 ≤ lp_lo)
+    (hlp_lo : lp_lo ≤ Real.log p) (hlp_hi : Real.log p ≤ lp_hi)
+    (hk_hi : 1 * lp_hi ≤ 9 / 2)
+    (hu_lo0 : 0 ≤ u_lo)
+    (hu_lo : u_lo ≤ 3.1415926535 * (1 - 1 * lp_hi / (9 / 2)))
+    (h_clo : c_lo ≤ lp_lo / p * (bohmanP13 u_lo / 3.1415926536))
+    (hp13_pos : 0 ≤ bohmanP13 u_lo) :
+    c_lo ≤ Real.log p / p * bohmanFn (9 / 2) (1 * Real.log p) := by
+  obtain ⟨hπ_lo, hπ_hi⟩ := pi_bounds_d10
+  have hπ_pos := Real.pi_pos
+  have hlp_nonneg : 0 ≤ Real.log p := hlp0.trans hlp_lo
+  set u : ℝ := Real.pi * (1 - 1 * Real.log p / (9 / 2))
+  have h1_lo : 0 ≤ 1 - 1 * lp_hi / (9 / 2) := by linarith
+  have h1_le : 1 - 1 * lp_hi / (9 / 2) ≤ 1 - 1 * Real.log p / (9 / 2) := by linarith
+  have hu_ge_lo : u_lo ≤ u :=
+    hu_lo.trans (mul_le_mul hπ_lo.le h1_le h1_lo hπ_pos.le)
+  have hu0 : 0 ≤ u := hu_lo0.trans hu_ge_lo
+  have hu_pi : u ≤ Real.pi := by
+    dsimp only [u]
+    exact mul_le_of_le_one_right hπ_pos.le (by linarith)
+  have hH_lo : bohmanP13 u_lo ≤ Real.sin u - u * Real.cos u :=
+    (bohmanP13_le hu_lo0).trans
+      (monotoneOn_sin_sub_mul_cos ⟨hu_lo0, hu_ge_lo.trans hu_pi⟩ ⟨hu0, hu_pi⟩ hu_ge_lo)
+  have hW_eq := bohmanFn_eq_sin_sub_mul_cos (L := 9 / 2) (x := 1 * Real.log p)
+    (by norm_num) (by linarith) (by linarith)
+  have hW_lo : bohmanP13 u_lo / 3.1415926536 ≤ bohmanFn (9 / 2) (1 * Real.log p) := by
+    rw [hW_eq]
+    exact (div_le_div_of_nonneg_left hp13_pos hπ_pos hπ_hi.le).trans
+      (div_le_div_of_nonneg_right hH_lo hπ_pos.le)
+  exact h_clo.trans (mul_le_mul (div_le_div_of_nonneg_right hlp_lo hp.le) hW_lo
+    (div_nonneg hp13_pos (by norm_num)) (div_nonneg hlp_nonneg hp.le))
+
 /-- **Phase-free saturation at height `85` (`L = 9/2`).** Evaluating `bohmanPhaseForm` at phase `π`
 on every prime (`cos(k π) = (-1)^k`) reverses the Bohman edge inequality strictly at `γ = 85`,
 even without the positive `O(1/1215 + 1/γ²)` archimedean constants. -/
@@ -1104,34 +1192,53 @@ theorem bohman_phaseFree_saturates_at_eightyFive :
           bohmanPhaseForm θ := by
   refine ⟨fun _ => Real.pi, ?_⟩
   have hleft_ub := bohman_budget_left_bounds.2
-  obtain ⟨⟨b2_1l, -⟩, ⟨-, b2_2u⟩, ⟨b2_3l, -⟩, ⟨-, b2_4u⟩, ⟨b2_5l, -⟩,
-    ⟨-, b2_6u⟩, ⟨b3_1l, -⟩, ⟨-, b3_2u⟩, ⟨b3_3l, -⟩, ⟨-, b3_4u⟩,
-    ⟨b5_1l, -⟩, ⟨-, b5_2u⟩, ⟨b7_1l, -⟩, ⟨-, b7_2u⟩,
-    ⟨b11l, -⟩, ⟨b13l, -⟩, ⟨b17l, -⟩, ⟨b19l, -⟩, ⟨b23l, -⟩, ⟨b29l, -⟩,
-    ⟨b31l, -⟩, ⟨b37l, -⟩, ⟨b41l, -⟩, ⟨b43l, -⟩, ⟨b47l, -⟩, ⟨b53l, -⟩,
-    ⟨b59l, -⟩, ⟨b61l, -⟩, ⟨b67l, -⟩, ⟨b71l, -⟩, ⟨b73l, -⟩, ⟨b79l, -⟩,
-    ⟨b83l, -⟩, ⟨b89l, -⟩⟩ := all_prime_bohman_coeff_bounds
-  obtain ⟨c2_2, c2_3, c2_4, c2_5, c2_6⟩ := cos_chebyshev_six Real.pi
-  have hform_ub : bohmanPhaseForm (fun _ => Real.pi) ≤ -0.93296 := by
-    unfold bohmanPhaseForm
-    rw [c2_2, c2_3, c2_4, c2_5, c2_6, Real.cos_pi]
-    norm_num
-    linarith only [b2_1l, b2_2u, b2_3l, b2_4u, b2_5l, b2_6u,
-      b3_1l, b3_2u, b3_3l, b3_4u, b5_1l, b5_2u, b7_1l, b7_2u,
-      b11l, b13l, b17l, b19l, b23l, b29l, b31l, b37l, b41l, b43l, b47l, b53l, b59l,
-      b61l, b67l, b71l, b73l, b79l, b83l, b89l]
-  -- Lower bound on `1/4 log(9/4 + 85²/4) - log π / 2` via `3645/2 = 3⁶ · 5 / 2` and `63/20`.
   have hl2a := Real.log_two_gt_d9.le
   have hl2b := Real.log_two_lt_d9.le
   obtain ⟨hl3a, hl3b⟩ := log_prime_bounds (p := 3) (by norm_num) (k1 := 53) (m1 := 84)
     (k2 := 41) (m2 := 65) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
     (lo := 1.098572) (hi := 1.098892) (by norm_num) (by norm_num)
-  obtain ⟨hl5a, -⟩ := log_prime_bounds (p := 5) (by norm_num) (k1 := 28) (m1 := 65)
+  obtain ⟨hl5a, hl5b⟩ := log_prime_bounds (p := 5) (by norm_num) (k1 := 28) (m1 := 65)
     (k2 := 31) (m2 := 72) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
     (lo := 1.609091) (hi := 1.609891) (by norm_num) (by norm_num)
-  obtain ⟨-, hl7b⟩ := log_prime_bounds (p := 7) (by norm_num) (k1 := 31) (m1 := 87)
+  obtain ⟨hl7a, hl7b⟩ := log_prime_bounds (p := 7) (by norm_num) (k1 := 31) (m1 := 87)
     (k2 := 26) (m2 := 73) (by norm_num) (by norm_num) (by norm_num) (by norm_num)
     (lo := 1.945284) (hi := 1.946145) (by norm_num) (by norm_num)
+  have b2_1l : (0.3108480 : ℝ) ≤ Real.log 2 / 2 * bohmanFn (9 / 2) (1 * Real.log 2) :=
+    bohman_coeff_lb_p13 (u_lo := 2.65768) (by norm_num) (by norm_num) hl2a hl2b (by norm_num)
+      (by norm_num) (by norm_num) (by unfold bohmanP13 bohmanP11 bohmanP9; norm_num)
+      (by unfold bohmanP13 bohmanP11 bohmanP9; norm_num)
+  have b3_1l : (0.2801437 : ℝ) ≤ Real.log 3 / 3 * bohmanFn (9 / 2) (1 * Real.log 3) :=
+    bohman_coeff_lb_p13 (u_lo := 2.37442) (by norm_num) (by norm_num) hl3a hl3b (by norm_num)
+      (by norm_num) (by norm_num) (by unfold bohmanP13 bohmanP11 bohmanP9; norm_num)
+      (by unfold bohmanP13 bohmanP11 bohmanP9; norm_num)
+  have b5_1l : (0.1816976 : ℝ) ≤ Real.log 5 / 5 * bohmanFn (9 / 2) (1 * Real.log 5) :=
+    bohman_coeff_lb_p13 (u_lo := 2.01767) (by norm_num) (by norm_num) hl5a hl5b (by norm_num)
+      (by norm_num) (by norm_num) (by unfold bohmanP13 bohmanP11 bohmanP9; norm_num)
+      (by unfold bohmanP13 bohmanP11 bohmanP9; norm_num)
+  have b7_1l : (0.1196791 : ℝ) ≤ Real.log 7 / 7 * bohmanFn (9 / 2) (1 * Real.log 7) :=
+    bohman_coeff_lb_p13 (u_lo := 1.78292) (by norm_num) (by norm_num) hl7a hl7b (by norm_num)
+      (by norm_num) (by norm_num) (by unfold bohmanP13 bohmanP11 bohmanP9; norm_num)
+      (by unfold bohmanP13 bohmanP11 bohmanP9; norm_num)
+  obtain ⟨-, ⟨-, b2_2u⟩, ⟨b2_3l, -⟩, ⟨-, b2_4u⟩, ⟨b2_5l, -⟩,
+    ⟨-, b2_6u⟩, -, ⟨-, b3_2u⟩, ⟨b3_3l, -⟩, ⟨-, b3_4u⟩,
+    -, ⟨-, b5_2u⟩, -, ⟨-, b7_2u⟩,
+    ⟨b11l, -⟩, ⟨b13l, -⟩, ⟨b17l, -⟩, ⟨b19l, -⟩, ⟨b23l, -⟩, ⟨b29l, -⟩,
+    ⟨b31l, -⟩, ⟨b37l, -⟩, ⟨b41l, -⟩, ⟨b43l, -⟩, ⟨b47l, -⟩, ⟨b53l, -⟩,
+    ⟨b59l, -⟩, ⟨b61l, -⟩, ⟨b67l, -⟩, ⟨b71l, -⟩, ⟨b73l, -⟩, ⟨b79l, -⟩,
+    ⟨b83l, -⟩, ⟨b89l, -⟩⟩ := all_prime_bohman_coeff_bounds
+  obtain ⟨c2_2, c2_3, c2_4, c2_5, c2_6⟩ := cos_chebyshev_six Real.pi
+  have hc2 : Real.cos (2 * Real.pi) = 1 := by rw [c2_2, Real.cos_pi]; norm_num
+  have hc3 : Real.cos (3 * Real.pi) = -1 := by rw [c2_3, Real.cos_pi]; norm_num
+  have hc4 : Real.cos (4 * Real.pi) = 1 := by rw [c2_4, Real.cos_pi]; norm_num
+  have hc5 : Real.cos (5 * Real.pi) = -1 := by rw [c2_5, Real.cos_pi]; norm_num
+  have hc6 : Real.cos (6 * Real.pi) = 1 := by rw [c2_6, Real.cos_pi]; norm_num
+  have hform_ub : bohmanPhaseForm (fun _ => Real.pi) ≤ -0.934633 := by
+    unfold bohmanPhaseForm
+    rw [hc2, hc3, hc4, hc5, hc6, Real.cos_pi]
+    linarith only [b2_1l, b2_2u, b2_3l, b2_4u, b2_5l, b2_6u,
+      b3_1l, b3_2u, b3_3l, b3_4u, b5_1l, b5_2u, b7_1l, b7_2u,
+      b11l, b13l, b17l, b19l, b23l, b29l, b31l, b37l, b41l, b43l, b47l, b53l, b59l,
+      b61l, b67l, b71l, b73l, b79l, b83l, b89l]
   have hlog85 : 6 * Real.log 3 + Real.log 5 - Real.log 2 - 28 / 3617 ≤
       Real.log (9 / 4 + (85 : ℝ) ^ 2 / 4) := by
     have heq : (9 / 4 + (85 : ℝ) ^ 2 / 4) = (3 ^ 6 * 5 / 2) * (3617 / 3645) := by norm_num
@@ -1143,21 +1250,13 @@ theorem bohman_phaseFree_saturates_at_eightyFive :
     rw [hinv_eq]
     norm_num at hinv ⊢
     linarith only [hinv]
-  have hlog_pi_ub : Real.log Real.pi ≤
-      2 * Real.log 3 + Real.log 7 - 2 * Real.log 2 - Real.log 5 +
-        (20 / 63 * 3.1415926536 - 1) := by
-    have hπ_hi := pi_bounds_d10.2.le
-    have hπ_pos := Real.pi_pos
-    have heq : Real.pi = (3 ^ 2 * 7 / (2 ^ 2 * 5)) * (20 / 63 * Real.pi) := by ring
-    conv_lhs => rw [heq]
-    rw [Real.log_mul (by norm_num) (by positivity), Real.log_div (by norm_num) (by norm_num),
-      Real.log_mul (by norm_num) (by norm_num), Real.log_mul (by norm_num) (by norm_num),
-      Real.log_pow, Real.log_pow]
-    have hnear := (Real.log_le_sub_one_of_pos (by positivity : 0 < 20 / 63 * Real.pi)).trans
-      (by linarith only [hπ_hi] : 20 / 63 * Real.pi - 1 ≤ 20 / 63 * 3.1415926536 - 1)
-    norm_num at hnear ⊢
-    linarith only [hnear]
-  linarith only [hleft_ub, hform_ub, hlog85, hlog_pi_ub, hl2a, hl2b, hl3a, hl3b, hl5a, hl7b]
+  have hlog_pi_ub : Real.log Real.pi ≤ 38 / 23 * 0.6931471808 := by
+    have hpow : Real.pi ^ 23 ≤ (2 : ℝ) ^ 38 :=
+      (pow_le_pow_left₀ Real.pi_pos.le pi_bounds_d10.2.le 23).trans (by norm_num)
+    have h := log_le_of_pow_le_two_pow Real.pi_pos (k := 23) (m := 38) (by norm_num) hpow
+    norm_num at h ⊢
+    linarith only [h, hl2b]
+  linarith only [hleft_ub, hform_ub, hlog85, hlog_pi_ub, hl2b, hl3a, hl5a]
 
 /-! ## Upgraded Pólya frequency, slice, and Li rungs -/
 

@@ -71,7 +71,8 @@ theorem PSpace.isLocallyNoetherian [IsNoetherianRing R] : IsLocallyNoetherian (P
   haveI : IsNoetherianRing (𝒜 0) :=
     isNoetherianRing_of_surjective R (𝒜 0) (algebraMap R (𝒜 0)) hzero
   haveI : IsScalarTower R (𝒜 0) (MvPolynomial (Fin (N + 1)) R) :=
-    IsScalarTower.of_algebraMap_eq (fun _ => rfl)
+    IsScalarTower.of_algebraMap_eq (R := R) (S := ↥(𝒜 0))
+      (A := MvPolynomial (Fin (N + 1)) R) (fun _ => rfl)
   haveI : Algebra.FiniteType (𝒜 0) (MvPolynomial (Fin (N + 1)) R) :=
     Algebra.FiniteType.of_restrictScalars_finiteType R _ _
   exact LocallyOfFiniteType.isLocallyNoetherian (Proj.toSpecZero 𝒜)

@@ -15,6 +15,10 @@ universe u
 
 variable {X : Scheme.{u}} {F G : X.Modules} (φ : F ⟶ G)
 
+local instance (X : Scheme.{u}) :
+    HasZeroMorphisms (TopCat.Presheaf AddCommGrpCat.{u} X.toPresheafedSpace) :=
+  inferInstanceAs (HasZeroMorphisms (X.Opensᵒᵖ ⥤ AddCommGrpCat.{u}))
+
 local instance : (Scheme.Modules.toPresheaf X).PreservesZeroMorphisms :=
   ⟨fun _ _ => by ext; rfl⟩
 

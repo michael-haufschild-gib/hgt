@@ -21,8 +21,8 @@ theorem calibrated_fieldTrace {n : ℕ} (E : selfAdjoint (Reg n)) (P Y : Reg n)
   have hat : a*t=π/4 := by dsimp only [a]; field_simp
   have hJ : Commute E.val J := hEP.smul_right (a:ℂ)
   have he : unitaryEvolution E.val (-t)*Y*unitaryEvolution E.val t=Y := by
-    have h := unitaryEvolution_sub_mul E 0 t
-    simp only [zero_sub,unitaryEvolution,zero_smul,exp_zero] at h
+    have h : unitaryEvolution E.val (-t)*unitaryEvolution E.val t=1 := by
+      simpa only [zero_sub,unitaryEvolution,zero_smul,NormedSpace.exp_zero] using unitaryEvolution_sub_mul E 0 t
     have heY : Commute (unitaryEvolution E.val (-t)) Y :=
       ((hEY.smul_left (-Complex.I)).smul_left (-t)).exp_left
     rw [heY.eq,mul_assoc,h,mul_one]
