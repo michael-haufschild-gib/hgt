@@ -80,7 +80,7 @@ or two incurs quadratic error, uniformly over its gates and global phase. -/
 theorem gaussian_missing_pair_floor : ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ n : ℕ,
     let H := pathHamiltonian (pathPauliDisorderShell ω (n+1))
     ∃ a : ℝ, 0<a ∧ ∀ᶠ t : ℝ in 𝓝 0, ∀ C : TwoQubitCircuit (n+3),
-      (∃ i j : Fin (n+3), i≠j ∧ i.val≤j.val+2 ∧ j.val≤i.val+2 ∧
+      (∃ i j : Fin (n+3), i≠j ∧ i.val ≤ j.val+2 ∧ j.val ≤ i.val+2 ∧
         ∀ A B : Register (n+3), IsSiteSupported {i} A → IsSiteSupported {j} B →
           Commute (star C.eval.val*A*C.eval.val) B) → ∀ z : ℂ, ‖z‖=1 →
       a*t^2 ≤ ‖unitaryEvolution H t-z • C.eval.val‖ := by

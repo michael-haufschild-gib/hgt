@@ -36,7 +36,7 @@ theorem path_exchange_budget {N : ℕ} (w : List (Fin N×Fin N))
     have hbc : b≠c := fun hh => by have := congrArg Fin.val hh; dsimp only [b,c] at this; omega
     let S : Finset (Fin N) := {a,b,c}
     have hsize : 2<S.card := by simp [S,hab,hac,hbc]
-    have bounds (i : Fin N) (hi : i∈S) : 3*k≤i.val ∧ i.val≤3*k+2 := by
+    have bounds (i : Fin N) (hi : i∈S) : 3*k ≤ i.val ∧ i.val ≤ 3*k+2 := by
       simp only [S,Finset.mem_insert,Finset.mem_singleton] at hi
       rcases hi with rfl|rfl|rfl <;> dsimp only [a,b,c] <;> omega
     obtain ⟨i,hi,hm⟩ := exchanging_meets_marked w S hsize (fun i hi j hj =>

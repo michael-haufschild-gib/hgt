@@ -109,9 +109,12 @@ theorem clock_pole_iff (t : ExceptionalTime) (j : ℕ) (k : ℤ) :
   change meromorphicOrderAt ((numerator t j)/(denominator t j)) w = (-1:ℤ) ↔ _
   rw [meromorphicOrderAt_div hN.meromorphicAt hD.meromorphicAt,hD.meromorphicOrderAt_eq,hd,
     ← hN.analyticOrderAt_eq_zero,hN.meromorphicOrderAt_eq]
-  cases he : analyticOrderAt (numerator t j) w with
-  | top => simp
-  | coe n => norm_cast; omega
+  cases analyticOrderAt (numerator t j) w with
+  | top => exact iff_of_false WithTop.top_ne_coe ENat.top_ne_zero
+  | coe n =>
+    change (↑((n:ℤ)-1) : WithTop ℤ) = ↑(-1:ℤ) ↔ (n : ℕ∞) = (↑(0:ℕ) : ℕ∞)
+    rw [WithTop.coe_inj,ENat.coe_inj]
+    omega
 
 /-- Critical ray at a harmonic, parametrized by real inverse temperature. -/
 def ray (t : ExceptionalTime) (j : ℕ) (k : ℤ) (β : ℝ) : ℂ := ⟨β,(point t j k).im⟩
@@ -153,7 +156,7 @@ theorem clock_removable_iff (t : ExceptionalTime) (j : ℕ) (k : ℤ) :
     have hM := continuation_meromorphic t j ⟨w,by change -(1/2:ℝ) < 1/2; norm_num⟩
     have h₀ := hM.meromorphicOrderAt_nonneg_iff.mpr hg
     rw [(clock_pole_iff t j k).mpr hn] at h₀
-    norm_num at h₀
+    exact (WithTop.coe_lt_coe.mpr (by norm_num : (-1:ℤ) < 0)).not_ge h₀
   · intro hn
     have hN := num_at t j k
     have hD := scaleFactor_analytic (logRadix t j).val w
@@ -183,7 +186,7 @@ theorem pole_locus (t : ExceptionalTime) (j : ℕ) (s : {z : ℂ // -(1/2) < z.r
     exact (clock_removable_iff t j k).mpr hn
   · rintro ⟨k,hk,hn⟩
     rw [hk,(clock_pole_iff t j k).mpr hn]
-    norm_num
+    exact WithTop.coe_lt_coe.mpr (by norm_num : (-1:ℤ) < 0)
 
 /-- A pole of the balanced trace forces an isometric composition on the full prime gas. -/
 theorem pole_forces_isometry (t : ExceptionalTime) (j : ℕ) (s : {z : ℂ // -(1/2) < z.re ∧
@@ -221,8 +224,8 @@ theorem first_clock_poles (t : ExceptionalTime) (j : ℕ) :
       (balanced_partition_real_blowup t j)
     have hz (β : ℝ) : ray t j 0 β = (β:ℂ) := by apply Complex.ext <;> simp [ray,clockPoint]
     simpa only [hz] using h
-  · simpa only [ray,clockPoint,Int.cast_one,one_mul] using hpos
-  · simpa only [ray,clockPoint,Int.cast_neg,Int.cast_one,neg_one_mul] using hneg
+  · simpa only [ray,clockPoint,logRadix,Int.cast_one,one_mul] using hpos
+  · simpa only [ray,clockPoint,logRadix,Int.cast_neg,Int.cast_one,neg_one_mul] using hneg
 
 #print axioms continuation_agrees
 #print axioms continuation_meromorphic

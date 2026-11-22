@@ -1,4 +1,5 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
+import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CharacterTheory.VirtualCharacterNorm
 import GaloisForLFunctions.HTGeometry.SteinbergTWTWeylKernel
 import GaloisForLFunctions.RHTower.Artin.ArtinMonomialCharacter
 import Mathlib.GroupTheory.OrderOfElement
@@ -65,8 +66,8 @@ private theorem entN_superdiagonal_mul {n : ℕ} (A B : Mt g n)
     · intro k _ ⟨hki, hkj⟩
       by_cases hlow : k < (⟨i, hi⟩ : Fin n)
       · rw [(hA _ _).1 hlow, zero_mul]
-      · have hv₁ := fun e : k.val = i => hki (Fin.ext e)
-        have hv₂ := fun e : k.val = i + 1 => hkj (Fin.ext e)
+      · have hv₁ : k.val ≠ i := fun e => hki (Fin.ext e)
+        have hv₂ : k.val ≠ i + 1 := fun e => hkj (Fin.ext e)
         change ¬ k.val < i at hlow
         have hgt : (⟨i + 1, hj⟩ : Fin n) < k := by
           change i + 1 < k.val
@@ -107,14 +108,18 @@ theorem gg_eq_inducedFunction (ψ : AddChar (ZMod g) ℂ) (n : ℕ) :
     gg ψ n = inducedFunction (upperUnitriangular g n) (fun u => (whittakerCharacter ψ n u : ℂ)) := by
   classical
   let U := upperUnitriangular g n
-  let S := (Finset.univ : Finset (Gn g n)).filter (fun u => IsUniUp (u : Mt g n))
-  let e : U ≃ ↥S := Equiv.subtypeEquivRight (fun u => by simp [U, S])
+  let S : Finset (Gn g n) := Finset.univ.filter (fun u : Gn g n => IsUniUp (u : Mt g n))
+  let e : {u : Gn g n // u ∈ U} ≃ {u : Gn g n // u ∈ S} :=
+    Equiv.subtypeEquivRight fun u => by
+      change u ∈ upperUnitriangular g n ↔ u ∈ (Finset.univ.filter fun v : Gn g n => IsUniUp (v : Mt g n))
+      rw [mem_upperUnitriangular, Finset.mem_filter]
+      exact ⟨fun h => ⟨Finset.mem_univ _, h⟩, And.right⟩
   have hcard : Nat.card U = S.card := by
     rw [Nat.card_congr e, Nat.card_eq_fintype_card, Fintype.card_coe]
   funext x
   unfold gg inducedFunction
   rw [hcard]
-  congr 1
+  refine congrArg (fun z : ℂ => (S.card : ℂ)⁻¹ * z) ?_
   refine Fintype.sum_equiv (Equiv.inv (Gn g n)) _ _ fun y => ?_
   simp only [Equiv.inv_apply, inv_inv]
   by_cases hy : IsUniUp ((y⁻¹ * x * y : Gn g n) : Mt g n)
@@ -195,6 +200,34 @@ theorem ip_gg (ψ : AddChar (ZMod g) ℂ) (n : ℕ) (χ : Gn g n → ℂ) (hχ :
   unfold ip
   rw [e1, e2, Finset.sum_congr rfl fun y _ => hinner y, Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
   rw [mul_left_comm, ← mul_assoc, ← mul_assoc, mul_assoc c, inv_mul_cancel₀ hG, mul_one]
+
+private theorem ip_eq_characterPairing {G : Type} [Group G] [Fintype G] (χ η : G → ℂ) :
+    ip χ η = characterPairing G η χ := by
+  rw [ip, characterPairing, Nat.card_eq_fintype_card]
+
+/-- Distinct irreducible characters with nonzero Whittaker trace are counted by
+the squared norm of the Gelfand–Graev character. -/
+theorem card_le_wh_gg (ψ : AddChar (ZMod g) ℂ) (n : ℕ) (S : Finset (Gn g n → ℂ))
+    (hS : ∀ χ ∈ S, IsIrr χ ∧ wh ψ χ ≠ 0) :
+    (S.card : ℝ) ≤ (wh ψ (gg ψ n)).re := by
+  have hvirt : gg ψ n ∈ virtualCharacterGroup (Gn g n) := by
+    rw [gg_eq_monomialCharacter]
+    exact genuineCharacterMonoid_le_virtualCharacterGroup _ (monomialGenuineCharacter _
+      (upperUnitriangular g n) (whittakerCharacter ψ n)).property
+  have hclass : IsClass (gg ψ n) := by
+    intro x y
+    rw [gg_eq_inducedFunction]
+    exact inducedFunction_conj (upperUnitriangular g n) _ y x
+  rw [← ip_gg ψ n _ hclass, ip_eq_characterPairing]
+  refine CuspGL.card_le_pairing_of_nonzero_on_simple hvirt S fun χ hχ => ?_
+  obtain ⟨⟨V, hV, hval⟩, hwh⟩ := hS χ hχ
+  have hχclass : IsClass χ := by
+    intro x y
+    rw [← hval (y * x * y⁻¹), ← hval x]
+    exact V.char_conj x y
+  refine ⟨⟨V, hV, funext hval⟩, ?_⟩
+  rw [← ip_eq_characterPairing, ip_gg ψ n _ hχclass]
+  exact hwh
 
 end GlobalTheory.GLq
 

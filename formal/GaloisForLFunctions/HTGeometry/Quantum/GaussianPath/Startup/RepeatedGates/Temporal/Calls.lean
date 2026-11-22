@@ -10,6 +10,15 @@ def inputs : List (V×V) → V → Finset V
   | [], i => {i}
   | e::w, i => if i=e.1 ∨ i=e.2 then inputs w e.1 ∪ inputs w e.2 else inputs w i
 
+/-- A call retains every input already known at a wire. -/
+theorem inputs_mono (e : V×V) (w : List (V×V)) (i : V) : inputs w i ⊆ inputs (e::w) i := by
+  by_cases he : i=e.1 ∨ i=e.2
+  · rw [inputs,if_pos he]
+    rcases he with rfl | rfl
+    · exact Finset.subset_union_left
+    · exact Finset.subset_union_right
+  · rw [inputs,if_neg he]
+
 /-- Joining components preserves the first endpoint's label. -/
 def label : List (V×V) → V → V
   | [], i => i

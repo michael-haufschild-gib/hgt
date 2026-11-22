@@ -89,7 +89,9 @@ private theorem reading_bound (t : ExceptionalTime) (j : ℕ) {a : ℂ} {r : ℝ
   rw [tsum_mul_left] at hu
   have hsum := (norm_tsum_le_tsum_norm hb).trans hu
   have hpos : 0 ≤ balancedMass t j β.val := tsum_nonneg (fun _ => norm_nonneg _)
-  rw [reading,norm_mul,norm_mul,balanced_partition_real,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg hpos]
+  have hmass : ‖balancedPartition t j (β.val:ℂ)‖ = balancedMass t j β.val := by
+    rw [balanced_partition_real,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg hpos]
+  rw [reading,norm_mul,norm_mul,hmass]
   calc _ ≤ ‖((β.val-1/2:ℝ):ℂ)‖*(r^m*balancedMass t j β.val) := mul_le_mul_of_nonneg_left hsum (norm_nonneg _)
        _ = _ := by ring
 

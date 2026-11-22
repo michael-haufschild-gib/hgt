@@ -32,7 +32,7 @@ theorem mark_budget (w : List (V×V)) :
     by_cases h : label w e.1=label w e.2
     · have he : label (e::w)=label w := by
         funext i
-        by_cases hi : label w i=label w e.2 <;> simp only [label,h,hi,ite_self,if_true,if_false]
+        by_cases hi : label w i=label w e.2 <;> simp only [label,h,hi,ite_self,if_false]
       have hp : parts (e::w)=parts w := by unfold parts; rw [he]
       rw [marked,if_pos h,hp,List.length_cons]
       have h₁ := Finset.card_insert_le e.2 (marked w)

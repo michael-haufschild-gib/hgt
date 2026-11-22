@@ -28,7 +28,7 @@ theorem lowest_pole_height (t : ExceptionalTime) (j : ℕ) :
     have hneg : meromorphicOrderAt (continuation t j) z < 0 := by
       change meromorphicOrderAt (continuation t j) ⟨1/2,v⟩ < 0
       rw [hp]
-      norm_num
+      exact WithTop.coe_lt_coe.mpr (by norm_num : (-1:ℤ) < 0)
     obtain ⟨k,hk,_⟩ := (pole_locus t j ⟨z,by change -(1/2:ℝ) < 1/2; norm_num⟩).mp hneg
     have he : v = (k:ℝ)*ω := congrArg Complex.im hk
     have hkp : 0 < (k:ℝ) := pos_of_mul_pos_left (he ▸ hv) hω.le
@@ -44,6 +44,7 @@ theorem radix_from_lowest_pole (t : ExceptionalTime) (j : ℕ)
     Real.exp (Real.pi/v.val) = (radix t j:ℝ) := by
   rw [v.property.unique (lowest_pole_height t j)]
   rw [div_div_cancel₀ Real.pi_ne_zero]
+  change Real.exp (Real.log (radix t j:ℝ)) = _
   exact Real.exp_log (by exact_mod_cast (tailRadix t j).pos)
 
 /-- Equal lowest positive pole heights identify the least product and current winding order. -/

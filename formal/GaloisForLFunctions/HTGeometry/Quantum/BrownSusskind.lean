@@ -52,6 +52,7 @@ import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.RampObstructi
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.FirstAscent.FirstExitDate
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.FirstAscent.AfterScalar.FirstRebound
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.RepeatedGates.SecondOrderBand
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.RepeatedGates.Temporal.Density
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.FirstAscent.GaussianIsolatedWindow
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.LateWindows
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.DelayedCrossing

@@ -26,7 +26,8 @@ private theorem hof_abs_dlogH_le {R : Ranks} (H : Host R) {x eps C : ℝ} (h : Q
     have h' := Nat.mul_pos hq hd'
     rw [mul_assoc]
     omega
-  have h1 := (h.2.1 H.d _ (QH.oddPrimeQuadraticCharacter_induces_chDir d (by omega) _ hM)).2
+  have hd4 : d.1 % 4 = 3 := H.d_mod_four
+  have h1 := (h.2.1 H.d _ (QH.oddPrimeQuadraticCharacter_induces_chDir d hd4 _ hM)).2
   exact (Complex.abs_re_le_norm _).trans h1
 
 private theorem hof_log_le_rpow (eps C : ℝ) (he : 0 < eps) (hC : 0 < C) :
@@ -92,7 +93,7 @@ private theorem hof_exists_host (R : Ranks) (H0 : HostAx R.toFrame) (b : ℕ) (h
       g_level := by intro i; fin_cases i <;> simp
       pde := p, pde' := p', pde_prime := hp, pde'_prime := hp', pde_ne := hpp, pde_level := by simp
       pde_mod := hm, pde_ne_g := hpg, ccK := ⊤, ccK_ne_bot := top_ne_bot
-      ccK_primitive := span_natCast_ne_whole_of_one_lt _
+      ccK_primitive := fun m hm => Ideal.span_natCast_not_top_le _ m hm
       ccK_split := fun P hP h => absurd (top_le_iff.1 h) hP.ne_top, ccK_coprime := by simp, ccK_coprimeS := by simp
       level_coprimeS := hS
       TT := ∅, T2 := T, u0 := 0, Lw := Lw, two_le_Lw := hL, second_set_range := hT, second_set_no_relation := hT', CT2 := CT2 }
@@ -164,8 +165,10 @@ theorem UpperTheory.T3.hostOfFieldOf :
     obtain ⟨c⟩ := nonempty_choices H0.toHostRaw
     let D0 := host_of_fields R H0 hF hqd c
     have h1 := (hP s R D0 M Y rfl hd hR ⟨hJ, ho, hQS⟩ hM hW hG).1.2.2.2.2.2.2.2.2.2.2
-    have h2 := hW.z_log_sq_le
-    linarith
+    change Real.log ((H0.QS : ℝ) * H0.q * H0.d) ≤
+      2 * Y ^ (s.eps / 5) * Real.log Y ^ 2 at h1
+    exact h1.trans (by simpa only [← mul_assoc] using
+      mul_le_mul_of_nonneg_left hW.z_log_sq_le (by norm_num : (0 : ℝ) ≤ 2))
   have hN0 : 0 < H0.QS * H0.q * H0.d := Nat.mul_pos (Nat.mul_pos H0.QS_pos hG.pair.q_prime.pos) hG.pair.d_prime.pos
   have hN1 : 1 < H0.QS * H0.q * H0.d := lt_of_lt_of_le (by omega) (Nat.le_of_dvd hN0 (dvd_mul_left H0.d _))
   have hd4 : H0.d % 4 = 3 := by have := hG.pair.d_mod; omega
@@ -195,7 +198,7 @@ theorem UpperTheory.T3.hostOfFieldOf :
   obtain ⟨hrow, hq, hbox, -⟩ := hP s R D M Y rfl hd hR ⟨hJ, ho, hQS⟩ hM hW hG
   obtain ⟨TT, tt1, tt2, hbad, hsh⟩ := hTops s R D rfl hc hR ⟨hJ, ho, hQS⟩ ⟨Y, hW, hrow⟩
   have hnorm := fun i => (GlobalTheory.Mem.An.normOne_iff_of_sqrt D.d D.d_prime D.d_mod_four
-    D.sqd D.sqd_sq D.conj_sqd (D.QS * D.q * D.d) (D.g i)).1 (hgi i).2.2.2
+    D.sqd D.sqd_sq D.conj D.conj_sqd (D.QS * D.q * D.d) (D.g i)).1 (hgi i).2.2.2
   have hsplit := fun (p : ℕ) (hp : p.Prime) (h : p % D.condN = 1) =>
     GlobalTheory.HostSplit.split_of_one_mod D.toHostAx hp h
   obtain ⟨bH, bR⟩ := hof_box { D with TT := TT } hM hQ hG
