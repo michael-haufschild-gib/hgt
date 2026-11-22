@@ -1,8 +1,18 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.ShortNorms.RayClass.Family
+import Mathlib.Analysis.Complex.CauchyIntegral
+import Mathlib.Analysis.MellinTransform
+import Mathlib.Analysis.Normed.Ring.Finite
+import Mathlib.Analysis.Real.Sqrt
+import Mathlib.MeasureTheory.Function.Floor
+import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
+import Mathlib.NumberTheory.LSeries.SumCoeff
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.FunProp
+import Mathlib.Tactic.Positivity
 
 /-! Mellin continuation from the square-root ray class counting remainder. -/
 
-open Complex ArithmeticFunction MeasureTheory Filter Topology NumberField GlobalTheory.Hk
+open Complex ArithmeticFunction MeasureTheory Filter Topology
 open scoped Classical
 
 namespace GlobalTheory.Hk.RayCont
@@ -226,8 +236,11 @@ theorem continuation_growth : ∀ (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ), Analy
   · have hB := 𝓕.B_ge
     have hm : ‖𝓕.mel χ s‖ ≤ 200 * 𝓕.B := by
       refine (norm_mel_le 𝓕 χ (by linarith)).trans ?_
-      rw [div_le_iff₀ (by linarith)]
-      nlinarith
+      have hgap : (1 : ℝ) / 20 ≤ s.re - 1 / 2 := by linarith
+      calc
+        _ ≤ 10 * 𝓕.B / (1 / 20) :=
+          div_le_div_of_nonneg_left (by linarith) (by norm_num) hgap
+        _ = 200 * 𝓕.B := by ring
     have hr := norm_res_le 𝓕 χ
     have h0 := norm_nonneg s
     have h1 : ‖s * 𝓕.mel χ s‖ ≤ ‖s‖ * (200 * 𝓕.B) := by
@@ -245,8 +258,8 @@ theorem continuation_growth : ∀ (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ), Analy
         rw [norm_mul]
         exact mul_le_mul_of_nonneg_right hr h0
       refine (norm_add_le _ _).trans ?_
-      nlinarith
-    · nlinarith
+      nlinarith only [h3, h4, hBs, hBs2, hB]
+    · nlinarith only [h1, hBs, hBs2, hB]
   · rw [LFam.F, LFam.F, mel_conj 𝓕 χ h]
     split_ifs <;> simp [conj_res]
 

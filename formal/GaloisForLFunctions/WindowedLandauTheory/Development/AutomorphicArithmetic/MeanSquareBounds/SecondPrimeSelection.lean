@@ -110,7 +110,7 @@ theorem stage2 (hP : PrimeProgressions.PNTAPRelW) :
   have hadm : AdmissiblePrimeScale (6 * ε / 5) Y (Real.exp z') (16 * oddM z q) a₀ := by
     refine ⟨by omega, Dvd.dvd.mul_right (by norm_num) _, hcop, ?_, ?_, ?_⟩
     · rw [Real.log_exp]
-      have hlm := log_oddM z q hzpos.le hqp.pos
+      have hlm := log_oddM hzpos.le hqp.pos
       have hlq : Real.log q ≤ z := by
         rw [Real.log_le_iff_le_exp (by exact_mod_cast hqp.pos)]
         exact hqle'
@@ -124,8 +124,15 @@ theorem stage2 (hP : PrimeProgressions.PNTAPRelW) :
       have hl2' : 0 < Real.log 2 := Real.log_pos (by norm_num)
       have hm : Real.log ((16 * oddM z q : ℕ) : ℝ) ≤ 4 * z := by
         rw [h16, h4] at hlm
-        have h := mul_le_mul_of_nonneg_right hz2' (by positivity : 0 ≤ 2 * Real.log 2)
-        linarith only [hlm, hlq, h, mul_lt_mul_of_pos_right hl2 hzpos]
+        have h₁ : 4 * Real.log 2 ≤ z * (2 * Real.log 2) := by
+          have h := mul_le_mul_of_nonneg_right hz2' (by positivity : 0 ≤ 2 * Real.log 2)
+          linarith only [h]
+        have h₂ : z * (2 * Real.log 2) ≤ z * (3 / 2) :=
+          mul_le_mul_of_nonneg_left (by linarith only [hl2]) hzpos.le
+        calc
+          _ ≤ 4 * Real.log 2 + Real.log q + z * (2 * Real.log 2) := hlm
+          _ ≤ z * (3 / 2) + z + z * (3 / 2) := add_le_add (add_le_add (h₁.trans h₂) hlq) h₂
+          _ = _ := by ring
       linarith only [hz1, mul_le_mul_of_nonneg_left hm (sq_nonneg (Real.log Y))]
     · rw [Real.log_exp, show 6 * ε / 5 / 6 = ε / 5 by ring]
       rw [← hz]
@@ -153,7 +160,7 @@ theorem stage2 (hP : PrimeProgressions.PNTAPRelW) :
         rw [(Nat.prime_dvd_prime_iff_eq hp hqp).mp h]
         exact hqK
       · left
-        obtain ⟨r, hr, hpr⟩ := (Prime.dvd_finset_prod_iff hp.prime _).mp h
+        obtain ⟨r, hr, hpr⟩ := (Prime.dvd_finsetProd_iff hp.prime _).mp h
         simp only [Finset.mem_filter, Finset.mem_Icc] at hr
         have hpr' := (Nat.prime_dvd_prime_iff_eq hp hr.2).mp hpr
         subst hpr'

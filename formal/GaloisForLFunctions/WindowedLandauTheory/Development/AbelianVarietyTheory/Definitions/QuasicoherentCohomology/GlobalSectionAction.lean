@@ -35,24 +35,33 @@ private def scalarHom (F : X.Modules) (r : Γ(X, ⊤)) : F ⟶ F :=
     (U : X.Opens) (x : Γ(F, U)) :
     (scalarHom F r).app U x = restrictGlobal X U r • x := rfl
 
+private theorem end_ext {F : X.Modules} {a b : End F}
+    (h : ∀ (U : X.Opens) (x : Γ(F, U)), (a : F ⟶ F).app U x = (b : F ⟶ F).app U x) :
+    a = b :=
+  Scheme.Modules.hom_ext a b fun U => AddCommGrpCat.ext (h U)
+
 /-- A global section acts by multiplication by its restriction on each open set. -/
 def globalSectionEnd (F : X.Modules) : Γ(X, ⊤) →+* End F where
   toFun := scalarHom F
   map_one' := by
-    ext U x
+    apply end_ext
+    intro U x
     change (scalarHom F 1).app U x = x
     rw [scalarHom_apply, map_one, one_smul]
   map_mul' r s := by
-    ext U x
+    apply end_ext
+    intro U x
     change (scalarHom F (r * s)).app U x =
       (scalarHom F r).app U ((scalarHom F s).app U x)
     simp only [scalarHom_apply, map_mul, mul_smul]
   map_zero' := by
-    ext U x
+    apply end_ext
+    intro U x
     change (scalarHom F 0).app U x = 0
     rw [scalarHom_apply, map_zero, zero_smul]
   map_add' r s := by
-    ext U x
+    apply end_ext
+    intro U x
     change (scalarHom F (r + s)).app U x =
       (scalarHom F r).app U x + (scalarHom F s).app U x
     simp only [scalarHom_apply, map_add, add_smul]

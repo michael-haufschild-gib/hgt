@@ -3,7 +3,7 @@ import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmeti
 
 /-! The right-half-plane logarithmic derivative is the series of the twisted Mangoldt coefficients. -/
 
-open Complex ArithmeticFunction MeasureTheory Filter Topology NumberField GlobalTheory.Hk
+open Complex ArithmeticFunction MeasureTheory Filter Topology GlobalTheory.Hk
 open scoped Classical
 
 namespace GlobalTheory.Hk.LogDeriv

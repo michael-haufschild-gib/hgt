@@ -1,4 +1,6 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.ShortNorms.NormOneIffOfSqrt
+import Mathlib.Analysis.Real.Sqrt
+import Mathlib.NumberTheory.NumberField.InfinitePlace.Embeddings
 
 /-! Integral coordinates and complex embeddings of an imaginary quadratic field. -/
 
@@ -79,8 +81,11 @@ theorem exists_integer_generator_of_sq_eq_neg {K : Type*} [Field K] [NumberField
     ring
   · intro c
     obtain ⟨a, b, hab⟩ := hdec c
+    have hc : IsIntegral ℤ ((a : K) + (b : K) * r) := by
+      rw [← hab]
+      exact c.isIntegral_coe
     obtain ⟨A, B, ⟨m, hm⟩, hA, hB⟩ :=
-      GlobalTheory.Mem.An.half_int_coords d hp hd r hr τ hτ a b (hab ▸ c.isIntegral_coe)
+      GlobalTheory.Mem.An.half_int_coords d hp hd r hr τ hτ a b hc
     refine ⟨m, B, ?_⟩
     apply RingOfIntegers.ext
     have hA' : 2 * (a : K) = A := by exact_mod_cast congrArg (fun q : ℚ => (q : K)) hA

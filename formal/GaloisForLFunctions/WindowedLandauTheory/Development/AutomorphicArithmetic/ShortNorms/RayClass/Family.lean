@@ -1,4 +1,11 @@
-import Mathlib
+import Mathlib.Algebra.Group.AddChar
+import Mathlib.Analysis.Calculus.Deriv.Basic
+import Mathlib.Analysis.Complex.ExponentialBounds
+import Mathlib.Analysis.SpecialFunctions.Pow.Complex
+import Mathlib.MeasureTheory.Integral.Bochner.Set
+import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
+import Mathlib.NumberTheory.ArithmeticFunction.VonMangoldt
+import Mathlib.Tactic.Linarith
 
 /-! The coefficients and pole-removed Dirichlet series of the ray class family. -/
 
@@ -64,9 +71,12 @@ def ExcZ (c : ℝ) (Z : Finset ℝ) : Prop :=
     ∀ s : ℂ, 1 - c / 𝓕.ell s.im ≤ s.re → 𝓕.F χ s = 0 → ∃ β ∈ Z, s = (β : ℂ)
 
 theorem two_lt_ell (t : ℝ) : 2 < 𝓕.ell t := by
-  have hB := 𝓕.B_ge
-  have ht := abs_nonneg t
-  have h8 : (8 : ℝ) ≤ 𝓕.B * (|t| + 2) := by nlinarith
+  have h8 : (8 : ℝ) ≤ 𝓕.B * (|t| + 2) := by
+    calc
+      (8 : ℝ) = 4 * 2 := by norm_num
+      _ ≤ 𝓕.B * (|t| + 2) :=
+        mul_le_mul 𝓕.B_ge (le_add_of_nonneg_left (abs_nonneg t)) (by norm_num)
+          (le_trans (by norm_num) 𝓕.B_ge)
   have h2 := Real.log_two_gt_d9
   have e : Real.log 8 = 3 * Real.log 2 := by
     rw [show (8 : ℝ) = 2 ^ 3 by norm_num, Real.log_pow]; norm_num

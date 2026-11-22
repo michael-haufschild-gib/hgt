@@ -3,7 +3,7 @@ import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmeti
 
 /-! Positivity across all real ray characters makes the exceptional zero unique and simple. -/
 
-open Complex ArithmeticFunction MeasureTheory Filter Topology NumberField GlobalTheory.Hk
+open Complex ArithmeticFunction MeasureTheory Filter Topology GlobalTheory.Hk
 open scoped Classical
 
 namespace GlobalTheory.Hk.RealZero

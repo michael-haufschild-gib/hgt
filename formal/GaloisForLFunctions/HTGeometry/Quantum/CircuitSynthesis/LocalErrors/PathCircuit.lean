@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitSynthesis.LocalErrors.Word
-import GaloisForLFunctions.HTGeometry.Quantum.CircuitSynthesis.LocalPatches.PauliTerm
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitSynthesis.LocalErrors.BlockCommutators
 
 /-! # Nearest-neighbour Pauli simulation controlled by squared interaction mass -/
 open Matrix NormedSpace
@@ -10,37 +10,6 @@ private abbrev Reg (N : ℕ) := Matrix (Fin N → Bool) (Fin N → Bool) ℂ
 local instance pathOverlapCStarAlgebra (N : ℕ) : CStarAlgebra (Reg N) where
 
 open LocalPatches
-
-private theorem pathTerm_commutator_mass {n : ℕ} (u : PathShell n) :
-    let X := pathTermGenerator u
-    (∑ l : PathLabel n, ∑ q : PathLabel n, ‖X l*X q-X q*X l‖) ≤ 84*‖u‖^2 := by
-  classical
-  let X := pathTermGenerator u
-  change (∑ l : PathLabel n, ∑ q : PathLabel n, ‖X l*X q-X q*X l‖) ≤ _
-  apply le_trans _ (path_sum_overlap_squares_le u)
-  apply Finset.sum_le_sum
-  intro l _
-  have hzero (q : PathLabel n) (hq : q ∉ pathOverlaps l) : ‖X l*X q-X q*X l‖ = 0 := by
-    have hd : Disjoint (labelSupport (pathWord l)) (labelSupport (pathWord q)) := by
-      by_contra hn
-      exact hq (mem_pathOverlaps.mpr hn)
-    have hh := commute_finitePauliMatrix_of_disjoint hd
-    have hh' : Commute (X l) (X q) :=
-      (((hh.smul_left (u l : ℂ)).smul_left (-Complex.I)).smul_right (u q : ℂ)).smul_right (-Complex.I)
-    rw [hh'.eq,sub_self,norm_zero]
-  rw [← Finset.sum_subset (Finset.subset_univ (pathOverlaps l)) (fun q _ hq => hzero q hq)]
-  apply Finset.sum_le_sum
-  intro q _
-  have hl := (pathTerm_properties u l).1
-  have hq := (pathTerm_properties u q).1
-  calc
-    _ ≤ ‖X l‖*‖X q‖+‖X q‖*‖X l‖ :=
-      (norm_sub_le _ _).trans (add_le_add (norm_mul_le _ _) (norm_mul_le _ _))
-    _ ≤ _ := by
-      change ‖pathTermGenerator u l‖*_+‖pathTermGenerator u q‖*_ ≤ _
-      dsimp only [X]
-      rw [hl,hq]
-      nlinarith only [sq_nonneg (|u l|-|u q|),sq_abs (u l),sq_abs (u q)]
 
 /-- Each sweep uses one physical gate per path label. The squared coefficient
 norm bounds the overlap error uniformly in the chain length. -/
@@ -78,7 +47,7 @@ theorem exists_path_circuit_squared_mass_error {n : ℕ} (u : PathShell n)
   rw [hprod,smul_pow,hs] at herr
   simp_rw [hmap] at herr
   rw [TwoQubitCircuit.pow_eval_coe,norm_sub_rev]
-  exact herr.trans (mul_le_mul_of_nonneg_left (pathTerm_commutator_mass u) (by positivity))
+  exact herr.trans (mul_le_mul_of_nonneg_left (LocalErrors.path_commutator_mass u) (by positivity))
 
 #print axioms exists_path_circuit_squared_mass_error
 end

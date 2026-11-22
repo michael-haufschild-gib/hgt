@@ -1,5 +1,7 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.GlobalSectionAction
+import Mathlib.Algebra.Homology.DerivedCategory.Ext.EnoughInjectives
 import Mathlib.Algebra.Module.Hom
+import Mathlib.CategoryTheory.Abelian.GrothendieckCategory.EnoughInjectives
 import Mathlib.CategoryTheory.Sites.SheafCohomology.Basic
 import Mathlib.Topology.Sheaves.Abelian
 
@@ -15,10 +17,14 @@ universe u
 
 variable {X : Scheme.{u}}
 
+local instance sheafHasExt (X : TopCat.{u}) :
+    HasExt.{u} (Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u}) :=
+  hasExt_of_enoughInjectives _
+
 private abbrev abelianCohomology (X : Scheme.{u}) (U : X.Opens) (n : ℕ) :
     Sheaf (Opens.grothendieckTopology X) AddCommGrpCat.{u} ⥤ AddCommGrpCat.{u} :=
   Sheaf.cohomologyPresheafFunctor (Opens.grothendieckTopology X) n ⋙
-    (Functor.evaluation (X.Opensᵒᵖ) AddCommGrpCat.{u}).obj (op U)
+    (CategoryTheory.evaluation (X.Opensᵒᵖ) AddCommGrpCat.{u}).obj (op U)
 
 private instance abelianCohomology_additive (X : Scheme.{u}) (U : X.Opens) (n : ℕ) :
     (abelianCohomology X U n).Additive := by
@@ -31,6 +37,10 @@ private abbrev cohomologyFunctor (X : Scheme.{u}) (U : X.Opens) (n : ℕ) :
     X.Modules ⥤ AddCommGrpCat.{u} :=
   SheafOfModules.toSheaf X.ringCatSheaf ⋙ abelianCohomology X U n
 
+private instance cohomologyFunctor_additive (X : Scheme.{u}) (U : X.Opens) (n : ℕ) :
+    (cohomologyFunctor X U n).Additive :=
+  inferInstanceAs ((SheafOfModules.toSheaf X.ringCatSheaf ⋙ abelianCohomology X U n).Additive)
+
 /-- The `n`th sheaf cohomology of an `𝒪ₓ`-module on `U`. -/
 def CohomologyOn (F : X.Modules) (U : X.Opens) (n : ℕ) : Type u :=
   (cohomologyFunctor X U n).obj F
@@ -42,15 +52,19 @@ private def cohomologyAction (F : X.Modules) (U : X.Opens) (n : ℕ) :
     Γ(X, ⊤) →+* AddMonoid.End (CohomologyOn F U n) where
   toFun r := ((cohomologyFunctor X U n).map (globalSectionEnd F r)).hom
   map_one' := by
-    rw [map_one, Functor.map_id] <;> rfl
+    rw [map_one]
+    exact congrArg AddCommGrpCat.Hom.hom ((cohomologyFunctor X U n).map_id F)
   map_mul' r s := by
     rw [map_mul]
     change ((cohomologyFunctor X U n).map (globalSectionEnd F s ≫ globalSectionEnd F r)).hom = _
     rw [Functor.map_comp] <;> rfl
   map_zero' := by
-    rw [map_zero, Functor.map_zero] <;> rfl
+    rw [map_zero]
+    exact congrArg AddCommGrpCat.Hom.hom ((cohomologyFunctor X U n).map_zero F F)
   map_add' r s := by
-    rw [map_add, Functor.map_add] <;> rfl
+    rw [map_add]
+    exact congrArg AddCommGrpCat.Hom.hom ((cohomologyFunctor X U n).map_add
+      (f := (globalSectionEnd F r : F ⟶ F)) (g := (globalSectionEnd F s : F ⟶ F)))
 
 /-- Scalars act on cohomology by functoriality of their sheaf endomorphisms. -/
 instance (F : X.Modules) (U : X.Opens) (n : ℕ) : Module Γ(X, ⊤) (CohomologyOn F U n) :=

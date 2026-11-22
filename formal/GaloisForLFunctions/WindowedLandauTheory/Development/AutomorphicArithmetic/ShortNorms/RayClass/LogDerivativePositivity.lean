@@ -2,7 +2,7 @@ import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmeti
 
 /-! The nonnegative Mangoldt coefficients give trigonometric and real-character positivity. -/
 
-open Complex ArithmeticFunction MeasureTheory Filter Topology NumberField GlobalTheory.Hk
+open Complex ArithmeticFunction MeasureTheory Filter Topology GlobalTheory.Hk
 open scoped Classical
 
 namespace GlobalTheory.Hk.LFamPos

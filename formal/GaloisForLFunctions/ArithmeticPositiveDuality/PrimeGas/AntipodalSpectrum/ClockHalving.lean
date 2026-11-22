@@ -103,7 +103,7 @@ theorem half_additional_rays (t : ExceptionalTime) (x : leastWords t) (y : Word)
     have hd : windingOrder t ∣ k.val := Classical.byContradiction fun h => hn (by rw [he]; exact (least_ray_rejected t x r k.val n).mpr h)
     have hnew := k.property
     change ¬windingOrder (halfClock t) ∣ k.val at hnew
-    have hn' : ¬2*windingOrder t ∣ k.val := fun h => hnew ((half_windingOrder t).symm ▸ h)
+    have hn' : ¬2*windingOrder t ∣ k.val := fun h => hnew ((congrArg (fun d : ℕ => d ∣ k.val) (half_windingOrder t)).mpr h)
     obtain ⟨j,hj⟩ := (new_index hm).mp ⟨hd,hn'⟩
     exact ⟨r,j,n,he.trans (congrArg (fun l => ray (x.val false) (x.val true) r l n) hj)⟩
   · rintro ⟨r,j,n,rfl⟩

@@ -1,4 +1,14 @@
-import Mathlib
+import Mathlib.Analysis.Calculus.MeanValue
+import Mathlib.Analysis.Complex.Convex
+import Mathlib.Analysis.SpecialFunctions.ImproperIntegrals
+import Mathlib.Analysis.SumIntegralComparisons
+import Mathlib.NumberTheory.LSeries.Dirichlet
+import Mathlib.NumberTheory.LSeries.Injectivity
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.GCongr
+import Mathlib.Tactic.IntervalCases
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
 
 /-! Dirichlet convolution with Mangoldt-majorized coefficients controls the Euler logarithm. -/
 
@@ -114,7 +124,7 @@ private lemma LSeriesSummable_div_log_of_LSeriesSummable {l : ℕ → ℂ} (hl :
     gcongr
     exact norm_div_log_natCast_le_norm_div_log_two _ _
 
-lemma absc_div_lt {l : ℕ → ℂ} (h1 : l 1 = 0) (hl : ∀ s : ℂ, 1 < s.re → LSeriesSummable l s)
+private lemma absc_div_lt {l : ℕ → ℂ} (hl : ∀ s : ℂ, 1 < s.re → LSeriesSummable l s)
     {s : ℂ} (hs : 1 < s.re) : abscissaOfAbsConv (fun n => l n / Complex.log n) < s.re := by
   have h : abscissaOfAbsConv (fun n => l n / Complex.log n) ≤ ((1 : ℝ) : EReal) :=
     LSeries.abscissaOfAbsConv_le_of_forall_lt_LSeriesSummable fun y hy =>
@@ -129,7 +139,7 @@ lemma eq_exp_of_conv {a l : ℕ → ℂ} (ha : ∀ s : ℂ, 1 < s.re → LSeries
   have hG : ∀ z : ℂ, 1 < z.re →
       HasDerivAt (LSeries (fun n => l n / Complex.log n)) (-LSeries l z) z := by
     intro z hz
-    have h := LSeries_hasDerivAt (absc_div_lt l1 hl hz)
+    have h := LSeries_hasDerivAt (absc_div_lt hl hz)
     rwa [LSeries_congr (fun {n} hn => logMul_div l1 hn) z] at h
   have hH : ∀ z : ℂ, 1 < z.re → HasDerivAt
       (fun w => LSeries a w * Complex.exp (-LSeries (fun n => l n / Complex.log n) w)) 0 z := by
@@ -149,7 +159,7 @@ lemma eq_exp_of_conv {a l : ℕ → ℂ} (ha : ∀ s : ℂ, 1 < s.re → LSeries
       (fun v hv => (hH v hv).deriv) hz hs
   have hab : abscissaOfAbsConv a < ⊤ := (absc_lt ha hs).trans (EReal.coe_lt_top _)
   have hlb : abscissaOfAbsConv (fun n => l n / Complex.log n) < ⊤ :=
-    (absc_div_lt l1 hl hs).trans (EReal.coe_lt_top _)
+    (absc_div_lt hl hs).trans (EReal.coe_lt_top _)
   have hlim : Tendsto
       (fun x : ℝ => LSeries a x * Complex.exp (-LSeries (fun n => l n / Complex.log n) x)) atTop
       (𝓝 (a 1 * Complex.exp (-((fun n => l n / Complex.log n) 1)))) :=
@@ -209,7 +219,7 @@ lemma norm_ge_of_conv {a l : ℕ → ℂ} (ha : ∀ s : ℂ, 1 < s.re → LSerie
      rw [← Complex.natCast_log, ← Complex.ofReal_div]
      exact Complex.zero_le_real.mpr (div_nonneg vonMangoldt_nonneg (Real.log_natCast_nonneg n)))
   have hts : Summable fun n => ‖t n‖ :=
-    summable_norm_iff.mpr (LSeriesSummable_of_abscissaOfAbsConv_lt_re (absc_div_lt hΛ1 hΛs hσc))
+    summable_norm_iff.mpr (LSeriesSummable_of_abscissaOfAbsConv_lt_re (absc_div_lt hΛs hσc))
   set R : ℝ := ∑' n, ‖t n‖ with hR
   have hZ : LSeries (fun n => (↗Λ) n / Complex.log n) ((s.re : ℝ) : ℂ) = (R : ℂ) := by
     show ∑' n, t n = _
@@ -220,7 +230,7 @@ lemma norm_ge_of_conv {a l : ℕ → ℂ} (ha : ∀ s : ℂ, 1 < s.re → LSerie
     simpa using hb
 
   have hgs : Summable fun n => ‖LSeries.term (fun n => l n / Complex.log n) s n‖ :=
-    summable_norm_iff.mpr (LSeriesSummable_of_abscissaOfAbsConv_lt_re (absc_div_lt l1 hl' hs))
+    summable_norm_iff.mpr (LSeriesSummable_of_abscissaOfAbsConv_lt_re (absc_div_lt hl' hs))
   have hpt : ∀ n, ‖LSeries.term (fun n => l n / Complex.log n) s n‖ ≤ 2 * ‖t n‖ := by
     intro n
     simp only [ht, LSeries.norm_term_eq, Complex.ofReal_re]

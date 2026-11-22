@@ -1,5 +1,7 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.ShortNorms.Statement
+import Mathlib.Analysis.Complex.ExponentialBounds
 import Mathlib.NumberTheory.Chebyshev
+import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Positivity
 
@@ -153,7 +155,8 @@ theorem shortNorm_of_mangoldt {A c₀ e : ℝ} (hA : 0 < A) (hc₀ : 0 < c₀) (
   have H4 : 8 * (|C| + 1) * Real.sqrt X ≤ e * (h * X / B ^ A) := by
     have : 8 * (|C| + 1) * Real.sqrt X = e * (K * Real.sqrt X) := by
       rw [hKdef]; field_simp
-    rw [this]; gcongr
+    rw [this]
+    exact mul_le_mul_of_nonneg_left hS he.le
   have H5 : e * h * X / B ^ A = e * (h * X / B ^ A) := by ring
   have H6 : 2 * Real.log (X * (1 + h)) * N ≤ 4 * Real.log X * N := by
     apply mul_le_mul_of_nonneg_right _ hN0

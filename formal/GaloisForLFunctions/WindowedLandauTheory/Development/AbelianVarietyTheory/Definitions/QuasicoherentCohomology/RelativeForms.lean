@@ -45,8 +45,8 @@ def sectionRes {U V : X.Opens} (i : V ⟶ U) :
 theorem sectionRes_id (U : X.Opens) : sectionRes s (𝟙 U) = AlgHom.id k (SectionRing s U) := by
   ext a
   change (X.presheaf.map (𝟙 U).op).hom a = a
-  simp only [op_id, Functor.map_id]
-  rfl
+  rw [op_id]
+  exact ConcreteCategory.congr_hom (X.presheaf.map_id (op U)) a
 
 theorem sectionRes_comp {U V W : X.Opens} (i : V ⟶ U) (j : W ⟶ V) :
     sectionRes s (j ≫ i) = (sectionRes s j).comp (sectionRes s i) := by
@@ -68,11 +68,13 @@ private def formsAdd (n : ℕ) : X.Opensᵒᵖ ⥤ AddCommGrpCat.{u} where
   obj U := AddCommGrpCat.of (FormsOn s U.unop n)
   map i := AddCommGrpCat.ofHom (ExteriorDifferentials.map (sectionRes s i.unop) n).toAddMonoidHom
   map_id U := by
-    ext x
+    apply AddCommGrpCat.ext
+    intro x
     change ExteriorDifferentials.map (sectionRes s (𝟙 U.unop)) n x = x
     rw [sectionRes_id, ExteriorDifferentials.map_id]
   map_comp i j := by
-    ext x
+    apply AddCommGrpCat.ext
+    intro x
     change ExteriorDifferentials.map (sectionRes s (j.unop ≫ i.unop)) n x =
       ExteriorDifferentials.map (sectionRes s j.unop) n
         (ExteriorDifferentials.map (sectionRes s i.unop) n x)
@@ -84,7 +86,7 @@ private instance formsAdd_module (n : ℕ) (U : X.Opensᵒᵖ) :
 
 /-- The presheaf obtained by taking exterior differentials of each section ring. -/
 def formsPresheaf (n : ℕ) : PresheafOfModules X.ringCatSheaf.obj :=
-  PresheafOfModules.ofPresheaf (formsAdd s n) fun i r x =>
+  PresheafOfModules.ofPresheaf (formsAdd s n) fun _ _ i r x =>
     (ExteriorDifferentials.map (sectionRes s i.unop) n).map_smulₛₗ r x
 
 /-- The sheaf of relative `n`-forms, obtained by sheafifying the presheaf of forms. -/

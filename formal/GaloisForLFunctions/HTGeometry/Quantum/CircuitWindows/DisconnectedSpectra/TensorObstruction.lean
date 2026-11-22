@@ -8,7 +8,8 @@ open scoped Kronecker
 namespace GaloisForLFunctions.HTGeometry.DisconnectedSpectra
 noncomputable section
 
-private def energyPhase (t E : ℝ) : ℂ := Complex.exp (-(Complex.I*((t:ℂ)*(E:ℂ))))
+/-- Eigenphase of the physical propagator at time t and energy E. -/
+def energyPhase (t E : ℝ) : ℂ := Complex.exp (-(Complex.I*((t:ℂ)*(E:ℂ))))
 
 private theorem mixed_gap_zero {a b c d t : ℝ}
     (h : energyPhase t a*energyPhase t d=energyPhase t b*energyPhase t c) :
@@ -16,9 +17,10 @@ private theorem mixed_gap_zero {a b c d t : ℝ}
   simp only [energyPhase,←Complex.exp_add] at h
   obtain ⟨k,hk⟩ := Complex.exp_eq_exp_iff_exists_int.mp h
   have hI := congrArg Complex.im hk
-  simp only [Complex.add_im,Complex.neg_im,Complex.I_mul_im,Complex.mul_im,Complex.mul_re,Complex.intCast_re,
-    Complex.intCast_im,Complex.ofReal_re,Complex.ofReal_im,Complex.ofNat_re,Complex.ofNat_im,
+  simp only [Complex.add_im,Complex.neg_im,Complex.mul_im,Complex.mul_re,Complex.intCast_re,
+    Complex.intCast_im,Complex.ofReal_re,Complex.ofReal_im,
     Complex.I_re,Complex.I_im,mul_zero,zero_mul,add_zero,zero_add,sub_zero,mul_one] at hI
+  norm_num at hI
   apply (AddCircle.coe_eq_zero_iff (p:=(1:ℝ))).mpr
   refine ⟨-k,?_⟩
   rw [zsmul_eq_mul,Int.cast_neg,mul_one,eq_div_iff (mul_ne_zero (by norm_num) Real.pi_ne_zero)]

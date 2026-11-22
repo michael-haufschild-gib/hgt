@@ -30,7 +30,7 @@ theorem refined_parameters (t : ExceptionalTime) (j : ℕ) :
 
 private theorem order_grows (t : ExceptionalTime) : Tendsto (fun j : ℕ => 2^j*windingOrder t) atTop atTop := by
   apply tendsto_atTop_mono (fun _ => Nat.le_mul_of_pos_right _ (Nat.zero_lt_one.trans (order_nontrivial t)))
-  exact tendsto_pow_atTop_atTop_of_one_lt (by decide : 1 < (2:ℕ))
+  exact tendsto_pow_atTop_atTop_of_one_lt (by norm_num : 1 < (2:ℕ))
 
 /-- Exactly the positive windings occur in the union over all refinement levels. -/
 theorem refined_union (t : ExceptionalTime) (x : leastWords t) (y : Word) :
@@ -68,7 +68,7 @@ theorem refined_deficit (t : ExceptionalTime) (s : {z : ℂ // 0 < z.re}) (j : �
 private theorem geometric_tail {q : ℂ} (hq : ‖q‖ < 1) (Z : ℂ) {M : ℕ → ℕ} (hM : Tendsto M atTop atTop) :
     Tendsto (fun j => Z*(2*q^(M j)/(1-q^(M j)))) atTop (𝓝 0) := by
   have hu := (tendsto_pow_atTop_nhds_zero_of_norm_lt_one hq).comp hM
-  simpa only [Function.comp_apply,mul_zero,sub_zero,zero_div] using
+  simpa only [Pi.div_apply,Function.comp_apply,mul_zero,sub_zero,zero_div] using
     (tendsto_const_nhds (x := Z)).mul
       (((tendsto_const_nhds (x := (2:ℂ))).mul hu).div ((tendsto_const_nhds (x := (1:ℂ))).sub hu) (by simp))
 

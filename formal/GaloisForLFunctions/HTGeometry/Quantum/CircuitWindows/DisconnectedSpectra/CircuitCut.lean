@@ -21,7 +21,7 @@ theorem circuit_cut {N : ℕ} (C : TwoQubitCircuit N) (hs : C.gateCount+1<N) :
     exact (Nat.pow_lt_pow_right (by decide : 1<2) hs).not_ge
       (by simpa only [pow_succ,Nat.mul_comm] using hc)
   unfold Function.Injective at hn
-  push_neg at hn
+  push Not at hn
   obtain ⟨x,y,hxy,hn⟩ := hn
   let S := Finset.univ.filter fun i => x i≠y i
   have hne : ∃ i, x i≠y i := by
@@ -38,7 +38,9 @@ theorem circuit_cut {N : ℕ} (C : TwoQubitCircuit N) (hs : C.gateCount+1<N) :
     change xor (x a) (x b)=xor (y a) (y b) at he
     simp only [S,Finset.mem_filter,Finset.mem_univ,true_and]
     change (x a≠y a) ↔ (x b≠y b)
-    cases x a <;> cases x b <;> cases y a <;> cases y b <;> simp_all
+    have parity (p q r s : Bool) : xor p q=xor r s → ((p≠r) ↔ (q≠s)) := by
+      cases p <;> cases q <;> cases r <;> cases s <;> simp
+    exact parity _ _ _ _ he
 
 #print axioms circuit_cut
 end

@@ -47,15 +47,15 @@ theorem factor_on_cut {N : ℕ} (C : TwoQubitCircuit N) (S : Finset (Fin N))
   let b := (C.architecture.sites i).2
   let u := twoQubitLift a b (C.architecture.distinct i) (C.gates i)
   by_cases ha : a∈S
-  · obtain ⟨M,hM⟩ := exists_liftLocalMatrix_of_isSiteSupported (supported_gate a b _ _ S ha ((hcut i).mp ha))
+  · obtain ⟨M,hM⟩ := exists_liftLocalMatrix_of_isSiteSupported (supported_gate a b (C.architecture.distinct i) (C.gates i) S ha ((hcut i).mp ha))
     refine ⟨M,1,?_⟩
     change Φ u.val=_
     rw [hM]
     exact reindex_liftLocalMatrix_eq_kronecker_one S M
   · have h₁ : a∈Sᶜ := Finset.mem_compl.mpr ha
     have h₂ : b∈Sᶜ := Finset.mem_compl.mpr (fun hb => ha ((hcut i).mpr hb))
-    obtain ⟨M,hM⟩ := exists_liftLocalMatrix_of_isSiteSupported (supported_gate a b _ _ Sᶜ h₁ h₂)
-    refine ⟨1,_,?_⟩
+    obtain ⟨M,hM⟩ := exists_liftLocalMatrix_of_isSiteSupported (supported_gate a b (C.architecture.distinct i) (C.gates i) Sᶜ h₁ h₂)
+    refine ⟨1,liftLocalMatrixOutsideDisjoint (show Disjoint S Sᶜ from disjoint_compl_right) M,?_⟩
     change Φ u.val=_
     rw [hM]
     exact reindex_liftLocalMatrix_disjoint_eq_one_kronecker disjoint_compl_right M

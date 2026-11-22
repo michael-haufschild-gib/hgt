@@ -1,4 +1,5 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.ShortNorms.Statement
+import Mathlib.Analysis.SpecialFunctions.Pow.Asymptotics
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Positivity
 
@@ -18,11 +19,7 @@ private lemma core_sqrt (A c c' t B Y : ℝ) (hA : 0 < A) (hc : 0 < c)
   have ht5 : 0 < t ^ 5 := pow_pos ht0 5
   have ht4 : 0 < t ^ 4 := pow_pos ht0 4
   have hL : 0 < Real.log Y := by linarith
-  have hY1 : 1 < Y := by
-    by_contra h
-    push_neg at h
-    have := Real.log_nonpos hY.le h
-    linarith
+  have hY1 : 1 < Y := lt_of_not_ge fun h => (not_le_of_gt hL) (Real.log_nonpos hY.le h)
   have ht1 : 1 ≤ t := by linarith
   have ht13 : t ≤ t ^ 3 := by
     calc t = t ^ 1 := (pow_one t).symm
@@ -40,7 +37,7 @@ private lemma core_sqrt (A c c' t B Y : ℝ) (hA : 0 < A) (hc : 0 < c)
         have h3 := mul_le_mul_of_nonneg_left hYt hc2.le
         have h4 := mul_le_mul_of_nonneg_left hct ht4.le
         nlinarith only [h3, h4, ht4]
-      exact le_of_pow_le_pow_left₀ 2 (by positivity) hs
+      exact le_of_pow_le_pow_left₀ (by norm_num) (by positivity) hs
     exact hBt.trans hb
   · have hB0 : 0 < B := by linarith
     have hc'0 : 0 < c' := lt_of_lt_of_le (by positivity) h2
@@ -131,7 +128,13 @@ theorem normPrimesN :
   have hlogd : Real.log d ≤ Real.log N := Real.log_le_log hd0 hdleN
   have hN3 : 3 ≤ N := by omega
   have hd100' : (100:ℝ) ≤ d := by exact_mod_cast hd100
-  have hB1 : 1 < 4 * (d:ℝ) * (N:ℝ) ^ 2 := by nlinarith
+  have hN1 : 1 ≤ (N : ℝ) := by exact_mod_cast (Nat.succ_le_of_lt hN0)
+  have hN2 : 1 ≤ (N : ℝ) ^ 2 := by
+    rw [pow_two, ← one_mul (1 : ℝ)]
+    exact mul_le_mul hN1 hN1 zero_le_one hN0'.le
+  have hB1 : 1 < 4 * (d:ℝ) * (N:ℝ) ^ 2 := by
+    have h := mul_le_mul_of_nonneg_left hN2 (show 0 ≤ 4 * (d : ℝ) by positivity)
+    nlinarith only [h, hd100']
   have hlogB : Real.log (4 * (d:ℝ) * (N:ℝ) ^ 2) = Real.log 4 + Real.log d + 2 * Real.log N := by
     rw [Real.log_mul (mul_ne_zero (by norm_num) hd0.ne') (pow_ne_zero _ hN0'.ne'),
       Real.log_mul (by norm_num) hd0.ne', Real.log_pow]
@@ -147,8 +150,7 @@ theorem normPrimesN :
   obtain ⟨hY1, hsq, hfin⟩ := core_sqrt A c c' (x ^ (eps / 5)) (4 * (d:ℝ) * (N:ℝ) ^ 2) Y hA hc t1 t2 t3 t4 hB1 hBt hY hYt
   have hexp : Real.exp (-c * Real.sqrt (Real.log Y)) ≤ 1 := by
     rw [Real.exp_le_one_iff]
-    have := Real.sqrt_nonneg (Real.log Y)
-    nlinarith
+    exact mul_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr hc.le) (Real.sqrt_nonneg _)
   have key := hmain d N Y 1 hdp hd4 hd100 hN3 hY1 hsq hexp le_rfl
   have e : Y * (1 + 1) = 2 * Y := by ring
   rw [e] at key

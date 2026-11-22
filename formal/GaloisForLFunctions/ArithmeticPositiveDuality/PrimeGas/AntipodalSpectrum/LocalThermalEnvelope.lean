@@ -30,6 +30,7 @@ theorem dense_large_order (H : ℕ+) (h : Dense {u : ℝ | ∃ e : u ∈ excepti
     let v : ExceptionalTime := ⟨u,e⟩
     refine ⟨(halfClock v).val,?_,(halfClock v).property,(half_block v).trans hb,?_⟩
     · change dist (u/2) t < ε
+      change dist u (2*t) < 2*ε at hd
       rw [Real.dist_eq,abs_lt] at hd ⊢
       constructor <;> linarith only [hd.1,hd.2]
     · rw [half_windingOrder,pow_succ']
@@ -50,9 +51,7 @@ theorem local_block_two_limit (t : ℝ) (ε : {r : ℝ // 0 < r}) :
 private def qReal (β : ℝ) (H : ℕ+) := Real.exp (-β*energy H)
 
 private theorem heat_real (β : ℝ) (H : ℕ+) : heat (β:ℂ) H = (qReal β H : ℂ) := by
-  unfold heat qReal
-  push_cast
-  rfl
+  simp only [heat,qReal,Complex.ofReal_exp,Complex.ofReal_mul,Complex.ofReal_neg]
 
 private theorem q_lt {β : ℝ} (hβ : 0 < β) {H : ℕ+} (hH : 1 < H.val) : qReal β H < 1 := by
   apply Real.exp_lt_one_iff.mpr
@@ -72,15 +71,34 @@ private theorem radial_pos (β : {b : ℝ // 1/2 < b}) : 0 < (riemannZeta (2*(β
 def envelope (β : {b : ℝ // 1/2 < b}) :=
   (riemannZeta (2*(β.val:ℂ))).re*(2*qReal β.val 2/(1-qReal β.val 2))
 
+theorem envelope_eq (β : {b : ℝ // 1/2 < b}) :
+    envelope β = 2*(riemannZeta (2*(β.val:ℂ))).re/((2:ℝ)^β.val-1) := by
+  have hp : 0 < β.val := by linarith only [β.property]
+  have hpow : 1 < (2:ℝ)^β.val := Real.one_lt_rpow (by norm_num) hp
+  have hq : qReal β.val 2 = ((2:ℝ)^β.val)⁻¹ := by
+    rw [Real.rpow_def_of_pos (by norm_num : 0 < (2:ℝ)),← Real.exp_neg]
+    unfold qReal
+    change Real.exp (-β.val*Real.log 2) = Real.exp (-(Real.log 2*β.val))
+    congr 1; ring
+  unfold envelope
+  rw [hq]
+  field_simp [(zero_lt_one.trans hpow).ne',sub_ne_zero.mpr hpow.ne']
+
+private theorem re_times_weight (Z : ℂ) (q : ℝ) (m : ℕ) :
+    (Z*(2*(q:ℂ)^m/(1-(q:ℂ)^m))).re = Z.re*(2*q^m/(1-q^m)) := by
+  have he : (2*(q:ℂ)^m/(1-(q:ℂ)^m)) = ((2*q^m/(1-q^m):ℝ):ℂ) := by push_cast; rfl
+  rw [he,Complex.mul_re,Complex.ofReal_re,Complex.ofReal_im,mul_zero,sub_zero]
+
+private theorem re_times_sum (Z : ℂ) (q : ℝ) :
+    (Z*(2*(q:ℂ)/(1-(q:ℂ)))).re = Z.re*(2*q/(1-q)) := by
+  simpa only [pow_one] using re_times_weight Z q 1
+
 private theorem real_tail (β : {b : ℝ // 1/2 < b}) (t : ExceptionalTime) :
     let q := qReal β.val (block t)
     let Z := (riemannZeta (2*(β.val:ℂ))).re
     Z*(2*q/(1-q))-(response t (β.val:ℂ)).re = Z*(2*q^(windingOrder t)/(1-q^(windingOrder t))) := by
   have hd := congrArg Complex.re (response_deficit t ⟨(β.val:ℂ),by change 0 < β.val; linarith only [β.property]⟩)
-  dsimp only [saturatedResponse,Complex.sub_re] at hd
-  rw [heat_real] at hd
-  simpa only [← Complex.ofReal_pow,← Complex.ofReal_one,← Complex.ofReal_ofNat,← Complex.ofReal_sub,
-    ← Complex.ofReal_mul,← Complex.ofReal_div,Complex.mul_re,Complex.ofReal_im,Complex.ofReal_re,mul_zero,sub_zero] using hd
+  simpa only [saturatedResponse,Complex.sub_re,heat_real,re_times_sum,re_times_weight] using hd
 
 private theorem zero_correction (t : ℝ) (h : t ∉ exceptional) (s : ℂ) : correction t s = 0 := by
   letI : IsEmpty {x // rejected t x} := ⟨fun x => h ⟨x.val,x.property⟩⟩
@@ -107,7 +125,7 @@ theorem loss_lt_envelope (β : {b : ℝ // 1/2 < b}) (t : ℝ) : (correction t (
     have ht' := real_tail β v
     have htail : 0 < (riemannZeta (2*(β.val:ℂ))).re*(2*q^(windingOrder v)/(1-q^(windingOrder v))) :=
       mul_pos (radial_pos β) (div_pos (mul_pos two_pos (pow_pos hq _)) (sub_pos.mpr (pow_lt_one₀ hq.le hq₁ hm)))
-    exact (sub_pos.mp (ht'.trans_gt htail)).trans_le (mul_le_mul_of_nonneg_left hf (radial_pos β).le)
+    exact (sub_pos.mp (htail.trans_eq ht'.symm)).trans_le (mul_le_mul_of_nonneg_left hf (radial_pos β).le)
   · rw [zero_correction _ ht,Complex.zero_re]
     exact mul_pos (radial_pos β) (div_pos (mul_pos two_pos hq₂) (sub_pos.mpr h₂))
 
@@ -115,7 +133,7 @@ theorem loss_lt_envelope (β : {b : ℝ // 1/2 < b}) (t : ℝ) : (correction t (
 theorem local_thermal_minimum (β : {b : ℝ // 1/2 < b}) (t : ℝ) (ε : {r : ℝ // 0 < r}) :
     IsLeast ((fun u => (correction u (β.val:ℂ)).re) '' Metric.ball t ε.val) 0 := by
   obtain ⟨u,hu,he⟩ := Metric.dense_iff.mp (exceptional_countable.dense_compl ℝ) t ε.val ε.property
-  refine ⟨⟨u,hu,by rw [zero_correction u he,Complex.zero_re]⟩,?_⟩
+  refine ⟨⟨u,hu,congrArg Complex.re (zero_correction u he (β.val:ℂ))⟩,?_⟩
   rintro _ ⟨v,_,rfl⟩
   have hs := ((sectorHeat_iff _ _).mp ((rejected_heat_iff v (β.val:ℂ)).mpr fun _ => β.property)).of_norm
   have hr := Complex.hasSum_re hs.hasSum
@@ -131,18 +149,7 @@ theorem local_thermal_supremum (β : {b : ℝ // 1/2 < b}) (t : ℝ) (ε : {r : 
     IsLUB ((fun u => (correction u (β.val:ℂ)).re) '' Metric.ball t ε.val)
       (2*(riemannZeta (2*(β.val:ℂ))).re/((2:ℝ)^β.val-1)) := by
   have hp : 0 < β.val := by linarith only [β.property]
-  have he : envelope β = 2*(riemannZeta (2*(β.val:ℂ))).re/((2:ℝ)^β.val-1) := by
-    have hpow : 1 < (2:ℝ)^β.val := Real.one_lt_rpow (by norm_num) hp
-    have hq : qReal β.val 2 = ((2:ℝ)^β.val)⁻¹ := by
-      rw [Real.rpow_def_of_pos (by norm_num : 0 < (2:ℝ)),← Real.exp_neg]
-      unfold qReal
-      change Real.exp (-β.val*Real.log 2) = Real.exp (-(Real.log 2*β.val))
-      congr 1; ring
-    unfold envelope
-    rw [hq]
-    field_simp [(zero_lt_one.trans hpow).ne',sub_ne_zero.mpr hpow.ne']
-    <;> ring
-  rw [← he]
+  rw [← envelope_eq β]
   refine ⟨?_,?_⟩
   · rintro _ ⟨u,_,rfl⟩
     exact (loss_lt_envelope β u).le
@@ -153,8 +160,7 @@ theorem local_thermal_supremum (β : {b : ℝ // 1/2 < b}) (t : ℝ) (ε : {r : 
       rw [← response_eq_heat_sum (v j) ⟨_,β.property⟩]
       exact hB ⟨(v j).val,hv j,rfl⟩
     have hle := le_of_tendsto hl (Eventually.of_forall hub)
-    simpa only [envelope,heat_real,← Complex.ofReal_one,← Complex.ofReal_ofNat,← Complex.ofReal_sub,
-      ← Complex.ofReal_mul,← Complex.ofReal_div,Complex.mul_re,Complex.ofReal_im,Complex.ofReal_re,mul_zero,sub_zero] using hle
+    simpa only [envelope,heat_real,re_times_sum] using hle
 
 #print axioms dense_large_order
 #print axioms local_block_two_limit

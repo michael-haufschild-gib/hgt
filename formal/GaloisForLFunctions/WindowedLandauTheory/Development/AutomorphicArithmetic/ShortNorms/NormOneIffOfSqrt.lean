@@ -1,8 +1,10 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.ShortNorms.NormOne
+import Mathlib.Data.Nat.Prime.Int
 import Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra
 import Mathlib.NumberTheory.NumberField.Basic
 import Mathlib.Tactic.ComputeDegree
 import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.LinearCombination
 
 /-! Integral representatives of norm p in the trivial quadratic ray class. -/
 
@@ -32,7 +34,7 @@ private theorem exists_rat_coords {E : Type} [Field E] [NumberField E] (d : ℕ)
       push_cast; linear_combination ((b : E) * (e : E)) * hs⟩
 
 /-- Trace and norm integrality force half-integer coordinates of the same parity. -/
-theorem half_int_coords {E : Type} [Field E] [NumberField E] (d : ℕ) (hd : d.Prime) (h4 : d % 4 = 3)
+theorem half_int_coords {E : Type*} [Field E] [NumberField E] (d : ℕ) (hd : d.Prime) (h4 : d % 4 = 3)
     (s : E) (hs : s ^ 2 = -(d : E)) (c : E →+* E) (hc : c s = -s) (a b : ℚ)
     (hy : IsIntegral ℤ ((a : E) + (b : E) * s)) :
     ∃ t u : ℤ, (2 : ℤ) ∣ t - u ∧ 2 * a = t ∧ 2 * b = u := by

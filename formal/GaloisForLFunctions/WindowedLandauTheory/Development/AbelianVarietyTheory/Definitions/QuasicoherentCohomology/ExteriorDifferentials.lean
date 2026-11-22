@@ -24,8 +24,7 @@ private def mapLinear (f : A →ₐ[k] B) (n : ℕ) :
   letI : Algebra A B := algHomTargetAlgebra f
   letI : Module A Ω[B⁄k] := Module.compHom _ f.toRingHom
   letI : Module A (ExteriorDifferentials k B n) := Module.compHom _ f.toRingHom
-  letI : IsScalarTower A B Ω[B⁄k] := IsScalarTower.of_compHom
-  letI : IsScalarTower A B (ExteriorDifferentials k B n) := IsScalarTower.of_compHom
+  letI : IsScalarTower A B Ω[B⁄k] := IsScalarTower.of_compHom A B Ω[B⁄k]
   let df : Ω[A⁄k] →ₗ[A] Ω[B⁄k] :=
     { algHomKaehlerMap f with
       map_smul' := algHomKaehlerMap_smul f }
@@ -33,16 +32,17 @@ private def mapLinear (f : A →ₐ[k] B) (n : ℕ) :
 
 /-- Pullback on forms applies the Kähler differential map to every factor. -/
 def map (f : A →ₐ[k] B) (n : ℕ) :
-    ExteriorDifferentials k A n →ₛₗ[f.toRingHom] ExteriorDifferentials k B n where
-  toFun := mapLinear f n
-  map_add' := (mapLinear f n).map_add
-  map_smul' := (mapLinear f n).map_smul
+    ExteriorDifferentials k A n →ₛₗ[f.toRingHom] ExteriorDifferentials k B n := by
+  letI : Module A (ExteriorDifferentials k B n) := Module.compHom _ f.toRingHom
+  let F := mapLinear f n
+  exact { toFun := F, map_add' := F.map_add, map_smul' := F.map_smul }
 
 @[simp] theorem map_ιMulti (f : A →ₐ[k] B) (n : ℕ) (v : Fin n → Ω[A⁄k]) :
     map f n (exteriorPower.ιMulti A n v) =
       exteriorPower.ιMulti B n (fun i => algHomKaehlerMap f (v i)) := by
-  unfold map mapLinear
-  exact exteriorMapOver_ιMulti _ _ _
+  letI : Module A (ExteriorDifferentials k B n) := Module.compHom _ f.toRingHom
+  change mapLinear f n (exteriorPower.ιMulti A n v) = _
+  simp only [mapLinear, exteriorMapOver_ιMulti, LinearMap.coe_mk, LinearMap.coe_toAddHom]
 
 private theorem ext_on_wedges {f : A →ₐ[k] B} {n : ℕ}
     {F G : ExteriorDifferentials k A n →ₛₗ[f.toRingHom] ExteriorDifferentials k B n}
@@ -80,10 +80,12 @@ private theorem kaehlerMap_id (x : Ω[A⁄k]) : algHomKaehlerMap (AlgHom.id k A)
 
 @[simp] theorem map_id (n : ℕ) (x : ExteriorDifferentials k A n) :
     map (AlgHom.id k A) n x = x := by
-  change map (AlgHom.id k A) n x = LinearMap.id x
+  change map (AlgHom.id k A) n x =
+    (LinearMap.id : ExteriorDifferentials k A n →ₗ[A] ExteriorDifferentials k A n) x
   apply ext_on_wedges
   intro v
-  simp only [LinearMap.id_apply, map_ιMulti, kaehlerMap_id]
+  change map (AlgHom.id k A) n (exteriorPower.ιMulti A n v) = exteriorPower.ιMulti A n v
+  simp only [map_ιMulti, kaehlerMap_id]
 
 end ExteriorDifferentials
 

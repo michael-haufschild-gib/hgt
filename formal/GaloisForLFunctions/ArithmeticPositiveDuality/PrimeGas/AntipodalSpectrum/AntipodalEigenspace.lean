@@ -111,6 +111,7 @@ theorem additional_heat_iff (t : ℝ) (s : ℂ) :
     · letI : IsEmpty {x // additional t x} := ⟨fun x => he ⟨_,x.property⟩⟩
       exact (sectorHeat_iff _ _).mpr Summable.of_finite
 
+/-- Rejected heat at half time splits into the old sector and the instantaneous antipodes. -/
 theorem additional_partition_sum (t : ℝ) (s : {s : ℂ // 1/2 < s.re}) :
     correction (2*t) s.val + partition (additional t) s.val = correction t s.val := by
   let W := {x // rejected t x}

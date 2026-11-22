@@ -111,7 +111,8 @@ theorem exists_imagQuad_integers : ∀ d : ℕ, d.Prime → d % 4 = 3 →
       apply top_unique
       intro x _
       obtain ⟨a, b, rfl⟩ := hcoords x
-      exact add_mem (ratCast_mem _ _) (mul_mem (ratCast_mem _ _)
+      let L := IntermediateField.adjoin ℚ ({r} : Set K)
+      exact add_mem (L.algebraMap_mem a) (mul_mem (L.algebraMap_mem b)
         (IntermediateField.mem_adjoin_simple_self ℚ _))
     apply WindowedLandauTheory.HF.P.quadDiscr_ne_one K (-(d : ℤ)) r
     · simpa using hr

@@ -52,25 +52,25 @@ theorem halving_trace (t : ExceptionalTime) (s : {z : ℂ // AbsoluteHeat (addit
 theorem factor_deficit {q : ℂ} (hq : ‖q‖ < 1) {m : ℕ} (hm : 1 < m) :
     2*q/(1-q)-factor m q = 2*q^m/(1-q^m) := by
   have hd : 1-q ≠ 0 := by simpa only [pow_one] using one_sub_pow_ne hq (one_ne_zero : (1:ℕ) ≠ 0)
-  have hn := one_sub_pow_ne hq hm.ne_zero
+  have hn := one_sub_pow_ne hq (show m ≠ 0 by omega)
   have hqm : q*q^(m-1) = q^m := by rw [← pow_succ',Nat.sub_add_cancel hm.le]
   have hnum : 2*q*(1-q^(m-1)) = 2*(q-q^m) := by rw [← hqm]; ring
   rw [factor,hnum]
   field_simp [hd,hn]
-  <;> ring
+  ring
 
 private theorem factor_step {q : ℂ} (hq : ‖q‖ < 1) {m : ℕ} (hm : 1 < m) :
     factor (2*m) q-factor m q = 2*q^m/(1-q^(2*m)) := by
   have h₁ := factor_deficit hq hm
   have h₂ := factor_deficit hq (show 1 < 2*m by omega)
-  have hn := one_sub_pow_ne hq hm.ne_zero
+  have hn := one_sub_pow_ne hq (show m ≠ 0 by omega)
   have hpow : q^(2*m) = (q^m)^2 := by rw [Nat.mul_comm 2 m,pow_mul]
   have hsq := one_sub_pow_ne hq (show 2*m ≠ 0 by omega)
   rw [hpow] at h₂ hsq ⊢
   suffices h : 2*q^m/(1-q^m)-2*(q^m)^2/(1-(q^m)^2) = 2*q^m/(1-(q^m)^2) by
     linear_combination h₁-h₂+h
   field_simp [hn,hsq]
-  <;> ring
+  ring
 
 theorem halving_formula (t : ExceptionalTime) (s : {z : ℂ // 0 < z.re}) :
     halvingPartition t s.val = riemannZeta (2*s.val)*

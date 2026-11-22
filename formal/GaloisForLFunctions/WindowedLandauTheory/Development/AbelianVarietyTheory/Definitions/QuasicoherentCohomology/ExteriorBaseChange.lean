@@ -1,4 +1,4 @@
-import Mathlib.LinearAlgebra.ExteriorPower.Basic
+import Mathlib.LinearAlgebra.ExteriorAlgebra.Basis
 import Mathlib.RingTheory.IsTensorProduct
 
 /-! Exterior powers commute with extension of scalars. -/
@@ -8,6 +8,19 @@ open TensorProduct
 noncomputable section
 
 namespace GlobalTheory.SchemeCohomology
+
+section Scalars
+
+variable {A B N : Type*} [CommRing A] [CommRing B] [Algebra A B]
+  [AddCommGroup N] [Module B N]
+
+scoped instance (priority := 50) exteriorPowerModule (n : ℕ) : Module A (⋀[B]^n N) :=
+  Module.compHom _ (algebraMap A B)
+
+scoped instance exteriorPowerScalarTower (n : ℕ) : IsScalarTower A B (⋀[B]^n N) :=
+  IsScalarTower.of_compHom A B (⋀[B]^n N)
+
+end Scalars
 
 variable {A B M N : Type*} [CommRing A] [CommRing B] [Algebra A B]
   [AddCommGroup M] [Module A M] [AddCommGroup N] [Module A N] [Module B N]

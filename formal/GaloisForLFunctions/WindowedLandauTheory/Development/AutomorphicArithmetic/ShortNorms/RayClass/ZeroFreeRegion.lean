@@ -3,7 +3,7 @@ import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmeti
 
 /-! The logarithmic zero-free region away from real zeros of real ray characters. -/
 
-open Complex ArithmeticFunction MeasureTheory Filter Topology NumberField GlobalTheory.Hk
+open Complex ArithmeticFunction MeasureTheory Filter Topology GlobalTheory.Hk
 open scoped Classical
 
 namespace GlobalTheory.Hk.ZeroFree
