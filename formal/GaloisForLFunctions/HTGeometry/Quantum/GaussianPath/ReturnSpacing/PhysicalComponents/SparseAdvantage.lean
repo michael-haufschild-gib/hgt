@@ -48,7 +48,7 @@ theorem gaussian_sparse_advantage (A η : ℝ) (hA : 0<A) (hη : 0<η) :
     linarith only [h]
   let q := sqrt (log ((N:ℝ)/s))
   have hq : 0≤q := sqrt_nonneg _
-  have hterm : 4*|t|*(42*(s:ℝ))*sqrt (log (B*N/(42*s))) ≤ η := calc
+  have hterm : 4 * |t| * (42*(s:ℝ))*sqrt (log (B*N/(42*s))) ≤ η := calc
     _ ≤ 4*(A/N)*(42*(s:ℝ))*(2*q) :=
       mul_le_mul (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left ht (by norm_num)) (by positivity))
         hroot (sqrt_nonneg _) (by positivity)
@@ -56,7 +56,7 @@ theorem gaussian_sparse_advantage (A η : ℝ) (hA : 0<A) (hη : 0<η) :
     _ ≤ (η*L)*((s:ℝ)/N*q) := mul_le_mul_of_nonneg_right hcoef (mul_nonneg (div_nonneg hsp.le hN.le) hq)
     _ = η*((L:ℝ)*(s/N)*q) := by ring
     _ ≤ η := by simpa only [mul_one] using mul_le_mul_of_nonneg_left hbudget hη.le
-  exact hf.trans (add_le_add_left hterm _)
+  exact hf.trans (add_le_add le_rfl hterm)
 
 end
 end GaloisForLFunctions.HTGeometry.ReturnSpacing.PhysicalComponents

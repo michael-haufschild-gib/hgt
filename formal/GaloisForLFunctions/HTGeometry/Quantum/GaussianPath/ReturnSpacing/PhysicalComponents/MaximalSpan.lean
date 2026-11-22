@@ -1,4 +1,6 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.ReturnSpacing.PhysicalComponents.PairDuration
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.FirstAscent.PhysicalWindow
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.SharpOccupation.BudgetOccupation
 
 /-! # The largest local span of physical visits has a sharp budget correction -/
 open Real Matrix Set MeasureTheory Filter
@@ -52,7 +54,8 @@ theorem gaussian_maximal_physical_span :
     have hsmall : F ≤ 1/(N:ℝ) := by
       apply (le_div_iff₀ hN).mpr
       change ((s:ℝ)*sqrt (log (N/s))/(N:ℝ)^2)*(N:ℝ) ≤ _
-      rw [show ((s:ℝ)*sqrt (log (N/s))/(N:ℝ)^2)*(N:ℝ) = (s/N)*sqrt (log (N/s)) by field_simp; ring]
+      rw [show ((s:ℝ)*sqrt (log (N/s))/(N:ℝ)^2)*(N:ℝ) = (s/N)*sqrt (log (N/s)) by
+        field_simp [hN.ne']]
       simpa only [one_mul] using hscale
     have hlen : ((8*θ/a+2*c)/b) ≤ (N:ℝ) := hL.trans (by exact_mod_cast (show L≤N by dsimp only [N]; omega))
     have h₁ := div_le_div_of_nonneg_left (show 0≤4*θ by positivity) (mul_pos ha hN) hw.1
@@ -74,12 +77,15 @@ theorem gaussian_maximal_physical_span :
       sqrt_le_sqrt (log_le_log (div_pos hN (add_pos hsp hsp))
         (div_le_div_of_nonneg_left hN.le hsp (le_add_of_nonneg_right hsp.le)))
     have hmul := mul_le_mul_of_nonneg_left hlog (add_nonneg hsp.le hsp.le)
-    have hscale' := mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hmul (sq_nonneg _)) hC.le
-    dsimp only [F]
-    linarith only [hh,hscale']
+    have hscale' := mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hmul (sq_nonneg (N:ℝ))) hC.le
+    apply hh.trans
+    calc 8*θ/W+C*(((s:ℝ)+s)*sqrt (log (N/((s:ℝ)+s)))/(N:ℝ)^2)
+           ≤ 8*θ/W+C*(((s:ℝ)+s)*sqrt (log (N/s))/(N:ℝ)^2) := add_le_add le_rfl hscale'
+         _ = 8*θ/W+2*C*F := by dsimp only [F]; ring
   change 2*c*F ≤ sSup S-8*θ/W ∧ sSup S-8*θ/W ≤ 2*C*F
   dsimp only [T] at hlow
-  exact ⟨by linarith only [hlow],by linarith only [hhigh]⟩
+  exact ⟨le_sub_iff_add_le.mpr ((show 2*c*F+8*θ/W=2*(4*θ/W+c*F) by ring).le.trans hlow),
+    sub_le_iff_le_add.mpr (hhigh.trans_eq (add_comm ..))⟩
 
 #print axioms gaussian_maximal_physical_span
 end

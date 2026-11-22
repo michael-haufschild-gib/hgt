@@ -43,7 +43,7 @@ theorem gaussian_pair_duration :
   intro N H W i j hsize v w hvw hb' hv hh s
   have hN : 0<(N:ℝ) := by dsimp only [N]; positivity
   have hW : 0<W := (mul_pos ha hN).trans_le hw.1
-  have hsp : 0≤s := by dsimp only [s]; positivity
+  have hsp : 0 ≤ s := by dsimp only [s]; positivity
   have hterm : 0 ≤ C*(s*sqrt (log (N/s))/(N:ℝ)^2) := by positivity
   rcases hvw.eq_or_lt with rfl|hpos
   · rw [sub_self]
@@ -69,7 +69,7 @@ theorem gaussian_pair_duration :
     exact ((le_div_iff₀ hW).mpr (by linarith only [hhalf])).trans (le_add_of_nonneg_right hterm)
   · have h := (hw.2.2 (i+j) hj hk' (2*θ) ⟨by linarith only [hθ],le_rfl⟩).2 (w-v)
       ⟨ht.le,(le_div_iff₀ hW).mpr hangle.le⟩ ⟨z,hz,D,hD,herrD⟩
-    simpa only [Nat.cast_add,show 4*(2*θ)=8*θ by ring] using h
+    rwa [Nat.cast_add i j,show 4*(2*θ)=8*θ by ring] at h
 
 end
 end GaloisForLFunctions.HTGeometry.ReturnSpacing.PhysicalComponents

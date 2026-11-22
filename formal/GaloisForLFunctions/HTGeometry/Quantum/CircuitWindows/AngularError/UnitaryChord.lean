@@ -21,11 +21,11 @@ theorem common_unitary_chord {X Y Z : Mat I} (hX : X ∈ unitary (Mat I))
       ‖L U v‖=‖v‖ := by
     apply RHTower.deningerUnitary_norm_apply
     have h := congrArg L (Unitary.mem_iff.mp hU).1
-    simpa only [map_mul,map_one,map_star] using h
+    simpa only [map_mul,map_one,map_star,ContinuousLinearMap.star_eq_adjoint] using h
   have dist_image (U : Mat I) (he : ‖U-Y‖ ≤ 2*sin θ) (v : EuclideanSpace ℂ I) :
       ‖L U v-L Y v‖ ≤ 2*sin θ*‖v‖ := by
     have h := (L (U-Y)).le_opNorm v
-    rw [map_sub,ContinuousLinearMap.sub_apply] at h
+    rw [map_sub,_root_.sub_apply] at h
     apply h.trans
     apply mul_le_mul_of_nonneg_right _ (norm_nonneg _)
     rw [←map_sub]
@@ -41,7 +41,7 @@ theorem common_unitary_chord {X Y Z : Mat I} (hX : X ∈ unitary (Mat I))
     ((norm_image Z hZ v).trans (norm_image Y hY v).symm)
     (by rw [norm_image Y hY]; exact dist_image X hx v)
     (by rw [norm_image Y hY]; exact dist_image Z hz v)
-  simpa only [ContinuousLinearMap.sub_apply,norm_image Y hY] using h
+  simpa only [_root_.sub_apply,norm_image Y hY] using h
 
 end
 end GaloisForLFunctions.HTGeometry.AngularError

@@ -68,7 +68,8 @@ theorem finite_renewal (t : ExceptionalTime) (j m : ℕ) (s : {z : ℂ // 1/2 < 
   let e := digitTreeEquiv t j
   have hW : Summable W := by simpa only [Nat.cast_zero,add_zero] using (physical_hasSum t j s 0).summable
   have hT := e.summable_iff.mpr hW
-  have hp := hT.comp_injective (Sum.inr_injective (α := First C))
+  have hp : Summable (fun p : Fin C × Label t j => W (e (.inr p))) :=
+    hT.comp_injective (Sum.inr_injective (α := First C))
   have hsplit := e.tsum_eq W
   rw [Summable.tsum_sum (f := fun u : DigitTree t j => W (e u)) Summable.of_finite hp,
     tsum_fintype (fun d : First C => W (e (.inl d))),hp.tsum_prod,tsum_fintype] at hsplit
@@ -83,8 +84,8 @@ theorem finite_renewal (t : ExceptionalTime) (j m : ℕ) (s : {z : ℂ // 1/2 < 
     apply HasSum.tsum_eq
     apply h.congr_fun
     intro x
-    exact (child_expansion (base_pos t j) (endpoint_pos t j d) (parent_ge_one x) s.val m).symm.trans
-      (congrArg (fun n => weight n s.val) (child_parent t j d x).symm)
+    exact (congrArg (fun n => weight n s.val) (child_parent t j d x)).trans
+      (child_expansion (base_pos t j) (endpoint_pos t j d) (parent_ge_one x) s.val m)
   change seeds t j s.val+(∑ d : Fin C, ∑' x : Label t j, W (e (.inr (d,x)))) = physical t j s.val at hsplit
   rw [← hsplit]
   simp only [hcol,Finset.sum_add_distrib,regular,add_assoc]

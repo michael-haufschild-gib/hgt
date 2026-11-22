@@ -49,19 +49,26 @@ private theorem second_ne (t : ExceptionalTime) (j : ℕ) (k : ℤ) : denominato
   scale_off t j _ (fun n hn => (by norm_num : -(3/2:ℝ) ≠ 1/2)
     ((second_re t j k).symm.trans (congrArg Complex.re hn)))
 
+theorem base_add_one_ne (t : ExceptionalTime) (j : ℕ) : (base t j:ℂ)+1 ≠ 0 := by
+  rw [← Complex.ofReal_one,← Complex.ofReal_add]
+  exact Complex.ofReal_ne_zero.mpr (add_pos (base_pos t j) zero_lt_one).ne'
+
 private theorem transfer_value (t : ExceptionalTime) (j : ℕ) (k : ℤ) :
     varianceFactor t j (second t j k) = multiplier t j (second t j k)*denominator t j (second t j k) := by
   let u := second t j k
   let B := base t j
   have hclock := clock_zero t j k
   rw [scale_weight,sub_eq_zero] at hclock
-  have hB : (B:ℂ)+1 ≠ 0 := by exact_mod_cast (add_pos (base_pos t j) zero_lt_one).ne'
-  rw [varianceFactor,multiplier,second_scale,sub_add_cancel]
+  have hB : (B:ℂ)+1 ≠ 0 := base_add_one_ne t j
+  rw [varianceFactor,multiplier,second_scale,show second t j k+2 = point t j k from sub_add_cancel _ _]
   change u*(u+1)*(radix t j:ℂ)*((B:ℂ)-1)*weight B (point t j k)/24 =
     -(u*(u+1))/(24*((B:ℂ)+1))*(1-(B:ℂ)^2)
   calc
     _ = u*(u+1)*((B:ℂ)-1)*((radix t j:ℂ)*weight B (point t j k))/24 := by ring
-    _ = _ := by rw [← hclock]; field_simp [hB]; ring
+    _ = _ := by
+      rw [← hclock]
+      field_simp [hB]
+      ring
 
 private theorem multiplier_ne (t : ExceptionalTime) (j : ℕ) (k : ℤ) : multiplier t j (second t j k) ≠ 0 := by
   let u := second t j k
@@ -72,7 +79,7 @@ private theorem multiplier_ne (t : ExceptionalTime) (j : ℕ) (k : ℤ) : multip
     have he := congrArg Complex.re h
     change (second t j k).re+1=0 at he
     linarith only [hr,he]
-  have hB : (base t j:ℂ)+1 ≠ 0 := by exact_mod_cast (add_pos (base_pos t j) zero_lt_one).ne'
+  have hB : (base t j:ℂ)+1 ≠ 0 := base_add_one_ne t j
   exact div_ne_zero (neg_ne_zero.mpr (mul_ne_zero hu hv)) (mul_ne_zero (by norm_num) hB)
 
 private theorem simple_data (t : ExceptionalTime) (j : ℕ) (s : Region) {v : ℂ}
@@ -81,8 +88,16 @@ private theorem simple_data (t : ExceptionalTime) (j : ℕ) (s : Region) {v : �
     (meromorphicOrderAt (continued t j) s.val < 0 ↔ fullNum t j s.val ≠ 0) ∧
     (meromorphicOrderAt (continued t j) s.val = (-1:ℤ) ↔ fullNum t j s.val ≠ 0) := by
   have h := simple_scale (H := fun _ => 0) analyticAt_const (fullNum_analytic t j s)
-    (scale_analytic t j s.val) h₀ (hd.deriv ▸ hv)
-  simpa only [zero_add,hd.deriv,continued] using h
+    (scale_analytic t j s.val) h₀ (by rw [hd.deriv]; exact hv)
+  have he : (fun z => (0:ℂ)+fullNum t j z/fullScale t j z) = continued t j := by
+    funext z
+    exact zero_add _
+  dsimp only at h
+  rw [he,hd.deriv] at h
+  exact h
+
+private theorem scale_product (t : ExceptionalTime) (j : ℕ) :
+    (denominator t j * fun z => denominator t j (z+2)) = fullScale t j := rfl
 
 /-- Primary residues and the simple-pole support agree with the original balanced partition. -/
 theorem primary_data (t : ExceptionalTime) (j : ℕ) (k : ℤ) :
@@ -95,10 +110,12 @@ theorem primary_data (t : ExceptionalTime) (j : ℕ) (k : ℤ) :
   let b := denominator t j (w+2)
   have hl : l ≠ 0 := mul_ne_zero two_ne_zero (Complex.ofReal_ne_zero.mpr (logRadix t j).property.ne')
   have hb : b ≠ 0 := scale_right t j ⟨w+2,by change (1/2:ℝ) < 1/2+2; norm_num⟩
-  have hz := clock_zero t j k
+  have hz : denominator t j w = 0 := clock_zero t j k
   have hd : HasDerivAt (fullScale t j) (l*b) w := by
-    simpa only [hz,zero_mul,add_zero] using
-      (scaleFactor_derivative (logRadix t j) k).mul (movedScale_analytic t j w).differentiableAt.hasDerivAt
+    have h₁ : HasDerivAt (denominator t j) l w := scaleFactor_derivative (logRadix t j) k
+    have h := h₁.mul (movedScale_analytic t j w).differentiableAt.hasDerivAt
+    rw [scale_product,hz,zero_mul,add_zero] at h
+    exact h
   have h := simple_data t j ⟨w,by change -(7/2:ℝ) < 1/2; norm_num⟩
     (by change denominator t j (point t j k)*_ = 0; rw [hz,zero_mul]) hd (mul_ne_zero hl hb)
   have hN : fullNum t j w = numerator t j w*b := by
@@ -129,13 +146,22 @@ theorem secondary_data (t : ExceptionalTime) (j : ℕ) (k : ℤ) :
   have hm : HasDerivAt (fun z => denominator t j (z+2)) l u := by
     simpa only [Function.comp_def,id_eq,mul_one] using hder.comp u ((hasDerivAt_id u).add_const 2)
   have hd : HasDerivAt (fullScale t j) (b*l) u := by
-    simpa only [hzero,mul_zero,zero_add] using (scaleFactor_analytic (logRadix t j).val u).differentiableAt.hasDerivAt.mul hm
+    have h₁ : HasDerivAt (denominator t j) (deriv (denominator t j) u) u :=
+      (scaleFactor_analytic (logRadix t j).val u).differentiableAt.hasDerivAt
+    have h := h₁.mul hm
+    rw [scale_product,hzero,mul_zero,zero_add] at h
+    exact h
   have hr : -(7/2) < u.re := by change -(7/2) < (second t j k).re; rw [second_re]; norm_num
   have h := simple_data t j ⟨u,hr⟩ (by change b*denominator t j (u+2) = 0; rw [hzero,mul_zero]) hd (mul_ne_zero hb hl)
   have hN : fullNum t j u = (v*b)*numerator t j w := by rw [fullNum,hzero,mul_zero,zero_add,hu,centeredNum_clock,transfer_value]
   have hr₁ : (v*b*numerator t j w)/(b*l) = v*(numerator t j w/l) := by field_simp [hb,hl]
-  change HTGeometry.laurentCoeff (continued t j) u (-1) = _ ∧ _ at h ⊢
-  simpa only [hN,hr₁,mul_ne_zero_iff,hv,hb,true_and,clock_residue,clock_pole_iff] using h
+  have hs : fullNum t j u ≠ 0 ↔ meromorphicOrderAt (continuation t j) w = (-1:ℤ) := by
+    rw [clock_pole_iff,hN]
+    constructor
+    · intro H hn; exact H (by rw [hn,mul_zero])
+    · exact fun hn => mul_ne_zero (mul_ne_zero hv hb) hn
+  refine ⟨h.1.trans ?_,h.2.1.trans hs,h.2.2.trans hs⟩
+  rw [hN,hr₁,clock_residue]
 
 #print axioms primary_data
 #print axioms secondary_data

@@ -6,6 +6,7 @@ open Filter NormedSpace Topology
 namespace GaloisForLFunctions.HTGeometry.SpanningDensity.FixedHorizon
 noncomputable section
 variable {A : Type*} [CStarAlgebra A] [NormOneClass A]
+local instance : NormedAlgebra ℚ A := .restrictScalars ℚ ℂ A
 
 /-- A skew-adjoint summand makes no contribution to this exponential
 norm bound. In each Lie–Trotter step its exponential is unitary. -/
@@ -31,7 +32,7 @@ only its imaginary part can grow the propagator's norm. The estimate
 is independent of the dimension and of the real background Hamiltonian. -/
 theorem norm_complex_field_evolution (H P : A) (hH : IsSelfAdjoint H) (hP : IsSelfAdjoint P)
     (z : ℂ) (t : ℝ) :
-    ‖exp (t • ((-Complex.I) • (H+z • P)))‖ ≤ Real.exp (|t|*|z.im|*‖P‖) := by
+    ‖exp (t • ((-Complex.I) • (H+z • P)))‖ ≤ Real.exp (|t| * |z.im| * ‖P‖) := by
   let R := H+(z.re:ℂ) • P
   have hR : IsSelfAdjoint R := by
     change star (H+(z.re:ℂ) • P)=H+(z.re:ℂ) • P

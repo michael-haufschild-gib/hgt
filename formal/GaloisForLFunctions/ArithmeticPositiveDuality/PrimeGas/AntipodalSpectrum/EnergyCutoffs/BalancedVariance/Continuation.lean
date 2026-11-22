@@ -34,7 +34,7 @@ theorem centeredNum_physical (t : ExceptionalTime) (j : ℕ) (s : {z : ℂ // 1/
   have h := extension_agrees t j ⟨center t j,by linarith only [center_pos t j]⟩ s
   simp only [extension,background,sub_self,mul_zero,zero_mul,add_zero] at h
   change _ = denominator t j s.val*partition t j (center t j) s.val
-  rw [← h,centeredNum,mul_add,mul_div_cancel₀' _ (scale_right t j s)]
+  rw [← h,centeredNum,mul_add,← mul_div_assoc,mul_div_cancel_left₀ _ (scale_right t j s)]
 
 theorem centeredNum_clock (t : ExceptionalTime) (j : ℕ) (k : ℤ) :
     centeredNum t j (point t j k) = numerator t j (point t j k) := by
@@ -67,7 +67,7 @@ theorem movedScale_analytic (t : ExceptionalTime) (j : ℕ) (s : ℂ) :
 
 theorem fullNum_analytic (t : ExceptionalTime) (j : ℕ) (s : Region) : AnalyticAt ℂ (fullNum t j) s.val := by
   have hreg := regular_analytic t j 3 ⟨s.val,by norm_num at ⊢; linarith only [s.property]⟩
-  have hm : -(3/2) < (s.val+2).re := by rw [Complex.add_re,Complex.ofNat_re]; linarith only [s.property]
+  have hm : -(3/2) < (s.val+2).re := by change _ < s.val.re+2; linarith only [s.property]
   have hN := (centeredNum_analytic t j ⟨s.val+2,hm⟩).comp (f := fun z : ℂ => z+2)
     (analyticAt_id.add analyticAt_const)
   exact (hreg.mul (movedScale_analytic t j _)).add ((varianceFactor_analytic t j _).mul hN)
@@ -81,14 +81,16 @@ theorem continued_meromorphic (t : ExceptionalTime) (j : ℕ) (s : Region) :
 
 private theorem physical_num (t : ExceptionalTime) (j : ℕ) (s : {z : ℂ // 1/2 < z.re}) :
     fullNum t j s.val = fullScale t j s.val*physical t j s.val := by
-  have h₂ : 1/2 < (s.val+2).re := by rw [Complex.add_re,Complex.ofNat_re]; linarith only [s.property]
+  have h₂ : 1/2 < (s.val+2).re := by change _ < s.val.re+2; linarith only [s.property]
   rw [fullNum,fullScale,centeredNum_physical t j ⟨s.val+2,h₂⟩]
   linear_combination -(denominator t j (s.val+2))*(variance_renewal t j s)
 
 theorem continued_agrees (t : ExceptionalTime) (j : ℕ) (s : {z : ℂ // 1/2 < z.re}) :
     continued t j s.val = physical t j s.val := by
-  have h₂ : 1/2 < (s.val+2).re := by rw [Complex.add_re,Complex.ofNat_re]; linarith only [s.property]
-  rw [continued,physical_num,mul_div_cancel_left₀ _ (mul_ne_zero (scale_right t j s) (scale_right t j ⟨s.val+2,h₂⟩))]
+  have h₂ : 1/2 < (s.val+2).re := by change _ < s.val.re+2; linarith only [s.property]
+  rw [continued,physical_num]
+  exact mul_div_cancel_left₀ _ (show fullScale t j s.val ≠ 0 from
+    mul_ne_zero (scale_right t j s) (scale_right t j ⟨s.val+2,h₂⟩))
 
 /-- Clearing scale factors compares the analytic numerators even at their common zeros. -/
 theorem overlap (t : ExceptionalTime) (j : ℕ) (s : Strip) :
@@ -98,7 +100,7 @@ theorem overlap (t : ExceptionalTime) (j : ℕ) (s : Strip) :
     fullNum_analytic t j ⟨z,by change -(3/2) < z.re at hz; linarith only [hz]⟩
   have hG : AnalyticOnNhd ℂ (fun z => centeredNum t j z*denominator t j (z+2)) U :=
     fun z hz => (centeredNum_analytic t j ⟨z,hz⟩).mul (movedScale_analytic t j z)
-  have hc : Convex ℝ U := convex_halfSpace_gt Complex.reCLM.toLinearMap _
+  have hc : Convex ℝ U := convex_halfSpace_gt Complex.reCLM.toLinearMap.isLinear _
   have h₀ : (2:ℂ) ∈ U := by change -(3/2:ℝ) < 2; norm_num
   apply hF.eqOn_of_preconnected_of_eventuallyEq hG hc.isPreconnected h₀ _ s.property
   have hnh := (isOpen_lt continuous_const Complex.continuous_re).mem_nhds

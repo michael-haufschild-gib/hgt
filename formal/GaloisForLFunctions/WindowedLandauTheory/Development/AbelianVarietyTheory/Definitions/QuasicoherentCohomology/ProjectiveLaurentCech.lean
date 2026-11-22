@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.PolynomialTwistedCech
+import Mathlib.Data.Int.Interval
 
 /-! A Laurent cocycle for a negative twist is a boundary once its monomials with
 all projective exponents negative vanish. -/
@@ -9,24 +10,27 @@ open AddMonoidAlgebra HTGeometry
 
 namespace GlobalTheory.SchemeCohomology
 
-variable {K ι ν : Type*} [CommRing K] [Fintype ι] [DecidableEq ι] [LinearOrder ι]
+attribute [local instance] MvPolynomial.weightedGradedAlgebra
+
+variable {K : Type*} {ι ν : Type} [Field K] [Fintype ι] [DecidableEq ι] [LinearOrder ι]
   [Fintype ν] [DecidableEq ν]
 
+omit [Fintype ι] [LinearOrder ι] [Fintype ν] [DecidableEq ν] in
 private theorem laurentCoeffs_zero {e : ℕ} (I : Finset ι) :
     laurentCoeffs (0 : (polyTwCech K ι ν e).Cochain) I = 0 := by
   change (laurentLoc K ι ν I 0).coeff = 0
   rw [map_zero, AddMonoidAlgebra.coeff_zero]
 
-/-- In positive Čech degree, only monomials with full negative support can
-obstruct a cocycle from being a boundary. -/
+/-- In the augmented Čech complex, only monomials with full negative support
+can obstruct a cocycle from being a boundary. -/
 theorem polyTwCech_exists_primitive [Nonempty ι] {e p : ℕ}
     {c : (polyTwCech K ι ν e).Cochain}
-    (hc : (polyTwCech K ι ν e).IsDeg c (p + 1)) (hdc : (polyTwCech K ι ν e).d c = 0)
+    (hc : (polyTwCech K ι ν e).IsDeg c p) (hdc : (polyTwCech K ι ν e).d c = 0)
     (hfull : ∀ a : LaurentExp ι ν, negSupp a = Finset.univ → laurentCoeffs c Finset.univ a = 0) :
     ∃ b : (polyTwCech K ι ν e).Cochain,
-      (polyTwCech K ι ν e).IsDeg b p ∧ (polyTwCech K ι ν e).d b = c := by
+      (∀ I : Finset ι, I.card ≠ p → b I = 0) ∧ (polyTwCech K ι ν e).d b = c := by
   classical
-  have hcard (I : Finset ι) (hI : I.card ≠ p + 2) : laurentCoeffs c I = 0 := by
+  have hcard (I : Finset ι) (hI : I.card ≠ p + 1) : laurentCoeffs c I = 0 := by
     change (laurentLoc K ι ν I (twVal projCoord_mem (c I))).coeff = 0
     rw [hc I hI]
     exact laurentCoeffs_zero I
@@ -64,27 +68,48 @@ theorem polyTwCech_exists_primitive [Nonempty ι] {e p : ℕ}
   · change laurentCoeffs ((polyTwCech K ι ν e).d b) I = laurentCoeffs c I
     rw [laurentCoeffs_d, hb, hηd]
 
-/-- A negative twist is Čech-exact in positive degrees below the projective dimension. -/
-theorem polyTwCech_exactAt_of_below_top {e p : ℕ} (hp : p + 2 < Fintype.card ι) :
-    (polyTwCech K ι ν e).ExactAt (p + 1) := by
+/-- A negative twist is exact in the augmented Čech complex below the projective dimension. -/
+theorem polyTwCech_exactAt_of_below_top {e p : ℕ} (hp : p + 1 < Fintype.card ι) :
+    (polyTwCech K ι ν e).ExactAt p := by
   haveI : Nonempty ι := Fintype.card_pos_iff.mp (by omega)
   intro c hc hdc
   refine polyTwCech_exists_primitive hc hdc (fun a _ => ?_)
-  have hcard : (Finset.univ : Finset ι).card ≠ p + 2 := by
+  have hcard : (Finset.univ : Finset ι).card ≠ p + 1 := by
     rw [Finset.card_univ]
     omega
   change (laurentLoc K ι ν Finset.univ (twVal projCoord_mem (c Finset.univ))).coeff a = 0
   rw [hc Finset.univ hcard]
   exact DFunLike.congr_fun (laurentCoeffs_zero (K := K) (ν := ν) (e := e) Finset.univ) a
 
+/-- Fully negative monomials cannot occur in any boundary: each summand of the
+top differential comes from an intersection missing one inverted coordinate. -/
+theorem polyTwCech_boundary_full_negative_coeff {e : ℕ}
+    (b : (polyTwCech K ι ν e).Cochain) (a : LaurentExp ι ν) (ha : negSupp a = Finset.univ) :
+    laurentCoeffs ((polyTwCech K ι ν e).d b) Finset.univ a = 0 := by
+  classical
+  rw [laurentCoeffs_d, monoCechD, Finsupp.finsetSum_apply]
+  refine Finset.sum_eq_zero fun i _ => ?_
+  rw [Finsupp.smul_apply]
+  have hz : laurentCoeffs b (Finset.univ.erase i) a = 0 := by
+    by_contra h
+    have hmem := Finsupp.mem_support_iff.mpr h
+    have hadm := laurentLoc_mem_admSubgroup
+      (b (Finset.univ.erase i) : twPart (projGrading K ι ν) (projCoord K ι ν) (Finset.univ.erase i) e).2
+      a hmem
+    exact Finset.notMem_erase i Finset.univ (hadm.1 (ha ▸ Finset.mem_univ i))
+  rw [hz, smul_zero]
+
+omit [LinearOrder ι] [Fintype ν] [DecidableEq ν] in
 /-- On projective space the degree fixes a lower bound for each fully negative
 exponent, so only finitely many monomials can survive in top degree. -/
 theorem finite_full_negative_exponents [IsEmpty ν] (e : ℕ) :
     Finite {a : LaurentExp ι ν // DegAdm e a ∧ negSupp a = Finset.univ} := by
   classical
   have hneg (a : {a : LaurentExp ι ν // DegAdm e a ∧ negSupp a = Finset.univ}) (i : ι) :
-      a.1 (Sum.inl i) < 0 :=
-    (Finset.mem_filter.mp (a.2.2 ▸ Finset.mem_univ i : i ∈ negSupp a.1)).2
+      a.1 (Sum.inl i) < 0 := by
+    have hi : i ∈ negSupp a.1 := by rw [a.2.2]; exact Finset.mem_univ i
+    exact (Finset.mem_filter.mp hi).2
+  letI : Finite (Set.Icc (-(e : ℤ)) (-1)) := (Set.finite_Icc _ _).to_subtype
   let f (a : {a : LaurentExp ι ν // DegAdm e a ∧ negSupp a = Finset.univ}) :
       ι → Set.Icc (-(e : ℤ)) (-1) := fun i =>
     ⟨a.1 (Sum.inl i), by

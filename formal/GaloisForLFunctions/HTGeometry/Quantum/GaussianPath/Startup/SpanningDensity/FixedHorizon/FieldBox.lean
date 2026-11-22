@@ -73,7 +73,7 @@ theorem gaussian_field_box (n : ℕ) {b h δ : ℝ} (hb : 0<b) (hh : 0<h) (hδ :
       have h2 := hnew G (hc.comp (continuous_release _ _)) i hslice (u i) (hu i)
       refine (measure_mono (t :=
         {x ∈ B | |F (release k u x)|≤r} ∪
-        {x | x i ∈ Ioo (-b) b ∧ r≤|G (update x i (u i))| ∧ |G x|≤s}) ?_).trans
+        {x | x i ∈ Ioo (-b) b ∧ r ≤ |G (update x i (u i))| ∧ |G x| ≤ s}) ?_).trans
         ((measure_union_le _ _).trans ((add_le_add h1 h2).trans_eq ?_))
       · rintro x ⟨hx,hsig⟩
         rcases le_total |F (release k u x)| r with hr'|hr'

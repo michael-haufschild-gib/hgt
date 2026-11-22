@@ -20,21 +20,24 @@ private abbrev restrictRing {V W : X.Opens} (h : W ≤ V) : Γ(X, V) →+* Γ(X,
   (X.presheaf.map (homOfLE h).op).hom
 
 private abbrev restrictModule (F : X.Modules) {V W : X.Opens} (h : W ≤ V) : Γ(F, V) →+ Γ(F, W) :=
-  (F.presheaf.map (homOfLE h).op).hom.toAddMonoidHom
+  (F.presheaf.map (homOfLE h).op).hom
 
 private theorem restrictModule_comp (F : X.Modules) {U V W : X.Opens} (h₁ : V ≤ U) (h₂ : W ≤ V)
-    (s : Γ(F, U)) : restrictModule F h₂ (restrictModule F h₁ s) = restrictModule F (h₂.trans h₁) s :=
-  (F.presheaf.map_comp_apply (homOfLE h₁).op (homOfLE h₂).op s).symm
+    (s : Γ(F, U)) : restrictModule F h₂ (restrictModule F h₁ s) = restrictModule F (h₂.trans h₁) s := by
+  change F.presheaf.map (homOfLE h₂).op (F.presheaf.map (homOfLE h₁).op s) = _
+  rw [← ConcreteCategory.comp_apply, ← F.presheaf.map_comp]
+  rfl
 
 private theorem restrictRing_comp {U V W : X.Opens} (h₁ : V ≤ U) (h₂ : W ≤ V)
     (s : Γ(X, U)) : restrictRing h₂ (restrictRing h₁ s) = restrictRing (h₂.trans h₁) s := by
-  rw [← CommRingCat.comp_apply, ← X.presheaf.map_comp]
+  change X.presheaf.map (homOfLE h₂).op (X.presheaf.map (homOfLE h₁).op s) = _
+  rw [← ConcreteCategory.comp_apply, ← X.presheaf.map_comp]
   rfl
 
 private theorem restrictModule_smul (F : X.Modules) {V W : X.Opens} (h : W ≤ V)
     (f : Γ(X, V)) (s : Γ(F, V)) :
     restrictModule F h (f • s) = restrictRing h f • restrictModule F h s :=
-  F.map_smul (homOfLE h).op f s
+  F.map_smul (homOfLE h) f s
 
 section Coordinates
 
@@ -75,6 +78,7 @@ private theorem exists_chart_lift (j : ι) (s : Γ(F, U j)) :
   rw [restrictModule_smul, hg, smul_smul, map_pow, ← pow_add,
     Nat.sub_add_cancel (Finset.le_sup (f := e) (Finset.mem_univ i))]
 
+omit [Fintype ι] [F.IsQuasicoherent] in
 private theorem chart_lift_restrict {j : ι} {s : Γ(F, U j)} {m : ℕ} {g : ∀ i, Γ(F, U i)}
     (hg : ∀ i, restrictModule F (inf_le_left : U i ⊓ U j ≤ U i) (g i) =
       restrictRing (inf_le_left : U i ⊓ U j ≤ U i) (ratio hv i j) ^ m •
@@ -129,7 +133,8 @@ theorem exists_compatible_chart_lifts (j : ι) (s : Γ(F, U j)) :
     have hM (z : Γ(F, U j)) : restrictModule F le_rfl z = z := by
       simp [restrictModule]
     simp only [hM, coordinateRatio_self, map_one, one_pow, one_smul] at hj
-    rw [t, coordinateRatio_self, one_pow, one_smul, hj]
+    change coordinateRatio (hv j) (hv j) ^ B • g j = s
+    rw [coordinateRatio_self (hv j), one_pow, one_smul, hj]
   · intro i k
     let il : U i ⊓ U k ≤ U i := inf_le_left
     let kr : U i ⊓ U k ≤ U k := inf_le_right
@@ -153,7 +158,7 @@ theorem exists_compatible_chart_lifts (j : ι) (s : Γ(F, U j)) :
     rw [restrictModule_smul, restrictModule_smul, map_pow, map_pow, smul_smul, hB,
       ← hr, mul_pow, pow_add]
     congr 1
-    ac_rfl
+    exact mul_right_comm _ _ _
 
 /-- Every section on a coordinate chart is the image of the local generator of
 some negative twist under a global module morphism. -/
@@ -181,25 +186,31 @@ theorem exists_twist_hom_lifting_section (hcov : ⨆ i, U i = ⊤) (j : ι) (s :
     change (φ i V hi).symm z • restrictModule T hi (b i) = z at hz
     change restrictModule T h z = restrictRing h ((φ i V hi).symm z) •
       restrictModule T (h.trans hi) (b i)
-    rw [← restrictModule_comp, ← restrictModule_smul, hz]
+    rw [← restrictModule_comp T hi h, ← restrictModule_smul, hz]
   have hlocal (i : ι) {V W : (Proj 𝒜).Opens} (h : W ≤ V) (hi : V ≤ U i) (z : Γ(T, V)) :
       restrictModule F h (localMap i hi z) =
         localMap i (h.trans hi) (restrictModule T h z) := by
-    rw [localMap, localMap, restrictModule_smul, restrictModule_comp, hscalar]
+    dsimp only [localMap]
+    rw [restrictModule_smul, restrictModule_comp, hscalar]
   have hoverlap (i k : ι) (W : (Proj 𝒜).Opens) (hi : W ≤ U i) (hk : W ≤ U k) (z : Γ(T, W)) :
       localMap i hi z = localMap k hk z := by
-    have hb0 := congrArg (restrictModule T (le_inf hi hk)) (coordinatePower_neg_overlap (hv i) (hv k) m)
+    have hb0 : restrictModule T (inf_le_left : U i ⊓ U k ≤ U i) (b i) =
+        restrictRing (inf_le_left : U i ⊓ U k ≤ U i) (ratio hv i k) ^ m •
+          restrictModule T (inf_le_right : U i ⊓ U k ≤ U k) (b k) :=
+      coordinatePower_neg_overlap (hv i) (hv k) m
+    have hb₁ := congrArg (restrictModule T (le_inf hi hk)) hb0
     have hg0 := congrArg (restrictModule F (le_inf hi hk)) (hg i k)
     have hb' : restrictModule T hi (b i) =
         restrictRing hi (ratio hv i k) ^ m • restrictModule T hk (b k) := by
-      simpa only [restrictModule_comp, restrictModule_smul, map_pow, restrictRing_comp] using hb0
+      simpa only [restrictModule_comp, restrictModule_smul, map_pow, restrictRing_comp] using hb₁
     have hg' : restrictModule F hi (g i) =
         restrictRing hi (ratio hv i k) ^ m • restrictModule F hk (g k) := by
       simpa only [restrictModule_comp, restrictModule_smul, map_pow, restrictRing_comp] using hg0
     have he : (φ k W hk).symm z = (φ i W hi).symm z * restrictRing hi (ratio hv i k) ^ m := by
       apply (φ k W hk).injective
       rw [LinearEquiv.apply_symm_apply]
-      change z = _ • restrictModule T hk (b k)
+      change z = ((φ i W hi).symm z * restrictRing hi (ratio hv i k) ^ m) •
+        restrictModule T hk (b k)
       rw [mul_smul, ← hb']
       exact ((φ i W hi).apply_symm_apply z).symm
     change (φ i W hi).symm z • restrictModule F hi (g i) =
@@ -228,8 +239,7 @@ theorem exists_twist_hom_lifting_section (hcov : ⨆ i, U i = ⊤) (j : ι) (s :
   have hzero (W : (Proj 𝒜).Opens) : f W 0 = 0 := by
     apply hsep W
     intro i
-    rw [hf, map_zero, map_zero]
-    exact (zero_smul _ _)
+    simp only [hf, map_zero, localMap, zero_smul]
   have hadd (W : (Proj 𝒜).Opens) (x y : Γ(T, W)) : f W (x + y) = f W x + f W y := by
     apply hsep W
     intro i
@@ -244,10 +254,14 @@ theorem exists_twist_hom_lifting_section (hcov : ⨆ i, U i = ⊤) (j : ι) (s :
     apply hsep W
     intro i
     have hh : Wc W i ≤ Wc V i := inf_le_inf_right (U i) h
-    rw [hf, restrictModule_comp, ← restrictModule_comp F (inf_le_left : Wc V i ≤ V) hh,
-      hf, hlocal, restrictModule_comp, restrictModule_comp]
+    rw [hf, restrictModule_comp T h, restrictModule_comp F h,
+      ← restrictModule_comp F (inf_le_left : Wc V i ≤ V) hh,
+      hf, hlocal, restrictModule_comp]
   let hom : T ⟶ F := SheafOfModules.Hom.mk <| PresheafOfModules.homMk
-    { app := fun W => AddCommGrpCat.ofHom ⟨f W.unop, hzero W.unop, hadd W.unop⟩
+    { app := fun W => AddCommGrpCat.ofHom
+        { toFun := f W.unop
+          map_zero' := hzero W.unop
+          map_add' := hadd W.unop }
       naturality := fun _ _ i => AddCommGrpCat.ext (hres i.unop.le) }
     (fun W => hsmul W.unop)
   refine ⟨m, hom, ?_⟩
@@ -259,7 +273,7 @@ theorem exists_twist_hom_lifting_section (hcov : ⨆ i, U i = ⊤) (j : ι) (s :
     simp [restrictModule]
   simp only [hM] at h
   rw [h, ← hgj]
-  change (φ j (U j) le_rfl).symm (b j) • g j = g j
+  simp only [localMap, hM]
   have h1 : (φ j (U j) le_rfl).symm (b j) = 1 := by
     apply (φ j (U j) le_rfl).injective
     rw [LinearEquiv.apply_symm_apply]

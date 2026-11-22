@@ -34,7 +34,7 @@ theorem gaussian_semicircle_only :
     change orbitCircuitDistance H s t ≤ 1/5 at hcost
     linarith only [h,hbad,hcost]
   · have htime' : 2*A ≤ t*N := (div_le_iff₀ hN).mp (le_of_not_ge hshort)
-    have htail : A≤|t|*(n+1:ℕ) := by
+    have htail : A≤|t| * (n+1:ℕ) := by
       rw [abs_of_pos ht]
       dsimp only [N] at htime'
       push_cast at htime' ⊢

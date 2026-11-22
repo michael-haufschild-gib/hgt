@@ -17,7 +17,7 @@ theorem gaussian_fields_signal (n : ℕ) {a h η : ℝ} (hh : 0<h) (hη : 0<η)
   let δ := η/(2*((n:ℝ)+1))
   have hδ : 0<δ := by dsimp only [δ]; positivity
   let b := max a (max 1 δ⁻¹)
-  have ha : a≤b := le_max_left .. 
+  have ha : a≤b := le_max_left ..
   have hb1 : 1≤b := (le_max_left ..).trans (le_max_right ..)
   have hb : 0<b := zero_lt_one.trans_le hb1
   have hbi : δ⁻¹≤b := (le_max_right ..).trans (le_max_right ..)

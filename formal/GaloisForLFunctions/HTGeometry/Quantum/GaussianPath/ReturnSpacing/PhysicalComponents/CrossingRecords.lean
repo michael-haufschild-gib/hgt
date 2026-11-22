@@ -9,7 +9,8 @@ namespace GaloisForLFunctions.HTGeometry.ReturnSpacing.PhysicalComponents
 open SharpOccupation EmptyVisitFlux
 noncomputable section
 
-private theorem eventual_unit_separation :
+/-- At each small tolerance a visit excludes its unit translate, and every later fresh entry is farther than one unit away. -/
+theorem eventual_unit_separation :
     ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop,
       let N := n+2
       let H : selfAdjoint (Register N) := ⟨pathHamiltonian (pathPauliDisorderShell ω n),isSelfAdjoint_pathHamiltonian _⟩

@@ -1,6 +1,8 @@
 import GaloisForLFunctions.HTGeometry.FinsetCechDatum
+import Mathlib.Algebra.Category.Grp.EpiMono
 import Mathlib.Algebra.Homology.HomologicalComplexAbelian
 import Mathlib.Algebra.Homology.ShortComplex.Ab
+import Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex
 
 /-! Čech cochains of fixed degree form a cochain complex of abelian groups. -/
 
@@ -12,7 +14,7 @@ namespace HTGeometry.FinsetCechDatum
 
 universe v
 
-variable {ι : Type*} [DecidableEq ι] [LinearOrder ι]
+variable {ι : Type v} [DecidableEq ι] [LinearOrder ι]
 
 /-- Cochains supported on the intersections indexed by subsets of size `n+1`. -/
 def degreeCochains (D : FinsetCechDatum.{v} ι) (n : ℕ) : AddSubgroup D.Cochain where
@@ -38,8 +40,15 @@ private def degreeDifferential (D : FinsetCechDatum.{v} ι) (n : ℕ) :
 def cochainComplex (D : FinsetCechDatum.{v} ι) : CochainComplex AddCommGrpCat.{v} ℕ :=
   CochainComplex.of (fun n => AddCommGrpCat.of (D.degreeCochains n)) (degreeDifferential D) (by
     intro n
-    ext c
+    apply AddCommGrpCat.ext
+    intro c
     exact Subtype.ext (D.d_d c.1))
+
+theorem cochainComplex_d_apply (D : FinsetCechDatum.{v} ι) (n : ℕ) (c : D.degreeCochains n) :
+    D.cochainComplex.d n (n + 1) c = ⟨D.d c.1, D.d_isDeg c.2⟩ := by
+  change CochainComplex.of.d _ (degreeDifferential D) n (n + 1) c = _
+  rw [CochainComplex.of_d]
+  rfl
 
 variable {D E : FinsetCechDatum.{v} ι}
 
@@ -57,24 +66,29 @@ def Hom.cochainMap (φ : D.Hom E) : D.cochainComplex ⟶ E.cochainComplex :=
     change φ.degreeMap n ≫ CochainComplex.of.d _ (degreeDifferential E) n (n + 1) =
       CochainComplex.of.d _ (degreeDifferential D) n (n + 1) ≫ φ.degreeMap (n + 1)
     rw [CochainComplex.of_d, CochainComplex.of_d]
-    ext c
+    apply AddCommGrpCat.ext
+    intro c
     exact Subtype.ext (φ.d_onCochain c.1))
 
 theorem cochainComplex_exactAt (D : FinsetCechDatum.{v} ι) {n : ℕ}
     (h : D.ExactAt (n + 1)) : D.cochainComplex.ExactAt (n + 1) := by
   rw [HomologicalComplex.exactAt_iff' _ n (n + 1) (n + 2) (by simp) (by simp)]
-  apply ShortComplex.ab_exact_iff_function_exact.mpr
+  apply (ShortComplex.ab_exact_iff_function_exact _).mpr
   intro c
   constructor
   · intro hc
-    have hc' : D.d c.1 = 0 := congrArg Subtype.val (by simpa [cochainComplex] using hc)
+    change D.cochainComplex.d (n + 1) (n + 2) c = 0 at hc
+    rw [cochainComplex_d_apply] at hc
+    have hc' : D.d c.1 = 0 := congrArg Subtype.val hc
     obtain ⟨b, hb, he⟩ := h c.1 c.2 hc'
-    exact ⟨⟨b, hb⟩, by simpa [cochainComplex, degreeDifferential] using
-      (Subtype.ext he : (⟨D.d b, D.d_isDeg hb⟩ : D.degreeCochains (n + 1)) = c)⟩
+    refine ⟨⟨b, hb⟩, ?_⟩
+    change D.cochainComplex.d n (n + 1) ⟨b, hb⟩ = c
+    rw [cochainComplex_d_apply]
+    exact Subtype.ext he
   · rintro ⟨b, rfl⟩
-    simpa [cochainComplex, degreeDifferential] using
-      (Subtype.ext (D.d_d b.1) : (⟨D.d (D.d b.1), D.d_isDeg (D.d_isDeg b.2)⟩ :
-        D.degreeCochains (n + 2)) = 0)
+    change D.cochainComplex.d (n + 1) (n + 2) (D.cochainComplex.d n (n + 1) b) = 0
+    rw [cochainComplex_d_apply, cochainComplex_d_apply]
+    exact Subtype.ext (D.d_d b.1)
 
 variable {Q : FinsetCechDatum.{v} ι}
 
@@ -90,8 +104,8 @@ theorem shortExact_cochainMap (f : D.Hom E) (g : E.Hom Q)
   classical
   apply HomologicalComplex.shortExact_of_degreewise_shortExact
   intro n
-  refine ShortComplex.ShortExact.mk' (ShortComplex.ab_exact_iff_function_exact.mpr ?_)
-    (AddCommGrpCat.mono_iff_injective.mpr ?_) (AddCommGrpCat.epi_iff_surjective.mpr ?_)
+  refine ShortComplex.ShortExact.mk' ((ShortComplex.ab_exact_iff_function_exact _).mpr ?_)
+    ((AddCommGrpCat.mono_iff_injective _).mpr ?_) ((AddCommGrpCat.epi_iff_surjective _).mpr ?_)
   · intro c
     constructor
     · intro hc
@@ -104,7 +118,7 @@ theorem shortExact_cochainMap (f : D.Hom E) (g : E.Hom Q)
       change f.app a (x a) = c.1 a
       by_cases ha : a.card = n + 1
       · simpa only [x, dif_pos ha] using hb a ha
-      · rw [x, dif_neg ha, map_zero, c.2 a ha]
+      · simp only [x, dif_neg ha, map_zero, c.2 a ha]
     · rintro ⟨b, rfl⟩
       exact Subtype.ext (funext fun a => hcomp a (b.1 a))
   · intro b c h
@@ -122,6 +136,6 @@ theorem shortExact_cochainMap (f : D.Hom E) (g : E.Hom Q)
     change g.app a (x a) = c.1 a
     by_cases ha : a.card = n + 1
     · simpa only [x, dif_pos ha] using hb a ha
-    · rw [x, dif_neg ha, map_zero, c.2 a ha]
+    · simp only [x, dif_neg ha, map_zero, c.2 a ha]
 
 end HTGeometry.FinsetCechDatum

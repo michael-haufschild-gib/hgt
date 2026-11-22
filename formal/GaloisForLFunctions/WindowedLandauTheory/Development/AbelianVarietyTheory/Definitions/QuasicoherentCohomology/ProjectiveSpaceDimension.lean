@@ -1,6 +1,7 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.FiniteAffineCoverDimension
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.ProjectiveCompactness
 import GaloisForLFunctions.HTGeometry.ProjTwistedComparison
+import Mathlib.AlgebraicGeometry.Noetherian
 
 /-! The coordinate affine cover bounds the cohomological dimension of projective space. -/
 
@@ -56,5 +57,23 @@ theorem PSpace.quasicoherent_cohomology_vanishing
   GlobalTheory.SchemeCohomology.quasicoherent_vanishing_of_finite_affineCover F
     (PSpace.coordinateOpen R N) (le_of_eq (PSpace.iSup_coordinateOpen R N).symm)
     (fun _ => PSpace.isAffineOpen_coordinateInter R N) q (by simpa using hq) x
+
+/-- The degree-zero ring is the base ring, so finite type of Proj gives local Noetherianity. -/
+theorem PSpace.isLocallyNoetherian [IsNoetherianRing R] : IsLocallyNoetherian (PSpace R N) := by
+  let 𝒜 := pspaceGrading R N
+  have hzero : Function.Surjective (algebraMap R (𝒜 0)) := by
+    intro a
+    have h := a.2
+    change a.1 ∈ MvPolynomial.homogeneousSubmodule (Fin (N + 1)) R 0 at h
+    rw [MvPolynomial.homogeneousSubmodule_zero, Submodule.mem_one] at h
+    obtain ⟨r, hr⟩ := h
+    exact ⟨r, Subtype.ext hr⟩
+  haveI : IsNoetherianRing (𝒜 0) :=
+    isNoetherianRing_of_surjective R (𝒜 0) (algebraMap R (𝒜 0)) hzero
+  haveI : IsScalarTower R (𝒜 0) (MvPolynomial (Fin (N + 1)) R) :=
+    IsScalarTower.of_algebraMap_eq (fun _ => rfl)
+  haveI : Algebra.FiniteType (𝒜 0) (MvPolynomial (Fin (N + 1)) R) :=
+    Algebra.FiniteType.of_restrictScalars_finiteType R _ _
+  exact LocallyOfFiniteType.isLocallyNoetherian (Proj.toSpecZero 𝒜)
 
 end UpperTheory.Cb
