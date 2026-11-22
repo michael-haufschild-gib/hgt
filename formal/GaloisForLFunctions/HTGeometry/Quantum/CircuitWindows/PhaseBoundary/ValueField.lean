@@ -1,5 +1,5 @@
 import Mathlib.Algebra.Polynomial.Eval.Coeff
-import Mathlib.FieldTheory.Subfield.Basic
+import Mathlib.Algebra.Field.Subfield.Basic
 import Mathlib.Tactic
 
 /-! # Lifting polynomial coefficients over a field of specialized real values -/

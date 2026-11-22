@@ -227,7 +227,7 @@ private theorem adjacentCutoff_radix_even_pow_eq_of_ne_one
         (q ^ 2) ^ (K - r) * radialCutoff ((tailRadix t (j + 1)).val ^ r) w) -
       _root_.RHTower.zetaPoleUnit w * finiteContrastTransfer C K w = _
   rw [Finset.mul_sum, Finset.sum_congr rfl hterm1,
-    Finset.mul_sum (2 : ℂ), Finset.sum_congr rfl hterm2]
+    Finset.mul_sum (Finset.range K), Finset.sum_congr rfl hterm2]
   simp only [Finset.sum_add_distrib, ← Finset.mul_sum, Finset.sum_const, Finset.card_range,
     nsmul_eq_mul, Nat.cast_mul, Nat.cast_ofNat]
   -- Match the `ζ(w)` geometric contrast with `zetaPoleUnit w * finiteContrastTransfer C K w`.
@@ -267,9 +267,9 @@ theorem adjacentCutoff_radix_even_pow_eq (t : ExceptionalTime) (j K : ℕ)
   · exact adjacentCutoff_radix_even_pow_eq_of_ne_one t j K hw hw1
   · -- Pass to `w = 1` along `w_n = 1 + (n + 1)⁻¹ → 1` by continuity of every finite shell term.
     set C := tailRadix t j
-    have hcont_sum : ∀ {ι : Type*} (s : Finset ι) (g : ι → ℂ → ℂ) (z₀ : ℂ),
-        (∀ i ∈ s, ContinuousAt (g i) z₀) → ContinuousAt (fun z => ∑ i ∈ s, g i z) z₀ :=
-      fun s _ _ hg => tendsto_finset_sum s fun i hi => (hg i hi).tendsto
+    have hcont_sum : ∀ (s : Finset ℕ) (g : ℕ → ℂ → ℂ),
+        (∀ i ∈ s, ContinuousAt (g i) 1) → ContinuousAt (fun z => ∑ i ∈ s, g i z) 1 :=
+      fun s _ hg => tendsto_finsetSum s fun i hi => (hg i hi).tendsto
     have hheat_cont : ∀ B : ℕ+, Continuous (fun z : ℂ => heat z B) := fun B => by
       unfold heat; fun_prop
     let lhs (z : ℂ) : ℂ :=
@@ -280,7 +280,7 @@ theorem adjacentCutoff_radix_even_pow_eq (t : ExceptionalTime) (j K : ℕ)
         2 * z * (z + 1) * adjacentBernoulliFinite C K z)
     have hcont_rad : ∀ N : ℕ, ContinuousAt (fun z : ℂ => radialCutoff N z) 1 := fun N => by
       unfold radialCutoff
-      refine hcont_sum _ _ 1 fun n hn => ?_
+      refine hcont_sum (Finset.Icc 1 N) (fun n z => (n : ℂ) ^ (-z)) fun n hn => ?_
       have hn0 : (n : ℂ) ≠ 0 := Nat.cast_ne_zero.mpr (by linarith [Finset.mem_Icc.mp hn])
       exact continuousAt_id.neg.const_cpow (Or.inl hn0)
     have hcont_sh0 : ContinuousAt (fun z : ℂ => shellCutoff t j (C.val ^ (2 * K)) z) 1 := by
@@ -289,7 +289,9 @@ theorem adjacentCutoff_radix_even_pow_eq (t : ExceptionalTime) (j K : ℕ)
             (heat z C) ^ (2 * K - m) * radialCutoff (C.val ^ m) z :=
         funext fun z => shellCutoff_radix_pow t j (2 * K) z
       rw [heq]
-      refine continuousAt_const.mul (hcont_sum _ _ 1 fun m _ => ?_)
+      refine continuousAt_const.mul
+        (hcont_sum (Finset.range (2 * K))
+          (fun m z => (heat z C) ^ (2 * K - m) * radialCutoff (C.val ^ m) z) fun m _ => ?_)
       exact ((hheat_cont C).continuousAt.pow _).mul (hcont_rad _)
     have hcont_sh1 : ContinuousAt (fun z : ℂ => shellCutoff t (j + 1) (C.val ^ (2 * K)) z) 1 := by
       have hpow_eq : (tailRadix t (j + 1)).val ^ K = C.val ^ (2 * K) := by
@@ -302,7 +304,10 @@ theorem adjacentCutoff_radix_even_pow_eq (t : ExceptionalTime) (j K : ℕ)
         rw [← hpow_eq]
         exact shellCutoff_radix_pow t (j + 1) K z
       rw [heq]
-      refine continuousAt_const.mul (hcont_sum _ _ 1 fun r _ => ?_)
+      refine continuousAt_const.mul
+        (hcont_sum (Finset.range K)
+          (fun r z => (heat z (tailRadix t (j + 1))) ^ (K - r) *
+            radialCutoff ((tailRadix t (j + 1)).val ^ r) z) fun r _ => ?_)
       exact ((hheat_cont (tailRadix t (j + 1))).continuousAt.pow _).mul (hcont_rad _)
     have hcont_lhs : ContinuousAt lhs 1 := by
       refine (hcont_sh0.sub (continuousAt_const.mul hcont_sh1)).sub ?_
@@ -316,10 +321,13 @@ theorem adjacentCutoff_radix_even_pow_eq (t : ExceptionalTime) (j K : ℕ)
       have htail : ∀ N : ℕ, 1 ≤ N → ContinuousAt (_root_.RHTower.zetaBernoulliTail N) 1 :=
         fun N hN => (_root_.RHTower.differentiableAt_zetaBernoulliTail hN
           (by norm_num : (-1 : ℝ) < (1 : ℂ).re)).continuousAt
-      refine (hcont_sum _ _ 1 fun m _ =>
-          (hqinv.pow m).mul (htail _ (Nat.one_le_pow m C.val C.pos))).sub
-        (continuousAt_const.mul (hcont_sum _ _ 1 fun r _ =>
-          (hqinv.pow (2 * r)).mul (htail _ (Nat.one_le_pow (2 * r) C.val C.pos))))
+      refine (hcont_sum (Finset.range (2 * K))
+          (fun m z => (heat z C)⁻¹ ^ m * _root_.RHTower.zetaBernoulliTail (C.val ^ m) z)
+          fun m _ => (hqinv.pow m).mul (htail _ (Nat.one_le_pow m C.val C.pos))).sub
+        (continuousAt_const.mul (hcont_sum (Finset.range K)
+          (fun r z => (heat z C)⁻¹ ^ (2 * r) *
+            _root_.RHTower.zetaBernoulliTail (C.val ^ (2 * r)) z)
+          fun r _ => (hqinv.pow (2 * r)).mul (htail _ (Nat.one_le_pow (2 * r) C.val C.pos))))
     have hcont_rhs : ContinuousAt rhs 1 := by
       have hq_cont : ContinuousAt (fun z : ℂ => (heat z C) ^ (2 * K)) 1 :=
         (hheat_cont C).continuousAt.pow (2 * K)
@@ -542,7 +550,7 @@ theorem norm_adjacentCutoff_radix_even_pow_sub_subMellin_le
         (1 / (8 * (w.re + 1))) * (Cr⁻¹) ^ (2 * K) * (Cr⁻¹) ^ n :=
       (summable_geometric_of_lt_one (by positivity) hinv1).mul_left _
     refine (norm_tsum_le_tsum_norm hsum_shift1).trans ?_
-    refine (Summable.tsum_le_tsum (fun n => ?_) hsum_shift1 hg).trans ?_
+    refine (Summable.tsum_le_tsum (fun n => ?_) hsum_shift1 hg).trans_eq ?_
     · have hbd := norm_inv_heat_mul_bernoulliTail_le C hw (n + 2 * K)
       have hexp : ((C.val : ℝ)⁻¹) ^ (n + 2 * K) = (Cr⁻¹) ^ (2 * K) * (Cr⁻¹) ^ n := by
         dsimp only [Cr]; rw [pow_add, mul_comm]
@@ -564,7 +572,7 @@ theorem norm_adjacentCutoff_radix_even_pow_sub_subMellin_le
         (1 / (8 * (w.re + 1))) * ((Cr ^ 2)⁻¹) ^ K * ((Cr ^ 2)⁻¹) ^ n :=
       (summable_geometric_of_lt_one (by positivity) hinv2).mul_left _
     refine (norm_tsum_le_tsum_norm hsum_shift2).trans ?_
-    refine (Summable.tsum_le_tsum (fun n => ?_) hsum_shift2 hg).trans ?_
+    refine (Summable.tsum_le_tsum (fun n => ?_) hsum_shift2 hg).trans_eq ?_
     · have hbd := norm_inv_heat_mul_bernoulliTail_le C hw (2 * (n + K))
       have hexp : ((C.val : ℝ)⁻¹) ^ (2 * (n + K)) = ((Cr ^ 2)⁻¹) ^ K * ((Cr ^ 2)⁻¹) ^ n := by
         dsimp only [Cr]; rw [Nat.mul_add, pow_add, pow_mul, pow_mul, inv_pow]; ring
@@ -575,7 +583,7 @@ theorem norm_adjacentCutoff_radix_even_pow_sub_subMellin_le
       have hc2_0 : Cr ^ 2 ≠ 0 := (sq_pos_of_pos hCr0).ne'
       have : (1 - (Cr ^ 2)⁻¹)⁻¹ = Cr ^ 2 / (Cr ^ 2 - 1) := by
         field_simp [hc2_0, hc2_sub, h1_pos.ne']
-      have hpowK : ((Cr ^ 2)⁻¹) ^ K = (Cr⁻¹) ^ (2 * K) := by rw [inv_pow, ← pow_mul]
+      have hpowK : ((Cr ^ 2)⁻¹) ^ K = (Cr⁻¹) ^ (2 * K) := by rw [inv_pow, ← pow_mul, ← inv_pow]
       rw [this, hpowK]; ring
   have heq := adjacentCutoff_radix_even_pow_eq t j K hw
   dsimp only at heq

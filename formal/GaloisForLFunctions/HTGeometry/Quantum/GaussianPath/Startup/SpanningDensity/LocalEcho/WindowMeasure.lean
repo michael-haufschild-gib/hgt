@@ -32,11 +32,12 @@ private theorem measure_one (E : Set ℝ) (d b a : ℝ) (hd : 0≤d)
 
 private theorem measure_windows (E : Set ℝ) (d b : ℝ) (hd : 0≤d) (hb : 0≤b)
     (gap : ∀ v∈E, ∀ w∈E, |w-v|<d ∨ b < |w-v|) (a : ℝ) (m : ℕ) :
-    volume.real (E∩Icc a (a+m*b))≤m*d := by
+    volume.real (E∩Icc a (a+m*b))≤ m *d := by
   induction m with
   | zero =>
     simp only [Nat.cast_zero,zero_mul,add_zero,Icc_self]
-    exact (measureReal_mono (μ:=volume) inter_subset_right (by simp)).trans_eq (by simp)
+    have hzero : volume.real ({a} : Set ℝ) = 0 := by rw [measureReal_def,measure_singleton,ENNReal.toReal_zero]
+    exact (measureReal_mono (μ:=volume) (show E ∩ {a} ⊆ {a} from inter_subset_right) (by simp)).trans_eq hzero
   | succ m ih =>
     let p := a+m*b
     have he : E∩Icc a (a+(m+1:ℕ)*b)=(E∩Icc a p)∪(E∩Icc p (p+b)) := by
@@ -62,10 +63,10 @@ theorem gaussian_uniform_window_occupation (κ : ℝ) (hκ : κ<1/2) : ∃ A b :
   filter_upwards [hω] with n hn
   intro s hs H E a T hT
   let m := ⌈T/b⌉₊
-  have ht : T≤m*b := (div_le_iff₀ hb).mp (Nat.le_ceil _)
+  have ht : T≤ m *b := (div_le_iff₀ hb).mp (Nat.le_ceil _)
   have hd : 0≤A/(n+1:ℕ) := by positivity
   have he := measure_windows E _ b hd hb.le (hn s hs).1 a m
-  have hsub : E∩Icc a (a+T) ⊆ E∩Icc a (a+m*b) := inter_subset_inter_right _ (Icc_subset_Icc_right (add_le_add_left ht _))
+  have hsub : E∩Icc a (a+T) ⊆ E∩Icc a (a+m*b) := inter_subset_inter_right _ (Icc_subset_Icc_right (add_le_add_right ht _))
   have hfin : volume (E∩Icc a (a+m*b))≠⊤ := ((measure_mono inter_subset_right).trans_lt measure_Icc_lt_top).ne
   apply ((measureReal_mono (μ:=volume) hsub hfin).trans he).trans
   apply mul_le_mul_of_nonneg_right _ hd
@@ -95,7 +96,7 @@ theorem gaussian_deep_visit_window (κ : ℝ) (hκ : κ<1/2) : ∃ c A b : ℝ, 
   obtain ⟨z,hz,D,hD,herr⟩ := hv
   have hsub : Icc v (v+c/(n+2:ℕ)) ⊆ E∩Icc v (v+b) := by
     intro w hw
-    refine ⟨⟨z,hz,D,hD,?_⟩,hw.1,hw.2.trans (add_le_add_left hshort _)⟩
+    refine ⟨⟨z,hz,D,hD,?_⟩,hw.1,hw.2.trans (add_le_add_right hshort _)⟩
     have hdist := norm_unitaryEvolution_time_sub_le (H:=H) (isSelfAdjoint_pathHamiltonian _) w v
     rw [abs_of_nonneg (sub_nonneg.mpr hw.1)] at hdist
     have hl : w-v≤c/(n+2:ℕ) := by linarith only [hw.2]
