@@ -3,7 +3,7 @@ import GaloisForLFunctions.WindowedLandauTheory.SharpRestriction.RamificationFro
 /-! The frame order is eventually a fixed multiple of the dyadic degree. -/
 
 open WindowedLandauTheory.HC WindowedLandauTheory.FrobeniusOrbits
-open WindowedLandauTheory.TwoAdicCyclotomicDecomposition UpperTheory.Top
+open WindowedLandauTheory.TwoAdicCyclotomicDecomposition
 
 private theorem ord_eq_mul (D : ModData) : D.frame.ord = Nat.card (D.cl.ker.map D.ξ) * 2 ^ D.e := by
   rw [D.ord_eq, ← Group.card_H D.e]

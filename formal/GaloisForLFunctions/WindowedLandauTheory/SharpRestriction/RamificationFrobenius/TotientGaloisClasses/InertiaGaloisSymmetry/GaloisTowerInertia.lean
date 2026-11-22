@@ -1,5 +1,6 @@
 import GaloisForLFunctions.WindowedLandauTheory.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.CyclotomicHostAction
 import GaloisForLFunctions.WindowedLandauTheory.TameInertiaTowers.CentralOrderTwo.OddEqOneOfSubOneMem
+import GaloisForLFunctions.WindowedLandauTheory.FrobeniusOrbits.Decomp
 
 /-! Inertia lifts and Frobenius restricts in towers of number fields. -/
 

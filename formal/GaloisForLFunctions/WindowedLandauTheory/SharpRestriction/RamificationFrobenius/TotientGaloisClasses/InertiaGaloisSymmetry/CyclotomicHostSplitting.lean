@@ -1,10 +1,13 @@
 import GaloisForLFunctions.WindowedLandauTheory.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.InertiaGaloisSymmetry.CyclotomicHostFrobenius
 import GaloisForLFunctions.WindowedLandauTheory.SharpRestriction.RamificationFrobenius.TotientGaloisClasses.FrameFacts
+import GaloisForLFunctions.WindowedLandauTheory.FrobeniusOrbits.Inertia
 
 /-! Decomposition at ramified host primes and unramifiedness over the real subfield. -/
 
 open NumberField IntermediateField Ideal
 open scoped Pointwise
+
+attribute [-instance] Int.instUnitsPow
 
 noncomputable section
 
@@ -181,7 +184,9 @@ theorem decompConj : ∀ (l : ℕ), l.Prime → l ∣ H.condN →
   rcases Nat.even_or_odd k with ⟨j, hj⟩ | ⟨j, hj⟩
   · have h0 := congrArg (fun g : φ.GG => g.1.1) hg
     simp only [Prod.fst_mul, Prod.pow_fst] at h0
-    rw [hρ1.1, hps, one_mul, hj, ← two_mul, pow_mul, Int.units_sq, one_pow] at h0
+    have hEven : (-1 : ℤˣ) ^ k = 1 := by
+      rw [hj, ← two_mul, pow_mul, Int.units_sq, one_pow]
+    rw [hρ1.1, hps, one_mul, hEven] at h0
     have h1 : (-1 : ℤˣ) = 1 := h0
     exact absurd (congrArg Units.val h1) (by norm_num)
   · have h7 : (7 : ZMod 16) ^ k = 7 := by

@@ -67,13 +67,6 @@ theorem log_norm_cyc {m : ℕ} (hm : 1 < m) {F : Type*} [Field F] [NumberField F
   have ht : (0 : ℝ) < m.totient := by exact_mod_cast Nat.totient_pos.2 (by omega)
   exact mul_right_cancel₀ ht.ne' (h.trans (mul_comm _ _))
 
-private theorem absNorm_map_algebraMap_eq_pow_finrank {L E : Type*} [Field L] [NumberField L] [Field E] [NumberField E]
-    [Algebra E L] (I : Ideal (𝓞 E)) :
-    Ideal.absNorm (I.map (algebraMap (𝓞 E) (𝓞 L))) = Ideal.absNorm I ^ Module.finrank E L := by
-  have hr : Module.finrank (𝓞 E) (𝓞 L) = Module.finrank E L := by
-    exact (IsFractionRing.finrank_eq (𝓞 E) E (𝓞 L) L).symm
-  rw [Ideal.absNorm_algebraMap (𝓞 E) (𝓞 L) I, hr]
-
 theorem log_norm_root {m : ℕ} (hm : 1 < m) {L : Type*} [Field L] [NumberField L] {η : L}
     (hη : IsPrimitiveRoot η m) :
     Real.log |((Algebra.norm ℚ (η - 1) : ℚ) : ℝ)| * (m.totient : ℝ) = (Module.finrank ℚ L : ℝ) * vonMangoldt m := by
@@ -87,10 +80,16 @@ theorem adjoin_top : Algebra.adjoin E {ζ} = ⊤ := by
   have h1 : Algebra.adjoin ℚ ({ζ} : Set L) = ⊤ := IsCyclotomicExtension.adjoin_primitive_root_eq_top hζ
   letI : IsScalarTower ℚ E L := IsScalarTower.of_algebraMap_eq fun r => by
     simp only [eq_ratCast, map_ratCast]
-  have hle : Algebra.adjoin ℚ ({ζ} : Set L) ≤ (Algebra.adjoin E {ζ}).restrictScalars ℚ :=
-    Algebra.adjoin_le (fun z hz => Algebra.subset_adjoin hz)
+  have hle : Algebra.adjoin ℚ ({ζ} : Set L) ≤ (Algebra.adjoin E ({ζ} : Set L)).restrictScalars ℚ := by
+    apply Algebra.adjoin_le
+    intro z hz
+    change z ∈ Algebra.adjoin E ({ζ} : Set L)
+    exact Algebra.subset_adjoin hz
   rw [h1] at hle
-  exact eq_top_iff.mpr fun z _ => hle (Algebra.mem_top)
+  apply top_unique
+  intro z _
+  have hz : z ∈ (⊤ : Subalgebra ℚ L) := Algebra.mem_top
+  exact hle hz
 
 theorem gal_inj : Function.Injective fun σ : L ≃ₐ[E] L => σ ζ := by
   intro σ τ h
@@ -182,13 +181,11 @@ theorem log_discr_tower : Real.log |(discr L : ℝ)| =
     ∑ σ ∈ (Finset.univ : Finset (L ≃ₐ[E] L)).erase 1, Real.log |((Algebra.norm ℚ (ζ - σ ζ) : ℚ) : ℝ)| +
       Module.finrank E L * Real.log |(discr E : ℝ)| := by
   haveI : FiniteDimensional E L := Module.Finite.of_restrictScalars_finite ℚ E L
-  have hD := differentIdeal_eq_differentIdeal_mul_differentIdeal ℤ (𝓞 E) (𝓞 L)
-  have h1 : ((Ideal.absNorm (differentIdeal ℤ (𝓞 L)) : ℕ) : ℝ) = |(discr L : ℝ)| := by
-    rw [NumberField.absNorm_differentIdeal L (𝓞 L)]
-    simp only [Nat.cast_natAbs, Int.cast_abs]
-  have hE : ((Ideal.absNorm (differentIdeal ℤ (𝓞 E)) : ℕ) : ℝ) = |(discr E : ℝ)| := by
-    rw [NumberField.absNorm_differentIdeal E (𝓞 E)]
-    simp only [Nat.cast_natAbs, Int.cast_abs]
+  have hD : |(discr L : ℝ)| = (Ideal.absNorm (differentIdeal (𝓞 E) (𝓞 L)) : ℝ) *
+      |(discr E : ℝ)| ^ Module.finrank E L := by
+    have h := NumberField.natAbs_discr_eq_absNorm_differentIdeal_mul_natAbs_discr_pow E (𝓞 E) L (𝓞 L)
+    simpa only [Nat.cast_mul, Nat.cast_pow, Nat.cast_natAbs, Int.cast_abs] using
+      congrArg (fun n : ℕ => (n : ℝ)) h
   have hne : ∀ σ ∈ (Finset.univ : Finset (L ≃ₐ[E] L)).erase 1,
       |((Algebra.norm ℚ (ζ - σ ζ) : ℚ) : ℝ)| ≠ 0 := by
     intro σ hσ
@@ -201,8 +198,8 @@ theorem log_discr_tower : Real.log |(discr L : ℝ)| =
     rw [abs_ne_zero, Rat.cast_ne_zero]
     exact Algebra.norm_ne_zero_iff.2 hne
   have hdE : |(discr E : ℝ)| ≠ 0 := abs_ne_zero.2 (Int.cast_ne_zero.2 (NumberField.discr_ne_zero E))
-  rw [← h1, hD, map_mul, absNorm_map_algebraMap_eq_pow_finrank, Nat.cast_mul, Nat.cast_pow, absNorm_diff hζ E,
-    hE, Real.log_mul (Finset.prod_ne_zero_iff.2 hne) (pow_ne_zero _ hdE), Real.log_prod hne, Real.log_pow]
+  rw [hD, absNorm_diff hζ E, Real.log_mul (Finset.prod_ne_zero_iff.2 hne) (pow_ne_zero _ hdE),
+    Real.log_prod hne, Real.log_pow]
 
 open Classical in
 theorem log_discr_sub : Module.finrank E L * Real.log |(discr E : ℝ)| =

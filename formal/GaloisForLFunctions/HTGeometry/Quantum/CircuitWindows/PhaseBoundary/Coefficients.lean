@@ -21,7 +21,8 @@ theorem coefficientSquares_zero_iff (φ : A →+* ℝ) (p : A[X]) :
     ext n
     rw [Polynomial.coeff_map, Polynomial.coeff_zero]
     by_cases hn : n ∈ p.support
-    · exact pow_eq_zero (h n hn)
+    · by_contra hval
+      exact (pow_ne_zero 2 hval) (h n hn)
     · rw [Polynomial.notMem_support_iff.mp hn, map_zero]
   · intro h n _
     have hv := congrArg (fun P : ℝ[X] => P.coeff n) h

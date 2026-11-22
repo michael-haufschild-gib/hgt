@@ -21,9 +21,10 @@ theorem continuous_appendEval (ρ : X → A →+* ℝ) (hc : ∀ a, Continuous f
   change Continuous (fun z : X × ℝ => p.eval₂ (ρ z.1) z.2)
   induction p using Polynomial.induction_on' with
   | add p q hp hq =>
-    simpa only [eval₂_add] using hp.add hq
+    simp only [eval₂_add]
+    simpa only [Pi.add_def] using hp.add hq
   | monomial n a =>
-    simpa only [eval₂_monomial] using ((hc a).comp continuous_fst).mul (continuous_snd.pow n)
+    simpa only [eval₂_monomial,Pi.mul_def,Pi.pow_def,Function.comp_def] using ((hc a).comp continuous_fst).mul (continuous_snd.pow n)
 
 private theorem real_root_of_crossing (p : ℝ[X]) {l r : ℝ} (hlr : l ≤ r)
     (h : p.eval l * p.eval r < 0) : ∃ z ∈ Icc l r, p.eval z = 0 := by
@@ -57,7 +58,7 @@ theorem LocallyCertified.fst_image {ρ : X → A →+* ℝ}
       (continuous_appendEval ρ hc P).comp (continuous_id.prodMk continuous_const)
     have ht : ∀ᶠ z in 𝓝 x, P.eval₂ (ρ z) l * P.eval₂ (ρ z) r < 0 := by
       apply ((cont l).mul (cont r)).continuousAt.eventually_lt continuousAt_const
-      simpa only [eval_map] using hsign
+      simpa only [eval_map,Pi.mul_apply] using hsign
     refine ⟨g,hg,?_⟩
     filter_upwards [hU,ht,(hc d).continuousAt.eventually_ne hd] with z hzU hsg hdz hg'
     obtain ⟨w,hw,he⟩ := real_root_of_crossing (P.map (ρ z)) hlr (by simpa only [eval_map] using hsg)

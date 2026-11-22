@@ -32,8 +32,8 @@ theorem sign_bracket (p : ℝ[X]) (y : ℝ) (hy : p.eval y = 0)
     dsimp only [l,r] at hz
     constructor <;> linarith only [hz.1,hz.2,hδ]
   have hsign : 0 < q.eval l * q.eval r := by
-    have h₁ := (hball (hsub (left_mem_Icc.mpr hlr))).2
-    have h₂ := (hball (hsub (right_mem_Icc.mpr hlr))).2
+    have h₁ : 0 < q.eval y * q.eval l := (hball (hsub (left_mem_Icc.mpr hlr))).2
+    have h₂ : 0 < q.eval y * q.eval r := (hball (hsub (right_mem_Icc.mpr hlr))).2
     rcases (mul_pos_iff.mp h₁) with h|h <;> rcases (mul_pos_iff.mp h₂) with k|k
     · exact mul_pos h.2 k.2
     · exact (h.1.not_gt k.1).elim

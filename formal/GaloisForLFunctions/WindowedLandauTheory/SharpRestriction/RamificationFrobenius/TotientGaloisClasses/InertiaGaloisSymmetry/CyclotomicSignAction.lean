@@ -103,8 +103,11 @@ theorem ps_d : ∀ u : (ZMod H.condN)ˣ, (u : ZMod H.condN).val ≡ H.d [MOD H.Q
       Units.val_pow_eq_pow_val, IsUnit.unit_spec, hs', hneg]
     ring
   have h1 := ps_congr H u (-1 * w ^ 2) key
-  rw [h1, map_mul, map_pow, H.art_neg_one, Prod.fst_mul, Prod.fst_mul, Prod.pow_fst, Prod.pow_fst,
-    Int.units_sq, mul_one]
+  have hsq : (H.art w).1.1 * (H.art w).1.1 = 1 := by
+    simpa only [pow_two] using Int.units_sq (H.art w).1.1
+  rw [h1, pow_two, map_mul, map_mul, H.art_neg_one]
+  change φ.cc.1.1 * ((H.art w).1.1 * (H.art w).1.1) = -1
+  rw [hsq, mul_one]
   rfl
 
 end WindowedLandauTheory.HC.Der

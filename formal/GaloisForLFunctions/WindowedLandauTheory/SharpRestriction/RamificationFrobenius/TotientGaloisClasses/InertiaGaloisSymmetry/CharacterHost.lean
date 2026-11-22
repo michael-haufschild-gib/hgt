@@ -29,21 +29,27 @@ private theorem exists_sign {p : ℕ} (hp : p.Prime) (hp4 : p % 4 = 3) (s : ℤ�
         jacobiSym.at_neg_one (Nat.odd_iff.mpr (by omega)), ZMod.χ₄_nat_three_mod_four hp4]
       simp
 
-private theorem cop_qd : Nat.Coprime q d := by
+private theorem cop_qd (hH : HostHyp q d) : Nat.Coprime q d := by
   rw [Nat.coprime_primes hH.1 hH.2.1]
   have := hH.2.2.1
   have := hH.2.2.2.1
   omega
-private theorem q4 : q % 4 = 3 := by
+private theorem q4 (hH : HostHyp q d) : q % 4 = 3 := by
   have := hH.2.2.1
   omega
-private theorem d4 : d % 4 = 3 := by
+private theorem d4 (hH : HostHyp q d) : d % 4 = 3 := by
   have := hH.2.2.2.1
   omega
 
 end D7
 
 namespace ModData
+
+private theorem unitsMap_eq_of_val_modEq {a b : ℕ} [NeZero a] [NeZero b]
+    (h : a ∣ b) (u : (ZMod b)ˣ) (v : (ZMod a)ˣ)
+    (hv : (u : ZMod b).val ≡ (v : ZMod a).val [MOD a]) : ZMod.unitsMap h u = v := by
+  apply Units.ext
+  simpa only [ZMod.natCast_zmod_val] using (Der.val_modEq_iff h u (v : ZMod a).val).mp hv
 
 private theorem exists_unit_crt_three {a b c : ℕ} [NeZero (a * b * c)]
     (hab : a.Coprime b) (hac : a.Coprime c) (hbc : b.Coprime c)
@@ -154,7 +160,7 @@ variable (hc : Nat.Coprime D.m (q * d))
 
 include hc in
 theorem art_surj : Function.Surjective (D.art hH) := by
-  have := D.neZeroN hH
+  haveI := D.neZeroN hH
   intro g
   obtain ⟨v, hv⟩ := D.toA_surj (g.2 * D.w g.1.1)
   obtain ⟨y, cy, hy⟩ := D7.exists_sign hH.1 (D7.q4 hH) g.1.1
@@ -164,8 +170,9 @@ theorem art_surj : Function.Surjective (D.art hH) := by
   have h4 : (D.art hH u).1.1 = g.1.1 := Units.ext (by rw [art_ps, jacobi_congr h2, hy])
   refine ⟨u, Prod.ext (Prod.ext h4 (Units.ext ?_)) ?_⟩
   · rw [art_ch, jacobi_congr h3, hz]
-  · rw [art_snd, (unitsMap_eq_iff _ u v).mpr h1, hv, h4, mul_assoc, w_mul_self, mul_one]
+  · rw [art_snd, unitsMap_eq_of_val_modEq _ u v h1, hv, h4, mul_assoc, w_mul_self, mul_one]
 
+include hc in
 theorem exists_art_ps_neg_one :
     ∃ u : (ZMod (D.m * q * d))ˣ, ZMod.unitsMap (D.m_dvd q d) u = 1 ∧
       (((D.art hH u).1.1 : ℤˣ) : ℤ) = -1 := by
@@ -230,7 +237,7 @@ theorem exists_sqq : ∃ s : (D.host hH hc he hs).E, s ^ 2 = -((D.host hH hc he 
 
 theorem exact (h : ∀ l : ℕ, l.Prime → l ∣ D.m → ∃ v : (ZMod D.m)ˣ, (v : ZMod D.m).val ≡ 1 [MOD D.m / l] ∧ D.eta v ≠ 1) :
     (D.host hH hc he hs).Exact := by
-  have := D.neZeroN hH
+  haveI := D.neZeroN hH
   intro l hl (hlm : l ∣ D.m)
   obtain ⟨v, hv, hv1⟩ := h l hl hlm
   obtain ⟨u, h1, h2, h3⟩ := exists_unit_crt_three hc.coprime_mul_right_right hc.coprime_mul_left_right (D7.cop_qd hH)
@@ -243,7 +250,7 @@ theorem exact (h : ∀ l : ℕ, l.Prime → l ∣ D.m → ∃ v : (ZMod D.m)ˣ, 
     exact (Nat.modEq_and_modEq_iff_modEq_mul (hc.coprime_dvd_left h6)).mp
       ⟨(h1.of_dvd h6).trans hv, (Nat.modEq_and_modEq_iff_modEq_mul (D7.cop_qd hH)).mp ⟨h2, h3⟩⟩
   · have h5 : (D.art hH u).2 = 1 := congrArg Prod.snd h4
-    rw [art_snd, (unitsMap_eq_iff _ u v).mpr h1, D.art_ps_one hH u h2 (by simp), map_one, mul_one] at h5
+    rw [art_snd, unitsMap_eq_of_val_modEq _ u v h1, D.art_ps_one hH u h2 (by simp), map_one, mul_one] at h5
     exact (D.toA_eq_one_iff v).mp h5
 
 end Host

@@ -55,13 +55,9 @@ theorem hcl_eq_one {e : ℕ} {v : (ZMod (2 ^ (e + 2)))ˣ} (h : hcl e v = 1) : v 
   unfold hcl at h
   rw [QuotientGroup.eq_one_iff] at h
   obtain ⟨k, hk⟩ := Subgroup.mem_zpowers_iff.1 h
-  rcases Int.even_or_odd k with ⟨m, rfl⟩ | ⟨m, rfl⟩
-  · left
-    rw [← hk, ← two_mul, zpow_mul]
-    simp
-  · right
-    rw [← hk, zpow_add, zpow_mul]
-    simp
+  rcases Int.even_or_odd k with he | ho
+  · exact Or.inl (hk.symm.trans he.neg_one_zpow)
+  · exact Or.inr (hk.symm.trans ho.neg_one_zpow)
 
 variable {φ : Frame} (H : HostRaw φ)
 

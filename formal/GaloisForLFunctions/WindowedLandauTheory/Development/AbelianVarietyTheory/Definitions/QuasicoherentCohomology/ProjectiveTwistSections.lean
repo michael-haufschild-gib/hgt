@@ -1,4 +1,5 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.ProjectiveTwists
+import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Basic
 
 /-! Sections of a projective twist on a basic open are homogeneous fractions. -/
 
@@ -151,11 +152,9 @@ lemma isLocallyFraction_locMap {f : A} {d : ℕ} (hf : f ∈ 𝒜 d) (hd : 0 < d
   (toSection hf hd k ⟨z, hz⟩).2
 
 set_option backward.isDefEq.respectTransparency.types false in
-open ProjectiveSpectrum in
-
 lemma exists_section_of_isLocallyFraction_zero {U : Opens (ProjectiveSpectrum.top 𝒜)}
     (t : ∀ x : U, Loc 𝒜 x.1) (ht : (isLocallyFraction 𝒜 0).pred t) :
-    ∃ t' : (Proj.structureSheaf 𝒜).obj.obj (op U), ∀ x, (t'.1 x).val = t x := by
+    ∃ t' : (ProjectiveSpectrum.Proj.structureSheaf 𝒜).obj.obj (op U), ∀ x, (t'.1 x).val = t x := by
   have key : ∀ x : U, ∃ (V : Opens (ProjectiveSpectrum.top 𝒜)) (_ : x.1 ∈ V) (iV : V ⟶ U)
       (j : ℕ) (r s : 𝒜 j) (s_nin : ∀ y : V, s.1 ∉ y.1.asHomogeneousIdeal),
       ∀ y : V, t (iV y : U) = Localization.mk r.1 ⟨s.1, s_nin y⟩ := by
@@ -172,7 +171,7 @@ lemma exists_section_of_isLocallyFraction_zero {U : Opens (ProjectiveSpectrum.to
       (show s.1 ∈ x.1.asHomogeneousIdeal.toIdeal.primeCompl from hsn ⟨x.1, hxV⟩)⟩,
       by rw [HomogeneousLocalization.val_mk]; exact (w ⟨x.1, hxV⟩).symm⟩
   choose g hg using pt
-  refine ⟨(⟨g, fun x => ?_⟩ : (StructureSheaf.structureSheafInType 𝒜).obj.obj (op U)), hg⟩
+  refine ⟨(⟨g, fun x => ?_⟩ : (ProjectiveSpectrum.StructureSheaf.structureSheafInType 𝒜).obj.obj (op U)), hg⟩
   obtain ⟨V, hxV, iV, j, r, s, hsn, w⟩ := key x
   refine ⟨V, hxV, iV, j, r, s, hsn, fun y => HomogeneousLocalization.val_injective _ ?_⟩
   rw [HomogeneousLocalization.val_mk]
