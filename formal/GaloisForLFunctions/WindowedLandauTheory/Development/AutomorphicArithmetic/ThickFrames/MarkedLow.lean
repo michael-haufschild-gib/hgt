@@ -1,4 +1,3 @@
-import Mathlib
 import GaloisForLFunctions.WindowedLandauTheory.SubspaceCounting.GoodOrbitIntervalTileCondition
 
 /-! Bernoulli weights for selecting a subset with prescribed orbit shares. -/

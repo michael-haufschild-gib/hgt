@@ -11,10 +11,11 @@ def ends (Q : Finset (Fin (n+1))) : Finset (Fin (n+2)) := Q.biUnion fun e => {e.
 private theorem mem_near_of_incident {Q : Finset (Fin (n+1))} {l : PathLabel n} {v : Fin (n+2)}
     (hv : v∈ends Q) (hl : pathIncident v l) : l∈nearBonds Q := by
   obtain ⟨e,he,hv⟩ := Finset.mem_biUnion.mp hv
-  apply Finset.mem_biUnion.mpr ⟨e,he,Finset.mem_insert_of_mem (mem_pathOverlaps.mpr ?_)⟩
-  apply Finset.not_disjoint_iff.mpr ⟨v,mem_labelSupport.mpr (pathWord_ne_none_of_incident ?_),
+  have hz : pathIncident v (zz e) := by
+    simpa only [zz,pathIncident,Finset.mem_insert,Finset.mem_singleton,eq_comm] using hv
+  have hd := Finset.not_disjoint_iff.mpr ⟨v,mem_labelSupport.mpr (pathWord_ne_none_of_incident hz),
     mem_labelSupport.mpr (pathWord_ne_none_of_incident hl)⟩
-  simpa only [zz,pathIncident,Finset.mem_insert,Finset.mem_singleton,eq_comm] using hv
+  exact Finset.mem_biUnion.mpr ⟨e,he,Finset.mem_insert_of_mem (mem_pathOverlaps.mpr hd)⟩
 
 /-- Spin flips have no effect on words outside the selected bond neighborhoods. -/
 theorem off_sign {Q : Finset (Fin (n+1))} {S : Finset (Fin (n+2))} (hs : S⊆ends Q)
@@ -27,7 +28,7 @@ theorem off_sign {Q : Finset (Fin (n+1))} {S : Finset (Fin (n+2))} (hs : S⊆end
 theorem mixed_coord_abs (S T : Finset (Fin (n+2))) (u : PathShell n) (l : PathLabel n) :
     |mixedShell S T u l| ≤ 4*|u l| := by
   have h (V : Finset (Fin (n+2))) : |1-wordSign V l|≤2 := by
-    simpa only [abs_one,wordSign_abs] using abs_sub (1:ℝ) (wordSign V l)
+    simpa only [abs_one,wordSign_abs,one_add_one_eq_two] using abs_sub (1:ℝ) (wordSign V l)
   change |(1-wordSign S l)*(1-wordSign T l)*u l| ≤ _
   rw [abs_mul,abs_mul]
   exact mul_le_mul_of_nonneg_right ((mul_le_mul (h S) (h T) (abs_nonneg _) zero_le_two).trans_eq (by norm_num)) (abs_nonneg _)
@@ -72,12 +73,11 @@ theorem mixed_energy (u : PathShell n) {S T : Finset (Fin (n+2))} (hd : Disjoint
 theorem mixed_crossed (u : PathShell n) (V S : Finset (Fin (n+2))) (e : Fin (n+1))
     (hl : e.castSucc∈V) (hr : e.succ∈V) (h : e.castSucc∈S ↔ e.succ∉S) :
     mixedShell (V∩S) (V\S) u (zz e)=4*u (zz e) := by
+  have haxis : (2 : Fin 3) ≠ 0 := by decide
   by_cases he : e.castSucc∈S
-  · simp [mixedShell,zz,wordSign,axisSign,hl,hr,he,h.mp he]
-    <;> ring
+  · norm_num [mixedShell,zz,wordSign,axisSign,hl,hr,he,h.mp he,haxis]
   · have hm : e.succ∈S := by by_contra hh; exact he (h.mpr hh)
-    simp [mixedShell,zz,wordSign,axisSign,hl,hr,he,hm]
-    <;> ring
+    norm_num [mixedShell,zz,wordSign,axisSign,hl,hr,he,hm,haxis]
 
 end
 end GaloisForLFunctions.HTGeometry.SpanningDensity.LocalEcho

@@ -62,7 +62,7 @@ theorem balanced_clock_arc (t : ExceptionalTime) (j : ℕ) :
   let τ := Real.pi/l
   let g := 2*l-Real.log (c+1)
   have h₂ : 2 ≤ C := radix_gt_one t j
-  have hc : (2:ℝ) ≤ c := by exact_mod_cast h₂
+  have hc : (2:ℝ) ≤ c := show ((2:ℕ):ℝ) ≤ (C:ℝ) from Nat.cast_le.mpr h₂
   have hc₀ : 0 < c := by linarith only [hc]
   have hc₁ : 0 < c+1 := by linarith only [hc]
   have hl : 0 < l := Real.log_pos (by linarith only [hc])
@@ -83,8 +83,12 @@ theorem balanced_clock_arc (t : ExceptionalTime) (j : ℕ) :
   let n := x.val.val
   have hn : (0:ℝ) < n := by exact_mod_cast x.property
   have hpow : 0 < (c^2)^k := pow_pos (sq_pos_of_pos hc₀) _
-  have hr₁ : (c^2)^k ≤ (n:ℝ) := by exact_mod_cast hk
-  have hr₂ : (c+1)*(n:ℝ) < c^2*(c^2)^k := by exact_mod_cast hcap
+  have hr₁ : (c^2)^k ≤ (n:ℝ) := by
+    have h : (((C^2)^k:ℕ):ℝ) ≤ (n:ℝ) := Nat.cast_le.mpr hk
+    simpa only [Nat.cast_pow] using h
+  have hr₂ : (c+1)*(n:ℝ) < c^2*(c^2)^k := by
+    have h : (((C+1)*n:ℕ):ℝ) < ((C^2*(C^2)^k:ℕ):ℝ) := Nat.cast_lt.mpr hcap
+    simpa only [Nat.cast_mul,Nat.cast_add,Nat.cast_one,Nat.cast_pow] using h
   have hlow := Real.log_le_log hpow hr₁
   have hupp := Real.log_lt_log (mul_pos hc₁ hn) hr₂
   rw [Real.log_mul hc₁.ne' hn.ne',Real.log_mul (sq_pos_of_pos hc₀).ne' hpow.ne'] at hupp

@@ -12,7 +12,7 @@ def mask {N : ℕ} (S : Finset (Fin N)) (i : Fin N) : Option (Fin 3) := if i ∈
 def flip {N : ℕ} (S : Finset (Fin N)) : Register N := finitePauliMatrix (mask S)
 
 theorem flip_supported {N : ℕ} (S : Finset (Fin N)) : IsSiteSupported S (flip S) :=
-  finitePauliMatrix_isSiteSupported_of_eq_none S (mask S) (fun i hi => if_neg hi)
+  finitePauliMatrix_isSiteSupported_of_eq_none S (mask S) (fun _ hi => if_neg hi)
 
 def axisSign {N : ℕ} (S : Finset (Fin N)) (i : Fin N) (a : Fin 3) : ℝ :=
   if i ∈ S ∧ a ≠ 0 then -1 else 1
@@ -37,7 +37,7 @@ private theorem word_sign {n : ℕ} (S : Finset (Fin (n+2))) (l : PathLabel n) :
   classical
   rcases l with ⟨i,a⟩|⟨e,a,b⟩
   · rw [finitePauliConjugationSign,Finset.prod_eq_single i]
-    · simpa only [pathWord,onsiteWord,if_pos rfl,wordSign] using local_sign S i a
+    · simpa only [pathWord,onsiteWord,if_pos rfl,ite_true,wordSign] using local_sign S i a
     · intro j _ hj; simp [pathWord,onsiteWord,hj,boolPauliConjugationSign]
     · simp
   · have hne : e.castSucc ≠ e.succ := fun h => by have := congrArg Fin.val h; simp at this

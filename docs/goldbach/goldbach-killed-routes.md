@@ -1,6 +1,6 @@
 # Binary Goldbach: killed routes and surviving results
 
-**Lean baseline:** `6b6eb094c948dc2e0229e6ea0de88f5b17fe093e`. No new obstructions or retirements since `aa34244d8b80`. [Live routes and candidates](goldbach-current-frontier-map.md).
+**Lean baseline:** `69ddb4658356380b7c49e1d2e47de56930506661`. No new Goldbach obstructions or retirements since `6b6eb094c948`. [Live routes and candidates](goldbach-current-frontier-map.md).
 
 | Retired mechanism | Obstruction | Surviving result |
 |---|---|---|

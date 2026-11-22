@@ -2,6 +2,7 @@ import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory
 import Mathlib.Algebra.Category.ModuleCat.Presheaf.Colimits
 import Mathlib.Algebra.Category.ModuleCat.Sheaf.Abelian
 import Mathlib.Algebra.Homology.DerivedCategory.Ext.ExactSequences
+import Mathlib.RingTheory.Noetherian.Basic
 
 /-! The cohomology sequence of a short exact sequence of scheme modules is linear over the
 global section ring. -/
@@ -108,5 +109,21 @@ theorem CohomologyOn.exact_boundary_map {S : ShortComplex X.Modules} (hS : S.Sho
     Function.Exact (CohomologyOn.boundary hS U q) (CohomologyOn.map S.f U (q + 1)) :=
   (ShortComplex.ab_exact_iff_function_exact _).mp
     (Ext.covariant_sequence_exact₁' (freeSheafOn U) (shortExact_toAbelianSheaf hS) q (q + 1) rfl)
+
+/-- Finiteness of the outer modules in an exact pair over a Noetherian ring implies
+finiteness of the middle module. -/
+theorem finite_of_exact_noetherian {R M N P : Type*} [CommRing R] [IsNoetherianRing R]
+    [AddCommGroup M] [AddCommGroup N] [AddCommGroup P]
+    [Module R M] [Module R N] [Module R P] [Module.Finite R M] [Module.Finite R P]
+    (f : M →ₗ[R] N) (g : N →ₗ[R] P) (h : Function.Exact f g) : Module.Finite R N := by
+  have hk : LinearMap.ker g = LinearMap.range f := by
+    ext y
+    exact h y
+  letI : IsNoetherian R P := isNoetherian_of_isNoetherianRing_of_finite R P
+  refine ⟨Submodule.fg_of_fg_map_of_fg_inf_ker g ?_ ?_⟩
+  · rw [Submodule.map_top]
+    exact IsNoetherian.noetherian _
+  · rw [top_inf_eq, hk, LinearMap.range_eq_map]
+    exact Module.Finite.fg_top.map f
 
 end GlobalTheory.SchemeCohomology

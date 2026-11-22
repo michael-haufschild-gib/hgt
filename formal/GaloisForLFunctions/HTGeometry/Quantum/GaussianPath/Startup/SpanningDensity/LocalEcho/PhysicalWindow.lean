@@ -29,7 +29,7 @@ private theorem crossed_bound {n : ℕ} (u : PathShell n) (C : TwoQubitCircuit (
     (hfit : ‖unitaryEvolution (pathHamiltonian u) t-z • C.eval.val‖ ≤ 1/4) :
     ((crossed c).card:ℝ) ≤ 8*q*(n+1:ℕ) := by
   by_contra! hh
-  have ha' : 0<a := ha ▸ div_pos pi_pos (mul_pos two_pos hq)
+  have ha' : 0<a := by rw [ha]; exact div_pos pi_pos (mul_pos two_pos hq)
   have hcard : q*(n+1:ℕ) ≤ G.card := by linarith only [hh,hsize]
   have hreach : a/t ≤ (G.card:ℝ) := by
     apply (div_le_iff₀ ht).mpr
@@ -81,7 +81,7 @@ theorem gaussian_physical_window : ∀ η : ℝ, 0<η → ∃ A b : ℝ, 0<A ∧
   intro t hlate hshort s hfit
   let u := pathPauliDisorderShell ω n
   let H : selfAdjoint (Register (n+2)) := ⟨_,isSelfAdjoint_pathHamiltonian u⟩
-  have ht : 0<|t| := by
+  have ht : 0 < |t| := by
     apply lt_of_le_of_ne (abs_nonneg _) (fun h => ?_)
     rw [←h,zero_mul] at hlate; exact (div_pos ha hq).not_ge hlate
   have hpos : HasProjectiveCircuitApproximation (n+2) (1/4) s (unitaryEvolution H.val |t|) := by
@@ -93,7 +93,7 @@ theorem gaussian_physical_window : ∀ η : ℝ, 0<η → ∃ A b : ℝ, 0<A ∧
   obtain ⟨G,hG,hsize,hgood⟩ := hn (crossed c)
   have hh := hs |t| ⟨ht.le,hshort⟩
   have hx := crossed_bound u C c |t| M q a ht hM hq rfl hlate hh.1 hh.2 G hG hsize
-    (fun e he => ⟨(hgood e he).1,hM₂ ▸ (hgood e he).2⟩) z hz he
+    (fun e he => ⟨(hgood e he).1,(hgood e he).2.trans_eq hM₂.symm⟩) z hz he
   have hcut' : ((n+1:ℕ):ℝ) ≤ (s:ℝ)+2*(crossed c).card := by exact_mod_cast hcut.trans (Nat.add_le_add_right hC _)
   linarith only [hcut',hx,mul_lt_mul_of_pos_right hqsmall (show 0<((n+1:ℕ):ℝ) by positivity)]
 

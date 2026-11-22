@@ -45,7 +45,7 @@ theorem split_of_one_mod {φ : Frame} (H : HostAx φ) {p : ℕ} (hp : p.Prime)
     rw [Nat.mod_self] at hself
     omega
   have hcN := (Nat.Prime.coprime_iff_not_dvd hp).2 hpN
-  refine ⟨?_, (primeClass_eq_splitK_iff' H.toHostRaw hp).2 ⟨hpN, ?_⟩⟩
+  refine ⟨?_, (primeClass_eq_splitK_iff' (H := H.toHostRaw) hp).2 ⟨hpN, ?_⟩⟩
   · letI : Fact p.Prime := ⟨hp⟩
     haveI : IsGalois ℚ H.E := H.galois
     haveI := SplitK.span_prime p
@@ -56,7 +56,7 @@ theorem split_of_one_mod {φ : Frame} (H : HostAx φ) {p : ℕ} (hp : p.Prime)
       rw [ZMod.coe_unitOfCoprime, ← ZMod.natCast_mod p, hc, Nat.cast_one, Units.val_one]
     have hF : IsArithFrobAt ℤ (1 : H.E ≃ₐ[ℚ] H.E) P := by
       apply (H.frob_iff p hcN P 1).2
-      rw [hu, map_one, map_one]
+      rw [hu, map_one, H.galE_one]
     refine ncard_primesOver_of_stabilizer H.E p P fun σ hσ => ?_
     obtain ⟨k, ρ, hρ, rfl⟩ := Decomp.stab_eq_inertia_mul p P 1 σ hF hσ
     have hI := (H.der.frob p hpN P).2.2.2

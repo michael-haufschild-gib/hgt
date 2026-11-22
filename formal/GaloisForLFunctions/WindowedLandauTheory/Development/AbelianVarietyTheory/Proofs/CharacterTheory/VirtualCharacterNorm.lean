@@ -134,4 +134,82 @@ theorem exists_simple_of_virtual_norm_one {χ : G → ℂ} (hχ : χ ∈ virtual
       exact Nat.cast_nonneg _
     linarith only [hdeg, hψdeg]
 
+/-- Distinct simple characters are orthogonal for the normalized character pairing. -/
+theorem pairing_simple {α β : G → ℂ} (hα : α ∈ simpleCharacterSet G)
+    (hβ : β ∈ simpleCharacterSet G) :
+    characterPairing G α β = if α = β then 1 else 0 := by
+  classical
+  obtain ⟨V, hV, rfl⟩ := hα
+  obtain ⟨W, hW, rfl⟩ := hβ
+  letI : Simple V := hV
+  letI : Simple W := hW
+  letI := invertibleOfNonzero (NeZero.ne (Nat.card G : ℂ))
+  by_cases he : V.character = W.character
+  · rw [if_pos he, he, characterPairing]
+    rw [(FDRep.simple_iff_char_is_norm_one W).mp hW, inv_mul_cancel₀]
+    exact NeZero.ne _
+  · rw [if_neg he, characterPairing]
+    have hne : ¬ Nonempty (W ≅ V) := fun ⟨e⟩ => he (FDRep.char_iso e.symm)
+    simpa only [hne, if_false, Nat.cast_zero] using FDRep.char_orthonormal W V
+
+/-- The number of distinct simple characters with nonzero pairing is bounded by
+the squared norm of an integral virtual character. -/
+theorem card_le_pairing_of_nonzero_on_simple {χ : G → ℂ} (hχ : χ ∈ virtualCharacterGroup G)
+    (S : Finset (G → ℂ))
+    (hS : ∀ α ∈ S, α ∈ simpleCharacterSet G ∧ characterPairing G χ α ≠ 0) :
+    (S.card : ℝ) ≤ (characterPairing G χ χ).re := by
+  classical
+  induction S using Finset.induction_on generalizing χ with
+  | empty =>
+      rw [Finset.card_empty, Nat.cast_zero, pairing_self_re hχ]
+      exact mul_nonneg (inv_nonneg.mpr (Nat.cast_nonneg _))
+        (Finset.sum_nonneg fun _ _ => Complex.normSq_nonneg _)
+  | @insert α S ha ih =>
+      obtain ⟨hα, hp⟩ := hS α (Finset.mem_insert_self _ _)
+      have hαv : α ∈ virtualCharacterGroup G := by
+        rw [virtualCharacterGroup_eq_simple_span]
+        exact AddSubgroup.subset_closure hα
+      obtain ⟨m, hm⟩ := virtualCharacterPairing_eq_intCast G ⟨χ, hχ⟩ ⟨α, hαv⟩
+      change characterPairing G χ α = (m : ℂ) at hm
+      have hm0 : m ≠ 0 := by
+        intro e
+        exact hp (by simpa only [e, Int.cast_zero] using hm)
+      let η := χ - m • α
+      have hη : η ∈ virtualCharacterGroup G := sub_mem hχ (zsmul_mem hαv m)
+      have hlin (β : G → ℂ) : characterPairing G (m • α) β =
+          (m : ℂ) * characterPairing G α β := by
+        have e : m • α = (m : ℂ) • α := by
+          funext x
+          exact (Int.cast_smul_eq_zsmul ℂ m (α x)).symm
+        rw [e, characterPairing_comm G _ β, characterPairing_smul_right,
+          characterPairing_comm G β α]
+      have hrest : ∀ β ∈ S, β ∈ simpleCharacterSet G ∧ characterPairing G η β ≠ 0 := by
+        intro β hb
+        obtain ⟨hβ, hχβ⟩ := hS β (Finset.mem_insert_of_mem hb)
+        have hab : α ≠ β := fun e => ha (e.symm ▸ hb)
+        refine ⟨hβ, ?_⟩
+        simpa only [η, sub_eq_add_neg, characterPairing_add_left, characterPairing_neg_left,
+          hlin, pairing_simple hα hβ, if_neg hab, mul_zero, neg_zero, add_zero] using hχβ
+      have hnorm : characterPairing G η η = characterPairing G χ χ - (m : ℂ) ^ 2 := by
+        have hsym : characterPairing G α χ = (m : ℂ) := (characterPairing_comm G α χ).trans hm
+        have hdiag : characterPairing G α α = 1 := by rw [pairing_simple hα hα, if_pos rfl]
+        have hright (β : G → ℂ) : characterPairing G β (m • α) =
+            (m : ℂ) * characterPairing G β α := by
+          rw [characterPairing_comm G β _, hlin, characterPairing_comm G α β]
+        simp only [η, sub_eq_add_neg, characterPairing_add_left, characterPairing_add_right,
+          characterPairing_neg_left, characterPairing_neg_right, hlin, hright, hm, hsym, hdiag]
+        ring
+      have hsq : 1 ≤ m ^ 2 := by
+        rcases lt_or_gt_of_ne hm0 with hmneg | hmpos
+        · have hmle : m ≤ -1 := by omega
+          nlinarith only [hmle, sq_nonneg (m + 1)]
+        · have hmge : 1 ≤ m := by omega
+          nlinarith only [hmge, sq_nonneg (m - 1)]
+      have hsq' : (1 : ℝ) ≤ (m : ℝ) ^ 2 := by exact_mod_cast hsq
+      have hcard := ih hη hrest
+      rw [hnorm, Complex.sub_re, ← Complex.ofReal_intCast, ← Complex.ofReal_pow,
+        Complex.ofReal_re] at hcard
+      rw [Finset.card_insert_of_notMem ha, Nat.cast_add, Nat.cast_one]
+      linarith only [hcard, hsq']
+
 end GlobalTheory.CuspGL

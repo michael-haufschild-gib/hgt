@@ -4,6 +4,7 @@ import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.SpanningOccupation.
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.DisconnectedReturns.FirstWait
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.SpanningDensity.AfterReturn
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.SpanningDensity.LimitLaw
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.SpanningDensity.LocalEcho.LagFloor
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.SpanningDensity.ProductInputs.PhysicalSeparation
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitSynthesis.ProductFormulas.DyadicSimulation
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.DisconnectedSpectra.PhysicalFloor

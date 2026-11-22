@@ -37,13 +37,12 @@ theorem tailRadix_add_pow_two (t : ExceptionalTime) (j r : ℕ) :
   induction r with
   | zero => simp
   | succ r ih =>
-    have hsucc : (tailRadix t ((j + r) + 1)).val = (tailRadix t (j + r)).val ^ 2 := by
-      rw [← PNat.pow_coe, ← radix_sq]
-      change ((block t) ^ (windingOrder (refined t ((j + r) + 1)) / 2)).val = _
+    have hsucc : tailRadix t ((j + r) + 1) = (tailRadix t (j + r)) ^ 2 := by
+      rw [radix_sq]
+      change (block t) ^ (windingOrder (refined t ((j + r) + 1)) / 2) = _
       rw [(refined_parameters t ((j + r) + 1)).2.2, (refined_parameters t (j + r)).2.2,
         pow_succ' 2 (j + r), Nat.mul_assoc, Nat.mul_div_cancel_left _ (by norm_num : 0 < 2)]
-      rfl
-    rw [← Nat.add_assoc, hsucc, ih, ← pow_mul, ← pow_succ]
+    rw [← Nat.add_assoc, hsucc, PNat.pow_coe, ih, ← pow_mul, ← pow_succ]
 
 /-! ### Exact base-`b` digit sums of sparse and periodic integers -/
 
@@ -76,7 +75,7 @@ private theorem digits_sum_two_terms {b : ℕ} (hb : 1 < b) {p q d₀ d₁ : ℕ
     Nat.mul_ne_zero (pow_ne_zero _ (by omega)) (by omega)
   have hrew : d₁ * b ^ q + d₀ * b ^ p = b ^ p * (d₀ + b * (b ^ (q - p - 1) * d₁)) := by
     have hq : q = p + (1 + (q - p - 1)) := by omega
-    rw [hq, pow_add, pow_add, pow_one]
+    conv_lhs => rw [hq, pow_add, pow_add, pow_one]
     ring
   rw [hrew, digits_sum_mul_pow hb p,
     Nat.digits_add b hb d₀ (b ^ (q - p - 1) * d₁) hd₀ (Or.inr hinner_ne),
@@ -104,9 +103,8 @@ private theorem digits_sum_block_shift {b : ℕ} (hb : 1 < b) :
         calc B + b ^ (Q + 1) * Y = (d + b * B') + b * (b ^ Q * Y) := by
               rw [hdm, pow_succ', mul_assoc]
           _ = d + b * (B' + b ^ Q * Y) := by ring
-      have hne_rhs : B' + b ^ Q * Y ≠ 0 := by
-        have hpos : 0 < b ^ Q * Y := Nat.mul_pos (pow_pos (by omega) Q) hY
-        omega
+      have hne_rhs : B' + b ^ Q * Y ≠ 0 :=
+        Nat.ne_of_gt (Nat.add_pos_right B' (Nat.mul_pos (pow_pos (by omega) Q) hY))
       rw [hrew, Nat.digits_add b hb d _ hd_lt (Or.inr hne_rhs), List.sum_cons,
         digits_sum_block_shift hb Q B' Y hB'_lt]
       rcases Nat.eq_zero_or_pos B with rfl | _
@@ -123,7 +121,7 @@ def periodicCutoff (P B : ℕ) : ℕ → ℕ
   | 0 => 0
   | K + 1 => B + P * periodicCutoff P B K
 
-theorem periodicCutoff_bounds {b Q B : ℕ} (hb : 1 < b) (hQ : 1 ≤ Q)
+theorem periodicCutoff_bounds {b Q B : ℕ} (_hb : 1 < b) (hQ : 1 ≤ Q)
     (hBlo : b ^ (Q - 1) ≤ B) (hBhi : B < b ^ Q) {K : ℕ} (hK : 1 ≤ K) :
     b ^ (K * Q - 1) ≤ periodicCutoff (b ^ Q) B K ∧ periodicCutoff (b ^ Q) B K < b ^ (K * Q) := by
   induction K with
@@ -172,7 +170,6 @@ theorem digitImbalance_periodicCutoff {b Q B : ℕ} (hb : 1 < b) (hQ : 1 ≤ Q)
   unfold digitImbalance
   rw [hlog, Nat.sub_add_cancel hKQ_pos, hdsum K, Nat.cast_mul, Nat.cast_mul]
   field_simp [hb_sub]
-  ring
 
 /-! ### Triangular nonsingularity of the multi-refinement spike slope -/
 
@@ -273,16 +270,15 @@ theorem exists_block_refinementSpikeSlope_ne_zero {C M : ℕ} (hC : 1 < C)
         have h2M : 2 * 2 ^ M = N := by dsimp only [N]; rw [pow_succ']
         have hslt := hs_lt_half m
         omega
+      dsimp only [p]
       by_contra! hge
-      have hmul := Nat.mul_le_mul_right twoR hge
+      have hmul := Nat.mul_le_mul_left twoR hge
       have hdm := Nat.div_add_mod (sPos m) twoR
-      dsimp only [p] at hmul
-      rw [mul_comm _ twoR] at hmul
+      rw [mul_comm (Q - 1) twoR] at hs_lt_prod
       omega
     have hsm_eq : C ^ (sPos m) = C ^ (sPos m % twoR) * b ^ p := by
       dsimp only [b, p]
       conv_lhs => rw [← Nat.div_add_mod (sPos m) twoR, add_comm, pow_add, pow_mul]
-      rw [mul_comm (twoR) _]
     have hd0_lt : C ^ (sPos m % twoR) < b :=
       (Nat.pow_lt_pow_iff_right hC).mpr (Nat.mod_lt _ htwoR_pos)
     have hsum_m : (b.digits (Bm m)).sum = C ^ (twoR - 1) + C ^ (sPos m % twoR) := by
@@ -321,7 +317,7 @@ theorem exists_block_refinementSpikeSlope_ne_zero {C M : ℕ} (hC : 1 < C)
       simpa only [sPos, ↓reduceIte, Nat.zero_mod, pow_zero, Nat.cast_one, mul_one] using hm0
     · rcases eq_or_lt_of_le hk with rfl | hk_lt
       · have hemp : Finset.univ.filter (fun r : Fin (M + 1) => M + 1 ≤ r.val) = ∅ := by
-          ext r; simp [Nat.not_le.mpr r.isLt]
+          ext r; simp; omega
         rw [hemp, Finset.sum_empty]
       · -- `1 ≤ k ≤ M`: subtract row `0` from row `k`.
         have hsum_all : (∑ r : Fin (M + 1), β r) = 0 := by
@@ -476,9 +472,10 @@ theorem exists_periodic_spike_for_refinement_combination
       dsimp only [Etotal]
       rw [Finset.sum_mul]
       refine Finset.sum_le_sum fun r _ => ?_
-      rw [← mul_sub, norm_mul, mul_assoc]
+      rw [← mul_sub, norm_mul, mul_assoc ‖α r‖]
       exact mul_le_mul_of_nonneg_left
-        (norm_renormalizedCutoff_sub_digitImbalance_le t (j + r.val) hX1 hw hw1) (norm_nonneg _)
+        (norm_renormalizedCutoff_sub_digitImbalance_le t (j + r.val) hX1 hw hw1)
+        (norm_nonneg (α r))
     have hXw_norm : ‖((Xseq K : ℕ) : ℂ) ^ (-w)‖ = ((Xseq K : ℕ) : ℝ) ^ (-w.re) := by
       rw [show ((Xseq K : ℕ) : ℂ) = (((Xseq K : ℕ) : ℝ) : ℂ) by simp,
         Complex.norm_cpow_eq_rpow_re_of_pos hXpos, Complex.neg_re]
@@ -507,9 +504,8 @@ theorem exists_periodic_spike_for_refinement_combination
     unfold digitBalancedCutoff
     ring
   dsimp only [rem, Xseq] at hsplit_sum ⊢
-  rw [hsplit_sum]
-  field_simp [hK_ne, hXw_ne]
-  ring
+  rw [hsplit_sum, add_sub_right_comm, add_div,
+    mul_div_cancel_right₀ _ (mul_ne_zero hK_ne hXw_ne)]
 
 /-- Corollary at `ζ` zeros: no nonzero finite linear combination of refinements
 `renormalizedCutoff t (j + r) X w` (`0 ≤ r ≤ M`) can decay as `o(X^(-Re w) log X)` across all `X`. -/

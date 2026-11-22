@@ -50,7 +50,7 @@ theorem UpperTheory.T3.levelData :
   obtain ⟨hx2, hx3⟩ := max_le_iff.1 hx23
   have hr5 := h2 s R hx2 hR
   have hkr : R.k ≤ R.r := by
-    have := R.m_add_three_le_k
+    have hm := R.two_le_m
     unfold Ranks.r
     omega
   have hk : 1 ≤ R.k := by have := R.m_add_three_le_k; omega

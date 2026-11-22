@@ -121,7 +121,7 @@ theorem pos_density_small_cutoff_on_vertical_line (t : ExceptionalTime) (j : ℕ
   obtain ⟨c, hc, hT⟩ :=
     _root_.RHTower.exists_pos_density_zetaTargetReturnSet_const_of_isCompact
       (K := {((σ : ℂ))}) isCompact_singleton
-      (fun s hs => by rw [mem_singleton_iff.mp hs]; simp [hlo, hhi])
+      (fun s hs => by rw [mem_singleton_iff.mp hs, Complex.ofReal_re]; exact ⟨hlo, hhi⟩)
       hη_ne hη_pos
   refine ⟨c, hc, hT.mono fun T hT_vol => hT_vol.trans (measure_mono (inter_subset_inter_left _ ?_))⟩
   intro τ hτ
@@ -203,7 +203,7 @@ theorem weightedShellCutoff_recursion (a : ℕ → ℝ) (t : ExceptionalTime) (j
       · exact (Nat.log_eq_iff (Or.inr ⟨hC1, hX0.ne'⟩)).mpr ⟨by simp; omega, by simpa using hXC⟩
     rw [weightedShellCutoff, weightedShellCutoff, ← hCdef, ← hqdef, hlog0, hdiv0]
     simp [weightedRadialCutoff]
-  · push_neg at hXC
+  · push Not at hXC
     have hdiv_pos : 1 ≤ X / C.val :=
       (Nat.le_div_iff_mul_le C.pos).mpr (by simpa only [one_mul] using hXC)
     set L' := Nat.log C.val (X / C.val)
@@ -215,7 +215,7 @@ theorem weightedShellCutoff_recursion (a : ℕ → ℝ) (t : ExceptionalTime) (j
       · rw [pow_succ]
         exact (Nat.le_div_iff_mul_le C.pos).mp hlo'
       · by_contra hge
-        push_neg at hge
+        push Not at hge
         rw [show L' + 1 + 1 = (L' + 1) + 1 by rfl, pow_succ] at hge
         exact hhi'.not_ge ((Nat.le_div_iff_mul_le C.pos).mpr hge)
     rw [weightedShellCutoff, weightedShellCutoff, ← hCdef, ← hqdef, hlog_succ,
@@ -376,7 +376,7 @@ private theorem weightedRadialCutoff_surgWeight {p k : ℕ} (hp : 0 < p)
     have hqr0 : (0 : ℝ) ≤ q := Nat.cast_nonneg q
     have hcpow : ((M * q : ℕ) : ℂ) ^ (-w) = (M : ℂ) ^ (-w) * (q : ℂ) ^ (-w) := by
       rw [Nat.cast_mul, show (M : ℂ) * (q : ℂ) = ((M : ℝ) : ℂ) * ((q : ℝ) : ℂ) by simp,
-        ← Complex.ofReal_mul, Complex.mul_cpow_ofReal_nonneg hMr0 hqr0]
+        Complex.mul_cpow_ofReal_nonneg hMr0 hqr0]
       simp
     rw [hcpow]
     ring
@@ -414,7 +414,8 @@ private theorem weightedShellCutoff_surgWeight (t : ExceptionalTime) (j : ℕ)
       have hcomm : ∀ i : ℕ, X / C.val ^ (i + 1) / M = X / M / C.val ^ (i + 1) := fun i => by
         rw [Nat.div_div_eq_div_mul, Nat.div_div_eq_div_mul, mul_comm]
       simp_rw [hcomm]
-      refine (Finset.sum_subset (Finset.range_subset.mpr hLM_le) ?_).symm
+      refine (Finset.sum_subset
+        (fun i hi => Finset.mem_range.mpr ((Finset.mem_range.mp hi).trans_le hLM_le)) ?_).symm
       intro i _ hi_not
       have hge : Nat.log C.val (X / M) ≤ i := not_lt.mp ( mt Finset.mem_range.mpr hi_not )
       have hlt_pow : X / M < C.val ^ (i + 1) :=
@@ -424,9 +425,8 @@ private theorem weightedShellCutoff_surgWeight (t : ExceptionalTime) (j : ℕ)
     rw [hsub]
     have hshell := shellCutoff_eq_sum_log t j (X / M) w
     dsimp only at hshell
-    rw [hshell, ← hCdef, ← hqdef, Finset.mul_sum, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    ring
+    rw [hshell, ← hCdef, ← hqdef, Finset.mul_sum, Finset.mul_sum, Finset.mul_sum]
+    exact Finset.sum_congr rfl fun i _ => by ring
   rw [weightedShellCutoff, ← hCdef, ← hqdef]
   simp_rw [weightedRadialCutoff_surgWeight hp c₁ c₂ _ w, mul_add, Finset.sum_add_distrib, mul_add]
   have h0 := shellCutoff_eq_sum_log t j X w
@@ -478,7 +478,7 @@ private theorem tendsto_scaled_renormalized_shift (t : ExceptionalTime) (j : ℕ
     rw [tendsto_zero_iff_norm_tendsto_zero]
     set K : ℝ := ‖(2 / (((C.val : ℂ) - 1) * (1 - w))) * (M : ℂ) ^ (-w)‖ * ‖(1 : ℂ) - w‖
     have h0 : Tendsto (fun X : ℕ => K * (((X / M : ℕ) : ℝ)) ^ (-w.re)) atTop (𝓝 0) := by
-      simpa only [mul_zero] using
+      simpa only [mul_zero, Function.comp_def] using
         (((tendsto_rpow_neg_atTop hw).comp
           (tendsto_natCast_atTop_atTop.comp hdiv_top)).const_mul K)
     refine squeeze_zero' (Eventually.of_forall fun _ => norm_nonneg _) ?_ h0
@@ -496,13 +496,11 @@ private theorem tendsto_scaled_renormalized_shift (t : ExceptionalTime) (j : ℕ
       have : b - a = ((X % M : ℕ) : ℝ) / (M : ℝ) := by
         dsimp only [a, b]; field_simp [hMr.ne']; linarith
       rw [this]; exact (div_le_one hMr).mpr hmod
-    have hz : (0 : ℝ) ∉ Set.uIcc a b := by
-      rw [Set.uIcc_of_le hab]; intro h; linarith [h.1]
+    have hz : (0 : ℝ) ∉ Set.uIcc a b := by rw [Set.uIcc_of_le hab]; intro h; linarith [h.1]
     have h1w_ne : (1 : ℂ) - w ≠ 0 := sub_ne_zero.mpr hw1.symm
     have hprim : (∫ u in a..b, (u : ℂ) ^ (-w)) = ((b : ℂ) ^ (1 - w) - (a : ℂ) ^ (1 - w)) / (1 - w) := by
       rw [integral_cpow (Or.inr ⟨neg_injective.ne hw1, hz⟩), show -w + 1 = 1 - w by ring]
-    have hdiff_eq : (a : ℂ) ^ (1 - w) - (b : ℂ) ^ (1 - w) =
-        -((1 - w) * ∫ u in a..b, (u : ℂ) ^ (-w)) := by
+    have hdiff_eq : (a : ℂ) ^ (1 - w) - (b : ℂ) ^ (1 - w) = -((1 - w) * ∫ u in a..b, (u : ℂ) ^ (-w)) := by
       rw [hprim]; field_simp [h1w_ne]; ring
     have hint_le : ‖∫ u in a..b, (u : ℂ) ^ (-w)‖ ≤ a ^ (-w.re) := by
       have hbd : ∀ u ∈ Set.uIoc a b, ‖(u : ℂ) ^ (-w)‖ ≤ a ^ (-w.re) := by
@@ -513,10 +511,14 @@ private theorem tendsto_scaled_renormalized_shift (t : ExceptionalTime) (j : ℕ
       have hle := intervalIntegral.norm_integral_le_of_norm_le_const hbd
       rw [abs_of_nonneg (sub_nonneg.mpr hab)] at hle
       exact hle.trans (mul_le_of_le_one_right (Real.rpow_nonneg ha0.le _) hba1)
-    dsimp only [err]
-    rw [show ((X / M : ℕ) : ℂ) = (a : ℂ) by simp [a], hdiff_eq,
-      norm_mul, norm_neg, norm_mul, ← mul_assoc]
-    exact mul_le_mul_of_nonneg_left hint_le (by positivity)
+    have herr_norm : ‖err X‖ = K * ‖∫ u in a..b, (u : ℂ) ^ (-w)‖ := by
+      dsimp only [err, K]
+      rw [show ((X / M : ℕ) : ℂ) = (a : ℂ) by simp [a],
+        show (((X : ℝ) / (M : ℝ) : ℝ) : ℂ) = (b : ℂ) by rfl, hdiff_eq,
+        norm_mul ((2 / (((C.val : ℂ) - 1) * (1 - w))) * (M : ℂ) ^ (-w)),
+        norm_neg, norm_mul (1 - w), ← mul_assoc]
+    rw [herr_norm]
+    exact mul_le_mul_of_nonneg_left hint_le (by dsimp only [K]; positivity)
   have hsum := hren.add herr
   rw [add_zero] at hsum
   refine hsum.congr' ?_
@@ -524,20 +526,21 @@ private theorem tendsto_scaled_renormalized_shift (t : ExceptionalTime) (j : ℕ
   have hXpos : (0 : ℝ) < X := Nat.cast_pos.mpr hX0
   have hC1 : (C.val : ℂ) - 1 ≠ 0 := sub_ne_zero.mpr (by exact_mod_cast (radix_gt_one t j).ne')
   have h1w : (1 : ℂ) - w ≠ 0 := sub_ne_zero.mpr hw1.symm
-  have hcancel := _root_.RHTower.cpow_neg_mul_div_cpow hMr hXpos w
-  dsimp only [err]
-  rw [renormalizedCutoff_eq]
-  dsimp only [C] at hC1 ⊢
-  have hMcast : (M : ℂ) = ((M : ℝ) : ℂ) := by simp
-  have hXcast : (X : ℂ) = ((X : ℝ) : ℂ) := by simp
-  rw [hMcast, hXcast]
-  push_cast
-  field_simp [hC1, h1w]
-  linear_combination -2 * hcancel
+  have hcancel : (M : ℂ) ^ (-w) * (((X : ℝ) / (M : ℝ) : ℝ) : ℂ) ^ (1 - w) =
+      (M : ℂ)⁻¹ * (X : ℂ) ^ (1 - w) := by
+    simpa only [Complex.ofReal_natCast] using _root_.RHTower.cpow_neg_mul_div_cpow hMr hXpos w
+  have hsub1 : (M : ℂ) ^ (-w) * renormalizedCutoff t j (X / M) w + err X =
+      (M : ℂ) ^ (-w) * shellCutoff t j (X / M) w -
+        (2 / (((C.val : ℂ) - 1) * (1 - w))) *
+          ((M : ℂ) ^ (-w) * (((X : ℝ) / (M : ℝ) : ℝ) : ℂ) ^ (1 - w)) := by
+    dsimp only [err]; rw [renormalizedCutoff_eq]; dsimp only [C] at hC1 ⊢
+    field_simp [hC1, h1w]; ring
+  rw [hsub1, hcancel, Complex.ofReal_inv, Complex.ofReal_natCast, div_mul_eq_div_div]
+  ring
 
 /-- Convergence of the renormalized surgery cutoffs to `surgPoly * 2 q ζ(w) / (1 - q)`. -/
 theorem weightedRenormalizedCutoff_surgWeight_limit (t : ExceptionalTime) (j : ℕ)
-    {p k : ℕ} (hp : 0 < p) (c₁ c₂ : ℝ) {w : ℂ} (hw : 0 < w.re) (hw1 : w ≠ 1) :
+    {p : ℕ} (hp : 0 < p) (k : ℕ) (c₁ c₂ : ℝ) {w : ℂ} (hw : 0 < w.re) (hw1 : w ≠ 1) :
     let q := heat w (tailRadix t j)
     Tendsto (fun X : ℕ =>
       weightedRenormalizedCutoff (surgWeight p k c₁ c₂) (surgDensity p k c₁ c₂) t j X w)
@@ -559,10 +562,7 @@ theorem weightedRenormalizedCutoff_surgWeight_limit (t : ExceptionalTime) (j : �
   refine hcomb.congr fun X => ?_
   rw [weightedRenormalizedCutoff, weightedShellCutoff_surgWeight t j hp c₁ c₂ X w,
     renormalizedCutoff_eq]
-  unfold surgDensity
-  push_cast
-  dsimp only [C]
-  ring
+  unfold surgDensity; push_cast; ring
 
 /-- One-prime positive surgery obstruction: for every nonreal `w₀` in `0 < Re w₀ < 1`, there exist
 `p ∈ {2, 3}`, `k ≥ 1`, and `c₁, c₂ > 0` such that the coprime-multiplicative weight
@@ -600,9 +600,12 @@ theorem exists_one_prime_positive_surgery_cutoff_extinction
   have hp_pos : (0 : ℝ) < p := by positivity
   set u : ℂ := Complex.exp (-(Real.log p : ℂ) * (w₀.im : ℂ) * Complex.I)
   have hu_norm : ‖u‖ = 1 := by
-    dsimp only [u]
-    rw [Complex.norm_exp]
-    simp [Complex.mul_re]
+    dsimp only [u]; rw [Complex.norm_exp]
+    have hre0 : (-(Real.log p : ℂ) * (w₀.im : ℂ) * Complex.I).re = 0 := by
+      simp only [Complex.mul_re, Complex.mul_im, Complex.neg_re, Complex.neg_im,
+        Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im]
+      ring
+    rw [hre0, Real.exp_zero]
   obtain ⟨k, hk1, hvk_neg⟩ := PositiveAnnihilator.exists_large_pow_re_neg hu_norm hu_ne1 1
   set v : ℂ := u ^ k
   have hv_norm : ‖v‖ = 1 := by dsimp only [v]; rw [norm_pow, hu_norm, one_pow]
@@ -630,7 +633,7 @@ theorem exists_one_prime_positive_surgery_cutoff_extinction
     rw [pow_mul', sq (p ^ k), Nat.cast_mul,
       show ((p ^ k : ℕ) : ℂ) * ((p ^ k : ℕ) : ℂ) =
         (((p ^ k : ℕ) : ℝ) : ℂ) * (((p ^ k : ℕ) : ℝ) : ℂ) by simp,
-      ← Complex.ofReal_mul, Complex.mul_cpow_ofReal_nonneg hpk_nn hpk_nn, ← sq]
+      Complex.mul_cpow_ofReal_nonneg hpk_nn hpk_nn, ← sq]
     simp
   have hpoly_zero : surgPoly p k c₁ c₂ w₀ = 0 := by
     unfold surgPoly
@@ -642,14 +645,13 @@ theorem exists_one_prime_positive_surgery_cutoff_extinction
       dsimp only [c₁, c₂]
       push_cast
       field_simp [hr_ne]
-      ring
     rw [hsimp]
     exact hquad
   have hw₀_ne1 : w₀ ≠ 1 := fun he => hhi.ne (by rw [he, Complex.one_re])
   have hlim_zero : Tendsto (fun X : ℕ =>
       weightedRenormalizedCutoff (surgWeight p k c₁ c₂) (surgDensity p k c₁ c₂) t j X w₀)
       atTop (𝓝 0) := by
-    have hlim := weightedRenormalizedCutoff_surgWeight_limit t j hp_prime.pos c₁ c₂ hlo hw₀_ne1
+    have hlim := weightedRenormalizedCutoff_surgWeight_limit t j hp_prime.pos k c₁ c₂ hlo hw₀_ne1
     dsimp only at hlim
     simpa only [hpoly_zero, zero_mul] using hlim
   refine ⟨p, k, c₁, c₂, hp23, hk1, hc₁, hc₂,
@@ -696,12 +698,13 @@ theorem exists_one_prime_positive_surgery_cutoff_extinction
       dsimp only [W, Z₁, c₁, c₂] at hzero ⊢
       push_cast at hzero ⊢
       linear_combination hzero
+    have hc : v.re * v.re + v.im * v.im = 1 ^ 2 := by
+      have h := Complex.normSq_eq_norm_sq v
+      rwa [Complex.normSq_apply, hv_norm] at h
     have hfac : (W - v) * (W - conj v) = 1 + ((-2 * v.re : ℝ) : ℂ) * W + W ^ 2 := by
-      have hc := Complex.normSq_eq_norm_sq v
-      rw [Complex.normSq_apply, hv_norm] at hc
       apply Complex.ext
       · simp only [Complex.mul_re, Complex.sub_re, Complex.conj_re, Complex.conj_im,
-          Complex.sub_im, Complex.neg_im, Complex.add_re, Complex.one_re, Complex.ofReal_re,
+          Complex.sub_im, Complex.add_re, Complex.one_re, Complex.ofReal_re,
           Complex.ofReal_im, zero_mul, sub_zero, sq]
         nlinarith only [hc]
       · simp only [Complex.mul_im, Complex.sub_re, Complex.conj_re, Complex.conj_im,
@@ -713,7 +716,11 @@ theorem exists_one_prime_positive_surgery_cutoff_extinction
     · have : W = v := sub_eq_zero.mp hWv
       exact hW_gt1.ne' (by rw [this, hv_norm])
     · have : W = conj v := sub_eq_zero.mp hWcv
-      exact hW_gt1.ne' (by rw [this, norm_conj, hv_norm])
+      have hcv_sq : ‖conj v‖ ^ 2 = 1 ^ 2 := by
+        rw [← Complex.normSq_eq_norm_sq, Complex.normSq_apply, Complex.conj_re, Complex.conj_im]
+        nlinarith only [hc]
+      have hcv : ‖conj v‖ = 1 := (sq_eq_sq₀ (norm_nonneg _) zero_le_one).mp hcv_sq
+      exact hW_gt1.ne' (by rw [this, hcv])
   -- Deduce eventual lower bound at `1 - w₀`.
   set C := tailRadix t j
   set q₁ := heat w₁ C
@@ -724,10 +731,184 @@ theorem exists_one_prime_positive_surgery_cutoff_extinction
     mul_ne_zero hpoly_ne
       (div_ne_zero (mul_ne_zero (mul_ne_zero two_ne_zero (Complex.exp_ne_zero _)) hzeta_ne) h1q₁)
   have hL₁_pos : 0 < ‖L₁‖ := norm_pos_iff.mpr hL₁_ne
-  have hlim₁ := (weightedRenormalizedCutoff_surgWeight_limit t j hp_prime.pos c₁ c₂ hw₁_re0 hw₁_ne1).norm
+  have hlim_raw := weightedRenormalizedCutoff_surgWeight_limit t j hp_prime.pos k c₁ c₂ hw₁_re0 hw₁_ne1
+  dsimp only at hlim_raw
+  have hlim₁ : Tendsto (fun X : ℕ =>
+      ‖weightedRenormalizedCutoff (surgWeight p k c₁ c₂) (surgDensity p k c₁ c₂) t j X w₁‖)
+      atTop (𝓝 ‖L₁‖) := hlim_raw.norm
   refine ⟨‖L₁‖ / 2, half_pos hL₁_pos, ?_⟩
   filter_upwards [hlim₁.eventually (Ioi_mem_nhds (half_lt_self hL₁_pos))] with X hX
   exact hX.le
+
+/-! ### Out-of-support `{5, 7}` surgery extinguishing all clock comparisons and reconstructions -/
+
+/-- Counterterm-free adjacent refinement contrast for a general arithmetic weight `a : ℕ → ℝ`. -/
+def weightedAdjacentCutoff (a : ℕ → ℝ) (t : ExceptionalTime) (j X : ℕ) (w : ℂ) : ℂ :=
+  weightedShellCutoff a t j X w -
+    (((tailRadix t j).val : ℂ) + 1) * weightedShellCutoff a t (j + 1) X w
+
+theorem weightedAdjacentCutoff_eq_renormalized (a : ℕ → ℝ) (ρ : ℝ)
+    (t : ExceptionalTime) (j X : ℕ) (w : ℂ) :
+    weightedAdjacentCutoff a t j X w =
+      weightedRenormalizedCutoff a ρ t j X w -
+        (((tailRadix t j).val : ℂ) + 1) * weightedRenormalizedCutoff a ρ t (j + 1) X w := by
+  have hrad_pnat : tailRadix t (j + 1) = (tailRadix t j) ^ 2 := by
+    rw [radix_sq]
+    change (block t) ^ (windingOrder (refined t (j + 1)) / 2) = _
+    rw [(refined_parameters t (j + 1)).2.2, (refined_parameters t j).2.2, pow_succ' 2 j,
+      Nat.mul_assoc, Nat.mul_div_cancel_left _ (by norm_num : 0 < 2)]
+  have hrad_succ : (tailRadix t (j + 1)).val = (tailRadix t j).val ^ 2 := by
+    rw [hrad_pnat, PNat.pow_coe]
+  set c : ℂ := ((tailRadix t j).val : ℂ) with hcdef
+  have hC1 : 1 < (tailRadix t j).val := radix_gt_one t j
+  have hc1 : c - 1 ≠ 0 := sub_ne_zero.mpr (by rw [hcdef]; exact_mod_cast hC1.ne')
+  have hc2 : c ^ 2 - 1 ≠ 0 := sub_ne_zero.mpr (by
+    rw [hcdef]; exact_mod_cast (one_lt_pow₀ hC1 (by norm_num : 2 ≠ 0)).ne')
+  have hden : 2 / (c - 1) - (c + 1) * (2 / (c ^ 2 - 1)) = 0 := by
+    field_simp [hc1, hc2]; ring
+  rw [weightedAdjacentCutoff, weightedRenormalizedCutoff, weightedRenormalizedCutoff,
+    hrad_succ, Nat.cast_pow, ← hcdef]
+  linear_combination (ρ : ℂ) * ((X : ℂ) ^ (1 - w) / (1 - w)) * hden
+
+/-- Phases at `5` and `7` cannot both be trivial at a nonzero frequency. -/
+theorem five_seven_phase_ne_one {γ : ℝ} (hγ : γ ≠ 0) :
+    Complex.exp (-(Real.log 5 : ℂ) * (γ : ℂ) * Complex.I) ≠ 1 ∨
+    Complex.exp (-(Real.log 7 : ℂ) * (γ : ℂ) * Complex.I) ≠ 1 := by
+  by_contra! h
+  let f : ℝ → ℂ := fun x => Complex.exp (-(x : ℂ) * (γ : ℂ) * Complex.I)
+  have hf : Continuous f := by fun_prop
+  have hperiod {p : ℕ} (hp : Complex.exp (-(Real.log p : ℂ) * (γ : ℂ) * Complex.I) = 1)
+      (x : ℝ) : f (x + Real.log p) = f x := by
+    dsimp [f]
+    rw [Complex.ofReal_add, neg_add, add_mul, add_mul, Complex.exp_add, hp, mul_one]
+  have hind : ∀ m n : ℕ, 0 < m → 0 < n → (5 : ℕ) ^ m ≠ 7 ^ n := by
+    intro m n hm _ heq
+    have hd5 : 5 ∣ (5 : ℕ) ^ m := dvd_pow_self 5 hm.ne'
+    rw [heq] at hd5
+    have hp5 : Nat.Prime 5 := by decide
+    have hd57 : 5 ∣ 7 := hp5.dvd_of_dvd_pow hd5
+    omega
+  have heq := _root_.RHTower.eq_of_two_dilation_invariance hf (by norm_num : 2 ≤ (5 : ℕ))
+    (by norm_num : 2 ≤ (7 : ℕ)) hind (hperiod h.1) (hperiod h.2) (Real.pi / γ) 0
+  have harg : -((Real.pi / γ : ℝ) : ℂ) * (γ : ℂ) * Complex.I = -(Real.pi : ℂ) * Complex.I := by
+    push_cast
+    have hγc : (γ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hγ
+    field_simp
+  dsimp [f] at heq
+  rw [harg, neg_mul, Complex.exp_neg, Complex.exp_pi_mul_I] at heq
+  norm_num at heq
+
+/-- Single-prime `{5, 7}` positive surgery obstruction against multi-clock / two-prime `{2, 3}`
+reconstruction: for every nonreal `w₀` in `0 < Re w₀ < 1`, modifying a single prime `p ∈ {5, 7}`
+leaves all `{2, 3}`-smooth integers equal to `1` (preserving the `{2, 3}` clock supports, weights
+`≥ 1`, coprime multiplicativity, `O(1)` linear counting, and all radix recursions), yet drives both
+`weightedRenormalizedCutoff` and `weightedAdjacentCutoff` to `0` at `w₀` simultaneously across
+**every** exceptional clock `t` and refinement `j`. -/
+theorem exists_coprime_prime_surgery_killing_all_clocks {w₀ : ℂ}
+    (hlo : 0 < w₀.re) (hhi : w₀.re < 1) (him : w₀.im ≠ 0) :
+    ∃ (p k : ℕ) (c₁ c₂ : ℝ),
+      (p = 5 ∨ p = 7) ∧ 1 ≤ k ∧ 0 < c₁ ∧ 0 < c₂ ∧
+      (∀ n : ℕ, 1 ≤ surgWeight p k c₁ c₂ n) ∧
+      (∀ u v : ℕ, surgWeight p k c₁ c₂ (2 ^ u * 3 ^ v) = 1) ∧
+      (∀ m n : ℕ, Nat.Coprime m n →
+        surgWeight p k c₁ c₂ (m * n) = surgWeight p k c₁ c₂ m * surgWeight p k c₁ c₂ n) ∧
+      (∀ Y : ℕ,
+        |(∑ n ∈ Finset.Icc 1 Y, surgWeight p k c₁ c₂ n) - surgDensity p k c₁ c₂ * (Y : ℝ)| ≤
+          c₁ + c₂) ∧
+      (∀ (t : ExceptionalTime) (j : ℕ),
+        Tendsto (fun X : ℕ =>
+          weightedRenormalizedCutoff (surgWeight p k c₁ c₂) (surgDensity p k c₁ c₂) t j X w₀)
+          atTop (𝓝 0)) ∧
+      (∀ (t : ExceptionalTime) (j : ℕ),
+        Tendsto (fun X : ℕ => weightedAdjacentCutoff (surgWeight p k c₁ c₂) t j X w₀)
+          atTop (𝓝 0)) := by
+  have hphase := five_seven_phase_ne_one him
+  obtain ⟨p, hp57, hu_ne1⟩ : ∃ p : ℕ, (p = 5 ∨ p = 7) ∧
+      Complex.exp (-(Real.log p : ℂ) * (w₀.im : ℂ) * Complex.I) ≠ 1 := by
+    rcases hphase with h5 | h7
+    · exact ⟨5, Or.inl rfl, by simpa using h5⟩
+    · exact ⟨7, Or.inr rfl, by simpa using h7⟩
+  have hp_prime : Nat.Prime p := by rcases hp57 with rfl | rfl <;> decide
+  have hp_pos : (0 : ℝ) < p := Nat.cast_pos.mpr hp_prime.pos
+  set u : ℂ := Complex.exp (-(Real.log p : ℂ) * (w₀.im : ℂ) * Complex.I)
+  have hu_norm : ‖u‖ = 1 := by
+    dsimp only [u]; rw [Complex.norm_exp]
+    have hre0 : (-(Real.log p : ℂ) * (w₀.im : ℂ) * Complex.I).re = 0 := by
+      simp only [Complex.mul_re, Complex.mul_im, Complex.neg_re, Complex.neg_im,
+        Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im]
+      ring
+    rw [hre0, Real.exp_zero]
+  obtain ⟨k, hk1, hvk_neg⟩ := PositiveAnnihilator.exists_large_pow_re_neg hu_norm hu_ne1 1
+  set v : ℂ := u ^ k
+  have hv_norm : ‖v‖ = 1 := by dsimp only [v]; rw [norm_pow, hu_norm, one_pow]
+  set r : ℝ := (p : ℝ) ^ (-(k : ℝ) * w₀.re)
+  have hr_pos : 0 < r := Real.rpow_pos_of_pos hp_pos _
+  set c₁ : ℝ := -2 * v.re * r⁻¹
+  set c₂ : ℝ := (r⁻¹) ^ 2
+  have hc₁ : 0 < c₁ := mul_pos (by linarith) (inv_pos.mpr hr_pos)
+  have hc₂ : 0 < c₂ := pow_pos (inv_pos.mpr hr_pos) 2
+  have hpk_cpow : ((p ^ k : ℕ) : ℂ) ^ (-w₀) = (r : ℂ) * v := by
+    have hpk_pos : (0 : ℝ) < (p ^ k : ℕ) := by exact_mod_cast pow_pos hp_prime.pos k
+    rw [show ((p ^ k : ℕ) : ℂ) = (((p ^ k : ℕ) : ℝ) : ℂ) by simp,
+      Complex.cpow_def_of_ne_zero (Complex.ofReal_ne_zero.mpr hpk_pos.ne'),
+      ← Complex.ofReal_log hpk_pos.le, Nat.cast_pow, Real.log_pow]
+    dsimp only [r, v, u]
+    rw [Real.rpow_def_of_pos hp_pos, Complex.ofReal_exp, ← Complex.exp_nat_mul, ← Complex.exp_add]
+    congr 1
+    conv_lhs => rw [← Complex.re_add_im w₀]
+    push_cast
+    ring
+  have hp2k_sq : ((p ^ (2 * k) : ℕ) : ℂ) ^ (-w₀) = (((p ^ k : ℕ) : ℂ) ^ (-w₀)) ^ 2 := by
+    have hpk_nn : (0 : ℝ) ≤ (p ^ k : ℕ) := Nat.cast_nonneg _
+    rw [pow_mul', sq (p ^ k), Nat.cast_mul,
+      show ((p ^ k : ℕ) : ℂ) * ((p ^ k : ℕ) : ℂ) =
+        (((p ^ k : ℕ) : ℝ) : ℂ) * (((p ^ k : ℕ) : ℝ) : ℂ) by simp,
+      Complex.mul_cpow_ofReal_nonneg hpk_nn hpk_nn, ← sq]
+    simp
+  have hpoly_zero : surgPoly p k c₁ c₂ w₀ = 0 := by
+    unfold surgPoly
+    rw [hp2k_sq, hpk_cpow]
+    have hquad := PositiveAnnihilator.unit_quadratic hv_norm
+    have hr_ne : (r : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr hr_pos.ne'
+    have hsimp : 1 + (c₁ : ℂ) * ((r : ℂ) * v) + (c₂ : ℂ) * ((r : ℂ) * v) ^ 2 =
+        1 + ((-2 * v.re : ℝ) : ℂ) * v + v ^ 2 := by
+      dsimp only [c₁, c₂]
+      push_cast
+      field_simp [hr_ne]
+    rw [hsimp]
+    exact hquad
+  have hw₀_ne1 : w₀ ≠ 1 := fun he => hhi.ne (by rw [he, Complex.one_re])
+  have hren_zero : ∀ (t : ExceptionalTime) (j : ℕ),
+      Tendsto (fun X : ℕ =>
+        weightedRenormalizedCutoff (surgWeight p k c₁ c₂) (surgDensity p k c₁ c₂) t j X w₀)
+        atTop (𝓝 0) := by
+    intro t j
+    have hlim := weightedRenormalizedCutoff_surgWeight_limit t j hp_prime.pos k c₁ c₂ hlo hw₀_ne1
+    dsimp only at hlim
+    simpa only [hpoly_zero, zero_mul] using hlim
+  have hadj_zero : ∀ (t : ExceptionalTime) (j : ℕ),
+      Tendsto (fun X : ℕ => weightedAdjacentCutoff (surgWeight p k c₁ c₂) t j X w₀)
+        atTop (𝓝 0) := by
+    intro t j
+    have h0 := hren_zero t j
+    have h1 := (hren_zero t (j + 1)).const_mul (((tailRadix t j).val : ℂ) + 1)
+    rw [mul_zero] at h1
+    have hsub := h0.sub h1
+    rw [sub_zero] at hsub
+    exact hsub.congr fun X =>
+      (weightedAdjacentCutoff_eq_renormalized (surgWeight p k c₁ c₂)
+        (surgDensity p k c₁ c₂) t j X w₀).symm
+  have hsmooth : ∀ u₂ v₃ : ℕ, surgWeight p k c₁ c₂ (2 ^ u₂ * 3 ^ v₃) = 1 := by
+    intro u₂ v₃
+    have hcop2 : Nat.Coprime 2 p := by rcases hp57 with rfl | rfl <;> decide
+    have hcop3 : Nat.Coprime 3 p := by rcases hp57 with rfl | rfl <;> decide
+    exact surgWeight_eq_one_of_coprime hp_prime hk1 c₁ c₂
+      ((hcop2.pow_left u₂).mul_left (hcop3.pow_left v₃))
+  exact ⟨p, k, c₁, c₂, hp57, hk1, hc₁, hc₂,
+    surgWeight_ge_one hc₁ hc₂, hsmooth,
+    fun _ _ hmn => surgWeight_mul_of_coprime hp_prime hk1 c₁ c₂ hmn,
+    abs_sum_surgWeight_sub_density_le hp_prime.pos hc₁ hc₂,
+    hren_zero, hadj_zero⟩
 
 #print axioms cutoff_vanishes_symm_one_sub
 #print axioms vertical_line_uniform_floor_of_one_lt
@@ -737,5 +918,6 @@ theorem exists_one_prime_positive_surgery_cutoff_extinction
 #print axioms abs_sum_surgWeight_sub_density_le
 #print axioms weightedRenormalizedCutoff_surgWeight_limit
 #print axioms exists_one_prime_positive_surgery_cutoff_extinction
+#print axioms exists_coprime_prime_surgery_killing_all_clocks
 
 end GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.CutoffSeparation

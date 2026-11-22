@@ -24,13 +24,21 @@ private theorem gen_eq (u : PathShell n) (f : PathLabel n → ℝ) (v : PathShel
 private def family (u : PathShell n) (Q : Finset (Fin (n+1))) (X : Register (n+2)) :=
   ∃ f : PathLabel n → ℝ, (∀ l, |f l| ≤ 1) ∧ (∀ l∉nearBonds Q, f l=1) ∧ (X=weighted u f ∨ X= -weighted u f)
 
+private theorem signed_bracket_le {R : Type*} [NormedRing R] (a b x y : R) (L : ℝ)
+    (hx : x=a ∨ x= -a) (hy : y=b ∨ y= -b) (h : ‖a*b-b*a‖ ≤ L) : ‖x*y-y*x‖ ≤ L := by
+  rcases hx with rfl|rfl <;> rcases hy with rfl|rfl
+  · exact h
+  · rw [mul_neg,neg_mul,neg_sub_neg,norm_sub_rev]; exact h
+  · rw [neg_mul,mul_neg,neg_sub_neg,norm_sub_rev]; exact h
+  · simpa only [neg_mul,mul_neg,neg_neg] using h
+
 private theorem family_bound (u : PathShell n) (Q : Finset (Fin (n+1))) (M : ℝ) (hM : 0≤M)
     (hm : ∀ e∈Q, localMass u e≤M^2) (X Y : Register (n+2)) (hx : family u Q X) (hy : family u Q Y) :
     ‖X*Y-Y*X‖ ≤ 4*43^2*Q.card*M^2 := by
   obtain ⟨f,hf,ho,he⟩ := hx
   obtain ⟨g,hg,hp,hj⟩ := hy
-  have h := sparse_bracket u Q M hM hm f g hf hg (fun l hl => (ho l hl).trans (hp l hl).symm)
-  rcases he with rfl|rfl <;> rcases hj with rfl|rfl <;> simp only [neg_mul,mul_neg,neg_neg,←neg_sub,norm_neg] <;> exact h
+  exact signed_bracket_le (weighted u f) (weighted u g) X Y _ he hj
+    (sparse_bracket u Q M hM hm f g hf hg (fun l hl => (ho l hl).trans (hp l hl).symm))
 
 private theorem family_skew {u : PathShell n} {Q : Finset (Fin (n+1))} {X : Register (n+2)}
     (hx : family u Q X) : X ∈ skewAdjoint _ := by
@@ -59,7 +67,8 @@ theorem echo_error (u : PathShell n) (Q : Finset (Fin (n+1))) (M t : ℝ) (hM : 
     · exact ⟨wordSign S,fun l => (wordSign_abs S l).le,off_sign hS,Or.inl (gen_eq u _ v fun _ => rfl)⟩
     · refine ⟨fun l => wordSign S l*wordSign T l,fun l => ?_,fun l hl => ?_,Or.inr (congrArg Neg.neg (gen_eq u _ p ?_))⟩
       · rw [abs_mul,wordSign_abs,wordSign_abs,one_mul]
-      · rw [off_sign hS l hl,off_sign hT l hl,one_mul]
+      · change wordSign S l*wordSign T l=1
+        rw [off_sign hS l hl,off_sign hT l hl,one_mul]
       · intro l; exact (mul_assoc ..).symm
     · exact ⟨wordSign T,fun l => (wordSign_abs T l).le,off_sign hT,Or.inl (gen_eq u _ w fun _ => rfl)⟩
   have hh := four_flow_error (-gen u) (gen v) (-gen p) (gen w) (4*43^2*Q.card*M^2) t ht
@@ -71,8 +80,9 @@ theorem echo_error (u : PathShell n) (Q : Finset (Fin (n+1))) (M t : ℝ) (hM : 
            simp only [mul_assoc]
          _=_ := by rw [conjugate_hamiltonian,conjugate_hamiltonian]
   let H : selfAdjoint (Register (n+2)) := ⟨_,isSelfAdjoint_pathHamiltonian u⟩
-  rw [echo_word H _ _ (finitePauliMatrix_mul_self _) (finitePauliMatrix_mul_self _) hab t,habH,
-    conjugate_hamiltonian,conjugate_hamiltonian]
+  have he := echo_word H (flip S) (flip T) (finitePauliMatrix_mul_self _) (finitePauliMatrix_mul_self _) hab t
+  dsimp only [H] at he
+  rw [he,habH,conjugate_hamiltonian,conjugate_hamiltonian]
   have hsum : -gen u+gen v+-gen p+gen w= -gen (mixedShell S T u) := by
     unfold gen
     rw [←mixed_hamiltonian S T u,smul_sub,smul_add,smul_sub]; abel

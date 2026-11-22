@@ -34,7 +34,7 @@ theorem oddPrimeQuadraticCharacter_induces_chDir (d : RHTower.OddPrime) (hd : d.
   have hn₀ : 0 < n := by
     by_contra! h
     have hn' : n = 0 := by omega
-    exact hM (Nat.coprime_zero_left.mp (hn' ▸ hn))
+    exact hM ((Nat.coprime_zero_left M).mp (hn' ▸ hn))
   rw [quadraticCharacter_eq_J, chDir_eq_J d.1 n hd hn₀]
 
 end QH

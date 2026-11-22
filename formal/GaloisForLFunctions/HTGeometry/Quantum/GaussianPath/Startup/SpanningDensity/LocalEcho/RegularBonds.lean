@@ -25,7 +25,7 @@ theorem gaussian_regular_bonds :
   filter_upwards [hω,hmass k] with n hn hmass
   intro E u
   let S := E.filter fun e => |u (zz e)| < q/2
-  let T := E.filter fun e => B* (2*43^2)/q < localMass u e
+  let T := E.filter fun e => L/q < localMass u e
   let G := E.filter fun e => q/2 ≤ |u (zz e)| ∧ localMass u e ≤ L/q
   have hweak := hmass S
   have hsum : (∑ e∈S, |u (zz e)|) ≤ S.card*(q/2) := by
@@ -37,10 +37,8 @@ theorem gaussian_regular_bonds :
     linarith only [hsum,hweak]
   have hL : 0 < L := by dsimp only [L]; positivity
   have hrow : (T.card:ℝ)*(L/q) ≤ ∑ e∈T, localMass u e := by
-    rw [←nsmul_eq_mul,←Finset.sum_const]
-    apply Finset.sum_le_sum
-    intro e he
-    simpa only [L,mul_comm B] using ((Finset.mem_filter.mp he).2 : B*(2*43^2)/q < localMass u e).le
+    simpa only [Finset.sum_const,nsmul_eq_mul] using Finset.sum_le_sum (s:=T)
+      (fun e he => ((Finset.mem_filter.mp he).2 : L/q < localMass u e).le)
   have htotal := (Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ T)
     (fun e _ _ => localMass_nonneg u e)).trans (sum_localMass u)
   have hmul := mul_le_mul_of_nonneg_left hn.2 (show 0 ≤ (43:ℝ)^2 by positivity)
@@ -52,15 +50,14 @@ theorem gaussian_regular_bonds :
     nlinarith only [hmul,mul_nonneg hB.le (Nat.cast_nonneg n : 0 ≤ (n:ℝ))]
   have hT : (T.card:ℝ) ≤ q*(n+1:ℕ) := by
     apply (mul_le_mul_iff_left₀ (div_pos hL hq)).mp
-    convert hbound using 1 <;> field_simp <;> ring
+    exact hbound.trans_eq (by field_simp [hq.ne'])
   have hsub : E ⊆ G ∪ (S∪T) := by
     intro e he
     by_cases h : |u (zz e)| < q/2
     · exact Finset.mem_union_right _ (Finset.mem_union_left _ (Finset.mem_filter.mpr ⟨he,h⟩))
     by_cases hh : localMass u e ≤ L/q
     · exact Finset.mem_union_left _ (Finset.mem_filter.mpr ⟨he,le_of_not_gt h,hh⟩)
-    · apply Finset.mem_union_right _ (Finset.mem_union_right _ (Finset.mem_filter.mpr ⟨he,?_⟩))
-      simpa only [L,mul_comm B] using lt_of_not_ge hh
+    · exact Finset.mem_union_right _ (Finset.mem_union_right _ (Finset.mem_filter.mpr ⟨he,lt_of_not_ge hh⟩))
   have hc := (Finset.card_le_card hsub).trans ((Finset.card_union_le ..).trans
     (Nat.add_le_add_left (Finset.card_union_le S T) _))
   have hc' : (E.card:ℝ) ≤ G.card+(S.card+T.card) := by exact_mod_cast hc

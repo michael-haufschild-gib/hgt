@@ -47,7 +47,7 @@ private theorem row_le (u : PathShell n) (i : PathLabel n) (a : ℝ) (ha : |a|�
     rw [show ‖X‖=|a| *|u i| by rw [norm_smul,(pathTerm_properties u i).1,Real.norm_eq_abs]]
     exact mul_le_mul ha (le_of_sq_le_sq (by rw [sq_abs]; exact hc i (Finset.mem_insert_self ..)) hM) (abs_nonneg _) zero_le_two
   have hY (j) (hj : j∈ball i) : ‖Y j‖ ≤ M := by
-    calc _ = |g j| *|u j| := by rw [Y,norm_smul,(pathTerm_properties u j).1,Real.norm_eq_abs]
+    calc _ = |g j| * |u j| := by dsimp only [Y]; rw [norm_smul,(pathTerm_properties u j).1,Real.norm_eq_abs]
          _ ≤ 1*M := mul_le_mul (hg j) (le_of_sq_le_sq (by rw [sq_abs]; exact hc j hj) hM) (abs_nonneg _) zero_le_one
          _ = M := one_mul _
   have hpair (j) (hj : j∈ball i) : ‖X*Y j-Y j*X‖ ≤ 4*M^2 := by
