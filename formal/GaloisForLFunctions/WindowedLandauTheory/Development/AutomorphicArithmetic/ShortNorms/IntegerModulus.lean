@@ -1,4 +1,4 @@
-import Mathlib
+import Mathlib.NumberTheory.NumberField.Norm
 
 /-! A nontrivial positive integer generates a proper ideal in a ring of integers. -/
 

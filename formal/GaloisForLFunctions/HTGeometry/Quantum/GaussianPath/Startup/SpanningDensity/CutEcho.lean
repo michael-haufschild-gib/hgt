@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.SpanningDensity.PathCuts
 import GaloisForLFunctions.HTGeometry.Quantum.PhysicalCircuitDeletionBound
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitSynthesis.OneGate
+import GaloisForLFunctions.HTGeometry.Quantum.LocalPacketComparison
 import GaloisForLFunctions.HTGeometry.SiteSupportedEvolutionFactorization
 
 /-! # A cut crossed by many physical bonds has a small commutator for every affordable unitary -/
@@ -76,6 +77,38 @@ private theorem conjugate_dist {N : ℕ} (U V A : Reg N) (hu : ‖U‖≤1) (hv 
   rw [h]
   linarith only [norm_add_le (star (U-V)*A*U) (star V*A*(U-V)),h₁,h₂]
 
+/-- Two unitaries differing on a directed signal have a projective norm gap. -/
+theorem projective_missing_signal_bound {N : ℕ} (W U : Matrix.unitaryGroup (Fin N→Bool) ℂ) (z : ℂ) (hz : ‖z‖=1)
+    (A B : Reg N) (ha : ‖A‖≤1) (hb : ‖B‖≤1)
+    (hcomm : Commute (star W.val*A*W.val) B) :
+    ‖(star U.val*A*U.val)*B-B*(star U.val*A*U.val)‖ ≤ 4*‖U.val-z • W.val‖ := by
+  let V := z • W.val
+  have hv : ‖V‖≤1 := by simp only [V,norm_smul,hz,one_mul,CStarRing.norm_of_mem_unitary W.property,le_refl]
+  have hphase : star V*A*V=star W.val*A*W.val := by
+    simp only [V,star_smul,Matrix.smul_mul,Matrix.mul_smul,smul_smul]
+    rw [show z*star z=1 by simp [Complex.mul_conj',hz],one_smul]
+  let X := star U.val*A*U.val
+  let Y := star V*A*V
+  have hY : Commute Y B := by
+    dsimp only [Y]; rw [hphase]
+    exact hcomm
+  have he : X*B-B*X=(X-Y)*B-B*(X-Y) := by rw [sub_mul,mul_sub]; rw [hY.eq]; abel
+  change ‖X*B-B*X‖ ≤ _
+  rw [he]
+  have hd := conjugate_dist U.val V A (CStarRing.norm_of_mem_unitary U.property).le hv ha
+  calc _ ≤ ‖X-Y‖*‖B‖+‖B‖*‖X-Y‖ :=
+         (norm_sub_le _ _).trans (add_le_add (norm_mul_le _ _) (norm_mul_le _ _))
+       _ ≤ ‖X-Y‖*1+1*‖X-Y‖ := by gcongr
+       _ ≤ _ := by change _ ≤ 4*‖U.val-V‖; linarith only [hd]
+
+/-- A signal absent from the circuit bounds its projective approximation error. -/
+theorem missing_signal_bound {N : ℕ} (C : TwoQubitCircuit N)
+    (U : Matrix.unitaryGroup (Fin N→Bool) ℂ) (z : ℂ) (hz : ‖z‖=1)
+    (A B : Reg N) (ha : ‖A‖≤1) (hb : ‖B‖≤1)
+    (hcomm : Commute (star C.eval.val*A*C.eval.val) B) :
+    ‖(star U.val*A*U.val)*B-B*(star U.val*A*U.val)‖ ≤ 4*‖U.val-z • C.eval.val‖ :=
+  projective_missing_signal_bound C.eval U z hz A B ha hb hcomm
+
 /-- Approximation in projective operator norm controls every commutator
 between a transported observable and an observable on the opposite side. -/
 theorem many_bonds_small_commutator {n : ℕ} (C : TwoQubitCircuit (n+1))
@@ -91,24 +124,8 @@ theorem many_bonds_small_commutator {n : ℕ} (C : TwoQubitCircuit (n+1))
   let S := Finset.univ.filter fun i => x.val i=true
   have hf := circuit_conjugate_supported C S (fun i => by simp only [S,Finset.mem_filter,
     Finset.mem_univ,true_and,x.gate_agrees i]) A hA
-  let V := z • C.eval.val
-  have hv : ‖V‖≤1 := by simp only [V,norm_smul,hz,one_mul,CStarRing.norm_of_mem_unitary C.eval.property,le_refl]
-  have hphase : star V*A*V=star C.eval.val*A*C.eval.val := by
-    simp only [V,star_smul,Matrix.smul_mul,Matrix.mul_smul,smul_smul]
-    rw [show z*star z=1 by simp [Complex.star_def,Complex.mul_conj',hz],one_smul]
-  let X := star U.val*A*U.val
-  let Y := star V*A*V
-  have hY : Commute Y B := by
-    dsimp only [Y]; rw [hphase]
-    exact commute_of_isSiteSupported_disjoint disjoint_compl_right hf hB
-  have he : X*B-B*X=(X-Y)*B-B*(X-Y) := by rw [sub_mul,mul_sub]; rw [hY.eq]; abel
-  change ‖X*B-B*X‖ ≤ _
-  rw [he]
-  have hd := conjugate_dist U.val V A (CStarRing.norm_of_mem_unitary U.property).le hv ha
-  calc _ ≤ ‖X-Y‖*‖B‖+‖B‖*‖X-Y‖ :=
-         (norm_sub_le _ _).trans (add_le_add (norm_mul_le _ _) (norm_mul_le _ _))
-       _ ≤ ‖X-Y‖*1+1*‖X-Y‖ := by gcongr
-       _ ≤ _ := by change _ ≤ 4*‖U.val-V‖; linarith only [hd]
+  exact missing_signal_bound C U z hz A B ha hb
+    (commute_of_isSiteSupported_disjoint disjoint_compl_right hf hB)
 
 #print axioms many_bonds_small_commutator
 end

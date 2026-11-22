@@ -1,4 +1,12 @@
-import Mathlib
+import Mathlib.Algebra.Order.Antidiag.Nat
+import Mathlib.Data.Nat.Prime.Int
+import Mathlib.NumberTheory.ArithmeticFunction.Misc
+import Mathlib.NumberTheory.Harmonic.Bounds
+import Mathlib.NumberTheory.NumberField.ClassNumber
+import Mathlib.NumberTheory.RamificationInertia.Basic
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-! The Minkowski norm bound and counts of ideals bound the class number. -/
 
@@ -241,7 +249,8 @@ theorem minkowski_const_le_one :
   rw [hn] at hr ⊢
   have h1 : (4 / π) ^ InfinitePlace.nrComplexPlaces K ≤ (2 : ℝ) ^ n := by
     have h4 : 4 / π ≤ 2 := by
-      rw [div_le_iff₀ Real.pi_pos]; linarith [Real.pi_gt_three]
+      rw [div_le_iff₀ Real.pi_pos]
+      linarith only [Real.two_le_pi]
     calc _ ≤ (2 : ℝ) ^ InfinitePlace.nrComplexPlaces K := by gcongr
       _ ≤ _ := pow_le_pow_right₀ one_le_two (by omega)
   have h2 := two_pow_mul_factorial_succ_le n
@@ -279,7 +288,7 @@ theorem classNumber_le_sqrt_discr_mul_pow_pred :
   · refine sum_le_sum fun n hn => le_trans ?_ (ncard_ideal_absNorm_eq_le K (mem_Ioc.mp hn).1.ne')
     rw [← Set.ncard_coe_finset]
     exact Set.ncard_le_ncard_of_injOn (fun C => (g C : Ideal (𝓞 K)))
-      (fun C hC => by simpa using hC) hginj.injOn (Ideal.finite_setOfPred_absNorm_eq n)
+      (fun C hC => by simpa using hC) hginj.injOn (Ideal.finite_setOf_absNorm_eq n)
   · intro C _
     rw [mem_coe, mem_Ioc]
     exact ⟨Nat.pos_of_ne_zero (Ideal.absNorm_ne_zero_of_nonZeroDivisors _),

@@ -3,7 +3,6 @@ import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmeti
 
 /-! The theta sum of the shifted binary form has an explicit power saving. -/
 
-open Complex ArithmeticFunction MeasureTheory Filter Topology NumberField GlobalTheory.Hk
 open scoped Classical
 
 namespace GlobalTheory.Hk

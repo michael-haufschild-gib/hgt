@@ -20,8 +20,11 @@ private theorem split_word (S : Finset (Fin N)) (p : Fin N→Option (Fin 3)) :
   obtain ⟨y,rfl⟩ := e.surjective v
   change finitePauliMatrix p (e.symm (e x)) (e.symm (e y))=_
   rw [e.symm_apply_apply,e.symm_apply_apply]
-  exact (Fintype.prod_subtype_mul_prod_subtype (fun i => i∈S)
-    (fun i => boolPauliOptionEntry (p i) (x i,y i))).symm
+  let f (i : Fin N) := boolPauliOptionEntry (p i) (x i,y i)
+  change (∏ i, f i)=(∏ i : S, f i.val)*∏ i : {v // v∉S}, f i.val
+  symm
+  convert! Fintype.prod_subtype_mul_prod_subtype (fun i => i∈S) f using 3
+  exact congrArg (fun i : Fintype S => @Finset.univ S i) (Subsingleton.elim _ _)
 
 private theorem center_word {ι : Type*} [Fintype ι] [DecidableEq ι] (p : ι→Option (Fin 3)) :
     traceCenter (finitePauliMatrix p)=if p=(fun _ => none) then 0 else finitePauliMatrix p := by
@@ -29,7 +32,7 @@ private theorem center_word {ι : Type*} [Fintype ι] [DecidableEq ι] (p : ι�
   by_cases h : p=fun _ => none
   · subst p
     rw [if_pos rfl,finitePauliMatrix_const_none]
-    simp [traceCenter,Fintype.card_ne_zero]
+    simp [traceCenter]
   · simp [h,traceCenter,finitePauliMatrix_trace_eq_zero_of_ne_identity p h]
 
 private def bothSides (S : Finset (Fin N)) (p : Fin N→Option (Fin 3)) : Prop :=
@@ -69,7 +72,10 @@ private theorem bothSides_iff {n : ℕ} (S : Finset (Fin (n+2))) (l : PathLabel 
     simp only [bothSides,hv,exists_eq_right,selected,Bool.false_eq_true,iff_false,not_and]
     exact fun h hn => hn h
   · have hv (i : Fin (n+2)) : pathWord (.inr (e,a,b)) i≠none ↔ i=e.castSucc ∨ i=e.succ := by
-      by_cases hl : i=e.castSucc <;> by_cases hr : i=e.succ <;> simp [pathWord,couplingWord,hl,hr]
+      by_cases hl : i=e.castSucc
+      · simp [pathWord,couplingWord,hl]
+      · simp only [pathWord,couplingWord,hl,false_or]
+        by_cases hr : i=e.succ <;> simp [hr]
     have exists_end (P : Fin (n+2)→Prop) :
         (∃ i, P i ∧ pathWord (.inr (e,a,b)) i≠none) ↔ P e.castSucc ∨ P e.succ := by
       simp only [hv,and_or_left,exists_or,exists_eq_right]

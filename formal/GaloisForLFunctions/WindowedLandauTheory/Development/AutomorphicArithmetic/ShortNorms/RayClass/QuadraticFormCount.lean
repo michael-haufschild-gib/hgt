@@ -1,8 +1,13 @@
-import Mathlib
+import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.FunProp
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-! Count lattice points in a shifted binary quadratic form. -/
 
-open Complex ArithmeticFunction MeasureTheory Filter Topology NumberField
+open MeasureTheory Filter Topology
 open scoped Classical
 
 namespace GlobalTheory.Hk

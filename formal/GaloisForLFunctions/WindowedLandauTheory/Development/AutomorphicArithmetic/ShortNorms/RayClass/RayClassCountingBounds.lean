@@ -13,7 +13,7 @@ theorem rayCountTheta_fibre_count {ι : Type} (Q : ι → ℝ) (q : ι → ℕ) 
     ∑ n ∈ Finset.Icc 1 ⌊y⌋₊, (({v | Q v = (n : ℕ)}.ncard : ℕ) : ℝ) = (({v | Q v ≤ y}.ncard : ℕ) : ℝ) := by
   have hmaps : ∀ v ∈ hfin.toFinset, q v ∈ Finset.Icc 1 ⌊y⌋₊ := by
     intro v hv
-    rw [Set.Finite.mem_toFinset, Set.mem_ofPred_eq, hq] at hv
+    rw [Set.Finite.mem_toFinset, Set.mem_setOf_eq, hq] at hv
     exact Finset.mem_Icc.mpr ⟨hq1 v, Nat.le_floor hv⟩
   have hfib : ∀ n ∈ Finset.Icc 1 ⌊y⌋₊,
       {v | Q v = (n : ℕ)}.ncard = (hfin.toFinset.filter fun v => q v = n).card := by
@@ -21,7 +21,7 @@ theorem rayCountTheta_fibre_count {ι : Type} (Q : ι → ℝ) (q : ι → ℕ) 
     rw [← Set.ncard_coe_finset]
     congr 1
     ext v
-    simp only [Set.mem_ofPred_eq, Finset.coe_filter, Set.Finite.mem_toFinset, hq, Nat.cast_inj]
+    simp only [Set.mem_setOf_eq, Finset.coe_filter, Set.Finite.mem_toFinset, hq, Nat.cast_inj]
     constructor
     · rintro rfl
       exact ⟨le_trans (Nat.cast_le.mpr (Finset.mem_Icc.mp hn).2) (Nat.floor_le (by linarith)), rfl⟩

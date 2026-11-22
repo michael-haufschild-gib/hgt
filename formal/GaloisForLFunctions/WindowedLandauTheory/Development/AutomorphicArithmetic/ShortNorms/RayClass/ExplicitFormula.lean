@@ -3,7 +3,7 @@ import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmeti
 
 /-! The sharp ray class explicit formula with exponentially small remainder. -/
 
-open Complex ArithmeticFunction MeasureTheory Filter Topology NumberField GlobalTheory.Hk
+open Complex ArithmeticFunction MeasureTheory Filter Topology GlobalTheory.Hk
 open scoped Classical
 
 namespace GlobalTheory.Hk.PsiExc
@@ -21,8 +21,8 @@ theorem norm_psi_le (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) {u : ℝ} (hu : 0 �
   have h := Chebyshev.psi_le_const_mul_self hu
   have hlog : Real.log 4 ≤ 2 := by
     rw [show (4 : ℝ) = 2 ^ (2 : ℕ) by norm_num, Real.log_pow]
-    have := Real.log_le_sub_one_of_pos (show (0 : ℝ) < 2 by norm_num)
-    linarith
+    change (2 : ℝ) * Real.log 2 ≤ 2
+    linarith only [Real.log_le_sub_one_of_pos (show (0 : ℝ) < 2 by norm_num)]
   nlinarith only [h, mul_le_mul_of_nonneg_right hlog hu]
 
 theorem pow_four_mul_exp_le {δ W : ℝ} (hδ : 0 < δ) (hW : 0 ≤ W) :

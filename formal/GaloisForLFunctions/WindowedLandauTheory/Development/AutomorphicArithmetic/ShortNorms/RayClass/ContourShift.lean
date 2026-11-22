@@ -54,16 +54,21 @@ theorem shift (ψ : ℂ → ℂ) (S : Finset ℂ) (k : ℂ → ℂ) (u σ c T M 
     have hR : AnalyticAt ℂ R p := (hg.mul hW).neg
     have hmero : MeromorphicAt (fun s => A s / (s - p)) p :=
       hA.meromorphicAt.div ((analyticAt_id.sub analyticAt_const).meromorphicAt)
-    have hE : f =ᶠ[𝓝[≠] p] fun s => A s / (s - p) + R s := by
+    have hE : f =ᶠ[𝓝[≠] p] (fun s => A s / (s - p)) + R := by
       filter_upwards [he] with s hs
+      change f s = A s / (s - p) + R s
       dsimp [f, A, R, W]
       rw [hs]
       simp only [div_eq_mul_inv]
       ring
     refine ⟨(hmero.add hR.meromorphicAt).congr hE.symm, ?_⟩
-    rw [← laurentCoeff_congr (hmero.add hR.meromorphicAt) hE.symm (-1),
-      laurentCoeff_add hmero hR.meromorphicAt (-1), laurentCoeff_analytic_div_sub hA,
-      laurentCoeff_eq_zero_of_analyticAt hR (by norm_num), add_zero]
+    calc laurentCoeff f p (-1) = laurentCoeff (fun s => A s / (s - p) + R s) p (-1) :=
+        (laurentCoeff_congr (hmero.add hR.meromorphicAt) hE.symm (-1)).symm
+      _ = laurentCoeff (fun s => A s / (s - p)) p (-1) + laurentCoeff R p (-1) :=
+        laurentCoeff_add hmero hR.meromorphicAt (-1)
+      _ = _ := by
+        rw [laurentCoeff_analytic_div_sub hA, laurentCoeff_eq_zero_of_analyticAt hR (by norm_num),
+          add_zero]
   have hRes := rectangleIntegral'_eq_sum_laurentCoeff (f := f) (z := z₀) (w := z₁)
     hσc.le hT' hins (fun p hp' => (hmodel p hp').1) han
   rw [Finset.sum_congr rfl (fun p hp' => (hmodel p hp').2)] at hRes

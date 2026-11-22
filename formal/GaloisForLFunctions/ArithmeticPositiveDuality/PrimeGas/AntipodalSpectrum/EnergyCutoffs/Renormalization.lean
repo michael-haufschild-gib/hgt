@@ -24,12 +24,12 @@ def renormalizedCutoff (t : ExceptionalTime) (j X : ℕ) (w : ℂ) :=
   shellCutoff t j X w - (2/((tailRadix t j).val-1:ℂ))*powerTerm X w
 
 /-- A contraction at the quotient cutoff transmits an asymptotically vanishing error. -/
-private theorem quotient_contraction (C : ℕ) (hC : 1 < C) (q : ℂ) (hq : ‖q‖ < 1)
+theorem tendsto_zero_of_quotient_contraction (C : ℕ) (hC : 1 < C) (q : ℂ) (hq : ‖q‖ < 1)
     (u : ℕ → ℂ) (hv : Tendsto (fun n => u n-q*u (n/C)) atTop (𝓝 0)) :
     Tendsto u atTop (𝓝 0) := by
   let v (n : ℕ) := u n-q*u (n/C)
   have herr (n : ℕ) : ‖u n‖ ≤ ‖v n‖+‖q‖*‖u (n/C)‖ := by
-    calc ‖u n‖ = ‖v n+q*u (n/C)‖ := by rw [v,sub_add_cancel]
+    calc ‖u n‖ = ‖v n+q*u (n/C)‖ := congrArg norm (sub_add_cancel (u n) (q*u (n/C))).symm
       _ ≤ _ := (norm_add_le _ _).trans_eq (by rw [norm_mul])
   obtain ⟨A,hA⟩ := (Metric.isBounded_range_of_tendsto v hv).exists_norm_le
   let B := max ‖u 0‖ (A/(1-‖q‖))
@@ -95,9 +95,9 @@ theorem renormalized_cutoff_limit (t : ExceptionalTime) (j : ℕ) (z : {w : ℂ 
   have hd : (2+D)*(C.val:ℂ)⁻¹ = D := by
     dsimp [D]
     field_simp [hc0,sub_ne_zero.mpr hc1]
-    <;> ring
+    ring
   have hL : (1-q)*L = 2*q*riemannZeta w := by
-    exact mul_div_cancel₀' _ hne
+    exact (mul_comm _ _).trans (div_mul_cancel₀ _ hne)
   have hs := (scaled_radial_residual C w z.property.1 z.property.2).const_mul (2+D)
   have hr := ((radial_residual w z.property.1 z.property.2).comp (Nat.tendsto_div_const_atTop C.ne_zero)).const_mul (D*q)
   have hgap := (hs.sub hr).sub (tendsto_const_nhds (x := (1-q)*L))
@@ -114,7 +114,7 @@ theorem renormalized_cutoff_limit (t : ExceptionalTime) (j : ℕ) (z : {w : ℂ 
     change _ = (q*(2*radialCutoff (X/C.val) w+shellCutoff t j (X/C.val) w)-D*powerTerm X w)-L-
       q*(shellCutoff t j (X/C.val) w-D*powerTerm (X/C.val) w-L)
     linear_combination -(powerTerm X w)*hd
-  have h := (quotient_contraction C.val hc q hq (fun X => U X-L) hres).add_const L
+  have h := (tendsto_zero_of_quotient_contraction C.val hc q hq (fun X => U X-L) hres).add_const L
   simpa only [sub_add_cancel,zero_add] using h
 
 /-- Vanishing of the measured limit is exactly vanishing of zeta. -/

@@ -1,8 +1,13 @@
-import Mathlib
+import Mathlib.Analysis.SpecialFunctions.Gaussian.PoissonSummation
+import Mathlib.NumberTheory.ZetaValues
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-! Poisson summation bounds a shifted one-dimensional Gaussian sum. -/
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology
+open Complex Filter
 
 namespace GlobalTheory.ShiftedTheta
 
@@ -101,7 +106,7 @@ theorem shifted_theta_bound : ∀ s θ : ℝ, 0 < s → Summable (fun m : ℤ =>
     rw [e]
     refine mul_le_of_le_one_right (sq_nonneg _) ?_
     rw [div_le_one (by positivity)]
-    nlinarith [Real.pi_gt_three]
+    nlinarith only [pow_le_pow_left₀ (by norm_num) Real.two_le_pi 2]
   have hg0 : g 0 = 1 := by simp [hg]
   have hp := poisson θ hs
   change _ = _ * ∑' n, g n at hp

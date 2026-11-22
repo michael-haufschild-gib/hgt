@@ -1,8 +1,14 @@
-import Mathlib
+import Mathlib.Algebra.Order.Round
+import Mathlib.Analysis.Complex.Basic
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NthRewrite
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 /-! A shortest-vector basis reduction in a complex plane lattice. -/
 
-open Complex DirichletCharacter ArithmeticFunction MeasureTheory Filter Topology
+open Complex
 
 namespace GlobalTheory
 

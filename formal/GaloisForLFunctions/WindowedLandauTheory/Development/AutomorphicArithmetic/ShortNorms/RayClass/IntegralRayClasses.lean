@@ -1,11 +1,12 @@
 import GaloisForLFunctions.HeckeLFunctions.EveryRayResidueAndSignHasAnIntegralRepresentative
+import GaloisForLFunctions.HeckeLFunctions.ConePointsOfARayClassAreLatticeCosets
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.ShortNorms.IntegerModulus
 
 /-! Integral representatives of the native ray class group at an integer modulus. -/
 
 open NumberField IsDedekindDomain IsDedekindDomain.HeightOneSpectrum FractionalIdeal
 open GaloisForLFunctions.HeckeLFunctions
-open scoped nonZeroDivisors
+open scoped Classical nonZeroDivisors
 
 noncomputable section
 
@@ -14,7 +15,7 @@ namespace GlobalTheory.Mem
 structure RayData (K : Type) [Field K] [NumberField K] (M : ℕ) where
   ne_zero : M ≠ 0
 
-def rayData (K : Type) [Field K] [NumberField K] (M : ℕ) (hM : M ≠ 0) : RayData K M := ⟨hM⟩
+theorem rayData (K : Type) [Field K] [NumberField K] (M : ℕ) (hM : M ≠ 0) : RayData K M := ⟨hM⟩
 
 namespace RayData
 
@@ -49,12 +50,14 @@ theorem cls_mul (I J : Ideal (𝓞 K)) (hI : IsCoprime I (Ideal.span {(M : 𝓞 
   exact Subtype.ext (idealUnit_mul hI₀ hJ₀)
 
 theorem cls_top : D.cls (⊤ : Ideal (𝓞 K)) = 1 := by
-  rw [D.cls_of top_ne_bot (by simp), ← (rayClass D.modulus).map_one]
-  congr 1
+  have hcop : IsCoprime (⊤ : Ideal (𝓞 K)) (Ideal.span {(M : 𝓞 K)}) :=
+    Ideal.isCoprime_iff_sup_eq.mpr (top_sup_eq _)
+  rw [D.cls_of top_ne_bot hcop, ← (rayClass D.modulus).map_one]
+  apply congrArg (rayClass D.modulus)
   apply Subtype.ext
   apply Units.ext
-  rw [coe_idealUnit, Units.val_one]
-  rfl
+  change (idealUnit (K := K) (I := ⊤) top_ne_bot).val = 1
+  rw [coe_idealUnit, coeIdeal_top]
 
 theorem cls_one : D.cls (1 : Ideal (𝓞 K)) = 1 := by rw [Ideal.one_eq_top, D.cls_top]
 
@@ -70,25 +73,20 @@ theorem cls_mul_of_two_le (hM : 2 ≤ M) {I J : Ideal (𝓞 K)}
     D.cls (I * J) = D.cls I * D.cls J :=
   D.cls_mul I J hI hJ (ne_bot_of_coprime hM hI) (ne_bot_of_coprime hM hJ)
 
-private theorem idealUnit_span_eq {a : 𝓞 K} (ha : algebraMap (𝓞 K) K a ≠ 0) :
-    idealUnit (I := Ideal.span {a}) (Ideal.span_singleton_eq_bot.not.mpr (fun h => ha (by simp [h]))) =
-      toPrincipalIdeal (𝓞 K) K (Units.mk0 _ ha) := by
-  apply Units.ext
-  rw [coe_idealUnit, coe_toPrincipalIdeal, coeIdeal_span_singleton, Units.val_mk0]
-
 private theorem cls_span_eq {a : 𝓞 K} (ha : algebraMap (𝓞 K) K a ≠ 0)
-    (h : Units.mk0 _ ha ∈ primeToUnits D.modulus) :
-    D.cls (Ideal.span {a}) = rayClassOfElt D.modulus ⟨_, h⟩ := by
+    (h : Units.mk0 (algebraMap (𝓞 K) K a) ha ∈ primeToUnits D.modulus) :
+    D.cls (Ideal.span {a}) =
+      rayClassOfElt D.modulus ⟨Units.mk0 (algebraMap (𝓞 K) K a) ha, h⟩ := by
   have hzero : Ideal.span {a} ≠ ⊥ :=
     Ideal.span_singleton_eq_bot.not.mpr (fun hz => ha (by simp [hz]))
+  have he := idealUnit_span_eq ha hzero
   have hun : idealUnit hzero ∈ idealGroup D.modulus := by
-    rw [idealUnit_span_eq ha, toPrincipalIdeal_mem_idealGroup_iff]
+    rw [he, toPrincipalIdeal_mem_idealGroup_iff]
     exact h
-  rw [D.cls_of hzero (Ideal.isCoprime_iff_sup_eq.mpr ((idealUnit_mem_idealGroup_iff _ hzero).mp hun))]
-  unfold rayClassOfElt
-  rw [MonoidHom.comp_apply]
-  congr 1
-  exact Subtype.ext (idealUnit_span_eq ha)
+  have hcop : IsCoprime (Ideal.span {a}) (Ideal.span {(M : 𝓞 K)}) :=
+    Ideal.isCoprime_iff_sup_eq.mpr ((idealUnit_mem_idealGroup_iff D.modulus hzero).mp hun)
+  refine (D.cls_of hzero hcop).trans ?_
+  exact congrArg (rayClass D.modulus) (Subtype.ext he)
 
 private theorem nonmem_of_prime_to {a : 𝓞 K} {ha : algebraMap (𝓞 K) K a ≠ 0}
     (h : Units.mk0 _ ha ∈ primeToUnits D.modulus) :
@@ -113,39 +111,46 @@ theorem cls_eq_one_iff {I : Ideal (𝓞 K)} (hI : IsCoprime I (Ideal.span {(M : 
       rwa [coe_toPrincipalIdeal, coe_idealUnit] at h
     have hmem : (α'.val : K) ∈ (I : FractionalIdeal (𝓞 K)⁰ K) := by
       rw [← hspan]
-      exact mem_spanSingleton_self _
+      exact mem_spanSingleton_self (𝓞 K)⁰ (α'.val : K)
     obtain ⟨a, -, ha⟩ := (mem_coeIdeal (𝓞 K)⁰).mp hmem
     have ha₀ : algebraMap (𝓞 K) K a ≠ 0 := fun h => Units.ne_zero _ (ha.symm.trans h)
     have he : Units.mk0 _ ha₀ = α'.val := Units.ext ha
     have hprime := D.nonmem_of_prime_to (he.symm ▸ α'.2)
     have ht : (⟨Units.mk0 _ ha₀, mk0_mem_primeToUnits D.modulus ha₀ hprime⟩ : primeToUnits D.modulus) = α' :=
       Subtype.ext he
-    rw [MonoidHom.mem_ker, ← ht, rayHom_algebraMap] at hα'
+    change rayHom D.modulus α' = 1 at hα'
+    rw [← ht, rayHom_algebraMap D.modulus ha₀ hprime] at hα'
     have hmod : Ideal.Quotient.mk D.modulus.fin a = 1 := by
       have h := congrArg (fun u => (u.1 : (𝓞 K) ⧸ D.modulus.fin)) hα'
       simpa only [coe_unitMod, Prod.fst_one, Units.val_one] using h
     refine ⟨a, ?_, ?_⟩
-    · apply coeIdeal_injective
+    · apply (coeIdeal_injective (R := 𝓞 K) (K := K))
+      change (I : FractionalIdeal (𝓞 K)⁰ K) = ↑(Ideal.span {a})
       rw [coeIdeal_span_singleton, ha, hspan]
-    · exact (Ideal.Quotient.eq.1 (by simpa using hmod))
+    · change a - 1 ∈ D.modulus.fin
+      apply Ideal.Quotient.eq.mp
+      rw [map_one]
+      exact hmod
   · rintro ⟨a, rfl, ha⟩
     have ha₀ : a ≠ 0 := fun h => hI₀ (by simp [h])
     have haK : algebraMap (𝓞 K) K a ≠ 0 := fun h => ha₀ (RingOfIntegers.coe_injective (by simpa using h))
     have hmod : Ideal.Quotient.mk D.modulus.fin a = 1 := by
-      simpa using (Ideal.Quotient.eq.2 ha)
+      rw [← (Ideal.Quotient.mk D.modulus.fin).map_one]
+      exact Ideal.Quotient.eq.mpr (show a - 1 ∈ D.modulus.fin from ha)
     have hprime : ∀ v : HeightOneSpectrum (𝓞 K), v.asIdeal ∣ D.modulus.fin → a ∉ v.asIdeal :=
       fun v hv => not_mem_of_isUnit_mk D.modulus (hmod.symm ▸ isUnit_one) v hv
     let α : primeToUnits D.modulus := ⟨_, mk0_mem_primeToUnits D.modulus haK hprime⟩
-    rw [D.cls_span_eq haK α.2]
-    apply MonoidHom.mem_ker.mp (ker_rayHom_le D.modulus ?_)
-    rw [MonoidHom.mem_ker]
-    change rayHom D.modulus ⟨_, mk0_mem_primeToUnits D.modulus haK hprime⟩ = 1
-    rw [rayHom_algebraMap]
-    apply Prod.ext
-    · apply Units.ext
-      simpa only [coe_unitMod, Prod.fst_one, Units.val_one] using hmod
-    · funext w
-      exact False.elim w.2
+    have hα : rayHom D.modulus α = 1 := by
+      change rayHom D.modulus ⟨_, mk0_mem_primeToUnits D.modulus haK hprime⟩ = 1
+      rw [rayHom_algebraMap D.modulus haK hprime]
+      apply Prod.ext
+      · apply Units.ext
+        change (unitMod D.modulus hprime : 𝓞 K ⧸ D.modulus.fin) = 1
+        exact (coe_unitMod D.modulus hprime).trans hmod
+      · funext w
+        exact False.elim w.2
+    exact (D.cls_span_eq haK α.2).trans
+      (MonoidHom.mem_ker.mp (ker_rayHom_le D.modulus (MonoidHom.mem_ker.mpr hα)))
 
 theorem cls_span {a : 𝓞 K} (ha : a ≠ 0) (h : a - 1 ∈ Ideal.span {(M : 𝓞 K)}) :
     D.cls (Ideal.span {a}) = 1 := by
@@ -171,8 +176,8 @@ theorem cls_surj (c : D.G) :
   let β : primeToUnits D.modulus := ⟨_, mk0_mem_primeToUnits D.modulus h₀ hprime⟩
   have hdata : rayHom D.modulus β = rayHom D.modulus α := by
     change rayHom D.modulus ⟨_, mk0_mem_primeToUnits D.modulus h₀ hprime⟩ = _
-    rw [rayHom_algebraMap]
-    refine Prod.ext (Units.ext (by simpa only [coe_unitMod] using hres)) ?_
+    rw [rayHom_algebraMap D.modulus h₀ hprime]
+    refine Prod.ext (Units.ext ((coe_unitMod D.modulus hprime).trans hres)) ?_
     funext w
     exact False.elim w.2
   have hβ : rayClassOfElt D.modulus β = rayClassOfElt D.modulus α := by
@@ -182,7 +187,7 @@ theorem cls_surj (c : D.G) :
   have hcop : IsCoprime (Ideal.span {a}) (Ideal.span {(M : 𝓞 K)}) := by
     apply Ideal.isCoprime_iff_sup_eq.mpr
     apply (idealUnit_mem_idealGroup_iff D.modulus hzero).mp
-    rw [idealUnit_span_eq h₀, toPrincipalIdeal_mem_idealGroup_iff]
+    rw [idealUnit_span_eq h₀ hzero, toPrincipalIdeal_mem_idealGroup_iff]
     exact β.2
   refine ⟨Ideal.span {a} * B, hcop.mul_left hBc, mul_ne_zero hzero hB₀, ?_⟩
   rw [D.cls_mul _ _ hcop hBc hzero hB₀, D.cls_span_eq h₀ β.2, hβ, hα, mul_assoc, inv_mul_cancel, mul_one]

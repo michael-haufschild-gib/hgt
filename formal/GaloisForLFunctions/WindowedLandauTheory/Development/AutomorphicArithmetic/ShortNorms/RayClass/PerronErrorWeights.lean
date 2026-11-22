@@ -16,8 +16,8 @@ theorem perron_hasSum (a : ℕ → ℂ) (ha0 : a 0 = 0) {c u T : ℝ}
       ((1 / (2 * Real.pi) : ℂ) * ∫ t in (-T)..T,
         LSeries a ((c : ℂ) + t * I) * (u : ℂ) ^ ((c : ℂ) + t * I) / ((c : ℂ) + t * I)) := by
   have hconv : Summable (fun n : ℕ => ‖a n‖ * (u / n) ^ c) := by
-    convert (summable_norm_iff.mpr hs).mul_right (u ^ c) using 1
-    funext n
+    refine ((summable_norm_iff.mpr hs).mul_right (u ^ c)).congr ?_
+    intro n
     rcases eq_or_ne n 0 with rfl | hn
     · simp [ha0]
     · rw [LSeries.norm_term_eq, if_neg hn, ofReal_re, Real.div_rpow hu.le (Nat.cast_nonneg n)]
@@ -53,7 +53,8 @@ theorem zeta_bound {s : ℝ} (hs : 1 < s) : ∑' n : ℕ, 1 / (n : ℝ) ^ s ≤ 
   rw [hsum.tsum_eq_zero_add, Nat.cast_zero, Real.zero_rpow (by linarith : s ≠ 0), div_zero, zero_add]
   push_cast
   refine hbound.trans_eq ?_
-  field_simp [ne_of_gt (sub_pos.mpr hs)] <;> ring
+  field_simp [ne_of_gt (sub_pos.mpr hs)]
+  ring
 
 noncomputable def w (N : ℕ) (B : ℝ) (n : ℕ) : ℝ :=
   (if n = N then 1 else 0) + (if n = N + 1 then 1 else 0)

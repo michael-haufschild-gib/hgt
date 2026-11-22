@@ -13,7 +13,7 @@ private theorem exceptional_primes_finite_card_le (n m : ℕ) (hn : n ≠ 0) (hm
   set F : Finset ℕ := n.primeFactors.filter (fun ℓ => m < ℓ ^ (4 * padicValNat ℓ n)) with hF
   have hS : {ℓ : ℕ | ℓ.Prime ∧ m < ℓ ^ (4 * padicValNat ℓ n)} = (F : Set ℕ) := by
     ext ℓ
-    simp only [hF, Set.mem_ofPred_eq, coe_filter, Nat.mem_primeFactors]
+    simp only [hF, Set.mem_setOf_eq, coe_filter, Nat.mem_primeFactors]
     constructor
     · rintro ⟨hp, h⟩
       refine ⟨⟨hp, ?_, hn⟩, h⟩
@@ -61,7 +61,7 @@ theorem exceptional_set_count : BBCount := by
   | zero =>
     have : BB 0 g = {g} := by
       ext ℓ
-      simp only [BB, Set.mem_union, Set.mem_ofPred_eq]
+      simp only [BB, Set.mem_union, Set.mem_setOf_eq]
       constructor
       · rintro (h | ⟨d, h1, h2, -⟩)
         · exact h
@@ -72,7 +72,7 @@ theorem exceptional_set_count : BBCount := by
   | succ N ih =>
     have : BB (N + 1) g = BB N g ∪ {ℓ | Exc g (N + 1) ℓ} := by
       ext ℓ
-      simp only [BB, Set.mem_union, Set.mem_ofPred_eq]
+      simp only [BB, Set.mem_union, Set.mem_setOf_eq]
       constructor
       · rintro (h | ⟨d, h1, h2, h3⟩)
         · exact Or.inl (Or.inl h)

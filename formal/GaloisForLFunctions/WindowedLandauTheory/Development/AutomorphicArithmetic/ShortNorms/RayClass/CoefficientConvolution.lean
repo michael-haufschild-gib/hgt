@@ -1,4 +1,5 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.ShortNorms.RayClass.IdealCoefficients
+import GaloisForLFunctions.ArtinMertens.TheIdealVonMangoldtIdentity
 
 /-! The log of an ideal norm is the sum of the von Mangoldt weights of its divisors. -/
 
@@ -9,74 +10,59 @@ namespace GlobalTheory.Hk.RayConv
 
 variable {K : Type} [Field K] [NumberField K]
 
-theorem lamIdeal_pow {P : Ideal (𝓞 K)} (hP : Prime P) (k : ℕ) :
-    lamIdeal (P ^ (k + 1)) = Real.log (Ideal.absNorm P) := by
-  have h1 : P.IsPrime := Ideal.isPrime_of_prime hP
-  unfold lamIdeal
-  rw [if_pos ⟨P, k + 1, h1, hP.ne_zero, by omega, rfl⟩, Ideal.radical_pow _ (by omega), h1.radical]
-
 theorem finite_dvd {I : Ideal (𝓞 K)} (hI : I ≠ 0) : {J : Ideal (𝓞 K) | J ∣ I}.Finite := by
   refine (Ideal.finite_setOf_absNorm_le (S := 𝓞 K) (Ideal.absNorm I)).subset fun J hJ => ?_
   exact Nat.le_of_dvd (Nat.pos_of_ne_zero fun h => hI (Ideal.absNorm_eq_zero_iff.1 h)) (map_dvd _ hJ)
 
+/-- Reindex the native prime-power identity by the prime-power ideals dividing `I`. -/
 theorem sum_lamIdeal (I : Ideal (𝓞 K)) : I ≠ 0 → ∀ T : Finset (Ideal (𝓞 K)), (∀ J, J ∈ T ↔ J ∣ I) →
     ∑ J ∈ T, lamIdeal J = Real.log (Ideal.absNorm I) := by
-  induction I using UniqueFactorizationMonoid.induction_on_prime with
-  | h₁ => intro h; exact (h rfl).elim
-  | h₂ I hu =>
-    intro _ T hT
-    have h1 : I = 1 := isUnit_iff_eq_one.1 hu
-    subst h1
-    rw [map_one, Nat.cast_one, Real.log_one]
-    refine Finset.sum_eq_zero fun J hJ => ?_
-    unfold lamIdeal
-    rw [if_neg]
-    rintro ⟨P, k, hP, hP0, hk, rfl⟩
-    have := isUnit_of_dvd_one ((hT _).1 hJ)
-    rw [isUnit_pow_iff (by omega), Ideal.isUnit_iff] at this
-    exact hP.ne_top this
-  | h₃ I P hI hP ih =>
-    intro _ T hT
-    set S := (finite_dvd hI).toFinset with hS
-    have hSm : ∀ J, J ∈ S ↔ J ∣ I := fun J => by simp [hS]
-    have hsub : S ⊆ T := fun J hJ => (hT J).2 (((hSm J).1 hJ).mul_left P)
-    have hfin : FiniteMultiplicity P I := FiniteMultiplicity.of_prime_left hP hI
-    have hN : ∀ J : Ideal (𝓞 K), J ≠ 0 → ((Ideal.absNorm J : ℕ) : ℝ) ≠ 0 := fun J hJ =>
-      Nat.cast_ne_zero.2 fun h => hJ (Ideal.absNorm_eq_zero_iff.1 h)
-    rw [← Finset.sum_sdiff hsub, ih hI S hSm, map_mul, Nat.cast_mul, Real.log_mul (hN _ hP.ne_zero) (hN _ hI)]
-    congr 1
-    rw [Finset.sum_eq_single_of_mem (P ^ (multiplicity P I + 1)), lamIdeal_pow hP]
-    · rw [Finset.mem_sdiff, hT, hSm]
-      refine ⟨?_, hfin.not_pow_dvd_of_multiplicity_lt (Nat.lt_succ_self _)⟩
-      rw [pow_succ']
-      exact mul_dvd_mul_left _ (pow_multiplicity_dvd _ _)
-    · intro J hJ hne
-      rw [Finset.mem_sdiff, hT, hSm] at hJ
-      unfold lamIdeal
-      rw [if_neg]
-      rintro ⟨Q, k, hQ, hQ0, hk, rfl⟩
-      have hQp : Prime Q := Ideal.prime_of_isPrime hQ0 hQ
-      by_cases hQP : Q = P
-      · subst hQP
-        obtain ⟨j, rfl⟩ : ∃ j, k = j + 1 := ⟨k - 1, by omega⟩
-        have h1 : Q ^ j ∣ I := by
-          have := hJ.1
-          rw [pow_succ'] at this
-          exact (mul_dvd_mul_iff_left hP.ne_zero).1 this
-        have h2 : j ≤ multiplicity Q I := hfin.le_multiplicity_of_pow_dvd h1
-        have h3 : ¬ j + 1 ≤ multiplicity Q I := fun h => hJ.2 (pow_dvd_of_le_multiplicity h)
-        exact hne (by rw [show j = multiplicity Q I by omega])
-      · refine hJ.2 (hQp.pow_dvd_of_dvd_mul_left k ?_ hJ.1)
-        intro hd
-        exact hQP (associated_iff_eq.1 ((hQp.dvd_prime_iff_associated hP).1 hd))
-
-variable {M : ℕ} (D : RayData K M)
-
-end GlobalTheory.Hk.RayConv
-
-namespace GlobalTheory.Hk
-
-open RayConv in
+  classical
+  intro hI T hT
+  let good (J : Ideal (𝓞 K)) : Prop :=
+    ∃ (P : Ideal (𝓞 K)) (k : ℕ), P.IsPrime ∧ P ≠ ⊥ ∧ 1 ≤ k ∧ J = P ^ k
+  let U := (GaloisForLFunctions.ArtinMertens.primePowersLe K (Ideal.absNorm I)).filter
+    (fun pk => pk.1 ^ pk.2 ∣ I)
+  have hU {P : Ideal (𝓞 K)} {k : ℕ} : (P, k) ∈ U ↔
+      (P.IsPrime ∧ P ≠ ⊥ ∧ 1 ≤ k ∧ Ideal.absNorm P ^ k ≤ Ideal.absNorm I) ∧ P ^ k ∣ I := by
+    simp only [U, Finset.mem_filter, GaloisForLFunctions.ArtinMertens.mem_primePowersLe]
+  have hfilter : ∑ J ∈ T, lamIdeal J = ∑ J ∈ T.filter good, lamIdeal J := by
+    rw [Finset.sum_filter]
+    refine Finset.sum_congr rfl fun J _ => ?_
+    by_cases hJ : good J
+    · rw [if_pos hJ]
+    · rw [if_neg hJ, RayCount.lamIdeal_of_not_prime_pow hJ]
+  have hsum : (∑ pk ∈ U, Real.log (Ideal.absNorm pk.1)) = ∑ J ∈ T.filter good, lamIdeal J := by
+    refine Finset.sum_bij (fun pk _ => pk.1 ^ pk.2) ?_ ?_ ?_ ?_
+    · rintro ⟨P, k⟩ hp
+      obtain ⟨⟨hP, hP0, hk, -⟩, hdiv⟩ := hU.mp hp
+      exact Finset.mem_filter.mpr ⟨(hT _).mpr hdiv, P, k, hP, hP0, hk, rfl⟩
+    · rintro ⟨P, k⟩ hp ⟨Q, j⟩ hq he
+      obtain ⟨⟨hP, hP0, hk, -⟩, -⟩ := hU.mp hp
+      obtain ⟨⟨hQ, hQ0, -, -⟩, -⟩ := hU.mp hq
+      have hdiv : P ∣ Q := ((Ideal.prime_iff_isPrime hP0).mpr hP).dvd_of_dvd_pow
+        (he ▸ dvd_pow_self P (by omega : k ≠ 0))
+      have hPQ := (hQ.isMaximal hQ0).eq_of_le hP.ne_top (Ideal.dvd_iff_le.mp hdiv)
+      subst Q
+      have h2 := GaloisForLFunctions.ArtinMertens.two_le_absNorm_of_isPrime hP hP0
+      have heN : Ideal.absNorm P ^ k = Ideal.absNorm P ^ j := by
+        simpa only [map_pow] using congrArg (Ideal.absNorm (S := 𝓞 K)) he
+      exact congrArg (Prod.mk P) (pow_right_injective₀
+        (a := Ideal.absNorm P) (by omega) (by omega) heN)
+    · intro J hJ
+      obtain ⟨hJT, P, k, hP, hP0, hk, rfl⟩ := Finset.mem_filter.mp hJ
+      have hdiv := (hT _).mp hJT
+      have hN : Ideal.absNorm P ^ k ≤ Ideal.absNorm I := by
+        rw [← map_pow]
+        exact Nat.le_of_dvd (Nat.pos_of_ne_zero (Ideal.absNorm_eq_zero_iff.not.mpr hI))
+          (map_dvd _ hdiv)
+      exact ⟨(P, k), hU.mpr ⟨⟨hP, hP0, hk, hN⟩, hdiv⟩, rfl⟩
+    · rintro ⟨P, k⟩ hp
+      obtain ⟨⟨hP, hP0, hk, -⟩, -⟩ := hU.mp hp
+      exact (RayCount.lamIdeal_prime_pow P hP hP0 k hk).symm
+  refine hfilter.trans (hsum.symm.trans ?_)
+  simpa only [U, Finset.sum_filter] using
+    GaloisForLFunctions.ArtinMertens.sum_primePowersLe_dvd_eq hI le_rfl
 
 theorem aRay_mul_log : ∀ (K : Type) [Field K] [NumberField K] (M : ℕ), 2 ≤ M → ∀ (D : RayData K M) (g : D.G) (n : ℕ), aRay D g n * Real.log n = ∑ h : D.G, ∑ p ∈ n.divisorsAntidiagonal, lamRay D h p.1 * aRay D (g / h) p.2 := by
   intro K _ _ M _ D g n
@@ -109,7 +95,8 @@ theorem aRay_mul_log : ∀ (K : Type) [Field K] [NumberField K] (M : ℕ), 2 ≤
     obtain ⟨⟨-, hp, -⟩, ⟨a1, a2, a3, a4⟩, b1, b2, b3, b4⟩ := hx
     refine ⟨⟨mul_ne_zero a1 b1, a2.mul_left b2, by rw [map_mul, a3, b3, hp], ?_⟩,
       (hT _ (mul_ne_zero a1 b1) _).2 (dvd_mul_right _ _)⟩
-    rw [D.cls_mul I J a2 b2 a1 b1, a4, b4, mul_div_cancel]
+    rw [D.cls_mul I J a2 b2 a1 b1, a4, b4]
+    exact mul_div_cancel h g
   · rintro ⟨⟨h, p, p'⟩, I, J⟩ hx ⟨⟨h', q, q'⟩, I', J'⟩ hy hxy
     simp only [Finset.mem_sigma, Finset.mem_product, hF, Nat.mem_divisorsAntidiagonal] at hx hy
     obtain ⟨⟨-, hp, -⟩, ⟨a1, a2, a3, a4⟩, b1, b2, b3, b4⟩ := hx
@@ -129,7 +116,8 @@ theorem aRay_mul_log : ∀ (K : Type) [Field K] [NumberField K] (M : ℕ), 2 ≤
     simp only [Finset.mem_sigma, Finset.mem_product, hF, Nat.mem_divisorsAntidiagonal, Finset.mem_univ, true_and, and_true]
     refine ⟨⟨by rw [← map_mul, a3], ?_⟩, ⟨j1, a2.of_mul_left_left⟩, j2, a2.of_mul_left_right, ?_⟩
     · rw [← a3]; exact fun h => a1 (Ideal.absNorm_eq_zero_iff.1 h)
-    · rw [← a4, D.cls_mul J J' a2.of_mul_left_left a2.of_mul_left_right j1 j2, mul_div_cancel_left]
+    · rw [← a4, D.cls_mul J J' a2.of_mul_left_left a2.of_mul_left_right j1 j2]
+      exact (mul_div_cancel_left (D.cls J) (D.cls J')).symm
   · intro x _; rfl
 
-end GlobalTheory.Hk
+end GlobalTheory.Hk.RayConv

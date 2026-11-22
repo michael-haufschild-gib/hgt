@@ -1,4 +1,3 @@
-import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.ShortNorms.RayClass.PrimeBelow
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.ShortNorms.RayClass.IdealCoefficients
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.ShortNorms.NormOne
 
@@ -17,22 +16,15 @@ theorem lamIdeal_nonneg (I : Ideal (𝓞 K)) : 0 ≤ lamIdeal I := by
   · exact Real.log_natCast_nonneg _
   · exact le_rfl
 
-theorem pow_prime_norm (hK : Module.finrank ℚ K = 2) {P : Ideal (𝓞 K)} {k : ℕ} (hP : P.IsPrime) (h0 : P ≠ ⊥)
+theorem pow_prime_norm {P : Ideal (𝓞 K)} {k : ℕ} (hP : P.IsPrime) (h0 : P ≠ ⊥)
     (hk : 1 ≤ k) : IsPrimePow (Ideal.absNorm (P ^ k)) ∧
       P ∣ Ideal.span {((Ideal.absNorm (P ^ k)).minFac : 𝓞 K)} ∧ 1 < Ideal.absNorm P := by
   let v : IsDedekindDomain.HeightOneSpectrum (𝓞 K) := ⟨P, hP, h0⟩
-  obtain ⟨p, hp, hm⟩ := GlobalTheory.PrimeInHeightOneSpectrum.exists_prime_mem_heightOneSpectrum v
+  letI : P.IsMaximal := hP.isMaximal h0
+  obtain ⟨p, i, hi, hm, hp, he⟩ := Ideal.exists_prime_and_absNorm_eq_pow P
   have hd : P ∣ Ideal.span {(p : 𝓞 K)} := Ideal.dvd_span_singleton.2 hm
-  have hN : Ideal.absNorm (Ideal.span {(p : 𝓞 K)}) = p ^ 2 := by
-    rw [Ideal.absNorm_span_natCast, RingOfIntegers.rank, hK]
   have h1 : 1 < Ideal.absNorm P := NumberField.HeightOneSpectrum.one_lt_absNorm v
-  have h2 : Ideal.absNorm P ∣ p ^ 2 := hN ▸ map_dvd _ hd
-  obtain ⟨i, -, he⟩ := (Nat.dvd_prime_pow hp).1 h2
-  have hi : i ≠ 0 := by
-    rintro rfl
-    rw [pow_zero] at he
-    exact absurd he h1.ne'
-  have hik : i * k ≠ 0 := mul_ne_zero hi (by omega)
+  have hik : i * k ≠ 0 := mul_ne_zero hi.ne' (by omega)
   rw [map_pow, he, ← pow_mul, hp.pow_minFac hik]
   exact ⟨(isPrimePow_nat_iff _).2 ⟨p, i * k, hp, Nat.pos_of_ne_zero hik, rfl⟩, hd, he ▸ h1⟩
 
@@ -50,7 +42,7 @@ theorem sum_lamIdeal_le (hK : Module.finrank ℚ K = 2) (n : ℕ) (S : Finset (I
       I.radical ∣ Ideal.span {(n.minFac : 𝓞 K)} ∧ 1 < Ideal.absNorm I.radical ∧ ∃ k, I = I.radical ^ k := by
     intro I hI
     obtain ⟨hIS, P, k, hP, h0, hk, rfl⟩ := Finset.mem_filter.1 hI
-    have h := pow_prime_norm hK hP h0 hk
+    have h := pow_prime_norm hP h0 hk
     rw [hS _ hIS] at h
     rw [Ideal.radical_pow _ (by omega), hP.radical]
     exact ⟨h.1, hP, h0, h.2.1, h.2.2, k, rfl⟩

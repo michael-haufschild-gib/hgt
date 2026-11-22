@@ -1,9 +1,10 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.ShortNorms.RayClass.RightLogDerivative
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.ShortNorms.RayClass.RealValueLowerBound
+import GaloisForLFunctions.HTGeometry.CauchyFirstOrderStep
 
 /-! The derivative bound near one converts the value bound to a polynomial gap for real zeros. -/
 
-open Complex ArithmeticFunction MeasureTheory Filter Topology NumberField GlobalTheory.Hk
+open Complex ArithmeticFunction MeasureTheory Filter Topology GlobalTheory.Hk
 open scoped Classical
 
 namespace GlobalTheory.Hk
@@ -35,14 +36,15 @@ theorem LFam.norm_deriv_F_le_near_one (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) (z
     intro w hw
     have := (key w hw).1
     exact (han w (by simp only [Set.mem_setOf_eq]; linarith)).differentiableAt.differentiableWithinAt
-  have h := Complex.norm_deriv_le_of_forall_mem_sphere_norm_le (C := 1800 * 𝓕.B) (by norm_num : (0 : ℝ) < 1 / 10) hd
+  have h := HTGeometry.norm_deriv_le_of_forall_mem_sphere_norm_le
+    (M := 1800 * 𝓕.B) (by norm_num : (0 : ℝ) < 1 / 10) hd
     (by
       intro w hw
       obtain ⟨h1, h2⟩ := key w (Metric.sphere_subset_closedBall hw)
-      have h3 := hbd w (by linarith)
-      have h4 : (‖w‖ + 1) ^ 2 ≤ 6 := by nlinarith [norm_nonneg w]
-      nlinarith)
-  linarith [show 1800 * 𝓕.B / (1 / 10) = 18000 * 𝓕.B by ring]
+      have h3 := hbd w (by linarith only [h1])
+      have h4 : (‖w‖ + 1) ^ 2 ≤ 6 := by nlinarith only [h2, norm_nonneg w]
+      exact h3.trans ((mul_le_mul_of_nonneg_left h4 (by positivity)).trans_eq (by ring)))
+  exact h.trans_eq (by ring)
 
 theorem LFam.real_zero_far_from_one : ∃ A c : ℝ, 0 < A ∧ 0 < c ∧ ∀ (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) (β : ℝ), χ * χ = 1 → 3 / 4 ≤ β → 𝓕.F χ β = 0 → c / 𝓕.B ^ A ≤ 1 - β := by
   obtain ⟨A, c, hA, hc, h⟩ := RealChar.norm_F_one_ge
@@ -51,8 +53,7 @@ theorem LFam.real_zero_far_from_one : ∃ A c : ℝ, 0 < A ∧ 0 < c ∧ ∀ (�
   have hB : 0 < 𝓕.B := by linarith [𝓕.B_ge]
   have hβ1 : β ≤ 1 := by
     by_contra hlt
-    push_neg at hlt
-    exact (LogDeriv.logDeriv_F 𝓕 χ β (by simpa using hlt)).2.2.1 h0
+    exact (LogDeriv.logDeriv_F 𝓕 χ β (by simpa using lt_of_not_ge hlt)).2.2.1 h0
   obtain ⟨han, -, -, -⟩ := RayCont.continuation_growth 𝓕 χ
   have hn : ‖(1 : ℂ) - β‖ = 1 - β := by
     rw [show (1 : ℂ) - β = ((1 - β : ℝ) : ℂ) by push_cast; ring, Complex.norm_real, Real.norm_eq_abs,

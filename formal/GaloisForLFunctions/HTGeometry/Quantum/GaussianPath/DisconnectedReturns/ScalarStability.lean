@@ -42,20 +42,23 @@ private theorem one_cut {n : ℕ} (u : PathShell n) (S : Finset (Fin (n+2))) (r 
   let V := z • C.eval.val
   let δ := ‖U-V‖
   have hphase : star z*z=1 := by
-    simp [Complex.star_def,mul_comm (starRingEnd ℂ z) z,Complex.mul_conj',hz]
+    rw [Complex.star_def,Complex.conj_mul',hz]
+    norm_num
+  have hphase' : z*star z=1 := (mul_comm ..).trans hphase
   have hV : V∈unitary (Register (n+2)) := by
     rw [Unitary.mem_iff]
     simp only [V,star_smul,Matrix.smul_mul,Matrix.mul_smul,smul_smul,
       (Unitary.mem_iff.mp C.eval.property).1,(Unitary.mem_iff.mp C.eval.property).2,hphase,
-      mul_comm z (star z),one_smul,and_self]
+      hphase',one_smul,and_self]
   have unphase (M : Register (n+2)) : V*M*star V=C.eval.val*M*star C.eval.val := by
-    simp only [V,star_smul,Matrix.smul_mul,Matrix.mul_smul,smul_smul,hphase,
-      mul_comm z (star z),one_smul]
+    simp only [V,star_smul,Matrix.smul_mul,Matrix.mul_smul,smul_smul,hphase,one_smul]
   have hfix : U*H*star U=H := by rw [hH.symm.eq,mul_assoc,(Unitary.mem_iff.mp hU).2,mul_one]
-  have h₁ : ‖H-V*H*star V‖ ≤ 2*‖H‖*δ := hfix ▸ conjugation_gap U V H hU hV
+  have h₁ : ‖H-V*H*star V‖ ≤ 2*‖H‖*δ := by
+    simpa only [hfix] using conjugation_gap U V H hU hV
+  have hHW : cutProjection S H=W := projection_hamiltonian S u
   have hmap : E (H-V*H*star V)=W-V*W*star V := by
     change cutProjection S (H-V*H*star V)=_
-    rw [map_sub,unphase,cutProjection_circuit C S hc,projection_hamiltonian,unphase]
+    rw [map_sub,unphase H,cutProjection_circuit C S hc,hHW,unphase W]
   have h₂ := E.le_opNorm (H-V*H*star V)
   rw [hmap] at h₂
   have h₃ := conjugation_gap V U W hV hU

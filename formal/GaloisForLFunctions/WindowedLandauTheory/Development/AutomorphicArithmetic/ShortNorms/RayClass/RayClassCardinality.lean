@@ -50,8 +50,9 @@ theorem rayClass_card_le {K : Type} [Field K] [NumberField K] {M : ℕ}
     rw [hr] at h₁
     exact h₁.trans (h₂.trans (h₃.trans_eq hmod))
   have hcard := Subgroup.card_eq_card_quotient_mul_card_subgroup f.ker
+  change Nat.card D.G = Nat.card (D.G ⧸ f.ker) * Nat.card f.ker at hcard
   have hQ : Nat.card (D.G ⧸ f.ker) = classNumber K := by
-    rw [← Nat.card_eq_fintype_card]
+    rw [classNumber, ← Nat.card_eq_fintype_card]
     exact Nat.card_congr (QuotientGroup.quotientKerEquivOfSurjective f (toClassGroup_surjective m)).toEquiv
   rw [← Nat.card_eq_fintype_card, hcard, hQ, Nat.cast_mul]
   exact mul_le_mul (class_number_le hK) (by exact_mod_cast hker)

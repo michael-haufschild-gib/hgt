@@ -1,4 +1,7 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.ConnectedGates.ReturnAnnulus
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.SpanningOccupation.PhysicalBand
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.SpanningOccupation.Threshold
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.DisconnectedReturns.FirstWait
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.SpanningDensity.AfterReturn
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.SpanningDensity.LimitLaw
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.SpanningDensity.ProductInputs.PhysicalSeparation
@@ -46,6 +49,8 @@ import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.ReturnExcursions.Maxi
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.FirstDip
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.RampObstruction
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.FirstAscent.FirstExitDate
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.FirstAscent.AfterScalar.FirstRebound
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.RepeatedGates.SecondOrderBand
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.FirstAscent.GaussianIsolatedWindow
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.LateWindows
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.DelayedCrossing

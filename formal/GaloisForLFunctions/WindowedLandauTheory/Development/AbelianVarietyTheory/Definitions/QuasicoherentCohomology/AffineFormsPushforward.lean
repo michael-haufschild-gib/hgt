@@ -2,7 +2,7 @@ import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.PushforwardComparison
 import Mathlib.AlgebraicGeometry.Morphisms.Affine
 
-/-! Comparing cohomology of relative forms along an affine morphism. -/
+/-! Comparing cohomology of quasi-coherent sheaves along an affine morphism. -/
 
 open AlgebraicGeometry CategoryTheory CategoryTheory.Abelian TopologicalSpace
 
@@ -32,18 +32,18 @@ private instance {X : TopCat.{0}} (U : Opens X) : IsIso (freeComparison U) := by
   exact (RHTower.deningerOpenFreeHomEquiv U F).injective ((freeComparison_comp U a).trans
     (Equiv.apply_symm_apply _ _).symm)
 
-variable {k : Type} [CommRing k] {X Y : Scheme.{0}} (f : Y ⟶ X) [IsAffineHom f]
-  (t : Y ⟶ Spec (CommRingCat.of k))
+variable {X Y : Scheme.{0}} (f : Y ⟶ X) [IsAffineHom f]
 
-/-- An affine morphism computes cohomology of relative forms by its underived direct image. -/
-theorem relativeForms_pushforwardComparison_bijective (p q : ℕ) (V : X.Opens) :
-    Function.Bijective (CohomologyOn.pushforwardComparison f (relativeForms t p) V q) := by
-  let G := (SheafOfModules.toSheaf Y.ringCatSheaf).obj (relativeForms t p)
+/-- An affine morphism computes cohomology of quasi-coherent sheaves by its direct image. -/
+theorem quasicoherent_pushforwardComparison_bijective (M : Y.Modules) [M.IsQuasicoherent]
+    (q : ℕ) (V : X.Opens) :
+    Function.Bijective (CohomologyOn.pushforwardComparison f M V q) := by
+  let G := (SheafOfModules.toSheaf Y.ringCatSheaf).obj M
   change Function.Bijective (abelianPushforwardComparison f.base G V q)
   refine abelianPushforwardComparison_bijective f.base X.isBasis_affineOpens G ?_ V q
   intro U hU n x
   let e := asIso (freeComparison (f ⁻¹ᵁ U))
-  have h0 := relativeForms_acyclicOn t p (IsAffineOpen.preimage hU f) n
+  have h0 := quasicoherent_acyclicOn M (IsAffineOpen.preimage hU f) n
     ((Ext.mk₀ e.hom).comp x (zero_add (n + 1)))
   have h := congrArg ((Ext.mk₀ e.inv).precomp G (zero_add (n + 1))) h0
   change (Ext.mk₀ e.inv).comp ((Ext.mk₀ e.hom).comp x (zero_add (n + 1))) (zero_add (n + 1)) =
@@ -51,5 +51,12 @@ theorem relativeForms_pushforwardComparison_bijective (p q : ℕ) (V : X.Opens) 
   rw [← Ext.comp_assoc_of_second_deg_zero, Ext.mk₀_comp_mk₀, e.inv_hom_id, Ext.mk₀_id_comp,
     Ext.comp_zero] at h
   exact h
+
+/-- Cohomology of relative forms is computed by direct image along an affine morphism. -/
+theorem relativeForms_pushforwardComparison_bijective {k : Type} [CommRing k]
+    (t : Y ⟶ Spec (CommRingCat.of k)) (p q : ℕ) (V : X.Opens) :
+    Function.Bijective (CohomologyOn.pushforwardComparison f (relativeForms t p) V q) := by
+  letI := relativeForms_isQuasicoherent t p
+  exact quasicoherent_pushforwardComparison_bijective f (relativeForms t p) q V
 
 end GlobalTheory.SchemeCohomology

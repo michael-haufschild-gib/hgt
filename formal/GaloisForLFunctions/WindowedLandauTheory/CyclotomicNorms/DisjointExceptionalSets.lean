@@ -148,7 +148,7 @@ private theorem card_mem_BB_fixed_le (hR : RootsOfUnityCount) (Y : ℝ) (hY : 2 
       (Finset.Icc 1 N).biUnion (fun d => T.filter (fun g => Exc g d ℓ)) := by
     intro g hg
     have h := (hT g hg).2.2
-    simp only [BB, Set.mem_union, Set.mem_singleton_iff, Set.mem_ofPred_eq] at h
+    simp only [BB, Set.mem_union, Set.mem_singleton_iff, Set.mem_setOf_eq] at h
     rw [Finset.mem_union, Finset.mem_filter, Finset.mem_biUnion]
     rcases h with h | ⟨d, hd1, hdN, hex⟩
     · exact Or.inl ⟨hg, h.symm⟩

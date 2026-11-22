@@ -1,8 +1,16 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.ShortNorms.RayClass.Family
+import Mathlib.Analysis.Real.Sqrt
+import Mathlib.Analysis.SpecialFunctions.Gamma.Basic
+import Mathlib.MeasureTheory.Function.Floor
+import Mathlib.MeasureTheory.Integral.DominatedConvergence
+import Mathlib.MeasureTheory.Integral.Prod
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.FunProp
+import Mathlib.Tactic.Positivity
 
 /-! Exponential smoothing bounds for the trivial and nontrivial ray characters. -/
 
-open Complex ArithmeticFunction MeasureTheory Filter Topology NumberField GlobalTheory.Hk
+open Complex ArithmeticFunction MeasureTheory Filter Topology GlobalTheory.Hk
 open scoped Classical
 
 namespace GlobalTheory.Hk
@@ -80,7 +88,9 @@ lemma integral_mul_exp_neg_sq {x : ℝ} (hx : 0 < x) :
   have h := Real.integral_rpow_mul_exp_neg_mul_Ioi (a := 2) (r := x) (by norm_num) hx
   have h2 : ∫ t in Set.Ioi 0, t * Real.exp (-(t * x)) = x ^ (-2 : ℝ) := by
     have e : (2 : ℝ) - 1 = 1 := by norm_num
-    simp only [e, Real.rpow_one, Real.Gamma_two, mul_one] at h
+    have hΓ : Real.Gamma 2 = 1 := by
+      simpa only [Nat.cast_one, one_add_one_eq_two, Nat.factorial_one] using Real.Gamma_nat_eq_factorial 1
+    simp only [e, Real.rpow_one, hΓ, mul_one] at h
     simp only [mul_comm _ x]
     rw [h, Real.rpow_neg hx.le, one_div, Real.inv_rpow hx.le]
   refine ⟨Integrable.of_integral_ne_zero ?_, h2⟩

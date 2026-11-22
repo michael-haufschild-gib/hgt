@@ -33,7 +33,7 @@ theorem logDeriv_local :
   have hzre : z₀.re = 5 / 4 := by simp [z₀]
   have hzone : 1 < z₀.re := by rw [hzre]; norm_num
   have hnorm : ‖z₀‖ ≤ 5 / 4 + |t| := by
-    exact (norm_add_le _ _).trans_eq (by simp [z₀, norm_mul, Real.norm_eq_abs])
+    exact (norm_add_le _ _).trans_eq (by simp [Real.norm_eq_abs])
   have hF₀ : 𝓕.F χ z₀ ≠ 0 := (LogDeriv.logDeriv_F 𝓕 χ z₀ hzone).2.2.1
   have hlow : (1 / 100 : ℝ) ≤ ‖𝓕.F χ z₀‖ := by
     have hL := (LogDeriv.logDeriv_F 𝓕 χ z₀ hzone).2.1
@@ -54,12 +54,12 @@ theorem logDeriv_local :
     dsimp [r] at h
     linarith only [h]
   have hAnalytic : AnalyticOnNhd ℂ (𝓕.F χ) (closedBall z₀ r) := fun w hw =>
-    han w (by have := hre w hw; linarith)
+    han w (show 1 / 2 < w.re by linarith only [hre w hw])
   let X : ℝ := 𝓕.B * (|t| + 2)
   have hB := 𝓕.B_ge
   have hX8 : 8 ≤ X := by
     calc (8 : ℝ) = 4 * 2 := by norm_num
-      _ ≤ X := mul_le_mul hB (show (2 : ℝ) ≤ |t| + 2 by positivity)
+      _ ≤ X := mul_le_mul hB (le_add_of_nonneg_left (abs_nonneg t))
         (by norm_num) (by linarith : 0 ≤ 𝓕.B)
   have hX0 : 0 ≤ X := by linarith
   have hX7 : 2 ≤ X ^ 7 := (by norm_num : (2 : ℝ) ≤ 8 ^ 7).trans
@@ -85,7 +85,7 @@ theorem logDeriv_local :
       _ ≤ 16875 / 100 * X ^ 2 := hScale
       _ ≤ (8 ^ 5 / 100) * X ^ 2 := mul_le_mul_of_nonneg_right (by norm_num) (sq_nonneg X)
       _ ≤ X ^ 7 * ‖𝓕.F χ z₀‖ := by
-        rw [show (7 : ℕ) = 5 + 2 by rfl, pow_add]
+        rw [show X ^ (7 : ℕ) = X ^ (5 : ℕ) * X ^ (2 : ℕ) from pow_add X 5 2]
         calc (8 ^ 5 / 100) * X ^ 2 = 8 ^ 5 * X ^ 2 * (1 / 100) := by ring
           _ ≤ _ := by gcongr
   obtain ⟨W, hW, hmass, hest⟩ := Zeta23.WeilEF.logDeriv_partial_fraction_disk
@@ -129,7 +129,8 @@ theorem logDeriv_local :
           have htri := norm_add_le (w - s) (s - z₀)
           rw [sub_add_sub_cancel, norm_sub_rev w s] at htri
           have hdist : 1 / 10 ≤ ‖s - w‖ := by linarith only [htri, hd, hs]
-          rw [f, norm_div, Complex.norm_natCast]
+          change ‖(analyticOrderNatAt (𝓕.F χ) w : ℂ) / (s - w)‖ ≤ _
+          rw [norm_div, Complex.norm_natCast]
           calc _ ≤ (analyticOrderNatAt (𝓕.F χ) w : ℝ) / (1 / 10) :=
                 div_le_div_of_nonneg_left (Nat.cast_nonneg _) (by norm_num) hdist
             _ = _ := by ring

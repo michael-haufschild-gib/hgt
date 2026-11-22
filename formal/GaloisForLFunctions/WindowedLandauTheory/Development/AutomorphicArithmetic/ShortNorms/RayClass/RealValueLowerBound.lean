@@ -1,8 +1,9 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.ShortNorms.RayClass.ThetaBounds
+import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.ShortNorms.RayClass.LogDerivativePositivity
 
 /-! The convolution square and the theta bounds give an effective lower bound at one. -/
 
-open Complex ArithmeticFunction MeasureTheory Filter Topology NumberField GlobalTheory.Hk
+open Complex ArithmeticFunction MeasureTheory Filter Topology GlobalTheory.Hk
 open scoped Classical
 
 noncomputable section
@@ -294,31 +295,12 @@ lemma integral_le {P Q : ℝ → ℝ} (hP : Measurable P) (hQ : Measurable Q) {�
 
 def bRe (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) (n : ℕ) : ℝ := ∑ g, (χ g).re * 𝓕.a g n
 
-lemma chi_real {𝓕 : LFam} {χ : AddChar 𝓕.G ℂ} (h : χ * χ = 1) (g : 𝓕.G) :
-    χ g = 1 ∨ χ g = -1 := by
-  have : χ g * χ g = 1 := by
-    have := DFunLike.congr_fun h g
-    simpa using this
-  exact mul_self_eq_one_iff.1 this
-
 lemma aChi_eq {𝓕 : LFam} {χ : AddChar 𝓕.G ℂ} (h : χ * χ = 1) (n : ℕ) :
     𝓕.aChi χ n = (bRe 𝓕 χ n : ℂ) := by
   unfold LFam.aChi bRe
   push_cast
   refine Finset.sum_congr rfl fun g _ => ?_
-  rcases chi_real h g with e | e <;> simp [e]
-
-lemma a_le (𝓕 : LFam) (g : 𝓕.G) (n : ℕ) : 𝓕.a g n ≤ 14 * n := by
-  rcases Nat.eq_zero_or_pos n with rfl | hn
-  · simp [𝓕.a_zero]
-  have h1 : (1 : ℝ) ≤ n := by exact_mod_cast hn
-  have h := (abs_le.1 (𝓕.count g n h1)).2
-  rw [Nat.floor_natCast] at h
-  have h2 : 𝓕.a g n ≤ ∑ m ∈ Finset.Icc 1 n, 𝓕.a g m :=
-    Finset.single_le_sum (fun m _ => 𝓕.a_nonneg g m) (Finset.mem_Icc.2 ⟨hn, le_rfl⟩)
-  have h3 : Real.sqrt n ≤ n := Real.sqrt_le_iff.2 ⟨by positivity, by nlinarith⟩
-  have h4 : 𝓕.κ * n ≤ 4 * n := mul_le_mul_of_nonneg_right 𝓕.κ_le (by positivity)
-  linarith
+  rcases LFamPos.pm_one χ h g with e | e <;> simp [e]
 
 lemma bRe_le {𝓕 : LFam} {χ : AddChar 𝓕.G ℂ} (h : χ * χ = 1) (n : ℕ) :
     |bRe 𝓕 χ n| ≤ (Fintype.card 𝓕.G * 14 : ℝ) * n := by
@@ -326,7 +308,7 @@ lemma bRe_le {𝓕 : LFam} {χ : AddChar 𝓕.G ℂ} (h : χ * χ = 1) (n : ℕ)
   refine (Finset.abs_sum_le_sum_abs _ _).trans ?_
   refine (Finset.sum_le_card_nsmul _ _ (14 * n : ℝ) fun g _ => ?_).trans (le_of_eq ?_)
   · rw [abs_mul, abs_of_nonneg (𝓕.a_nonneg g n)]
-    rcases chi_real h g with e | e <;> simpa [e] using a_le 𝓕 g n
+    rcases LFamPos.pm_one χ h g with e | e <;> simpa [e] using 𝓕.a_le_mul g n
   · simp [mul_assoc]
 
 lemma bRe_one (𝓕 : LFam) (χ : AddChar 𝓕.G ℂ) : bRe 𝓕 χ 1 = 1 := by

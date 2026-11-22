@@ -11,11 +11,11 @@ namespace GlobalTheory.Hk.RaySq
 
 variable {K : Type} [Field K] [NumberField K]
 
-def normEq (K : Type) [Field K] [NumberField K] (n : ℕ) : Finset (Ideal (𝓞 K)) :=
-  (Ideal.finite_setOf_absNorm_eq (S := 𝓞 K) n).toFinset
+abbrev normEq (K : Type) [Field K] [NumberField K] (n : ℕ) : Finset (Ideal (𝓞 K)) :=
+  GaloisForLFunctions.HeckeLFunctions.idealsOfNorm K n
 
-lemma mem_normEq {n : ℕ} {I : Ideal (𝓞 K)} : I ∈ normEq K n ↔ Ideal.absNorm I = n := by
-  simp [normEq]
+lemma mem_normEq {n : ℕ} {I : Ideal (𝓞 K)} : I ∈ normEq K n ↔ Ideal.absNorm I = n :=
+  GaloisForLFunctions.HeckeLFunctions.mem_idealsOfNorm
 
 def dv (C : Ideal (𝓞 K)) : Finset (Ideal (𝓞 K)) :=
   ((Ideal.finite_setOf_absNorm_le (S := 𝓞 K) (Ideal.absNorm C)).toFinset).filter (· ∣ C)
@@ -331,11 +331,7 @@ lemma chi_one (ε : D.G → ℝ) (h1 : ε 1 = 1) : chi D ε 1 = 1 := by
   have hb : (1 : Ideal (𝓞 K)) ≠ ⊥ := by
     rw [Ideal.one_eq_top]
     exact top_ne_bot
-  have hcls : D.cls 1 = 1 := by
-    have e := D.cls_mul 1 1 hc hc hb hb
-    rw [one_mul] at e
-    exact mul_left_cancel (by rw [mul_one]; exact e.symm : D.cls 1 * D.cls 1 = D.cls 1 * 1)
-  rw [chi, if_pos ⟨hb, hc⟩, hcls, h1]
+  rw [chi, if_pos ⟨hb, hc⟩, D.cls_one, h1]
 
 lemma conv_aRay (ε : D.G → ℝ) {n : ℕ} (hn : n ≠ 0) :
     ∑ p ∈ n.divisorsAntidiagonal, (∑ g, aRay D g p.1) * ∑ g, ε g * aRay D g p.2 =

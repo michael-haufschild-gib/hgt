@@ -17,25 +17,25 @@ private theorem band_measure (A : Set ℝ) (F : Finset ℝ) (a T h : ℝ) (hh : 
   have hle {i j : F} (hij : i.val<j.val) : Disjoint (I i) (I j) := by
     apply Set.disjoint_left.mpr
     intro x hx hy
-    have h := hg i i.property j j.property hij
-    change _≤x ∧ x<i.val+h at hx
-    change j.val+h/2≤x ∧ _ at hy
-    linarith only [h,hx.2,hy.1,hh]
+    have hsep := hg i i.property j j.property hij
+    change (i.val + h / 2 ≤ x) ∧ (x < i.val + h) at hx
+    change (j.val + h / 2 ≤ x) ∧ (x < j.val + h) at hy
+    linarith only [hsep,hx.2,hy.1,hh]
   have hd : Pairwise (fun i j : F => Disjoint (I i) (I j)) := by
     intro i j h
     exact (lt_or_gt_of_ne (Subtype.coe_injective.ne h)).elim hle (fun hh => (hle hh).symm)
   have hsub : (⋃ v : F, I v) ⊆ A∩Icc a T := by
     rintro x hx
     obtain ⟨v,hv⟩ := mem_iUnion.mp hx
-    change v.val+h/2≤x ∧ x<v.val+h at hv
+    change (v.val + h / 2 ≤ x) ∧ (x < v.val + h) at hv
     obtain ⟨h₁,h₂⟩ := ht v v.property
     have h := hA v v.property (x-v.val) ⟨by linarith only [hv.1],by linarith only [hv.2]⟩
     rw [show (v:ℝ)+(x-v)=x by ring] at h
     exact ⟨h,by linarith only [h₁,hv.1,hh],hv.2.le.trans h₂⟩
-  have h := measureReal_mono (μ:=volume) hsub (measure_ne_top_of_subset inter_subset_right measure_Icc_lt_top.ne)
-  rw [measureReal_iUnion_fintype hd (fun _ => measurableSet_Ico) (fun _ => measure_Ico_lt_top.ne)] at h
+  have hm := measureReal_mono (μ:=volume) hsub (measure_ne_top_of_subset inter_subset_right measure_Icc_lt_top.ne)
+  rw [measureReal_iUnion_fintype hd (fun _ => measurableSet_Ico) (fun _ => measure_Ico_lt_top.ne)] at hm
   simpa only [I,Real.volume_real_Ico,show ∀ x : ℝ, x+h-(x+h/2)=h/2 by intro x; ring,
-    max_eq_left (half_nonneg hh),Finset.sum_const,Finset.card_univ,Fintype.card_coe,nsmul_eq_mul] using h
+    max_eq_left (by positivity : 0≤h/2),Finset.sum_const,Finset.card_univ,Fintype.card_coe,nsmul_eq_mul] using hm
 
 /-- If an event persists through the second half of a length-h band
 after every entry, its eventual time share is at least one eighth of

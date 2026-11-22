@@ -87,7 +87,7 @@ theorem kernel_bound : ∃ C : ℝ, 0 < C ∧ ∀ y c T : ℝ, 0 < y → 0 < c �
   let d := T * |Real.log y|
   have hT0 : 0 < T := by linarith
   have hyc : 0 < y ^ c := Real.rpow_pos_of_pos hy _
-  have hπ : 1 ≤ Real.pi := by linarith [Real.pi_gt_three]
+  have hπ : 1 ≤ Real.pi := (by norm_num : (1 : ℝ) ≤ 2).trans Real.two_le_pi
   have hfar (hne : y ≠ 1) :
       ‖perronVertical c T y - (if 1 ≤ y then 1 else 0)‖ ≤ y ^ c / (Real.pi * d) := by
     rcases lt_or_gt_of_ne hne with h | h
@@ -121,12 +121,13 @@ theorem kernel_bound : ∃ C : ℝ, 0 < C ∧ ∀ y c T : ℝ, 0 < y → 0 < c �
     · have hd : 1 < d := lt_of_not_ge hclose
       have hy1 : y ≠ 1 := by
         intro h
-        simp [d, h] at hd
+        norm_num [d, h] at hd
       refine (hfar hy1).trans ?_
-      have hπd : 1 ≤ Real.pi * d := by nlinarith only [hπ, hd, mul_nonneg (sub_nonneg.mpr hπ) hd.le]
+      have hπd : 1 ≤ Real.pi * d := hd.le.trans
+        (by simpa only [one_mul] using mul_le_mul_of_nonneg_right hπ (hpos hy1).le)
       exact (div_le_self hyc.le hπd).trans (by linarith only [hyc])
   · by_cases hy1 : y = 1
-    · simp [hy1, hyc.le]
+    · simp [hy1]
     have hd := hpos hy1
     calc _ ≤ (y ^ c / (Real.pi * d)) * d := mul_le_mul_of_nonneg_right (hfar hy1) hd.le
       _ = y ^ c / Real.pi := by field_simp
