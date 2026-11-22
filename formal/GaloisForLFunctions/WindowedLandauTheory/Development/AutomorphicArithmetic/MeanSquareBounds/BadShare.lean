@@ -69,7 +69,7 @@ private theorem bs_hasDeriv_S (Z : ℝ) (q : ℕ) (κ : ℕ → ℂ) (x : ℝ) :
     have := (Finset.mem_Icc.1 hm).1
     exact_mod_cast this
   have h1 := (((bs_hasDeriv_min m x hm0).const_mul (Λ m)).ofReal_comp.mul_const (κ m)).mul_const
-    J q m
+    (J q m)
   refine HasDerivWithinAt.congr_deriv h1 ?_
   split_ifs
   · push_cast; ring

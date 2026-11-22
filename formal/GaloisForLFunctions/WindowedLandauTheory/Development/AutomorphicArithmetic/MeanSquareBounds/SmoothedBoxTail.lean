@@ -78,8 +78,9 @@ theorem norm_partialLogDerivative_error_le (hχ : χ ≠ 1) (hp : χ.IsPrimitive
     have hZ₀ := norm_smoothed_zero_difference_le hχ hp hbox hz₁ hh hT hTl
     refine hZ₀.trans ?_
     have hL (t : ℝ) (ht : 1 ≤ t) : 0 ≤ Real.log t := Real.log_nonneg ht
-    have hL₀ : 0 ≤ Real.log ((T : ℝ) + 3) :=
-      hL _ (by linarith only [Nat.cast_nonneg T])
+    have hL₀ : 0 ≤ Real.log ((T : ℝ) + 3) := hL _ (by
+      have hT₀ : (0 : ℝ) ≤ T := Nat.cast_nonneg T
+      linarith only [hT₀])
     have hL₁ : 0 ≤ 2 + Real.log T := by
       have := hL T (by exact_mod_cast hT)
       linarith
@@ -102,10 +103,10 @@ theorem norm_partialLogDerivative_error_le (hχ : χ ≠ 1) (hp : χ.IsPrimitive
   have hF (t : ℝ) (ht : 1 < t) : ‖F t‖ ≤ efD / t := hβ t ht
   have hdiff : An.gChi χ (z + h) - An.gChi χ z =
       (F (z + h) - F z) - (Z (z + h) - Z z) +
-        efGamma χ * (Complex.log (z + h) - Complex.log z) := by
+        efGamma χ * (Complex.log ((z + h : ℝ) : ℂ) - Complex.log z) := by
     dsimp only [F]
     ring
-  have hLog : ‖efGamma χ * (Complex.log (z + h) - Complex.log z)‖ ≤ h / z := by
+  have hLog : ‖efGamma χ * (Complex.log ((z + h : ℝ) : ℂ) - Complex.log z)‖ ≤ h / z := by
     have hpos : 0 ≤ Real.log (z + h) - Real.log z :=
       sub_nonneg.mpr (Real.log_le_log hz₀ (by linarith only [hh]))
     rw [norm_mul, ← Complex.ofReal_log (by positivity : 0 ≤ z + h),
@@ -113,8 +114,7 @@ theorem norm_partialLogDerivative_error_le (hχ : χ ≠ 1) (hp : χ.IsPrimitive
     refine (mul_le_of_le_one_left hpos (norm_efGamma_le χ)).trans ?_
     rw [← Real.log_div (by positivity : z + h ≠ 0) hz₀.ne']
     have hl := Real.log_le_sub_one_of_pos (show 0 < (z + h) / z by positivity)
-    convert hl using 1
-    field_simp [hz₀.ne'] <;> ring
+    exact hl.trans_eq (by rw [add_div, div_self hz₀.ne', add_sub_cancel_left])
   have hw := norm_ramp_difference_sub hχ hz₁ hh
   let D := partialLogDerivative χ z + An.logDerivativeAtOne χ
   have hn : ‖D‖ ≤ ‖Z (z + h) - Z z‖ / h + 5 / z + (h + 1) * Real.log (z + h) / z := by
@@ -122,11 +122,11 @@ theorem norm_partialLogDerivative_error_le (hχ : χ ≠ 1) (hp : χ.IsPrimitive
       have ht := div_le_div_of_nonneg_left efD_nonneg hz₀ (le_add_of_nonneg_right hh.le)
       refine (norm_sub_le _ _).trans ((add_le_add ((hF _ hz').trans ht) (hF _ hz₁)).trans ?_)
       have h₀ := div_le_div_of_nonneg_right efD_le_two hz₀.le
-      linarith only [h₀]
+      exact (add_le_add h₀ h₀).trans_eq (by rw [← add_div]; norm_num)
     have hb : ‖An.gChi χ (z + h) - An.gChi χ z‖ ≤ ‖Z (z + h) - Z z‖ + 4 / z + h / z := by
       rw [hdiff]
-      have ht := (norm_add_le _ _).trans (add_le_add (norm_sub_le _ _) le_rfl)
-      linarith only [ht, hF₀, hLog]
+      refine ((norm_add_le _ _).trans (add_le_add (norm_sub_le _ _) le_rfl)).trans ?_
+      linarith only [hF₀, hLog]
     have he : (h : ℂ) * D = (An.gChi χ (z + h) - An.gChi χ z) -
         (An.gChi χ (z + h) - An.gChi χ z - (h : ℂ) * D) := by ring
     have hu := (norm_sub_le (An.gChi χ (z + h) - An.gChi χ z)
@@ -140,6 +140,8 @@ theorem norm_partialLogDerivative_error_le (hχ : χ ≠ 1) (hp : χ.IsPrimitive
     have hlast : (h * (h + 1) * Real.log (z + h) / z) / h =
         (h + 1) * Real.log (z + h) / z := by field_simp [hz₀.ne', hh.ne']
     simp only [add_div, he', hlast] at hsum
+    rw [add_div, show 5 / z = 4 / z + 1 / z by rw [← add_div]; norm_num]
+    dsimp only [D]
     linarith only [hsum, hconst]
   have htrim : (h + 1) * Real.log (z + h) / z ≤ 2 * v * E := by
     have hlog := Real.log_le_log (by positivity : 0 < z + h) (show z + h ≤ 2 * z by linarith only [hhz])
@@ -163,9 +165,12 @@ theorem norm_partialLogDerivative_error_le (hχ : χ ≠ 1) (hp : χ.IsPrimitive
     _ ≤ (269000 * (140 * (1 + Real.log N))) * v ^ 2 * E + 7 * v ^ 2 * E := by
       have hZ' : ‖Z (z + h) - Z z‖ / h ≤
           (269000 * (140 * (1 + Real.log N))) * v ^ 2 * E := hZ.trans (by gcongr)
-      have hE₁ := mul_le_mul_of_nonneg_right hv₂ hE₀
+      have hE₁ : E ≤ v ^ 2 * E := le_mul_of_one_le_left hE₀ hv₂
       have hE₂ := mul_le_mul_of_nonneg_right hvle hE₀
-      linarith only [hZ', hInv, hE₁, hE₂, htrim]
+      have h5 : 5 / z ≤ 5 * (v ^ 2 * E) := by
+        rw [show 5 / z = 5 * (1 / z) by ring]
+        exact mul_le_mul_of_nonneg_left (hInv.trans hE₁) (by norm_num)
+      linarith only [hZ', h5, hE₂, htrim]
     _ ≤ _ := by
       have h₁ := mul_le_mul_of_nonneg_right hN' (show 0 ≤ v ^ 2 * E by positivity)
       have h₂ : 0 ≤ (1 + Real.log N) * (v ^ 2 * E) := by positivity

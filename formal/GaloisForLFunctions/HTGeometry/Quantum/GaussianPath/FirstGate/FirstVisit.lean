@@ -37,6 +37,26 @@ theorem gaussian_one_gate_before_entry (ε : ℝ) (hε : 0 < ε) (hs : ε < sqrt
   refine ⟨ht,lt_of_not_ge fun h => hgap t ⟨hlo,hhi⟩ ?_⟩
   exact (physical_visit H hε hs t).mpr ((hasProjectiveCircuitApproximation_iff_infDist _ 0 _).mpr h)
 
+/-- The first empty visit following an outside time is an incoming scalar
+entry, with the whole interval from that time to the visit outside. -/
+theorem first_empty_entry_of_outside {N : ℕ} (H : selfAdjoint (Register N)) {A ε : ℝ}
+    (hε : 0 < ε) (hs : ε < sqrt 2) (hfar : ε < orbitCircuitDistance H 0 A) :
+    let v := firstVisit H A 0 ε
+    A < v ∧ visitEntry (fun j => -H.2.isHermitian.eigenvalues j/(2*π))
+      (SharpOccupation.physicalArc ε) v := by
+  intro v
+  have hleast := firstVisit_isLeast H A 0 hε
+  have hAv : A < v := hleast.1.1.lt_of_ne (by
+    intro h
+    have hv := (hasProjectiveCircuitApproximation_iff_infDist _ 0 ε).mp hleast.1.2
+    change orbitCircuitDistance H 0 v ≤ ε at hv
+    exact hfar.not_ge ((congrArg (orbitCircuitDistance H 0) h).le.trans hv))
+  refine ⟨hAv,?_⟩
+  refine ⟨(physical_visit H hε hs v).mpr hleast.1.2,v-A,sub_pos.mpr hAv,?_⟩
+  intro t hh ht
+  have htA : A ≤ t := by linarith only [hh.1]
+  exact hh.2.not_ge (hleast.2 ⟨htA,(physical_visit H hε hs t).mp ht⟩)
+
 /-- At any positive origin outside the scalar tube, its next entry admits
 a strictly earlier one-gate visit at the same physical accuracy. The
 statement holds simultaneously for every origin on the entire chain. -/
@@ -49,21 +69,8 @@ theorem gaussian_first_one_gate_window (ε : ℝ) (hε : 0 < ε) (hs : ε < sqrt
         ∃ t ∈ Ioo A (firstVisit H A 0 ε), orbitCircuitDistance H 1 t < ε ∧ ε < orbitCircuitDistance H 0 t := by
   filter_upwards [gaussian_one_gate_before_entry ε hε hs] with ω hentryWindow k
   intro p N H A hA hfar
-  let E := fun j => -H.2.isHermitian.eigenvalues j
-  let f := fun j => E j/(2*π)
-  let x := SharpOccupation.physicalArc ε
   let v := firstVisit H A 0 ε
-  have hleast := firstVisit_isLeast H A 0 hε
-  have hAv : A < v := hleast.1.1.lt_of_ne (by
-    intro h
-    have hv := (hasProjectiveCircuitApproximation_iff_infDist _ 0 ε).mp hleast.1.2
-    change orbitCircuitDistance H 0 v ≤ ε at hv
-    exact hfar.not_ge ((congrArg (orbitCircuitDistance H 0) h).le.trans hv))
-  have hentry : visitEntry f x v := by
-    refine ⟨(physical_visit H hε hs v).mpr hleast.1.2,v-A,sub_pos.mpr hAv,?_⟩
-    intro t hh ht
-    have htA : A ≤ t := by linarith only [hh.1]
-    exact hh.2.not_ge (hleast.2 ⟨htA,(physical_visit H hε hs t).mp ht⟩)
+  obtain ⟨hAv,hentry⟩ := first_empty_entry_of_outside H hε hs hfar
   have hopen := hentryWindow k v (hA.trans hAv) hentry
   have hstart : ∀ᶠ t : ℝ in 𝓝[<] v, A < t := (lt_mem_nhds hAv).filter_mono nhdsWithin_le_nhds
   obtain ⟨t,ht,ha,hv⟩ := (hopen.and (hstart.and self_mem_nhdsWithin)).exists

@@ -1,6 +1,6 @@
 import GaloisForLFunctions.HTGeometry.Quantum.InverseBandwidthCircuitCost
 import GaloisForLFunctions.HTGeometry.Quantum.LocalPacketComparison
-import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.IncidentPauliTerms
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.FirstAscent.IncidentMass
 import GaloisForLFunctions.HTGeometry.SiteFactorLeafTransport
 
 /-!
@@ -92,18 +92,7 @@ theorem path_idle_deletion_norm_sq {n : ℕ} (S : Finset (Fin (n+2))) (u : PathS
   classical
   let W := S.biUnion pathIncidentLabels
   have hcard : W.card ≤ 21*S.card := pathIncident_union_card S
-  have hmiss (l) (hl : l ∉ W) : PathWordSupportedIn Sᶜ l :=
-    path_supported_compl_of_not_incident S l hl
-  have hbound : ‖pathHamiltonian u-pathHamiltonianOnSites Sᶜ u‖ ≤ ∑ l ∈ W, |u l| := by
-    have h0 := norm_pathHamiltonian_sub_packetReference_le Sᶜ ∅ u 0
-    have hR : pathHamiltonianPacketReference Sᶜ ∅ u 0 = pathHamiltonianOnSites Sᶜ u := by
-      simp [pathHamiltonianPacketReference,pathHamiltonianOnSites]
-    rw [hR] at h0
-    apply h0.trans
-    rw [Finset.sum_subset (Finset.subset_univ W) (fun l _ hl => by simp [pathPacketReferenceCoeff,hmiss l hl]) |>.symm]
-    apply Finset.sum_le_sum
-    intro l _
-    by_cases hl : PathWordSupportedIn Sᶜ l <;> simp [pathPacketReferenceCoeff,hl]
+  have hbound := FirstAscent.incident_deletion S u
   apply (pow_le_pow_left₀ (norm_nonneg _) hbound 2).trans
   have hcs := sq_sum_le_card_mul_sum_sq (s := W) (f := fun l => |u l|)
   apply hcs.trans

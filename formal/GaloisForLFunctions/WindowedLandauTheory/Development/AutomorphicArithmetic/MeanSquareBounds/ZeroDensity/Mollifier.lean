@@ -66,10 +66,8 @@ lemma mco_norm_le (Y N : ℕ) {n : ℕ} (hn : 1 ≤ n) : ‖mco Y N n‖ ≤ (n.
   refine le_trans (sum_le_sum (g := fun _ => (1 : ℝ)) ?_) ?_
   · intro p _
     have h1 := abs_moebius_le_one (n := p.1)
-    first
-      | (rw [Complex.norm_intCast]; exact_mod_cast h1)
-      | (rw [Complex.norm_int]; exact_mod_cast h1)
-      | (rw [← Complex.ofReal_intCast, Complex.norm_real, Real.norm_eq_abs]; exact_mod_cast h1)
+    rw [Complex.norm_intCast]
+    exact_mod_cast h1
   · rw [sum_const, nsmul_eq_mul, mul_one]
     have hc := card_le_card (mco_filter_subset_antidiag (Y := Y) (N := N) hn)
     have he : n.divisorsAntidiagonal.card = n.divisors.card := by

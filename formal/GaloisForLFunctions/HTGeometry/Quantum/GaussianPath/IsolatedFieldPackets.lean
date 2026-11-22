@@ -15,7 +15,9 @@ def longitudinalPacket {n : ℕ} (S : Finset (Fin (n+2))) (q : ℝ) : PathShell 
   | .inl (s,a) => if a=2 ∧ s ∈ S then q else 0
   | .inr _ => 0
 
-private theorem longitudinal_mass {n : ℕ} (S : Finset (Fin (n+2))) (q : ℝ) :
+/-- Total absolute mass of a uniform longitudinal packet, both as a full
+Pauli shell and as a list of onsite Z coefficients. -/
+theorem longitudinalPacket_mass {n : ℕ} (S : Finset (Fin (n+2))) (q : ℝ) :
     (∑ l : PathLabel n, |longitudinalPacket S q l|) = S.card*|q| ∧
       (∑ v : Fin (n+2), |longitudinalPacket S q (.inl (v,2))|) = S.card*|q| := by
   classical
@@ -41,7 +43,7 @@ theorem longitudinal_packet_scalar_floor {n : ℕ} (S : Finset (Fin (n+2))) (hS 
   let H := pathHamiltonian u
   let M := (S.card:ℝ)*q
   have hM : 0 < M := by dsimp [M]; positivity
-  obtain ⟨h1,h2⟩ := longitudinal_mass S q
+  obtain ⟨h1,h2⟩ := longitudinalPacket_mass S q
   rw [abs_of_pos hq] at h1 h2
   have hnorm : ‖H‖ ≤ M := by
     change ‖pathHamiltonian u‖ ≤ (S.card:ℝ)*q

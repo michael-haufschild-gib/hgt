@@ -22,7 +22,7 @@ lemma norm_cpow_step_le {i U : ℕ} (hU : 1 ≤ U) (hi : U ≤ i) {w : ℂ} (hw 
     exact lt_irrefl _ hw
   have h := QH.norm_cpow_increment_le (ρ := -w) (neg_ne_zero.mpr hw₀) hi₁
     (h := 1) zero_le_one (show -w.re ≤ 1 by linarith only [hw]) (by rw [Complex.neg_re])
-  push_cast at h
+  push_cast at h ⊢
   rw [norm_neg, mul_one] at h
   refine h.trans ?_
   have hUi : (U : ℝ) ≤ i := by exact_mod_cast hi

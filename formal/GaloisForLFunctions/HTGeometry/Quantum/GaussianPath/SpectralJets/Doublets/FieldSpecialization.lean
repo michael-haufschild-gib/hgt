@@ -20,7 +20,7 @@ theorem map_fieldCharacteristic (φ : R →+* S) (H : Matrix I I R) (u : I → �
   by_cases he : i=j
   · subst j
     simp [RingHom.mapMatrix_apply,Matrix.map_apply,Matrix.scalar_apply,map_fieldPoly]
-  · simp [RingHom.mapMatrix_apply,Matrix.map_apply,Matrix.scalar_apply,he,Matrix.diagonal_apply_ne _ he]
+  · simp [RingHom.mapMatrix_apply,Matrix.map_apply,Matrix.scalar_apply,he]
 
 theorem eval_fieldCharacteristic (H : Matrix I I R) (u : I → κ → R) (y : R) (h : κ → R) :
     eval (fun o : Option κ => o.elim y h) (fieldCharacteristic H u) =
@@ -32,7 +32,7 @@ theorem eval_fieldCharacteristic (H : Matrix I I R) (u : I → κ → R) (y : R)
   by_cases he : i=j
   · subst j
     simp [RingHom.mapMatrix_apply,Matrix.scalar_apply,eval_fieldPoly,sub_add_eq_sub_sub]
-  · simp [RingHom.mapMatrix_apply,Matrix.scalar_apply,he,Matrix.diagonal_apply_ne _ he]
+  · simp [RingHom.mapMatrix_apply,Matrix.scalar_apply,he]
 
 /-- Set the independent perturbations to zero and retain the energy variable and
 the background couplings. This is applied after differentiating. -/
@@ -40,6 +40,7 @@ def atZeroField : MvPolynomial (Option κ) (MvPolynomial ρ R) →+* MvPolynomia
   eval₂Hom (rename (R := R) (some : ρ → Option ρ)).toRingHom
     (fun o : Option κ => o.elim (X none) (fun _ => 0))
 
+omit [Fintype κ] in
 theorem eval_atZeroField (φ : R →+* S) (x : ρ → S) (y : S)
     (q : MvPolynomial (Option κ) (MvPolynomial ρ R)) :
     eval₂ φ (fun o : Option ρ => o.elim y x) (atZeroField q) =

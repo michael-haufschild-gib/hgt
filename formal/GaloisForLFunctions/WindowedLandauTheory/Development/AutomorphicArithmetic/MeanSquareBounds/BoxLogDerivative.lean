@@ -110,6 +110,7 @@ theorem kappa4 :
   rw [Real.log_mul (mul_pos hA hpow).ne' (by positivity), Real.log_mul hA.ne' hpow.ne',
     Real.log_rpow hYpos, Real.log_pow] at hlogQ
   push_cast at hlogQ
+  dsimp only [id] at hsmall'
   rw [Real.norm_of_nonneg (Real.log_nonneg hlog), Real.norm_of_nonneg hl.le] at hsmall'
   have hrate := mul_le_mul_of_nonneg_right hε'.le hl.le
   have h := hbound Q N χ (hlo'.trans hQlo) hp hg

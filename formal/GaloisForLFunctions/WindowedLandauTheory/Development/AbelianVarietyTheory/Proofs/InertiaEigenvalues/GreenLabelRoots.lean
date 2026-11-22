@@ -1,4 +1,5 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
+import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CharacterTheory.FiniteFieldFrobeniusPeriods
 
 /-! Irreducible polynomial labels are Frobenius orbits of roots in the algebraic closure. -/
 
@@ -45,8 +46,10 @@ theorem pow_eq_self_iff {f : (ZMod g)[X]} (hf : Irreducible f) {z : Fbar g}
   have hx : IsIntegral (ZMod g) z := Algebra.IsIntegral.isIntegral z
   have has : Associated (minpoly (ZMod g) z) f :=
     (minpoly.irreducible hx).associated_of_dvd hf (minpoly.dvd _ _ hz)
-  rw [hf.natDegree_dvd_iff_dvd_X_pow_card_pow_sub_X, ← has.dvd_iff_dvd_left, minpoly.dvd_iff]
-  simp [sub_eq_zero]
+  have hdeg : (minpoly (ZMod g) z).natDegree = f.natDegree :=
+    le_antisymm (natDegree_le_of_dvd has.dvd hf.ne_zero)
+      (natDegree_le_of_dvd has.symm.dvd (minpoly.ne_zero hx))
+  rw [← hdeg, CuspGL.minpoly_natDegree_dvd_iff_pow, Nat.card_zmod]
 
 theorem pow_inj_lt {P : (ZMod g)[X]} (hP : Irreducible P) {x : Fbar g} (hx : aeval x P = 0)
     {i j : ℕ} (hij : i < j) (hj : j < P.natDegree) : x ^ g ^ i ≠ x ^ g ^ j := by

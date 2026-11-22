@@ -1,4 +1,3 @@
-import Mathlib
 import GaloisForLFunctions.WindowedLandauTheory.SharpRestriction.LevelLetterCocycles.ArithmeticCylinders
 
 /-! Polynomial labels and parabolic induction for characters of finite general linear groups. -/

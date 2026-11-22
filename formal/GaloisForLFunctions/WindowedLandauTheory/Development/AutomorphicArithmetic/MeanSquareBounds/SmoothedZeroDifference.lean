@@ -112,7 +112,9 @@ theorem norm_smoothed_zero_difference_le (hχ : χ ≠ 1) (hp : χ.IsPrimitive)
     rw [← Finset.sum_fiberwise_of_maps_to (fun q hq => Finset.mem_image_of_mem fl hq)]
     let K (m : ℕ) := Real.log (m + 3) * bnd m
     have hlog₀ (m : ℕ) : 0 ≤ Real.log ((m : ℝ) + 3) := Real.log_nonneg
-      (by linarith only [Nat.cast_nonneg m])
+      (by
+        have hm : (0 : ℝ) ≤ m := Nat.cast_nonneg m
+        linarith only [hm])
     have hK (m : ℕ) : 0 ≤ K m := mul_nonneg (hlog₀ m) (hb₀ m)
     have hfiber (m : ℕ) : ∑ q ∈ F with fl q = m, w q ≤ 4 * localCountConst N * K m := by
       obtain ⟨hf, hc⟩ := ncard_zeros_floor_le hχ hp m

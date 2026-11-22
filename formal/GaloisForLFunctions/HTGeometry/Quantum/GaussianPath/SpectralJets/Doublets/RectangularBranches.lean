@@ -46,7 +46,7 @@ theorem cleared_minor_iff_field (H : Matrix (Fin D) (Fin D) ℂ) (hH : H.IsHermi
       rw [hw i,he j] at hv
       exact hv
     rw [hh,Matrix.det_mul,Matrix.det_diagonal]
-    have hn := Finset.prod_ne_zero_iff.mpr (s := Finset.univ) (f := c ∘ s) (fun j _ => hc (s j))
+    have hn : (∏ j, (c ∘ s) j) ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun j _ => hc (s j))
     exact ⟨fun h => left_ne_zero_of_mul h,fun h => mul_ne_zero h hn⟩
   constructor
   · rintro ⟨s,hs⟩

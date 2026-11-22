@@ -26,7 +26,8 @@ private theorem packet_coefficient_outside {n : ℕ} (S : Finset (Fin (n+2))) (q
     simp [longitudinalPacket,hout]
   · rfl
 
-private theorem packet_restriction {n : ℕ} (S : Finset (Fin (n+2))) (q : ℝ) :
+/-- The longitudinal packet is unchanged by restriction to its sites. -/
+theorem longitudinalPacket_restriction {n : ℕ} (S : Finset (Fin (n+2))) (q : ℝ) :
     pathHamiltonianOnSites S (longitudinalPacket S q) = pathHamiltonian (longitudinalPacket S q) := by
   classical
   rw [pathHamiltonianOnSites_eq_pathHamiltonian_pathShellOnSites]
@@ -37,7 +38,9 @@ private theorem packet_restriction {n : ℕ} (S : Finset (Fin (n+2))) (q : ℝ) 
   · rw [if_pos h]
   · rw [if_neg h,packet_coefficient_outside S q l h]
 
-private theorem omitted_mass {n : ℕ} (u : PathShell n) (S : Finset (Fin (n+2))) (q η : ℝ)
+/-- Replacing all interactions on nearly isolated sites by their uniform
+longitudinal field costs at most 21η in operator norm per site. -/
+theorem isolated_field_replacement_error {n : ℕ} (u : PathShell n) (S : Finset (Fin (n+2))) (q η : ℝ)
     (hη : 0 ≤ η) (hs : ∀ s ∈ S, isolatedLongitudinalSite u q η s) :
     ‖pathHamiltonian u-(pathHamiltonianOnSites Sᶜ u + pathHamiltonian (longitudinalPacket S q))‖ ≤
       21*(S.card:ℝ)*η := by
@@ -72,7 +75,7 @@ private theorem omitted_mass {n : ℕ} (u : PathShell n) (S : Finset (Fin (n+2))
     rw [pathPacketReferenceCoeff,if_pos (path_supported_compl_of_not_incident S l hl),
       hp l,ho l hl,add_zero,sub_self,abs_zero]
   have herr := norm_pathHamiltonian_sub_packetReference_le Sᶜ S u p
-  have hres : pathHamiltonianOnSites S p = pathHamiltonian p := packet_restriction S q
+  have hres : pathHamiltonianOnSites S p = pathHamiltonian p := longitudinalPacket_restriction S q
   rw [pathHamiltonianPacketReference,hres] at herr
   rw [← Finset.sum_subset (Finset.subset_univ W) (fun l _ hl => hz l hl)] at herr
   refine herr.trans ((Finset.sum_le_sum hc).trans ?_)
@@ -93,7 +96,7 @@ theorem isolated_field_circuit_deficit {n : ℕ} (u : PathShell n) (q η : ℝ) 
   let K : selfAdjoint (Reg (n+2)) := ⟨pathHamiltonian (longitudinalPacket S q),isSelfAdjoint_pathHamiltonian _⟩
   have hK : IsSiteSupported S K.val := by
     change IsSiteSupported S (pathHamiltonian (longitudinalPacket S q))
-    rw [← packet_restriction]
+    rw [← longitudinalPacket_restriction]
     exact pathHamiltonianOnSites_isSiteSupported _ _
   have hC := (C.isSiteSupported_touchedSites.complex_smul z).mono (show C.touchedSites ⊆ Sᶜ from
     fun s hs => Finset.mem_compl.mpr (fun h => Finset.disjoint_left.mp hd h hs))
@@ -102,7 +105,7 @@ theorem isolated_field_circuit_deficit {n : ℕ} (u : PathShell n) (q η : ℝ) 
   have hf := longitudinal_packet_scalar_floor S hS q hq t c
   apply hf.trans
   exact add_le_add (hc.trans (add_le_add le_rfl
-    (mul_le_mul_of_nonneg_left (omitted_mass u S q η hη hs) (abs_nonneg _)))) le_rfl
+    (mul_le_mul_of_nonneg_left (isolated_field_replacement_error u S q η hη hs) (abs_nonneg _)))) le_rfl
 
 #print axioms isolated_field_circuit_deficit
 end

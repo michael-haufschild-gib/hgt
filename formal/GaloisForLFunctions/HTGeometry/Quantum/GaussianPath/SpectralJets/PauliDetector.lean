@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.SimpleBranches
-import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.Discriminant
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.IntegralSublevel
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPauliPrefixPhaseLaw
 
 /-! # Integral spectral derivative detectors on Gaussian Pauli chains -/
@@ -88,31 +88,6 @@ theorem gaussian_path_mixed_spectral_jet_detectors :
   filter_upwards [numbered_simple] with ω hω
   exact fun k => path_branches_at_simple _ _ (hω k)
 
-private theorem integral_sublevel {n : ℕ} (g : MvPolynomial (Fin n) GaussianInt) (B : ℕ)
-    (hg : g.totalDegree ≤ B) (hnz : map GaussianInt.toComplex g ≠ 0)
-    {r : ℝ} (hr : 0 < r) (hr' : r ≤ 1) :
-    (Measure.pi fun _ : Fin n => gaussianReal 0 1)
-      {x | ‖eval₂Hom GaussianInt.toComplex (fun i => (x i : ℂ)) g‖ < r^B} ≤
-        ENNReal.ofReal (2*(B:ℝ)*r) := by
-  let f := map GaussianInt.toComplex g
-  have hd : f.totalDegree ≤ B := (show f.totalDegree ≤ g.totalDegree from
-    Finset.sup_mono (support_map_subset GaussianInt.toComplex g)).trans hg
-  have hev (x : Fin n → ℝ) : eval₂Hom GaussianInt.toComplex (fun i => (x i : ℂ)) g =
-      eval (fun i => (x i : ℂ)) f := (eval_map ..).symm
-  obtain ⟨a,ha⟩ := lexHeadCoefficient_is_coeff f
-  have hc : GaussianInt.toComplex (g.coeff a) = lexHeadCoefficient f := by rw [← ha,show f = map GaussianInt.toComplex g from rfl,coeff_map]
-  have hnorm := one_le_gaussianInt_norm (g.coeff a) (by rw [hc]; exact lexHeadCoefficient_ne_zero f hnz)
-  change 1 ≤ ‖GaussianInt.toComplex (g.coeff a)‖ at hnorm
-  rw [hc] at hnorm
-  have hsmall := gaussian_mvPolynomial_sublevel f hnz hr hr'
-  apply (measure_mono ?_).trans (hsmall.trans (ENNReal.ofReal_le_ofReal ?_))
-  · intro x hx
-    change ‖eval (fun i => (x i : ℂ)) f‖ < _
-    rw [← hev]
-    exact hx.trans_le ((pow_le_pow_of_le_one hr.le hr' hd).trans
-      (le_mul_of_one_le_left (pow_nonneg hr.le _) hnorm))
-  · gcongr
-
 /-- A nonzero detector has a Gaussian lower-tail bound at its degree budget. -/
 theorem pathDetector_lower_tail_of_nonzero (N L : ℕ)
     (rows : Fin (2^N) → Option (List (Coordinates N))) (hw : ∀ j v, v ∈ rows j → v.length ≤ L)
@@ -122,7 +97,7 @@ theorem pathDetector_lower_tail_of_nonzero (N L : ℕ)
     (Measure.pi fun _ : Coordinates N => gaussianReal 0 1)
       {x | let z := eval₂Hom GaussianInt.toComplex (fun i => (x i : ℂ)) (pathDetector N L rows)
            ‖z‖ < r^B} ≤ ENNReal.ofReal (2*(B:ℝ)*r) := by
-  exact integral_sublevel _ _ (pathDetector_degree N L rows hw) hnz hr hr'
+  exact gaussianInt_sublevel_of_degree_le _ _ (pathDetector_degree N L rows hw) hnz hr hr'
 
 /-- Small nonzero detector values have a Gaussian lower-tail bound with the
 polynomial degree budget. This statement also covers identically zero minors. -/

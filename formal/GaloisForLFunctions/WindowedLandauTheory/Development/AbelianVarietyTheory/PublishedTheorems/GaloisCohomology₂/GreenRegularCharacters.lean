@@ -1,4 +1,3 @@
-import Mathlib
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.NonGaloisDescent.LabelDatum
 
 /-! Green's parameterization by regular characters of finite field units. -/

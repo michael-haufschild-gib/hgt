@@ -116,7 +116,7 @@ theorem box_of_S :
   have hKpow : z ^ (-1 / 400 : ℝ) = X⁻¹ := by
     dsimp [z]
     rw [← Real.rpow_natCast, ← Real.rpow_mul (zero_le_one.trans hX),
-      show (400 : ℝ) * (-1 / 400) = -1 by norm_num, Real.rpow_neg_one]
+      show ((400 : ℕ) : ℝ) * (-1 / 400) = -1 by norm_num, Real.rpow_neg_one]
   have htail : ‖(y : ℂ) * (partialLogDerivative χ z + An.logDerivativeAtOne χ)‖ ≤ Y ^ ε := by
     rw [norm_mul, Complex.norm_real, Real.norm_of_nonneg (zero_le_one.trans hy₁)]
     have h := norm_partialLogDerivative_error_le hg.1 hp hg.2.2 hz hQ

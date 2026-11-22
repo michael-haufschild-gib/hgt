@@ -16,8 +16,9 @@ theorem duality_inequality : DualIneq := by
     dsimp only [φ]
     rw [EuclideanSpace.inner_toLp_toLp]
     change (∑ n : I, star (v j n) * star (star (v i n))) = _
-    simp only [star_star, Finset.sum_coe_sort]
-    exact Finset.sum_congr rfl (fun n _ => mul_comm _ _)
+    simp only [star_star]
+    rw [Finset.sum_coe_sort I (fun n => star (v j n) * v i n)]
+    exact Finset.sum_congr rfl (fun n _ => mul_comm (star (v j n)) (v i n))
   have hlin (i : ι) : ⟪φ i, a⟫_ℂ = ∑ n ∈ I, b n * v i n := by
     dsimp only [φ, a]
     rw [EuclideanSpace.inner_toLp_toLp]
