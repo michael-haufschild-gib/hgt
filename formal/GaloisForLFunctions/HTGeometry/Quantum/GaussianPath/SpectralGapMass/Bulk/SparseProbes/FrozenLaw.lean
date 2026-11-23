@@ -14,16 +14,17 @@ def probeCovariance {n : ℕ} (u : PathShell n) (t : ℝ) (C : TwoQubitCircuit (
 
 /-- A gate touches at most two sites and each site meets at most 21
 Pauli terms. Cauchy–Schwarz bounds their total squared coupling. -/
-theorem circuit_covariance_fourth {n : ℕ} (u : PathShell n) (t : ℝ) (C : TwoQubitCircuit (n+2)) :
-    ‖probeCovariance u t C‖^4 ≤ 672*t^4*C.gateCount*(∑ l : PathLabel n, |u l|^4) := by
+theorem circuit_incident_fourth {n : ℕ} (u : PathShell n) (t : ℝ) (C : TwoQubitCircuit (n+2)) :
+    (2* |t| *Real.sqrt (∑ l ∈ C.touchedSites.biUnion pathIncidentLabels, (u l)^2))^4 ≤ 672*t^4*C.gateCount*(∑ l : PathLabel n, |u l|^4) := by
   let L := C.touchedSites.biUnion pathIncidentLabels
   let m := ∑ l ∈ L, (u l)^2
   have hm : 0≤m := sum_nonneg fun _ _ => sq_nonneg _
-  have h := supported_trace_covariance C.touchedSites u t C.eval C.isSiteSupported_touchedSites
-  change ‖probeCovariance u t C‖ ≤ 2* |t| *Real.sqrt m at h
   have hc : (L.card:ℝ) ≤ 42*(C.gateCount:ℝ) := by
-    exact_mod_cast ((pathIncident_union_card C.touchedSites).trans
-      ((Nat.mul_le_mul_left 21 C.card_touchedSites_le).trans_eq (by ring)))
+    have h : L.card ≤ 42*C.gateCount := calc
+      _ ≤ 21*C.touchedSites.card := pathIncident_union_card C.touchedSites
+      _ ≤ 21*(2*C.gateCount) := Nat.mul_le_mul_left 21 C.card_touchedSites_le
+      _ = _ := by ring
+    exact_mod_cast h
   have hs := sq_sum_le_card_mul_sum_sq (s:=L) (f:=fun l => (u l)^2)
   have he (l : PathLabel n) : ((u l)^2)^2=|u l|^4 := by
     rw [show (4:ℕ)=2*2 by decide,pow_mul,sq_abs]
@@ -31,12 +32,16 @@ theorem circuit_covariance_fourth {n : ℕ} (u : PathShell n) (t : ℝ) (C : Two
   have hmass : m^2 ≤ 42*(C.gateCount:ℝ)*(∑ l : PathLabel n, |u l|^4) :=
     hs.trans (mul_le_mul hc (sum_le_sum_of_subset_of_nonneg (subset_univ L)
       (fun _ _ _ => by positivity)) (sum_nonneg fun _ _ => by positivity) (by positivity))
-  have ht : |t|^4=t^4 := by rw [show (4:ℕ)=2*2 by decide,pow_mul,pow_mul,sq_abs]
+  have ht : |t|^4=t^4 := by simp only [show (4:ℕ)=2*2 from rfl,pow_mul,sq_abs]
   have hr : (Real.sqrt m)^4=m^2 := by rw [show (4:ℕ)=2*2 by decide,pow_mul,Real.sq_sqrt hm]
-  calc ‖probeCovariance u t C‖^4 ≤ (2* |t| *Real.sqrt m)^4 :=
-         pow_le_pow_left₀ (norm_nonneg _) h 4
-       _ = 16*t^4*m^2 := by rw [mul_pow,mul_pow,ht,hr]; norm_num
+  calc (2* |t| *Real.sqrt m)^4 = 16*t^4*m^2 := by rw [mul_pow,mul_pow,ht,hr]; norm_num
        _ ≤ _ := (mul_le_mul_of_nonneg_left hmass (by positivity : 0≤16*t^4)).trans_eq (by ring)
+
+/-- The incident mass bounds every circuit's normalized trace covariance. -/
+theorem circuit_covariance_fourth {n : ℕ} (u : PathShell n) (t : ℝ) (C : TwoQubitCircuit (n+2)) :
+    ‖probeCovariance u t C‖^4 ≤ 672*t^4*C.gateCount*(∑ l : PathLabel n, |u l|^4) := by
+  have h := supported_trace_covariance C.touchedSites u t C.eval C.isSiteSupported_touchedSites
+  exact (pow_le_pow_left₀ (norm_nonneg _) h 4).trans (circuit_incident_fourth u t C)
 
 /-- Uniform on a single frozen chain. At critical times Nt² bounded,
 any fixed improvement in normalized trace overlap requires an extensive

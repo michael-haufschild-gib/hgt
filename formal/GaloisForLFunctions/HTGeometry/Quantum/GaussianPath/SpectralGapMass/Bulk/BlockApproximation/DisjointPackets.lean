@@ -17,7 +17,8 @@ def shellTrace {n : ℕ} (u : PathShell n) (t : ℝ) :=
 /-- Spectral variance in the normalized trace state. -/
 def shellVariance {n : ℕ} (u : PathShell n) : ℝ := ∑ l : PathLabel n, (u l)^2
 
-private theorem trace_characteristic {n : ℕ} (u : PathShell n) (t : ℝ) :
+/-- The evolution uses the negative-time Fourier convention. -/
+theorem shellTrace_eq_energyCharacteristic {n : ℕ} (u : PathShell n) (t : ℝ) :
     shellTrace u t=energyCharacteristic (isSelfAdjoint_pathHamiltonian u).isHermitian.eigenvalues (-t) := by
   let hH := (isSelfAdjoint_pathHamiltonian u).isHermitian
   rw [shellTrace,unitaryEvolution_spectral hH,Matrix.trace_mul_cycle,hH.eigenvectorUnitary.property.1,
@@ -31,7 +32,7 @@ private theorem trace_characteristic {n : ℕ} (u : PathShell n) (t : ℝ) :
   ring
 
 theorem norm_shellTrace_le {n : ℕ} (u : PathShell n) (t : ℝ) : ‖shellTrace u t‖≤1 := by
-  rw [trace_characteristic,energyCharacteristic,norm_mul,norm_inv,Complex.norm_natCast]
+  rw [shellTrace_eq_energyCharacteristic,energyCharacteristic,norm_mul,norm_inv,Complex.norm_natCast]
   have hd : (0:ℝ)<Fintype.card (Fin (n+2)→Bool) := Nat.cast_pos.mpr Fintype.card_pos
   rw [←div_eq_inv_mul,div_le_one hd]
   exact (norm_sum_le _ _).trans_eq (by simp [Complex.norm_exp])
@@ -43,8 +44,8 @@ theorem shell_gaussian_error {n : ℕ} (u : PathShell n) (t : ℝ) :
   obtain ⟨h₁,h₂⟩ := FluxOccupation.path_spectral_moments u
   have he : (∑ i, (hH.eigenvalues i)^2)=(Fintype.card (Fin (n+2)→Bool):ℝ)*shellVariance u := by
     simpa only [Fintype.card_fun,Fintype.card_fin,Fintype.card_bool,shellVariance] using h₂
-  rw [trace_characteristic]
-  simpa only [neg_sq,abs_neg] using packet_gaussian_error hH.eigenvalues
+  rw [shellTrace_eq_energyCharacteristic]
+  simpa only [neg_sq,abs_neg,shellVariance,hH] using packet_gaussian_error (v:=shellVariance u) hH.eigenvalues
     (sum_nonneg fun _ _ => sq_nonneg _) (norm_nonneg _) h₁ he
     (abs_eigenvalue_le_l2_opNorm hH) (-t)
 
@@ -65,9 +66,10 @@ theorem disjoint_shell_comparison {n : ℕ} {ι : Type*} [Fintype ι]
       change _=(D⁻¹*_)*D
       rw [mul_comm _ D,←mul_assoc,mul_inv_cancel₀ hD,one_mul]
       rfl)
-  have hsum : pathHamiltonian (∑ i, u i)=∑ i, pathHamiltonian (u i) := (pathHamiltonianLM n).map_sum ..
+  have hsum : pathHamiltonian (∑ i, u i)=∑ i, pathHamiltonian (u i) := map_sum (pathHamiltonianLM n) u univ
   have htrace : shellTrace (∑ i, u i) t=∏ i, shellTrace (u i) t := by
-    simp only [shellTrace,hsum,unitaryEvolution,smul_sum]
+    rw [shellTrace,hsum,unitaryEvolution]
+    simp only [smul_sum]
     change D⁻¹*_=_
     rw [hf,←mul_assoc,inv_mul_cancel₀ hD,one_mul]
   let g (i : ι) := exp (-(t^2*shellVariance (u i)/2))
@@ -81,9 +83,11 @@ theorem disjoint_shell_comparison {n : ℕ} {ι : Type*} [Fintype ι]
     congr 1
     simp only [mul_sum,sum_div,sum_neg_distrib]
   rw [htrace,heq]
+  have hgn (i : ι) : ‖(g i:ℂ)‖≤1 := by
+    rw [Complex.norm_real,Real.norm_eq_abs,abs_of_pos (show 0<g i from exp_pos _)]
+    exact hg i
   have h := GaloisForLFunctions.MultiscaleMollifiedZetaField.norm_prod_sub_prod_le_sum univ
-    (fun i _ => norm_shellTrace_le (u i) t) (fun i _ => by simpa only [Complex.norm_real,
-      Real.norm_eq_abs,abs_of_pos (exp_pos _)] using hg i)
+    (fun i _ => norm_shellTrace_le (u i) t) (fun i _ => hgn i)
   apply h.trans
   rw [mul_sum]
   exact sum_le_sum fun i _ => (shell_gaussian_error (u i) t).trans_eq (mul_assoc ..)

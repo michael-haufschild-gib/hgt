@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.LocalSimulation.ShellSums
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.LocalSimulation.CoordinateLaw
 import GaloisForLFunctions.HTGeometry.QuadraticExponentialMoments
 
 /-! # Limiting spectral variance per site of the frozen Gaussian chain -/
@@ -31,19 +32,19 @@ theorem gaussian_variance_per_site :
   filter_upwards [ae_all_iff.mpr h] with ω hw
   let F (m : ℕ) := ∑ d : PathPauliDirections, ∑ i∈range m, (ω (i,d))^2
   have hs : Tendsto (fun m : ℕ => F m/(m:ℝ)) atTop (𝓝 12) := by
-    have hh := tendsto_finset_sum univ (fun d _ => hw d)
+    have hh := tendsto_finsetSum univ (fun d _ => hw d)
     simpa only [F,sum_div,γ,gaussianZero_integral_sq,NNReal.coe_one,sum_const,card_univ,
-      PathPauliDirections,Fintype.card_sum,Fintype.card_fin,Fintype.card_prod,nsmul_eq_mul,mul_one] using hh
+      PathPauliDirections,Fintype.card_sum,Fintype.card_fin,Fintype.card_prod,nsmul_eq_mul,mul_one,show (3:ℕ)+3*3=12 from rfl, Nat.cast_ofNat] using hh
   have htop (j : ℕ) := hs.comp (tendsto_add_atTop_nat j)
   have hinv : Tendsto (fun n : ℕ => (1:ℝ)/((n+2:ℕ):ℝ)) atTop (𝓝 0) :=
     tendsto_one_div_atTop_nhds_zero_nat.comp (tendsto_add_atTop_nat 2)
   have hlo : Tendsto (fun n : ℕ => F (n+1)/((n+2:ℕ):ℝ)) atTop (𝓝 12) := by
-    have hmul := (htop 1).mul (tendsto_const_nhds.sub hinv)
+    have hmul := (htop 1).mul ((tendsto_const_nhds (x:=(1:ℝ))).sub hinv)
     convert hmul using 1
     · funext n
       change F (n+1)/((n+2:ℕ):ℝ)=F (n+1)/((n+1:ℕ):ℝ)*(1-1/((n+2:ℕ):ℝ))
       push_cast
-      field_simp
+      field_simp [show (n:ℝ)+1 ≠ 0 by positivity, show (n:ℝ)+2 ≠ 0 by positivity]
       ring
     · norm_num
   apply tendsto_of_tendsto_of_tendsto_of_le_of_le hlo (htop 2)
