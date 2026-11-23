@@ -56,8 +56,10 @@ theorem nativeVectorMoment_eq_sum (v : MissingWave) (m : ℕ) :
   change inner ℂ ((squareHeat.val^m) x (number n)) (x (number n)) = _
   rw [native_power_at]
   change inner ℂ (((occupationWeight n^m:ℝ):ℂ) • x (number n)) (x (number n)) = _
-  rw [inner_smul_left,Complex.conj_ofReal,inner_self_eq_norm_sq_to_K,Complex.ofReal_mul]
-  simp only [heatedMass,Complex.ofReal_pow,x]
+  rw [inner_smul_left,Complex.conj_ofReal,Complex.ofReal_mul]
+  congr 1
+  change inner ℂ (x (number n)) (x (number n)) = ((‖x (number n)‖^2:ℝ):ℂ)
+  rw [RCLike.inner_apply,Complex.mul_conj,Complex.sq_norm]
 
 theorem heatedMoment_summable (v : MissingWave) (m : ℕ) :
     Summable (fun n => occupationWeight n^m*heatedMass v n) := by

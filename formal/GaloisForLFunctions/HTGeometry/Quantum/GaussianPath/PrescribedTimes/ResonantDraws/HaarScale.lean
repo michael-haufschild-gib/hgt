@@ -22,15 +22,14 @@ private theorem middle_price (n : ℕ) (t : ℝ) :
   let a : Fin (n+1) := ⟨h-1,by dsimp only [h,N]; omega⟩
   have hl : (leftBlock a).card=h := by rw [leftBlock,Fin.card_Iic]; change h-1+1=h; dsimp [h,N]; omega
   have hr : (rightBlock a).card=N-h := by rw [rightBlock,Fin.card_Ioi]; change n+2-1-(h-1)=_; dsimp [h,N]; omega
-  have hh := gaussian_weak_cut_scalar_mass n a t
-  rw [hl,hr] at hh
   let c := 2*gaussianDensityFloor
   let T := 1+|t|
   let p := prescribedScalarProbability n t
   have hc : 0<c := mul_pos (by norm_num) gaussianDensityFloor_pos
   have hT : 0<T := by dsimp only [T]; positivity
   have h : c^9*(1/(1800*T))^9 ≤ ((256:ℝ)^d)^(m+1)*p := by
-    simpa only [Nat.cast_pow,Nat.cast_ofNat] using hh
+    dsimp only [c,T,d,m,p,prescribedScalarProbability]
+    simpa only [hl,hr,Nat.cast_pow,Nat.cast_ofNat] using gaussian_weak_cut_scalar_mass n a t
   have hp : 0<p := pos_of_mul_pos_right (lt_of_lt_of_le (by positivity) h) (by positivity)
   have hlog := log_le_log (by positivity) h
   rw [log_mul (by positivity) (by positivity),log_pow,log_pow,
@@ -94,8 +93,10 @@ theorem gaussian_prescribed_scalar_before_haar (t : ℕ → ℝ)
   apply tendsto_of_tendsto_of_tendsto_of_le_of_le hb tendsto_const_nhds
   · intro n
     have h := div_le_div_of_nonneg_right (middle_price n (t n)) (by positivity : 0≤(2:ℝ)^(n+2))
-    dsimp only [c] at *
-    linarith only [h]
+    dsimp only [c] at h ⊢
+    refine le_trans ?_ h
+    apply le_of_eq
+    ring
   · intro n
     apply div_nonpos_of_nonpos_of_nonneg _ (by positivity)
     apply log_nonpos measureReal_nonneg
@@ -136,7 +137,9 @@ theorem gaussian_scalar_probability_deadline {b : ℝ} (hb : 0<b) (hb' : b<1) :
   let E := ((Fintype.card (PrefixIndex n):ℝ)+1)*
     ((2^((n+2)/2)+2^((n+2)-(n+2)/2):ℕ):ℝ)
   change log b/2 < c/D-E/D*log 256 at hn
-  have hprice : log b/2*D < c-E*log 256 := (lt_div_iff₀ hD).mp (by linarith only [hn])
+  have hprice : log b/2*D < c-E*log 256 := (lt_div_iff₀ hD).mp (by
+    rw [sub_div,mul_div_right_comm]
+    exact hn)
   change c-9*log (1+|t|)-E*log 256 ≤ log (prescribedScalarProbability n t) at hmid
   change log (prescribedScalarProbability n t) ≤ D*log b at hupper
   change -(log b)/18*D ≤ _

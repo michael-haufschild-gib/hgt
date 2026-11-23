@@ -5,6 +5,21 @@ open Set Filter MeasureTheory Topology
 namespace GaloisForLFunctions.HTGeometry.PrescribedTimes.ResonantDraws
 noncomputable section
 
+/-- Uniform dilation samples the corresponding physical time interval
+with the reciprocal-time Jacobian. -/
+theorem dilation_interval_volume (A : Set ℝ) (a b : ℝ) {t : ℝ} (ht : 0<t) :
+    (volume.restrict (Icc a b)).real ((fun z : ℝ => z*t) ⁻¹' A) =
+      t⁻¹*volume.real (A ∩ Icc (a*t) (b*t)) := by
+  have he : ((fun z : ℝ => z*t) ⁻¹' A) ∩ Icc a b =
+      (fun z : ℝ => t*z) ⁻¹' (A ∩ Icc (a*t) (b*t)) := by
+    ext z
+    change (z*t∈A ∧ a≤z ∧ z≤b) ↔ t*z∈A ∧ a*t≤t*z ∧ t*z≤b*t
+    rw [mul_comm t z]
+    exact and_congr_right' (and_congr (mul_le_mul_iff_left₀ ht).symm (mul_le_mul_iff_left₀ ht).symm)
+  rw [measureReal_restrict_apply' measurableSet_Icc,he,Measure.real,Real.volume_preimage_mul_left ht.ne',
+    ENNReal.toReal_mul,abs_of_pos (inv_pos.mpr ht),ENNReal.toReal_ofReal (inv_nonneg.mpr ht.le)]
+  rfl
+
 /-- A limiting positive-time density fixes the mass seen by dilation
 factors from one to b. Subtracting the two prefix masses removes all
 dependence on the early part of the orbit. -/
@@ -19,13 +34,6 @@ theorem dilation_interval_limit {A : Set ℝ} (hA : MeasurableSet A) (p : ℝ)
   refine hh.congr' ?_
   filter_upwards [eventually_gt_atTop (0:ℝ)] with t ht
   have hbt := le_mul_of_one_le_left ht.le hb.le
-  have he : ((fun a : ℝ => a*t) ⁻¹' A) ∩ Icc 1 b =
-      (fun a : ℝ => t*a) ⁻¹' (A ∩ Icc t (b*t)) := by
-    ext a
-    change (a*t∈A ∧ 1≤a ∧ a≤b) ↔ t*a∈A ∧ t≤t*a ∧ t*a≤b*t
-    rw [mul_comm t a]
-    exact and_congr_right' (and_congr (by simpa only [one_mul] using
-      (mul_le_mul_iff_left₀ ht (a:=1) (b:=a)).symm) (mul_le_mul_iff_left₀ ht).symm)
   have hjoin : (A ∩ Icc 0 t) ∪ (A ∩ Ioc t (b*t)) = A ∩ Icc 0 (b*t) := by
     ext a
     change ((a∈A ∧ 0≤a ∧ a≤t) ∨ (a∈A ∧ t<a ∧ a≤b*t)) ↔ a∈A ∧ 0≤a ∧ a≤b*t
@@ -44,11 +52,7 @@ theorem dilation_interval_limit {A : Set ℝ} (hA : MeasurableSet A) (p : ℝ)
   rw [hjoin,hic] at hsum
   change M (b*t)=M t+volume.real (A ∩ Icc t (b*t)) at hsum
   change b*(M (b*t)/(b*t))-M t/t=_
-  rw [measureReal_restrict_apply (hA.preimage (measurable_id.mul_const t)),he,
-    Measure.real,Real.volume_preimage_mul_left ht.ne',ENNReal.toReal_mul,abs_of_pos (inv_pos.mpr ht),
-    ENNReal.toReal_ofReal (inv_nonneg.mpr ht.le)]
-  change _=t⁻¹*volume.real (A ∩ Icc t (b*t))
-  rw [hsum]
+  rw [dilation_interval_volume A 1 b ht,one_mul,hsum]
   field_simp
   <;> ring
 

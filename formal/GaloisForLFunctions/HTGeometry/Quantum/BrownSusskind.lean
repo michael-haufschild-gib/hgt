@@ -161,6 +161,7 @@ import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.SharpOccupation.Clo
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.SharpOccupation.FirstCrossing
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.SharpOccupation.FirstAscent
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.SharpOccupation.LongWindows
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.ResonantDraws.WeakCutMass
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPauliEarlyLateCircuitLaw
 
 /-! # Circuit complexity along static local Hamiltonian trajectories -/

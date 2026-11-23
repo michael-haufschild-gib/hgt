@@ -22,6 +22,7 @@ def traceWedgeLeftDual (τ : DR k E →ₗ[E] E) :
     ExteriorDifferentials k E q →ₗ[F] Module.Dual F (ExteriorDifferentials k E p) :=
   (traceWedgeDual (p := q) (q := p) τ).flip
 
+omit [CharZero k] [Algebra k F] [IsScalarTower k F E] in
 theorem traceWedgeLeftDual_apply (τ : DR k E →ₗ[E] E)
     (b : ExteriorDifferentials k E q) (a : ExteriorDifferentials k E p) :
     traceWedgeLeftDual (F := F) τ b a = Algebra.trace F E (τ ((b : DR k E) * (a : DR k E))) := rfl
@@ -88,6 +89,7 @@ theorem IsFinCover.exists_affineIdentityFamily (h : IsFinCover k E x)
   intro a
   conv_rhs => rw [hsum a, Finset.smul_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
-  rw [LinearMap.congr_fun (hw j) a, LinearMap.smul_apply, ← smul_smul]
+  rw [LinearMap.congr_fun (hw j) a, LinearMap.smul_apply, smul_eq_mul]
+  exact (smul_smul c (φ j a) (v j)).symm
 
 end GlobalTheory.PD
