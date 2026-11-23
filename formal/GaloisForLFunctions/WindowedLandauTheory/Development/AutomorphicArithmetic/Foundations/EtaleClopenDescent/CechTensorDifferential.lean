@@ -49,7 +49,7 @@ theorem tensorToJoined_differential (t : regularCochains A ⊗[k] regularCochain
 
 theorem tensorToJoined_projection (p q : ℕ) (t : regularCochains A ⊗[k] regularCochains B)
     (s : Finset (ι ⊕ₗ κ)) :
-    tensorToJoined A B (TensorProduct.map (G.π p) (G'.π q) t) s =
+    tensorToJoined A B (TensorProduct.map ((G).π p) ((G').π q) t) s =
       if (lft s).card = p ∧ (rgt s).card = q then tensorToJoined A B t s else 0 := by
   induction t using TensorProduct.induction_on with
   | zero => simp only [map_zero, Pi.zero_apply, ite_self]
@@ -61,6 +61,7 @@ theorem tensorToJoined_projection (p q : ℕ) (t : regularCochains A ⊗[k] regu
     rw [map_add, map_add, Pi.add_apply, hu, hv, map_add, Pi.add_apply]
     split_ifs <;> simp
 
+omit [Fintype ι] [Fintype κ] in
 private theorem card_joined (s : Finset (ι ⊕ₗ κ)) : s.card = (lft s).card + (rgt s).card := by
   conv_lhs => rw [← uni_lft_rgt s, card_uni]
 
@@ -82,15 +83,15 @@ theorem tensorToJoined_support {n : ℤ} {t : regularCochains A ⊗[k] regularCo
 theorem tensorDegree_of_joined_support {n : ℤ} (t : regularCochains A ⊗[k] regularCochains B)
     (ht : ∀ s : Finset (ι ⊕ₗ κ), (s.card : ℤ) ≠ n → tensorToJoined A B t s = 0) :
     t ∈ tensorDegree G G' n := by
-  let z (p q : ℕ) := TensorProduct.map (G.π p) (G'.π q) t
-  have hz (p q : ℕ) (h : ((p + q : ℕ) : ℤ) = n) : z p q ∈ tensorDegree G G' n := by
-    dsimp only [z]
-    induction t using TensorProduct.induction_on with
+  let z (p q : ℕ) := TensorProduct.map ((G).π p) ((G').π q) t
+  have hz (p q : ℕ) (h : ((p + q : ℕ) : ℤ) = n) (u : regularCochains A ⊗[k] regularCochains B) :
+      TensorProduct.map ((G).π p) ((G').π q) u ∈ tensorDegree G G' n := by
+    induction u using TensorProduct.induction_on with
     | zero => rw [map_zero]; exact zero_mem _
     | add u v hu hv => rw [map_add]; exact add_mem hu hv
     | tmul a b =>
       rw [TensorProduct.map_tmul]
-      exact Submodule.subset_span ⟨_, _, p, q, G.idem p a, G'.idem q b, h, rfl⟩
+      exact Submodule.subset_span ⟨_, _, p, q, (G).idem p a, (G').idem q b, h, rfl⟩
   have h₀ (p q : ℕ) (h : ((p + q : ℕ) : ℤ) ≠ n) : z p q = 0 := by
     apply tensorToJoined_injective A B
     funext s
@@ -100,14 +101,14 @@ theorem tensorDegree_of_joined_support {n : ℤ} (t : regularCochains A ⊗[k] r
     split_ifs with hI
     · exact ht s (by rw [card_joined, hI.1, hI.2]; exact h)
     · rfl
-  have e : t = ∑ p ∈ Finset.range G.N, ∑ q ∈ Finset.range G'.N, z p q := by
+  have e : t = ∑ p ∈ Finset.range (G).N, ∑ q ∈ Finset.range (G').N, z p q := by
     apply tensorToJoined_injective A B
     funext s
     symm
     simp only [map_sum, Finset.sum_apply, z, tensorToJoined_projection hA hB]
-    have hI : (lft s).card ∈ Finset.range G.N :=
+    have hI : (lft s).card ∈ Finset.range (G).N :=
       Finset.mem_range.mpr (Nat.lt_succ_of_le (Finset.card_le_univ _))
-    have hJ : (rgt s).card ∈ Finset.range G'.N :=
+    have hJ : (rgt s).card ∈ Finset.range (G').N :=
       Finset.mem_range.mpr (Nat.lt_succ_of_le (Finset.card_le_univ _))
     rw [Finset.sum_eq_single_of_mem _ hI, Finset.sum_eq_single_of_mem _ hJ]
     · simp
@@ -118,7 +119,7 @@ theorem tensorDegree_of_joined_support {n : ℤ} (t : regularCochains A ⊗[k] r
   rw [e]
   refine Submodule.sum_mem _ fun p _ => Submodule.sum_mem _ fun q _ => ?_
   by_cases h : ((p + q : ℕ) : ℤ) = n
-  · exact hz p q h
+  · exact hz p q h t
   · rw [h₀ p q h]
     exact zero_mem _
 

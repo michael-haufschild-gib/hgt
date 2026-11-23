@@ -26,9 +26,10 @@ theorem forecast_mass_difference (F g : (ι → ℝ) → ℝ) (hF : Measurable F
     change g (a • x) < F (a • x) ↔ a*g x < F x
     rw [hang,←hscale x]
     exact (mul_lt_mul_iff_right₀ hp).symm
-  have he : {x | g x < F x ∧ F x ≤ a*g x} = E \\ G := by
+  have he : {x | g x < F x ∧ F x ≤ a*g x} = E \ G := by
     ext x
-    exact and_congr_right fun _ => (not_lt (α:=ℝ)).symm
+    change (g x < F x ∧ F x ≤ a*g x) ↔ g x < F x ∧ ¬ a*g x < F x
+    rw [not_lt]
   rw [he,hg',measureReal_sdiff hs hm (measure_ne_top _ _)]
 
 /-- A forecaster who sees only direction can choose any radial band.
@@ -51,7 +52,7 @@ theorem radialForecast_score (F : (ι → ℝ) → ℝ) (x : ι → ℝ) (hx : 0
   let R := ‖(WithLp.toLp 2 x : EuclideanSpace ℝ ι)‖
   have har := mul_pos ha hr
   change (F x*R/(a*r) < F x ∧ F x ≤ a*(F x*R/(a*r))) ↔ r ≤ R ∧ R < a*r
-  rw [show a*(F x*R/(a*r))=F x*R/r by field_simp,div_lt_iff₀ har,le_div_iff₀ hr,
+  rw [show a*(F x*R/(a*r))=F x*R/r by field_simp [ha.ne',hr.ne'],div_lt_iff₀ har,le_div_iff₀ hr,
     mul_lt_mul_iff_right₀ hx,mul_le_mul_iff_right₀ hx,and_comm]
 
 #print axioms forecast_mass_difference

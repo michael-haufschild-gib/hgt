@@ -13,9 +13,10 @@ def derivativePhaseHorizon (k : ℕ) : ℝ :=
   let S := phaseClockModes (prefixPhaseEnergyEquiv k) (1/80)
   8*(((nonconstantPacketIndexSet (phaseCubeFourierCutoff d (1/80)) d).card:ℝ)+1)/prefixModeMargin k S.card
 
-private theorem retained_frequency {D d : ℕ} (e : Fin D ≃ Fin (d+1)) (E : Fin D → ℝ)
-    (p : Fin d → ℕ × ℕ) (hp : p ∈ nonconstantPacketIndexSet (phaseCubeFourierCutoff d (1/80)) d) :
-    ∃ m ∈ phaseClockModes e (1/80), m ≠ 0 ∧ ∑ i, m i = 0 ∧
+/-- Each retained Fourier frequency is a nonzero balanced integer sum of the energies. -/
+theorem balanced_mode_of_retained_phase_frequency {D d : ℕ} {ρ : ℝ} (e : Fin D ≃ Fin (d+1)) (E : Fin D → ℝ)
+    (p : Fin d → ℕ × ℕ) (hp : p ∈ nonconstantPacketIndexSet (phaseCubeFourierCutoff d ρ) d) :
+    ∃ m ∈ phaseClockModes e ρ, m ≠ 0 ∧ ∑ i, m i = 0 ∧
       ∑ i, (m i:ℝ)*E i = packetFreq (RHTower.zeroProjectiveFrequency (E ∘ e.symm)) p := by
   refine ⟨liftedPhaseMode e p,Finset.mem_image_of_mem _ hp,?_,?_,?_⟩
   · intro hz
@@ -48,11 +49,12 @@ theorem gaussian_path_sorted_derivative_clock :
   refine phaseCube_hit_at_calibrated_cutoff (by norm_num : (0:ℝ) < 1/80) (by linarith only [pi_gt_three])
     (prefixModeMargin_pos k (S k).card) (RHTower.zeroProjectiveFrequency (E ∘ (prefixPhaseEnergyEquiv k).symm)) ?_ u c
   intro p hp
-  obtain ⟨m,hm,hn,hb,he⟩ := retained_frequency (prefixPhaseEnergyEquiv k) E p hp
+  obtain ⟨m,hm,hn,hb,he⟩ := balanced_mode_of_retained_phase_frequency (ρ:=1/80) (prefixPhaseEnergyEquiv k) E p hp
   rw [← he]
   exact hk m hm hn hb
 
-private theorem physical_sorted_order (k : ℕ) (ω : PathPauliDisorder)
+/-- Simple physical energies agree with the sorted ensemble energies up to a permutation. -/
+theorem physical_sorted_order (k : ℕ) (ω : PathPauliDisorder)
     (hi : Function.Injective (isSelfAdjoint_pathHamiltonian (pathPauliDisorderShell ω (k+1))).isHermitian.eigenvalues) :
     let N := k+3
     let u := pathPauliDisorderShell ω (k+1)

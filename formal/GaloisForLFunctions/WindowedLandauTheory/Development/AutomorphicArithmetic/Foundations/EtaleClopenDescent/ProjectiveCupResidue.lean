@@ -45,9 +45,10 @@ theorem cupResidueFunctional_apply (τ : DR k E →ₗ[E] E) (ρ : F →ₗ[k] k
 /-- Cup with a complementary cocycle followed by residue kills boundaries. -/
 theorem IsFinCover.cupResidueFunctional_eq_zero_of_boundary [CharZero k] (h : IsFinCover k E x)
     (τ : DR k E →ₗ[E] E) (hτ : IsTop (x := x) τ) (ρ : F →ₗ[k] k) (hρ : IsRes x ρ)
-    {p q : ℕ} (hpq : p + q = d) {a b : Finset (Fin (d + 1)) → DR k E}
-    (ha : a ∈ (cech fun I => omB k E (rB k E x I) p).Z p)
-    (hb : b ∈ (cech fun I => omB k E (rB k E x I) q).B q) :
+    {p q r s : ℕ} (hpq : p + q = d) (hrs : r + s = d)
+    {a b : Finset (Fin (d + 1)) → DR k E}
+    (ha : a ∈ (cech fun I => omB k E (rB k E x I) p).Z r)
+    (hb : b ∈ (cech fun I => omB k E (rB k E x I) q).B s) :
     cupResidueFunctional τ ρ a b = 0 := by
   let A (n : ℕ) (I : Finset (Fin (d + 1))) := omB k E (rB k E x I) n
   let μ := LinearMap.mul k (DR k E)
@@ -56,9 +57,9 @@ theorem IsFinCover.cupResidueFunctional_eq_zero_of_boundary [CharZero k] (h : Is
       μ v w ∈ A d W := by
     rw [← hpq]
     exact mul_mem_omB (omB_mono (rB_mono hI) p hv) (omB_mono (rB_mono hJ) q hw)
-  have hbd : cechCup μ a b ∈ (cech (A d)).B ((p : ℤ) + q) :=
+  have hbd : cechCup μ a b ∈ (cech (A d)).B ((r : ℤ) + s) :=
     cechCup_boundary_right μ (A p) (A q) (A d) hm ha hb
-  rw [show (p : ℤ) + q = d by exact_mod_cast hpq] at hbd
+  rw [show (r : ℤ) + s = d by exact_mod_cast hrs] at hbd
   rw [cupResidueFunctional_apply]
   exact h.topResidue_cech_boundary τ hτ ρ hρ hbd
 

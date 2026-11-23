@@ -10,7 +10,9 @@ private theorem inverse_margin (u v C : ℝ) (k B L : ℕ) :
   simp only [div_eq_mul_inv,mul_inv_rev,← inv_pow,inv_inv,one_mul]
   ac_rfl
 
-private theorem inverse_margin_log_polynomial (count : ℕ → ℕ)
+/-- A packet with logarithmic cardinality polynomial in dimension retains an inverse
+frequency margin of the same growth class. -/
+theorem inverse_margin_log_polynomial (count : ℕ → ℕ)
     (hcount : LogPolynomialInDimension (fun k => (count k:ℝ))) :
     LogPolynomialInDimension (fun k => (prefixModeMargin k (count k))⁻¹) := by
   let D (k : ℕ) := 2^(k+3)

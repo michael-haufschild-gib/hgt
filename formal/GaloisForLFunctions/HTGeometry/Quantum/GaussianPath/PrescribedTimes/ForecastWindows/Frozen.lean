@@ -28,8 +28,9 @@ theorem gaussian_eventually_misses_first_wait_forecasts (K : ℕ→ℕ)
     ∃ i, crossingWait (k+1) (P k) (s k i) x ∈ Ioc (t k i) (t k i+w k i)}
   have hm (k) : MeasurableSet (E k) := by
     refine (measurableSet_lt measurable_const (measurable_crossingWait ..)).inter ?_
-    rw [Set.setOf_exists]
-    exact MeasurableSet.iUnion fun i => measurableSet_Ioc.preimage (measurable_crossingWait _ _ (s k i))
+    let A (i : Fin (K k)) := (crossingWait (k+1) (P k) (s k i)) ⁻¹' Ioc (t k i) (t k i+w k i)
+    have hA (i) : MeasurableSet (A i) := measurableSet_Ioc.preimage (measurable_crossingWait ..)
+    exact (MeasurableSet.iUnion hA).congr (Set.ext fun _ => Set.mem_iUnion)
   let A (k : ℕ) := prefixPoint k ⁻¹' E k
   have hmass : Summable (fun k => μ.real (A k)) := by
     apply hcost.of_norm_bounded_eventually_nat

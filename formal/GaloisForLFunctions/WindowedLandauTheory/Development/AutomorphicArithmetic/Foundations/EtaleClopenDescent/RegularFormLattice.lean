@@ -19,6 +19,12 @@ private theorem exteriorPower_projective {A M : Type*} [CommRing A]
     (exteriorPower.map p (Finsupp.linearCombination A id)) (by
       rw [← exteriorPower.map_comp, hs, exteriorPower.map_id])
 
+/-- Exterior powers of a projective module are projective over the same ring. -/
+theorem exteriorPower_moduleProjective {A M : Type*} [CommRing A]
+    [AddCommGroup M] [Module A M] [Module.Projective A M] (p : ℕ) :
+    Module.Projective A (⋀[A]^p M) :=
+  exteriorPower_projective p
+
 variable {k E : Type} [Field k] [Field E] [Algebra k E]
   (B : Subalgebra k E) [IsFractionRing B E] [Algebra.Smooth k B]
   [IsNoetherianRing B] [IsIntegrallyClosed B]

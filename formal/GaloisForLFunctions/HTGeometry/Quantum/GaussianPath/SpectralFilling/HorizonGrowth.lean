@@ -19,7 +19,8 @@ private theorem cutoff_fixed_radius_le (d : ℕ) : phaseCubeFourierCutoff d (1/8
   congr 1
   omega
 
-private theorem packet_card_le (M d : ℕ) : (nonconstantPacketIndexSet M d).card ≤ (M+1)^(2*d) := by
+/-- Each phase coordinate contributes a pair of Fourier indices between zero and the cutoff. -/
+theorem nonconstant_phase_packet_card_le (M d : ℕ) : (nonconstantPacketIndexSet M d).card ≤ (M+1)^(2*d) := by
   apply (Finset.card_le_card (Finset.sdiff_subset : nonconstantPacketIndexSet M d ⊆ _)).trans_eq
   simp only [Fintype.card_piFinset,Finset.card_product,Finset.card_range,Finset.prod_const,Finset.card_univ,Fintype.card_fin]
   rw [← sq,← pow_mul]
@@ -56,7 +57,7 @@ theorem fixed_radius_phase_packet_envelope {D : ℕ} (hD : 1 ≤ D) (e : Fin D �
       _ = 102*D^2 := by ring
       _ ≤ _ := Nat.mul_le_mul_right _ (by decide : 102 ≤ 128)
   have hF : (nonconstantPacketIndexSet M d).card ≤ A := by
-    apply (packet_card_le M d).trans
+    apply (nonconstant_phase_packet_card_le M d).trans
     apply (Nat.pow_le_pow_left hMs _).trans
     rw [← pow_mul]
     exact Nat.pow_le_pow_right (by decide) hpow

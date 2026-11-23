@@ -18,7 +18,7 @@ theorem omission_finite_order (v : MissingWave) {z : ℂ} (hz : 0 < z.re) :
   intro h
   have hzero := (omissionPartition_analytic v).eqOn_zero_of_preconnected_of_frequently_eq_zero
     (convex_halfSpace_re_gt 0).isPreconnected hz (meromorphicOrderAt_eq_top_iff.mp h).frequently
-  exact omissionPartition_two_ne v (hzero (show (2:ℂ) ∈ {w : ℂ | 0 < w.re} by norm_num))
+  exact omissionPartition_two_ne v (hzero (show (2:ℂ) ∈ {w : ℂ | 0 < w.re} by change 0 < (2:ℂ).re; norm_num))
 
 theorem omissionLead_ne (v : MissingWave) {z : ℂ} (hz : 0 < z.re) : omissionLead v z ≠ 0 :=
   (omissionPartition_analytic v z hz).meromorphicAt.meromorphicTrailingCoeffAt_ne_zero (omission_finite_order v hz)
@@ -52,11 +52,13 @@ theorem insertionReading_eq_heat (a : ℕ+) (v : MissingWave) {z : ℂ} (hz : 0 
 theorem insertionReading_derivative (a : ℕ+) (v : MissingWave) {z : ℂ} (hz : 0 < z.re) :
     deriv (insertionReading a v) z = -(energy a:ℂ)*insertionReading a v z := by
   have hu : {w : ℂ | 0 < w.re} ∈ 𝓝 z := (isOpen_lt continuous_const Complex.continuous_re).mem_nhds hz
-  have he : insertionReading a v =ᶠ[𝓝 z] fun w => heat w a :=
-    hu.mono (fun _ hw => insertionReading_eq_heat a v hw)
+  have he : insertionReading a v =ᶠ[𝓝 z] fun w => heat w a := by
+    filter_upwards [hu] with w hw
+    exact insertionReading_eq_heat a v hw
   rw [he.deriv_eq,insertionReading_eq_heat a v hz]
   have hd := (((hasDerivAt_id z).neg.mul_const (energy a:ℂ)).cexp).deriv
-  simpa only [heat,neg_one_mul,mul_comm] using hd
+  change deriv (fun w => heat w a) z = heat z a*((-1)*(energy a:ℂ)) at hd
+  rw [hd,neg_one_mul,mul_comm]
 
 /-- A single prime compares outgoing and incoming leading intensities at every positive real part. -/
 theorem insertion_leading_balance (p : Nat.Primes) (v : MissingWave) {s : ℂ} (hs : 0 < s.re) :

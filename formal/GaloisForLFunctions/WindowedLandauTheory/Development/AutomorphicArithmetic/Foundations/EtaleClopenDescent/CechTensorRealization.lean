@@ -25,8 +25,8 @@ private def chartPi {σ N : Type} [AddCommGroup N] [Module k N] (A : Finset σ �
     regularCochains A ≃ₗ[k] (∀ I, chart A I) where
   toFun z I := ⟨z.val I, Submodule.mem_pi.mp z.property I (Set.mem_univ _)⟩
   invFun z := ⟨fun I => (z I).val, Submodule.mem_pi.mpr fun I _ => (z I).property⟩
-  left_inv z := Subtype.ext rfl
-  right_inv z := funext fun I => Subtype.ext rfl
+  left_inv _ := Subtype.ext rfl
+  right_inv _ := funext fun _ => Subtype.ext rfl
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 
@@ -62,6 +62,7 @@ def joinedTensorCoefficients (A : Finset ι → Submodule k E) (B : Finset κ �
     (s : Finset (ι ⊕ₗ κ)) : Submodule k (E ⊗[k] M) :=
   Submodule.map₂ (TensorProduct.mk k E M) (chart A (lft s)) (chart B (rgt s))
 
+omit [LinearOrder ι] [LinearOrder κ] [Fintype ι] [Fintype κ] in
 theorem joinedTensorCoefficients_eq (A : Finset ι → Submodule k E) (B : Finset κ → Submodule k M)
     (s : Finset (ι ⊕ₗ κ)) :
     joinedTensorCoefficients A B s =
@@ -95,8 +96,13 @@ theorem tensorToJoined_injective (A : Finset ι → Submodule k E) (B : Finset �
   funext I J
   apply TensorProduct.map_injective_of_flat_flat (chart A I).subtype (chart B J).subtype
     Subtype.val_injective Subtype.val_injective
-  simpa only [tensorToJoined, LinearMap.pi_apply, LinearMap.comp_apply, LinearMap.proj_apply,
-    LinearEquiv.coe_coe, lft_uni, rgt_uni] using congrFun h (uni I J)
+  let component (I' : Finset ι) (J' : Finset κ) (z : regularCochains A ⊗[k] regularCochains B) :=
+    TensorProduct.map (chart A I').subtype (chart B J').subtype (tensorComponents A B z I' J')
+  have he := congrFun h (uni I J)
+  change component (lft (uni I J)) (rgt (uni I J)) t =
+    component (lft (uni I J)) (rgt (uni I J)) u at he
+  rw [lft_uni, rgt_uni] at he
+  exact he
 
 theorem tensorToJoined_mem (A : Finset ι → Submodule k E) (B : Finset κ → Submodule k M)
     (t : regularCochains A ⊗[k] regularCochains B) (s : Finset (ι ⊕ₗ κ)) :

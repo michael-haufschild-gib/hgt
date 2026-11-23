@@ -47,7 +47,7 @@ theorem omissionPartition_insert (a : ℕ+) (v : MissingWave) {z : ℂ} (hz : 0 
     change (u n:ℂ) ≠ 2
     exact_mod_cast hpos.ne'
   exact (omissionPartition_analytic (insertMissing a v)).eqOn_of_preconnected_of_mem_closure hg
-    (convex_halfSpace_re_gt 0).isPreconnected (by norm_num : (2:ℂ) ∈ {w : ℂ | 0 < w.re}) hacc hz
+    (convex_halfSpace_re_gt 0).isPreconnected (by change 0 < (2:ℂ).re; norm_num) hacc hz
 
 /-- The same scaling holds for relative real moments even when separate ordinary traces diverge. -/
 theorem all_real_moments_insert (a : ℕ+) (v : MissingWave) (q : GibbsExponent) :

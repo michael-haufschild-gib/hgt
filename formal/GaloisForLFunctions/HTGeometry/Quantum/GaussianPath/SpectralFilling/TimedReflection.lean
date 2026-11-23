@@ -30,13 +30,13 @@ private theorem norm_spectral_phase_difference_le {n d : ℕ} (e : (Fin n → Bo
 
 /-- Filling the relative phases in a prescribed interval approximates each
 spectral reflection there, up to the phase of the anchor energy. -/
-theorem phase_interval_approaches_reflection {n d : ℕ}
+theorem phase_interval_approaches_reflection_at_error {n d : ℕ} {ρ : ℝ} (hρ : 0 ≤ ρ)
     (e : (Fin n → Bool) ≃ Fin (d+1)) (H : selfAdjoint (Reg n)) (a b : ℝ)
     (hphase : ∀ c : Fin d → ℝ, ∃ t ∈ Icc a b, ∀ j,
-      turnDist (t*RHTower.zeroProjectiveFrequency (fun i => H.2.isHermitian.eigenvalues (e.symm i)) j-c j) < 1/80)
+      turnDist (t*RHTower.zeroProjectiveFrequency (fun i => H.2.isHermitian.eigenvalues (e.symm i)) j-c j) < ρ)
     (x : Fin d → Bool) :
     ∃ t ∈ Icc a b, ∃ z : ℂ, ‖z‖ = 1 ∧
-      ‖unitaryEvolution H.val t-z • anchoredSpectralBooleanReflection e (hermitianEigenbasisUnitary H.2.isHermitian) x‖ ≤ 1/80 := by
+      ‖unitaryEvolution H.val t-z • anchoredSpectralBooleanReflection e (hermitianEigenbasisUnitary H.2.isHermitian) x‖ ≤ ρ := by
   let V := hermitianEigenbasisUnitary H.2.isHermitian
   let E (i) := H.2.isHermitian.eigenvalues (e.symm i)
   let y := anchoredBooleanProjectivePhase x
@@ -44,25 +44,35 @@ theorem phase_interval_approaches_reflection {n d : ℕ}
   let z : ℂ := Complex.exp (-(Complex.I*(t*E 0)))
   have hz : ‖z‖ = 1 := by simp [z,Complex.norm_exp]
   let J := anchoredSpectralBooleanReflection e V x
-  have hclose : ‖unitaryEvolution H.val t-z • J‖ ≤ 1/80 := by
+  have hclose : ‖unitaryEvolution H.val t-z • J‖ ≤ ρ := by
     rw [unitaryEvolution_eq_anchorPhase_smul_projectiveSpectralMatrix e H.2.isHermitian,
       projectivePhysicalPhaseFlow_eq_angularPhasePoint]
     change ‖z • _ - z • J‖ ≤ _
     rw [← smul_sub,norm_smul,hz,one_mul]
     rw [show J = projectiveSpectralMatrix e V y from (projectiveSpectralMatrix_anchoredBooleanProjectivePhase e V x).symm]
-    exact norm_spectral_phase_difference_le e V _ y (by norm_num) (fun j => (hθ j).le)
+    exact norm_spectral_phase_difference_le e V _ y hρ (fun j => (hθ j).le)
   exact ⟨t,ht,z,hz,hclose⟩
+
+/-- The fixed angular clock tracks every reflection to operator error 1/80. -/
+theorem phase_interval_approaches_reflection {n d : ℕ}
+    (e : (Fin n → Bool) ≃ Fin (d+1)) (H : selfAdjoint (Reg n)) (a b : ℝ)
+    (hphase : ∀ c : Fin d → ℝ, ∃ t ∈ Icc a b, ∀ j,
+      turnDist (t*RHTower.zeroProjectiveFrequency (fun i => H.2.isHermitian.eigenvalues (e.symm i)) j-c j) < 1/80)
+    (x : Fin d → Bool) :
+    ∃ t ∈ Icc a b, ∃ z : ℂ, ‖z‖ = 1 ∧
+      ‖unitaryEvolution H.val t-z • anchoredSpectralBooleanReflection e (hermitianEigenbasisUnitary H.2.isHermitian) x‖ ≤ 1/80 :=
+  phase_interval_approaches_reflection_at_error (by norm_num : 0 ≤ (1/80:ℝ)) e H a b hphase x
 
 /-- A filled phase box around the identity gives a zero-gate visit in the
 same interval, even when its starting point depends on the trajectory. -/
-theorem phase_interval_contains_zero_gate {n d : ℕ}
+theorem phase_interval_zero_gate_at_error {n d : ℕ} {ρ : ℝ} (hρ : 0 ≤ ρ)
     (e : (Fin n → Bool) ≃ Fin (d+1)) (H : selfAdjoint (Reg n)) (a b : ℝ)
     (hphase : ∀ c : Fin d → ℝ, ∃ t ∈ Icc a b, ∀ j,
-      turnDist (t*RHTower.zeroProjectiveFrequency (fun i => H.2.isHermitian.eigenvalues (e.symm i)) j-c j) < 1/80) :
-    ∃ t ∈ Icc a b, HasProjectiveCircuitApproximation n (1/10:ℝ) 0 (unitaryEvolution H.val t) := by
+      turnDist (t*RHTower.zeroProjectiveFrequency (fun i => H.2.isHermitian.eigenvalues (e.symm i)) j-c j) < ρ) :
+    ∃ t ∈ Icc a b, HasProjectiveCircuitApproximation n ρ 0 (unitaryEvolution H.val t) := by
   let V := hermitianEigenbasisUnitary H.2.isHermitian
   let x : Fin d → Bool := fun _ => false
-  obtain ⟨t,ht,z,hz,hclose⟩ := phase_interval_approaches_reflection e H a b hphase x
+  obtain ⟨t,ht,z,hz,hclose⟩ := phase_interval_approaches_reflection_at_error hρ e H a b hphase x
   have hone : anchoredBooleanPacket x ∘ e = (fun _ : Fin n → Bool => (1:ℂ)) := by
     funext i
     change anchoredBooleanPacket x (e i) = 1
@@ -75,7 +85,16 @@ theorem phase_interval_contains_zero_gate {n d : ℕ}
   rw [hJ] at hclose
   refine ⟨t,ht,z,hz,TwoQubitCircuit.one n,le_rfl,?_⟩
   rw [TwoQubitCircuit.one_eval]
-  exact hclose.trans (by norm_num)
+  exact hclose
+
+/-- Angular resolution 1/80 ensures a physical empty-circuit visit at error 1/10. -/
+theorem phase_interval_contains_zero_gate {n d : ℕ}
+    (e : (Fin n → Bool) ≃ Fin (d+1)) (H : selfAdjoint (Reg n)) (a b : ℝ)
+    (hphase : ∀ c : Fin d → ℝ, ∃ t ∈ Icc a b, ∀ j,
+      turnDist (t*RHTower.zeroProjectiveFrequency (fun i => H.2.isHermitian.eigenvalues (e.symm i)) j-c j) < 1/80) :
+    ∃ t ∈ Icc a b, HasProjectiveCircuitApproximation n (1/10:ℝ) 0 (unitaryEvolution H.val t) := by
+  obtain ⟨t,ht,z,hz,C,hC,he⟩ := phase_interval_zero_gate_at_error (by norm_num : 0 ≤ (1/80:ℝ)) e H a b hphase
+  exact ⟨t,ht,z,hz,C,hC,he.trans (by norm_num)⟩
 
 /-- A horizon that fills the relative phase torus to 1/80 reaches the robust
 9/80 circuit threshold. At double the resulting time the whole unitary is
