@@ -1,8 +1,4 @@
-import GaloisForLFunctions.HTGeometry.ProjectiveOperatorNormReturnTarget
-import GaloisForLFunctions.HTGeometry.FidelityPhaseRadius
-import GaloisForLFunctions.HTGeometry.UniformProjectiveContinuousCircuitFirstReturnLaw
-import GaloisForLFunctions.HTGeometry.ProjectiveContinuousCircuitConeLaw
-import GaloisForLFunctions.HTGeometry.Quantum.TranslatedCircuitOccupation
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.ClockSpectrum.DirichletMultiples
 
 /-!
 # A delayed first entrance to the physical circuit set
@@ -20,19 +16,6 @@ noncomputable section
 
 private abbrev Reg (n : ℕ) := Matrix (Fin n → Bool) (Fin n → Bool) ℂ
 
-private theorem chord_le_of_turns_close (x : ℝ) (Q : ℕ)
-    (h : latticeClose (x/(2*Real.pi)) (1/(Q+1 : ℝ))) :
-    ‖Complex.exp (-(Complex.I*(x : ℂ))) - 1‖ ≤ 2*Real.pi/(Q+1:ℝ) := by
-  obtain ⟨m,hm⟩ := h
-  rw [norm_exp_neg_I_mul_sub_one, mul_comm Complex.I]
-  have hc := norm_expI_sub_expI_le x 0 m
-  simp only [Complex.ofReal_zero,zero_mul,Complex.exp_zero,sub_zero] at hc
-  have hpi : 0 < 2*Real.pi := by positivity
-  apply hc.trans
-  rw [show x-2*Real.pi*m = 2*Real.pi*(x/(2*Real.pi)-m) by field_simp,
-    abs_mul,abs_of_pos hpi]
-  simpa only [mul_one_div] using mul_le_mul_of_nonneg_left hm.le hpi.le
-
 /-- After any specified time A, one multiple of |A|+1 returns the whole
 operator up to phase, with the Dirichlet exponent equal to the number of
 relative phases. No spectral genericity is required. -/
@@ -40,41 +23,11 @@ theorem projective_operator_zero_gate_return_after {n d : ℕ}
     (e : (Fin n → Bool) ≃ Fin (d+1)) (H : selfAdjoint (Reg n)) (A : ℝ) (Q : ℕ) :
     ∃ t ∈ Icc (|A|+1) ((|A|+1)*((Q+1:ℝ)^d)),
       HasProjectiveCircuitApproximation n (2*Real.pi/(Q+1:ℝ)) 0 (unitaryEvolution (H : Reg n) t) := by
-  let E := H.2.isHermitian.eigenvalues
-  let a := e.symm 0
   let tick := |A|+1
-  let β (j : Fin d) := tick*(E (e.symm j.succ)-E a)/(2*Real.pi)
-  obtain ⟨q,hq,hQ,hb⟩ := exists_simultaneous_dirichlet β (Nat.succ_pos Q)
-  let t := tick*q
-  have htick : 0 < tick := by dsimp [tick]; positivity
-  have h1 : (1:ℝ) ≤ q := by exact_mod_cast hq
-  have h2 : (q:ℝ) ≤ (Q+1:ℝ)^d := by exact_mod_cast hQ
-  refine ⟨t,⟨?_,mul_le_mul_of_nonneg_left h2 htick.le⟩,?_⟩
-  · change tick ≤ tick*q
-    simpa only [mul_one] using mul_le_mul_of_nonneg_left h1 htick.le
-  refine ⟨anchorPhase E a t,by simp [anchorPhase,Complex.norm_exp],TwoQubitCircuit.one n,by rfl,?_⟩
-  rw [TwoQubitCircuit.one_eval]
-  change ‖unitaryEvolution (H : Reg n) t - anchorPhase E a t • (1:Reg n)‖ ≤ _
-  rw [l2_opNorm_unitaryEvolution_sub_anchorPhase H.2.isHermitian a t]
-  apply (pi_norm_le_iff_of_nonneg (by positivity : 0 ≤ 2*Real.pi/(Q+1:ℝ))).mpr
-  intro i
-  let x := t * (E i-E a)
-  have he : -(Complex.I * ((t:ℂ) * ((E i:ℂ)-(E a:ℂ)))) = -(Complex.I*(x:ℂ)) := by
-    dsimp [x]; push_cast; rfl
-  change ‖Complex.exp (-(Complex.I*((t:ℂ)*((E i:ℂ)-(E a:ℂ))))) - 1‖ ≤ _
-  rw [he]
-  apply chord_le_of_turns_close x Q
-  dsimp only [x]
-  obtain ⟨j,rfl⟩ := e.symm.surjective i
-  refine Fin.cases ?_ (fun k => ?_) j
-  · refine ⟨0,?_⟩
-    simp only [a,sub_self,mul_zero,zero_div,Int.cast_zero,abs_zero]
-    positivity
-  · have h := hb k
-    have hz : t*(E (e.symm k.succ)-E a)/(2*Real.pi) = (q:ℝ)*β k := by dsimp [t,β]; ring
-    change latticeClose (t*(E (e.symm k.succ)-E a)/(2*Real.pi)) _
-    rw [hz]
-    simpa only [Nat.cast_succ] using h
+  obtain ⟨q,hq,hQ,hfit⟩ := zero_gate_at_integer_multiple e H tick Q
+  have hp : 0 ≤ tick := by dsimp only [tick]; positivity
+  refine ⟨tick*(q:ℝ),⟨?_,mul_le_mul_of_nonneg_left (by exact_mod_cast hQ) hp⟩,hfit⟩
+  simpa only [mul_one] using mul_le_mul_of_nonneg_left (show (1:ℝ) ≤ q by exact_mod_cast hq) hp
 
 /-- The exact closed circuit tube is the sublevel set of distance to the
 compact image of the allowed architectures and global phases. -/

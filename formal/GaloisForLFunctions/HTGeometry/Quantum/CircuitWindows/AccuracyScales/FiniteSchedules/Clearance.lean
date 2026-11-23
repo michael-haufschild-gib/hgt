@@ -13,24 +13,11 @@ def scheduleHeight (ω : PathPauliDisorder) (τ : ℕ → ℕ → ℝ) (k j : �
   let B := 2^(6*(k+3))
   if j=0 then 0 else orbitCircuitDistance (chainGenerator ω k) ((j-1)%B) (τ k ((j-1)/B))
 
-private theorem cap_le (N : ℕ) (hN : 2 ≤ N) :
-    (4*N+1)*(2*N+2)*(2^N)^2 ≤ 2^(6*N) := by
-  have h (n : ℕ) : n+1 ≤ 2^n := by
-    induction n with
-    | zero => decide
-    | succ n ih => rw [pow_succ]; omega
-  calc
-    _ ≤ (4*2^N)*(2*2^N)*(2^N)^2 := by
-      have hh := h N
-      exact Nat.mul_le_mul_right _ (Nat.mul_le_mul (by omega) (by omega))
-    _ = 2^(3+N+N+N*2) := by rw [pow_add,pow_add,pow_add,pow_mul]; ring
-    _ ≤ _ := Nat.pow_le_pow_right (by decide) (by omega)
-
 /-- For any frozen path and schedule, every budget at every scheduled
 date can be repaired across an exponential error margin, off a single
 zero-dimensional set of tolerances. There are 2^N dates at each size. -/
 theorem schedule_clearance (ω : PathPauliDisorder) (τ : ℕ → ℕ → ℝ) :
-    ∃ E : Set ℝ, dimH E=0 ∧ ∀ e > (0:ℝ), e∉E → ∃ c : ℕ, ∀ᶠ k : ℕ in atTop,
+    ∀ e > (0:ℝ), e∉exceptionalTolerances (scheduleHeight ω τ) → ∃ c : ℕ, ∀ᶠ k : ℕ in atTop,
       let N := k+3
       let δ := 1/(2:ℝ)^(c*N)
       let H := chainGenerator ω k
@@ -38,7 +25,6 @@ theorem schedule_clearance (ω : PathPauliDisorder) (τ : ℕ → ℕ → ℝ) :
         HasProjectiveCircuitApproximation N (e+δ) j (unitaryEvolution H.val (τ k i)) →
         HasProjectiveCircuitApproximation N (e-δ) j (unitaryEvolution H.val (τ k i)) := by
   let g := scheduleHeight ω τ
-  refine ⟨exceptionalTolerances g,dimH_exceptionalTolerances g,?_⟩
   intro e he hreg
   obtain ⟨c,hc⟩ := not_forall.mp hreg
   refine ⟨c,?_⟩
@@ -76,7 +62,7 @@ theorem schedule_clearance (ω : PathPauliDisorder) (τ : ℕ → ℕ → ℝ) :
   · have hN : 2 ≤ N := by dsimp only [N]; omega
     obtain ⟨z,hz,C,hC,herror⟩ := (DiagonalSynthesis.exact_evolution_gate_cap hN H (τ k i)).approx
       (sub_nonneg.mpr heδ)
-    exact ⟨z,hz,C,hC.trans ((cap_le N hN).trans (Nat.le_of_not_gt hj)),herror⟩
+    exact ⟨z,hz,C,hC.trans ((exact_gate_cap_le hN).trans (Nat.le_of_not_gt hj)),herror⟩
 
 #print axioms schedule_clearance
 end

@@ -14,7 +14,7 @@ The bound applies to every observation origin on the same Gaussian draw. -/
 theorem gaussian_full_profile_observation_lower :
     ∃ C > (0:ℝ), ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ k : ℕ in atTop,
       let N := k+3
-      let D := 2^N
+      let D : ℕ := 2^N
       let H : selfAdjoint (Register N) := ⟨pathHamiltonian (pathPauliDisorderShell ω (k+1)),isSelfAdjoint_pathHamiltonian _⟩
       ∀ a G : ℝ, 0 ≤ G →
         (∀ v : ℝ, ∃ z ∈ Icc a (a+G), ∀ t : ℝ, ∀ s : ℕ,
@@ -49,7 +49,7 @@ theorem gaussian_full_profile_observation_lower :
     apply h.trans
     apply mul_le_mul
     · change 1+G*(1+‖H.val‖)/(1/B) ≤ 1+G*(1+C*N)*B
-      rw [div_one_div]
+      rw [one_div,div_inv_eq_mul]
       exact add_le_add_right (mul_le_mul_of_nonneg_right
         (mul_le_mul_of_nonneg_left (add_le_add_right hK 1) hG) hB.le) 1
     · exact mul_le_mul_of_nonneg_left (pow_le_pow_left₀

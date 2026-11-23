@@ -11,17 +11,25 @@ in the independent Gaussian coefficient coordinates. -/
 def pathGateDistance (n j : ℕ) (x : PrefixIndex n → ℝ) (t : ℝ) : ℝ :=
   Metric.infDist (unitaryEvolution (numberedGenerator n x) t) (phaseCircuitMatrixImageAtMost (n+2) j)
 
-private theorem continuous_distance (n j : ℕ) :
+/-- The distance to a physical gate budget varies continuously in the
+couplings and in the observation time jointly. -/
+theorem continuous_distance (n j : ℕ) :
     Continuous (fun p : (PrefixIndex n → ℝ) × ℝ => pathGateDistance n j p.1 p.2) := by
   have hH : Continuous (numberedGenerator n) := by unfold numberedGenerator; fun_prop
   exact (Metric.continuous_infDist_pt _).comp
     (continuous_unitaryEvolution.comp ((hH.comp continuous_fst).prodMk continuous_snd))
 
+private theorem continuous_section {X : Type*} [TopologicalSpace X]
+    (f : X × ℝ → ℝ) (hf : Continuous f) (t : ℝ) :
+    Continuous (fun x : X => f (x,t)) :=
+  hf.comp (continuous_id.prodMk continuous_const)
+
 /-- At a prescribed date the distance to a bounded circuit set varies
 continuously with the coefficients of the physical Hamiltonian. -/
 theorem continuous_distance_at_time (n j : ℕ) (t : ℝ) :
     Continuous (fun x => pathGateDistance n j x t) :=
-  (continuous_distance n j).comp (continuous_id.prodMk continuous_const)
+  continuous_section (fun p : (PrefixIndex n → ℝ) × ℝ => pathGateDistance n j p.1 p.2)
+    (continuous_distance n j) t
 
 theorem distance_dilate (n j : ℕ) (a : ℝ) (x : PrefixIndex n → ℝ) (t : ℝ) :
     pathGateDistance n j (a • x) t = pathGateDistance n j x (a*t) := by

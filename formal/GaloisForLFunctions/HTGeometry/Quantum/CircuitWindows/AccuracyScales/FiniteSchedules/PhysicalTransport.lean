@@ -25,7 +25,8 @@ times the physical volume swept between the dates. The starting dates
 may be selected from the full frozen chain before choosing the error. -/
 theorem gaussian_same_error_transport :
     ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ a : ℕ → ℝ,
-      ∃ E : Set ℝ, dimH E=0 ∧ ∀ e > (0:ℝ), e∉E → ∃ C : ℕ, ∀ᶠ k : ℕ in atTop,
+      let E := exceptionalTolerances (scheduleHeight ω fun k i => a k+(i:ℝ))
+      dimH E=0 ∧ ∀ e > (0:ℝ), e∉E → ∃ C : ℕ, ∀ᶠ k : ℕ in atTop,
         let N := k+3
         let H := chainGenerator ω k
         let I := Icc (a k) (a k+(2:ℝ)^N)
@@ -33,12 +34,11 @@ theorem gaussian_same_error_transport :
           ∃ j : ℕ, HasProjectiveCircuitApproximation N e j (unitaryEvolution H.val w) ∧
             (j:ℝ) ≤ (s:ℝ)+(N:ℝ)*(4+|w-v|)*2^(5*(C*N).sqrt+17) := by
   filter_upwards [LocalPatches.gaussian_binary_precision_compiler] with ω hcompile
-  intro a
+  intro a E
   let τ (k i : ℕ) : ℝ := a k+(i:ℝ)
-  obtain ⟨E,hE,hreg⟩ := schedule_clearance ω τ
-  refine ⟨E,hE,?_⟩
+  refine ⟨dimH_exceptionalTolerances _,?_⟩
   intro e he hre
-  obtain ⟨c,hc⟩ := hreg e he hre
+  obtain ⟨c,hc⟩ := schedule_clearance ω τ e he hre
   refine ⟨c+3,?_⟩
   filter_upwards [hc,(tendsto_add_atTop_nat 1).eventually hcompile] with k hk hs
   intro N H I v hv w hw s hfit
@@ -49,7 +49,7 @@ theorem gaussian_same_error_transport :
   have hd : N ≤ d := by dsimp only [d]; rw [Nat.add_mul]; omega
   have hN : 0 < N := by dsimp only [N]; omega
   have hD : 0 < D := Nat.pow_pos (by decide) _
-  have hD' : (D:ℝ)=(2:ℝ)^N := by dsimp only [D]; push_cast; rfl
+  have hD' : (D:ℝ)=(2:ℝ)^N := by simp only [D,Nat.cast_pow,Nat.cast_ofNat]
   have hN' : (N:ℝ) ≤ (D:ℝ) := by exact_mod_cast (Nat.lt_two_pow_self (n:=N)).le
   have hD₂ : (2:ℝ) ≤ D := by
     exact_mod_cast (show 2^1 ≤ 2^N from Nat.pow_le_pow_right (by decide) hN)
@@ -64,7 +64,7 @@ theorem gaussian_same_error_transport :
            (mul_le_mul hN' h₁ (by positivity) (Nat.cast_nonneg D)) (by positivity)
          _ = _ := by
            rw [hD',show d=c*N+N+(N*2) by dsimp only [d]; rw [Nat.add_mul]; omega,
-             pow_add,pow_add,pow_mul]
+             pow_add (2:ℝ) (c*N+N) (N*2),pow_add (2:ℝ) (c*N) N,pow_mul (2:ℝ) N 2]
            ring
   have hv' : v ∈ Icc (a k) (a k+(D:ℝ)) := by rwa [hD']
   have hw' : w ∈ Icc (a k) (a k+(D:ℝ)) := by rwa [hD']

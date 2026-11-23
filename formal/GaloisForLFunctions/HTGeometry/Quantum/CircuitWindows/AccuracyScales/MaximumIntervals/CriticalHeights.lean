@@ -23,21 +23,25 @@ theorem required_at_some_date {N : ℕ} {H : selfAdjoint (Register N)} {e : ℝ}
   rintro j ⟨z,hz,C,hC,he⟩
   exact (ht t ⟨le_rfl,le_add_of_nonneg_right hw.le⟩ z hz C he).trans hC
 
-private theorem max_cap {N m : ℕ} (hn : 2 ≤ N) (H : selfAdjoint (Register N)) {e : ℝ}
-    (he : 0 ≤ e) (hm : IsRecurrentOrbitCircuitMaximumAt H e m) : m ≤ 2^(8*N) := by
-  obtain ⟨t,ht⟩ := required_at_some_date hm
-  have hc := ht _ ((DiagonalSynthesis.exact_evolution_gate_cap hn H t).approx he)
+/-- A binary envelope for the exact diagonal-synthesis gate budget. -/
+theorem exact_gate_cap_le {N : ℕ} (hn : 2 ≤ N) :
+    (4*N+1)*(2*N+2)*(2^N)^2 ≤ 2^(6*N) := by
   have h (n : ℕ) : n+1 ≤ 2^n := by
     induction n with
     | zero => decide
     | succ n ih => rw [pow_succ]; omega
   calc
-    m ≤ (4*N+1)*(2*N+2)*(2^N)^2 := hc
     _ ≤ (4*2^N)*(2*2^N)*(2^N)^2 := by
       have hN := h N
       exact Nat.mul_le_mul_right _ (Nat.mul_le_mul (by omega) (by omega))
     _ = 2^(3+N+N+N*2) := by rw [pow_add,pow_add,pow_add,pow_mul]; ring
     _ ≤ _ := Nat.pow_le_pow_right (by decide) (by omega)
+
+/-- The same envelope bounds the true orbit maximum at every nonnegative error. -/
+theorem max_cap {N m : ℕ} (hn : 2 ≤ N) (H : selfAdjoint (Register N)) {e : ℝ}
+    (he : 0 ≤ e) (hm : IsRecurrentOrbitCircuitMaximumAt H e m) : m ≤ 2^(6*N) := by
+  obtain ⟨t,ht⟩ := required_at_some_date hm
+  exact (ht _ ((DiagonalSynthesis.exact_evolution_gate_cap hn H t).approx he)).trans (exact_gate_cap_le hn)
 
 /-- A drop in actual maximum between two tolerances locates a critical
 height in their half-open interval. Its budget is below the exact synthesis cap. -/
@@ -53,7 +57,7 @@ theorem criticalHeight_of_maximum_drop {N m j : ℕ} (hn : 2 ≤ N) (H : selfAdj
   obtain ⟨t,ht⟩ := required_at_some_date hf
   have hfar : e < orbitCircuitDistance H j t := lt_of_not_ge fun h =>
     hjm.not_ge (ht _ ((hasProjectiveCircuitApproximation_iff_infDist ..).mpr h))
-  exact ⟨hjm.trans_le (max_cap hn H he hf),
+  exact ⟨(hjm.trans_le (max_cap hn H he hf)).trans_le (Nat.pow_le_pow_right (by decide) (by omega)),
     hfar.trans_le (le_csSup ⟨_,hu⟩ (mem_range_self t)),
     csSup_le (range_nonempty _) hu⟩
 

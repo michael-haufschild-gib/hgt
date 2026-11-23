@@ -9,7 +9,7 @@ noncomputable section
 theorem polynomial_jet_order : PolynomialInDimension (fun k => 2^(k+3)-2) :=
   PolynomialInDimension.dim.mono fun _ => Nat.sub_le _ _
 
-private theorem polynomial_labels : PolynomialInDimension (fun k => Fintype.card (ChainLabel (k+3))) := by
+theorem polynomial_labels : PolynomialInDimension (fun k => Fintype.card (ChainLabel (k+3))) := by
   let hd := PolynomialInDimension.dim.square
   apply hd.mono
   intro k
@@ -27,13 +27,12 @@ theorem polynomial_detector_degree : PolynomialInDimension prefixDetectorDegree 
     ((PolynomialInDimension.const 1).add (((PolynomialInDimension.const 2).mul polynomial_jet_order).mul
       PolynomialInDimension.dim)))
 
-/-- The Cramer response constant grows at most exponentially in a fixed power
-of the Hilbert-space dimension. -/
-theorem responseCap_log_polynomial : LogPolynomialInDimension
-    (fun k : ℕ => pathResponseCap (k+3) (2^(k+3)-2) (((k+3:ℕ):ℝ)^2)) := by
+/-- A coefficient box whose log radius grows polynomially in dimension
+gives a Cramer response constant with the same growth property. -/
+theorem responseCap_box_log_polynomial (T : ℕ → ℝ) (hT : LogPolynomialInDimension T) :
+    LogPolynomialInDimension (fun k => pathResponseCap (k+3) (2^(k+3)-2) (T k)) := by
   let D (k : ℕ) := 2^(k+3)
   let L (k : ℕ) := D k-2
-  let T (k : ℕ) := (((k+3:ℕ):ℝ)^2)
   let R (k : ℕ) := pathBoxRadius (k+3) (T k) + (L k:ℝ) + 3
   let K (k : ℕ) := pencilCap (k+3) (R k)
   let d := PolynomialInDimension.dim
@@ -43,17 +42,23 @@ theorem responseCap_log_polynomial : LogPolynomialInDimension
   let hl := LogPolynomialInDimension.natCast l
   let hcount := LogPolynomialInDimension.natCast polynomial_labels
   let h₁ := LogPolynomialInDimension.const 1
-  let hT := (LogPolynomialInDimension.natCast PolynomialInDimension.sites).pow (PolynomialInDimension.const 2)
   let hJ := LogPolynomialInDimension.factorial d
   have hR : LogPolynomialInDimension R := by
-    simpa only [R,T,L,D,pathBoxRadius,Nat.cast_one,Nat.cast_ofNat] using
+    simpa only [R,L,D,pathBoxRadius,Nat.cast_one,Nat.cast_ofNat] using
       ((hT.add ((hd.add h₁).mul (hcount.mul hT))).add hl).add (LogPolynomialInDimension.const 3)
   have hK : LogPolynomialInDimension K := by
     simpa only [K,pencilCap,Nat.cast_one] using hJ.mul (((hcount.add h₁).mul hR).pow d)
   let hM := (hR.mul (((LogPolynomialInDimension.const 2).add ((LogPolynomialInDimension.const 4).mul hl)).pow l)).mul
     (hK.pow twoL)
-  simpa only [pathResponseCap,K,R,T,L,D,Nat.cast_one,Nat.cast_ofNat] using
+  simpa only [pathResponseCap,K,R,L,D,Nat.cast_one,Nat.cast_ofNat] using
     ((h₁.add (hd.mul (hK.pow twoL))).mul hJ).mul ((h₁.add (hd.mul (hd.mul hM))).pow d)
+
+/-- On the quadratic site-count box the logarithm of the response
+constant is polynomial in Hilbert dimension. -/
+theorem responseCap_log_polynomial : LogPolynomialInDimension
+    (fun k : ℕ => pathResponseCap (k+3) (2^(k+3)-2) (((k+3:ℕ):ℝ)^2)) :=
+  responseCap_box_log_polynomial _ ((LogPolynomialInDimension.natCast PolynomialInDimension.sites).pow
+    (PolynomialInDimension.const 2))
 
 /-- The algebraic number of line intervals enters multiplicatively in the
 sublevel estimate, and its logarithm is polynomial in dimension. -/

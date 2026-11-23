@@ -17,7 +17,9 @@ theorem bondSites_card {n : ℕ} (a : Fin (n+1)) : (bondSites a).card=9 := by
     (Prod.mk.inj (Sum.inr.inj ((pathCoeffEquiv n).symm.injective h))).2
   rw [bondSites,Finset.card_image_of_injective _ hi,Finset.card_univ,Fintype.card_prod,Fintype.card_fin]
 
-private theorem weak_error {n : ℕ} (u : PathShell n) (a : Fin (n+1)) {T : ℝ} (hT : 0 < T)
+/-- Erasing nine uniformly weak couplings changes the evolution by at
+most 1/200 throughout the indicated clock interval. -/
+theorem weak_error {n : ℕ} (u : PathShell n) (a : Fin (n+1)) {T : ℝ} (hT : 0 < T)
     (hs : ∀ i∈bondSites a, |u (pathCoeffEquiv n i)| ≤ 1/(1800*T)) (t : ℝ) (ht : |t| ≤ T) :
     ‖unitaryEvolution (pathHamiltonian u) t-unitaryEvolution (pathHamiltonianCut u a) t‖ ≤ 1/200 := by
   have hn : ‖edgePart u a‖ ≤ 9*(1/(1800*T)) := by

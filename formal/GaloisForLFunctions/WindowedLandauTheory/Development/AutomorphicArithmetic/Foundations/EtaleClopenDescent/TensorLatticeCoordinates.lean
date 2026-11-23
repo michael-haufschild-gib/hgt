@@ -31,7 +31,13 @@ theorem tensorCoordinates_mem_chartRing {φ : V →ₗ[F] F} {ψ : W →ₗ[F] F
       (tensorChartRing A B).toSubmodule.comap (tensorCoordinates φ ψ) :=
     Submodule.map₂_le.mpr fun v hv w hw => by
       change tensorCoordinates φ ψ (v ⊗ₜ[k] w) ∈ (Algebra.TensorProduct.map A.val B.val).range
-      exact ⟨(⟨φ v, hφ v hv⟩ : A) ⊗ₜ[k] (⟨ψ w, hψ w hw⟩ : B), rfl⟩
+      let a : A := ⟨φ v, hφ v hv⟩
+      let b : B := ⟨ψ w, hψ w hw⟩
+      refine ⟨a ⊗ₜ[k] b, ?_⟩
+      change Algebra.TensorProduct.map A.val B.val (a ⊗ₜ[k] b) =
+        tensorCoordinates φ ψ (v ⊗ₜ[k] w)
+      rw [Algebra.TensorProduct.map_tmul, tensorCoordinates_tmul]
+      rfl
   exact hle ht
 
 theorem tensorScalarAction_mem_chartLattice
@@ -48,10 +54,12 @@ theorem tensorScalarAction_mem_chartLattice
     rw [map_add, map_add, LinearMap.add_apply]
     exact add_mem ha hb
   | tmul a b =>
-    let f := tensorScalarAction (Algebra.TensorProduct.map A.val B.val (a ⊗ₜ[k] b))
+    let f : Module.End k (V ⊗[k] W) :=
+      tensorScalarAction (Algebra.TensorProduct.map A.val B.val (a ⊗ₜ[k] b))
     have hle : tensorChartLattice P Q ≤ (tensorChartLattice P Q).comap f := by
       refine Submodule.map₂_le.mpr fun v hv w hw => ?_
-      change tensorScalarAction (Algebra.TensorProduct.map A.val B.val (a ⊗ₜ[k] b)) (v ⊗ₜ[k] w) ∈ _
+      change tensorScalarAction (Algebra.TensorProduct.map A.val B.val (a ⊗ₜ[k] b)) (v ⊗ₜ[k] w) ∈
+        tensorChartLattice P Q
       rw [Algebra.TensorProduct.map_tmul, tensorScalarAction_tmul]
       exact Submodule.apply_mem_map₂ _ (hP _ a.property _ hv) (hQ _ b.property _ hw)
     exact hle ht
@@ -65,13 +73,16 @@ theorem tensorCoordinates_sum {ι κ : Type*} [Fintype ι] [Fintype κ]
   let L : V ⊗[k] W →ₗ[k] V ⊗[k] W :=
     ∑ i, ∑ j, (LinearMap.applyₗ (v i ⊗ₜ[k] w j)) ∘ₗ
       tensorScalarAction.toLinearMap ∘ₗ tensorCoordinates (φ i) (ψ j)
+  have happly (u : V ⊗[k] W) (f : Module.End k (V ⊗[k] W)) :
+      LinearMap.applyₗ u f = f u := rfl
   have hL : LinearMap.id = L := by
     refine TensorProduct.ext' fun a b => ?_
     simp only [L, LinearMap.id_apply, LinearMap.sum_apply, LinearMap.comp_apply,
-      LinearMap.applyₗ_apply, AlgHom.toLinearMap_apply, tensorCoordinates_tmul, tensorScalarAction_tmul]
+      happly, AlgHom.toLinearMap_apply, tensorCoordinates_tmul, tensorScalarAction_tmul]
     conv_lhs => rw [hv a, hw b]
-    simp only [TensorProduct.sum_tmul, TensorProduct.tmul_sum]
+    rw [TensorProduct.sum_tmul]
+    simp only [TensorProduct.tmul_sum]
   simpa only [L, LinearMap.id_apply, LinearMap.sum_apply, LinearMap.comp_apply,
-    LinearMap.applyₗ_apply, AlgHom.toLinearMap_apply] using LinearMap.congr_fun hL t
+    happly, AlgHom.toLinearMap_apply] using LinearMap.congr_fun hL t
 
 end GlobalTheory.PD

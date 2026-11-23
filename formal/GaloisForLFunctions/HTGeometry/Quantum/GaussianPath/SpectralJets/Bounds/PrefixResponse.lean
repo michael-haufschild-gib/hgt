@@ -40,7 +40,8 @@ def ModesAtScale (N : ℕ) (rows : Fin (2^N) → Option (List (Coordinates N)))
     ∀ m : Fin (2^N) → ℤ, m ≠ 0 → ∑ j, m j = 0 →
       ∃ i w, rows i = some w ∧ a ≤ (C*((2^N : ℕ):ℝ)*‖∑ j, mixed w (f j) x*(m j : ℂ)‖)^2
 
-private theorem modes_at_box_scale (N L : ℕ) (rows : Fin (2^N) → Option (List (Coordinates N)))
+/-- A coefficient box bounds the derivative prefactor simultaneously for every mode. -/
+theorem modes_at_box_scale (N L : ℕ) (rows : Fin (2^N) → Option (List (Coordinates N)))
     (hw : ∀ i w, w ∈ rows i → w.length ≤ L) (θ : Coordinates N → ℝ) {a T : ℝ} (hT : 0 ≤ T)
     (hθ : ∀ i, |θ i| ≤ T) (h : DetectsBalancedModes N L rows θ a) :
     ModesAtScale N rows θ (pathResponseCap N L T) a := by

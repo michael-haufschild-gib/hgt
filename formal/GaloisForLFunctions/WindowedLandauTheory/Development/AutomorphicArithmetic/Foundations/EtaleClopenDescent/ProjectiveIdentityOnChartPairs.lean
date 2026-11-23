@@ -34,7 +34,8 @@ private theorem IsFinCover.exists_chartPairIdentityFamily (h : IsFinCover k E x)
     change (∏ l ∈ I, x l / x j) = _
     simp [I, Finset.prod_insert, hij, div_self (h.pd.ne j)]
   have hlocal (a : Fin n) : (v a : DR k E) ∈ omB k E (rB k E x I) p :=
-    omB_mono (rB_mono (Finset.singleton_subset_iff.mpr hi)) p (hv a)
+    (mem_omB_chartIntersection_iff (E := E) h.pd hi (v a)).mpr
+      ⟨0, by simpa only [pow_zero, one_smul] using hv a⟩
   choose N hN using fun a => (mem_omB_chartIntersection_iff (E := E) h.pd hj (v a)).mp (hlocal a)
   let s (a : Fin n) := (x j / x i) ^ N a
   let t (a : Fin n) := (x i / x j) ^ N a
@@ -46,6 +47,7 @@ private theorem IsFinCover.exists_chartPairIdentityFamily (h : IsFinCover k E x)
     let z : rA k x {i} := ⟨x j / x i, Algebra.subset_adjoin ⟨i, Finset.mem_singleton_self i, j, rfl⟩⟩
     have hz : algebraMap F E (s a) ∈ rB k E x {i} :=
       isIntegral_algebraMap (x := z ^ N a)
+    change (algebraMap F E (s a) • (u a : DR k E)) ∈ omB k E (rB k E x {i}) q
     exact smul_mem_omB hz (hu a)
   · intro a
     change (algebraMap F E (t a) • (v a : DR k E)) ∈ omB k E (rB k E x {j}) p

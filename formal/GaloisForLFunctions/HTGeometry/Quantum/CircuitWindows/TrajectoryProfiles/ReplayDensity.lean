@@ -32,7 +32,8 @@ theorem translated_scalar_fraction {N : ℕ} (H : selfAdjoint (Register N))
     ext u
     change ((u-v∈A) ∧ a ≤ u ∧ u ≤ T) ↔ u+(-v)∈A ∧ a-v ≤ u+(-v) ∧ u+(-v) ≤ T-v
     simp only [←sub_eq_add_neg,sub_le_sub_iff_right]
-  have hmass := (measurePreserving_add_right volume (-v)).measure_preimage (hm.inter measurableSet_Icc).nullMeasurableSet
+  have hwindow : MeasurableSet (A ∩ Icc (a-v) (T-v)) := hm.inter measurableSet_Icc
+  have hmass := (measurePreserving_add_right volume (-v)).measure_preimage hwindow.nullMeasurableSet
   change volume.real (A ∩ Icc (a-v) (T+ -v))/(T+ -v-(a-v))=_
   rw [he,show T+ -v-(a-v)=T-a by ring]
   exact congrArg (fun x : ℝ≥0∞ => x.toReal/(T-a)) hmass.symm

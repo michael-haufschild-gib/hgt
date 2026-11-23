@@ -1,3 +1,5 @@
 import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.InverseSpectrum.InsertionSpectrum.ThreeTraceBalance
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.InverseSpectrum.InsertionSpectrum.OperatorReadings
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.InverseSpectrum.InsertionSpectrum.Primitive
 
 /-! # Spectral response to occupation insertion in the prime gas -/

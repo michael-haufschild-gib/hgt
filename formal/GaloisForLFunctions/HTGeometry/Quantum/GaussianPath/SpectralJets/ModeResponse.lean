@@ -60,7 +60,8 @@ private theorem row_on_chart {n D : ℕ} {R : Type*} [CommRing R]
   rw [onRoot,show p = MvPolynomial.map φ (characteristic A) from rfl,eval_map]
   exact (eval_characteristic A φ z (f z)).trans (hr z hz)
 
-private theorem detect_at_sample (N L : ℕ) (rows : Fin (2^N) → Option (List (Coordinates N)))
+/-- A nonvanishing detector bounds a derivative in every nonconstant balanced mode. -/
+theorem detect_at_sample (N L : ℕ) (rows : Fin (2^N) → Option (List (Coordinates N)))
     (hw : ∀ i w, w ∈ rows i → w.length ≤ L) (θ : Coordinates N → ℝ) {a : ℝ} (ha : 0 < a)
     (he : a ≤ ‖eval₂Hom GaussianInt.toComplex (fun i => (θ i : ℂ)) (pathDetector N L rows)‖) :
     DetectsBalancedModes N L rows θ a := by

@@ -69,7 +69,7 @@ theorem IsFinCover.exists_affineIdentityFamily (h : IsFinCover k E x)
   have hw' (j : Fin n) : (w j : DR k E) ∈ omB k E (rB k E x {i}) q := by
     refine (h.complementary_trace_dual_iff τ hτ (Finset.mem_singleton_self i) hpq (w j)).mp ?_
     intro a ha
-    let a' : ExteriorDifferentials k E p := ⟨a, omB_le_degree ha⟩
+    let a' : ExteriorDifferentials k E p := ⟨a, omB_le_degree (B := rB k E x {i}) (p := p) ha⟩
     let e : F := (-1 : F) ^ (p * q)
     have he : e ∈ rA k x {i} := by
       rw [show e = algebraMap k F ((-1 : k) ^ (p * q)) by simp [e]]

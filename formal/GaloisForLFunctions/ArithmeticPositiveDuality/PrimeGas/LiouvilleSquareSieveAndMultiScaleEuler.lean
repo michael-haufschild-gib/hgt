@@ -65,6 +65,19 @@ occupation parity `λ(n) = (-1)^{Ω(n)}` across **all** ordinates `Im s ∈ ℝ`
    points `{s₀, conj s₀, 1 - s₀, 1 - conj s₀}` no order `(N, M)` (`M ≥ 1`) ever beats its error
    bound — while Liouville square-sieving immediately detects the planted prime-3 zero via vanishing
    of `Q_{s₀}(1 - conj s₀) (1 - 2^{conj s₀}) ζ(2 - 2 conj s₀)`.
+6. **All-abscissa zero-tail Möbius–eta identity and unreflected 8-copy dyadic pole localization
+   (`sum_moebius_mul_dqptAltPartialSum_eq_one_sub_two_cpow`,
+   `norm_multiStrideEuler_moebius_highDivisors_ge_of_zeta_eq_zero`,
+   `norm_zeta_eight_mul_ge_on_left_strip`,
+   `exists_dyadic_step_zeta_zero_and_double_ne_zero`):**
+   Directly at any `z ∈ ℂ` (including `0 < Re s < 1/2` without functional reflection), for every
+   `X ≥ 2`, `∑_{d=1}^X μ(d) d^{-z} S_{⌊X/d⌋}(z) = 1 - 2^{1-z}` identically with zero truncation
+   tail, forcing the multi-stride high-divisor Möbius sum at any `ζ(z) = 0` to exceed
+   `‖1 - 2^{1-z}‖ - 3 D / 2^{M / 2}` (`≥ 2^{1 - Re s} - 1 - 3 D / 2^{M / 2}` on `0 < Re s < 1/2`).
+   Moreover, directly on `3001/24000 ≤ Re s < 1/2` across all `Im s ∈ ℝ`, the 8-copy cyclic-grading
+   partition `ζ(8 s)` satisfies `‖ζ(8 s)‖ ≥ 1 / 3001`, forcing at least one dyadic step
+   `r ∈ {0, 1, 2}` (`r = 0` on `20999/48000 < Re s < 1/2`) at any `ζ(s) = 0` to satisfy
+   `ζ(2^r s) = 0 ∧ ζ(2^{r+1} s) ≠ 0` (a genuine pole of `ζ(2z) / ζ(z)` at `z = 2^r s`).
 -/
 
 noncomputable section
@@ -927,9 +940,7 @@ private lemma norm_zeta_sub_harmonicPartialSum_le {z : ℂ} (hz : 1 < z.re) {R :
       have hsh := Finset.sum_Ico_add' (fun m : ℕ => ((m + 1 : ℕ) : ℝ) ^ (-z.re)) 0 K R
       rw [zero_add, add_comm K R] at hsh
       rw [Finset.range_eq_Ico, ← hsh]
-      refine Finset.sum_congr rfl fun j _ => ?_
-      congr 1
-      push_cast
+      rfl
     have hcomp := (_root_.RHTower.Sieve.antitoneOn_rpow_neg (by linarith : (0 : ℝ) ≤ z.re)
       R (R + K) hR).sum_le_integral_Ico (by omega : R ≤ R + K)
     have hRRK : (R : ℝ) ≤ ((R + K : ℕ) : ℝ) := by exact_mod_cast Nat.le_add_right R K
@@ -1234,9 +1245,7 @@ theorem sum_highDivisors_liouville_altPartialSum_eq_dual (Y D : ℕ) (w : ℂ) :
     exact ⟨⟨d, m⟩, Finset.mem_sigma.mpr ⟨Finset.mem_Icc.mpr ⟨hd_lo, hdY⟩,
       Finset.mem_Icc.mpr ⟨hm1, hm_div⟩⟩, rfl⟩
   · rintro ⟨d, m⟩ _
-    change (-1 : ℂ) ^ (m - 1) * (m : ℂ) ^ (-w) * (_root_.RHTower.liouvilleC d * (d : ℂ) ^ (-w)) =
-      _root_.RHTower.liouvilleC d * (d : ℂ) ^ (-w) * ((-1 : ℂ) ^ (m - 1) * (m : ℂ) ^ (-w))
-    ring
+    exact mul_comm _ _
 
 /-- Exact Prime-Gas Liouville–Euler hyperbola defect separating `L_N(w) · E_{N, M}(w)` from
 `squareEtaHead N w`. -/
@@ -1432,9 +1441,14 @@ private theorem tendsto_liouvillePoly_mul_zeta_of_zeroFree
     rw [heqF] at hsum
     refine hsum.congr fun N => ?_
     dsimp only [Function.comp_apply]
-    rw [← _root_.RHTower.sum_eq_abelPartial (fun i => (_root_.RHTower.liouvilleR (i + 1) : ℂ)) w N,
-      _root_.RHTower.sum_range_succ_eq_sum_Icc
-        (fun m => (((m : ℝ) : ℂ) ^ (-w) * (_root_.RHTower.liouvilleR m : ℂ))) N]
+    rw [← _root_.RHTower.sum_eq_abelPartial (fun i => (_root_.RHTower.liouvilleR (i + 1) : ℂ)) w N]
+    have hcast_i : (∑ i ∈ Finset.range N,
+          ((((i : ℝ) + 1 : ℝ) : ℂ) ^ (-w) * (_root_.RHTower.liouvilleR (i + 1) : ℂ))) =
+        ∑ i ∈ Finset.range N,
+          ((((i + 1 : ℕ) : ℝ) : ℂ) ^ (-w) * (_root_.RHTower.liouvilleR (i + 1) : ℂ)) :=
+      Finset.sum_congr rfl fun i _ => by push_cast; rfl
+    rw [hcast_i, _root_.RHTower.sum_range_succ_eq_sum_Icc
+      (fun m => (((m : ℝ) : ℂ) ^ (-w) * (_root_.RHTower.liouvilleR m : ℂ))) N]
     unfold liouvillePoly
     refine Finset.sum_congr rfl fun d _ => ?_
     rw [_root_.RHTower.liouvilleC_apply, _root_.RHTower.liouvilleR]
@@ -1844,6 +1858,261 @@ theorem plantedQuartetEuler3_obstruction {s₀ : ℂ} (hs₀0 : 0 < s₀.re) (hs
     unfold plantedQuartetPoly; simp
   exact ⟨hconj, hrem, hvan, ⟨by rw [hQ_refl, zero_mul], (norm_eta_two_mul_refl_ge hs₀0 hs₀_hi).1⟩⟩
 
+/-! ### 6. All-Abscissa Zero-Tail Möbius–Eta Identity and Unreflected 8-Copy Dyadic Pole Localization -/
+
+private lemma sum_moebius_mul_harmonicPartialSum_div {Y : ℕ} (hY : 1 ≤ Y) (z : ℂ) :
+    (∑ d ∈ Finset.Icc 1 Y,
+        (ArithmeticFunction.moebius d : ℂ) * (d : ℂ) ^ (-z) * harmonicPartialSum (Y / d) z) = 1 := by
+  have hexpand : (∑ d ∈ Finset.Icc 1 Y,
+        (ArithmeticFunction.moebius d : ℂ) * (d : ℂ) ^ (-z) * harmonicPartialSum (Y / d) z) =
+      ∑ p ∈ (Finset.Icc 1 Y).sigma (fun d => Finset.Icc 1 (Y / d)),
+        (ArithmeticFunction.moebius p.1 : ℂ) * ((p.1 * p.2 : ℕ) : ℂ) ^ (-z) := by
+    rw [Finset.sum_sigma]
+    refine Finset.sum_congr rfl fun d _ => ?_
+    unfold harmonicPartialSum
+    rw [Finset.mul_sum]
+    refine Finset.sum_congr rfl fun m _ => ?_
+    have hpow : ((d * m : ℕ) : ℂ) ^ (-z) = (d : ℂ) ^ (-z) * (m : ℂ) ^ (-z) := by
+      rw [show ((d * m : ℕ) : ℂ) = ((d : ℝ) : ℂ) * ((m : ℝ) : ℂ) by push_cast; ring,
+        Complex.mul_cpow_ofReal_nonneg (Nat.cast_nonneg d) (Nat.cast_nonneg m)]
+      norm_cast
+    rw [hpow, mul_assoc]
+  have hbij : (∑ p ∈ (Finset.Icc 1 Y).sigma (fun d => Finset.Icc 1 (Y / d)),
+        (ArithmeticFunction.moebius p.1 : ℂ) * ((p.1 * p.2 : ℕ) : ℂ) ^ (-z)) =
+      ∑ q ∈ (Finset.Icc 1 Y).sigma (fun n => n.divisors),
+        (ArithmeticFunction.moebius q.2 : ℂ) * (q.1 : ℂ) ^ (-z) := by
+    refine Finset.sum_bij (fun p _ => ⟨p.1 * p.2, p.1⟩) ?_ ?_ ?_ ?_
+    · rintro ⟨d, m⟩ hp
+      obtain ⟨hd, hm⟩ := Finset.mem_sigma.mp hp
+      obtain ⟨hd1, _⟩ := Finset.mem_Icc.mp hd
+      obtain ⟨hm1, hmY⟩ := Finset.mem_Icc.mp hm
+      have hdm_le : d * m ≤ Y := by rw [mul_comm]; exact (Nat.le_div_iff_mul_le hd1).mp hmY
+      have hdm_pos : 1 ≤ d * m := Nat.mul_pos hd1 hm1
+      exact Finset.mem_sigma.mpr ⟨Finset.mem_Icc.mpr ⟨hdm_pos, hdm_le⟩,
+        Nat.mem_divisors.mpr ⟨dvd_mul_right d m, Nat.ne_of_gt hdm_pos⟩⟩
+    · rintro ⟨d₁, m₁⟩ hp₁ ⟨d₂, m₂⟩ _ heq
+      obtain ⟨hd₁, _⟩ := Finset.mem_sigma.mp hp₁
+      have hd₁_pos : 0 < d₁ := (Finset.mem_Icc.mp hd₁).1
+      injection heq with hprod hd_eq
+      subst hd_eq
+      have hm_eq : m₁ = m₂ := Nat.eq_of_mul_eq_mul_left hd₁_pos hprod
+      subst hm_eq
+      rfl
+    · rintro ⟨n, d⟩ hq
+      obtain ⟨hn, hd_div⟩ := Finset.mem_sigma.mp hq
+      obtain ⟨hn1, hnY⟩ := Finset.mem_Icc.mp hn
+      obtain ⟨⟨m, hm_eq⟩, _⟩ := Nat.mem_divisors.mp hd_div
+      change n = d * m at hm_eq
+      change 1 ≤ n at hn1
+      change n ≤ Y at hnY
+      subst hm_eq
+      have hd1 : 1 ≤ d := Nat.pos_of_dvd_of_pos (dvd_mul_right d m) hn1
+      have hm1 : 1 ≤ m := Nat.pos_of_dvd_of_pos (dvd_mul_left m d) hn1
+      have hm_le : m ≤ Y / d := (Nat.le_div_iff_mul_le hd1).mpr (by rwa [mul_comm])
+      exact ⟨⟨d, m⟩, Finset.mem_sigma.mpr ⟨Finset.mem_Icc.mpr ⟨hd1, by nlinarith⟩,
+        Finset.mem_Icc.mpr ⟨hm1, hm_le⟩⟩, rfl⟩
+    · rintro ⟨d, m⟩ _; rfl
+  rw [hexpand, hbij, Finset.sum_sigma]
+  have h1_mem : 1 ∈ Finset.Icc 1 Y := Finset.mem_Icc.mpr ⟨le_rfl, hY⟩
+  rw [Finset.sum_eq_single 1]
+  · rw [Nat.divisors_one, Finset.sum_singleton, ArithmeticFunction.moebius_apply_one]
+    simp
+  · intro n _ hne1
+    dsimp only
+    rw [← Finset.sum_mul]
+    have hmoeb : (∑ d ∈ n.divisors, (ArithmeticFunction.moebius d : ℂ)) = 0 := by
+      simp_rw [← ArithmeticFunction.intCoe_apply (R := ℂ) (f := ArithmeticFunction.moebius)]
+      rw [← ArithmeticFunction.coe_mul_zeta_apply, ArithmeticFunction.coe_moebius_mul_coe_zeta,
+        ArithmeticFunction.one_apply, if_neg hne1]
+    rw [hmoeb, zero_mul]
+  · intro hnot
+    exact absurd h1_mem hnot
+
+/-- **Exact all-abscissa zero-tail Möbius–eta identity:** for **every** `X ≥ 2` and **every**
+`z ∈ ℂ` (including directly on `0 < Re s < 1/2` with zero truncation tail), convolving
+`dqptAltPartialSum z (X / d)` against `(μ(d) : ℂ) d^{-z}` equals `1 - 2^{1 - z}` identically. -/
+theorem sum_moebius_mul_dqptAltPartialSum_eq_one_sub_two_cpow {X : ℕ} (hX : 2 ≤ X) (z : ℂ) :
+    (∑ d ∈ Finset.Icc 1 X,
+        (ArithmeticFunction.moebius d : ℂ) * (d : ℂ) ^ (-z) * dqptAltPartialSum z (X / d)) =
+      1 - (2 : ℂ) ^ (1 - z) := by
+  have hX1 : 1 ≤ X := by omega
+  have hX2 : 1 ≤ X / 2 := by omega
+  have hsplit : ∀ d ∈ Finset.Icc 1 X,
+      (ArithmeticFunction.moebius d : ℂ) * (d : ℂ) ^ (-z) * dqptAltPartialSum z (X / d) =
+        (ArithmeticFunction.moebius d : ℂ) * (d : ℂ) ^ (-z) * harmonicPartialSum (X / d) z -
+          (2 : ℂ) ^ (1 - z) *
+            ((ArithmeticFunction.moebius d : ℂ) * (d : ℂ) ^ (-z) *
+              harmonicPartialSum ((X / 2) / d) z) := by
+    intro d _
+    rw [dqptAltPartialSum_eq_harmonic_sub_even, Nat.div_div_eq_div_mul, mul_comm d 2,
+      ← Nat.div_div_eq_div_mul]
+    ring
+  have htrim : (∑ d ∈ Finset.Icc 1 X,
+        (ArithmeticFunction.moebius d : ℂ) * (d : ℂ) ^ (-z) * harmonicPartialSum ((X / 2) / d) z) =
+      ∑ d ∈ Finset.Icc 1 (X / 2),
+        (ArithmeticFunction.moebius d : ℂ) * (d : ℂ) ^ (-z) * harmonicPartialSum ((X / 2) / d) z := by
+    refine (Finset.sum_subset (Finset.Icc_subset_Icc_right (Nat.div_le_self X 2)) ?_).symm
+    intro d hd hnot
+    rw [Finset.mem_Icc] at hd hnot
+    have hgt : X / 2 < d := by omega
+    rw [Nat.div_eq_of_lt hgt]
+    simp [harmonicPartialSum]
+  rw [Finset.sum_congr rfl hsplit, Finset.sum_sub_distrib, ← Finset.mul_sum, htrim,
+    sum_moebius_mul_harmonicPartialSum_div hX1 z,
+    sum_moebius_mul_harmonicPartialSum_div hX2 z, mul_one]
+
+/-- **Unreflected multi-stride Möbius high-divisor forcing (`∀ z` with `0 < Re z < 1`):**
+at any hypothetical zero `ζ(z) = 0` (`0 < Re z < 1`, including directly on the left strip
+`0 < Re s < 1/2` where `‖1 - 2^{1 - s}‖ ≥ 2^{1 - Re s} - 1 > 0`), for every `D ≥ 1`,
+`M ≥ max 10 ⌈|Im z|⌉₊`, and `X₀ ≥ max 2 (2 D M)`, the multi-stride Euler operator crushes the
+first `D` Möbius channels below `3 D / 2^{M / 2}` and forces the remaining `D < d ≤ Y` sum to
+have norm at least `‖1 - 2^{1 - z}‖ - 3 D / 2^{M / 2}`. -/
+theorem norm_multiStrideEuler_moebius_highDivisors_ge_of_zeta_eq_zero
+    {z : ℂ} (hz0 : 0 < z.re) (hz1 : z.re < 1) (hzz : riemannZeta z = 0)
+    {D M X₀ : ℕ} (hD : 1 ≤ D) (hM10 : 10 ≤ M) (him : |z.im| ≤ (M : ℝ))
+    (hX₀ : 2 * D * M ≤ X₀) :
+    ‖1 - (2 : ℂ) ^ (1 - z)‖ - 3 * (D : ℝ) / (2 : ℝ) ^ (M / 2) ≤
+      ‖multiStrideEuler (List.range' 1 D) M
+        (fun Y => ∑ d ∈ Finset.Icc (D + 1) Y,
+          (ArithmeticFunction.moebius d : ℂ) * (d : ℂ) ^ (-z) * dqptAltPartialSum z (Y / d)) X₀‖ := by
+  have hne1 : z ≠ 1 := fun h => hz1.ne (by rw [h, Complex.one_re])
+  have hX₀2 : 2 ≤ X₀ := by nlinarith
+  set ds := List.range' 1 D
+  set Low : ℕ → ℂ := fun Y => ∑ d ∈ Finset.Icc 1 D,
+    (ArithmeticFunction.moebius d : ℂ) * (d : ℂ) ^ (-z) * dqptAltPartialSum z (Y / d)
+  set High : ℕ → ℂ := fun Y => ∑ d ∈ Finset.Icc (D + 1) Y,
+    (ArithmeticFunction.moebius d : ℂ) * (d : ℂ) ^ (-z) * dqptAltPartialSum z (Y / d)
+  have hconst : multiStrideEuler ds M (fun Y => Low Y + High Y) X₀ = 1 - (2 : ℂ) ^ (1 - z) := by
+    have hcongr : multiStrideEuler ds M (fun Y => Low Y + High Y) X₀ =
+        multiStrideEuler ds M (fun _ => 1 - (2 : ℂ) ^ (1 - z)) X₀ := by
+      refine multiStrideEuler_congr_of_window ds M fun Y hYlo _ => ?_
+      have hDY : D ≤ Y := by nlinarith
+      have hunion : Finset.Icc 1 D ∪ Finset.Icc (D + 1) Y = Finset.Icc 1 Y := by
+        ext d; simp only [Finset.mem_union, Finset.mem_Icc]; omega
+      have hdisj : Disjoint (Finset.Icc 1 D) (Finset.Icc (D + 1) Y) := by
+        rw [Finset.disjoint_left]
+        intro d hd1 hd2
+        rw [Finset.mem_Icc] at hd1 hd2
+        omega
+      dsimp only [Low, High]
+      rw [← Finset.sum_union hdisj, hunion]
+      exact sum_moebius_mul_dqptAltPartialSum_eq_one_sub_two_cpow (hX₀2.trans hYlo) z
+    have hconst_eval : multiStrideEuler ds M (fun _ => 1 - (2 : ℂ) ^ (1 - z)) X₀ =
+        1 - (2 : ℂ) ^ (1 - z) := by
+      have h0 : ‖multiStrideEuler ds M (fun _ => 1 - (2 : ℂ) ^ (1 - z)) X₀ -
+          (1 - (2 : ℂ) ^ (1 - z))‖ ≤ 0 :=
+        norm_multiStrideEuler_sub_const_le_of_window ds M _ _ fun _ _ _ => by simp
+      exact sub_eq_zero.mp (norm_le_zero_iff.mp h0)
+    rw [hcongr, hconst_eval]
+  have hlow_le : ‖multiStrideEuler ds M Low X₀‖ ≤ 3 * (D : ℝ) / (2 : ℝ) ^ (M / 2) := by
+    dsimp only [Low]
+    rw [multiStrideEuler_finset_sum]
+    refine (norm_sum_le _ _).trans ?_
+    calc ∑ d ∈ Finset.Icc 1 D, ‖multiStrideEuler ds M
+            (fun Y => (ArithmeticFunction.moebius d : ℂ) * (d : ℂ) ^ (-z) *
+              dqptAltPartialSum z (Y / d)) X₀‖
+        ≤ ∑ _d ∈ Finset.Icc 1 D, (3 / (2 : ℝ) ^ (M / 2)) := by
+          refine Finset.sum_le_sum fun d hd => ?_
+          obtain ⟨hd1, hdD⟩ := Finset.mem_Icc.mp hd
+          have hrew : (fun Y => (ArithmeticFunction.moebius d : ℂ) * (d : ℂ) ^ (-z) *
+                dqptAltPartialSum z (Y / d)) =
+              fun Y => ((ArithmeticFunction.moebius d : ℂ) * (d : ℂ) ^ (-z)) *
+                dqptAltPartialSum z (Y / d) := rfl
+          rw [hrew, multiStrideEuler_smul, norm_mul]
+          have hcoef_le : ‖(ArithmeticFunction.moebius d : ℂ) * (d : ℂ) ^ (-z)‖ ≤ 1 := by
+            rw [norm_mul, show (d : ℂ) = ((d : ℝ) : ℂ) by norm_cast,
+              Complex.norm_cpow_eq_rpow_re_of_pos (by exact_mod_cast hd1), Complex.neg_re]
+            have hm1 : ‖(ArithmeticFunction.moebius d : ℂ)‖ ≤ 1 := by
+              by_cases hsq : Squarefree d
+              · rw [ArithmeticFunction.moebius_apply_of_squarefree hsq, Int.cast_pow, Int.cast_neg,
+                  Int.cast_one, norm_pow, norm_neg, norm_one, one_pow]
+              · rw [ArithmeticFunction.moebius_eq_zero_of_not_squarefree hsq, Int.cast_zero, norm_zero]
+                exact zero_le_one
+            have hr1 : (d : ℝ) ^ (-z.re) ≤ 1 :=
+              Real.rpow_le_one_of_one_le_of_nonpos (by exact_mod_cast hd1) (by linarith)
+            nlinarith [norm_nonneg (ArithmeticFunction.moebius d : ℂ),
+              Real.rpow_nonneg (Nat.cast_nonneg d) (-z.re)]
+          have herr_le : ‖multiStrideEuler ds M (fun Y => dqptAltPartialSum z (Y / d)) X₀‖ ≤
+              3 / (2 : ℝ) ^ (M / 2) :=
+            (norm_multiStrideEuler_lowDivisors_le_of_zeta_eq_zero hz0 hz1.le hne1 hzz
+              hM10 him hX₀).2.1 d hd1 hdD
+          calc ‖(ArithmeticFunction.moebius d : ℂ) * (d : ℂ) ^ (-z)‖ *
+                ‖multiStrideEuler ds M (fun Y => dqptAltPartialSum z (Y / d)) X₀‖
+              ≤ 1 * (3 / (2 : ℝ) ^ (M / 2)) :=
+                mul_le_mul hcoef_le herr_le (norm_nonneg _) zero_le_one
+            _ = 3 / (2 : ℝ) ^ (M / 2) := one_mul _
+      _ = 3 * (D : ℝ) / (2 : ℝ) ^ (M / 2) := by simp [div_eq_mul_inv]; ring
+  have hsum_eq : multiStrideEuler ds M Low X₀ + multiStrideEuler ds M High X₀ =
+      1 - (2 : ℂ) ^ (1 - z) := by
+    rw [← congrFun (multiStrideEuler_add ds M Low High) X₀]
+    exact hconst
+  have htri := norm_add_le (multiStrideEuler ds M Low X₀) (multiStrideEuler ds M High X₀)
+  rw [hsum_eq] at htri
+  linarith
+
+/-- **Unreflected 8-copy cyclic-grading floor across all heights (`∀ Im s ∈ ℝ`):** directly at any
+`s : ℂ` with `3001 / 24000 ≤ Re s` (without functional reflection), `Re(8 s) ≥ 24008 / 24000 > 1`,
+so `ζ(8 s) ≠ 0` and `‖ζ(8 s)‖ ≥ 1 / 3001` uniformly across all ordinates `Im s ∈ ℝ`. -/
+theorem norm_zeta_eight_mul_ge_on_left_strip {s : ℂ} (hlo : (3001 / 24000 : ℝ) ≤ s.re) :
+    riemannZeta (8 * s) ≠ 0 ∧ (1 / 3001 : ℝ) ≤ ‖riemannZeta (8 * s)‖ := by
+  have h8re : (8 * s).re = 8 * s.re := by simp [Complex.mul_re]
+  have hσ₁ : (1 : ℝ) < 24008 / 24000 := by norm_num
+  have hle_re : (24008 / 24000 : ℝ) ≤ (8 * s).re := by rw [h8re]; linarith
+  have hne : riemannZeta (8 * s) ≠ 0 :=
+    riemannZeta_ne_zero_of_one_lt_re (lt_of_lt_of_le hσ₁ hle_re)
+  have hpos : 0 < ‖riemannZeta (8 * s)‖ := norm_pos_iff.mpr hne
+  have hinv := _root_.RHTower.norm_inv_riemannZeta_le_of_le_re hσ₁ (s := 8 * s) hle_re
+  have hnum : 1 + 1 / ((24008 / 24000 : ℝ) - 1) = 3001 := by norm_num
+  rw [hnum, norm_inv] at hinv
+  have hge : (1 / 3001 : ℝ) ≤ ‖riemannZeta (8 * s)‖ := by
+    rw [div_le_iff₀ (by norm_num : (0 : ℝ) < 3001)]
+    have h1 := (inv_le_iff_one_le_mul₀' hpos).mp hinv
+    linarith
+  exact ⟨hne, hge⟩
+
+/-- **Unreflected dyadic pole localization on the remaining strip:** at any hypothetical zero
+`ζ(s) = 0` with `3001 / 24000 ≤ Re s < 1 / 2` (any `Im s ∈ ℝ`), there exists a dyadic step
+`r ∈ {0, 1, 2}` such that `z = 2^r s` lies in `0 < Re z < 1`, satisfies `ζ(z) = 0` and
+`ζ(2 z) ≠ 0` (so the unreflected Prime-Gas parity partition `ζ(2z) / ζ(z)` has a genuine pole at
+`z`); moreover on `20999 / 48000 < Re s < 1 / 2`, `r = 0` (`ζ(2 s) ≠ 0`) already holds unconditionally. -/
+theorem exists_dyadic_step_zeta_zero_and_double_ne_zero
+    {s : ℂ} (hlo : (3001 / 24000 : ℝ) ≤ s.re) (hhi : s.re < 1 / 2) (hz : riemannZeta s = 0) :
+    (∃ r ∈ ({0, 1, 2} : Finset ℕ),
+      0 < (((2 : ℂ) ^ r * s).re) ∧ (((2 : ℂ) ^ r * s).re) < 1 ∧
+      riemannZeta ((2 : ℂ) ^ r * s) = 0 ∧
+      riemannZeta (2 * ((2 : ℂ) ^ r * s)) ≠ 0) ∧
+    ((20999 / 48000 : ℝ) < s.re → riemannZeta (2 * s) ≠ 0) := by
+  have hs0 : 0 < s.re := by linarith
+  have h8ne : riemannZeta (8 * s) ≠ 0 := (norm_zeta_eight_mul_ge_on_left_strip hlo).1
+  have hwarm : (20999 / 48000 : ℝ) < s.re → riemannZeta (2 * s) ≠ 0 := by
+    intro hw
+    have h2re : (20999 / 24000 : ℝ) < (2 * s).re := by simp [Complex.mul_re]; linarith
+    exact GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein.riemannZeta_ne_zero_of_sub_seven_eighths_lt_re h2re
+  refine ⟨?_, hwarm⟩
+  by_cases h2 : riemannZeta (2 * s) = 0
+  · have h2_lt1 : (2 * s).re < 1 := by
+      by_contra hge
+      exact riemannZeta_ne_zero_of_one_le_re (not_lt.mp hge) h2
+    by_cases h4 : riemannZeta (4 * s) = 0
+    · have h4_lt1 : (4 * s).re < 1 := by
+        by_contra hge
+        exact riemannZeta_ne_zero_of_one_le_re (not_lt.mp hge) h4
+      refine ⟨2, by simp, ?_, ?_, ?_, ?_⟩
+      · rw [show (2 : ℂ) ^ 2 * s = 4 * s by ring]; simp [Complex.mul_re]; linarith
+      · simpa [show (2 : ℂ) ^ 2 * s = 4 * s by ring] using h4_lt1
+      · simpa [show (2 : ℂ) ^ 2 * s = 4 * s by ring] using h4
+      · simpa [show 2 * ((2 : ℂ) ^ 2 * s) = 8 * s by ring] using h8ne
+    · refine ⟨1, by simp, ?_, ?_, ?_, ?_⟩
+      · rw [pow_one]; simp [Complex.mul_re]; linarith
+      · simpa [pow_one] using h2_lt1
+      · simpa [pow_one] using h2
+      · rwa [show 2 * ((2 : ℂ) ^ 1 * s) = 4 * s by ring]
+  · refine ⟨0, by simp, ?_, ?_, ?_, ?_⟩
+    · simpa using hs0
+    · simp; linarith
+    · simpa using hz
+    · simpa using h2
+
 #print axioms eulerEtaPartialSum_succ_order
 #print axioms eulerEtaPartialSum_add_one_sub
 #print axioms eulerEtaPartialSum_succ_order_sub
@@ -1868,6 +2137,10 @@ theorem plantedQuartetEuler3_obstruction {s₀ : ℂ} (hs₀0 : 0 < s₀.re) (hs
 #print axioms eulerEtaPartialSum_beats_tail_of_liouvilleEulerDefect_lt
 #print axioms rh_iff_liouvilleEulerDefect_above_oneHundredEightyFour
 #print axioms plantedQuartetEuler3_obstruction
+#print axioms sum_moebius_mul_dqptAltPartialSum_eq_one_sub_two_cpow
+#print axioms norm_multiStrideEuler_moebius_highDivisors_ge_of_zeta_eq_zero
+#print axioms norm_zeta_eight_mul_ge_on_left_strip
+#print axioms exists_dyadic_step_zeta_zero_and_double_ne_zero
 
 end GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas
 

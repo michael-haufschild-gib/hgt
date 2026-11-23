@@ -16,7 +16,7 @@ theorem gaussian_prescribed_maximum_center_density :
     ∀ᵐ e : ℝ ∂volume, e ∈ Ioc (0:ℝ) (11/25) → ∀ᵐ ω ∂pathPauliDisorderLaw,
       ∃ b : ℕ, 0 < b ∧ ∀ γ α : ℝ, 0 ≤ γ → γ < α → α < 1 → ∀ᶠ k : ℕ in atTop,
         let N := k+3
-        let D := 2^N
+        let D : ℕ := 2^N
         let H := chainGenerator ω k
         let η := 1/(2:ℝ)^(b*N)
         ∃ m > nearHilbertContinuousCircuitBudget N, IsRecurrentOrbitCircuitMaximumAt H e m ∧

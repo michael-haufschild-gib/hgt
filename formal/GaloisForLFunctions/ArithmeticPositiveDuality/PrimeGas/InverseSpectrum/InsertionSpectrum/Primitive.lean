@@ -53,8 +53,10 @@ theorem primitiveWave_insert (a : ℕ+) (v : MissingWave) : primitiveWave (inser
 /-- The content-normalized relative partition is the measured partition loss of the primitive wave. -/
 theorem primitive_partition (v : MissingWave) {z : ℂ} (hz : 0 < z.re) :
     omissionPartition (primitiveWave v) z = omissionPartition v z/heat z (occupationContent v) := by
-  apply (eq_div_iff (Complex.exp_ne_zero _)).mpr
-  rw [mul_comm,← omissionPartition_insert _ _ hz,insert_primitive]
+  have h := omissionPartition_insert (occupationContent v) (primitiveWave v) hz
+  rw [insert_primitive] at h
+  exact (eq_div_iff (show heat z (occupationContent v) ≠ 0 from Complex.exp_ne_zero _)).mpr
+    ((mul_comm _ _).trans h.symm)
 
 theorem primitive_partition_insert (a : ℕ+) (v : MissingWave) (z : ℂ) :
     omissionPartition (primitiveWave (insertMissing a v)) z = omissionPartition (primitiveWave v) z := by
