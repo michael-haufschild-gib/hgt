@@ -2,6 +2,7 @@ import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmeti
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.CechEdgeBoundary
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.AffineCoverFormRestrictions
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.AffineCoverCechExact
+import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.RelativeFormsQuasicoherent
 
 /-! Right columns in a joined cover of a smooth scheme are augmented
 Čech complexes of relative forms on the affine left intersections. -/
@@ -40,18 +41,19 @@ theorem IsAffCover.rightColumn_exact (h : IsAffCover s (joinedCover U V) B)
     have he := Finset.card_pos.mpr hI
     omega
   have hW (J : Finset κ) : W J = W' J := by
-    simp only [W, W', coverInter, top_inf_eq, inf_joinedCover, lft_uni, rgt_uni]
+    simp only [W, W', V₀, coverInter, top_inf_eq, inf_joinedCover, lft_uni, rgt_uni]
   have haff (J : Finset κ) : IsAffineOpen (W J) := by
     rw [hW J]
     simpa only [W', coverInter, top_inf_eq] using h.affine (uni I J) (hIJ J)
   have haff₀ : IsAffineOpen V₀ := by
-    have he := haff ∅
-    rwa [W, coverInter_empty] at he
+    have he : IsAffineOpen (coverInter V₀ V (∅ : Finset κ)) := haff ∅
+    rwa [coverInter_empty] at he
   have hcov : V₀ ≤ iSup V := by rw [hV]; exact le_top
   let u (J : Finset κ) : D.obj J ≃+ (h.formCechDatum p).obj (uni I J) :=
     (F.1.mapIso (eqToIso (hW J).symm).op).addCommGroupIsoToAddEquiv
   let e (J : Finset κ) : D.obj J ≃+ G (B := B) p (uni I J) :=
     (u J).trans (h.sectionRationalForms (hIJ J) p)
+  letI := relativeForms_isQuasicoherent s p
   refine acx_exact_of_cechDatum D _ e (fun {J K} hJK x => ?_)
     (sheafCech_exactBot F hcov)
     (quasicoherent_cech_exactAt_of_isAffine (relativeForms s p) haff₀ hcov (fun J _ => haff J)) n
@@ -101,7 +103,9 @@ theorem IsAffCover.leftBoundary_of_mixedEdge [Fintype ι] [Fintype κ]
   by_cases ht : (lft t).Nonempty
   · have ht' : t.Nonempty := by
       rcases t.eq_empty_or_nonempty with rfl | ht'
-      · simp [lft] at ht
+      · obtain ⟨j, hj⟩ := ht
+        exact (by simpa only [lft, Finset.mem_toLeft, Finset.map_empty,
+          Finset.notMem_empty] using hj : False).elim
       · exact ht'
     have hsub := Finset.subset_insert i t
     have hi : (lft (insert i t)).Nonempty := ht.mono

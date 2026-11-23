@@ -15,14 +15,15 @@ private theorem disjoint_row {ι : Type*} [Fintype ι] {q : ℕ} (a : Fin q→�
     (∑ i, μ.real ((fun x : ι→ℝ => a i • x) ⁻¹' E)) ≤ 1 := by
   intro μ E
   let A (i : Fin q) := (fun x : ι→ℝ => a i • x) ⁻¹' E
-  have hm (i) : MeasurableSet (A i) := (measurableSet_Ioc.preimage hf).preimage (measurable_id.const_smul _)
+  have hm (i) : MeasurableSet (A i) := (measurableSet_Ioc.preimage hf).preimage
+    (show Measurable (fun x : ι → ℝ => a i • x) by fun_prop)
   have hl (i) (x) (hx : x∈A i) : a i*t < f x ∧ f x ≤ a i*t+2*w := by
     have hp : 0 < a i := (by norm_num : (0:ℝ) < 1/2).trans_le (ha i).1
     have hy : f (a i • x) ∈ Ioc t (t+w) := hx
     refine ⟨(mul_lt_mul_of_pos_left hy.1 hp).trans_eq (hscale i x),?_⟩
     rw [←hscale i x]
     exact (mul_le_mul_of_nonneg_left hy.2 hp.le).trans ((mul_add ..).trans_le
-      (add_le_add_left (mul_le_mul_of_nonneg_right (ha i).2 hw) _))
+      (add_le_add le_rfl (mul_le_mul_of_nonneg_right (ha i).2 hw)))
   have hd : Pairwise (fun i j => Disjoint (A i) (A j)) := by
     intro i j hij
     apply Set.disjoint_left.mpr

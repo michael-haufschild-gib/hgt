@@ -18,10 +18,11 @@ private theorem cauchy_residue_sum {m : ℕ} (a : Fin (m+1) → ℝ) (ha : Funct
   have hi := eq_interpolate (s := univ) ha.injOn hd
   have he := eval_interpolate_not_at_node (s := univ) (v := a) (fun i => P.eval (a i)) (fun i _ => hx i)
   rw [← hi] at he
-  have hterm (i : Fin (m+1)) : nodalWeight univ a i*(x-a i)⁻¹*P.eval (a i) = residueMass a b i/(x-a i) := by
-    simp only [P,nodalWeight_eq_eval_nodal_erase_inv,eval_nodal,residueMass,div_eq_mul_inv]
+  simp only [P,eval_nodal] at he
+  have hterm (i : Fin (m+1)) : nodalWeight univ a i*(x-a i)⁻¹*(∏ j, (a i-b j)) = residueMass a b i/(x-a i) := by
+    simp only [nodalWeight_eq_eval_nodal_erase_inv,eval_nodal,residueMass,div_eq_mul_inv]
     ring
-  simp only [hterm,P,eval_nodal] at he
+  simp only [hterm] at he
   apply (eq_div_iff (prod_ne_zero_iff.mpr (fun i _ => sub_ne_zero.mpr (hx i)))).mpr
   exact (mul_comm _ _).trans he.symm
 

@@ -65,7 +65,8 @@ theorem fixed_omission_reciprocity (P : Projection) (hd : MissingDimension P 1) 
     operatorHeight P*‖heat s (number j)‖ = 1 ↔ ∃ V : Gas →ₗᵢ[ℂ] PairGas, ∀ f x, V f x = split s f x := by
   have he := (operatorHeight_eq P hd hc).trans (lastHeight_of_first_move hj)
   apply reciprocal_amplitude_iff (s := s) (n := number j) (show 1 < (j+1:ℕ) by omega)
-  simpa only [number,Nat.cast_add,Nat.cast_one] using he
+  change operatorHeight P = Real.sqrt ((j+1:ℕ):ℝ)
+  simpa only [Nat.cast_add,Nat.cast_one] using he
 
 /-- Ordinary even traces of a fixed omitted direction locate its first occupied shell. -/
 theorem even_trace_height_from_support {v : MissingWave} {j : ℕ} (hj : FirstOccupied v j) :

@@ -11,6 +11,7 @@ private theorem width_le_travel_product {N : ℕ} (hs : 64 ≤ N.sqrt) :
     crossingWidth N ≤ travelProduct N := by
   let s := N.sqrt
   have hpoly := ReturnExcursions.dimension_dominates_speed hs
+  change 64*(s+1)^2 ≤ 2^s at hpoly
   have hN : N+1 ≤ (s+1)^2 := by rw [pow_two]; exact Nat.lt_succ_sqrt N
   have hscale : N+1 ≤ 2^s := hN.trans (le_trans (by omega) hpoly)
   have hsq : 26*s ≤ N := by
@@ -25,6 +26,7 @@ private theorem width_le_travel_product {N : ℕ} (hs : 64 ≤ N.sqrt) :
   have hW : crossingWidth N ≤ localCrossingWidth N := by
     unfold localCrossingWidth
     apply (le_div_iff₀ (by positivity)).mpr
+    change (2:ℝ)^(N-26*s)*(2^(5*s+26)*((N:ℝ)+1)^2) ≤ (2:ℝ)^N
     exact_mod_cast hbound
   apply hW.trans
   exact le_mul_of_one_le_left (by dsimp [localCrossingWidth]; positivity)

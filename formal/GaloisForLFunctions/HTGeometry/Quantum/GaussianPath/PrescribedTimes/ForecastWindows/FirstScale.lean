@@ -62,7 +62,11 @@ theorem gaussian_first_passage_affine_window (n j s : ℕ) (a b : ℝ) {t w : �
   have hscale (z : ℝ) (hz : 0 < z) (x : PrefixIndex n→ℝ) : z*f (z • x)=f x := by
     change z*(a*σ (z • x)+b*Δ (z • x))=a*σ x+b*Δ x
     rw [mul_add,mul_left_comm z a,mul_left_comm z b,smul_crossingOrigin n j (9/80) hz,smul_crossingWait n j s hz]
-  simpa only [Fintype.card_fin,f,preimage_setOf_eq,μ] using scale_window_bound f hf hscale ht hw
+  have he : f ⁻¹' Ioc t (t+w) = {x | a*σ x+b*Δ x ∈ Ioc t (t+w)} := by
+    ext x
+    rfl
+  rw [←he]
+  simpa only [Fintype.card_fin] using scale_window_bound f hf hscale ht hw
 
 theorem first_wait_window (n j s : ℕ) {t w : ℝ} (ht : 0 < t) (hw : 0 ≤ w) :
     let μ := Measure.pi fun _ : PrefixIndex n => gaussianReal 0 1
@@ -70,5 +74,32 @@ theorem first_wait_window (n j s : ℕ) {t w : ℝ} (ht : 0 < t) (hw : 0 ≤ w) 
   simpa only [zero_mul,one_mul,zero_add] using gaussian_first_passage_affine_window n j s 0 1 ht hw
 
 #print axioms gaussian_first_passage_affine_window
+
+/-- A return forecast may inspect the whole coefficient direction. If it
+uses no information about the radius, the same square-root dimension bound
+holds for success in a relative window about its chosen date. -/
+theorem gaussian_first_wait_angular_forecast (n j s : ℕ) (g : (PrefixIndex n → ℝ) → ℝ)
+    (hg : Measurable g) (hang : ∀ a > (0:ℝ), ∀ x, g (a • x)=g x) {w : ℝ} (hw : 0 ≤ w) :
+    let μ := Measure.pi fun _ : PrefixIndex n => gaussianReal 0 1
+    let Δ := crossingWait n j s
+    μ.real {x | g x < Δ x ∧ Δ x ≤ (1+w)*g x} ≤ 1024*sqrt (Fintype.card (ChainLabel (n+2)))*w := by
+  intro μ Δ
+  letI : Nonempty (PrefixIndex n) := ⟨(pathCoeffEquiv n).symm (Sum.inl (0,0))⟩
+  let f (x : PrefixIndex n → ℝ) := Δ x/g x
+  have hf : Measurable f := (measurable_crossingWait ..).div hg
+  have hscale (a : ℝ) (ha : 0 < a) (x : PrefixIndex n → ℝ) : a*f (a • x)=f x := by
+    dsimp only [f]
+    rw [hang a ha,←mul_div_assoc,smul_crossingWait n j s ha]
+  have hsub : {x | g x < Δ x ∧ Δ x ≤ (1+w)*g x} ⊆ f ⁻¹' Ioc 1 (1+w) := by
+    rintro x ⟨hl,hu⟩
+    have hp : 0 < g x := by
+      by_contra! hh
+      have hn := mul_nonpos_of_nonneg_of_nonpos hw hh
+      linarith only [hl,hu,hn]
+    exact ⟨(one_lt_div hp).mpr hl,(div_le_iff₀ hp).mpr hu⟩
+  exact (measureReal_mono (μ:=μ) hsub).trans (by
+    simpa only [div_one,Fintype.card_fin] using scale_window_bound f hf hscale zero_lt_one hw)
+
+#print axioms gaussian_first_wait_angular_forecast
 end
 end GaloisForLFunctions.HTGeometry.PrescribedTimes.ForecastWindows

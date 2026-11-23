@@ -1,52 +1,60 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.ForecastWindows.Intervals
-import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.IncrementClocks.FirstCrossing
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.LocalSimulation.PhysicalSpeed.FrozenWidth
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.ShortWindows.PrefixProbability
 
 /-! # Uniform forecast exclusion for the first wait after the near-Hilbert crossing -/
 open Filter MeasureTheory ProbabilityTheory Set Real
 open scoped Topology Matrix.Norms.L2Operator
 namespace GaloisForLFunctions.HTGeometry.PrescribedTimes.ForecastWindows
-open IncrementClocks ShortWindows
+open LocalPatches LocalPatches.PhysicalSpeed ShortWindows
 noncomputable section
 
-/-- On the original infinite draw the half-budget first wait eventually
-exceeds the simulation travel width. Smaller budgets wait at least as long. -/
+/-- A deterministic lower scale for simultaneous first waits on one frozen chain. -/
+def forecastWidth (N : ℕ) : ℝ :=
+  (N:ℝ)*localCrossingWidth N/(2*sqrt (log ((N:ℝ)+1)))
+
+theorem forecastWidth_pos (k : ℕ) : 0 < forecastWidth (k+3) := by
+  have hn : 0 < ((k+3:ℕ):ℝ) := by positivity
+  have hl : 0 < log (((k+3:ℕ):ℝ)+1) := log_pos (by linarith only [hn])
+  unfold forecastWidth localCrossingWidth
+  positivity
+
+/-- The random coefficient cap costs at most a square root of a logarithm
+on every sufficiently long prefix of almost every infinite draw. -/
 theorem typical_first_wait_lower :
     ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ k : ℕ in atTop,
       let P := nearHilbertContinuousCircuitBudget (k+3)
-      crossingWidth (k+3) < crossingWait (k+1) P (P/2) (prefixPoint k ω) := by
-  let P (k : ℕ) := nearHilbertContinuousCircuitBudget (k+3)
-  let B (k : ℕ) := crossingWidth (k+3)
-  obtain ⟨_,hh⟩ := gaussian_path_first_crossing_near_dimension_wait
-  filter_upwards [hh] with ω hw
-  filter_upwards [hw] with k hk
-  let u := pathPauliDisorderShell ω (k+1)
-  let x := prefixPoint k ω
-  let H : selfAdjoint (Register (k+3)) := ⟨pathHamiltonian u,isSelfAdjoint_pathHamiltonian u⟩
-  have hgen : numberedGenerator (k+1) x=H.val := numberedGenerator_shell u
-  have hd (j) (t) : pathGateDistance (k+1) j x t=orbitCircuitDistance H j t := by
-    unfold pathGateDistance orbitCircuitDistance
-    rw [hgen]
-  obtain ⟨σ,hσ,_,hc,hp,hwin,_⟩ := hk
-  have hB : 0 < B k := by dsimp only [B,crossingWidth]; positivity
-  have hor := crossingOrigin_eq_of_first (hB.trans hσ).le ((hd _ σ).trans hc)
-    (fun t ht => (hd _ t).trans_lt (hp t ht))
-  by_contra! hx
-  obtain ⟨v,hv,he⟩ := (crossingWait_le_iff (k+1) (P k) (P k/2) x (B k)).mp hx
-  rw [hor] at hv
-  have hsep := hwin v ⟨(sub_le_self σ hB.le).trans hv.1,hv.2⟩
-  have hfit := (hasProjectiveCircuitApproximation_iff_infDist (unitaryEvolution H.val v) (P k/2) (1/10:ℝ)).mpr
-    ((hd _ v).symm.trans_le he)
-  obtain ⟨z,hz,C,hC,herr⟩ := hfit
-  exact herr.not_lt (hsep z hz C hC)
+      forecastWidth (k+3) < crossingWait (k+1) P (P/2) (prefixPoint k ω) := by
+  obtain ⟨C,hC,h⟩ := gaussian_joint_frozen_travel_width
+  obtain ⟨j,hj⟩ := exists_nat_gt (max C (1/C))
+  filter_upwards [h] with ω hw
+  filter_upwards [hw,eventually_ge_atTop j] with k hk hkj
+  let N := k+3
+  have hN : 0 < (N:ℝ) := by dsimp [N]; positivity
+  have hjN : (j:ℝ) ≤ N := by exact_mod_cast (show j ≤ N by dsimp [N]; omega)
+  have hCN : C ≤ (N:ℝ) := (le_max_left ..).trans (hj.le.trans hjN)
+  have hone : 1 < C*(N:ℝ) := by
+    rw [mul_comm]
+    exact (div_lt_iff₀ hC).mp (((le_max_right ..).trans_lt hj).trans_le hjN)
+  have hlog := log_pos hone
+  have hNlog : 0 < log ((N:ℝ)+1) := log_pos (by linarith only [hN])
+  have hcs : C*(N:ℝ) ≤ ((N:ℝ)+1)^2 := by
+    nlinarith only [mul_le_mul_of_nonneg_right hCN hN.le,hN.le]
+  have hl := log_le_log (mul_pos hC hN) hcs
+  rw [log_pow,Nat.cast_ofNat] at hl
+  have hden : sqrt (log (C*(N:ℝ))) ≤ 2*sqrt (log ((N:ℝ)+1)) := by
+    apply sqrt_le_iff.mpr ⟨by positivity,?_⟩
+    nlinarith only [hl,hNlog.le,sq_sqrt hNlog.le]
+  have hnum : 0 ≤ (N:ℝ)*localCrossingWidth N := by dsimp only [localCrossingWidth]; positivity
+  exact (div_le_div_of_nonneg_left hnum (sqrt_pos.mpr hlog) hden).trans_lt (hk.2 _ le_rfl)
 
 private theorem early_probability :
     let P (k : ℕ) := nearHilbertContinuousCircuitBudget (k+3)
     let μ (k : ℕ) := Measure.pi fun _ : PrefixIndex (k+1) => gaussianReal 0 1
     Tendsto (fun k : ℕ => (μ k).real
-      {x | crossingWait (k+1) (P k) (P k/2) x ≤ crossingWidth (k+3)}) atTop (𝓝 0) := by
+      {x | crossingWait (k+1) (P k) (P k/2) x ≤ forecastWidth (k+3)}) atTop (𝓝 0) := by
   intro P μ
-  let B (k : ℕ) := crossingWidth (k+3)
+  let B (k : ℕ) := forecastWidth (k+3)
   let E (k : ℕ) := {x | crossingWait (k+1) (P k) (P k/2) x ≤ B k}
   have hm (k) : MeasurableSet (E k) := measurableSet_le (measurable_crossingWait ..) measurable_const
   letI : IsProbabilityMeasure pathPauliDisorderLaw := by unfold pathPauliDisorderLaw; infer_instance
@@ -70,13 +78,13 @@ theorem gaussian_first_wait_excludes_forecasts {η : ℝ} (hη : 0 < η) :
       let μ := Measure.pi fun _ : PrefixIndex (k+1) => gaussianReal 0 1
       let m := Fintype.card (ChainLabel N)
       ∀ (K : ℕ) (s : Fin K→ℕ) (t w : Fin K→ℝ), (∀ i, s i ≤ P/2) → (∀ i, 0 ≤ w i) →
-        1024*sqrt m*(∑ i, w i) ≤ η*crossingWidth N/2 →
+        1024*sqrt m*(∑ i, w i) ≤ η*forecastWidth N/2 →
         μ.real {x | ∃ i, crossingWait (k+1) P (s i) x ∈ Ioc (t i) (t i+w i)} < η := by
   filter_upwards [early_probability.eventually_lt_const (half_pos hη)] with k hk
   intro N P μ m K s t w hs hw hwidth
-  have hB : 0 < crossingWidth N := by unfold crossingWidth; positivity
+  have hB : 0 < forecastWidth N := forecastWidth_pos k
   have hh := first_wait_forecast_union (k+1) P (P/2) s t w hs hw hB
-  have hprice : 1024*sqrt m*(∑ i, w i)/crossingWidth N ≤ η/2 := (div_le_iff₀ hB).mpr (by linarith only [hwidth])
+  have hprice : 1024*sqrt m*(∑ i, w i)/forecastWidth N ≤ η/2 := (div_le_iff₀ hB).mpr (by linarith only [hwidth])
   exact hh.trans_lt (by linarith only [hk,hprice])
 
 #print axioms gaussian_first_wait_excludes_forecasts

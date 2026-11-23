@@ -17,14 +17,17 @@ variable {k F E : Type} [Field k] [Field F] [Field E]
   [Algebra k F] [Algebra k E] [Algebra F E] [IsScalarTower k F E]
   {d : ℕ} {x : Fin (d + 1) → F}
 
-theorem rB_mono {I J : Finset (Fin (d + 1))} (h : I ⊆ J) :
-    rB k E x I ≤ rB k E x J := by
-  let A := rA k x I
-  let B := rA k x J
-  letI : Algebra A B := (Subalgebra.inclusion (rA_mono (k := k) (x := x) h)).toRingHom.toAlgebra
+private theorem integralClosure_restrictScalars_mono {A B : Subalgebra k F} (h : A ≤ B) :
+    (integralClosure A E).restrictScalars k ≤ (integralClosure B E).restrictScalars k := by
+  letI : Algebra A B := (Subalgebra.inclusion h).toRingHom.toAlgebra
   letI : IsScalarTower A B E := .of_algebraMap_eq fun _ => rfl
   intro z hz
   exact (show IsIntegral A z from hz).tower_top (A := B)
+
+/-- Normalized chart rings are monotone in the set of indices. -/
+theorem rB_mono {I J : Finset (Fin (d + 1))} (h : I ⊆ J) :
+    rB k E x I ≤ rB k E x J :=
+  integralClosure_restrictScalars_mono (rA_mono (k := k) (x := x) h)
 
 /-- Pair with a fixed left cochain by the top Čech cup product and residue. -/
 def cupResidueFunctional (τ : DR k E →ₗ[E] E) (ρ : F →ₗ[k] k)

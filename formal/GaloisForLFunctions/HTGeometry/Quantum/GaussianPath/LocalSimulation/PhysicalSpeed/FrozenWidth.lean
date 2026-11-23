@@ -36,6 +36,7 @@ theorem gaussian_joint_frozen_travel_width :
     let l := pathCoeffEquiv (k+1) i
     have h := hk {l} (Finset.singleton_nonempty l)
     simp only [Finset.sum_singleton,Finset.card_singleton,Nat.cast_one,one_pow,mul_one,div_one] at h
+    change |pathPauliDisorderShell ω (k+1) l|^2 ≤ 4*log (C*(N:ℝ)) at h
     have he : L^2 = log (C*(N:ℝ)) := sq_sqrt hlog.le
     apply (sq_le_sq₀ (abs_nonneg _) (by positivity : 0 ≤ 2*L)).mp
     change |pathPauliDisorderShell ω (k+1) l|^2 ≤ _

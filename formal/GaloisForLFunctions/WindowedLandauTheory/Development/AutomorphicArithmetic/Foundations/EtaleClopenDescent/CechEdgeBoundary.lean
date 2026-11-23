@@ -111,7 +111,7 @@ theorem left_boundary_of_edge_boundary (G : Finset (ι ⊕ₗ κ) → Submodule 
     all_goals rw [(Submodule.mem_bot k).mp hs]; exact zero_mem _
   · funext I
     change deltaL k ι M (fun J => u (uni J (∅ : Finset κ))) I = a I
-    have hd := deltaL_uni u I (∅ : Finset κ)
+    have hd := deltaL_uni (k := k) u I (∅ : Finset κ)
     have hu0 : deltaL k κ M (fun J => u (uni I J)) ∅ = 0 := by rw [deltaL_apply, Finset.sum_empty]
     rw [hu0, smul_zero, add_zero] at hd
     change wd w u = b at hdu

@@ -21,7 +21,7 @@ theorem late_forecast_union (n j b : ℕ) {I : Type*} [Fintype I]
       ⊆ ⋃ i, A i := by
     rintro x ⟨h,i,hi⟩
     have hx := h.trans_le (crossingWait_antitone (hs i) x)
-    exact mem_iUnion.mpr ⟨i,max_lt hx hi.1,hi.2.trans (add_le_add_right (le_max_right ..) _)⟩
+    exact mem_iUnion.mpr ⟨i,max_lt hx hi.1,hi.2.trans (add_le_add (le_max_right ..) le_rfl)⟩
   have price (i : I) : μ.real (A i) ≤ 1024*sqrt m*w i/B := by
     have hl : 0 < L i := hB.trans_le (le_max_left ..)
     exact (first_wait_window n j (s i) hl (hw i)).trans
@@ -44,7 +44,7 @@ theorem first_wait_forecast_union (n j b : ℕ) {I : Type*} [Fintype I]
   let E := {x | crossingWait n j b x ≤ B}
   have hsub : F ⊆ E∪A := fun x hx => (le_or_gt (crossingWait n j b x) B).imp_right (fun h => ⟨h,hx⟩)
   exact ((measureReal_mono (μ:=μ) hsub).trans (measureReal_union_le _ _)).trans
-    (add_le_add_left (late_forecast_union n j b s t w hs hw hB) _)
+    (add_le_add le_rfl (late_forecast_union n j b s t w hs hw hB))
 
 end
 end GaloisForLFunctions.HTGeometry.PrescribedTimes.ForecastWindows

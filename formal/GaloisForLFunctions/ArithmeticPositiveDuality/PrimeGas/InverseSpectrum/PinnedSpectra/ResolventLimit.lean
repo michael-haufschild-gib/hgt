@@ -29,7 +29,9 @@ def bandProduct (b : SpectralBand 1) (x : ℝ) (m : ℕ) :=
   ∏ k ∈ range m, (x+(b k).val)/(x+occupationWeight k)
 
 private theorem product_restrict (b : SpectralBand 1) (x : ℝ) (m : ℕ) :
-    prefixProduct (fun j : Fin m => b j.val) x = bandProduct b x m := Fin.prod_univ_eq_prod_range _ _
+    prefixProduct (fun j : Fin m => b j.val) x = bandProduct b x m := by
+  unfold prefixProduct bandProduct
+  exact Fin.prod_univ_eq_prod_range (fun k : ℕ => (x+(b k).val)/(x+occupationWeight k)) m
 
 private theorem product_positive (b : SpectralBand 1) {x : ℝ} (hx : 0 < x) (m : ℕ) : 0 < bandProduct b x m :=
   (prefixProduct_pos (fun j : Fin m => b j.val) hx).trans_eq (product_restrict b x m)
@@ -47,7 +49,7 @@ theorem bandProduct_cold_lower (b : SpectralBand 1) {x : ℝ} (hx : 0 < x) (m : 
     rw [show bandProduct b x (m+1) = bandProduct b x m*((x+(b m).val)/(x+occupationWeight m)) from prod_range_succ _ _]
     calc (x+occupationWeight (m+1))/(x+1) =
           ((x+occupationWeight m)/(x+1))*((x+occupationWeight (m+1))/(x+occupationWeight m)) := by
-            field_simp [h1.ne',hd.ne'] <;> ring
+            field_simp [h1.ne',hd.ne']
          _ ≤ _ := mul_le_mul ih (div_le_div_of_nonneg_right (add_le_add_right (b m).property.1 x) hd.le)
            (div_nonneg hn.le hd.le) (product_positive b hx m).le
 
@@ -57,8 +59,8 @@ theorem bandProduct_limit_bounds (b : SpectralBand 1) {x : ℝ} (hx : 0 < x) :
   constructor
   · exact le_ciInf fun m => (div_le_div_of_nonneg_right (le_add_of_nonneg_right (occupationWeight_pos m).le)
       (add_pos hx zero_lt_one).le).trans (bandProduct_cold_lower b hx m)
-  · have hb : BddBelow (range (bandProduct b x)) := ⟨0,fun _ ⟨m,hm⟩ => (product_positive b hx m).le.trans_eq hm⟩
-    simpa only [bandProduct,prod_range_zero] using ciInf_le hb 0
+  · have hb : BddBelow (Set.range (bandProduct b x)) := ⟨0,fun _ ⟨m,hm⟩ => (product_positive b hx m).le.trans_eq hm⟩
+    exact (ciInf_le hb 0).trans_eq (by simp only [bandProduct,prod_range_zero])
 
 theorem bandProduct_antitone (b : SpectralBand 1) {x : ℝ} (hx : 0 < x) : Antitone (bandProduct b x) := by
   apply antitone_nat_of_succ_le
@@ -81,7 +83,9 @@ theorem prefix_stieltjes_tendsto (b : SpectralBand 1) {x : ℝ} (hx : 0 < x) :
   rw [hval] at hu
   apply tendsto_of_tendsto_of_tendsto_of_le_of_le hl hu
   · intro m
-    simpa only [← product_restrict b x m] using mul_le_mul_of_nonneg_left (mixture_stieltjes_bounds (fun j : Fin m => b j.val) hx).1 hx.le
+    change x*(bandProduct b x m/(x+occupationWeight m)) ≤ _
+    rw [← product_restrict b x m]
+    exact mul_le_mul_of_nonneg_left (mixture_stieltjes_bounds (fun j : Fin m => b j.val) hx).1 hx.le
   · intro m
     simpa only [← product_restrict b x m] using mul_le_mul_of_nonneg_left (mixture_stieltjes_bounds (fun j : Fin m => b j.val) hx).2 hx.le
 

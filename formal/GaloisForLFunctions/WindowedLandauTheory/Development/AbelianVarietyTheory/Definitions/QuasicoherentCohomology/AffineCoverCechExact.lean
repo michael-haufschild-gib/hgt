@@ -7,7 +7,7 @@ an affine open covered by opens with affine intersections. -/
 
 noncomputable section
 
-open AlgebraicGeometry CategoryTheory TopologicalSpace HTGeometry
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits TopologicalSpace HTGeometry
 
 namespace GlobalTheory.SchemeCohomology
 
@@ -45,6 +45,7 @@ theorem quasicoherent_cech_exactAt_of_isAffine (hV : IsAffineOpen V)
       rw [FinsetCechDatum.cochainComplex_d_apply]
       exact Subtype.ext hz
     obtain ⟨b, hb⟩ := (hF ⟨c, hc⟩).mp hz'
+    change D.cochainComplex.d n (n + 1) b = ⟨c, hc⟩ at hb
     rw [FinsetCechDatum.cochainComplex_d_apply] at hb
     exact ⟨b.val, b.property, congrArg Subtype.val hb⟩
 

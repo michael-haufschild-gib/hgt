@@ -53,8 +53,11 @@ theorem inverseTraceRoot_tendsto {v : MissingWave} {n : ℕ+} (hn : LowestLabel 
   have hr (m : ℕ) : inverseTraceRoot v m =
       ((momentLoss (ordinaryMomentOrder m) (missingSpectrum v))^(ordinaryMomentOrder m).val⁻¹)⁻¹ := by
     rw [inverseTraceRoot,missingSpectrum,momentLoss_ordinary_eq_operator_deficit _ hd hc]
-  rw [show inverseTraceRoot v = _ from funext hr]
-  simpa only [Function.comp_apply,occupationWeight_eq,inv_inv,number,Nat.cast_add,Nat.cast_one] using h
+  have hlabel : ((number j).val:ℝ) = (j:ℝ)+1 := by
+    change ((j+1:ℕ):ℝ) = _
+    rw [Nat.cast_add,Nat.cast_one]
+  rw [show inverseTraceRoot v = _ from funext hr,hlabel]
+  simpa only [Function.comp_apply,occupationWeight_eq,inv_inv] using h
 
 theorem traceCount_eq_lowest {v : MissingWave} {n : ℕ+} (h : LowestLabel v n) : traceCount v = (n.val:ℝ) :=
   (inverseTraceRoot_tendsto h).limUnder_eq

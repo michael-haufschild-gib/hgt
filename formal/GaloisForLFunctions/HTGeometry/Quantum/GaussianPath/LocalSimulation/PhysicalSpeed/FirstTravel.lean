@@ -52,7 +52,7 @@ theorem gaussian_capped_first_passage :
   have hsep := hwin v ⟨(sub_le_self σ hT).trans hv.1,hv.2⟩
   obtain ⟨z,hz,C,hC,herr⟩ := (hasProjectiveCircuitApproximation_iff_infDist
     (unitaryEvolution H.val v) (P/2) (1/10:ℝ)).mpr ((hd _ v).symm.trans_le he)
-  exact herr.not_lt (hsep z hz C hC)
+  exact (not_lt_of_ge herr) (hsep z hz C hC)
 
 #print axioms gaussian_capped_first_passage
 end

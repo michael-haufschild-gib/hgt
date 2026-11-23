@@ -36,7 +36,6 @@ theorem acx_exact_of_cechDatum (D : FinsetCechDatum.{0} ι)
     rw [deltaL_apply]
     simp only [embed, FinsetCechDatum.d, map_sum, map_zsmul, Submodule.coe_sum,
       Submodule.coe_smul_of_tower, he]
-    rfl
   let c' (I : Finset ι) : D.obj I := (e I).symm ⟨c I, hA I⟩
   have h' : embed c' = c := funext fun I => congrArg Subtype.val ((e I).apply_symm_apply ⟨_, _⟩)
   have h'₀ (I : Finset ι) (hI : (I.card : ℤ) ≠ n) : c' I = 0 := by
@@ -47,6 +46,7 @@ theorem acx_exact_of_cechDatum (D : FinsetCechDatum.{0} ι)
     have e0 : embed (D.d c') = 0 := by rw [embed_d, h', ← wd_one, hz']
     funext I
     apply (e I).injective
+    change e I (D.d c' I) = e I 0
     rw [map_zero]
     exact Subtype.ext (congrFun e0 I)
   by_cases hn : n < 0
