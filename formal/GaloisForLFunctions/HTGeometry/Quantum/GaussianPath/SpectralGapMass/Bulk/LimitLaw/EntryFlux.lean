@@ -21,7 +21,7 @@ private theorem absolute_rate {I : Type*} [Fintype I] (E : I→ℝ) :
     simp only [sum_sub_distrib,sum_const,card_univ,nsmul_eq_mul,←mul_sum,sub_self]
   rw [pairTurnRate,←sum_div]
   calc
-    _ = ∑ p : I×I, 2*max 0 (-E p.1- -E p.2) := by rw [←mul_sum]; field_simp
+    _ = ∑ p : I×I, 2*max 0 (-E p.1- -E p.2) := by rw [←mul_sum]; field_simp; ring
     _ = _ := by simp only [he,sum_add_distrib,hz,add_zero]
 
 /-- The Gaussian mean absolute gap fixes the leading coefficient in the
@@ -44,11 +44,11 @@ theorem gaussian_entry_flux_prefactor :
   have hv : 0 < v := by dsimp only [v]; positivity
   rw [integral_listLaw]
   simp only [Fintype.card_prod,Fintype.card_fun,Fintype.card_fin,Fintype.card_bool,Nat.cast_mul,
-    Nat.cast_pow,Nat.cast_ofNat,scaledGap,scaledEnergy,←sub_div,abs_div,abs_of_nonneg hv.le,←sum_div]
-  change (D*D)⁻¹*((∑ p : (Fin (n+2)→Bool)×(Fin (n+2)→Bool), |E p.1-E p.2|)/v)/(4*π) =
+    Nat.cast_pow,Nat.cast_ofNat,scaledGap,scaledEnergy,←sub_div,abs_div,←sum_div]
+  change (D*D)⁻¹*((∑ p : (Fin (n+2)→Bool)×(Fin (n+2)→Bool), |E p.1-E p.2|)/|v|)/(4*π) =
     pairTurnRate (fun i => -E i)/(D^2*v)
-  rw [←absolute_rate E]
-  field_simp
+  rw [abs_of_pos hv,←absolute_rate E]
+  field_simp [hv.ne',hD.ne']
 
 /-- From the actual first near-Hilbert crossing, normalized scalar-entry
 frequency and inverse normalized residence converge to the same constant.
@@ -56,7 +56,7 @@ The long-time observation limit is taken on each fixed prefix first. -/
 theorem gaussian_first_crossing_entry_constant :
     ∀ᵐ ω ∂pathPauliDisorderLaw, ∃ R : ℕ → ℝ, Tendsto R atTop (𝓝 (12/(π*sqrt (48*π)))) ∧
       ∀ᶠ k : ℕ in atTop, let N := k+3
-        let D := 2^N
+        let D : ℕ := 2^N
         let H : selfAdjoint (Register N) := ⟨pathHamiltonian (pathPauliDisorderShell ω (k+1)),
           isSelfAdjoint_pathHamiltonian _⟩
         let E := fun i => -H.2.isHermitian.eigenvalues i
@@ -86,13 +86,15 @@ theorem gaussian_first_crossing_entry_constant :
   have hr : R k=pairTurnRate E/((D:ℝ)^2*sqrt N) := by
     simp only [R,D,N,H,E,Nat.cast_pow,Nat.cast_ofNat]
   have hh' := h ε hε
+  have hscale := (eq_div_iff (mul_pos (pow_pos hd 2) hv).ne').mp hr
   constructor
-  · convert hh'.1 using 2
-    rw [hr]
-    field_simp
-  · convert hh'.2.2.1 using 2
-    rw [hr]
-    field_simp
+  · rw [mul_assoc,mul_comm ((D:ℝ)^2*sqrt N) (R k),hscale]
+    exact hh'.1
+  · have hres : x/((D:ℝ)*sqrt N*R k)=(D:ℝ)*x/pairTurnRate E := by
+      rw [←hscale]
+      field_simp [hd.ne',hv.ne',hp.ne']
+    rw [hres]
+    exact hh'.2.2.1
 
 #print axioms gaussian_entry_flux_prefactor
 #print axioms gaussian_first_crossing_entry_constant

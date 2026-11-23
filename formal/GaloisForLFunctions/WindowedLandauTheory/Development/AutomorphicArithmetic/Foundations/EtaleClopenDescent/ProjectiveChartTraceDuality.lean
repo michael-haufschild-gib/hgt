@@ -38,7 +38,8 @@ theorem IsFinCover.affine_trace_dual_iff (h : IsFinCover k E x) (i : Fin (d + 1)
   have he (j : Fin d) :
       algebraMap A E (e (MvPolynomial.X j)) = algebraMap F E (chartCoordinates x i j) :=
     congrArg (algebraMap F E) (h.pd.chartPolynomialEquiv_X i j)
-  simpa only [he] using normalized_affine_trace_dual_iff A e b z
+  simpa only [he, mem_algebraMap_range_subalgebra] using
+    normalized_affine_trace_dual_iff (F := F) (E := E) A e b z
 
 /-- The same trace-dual characterization on any nonempty standard
 intersection, using the volume of a chart containing it. -/
@@ -63,7 +64,8 @@ theorem IsFinCover.intersection_trace_dual_iff (h : IsFinCover k E x)
   letI : IsLocalization (Algebra.algebraMapSubmonoid B (Submonoid.powers s)) T := by
     simpa [Algebra.algebraMapSubmonoid, Submonoid.map_powers] using
       (normalizedIntersection_isLocalization (E := E) h.pd hi)
-  have htr := finite_trace_dual_localization (R := C) (T := T) (Submonoid.powers s) z
+  have htr := finite_trace_dual_localization (A := A) (B := B) (R := C) (T := T) (F := F)
+    (E := E) (Submonoid.powers s) z
   simp only [mem_algebraMap_range_subalgebra] at htr
   change _ ↔ ((z • ω : ExteriorDifferentials k E d) : DR k E) ∈ _
   rw [mem_omB_chartIntersection_iff h.pd hi]

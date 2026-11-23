@@ -27,14 +27,55 @@ private theorem isDiscreteValuationRing_primeLocalization {A F : Type*}
   apply isDiscreteValuationRing_of_ringKrullDim_eq_one
   rw [IsLocalization.AtPrime.ringKrullDim_eq_height P R, hP, WithBot.coe_one]
 
-variable {k F E : Type} [Field k] [CharZero k] [Field F] [Field E]
-  [Algebra k F] [Algebra k E] [Algebra F E] [IsScalarTower k F E]
-  [FiniteDimensional F E] [Algebra.IsSeparable F E]
-  (A : Subalgebra k F) [IsNoetherianRing A] [IsIntegrallyClosed A] [IsFractionRing A F]
+private theorem trace_pairing_atPrime_iff_polynomial_forms {k A B R T F E : Type}
+    [Field k] [CommRing A] [CommRing B] [CommRing R] [IsDomain R]
+    [IsDiscreteValuationRing R] [CharZero (IsLocalRing.ResidueField R)]
+    [CommRing T] [IsDedekindDomain T] [Field F] [Field E]
+    [Algebra A B] [Algebra A R] [Algebra A T] [Algebra A F] [Algebra R F] [Algebra F E]
+    [Algebra A E] [Algebra B E] [Algebra R E] [Algebra T E] [Algebra R T] [Algebra B T]
+    [IsScalarTower A B T] [IsScalarTower A R T] [IsScalarTower A R F] [IsScalarTower A R E]
+    [IsScalarTower A B E] [IsScalarTower A F E] [IsScalarTower B T E]
+    [IsScalarTower R F E] [IsScalarTower R T E]
+    [IsFractionRing R F] [IsFractionRing T E] [IsIntegralClosure T R E]
+    [FiniteDimensional F E] [Algebra.IsSeparable F E] [Module.Finite R T] [Module.IsTorsionFree R T]
+    [Algebra k A] [Algebra k B] [Algebra k R] [Algebra k T] [Algebra k E]
+    [IsScalarTower k A R] [IsScalarTower k B E] [IsScalarTower k R E] [IsScalarTower k T E]
+    [Algebra.FormallyEtale A R] [Algebra.Smooth k B] [Algebra.FormallyEtale B T]
+    (P : Ideal A) [P.IsPrime] [IsLocalization.AtPrime R P]
+    [IsLocalization (Algebra.algebraMapSubmonoid B P.primeCompl) T]
+    {d : ℕ} (e : MvPolynomial (Fin d) k ≃ₐ[k] A)
+    (bE : Module.Basis (Fin d) E Ω[E⁄k]) (z : E) :
+    let w := z • exteriorPower.ιMulti E d (fun i => D k E (algebraMap A E (e (MvPolynomial.X i))))
+    (∀ b : B, Algebra.trace F E (z * algebraMap B E b) ∈ (algebraMap R F).range) ↔
+      ∀ (Q : Ideal B) [Q.IsPrime], Q.comap (algebraMap A B) = P →
+        ∃ s : B, s ∉ Q ∧ s • w ∈ LinearMap.range (algebraFormPullback k B E d) := by
+  intro w
+  let u (i : Fin d) := algebraMap A R (e (MvPolynomial.X i))
+  obtain ⟨a, ha⟩ := exists_kaehler_basis_of_polynomial_chart (C := R) e
+  have hω : z • exteriorPower.ιMulti E d (fun i => D k E (algebraMap R E (u i))) = w := by
+    refine congrArg (fun v => z • exteriorPower.ιMulti E d v) (funext fun i => ?_)
+    exact congrArg (D k E) (IsScalarTower.algebraMap_apply A R E (e (MvPolynomial.X i))).symm
+  have h := trace_pairing_atPrime_iff_regular (k := k) (A := A) (B := B) (R := R)
+    (T := T) (F := F) (E := E) P u a ha bE z
+  have hmem (s : B) := congrArg (fun v : ExteriorDifferentials k E d =>
+    s • v ∈ LinearMap.range (algebraFormPullback k B E d)) hω
+  refine h.trans ⟨?_, ?_⟩
+  · intro hreg Q _ hQ
+    obtain ⟨s, hs, hw⟩ := hreg Q hQ
+    exact ⟨s, hs, (hmem s).mp hw⟩
+  · intro hreg Q _ hQ
+    obtain ⟨s, hs, hw⟩ := hreg Q hQ
+    exact ⟨s, hs, (hmem s).mpr hw⟩
+
+variable {k F E : Type} [Field k] [Field F] [Field E]
+  [Algebra k E] [Algebra F E]
+  [FiniteDimensional F E] [Algebra.IsSeparable F E] (A : Type)
+  [CommRing A] [Algebra A F] [Algebra A E] [IsScalarTower A F E]
+  [Algebra k A] [IsScalarTower k A E]
 
 local notation "B₀" => integralClosure A E
 
-variable [Algebra.Smooth k ((B₀).restrictScalars k)]
+variable [Algebra.Smooth k (integralClosure A E)]
 
 private theorem trace_pairing_at_localized_chart
     (R : Type) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] [CharZero (IsLocalRing.ResidueField R)]
@@ -47,9 +88,8 @@ private theorem trace_pairing_at_localized_chart
     (∀ b : B₀, Algebra.trace F E (z * (b : E)) ∈ (algebraMap R F).range) ↔
       ∀ (Q : Ideal B₀) [Q.IsPrime], Q.comap (algebraMap A B₀) = P →
         ∃ s : B₀, s ∉ Q ∧ s • w ∈
-          LinearMap.range (algebraFormPullback k ((B₀).restrictScalars k) E d) := by
+          LinearMap.range (algebraFormPullback k B₀ E d) := by
   intro w
-  letI : Algebra k B₀ := ((B₀).restrictScalars k).algebra
   letI : IsScalarTower k B₀ E := .of_algebraMap_eq fun _ => rfl
   let T : Subalgebra R E := integralClosure R E
   letI : Algebra A T := T.algebra'
@@ -76,19 +116,11 @@ private theorem trace_pairing_at_localized_chart
     IsLocalization.integralClosure (S := E) (Rf := R) (Sf := E) P.primeCompl
   letI : Algebra.FormallyEtale B₀ T := .of_isLocalization (Algebra.algebraMapSubmonoid B₀ P.primeCompl)
   letI : Algebra.FormallyEtale A R := .of_isLocalization P.primeCompl
-  obtain ⟨a, ha⟩ := exists_kaehler_basis_of_polynomial_chart (k := k) (A := A) (C := R) e
-  have hω : z • exteriorPower.ιMulti E d (fun i =>
-      D k E (algebraMap R E (algebraMap A R (e (MvPolynomial.X i))))) = w := by
-    refine congrArg (fun v => z • exteriorPower.ιMulti E d v) (funext fun i => ?_)
-    apply congrArg (D k E)
-    show
-      algebraMap R E (algebraMap A R (e (MvPolynomial.X i))) =
-        algebraMap A E (e (MvPolynomial.X i))
-    exact (IsScalarTower.algebraMap_apply A R E _).symm
-  have h := trace_pairing_atPrime_iff_regular (k := k) (A := A) (B := B₀) (R := R)
-    (T := T) (F := F) (E := E) P (fun i => algebraMap A R (e (MvPolynomial.X i))) a ha bE z
-  rw [← hω]
-  exact h
+  exact trace_pairing_atPrime_iff_polynomial_forms (k := k) (A := A) (B := B₀) (R := R)
+    (T := T) (F := F) (E := E) P e bE z
+
+variable [CharZero k] [Algebra k F] [IsScalarTower k F E] [IsScalarTower k A F] [IsDomain A]
+  [IsNoetherianRing A] [IsIntegrallyClosed A] [IsFractionRing A F]
 
 /-- At a height-one prime of a polynomial chart, trace integrality
 detects top-form regularity at exactly the primes lying over it. -/
@@ -100,13 +132,14 @@ theorem trace_pairing_at_chartPrime_iff_regular {d : ℕ}
     (∀ b : B₀, Algebra.trace F E (z * (b : E)) ∈ (algebraMap R F).range) ↔
       ∀ (Q : Ideal B₀) [Q.IsPrime], Q.comap (algebraMap A B₀) = P →
         ∃ s : B₀, s ∉ Q ∧ s • w ∈
-          LinearMap.range (algebraFormPullback k ((B₀).restrictScalars k) E d) := by
+          LinearMap.range (algebraFormPullback k B₀ E d) := by
   intro R w
-  letI : Algebra k R := (R.restrictScalars k).algebra
-  letI : Algebra R E := Algebra.compHom E R.val.toRingHom
-  letI : IsScalarTower R F E := .of_algebraMap_eq fun _ => rfl
-  letI : IsScalarTower A R E := .of_algebraMap_eq fun _ => rfl
-  letI : IsScalarTower k A R := .of_algebraMap_eq fun _ => rfl
+  letI : Algebra k R := R.algebra'
+  letI : Algebra R E := R.toAlgebra
+  letI : IsScalarTower R F E := IsScalarTower.subalgebra A F E R
+  letI : IsScalarTower A R E := IsScalarTower.subalgebra' A F E R
+  letI : IsScalarTower k A R := .of_algebraMap_eq fun r =>
+    Subtype.ext (IsScalarTower.algebraMap_apply k A F r)
   letI : IsScalarTower k R E := .of_algebraMap_eq fun r => IsScalarTower.algebraMap_apply k F E r
   letI : IsLocalization.AtPrime R P :=
     inferInstanceAs (IsLocalization.AtPrime (primeLocalizationInField F P) P)

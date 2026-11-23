@@ -46,8 +46,8 @@ theorem selected_dates_rate (E : I→ℝ) (hi : MaximallyProjectiveEnergy E) (S 
       obtain ⟨p,hp,h⟩ := mem_biUnion.mp ht
       obtain ⟨h₀,hT',hf⟩ := (mem_markedDates E p.1 p.2 hr.le hh O t T).mp h
       refine mem_biUnion.mpr ⟨p,hp,(mem_markedDates E p.1 p.2 hr.le hh C t T).mpr ⟨h₀,hT',hf.1,hf.2.1,?_⟩⟩
-      exact fun i h₁ h₂ => image_mono Ioo_subset_Icc_self (hf.2.2 i h₁ h₂)
-    have h := card_le_card hsub
+      exact fun i h₁ h₂ => Set.image_mono Set.Ioo_subset_Icc_self (hf.2.2 i h₁ h₂)
+    have h := Finset.card_le_card hsub
     rw [card_biUnion hdis] at h
     dsimp only [count]
     rw [←sum_div]
@@ -74,12 +74,12 @@ theorem selected_entry_fraction (E : I→ℝ) (hi : MaximallyProjectiveEnergy E)
     apply tendsto_of_tendsto_of_tendsto_of_le_of_le' hl h
     · filter_upwards [eventually_ge_atTop (0:ℝ)] with T hT
       have hh := card_sdiff_add_card_inter (f T) s
-      have hi := card_le_card (inter_subset_right : f T ∩ s ⊆ s)
-      rw [←sub_div]
+      have hi := Finset.card_le_card (Finset.inter_subset_right : f T ∩ s ⊆ s)
+      rw [id_eq,←sub_div]
       apply div_le_div_of_nonneg_right _ hT
       exact sub_le_iff_le_add.mpr (by exact_mod_cast (show (f T).card ≤ ((f T) \ s).card+s.card by omega))
     · exact (eventually_ge_atTop (0:ℝ)).mono fun T hT => div_le_div_of_nonneg_right
-        (by exact_mod_cast card_le_card (sdiff_subset : f T \ s ⊆ f T)) hT
+        (by exact_mod_cast Finset.card_le_card (Finset.sdiff_subset : f T \ s ⊆ f T)) hT
   have hden := remove (entryDates E r) (entryDates E r a) (entry_count_rate E hi hr hs)
   have hnum := remove (selectedDates E S r) (entryDates E r a) (selected_dates_rate E hi S hr hs)
   have hpow := pow_pos hr (Fintype.card I-2)

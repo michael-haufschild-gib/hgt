@@ -14,14 +14,15 @@ from the energies. -/
 def fastPairs {n : ℕ} (u : PathShell n) (a : ℝ) :=
   univ.filter fun p : (Fin (n+2)→Bool)×(Fin (n+2)→Bool) => a < scaledGap u p.swap
 
-private theorem swap_integral {n : ℕ} (u : PathShell n) (f : ℝ→ℝ) :
+private theorem scaledGap_integral_swapped {n : ℕ} (u : PathShell n) (f : ℝ→ℝ) :
     (∫ x, f x ∂(listLaw (scaledGap u) : Measure ℝ)) =
       (Fintype.card ((Fin (n+2)→Bool)×(Fin (n+2)→Bool)):ℝ)⁻¹ *
-        ∑ p, f (scaledGap u p.swap) := by
+        ∑ p : (Fin (n+2)→Bool)×(Fin (n+2)→Bool), f (scaledGap u p.swap) := by
   rw [integral_listLaw]
   congr 1
   simp only [Fintype.sum_prod_type]
   rw [sum_comm]
+  rfl
 
 private theorem fast_pair_ratio {n : ℕ} (u : PathShell n) {a : ℝ} (ha : 0 ≤ a) :
     let E := fun i => -(isSelfAdjoint_pathHamiltonian u).isHermitian.eigenvalues i
@@ -31,6 +32,7 @@ private theorem fast_pair_ratio {n : ℕ} (u : PathShell n) {a : ℝ} (ha : 0 �
   classical
   intro E μ
   let I := Fin (n+2)→Bool
+  let e := (isSelfAdjoint_pathHamiltonian u).isHermitian.eigenvalues
   let v := sqrt (n+2:ℕ)
   let w (p : I×I) := scaledGap u p.swap
   have hv : 0 < v := by dsimp only [v]; positivity
@@ -38,7 +40,7 @@ private theorem fast_pair_ratio {n : ℕ} (u : PathShell n) {a : ℝ} (ha : 0 �
   have hD : (Fintype.card (I×I):ℝ)⁻¹ ≠ 0 := by positivity
   have hpair (p : I×I) : max 0 (E p.1-E p.2)/(2*π) = v/(2*π)*max 0 (w p) := by
     have he : E p.1-E p.2=v*w p := by
-      dsimp only [E,v,w,scaledGap,scaledEnergy,Prod.swap]
+      change -(e p.1)- -(e p.2)=v*(e p.2/v-e p.1/v)
       field_simp [hv.ne']
       ring
     rw [he]
@@ -52,12 +54,14 @@ private theorem fast_pair_ratio {n : ℕ} (u : PathShell n) {a : ℝ} (ha : 0 �
     · rw [if_neg h,indicator_of_notMem (show w p∉Ioi a from h)]
   rw [←integral_indicator measurableSet_Ioi]
   change _=(∫ x, (Ioi a).indicator (fun y : ℝ => y) x ∂(listLaw (scaledGap u) : Measure ℝ)) / _
-  rw [swap_integral,show μ=(listLaw (scaledGap u) : Measure ℝ) from rfl,swap_integral,
+  rw [scaledGap_integral_swapped u ((Ioi a).indicator (fun y : ℝ => y)),
+    show μ=(listLaw (scaledGap u) : Measure ℝ) from rfl,scaledGap_integral_swapped u (max 0),
     selectedRate,pairTurnRate]
   simp only [hpair,←mul_sum]
   change ((v/(2*π))*(∑ p ∈ univ.filter (fun p => a<w p), max 0 (w p))) / _ = _
   rw [sum_filter]
-  simp only [hsel,mul_div_mul_left _ _ hK,mul_div_mul_left _ _ hD,w]
+  simp only [hsel,mul_div_mul_left _ _ hK,w]
+  exact (mul_div_mul_left _ _ hD).symm
 
 /-- Count distinct entries after the genuine first near-Hilbert crossing.
 For every physical tolerance below √2 the fraction with closing speed
@@ -90,7 +94,8 @@ theorem gaussian_first_crossing_closing_gaps :
   have hx := (physicalArc_spec hε.1 hε.2).1
   have hE : MaximallyProjectiveEnergy E := maximallyProjectiveEnergy_neg (hi k)
   have hh := selected_entry_fraction E hE (fastPairs u a) hx.1 hx.2 σ (pair_rate_pos E hE)
-  exact (fast_pair_ratio u ha) ▸ hh
+  rw [show F k=selectedRate E (fastPairs u a)/pairTurnRate E from (fast_pair_ratio u ha).symm]
+  exact hh
 
 #print axioms gaussian_first_crossing_closing_gaps
 end

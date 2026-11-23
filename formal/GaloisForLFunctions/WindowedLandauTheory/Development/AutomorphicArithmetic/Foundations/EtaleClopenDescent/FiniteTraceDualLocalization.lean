@@ -21,7 +21,7 @@ theorem finite_trace_dual_localization (M : Submonoid A) [IsLocalization M R]
     (∀ t : T, Algebra.trace F E (z * algebraMap T E t) ∈ (algebraMap R F).range) ↔
       ∃ s : M, ∀ b : B, Algebra.trace F E
         ((algebraMap A E (s : A) * z) * algebraMap B E b) ∈ (algebraMap A F).range := by
-  rw [← trace_pairing_localization (T := T) M z]
+  rw [← trace_pairing_localization (B := B) (R := R) (T := T) (F := F) M z]
   let f : B →ₗ[A] F :=
     (((Algebra.trace F E).comp (LinearMap.mul F E z)).restrictScalars A).comp
       ((Algebra.linearMap B E).restrictScalars A)

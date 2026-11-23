@@ -15,7 +15,7 @@ variable {k F E : Type} [Field k] [Field F] [Field E]
   [Algebra k F] [Algebra k E] [Algebra F E] [IsScalarTower k F E]
   {d : ℕ} {x : Fin (d + 1) → F} {I : Finset (Fin (d + 1))} {i : Fin (d + 1)}
 
-local notation "A" => rA k x {i}
+local notation "A" => rA k x (Finset.singleton i)
 local notation "C" => rA k x I
 local notation "B" => integralClosure A E
 local notation "T" => integralClosure C E

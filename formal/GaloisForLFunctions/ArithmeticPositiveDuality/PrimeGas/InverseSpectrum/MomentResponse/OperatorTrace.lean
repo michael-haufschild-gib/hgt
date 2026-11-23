@@ -23,7 +23,7 @@ theorem projected_even_trace (P : Projection) {r : ℕ} (dim : MissingDimension 
   have hfac : S^(m+2) = S ∘L (S ∘L S^m) := by
     change S^(m+2) = S*(S*S^m)
     rw [pow_succ',pow_succ']
-  rw [pow_mul,show projected P^2 = S from rfl,opTrace_pow_eq_tsum_sgVal_pow hhs.isCompactOperator hpos.isSymmetric (by omega : 0<m+2)
+  rw [pow_mul,show projected P^2 = S from rfl,opTrace_pow_eq_tsum_sgVal_pow hhs.isCompactOperator hpos.isSymmetric (by omega : 0 < m+2)
     hhs (hhs.comp_right _) hfac,Complex.ofReal_tsum]
   refine tsum_congr (fun n => ?_)
   rw [← projected_square_sgVal P dim hc n,Complex.ofReal_pow]
@@ -32,7 +32,9 @@ theorem momentLoss_ordinary_eq_operator_deficit (P : Projection) {r : ℕ} (dim 
     (hc : Conserving (projected P)) (m : ℕ) :
     momentLoss (ordinaryMomentOrder m) (physicalSpectrum P dim hc) =
       (riemannZeta ((m+2:ℕ):ℂ)).re - (opTrace (projected P^(2*(m+2)))).re := by
-  have ho : 1 < (ordinaryMomentOrder m).val := by change (1:ℝ)<(m+2:ℕ); exact_mod_cast (show 1<m+2 by omega)
+  have ho : 1 < (ordinaryMomentOrder m).val := by
+    change (1:ℝ) < (m+2:ℕ)
+    exact_mod_cast (show 1 < m+2 by omega)
   rw [momentLoss_eq_trace_difference _ ho,projected_even_trace P dim hc m,Complex.ofReal_re]
   simp only [ordinaryMomentOrder,Complex.ofReal_natCast,Real.rpow_natCast]
 
@@ -47,8 +49,9 @@ theorem even_operator_traces_cutoff (P : Projection) (dim : MissingDimension P 1
     change a.val ≤ ((⌈a.val⌉₊+2:ℕ):ℝ)
     exact (Nat.le_ceil a.val).trans (Nat.cast_le.mpr (Nat.le_add_right _ 2))
   have he := cofinal_moment_ceilings_iff b hh (range ordinaryMomentOrder) hcof
-  simp only [forall_mem_range] at he
-  simpa only [b,momentLoss_ordinary_eq_operator_deficit,ordinaryMomentOrder,Real.rpow_natCast] using he
+  simp only [b,forall_mem_range] at he
+  simp_rw [momentLoss_ordinary_eq_operator_deficit P dim hc] at he
+  simpa only [ordinaryMomentOrder,Real.rpow_natCast] using he
 
 #print axioms projected_even_trace
 #print axioms momentLoss_ordinary_eq_operator_deficit

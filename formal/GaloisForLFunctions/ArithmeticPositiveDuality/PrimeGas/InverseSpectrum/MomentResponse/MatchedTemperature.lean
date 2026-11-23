@@ -14,7 +14,8 @@ def thermalAmplitudeWindow (σ t D : ℝ) : Set ℝ :=
 
 private theorem real_loss_norm (q : GibbsExponent) {r : ℕ} (b : SpectralBand r) :
     ‖relativePartition b (q.val:ℂ)‖ = momentLoss q b := by
-  rw [relativePartition_real b q,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (momentLoss_nonneg q b)]
+  rw [relativePartition_real b q,Complex.norm_real,Real.norm_eq_abs]
+  exact abs_of_nonneg (momentLoss_nonneg q b)
 
 /-- Maximum clock response when the real partition change has at most one shell's Born scale. -/
 def sameTemperatureResponse (σ t : ℝ) : ℝ := sSup (thermalAmplitudeWindow σ t (1/t^(2*σ)))
@@ -61,7 +62,9 @@ theorem shell_calibrated_partition_response {s : ℂ} (hs : 0 < s.re) (n : ℕ+)
     let A := thermalAmplitudeWindow s.re (n:ℕ) (‖heat s n‖^2)
     (highWindowFactor s.re/5)*shellMass s n < sSup A ∧ sSup A ≤ ((s.re+1)/s.re)*shellMass s n := by
   let t : ℝ := (n:ℕ)
-  have ht : 1 ≤ t := by exact_mod_cast (show 1 ≤ (n:ℕ) from n.pos)
+  have ht : 1 ≤ t := by
+    change (1:ℝ) ≤ ((n:ℕ):ℝ)
+    exact Nat.one_le_cast.mpr n.pos
   have ht' := zero_lt_one.trans_le ht
   have hmass : shellMass s n = t^(1-2*s.re) := by
     rw [shellMass,Real.rpow_def_of_pos ht']
@@ -79,7 +82,9 @@ theorem prime_tower_response_rate {σ : ℝ} (hs : 0 < σ) (p : Nat.Primes) :
     Tendsto (fun k : ℕ => Real.log (sameTemperatureResponse σ (((p:ℕ):ℝ)^k))/(k:ℝ)) atTop
       (𝓝 ((1-2*σ)*Real.log (p:ℕ))) := by
   let a : ℝ := (p:ℕ)
-  have hp : 1 < a := by exact_mod_cast p.property.one_lt
+  have hp : 1 < a := by
+    change (1:ℝ) < ((p:ℕ):ℝ)
+    exact_mod_cast p.property.one_lt
   have ht : Tendsto (fun k : ℕ => a^k) atTop atTop := tendsto_pow_atTop_atTop_of_one_lt hp
   have he := ((same_temperature_log_slope hs).comp ht).mul_const (Real.log a)
   apply he.congr'

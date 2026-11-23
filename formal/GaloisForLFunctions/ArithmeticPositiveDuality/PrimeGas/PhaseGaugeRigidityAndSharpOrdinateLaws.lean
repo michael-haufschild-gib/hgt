@@ -157,15 +157,8 @@ private theorem projected_omitLine_sq_unitPhaseDiag (u : ℕ+ → ℂ) (hu : ∀
         (((projected (omitLine v)) ^ 2).comp (unitPhaseDiag (starPhase u) (norm_starPhase u hu))) := by
   apply ContinuousLinearMap.ext
   intro x
-  simp only [line_square, comp_apply, sub_apply, smul_apply, map_sub, map_smul,
-    norm_unitPhaseDiag_eq]
-  change squareHeat.val x - ((‖v‖ ^ 2 : ℝ) : ℂ)⁻¹ •
-      (inner ℂ (criticalOperator (unitPhaseDiag u hu v)) x •
-        criticalOperator (unitPhaseDiag u hu v)) =
-    unitPhaseDiag u hu (squareHeat.val (unitPhaseDiag (starPhase u) (norm_starPhase u hu) x)) -
-      ((‖v‖ ^ 2 : ℝ) : ℂ)⁻¹ •
-        (inner ℂ (criticalOperator v) (unitPhaseDiag (starPhase u) (norm_starPhase u hu) x) •
-          unitPhaseDiag u hu (criticalOperator v))
+  simp only [line_square, comp_apply, sub_apply, smul_apply, InnerProductSpace.rankOne_apply,
+    map_sub, map_smul, norm_unitPhaseDiag_eq]
   rw [← unitPhaseDiag_comm_squareHeat, unitPhaseDiag_apply_star,
     unitPhaseDiag_comm_criticalOperator, inner_unitPhaseDiag_left]
 
@@ -1229,108 +1222,16 @@ private theorem four_pow_add_le {a b : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) :
     have h2 : 0 ≤ 16 * b ^ 4 := by positivity
     nlinarith [show (2 * a) ^ 4 = 16 * a ^ 4 by ring]
 
-/-- **Matching `Ω_σ(|Im s|^{1 - σ})` lower bound inside `uvRegularRankOne` on `0 < σ < 1 / 2`:**
-the `O_σ(|Im s|^{1 - σ})` ceiling is **sharp** across `uvRegularRankOne`: for every `0 < σ < 1 / 2`
-and `Λ > 0`, there exist `c > 0` and `T₀ ≥ 1` such that at **every** `s` with `s.re = σ` and
-`|s.im| ≥ T₀` (including every Speiser-shadowed ordinate and any hypothetical zero of `ζ`), some
-conserving `v : MissingWave` in `uvRegularRankOne s hs0 Λ` achieves
-`c * |s.im|^{1 - σ} ≤ ‖jointSurvivingPartition (missingWaveSpectrum v) s‖`. -/
-theorem exists_uvRegularRankOne_jointSurvivingPartition_ge_rpow_one_sub_re
-    {σ Λ : ℝ} (hσ0 : 0 < σ) (hσ_half : σ < 1 / 2) (hΛ : 0 < Λ) :
-    ∃ c : ℝ, 0 < c ∧ ∃ T₀ : ℝ, 1 ≤ T₀ ∧
-      ∀ s : ℂ, ∀ hs0 : 0 < s.re, s.re = σ → T₀ ≤ |s.im| →
-        ∃ v : MissingWave, uvRegularRankOne s hs0 Λ v ∧
-          c * |s.im| ^ (1 - σ) ≤ ‖jointSurvivingPartition (missingWaveSpectrum v) s‖ := by
-  have hσ1 : σ < 1 := by linarith
-  have h1mσ : 0 < 1 - σ := sub_pos.mpr hσ1
-  set η : ℝ := (1 - σ) / 2
-  have hη0 : 0 < η := by dsimp only [η]; positivity
-  have hη_half : η ≤ 1 / 2 := by dsimp only [η]; linarith
-  obtain ⟨Cζ, hCζ, hconv⟩ := _root_.RHTower.exists_norm_riemannZeta_le_convexity hη0 hη_half
-  have h2_pos : 0 < (2 : ℝ) ^ σ - 1 := sub_pos.mpr (Real.one_lt_rpow one_lt_two hσ0)
-  set c_win : ℝ := (1 / (32 * Real.pi)) * (Real.pi) ^ σ
-  have hc_win_pos : 0 < c_win := by dsimp only [c_win]; positivity
-  set c_out : ℝ := ((2 : ℝ) ^ σ - 1) * (c_win / 4)
-  have hc_out_pos : 0 < c_out := by dsimp only [c_out]; positivity
-  -- Thresholds ensuring `N = ⌊t / (4π)⌋₊ ≥ 1`, `δ₀ ≤ 3/4`, `16 δ₀^3 < Λ / 2`, and `Cζ t^{3(1-σ)/4} + 2 ≤ (c_win / 2) t^{1-σ}`.
-  have hexp_4σ : 0 < 4 * σ := by positivity
-  set M_uv : ℝ := max ((128 / (3 * Λ)) ^ (1 / (4 * σ)))
-      ((32 ^ 4 / Λ ^ 4) ^ (1 / (12 * σ)))
-  have hexp_gap : 0 < (1 - σ) / 4 := by positivity
-  obtain ⟨T_gap, hT_gap⟩ := Filter.eventually_atTop.mp
-    ((tendsto_rpow_atTop hexp_gap).eventually_ge_atTop ((4 * (Cζ + 2)) / c_win))
-  set T₀ : ℝ := max (max 8 (8 * Real.pi * (M_uv + 2))) T_gap
-  have hT₀_ge1 : 1 ≤ T₀ := le_trans (by norm_num : (1 : ℝ) ≤ 8)
-    ((le_max_left 8 _).trans (le_max_left _ T_gap))
-  refine ⟨c_out, hc_out_pos, T₀, hT₀_ge1, fun s hs0 hs_re hT => ?_⟩
-  set t : ℝ := |s.im|
-  have ht8 : 8 ≤ t := ((le_max_left 8 _).trans (le_max_left _ T_gap)).trans hT
-  have ht_M : 8 * Real.pi * (M_uv + 2) ≤ t :=
-    ((le_max_right 8 _).trans (le_max_left _ T_gap)).trans hT
-  have ht_gap : T_gap ≤ t := (le_max_right _ T_gap).trans hT
-  have ht_pos : 0 < t := by linarith
-  -- Work at positive ordinate `z = σ + i t` (`z = s` if `0 ≤ s.im`, `z = conj s` if `s.im < 0`).
-  set z : ℂ := (σ : ℂ) + (t : ℂ) * Complex.I
-  have hz_re : z.re = σ := by simp [z]
-  have hz_im : z.im = t := by simp [z]
-  have hz0 : 0 < z.re := hz_re ▸ hσ0
-  have hzt : 0 < z.im := hz_im ▸ ht_pos
-  set N : ℕ := ⌊t / (4 * Real.pi)⌋₊
-  have hpi_pos : 0 < Real.pi := Real.pi_pos
-  have ht_div_ge2 : 2 * (M_uv + 2) ≤ t / (4 * Real.pi) := by
-    rw [le_div_iff₀ (by positivity : 0 < 4 * Real.pi)]
-    linarith
-  have hM_uv_nn : 0 ≤ M_uv := le_max_of_le_left (Real.rpow_nonneg (by positivity) _)
-  have hN_ge2 : 2 ≤ N := by
-    exact Nat.le_floor (by linarith : (2 : ℝ) ≤ t / (4 * Real.pi))
-  have hN_pos : 0 < N := by omega
-  have hN_le : (N : ℝ) ≤ t / (4 * Real.pi) := Nat.floor_le (by positivity)
-  have hN_gt : t / (4 * Real.pi) < (N : ℝ) + 1 := Nat.lt_floor_add_one _
-  have hN_ge_half : t / (8 * Real.pi) ≤ (N : ℝ) := by
-    have h2 : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN_ge2
-    have hmul := (div_lt_iff₀ (by positivity : 0 < 4 * Real.pi)).mp hN_gt
-    rw [div_le_iff₀ (by positivity : 0 < 8 * Real.pi)]
-    nlinarith [Real.pi_pos]
-  have hN1_gt_M : M_uv < (N : ℝ) + 1 := by linarith
-  have hsize : (2 * (N : ℝ) + 1) * Real.pi ≤ z.im := by
-    rw [hz_im]
-    have hmul := (le_div_iff₀ (by positivity : 0 < 4 * Real.pi)).mp hN_le
-    have hN1 : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN_pos
-    nlinarith [Real.pi_pos]
-  -- Construct the hybrid window + ground-slack profile `b_hyb : SpectralBand 1`.
-  let u := halfTurnFraction hzt.ne'
-  let v_vec (j : ℕ) : ℂ :=
-    (occupationWeight (N + j) : ℂ) ^ z - ((occupationWeight (N + j) * u.val : ℝ) : ℂ) ^ z
-  have hx_win : ∀ j ∈ Finset.range N,
-      occupationWeight (N + j) * u.val ∈
-        Icc (occupationWeight (N + j + 1)) (occupationWeight (N + j)) := by
-    intro j hj
-    have hj' := Finset.mem_range.mp hj
-    have ha : Real.pi / z.im ≤ occupationWeight (2 * N) := by
-      rw [occupationWeight_eq, ← one_div, Nat.cast_mul, Nat.cast_ofNat]
-      apply (div_le_div_iff₀ hzt (by positivity : 0 < 2 * (N : ℝ) + 1)).mpr
-      simpa only [one_mul, mul_comm Real.pi] using hsize
-    have hcost := ((halfTurn_fraction_loss hzt).trans ha).trans
-      (occupationWeight_antitone (show N + j + 1 ≤ 2 * N by omega))
-    have hret : 1 - occupationWeight (N + j + 1) ≤ u.val := by
-      change 1 - u.val ≤ _ at hcost; linarith only [hcost]
-    have hrec : occupationWeight (N + j) * (1 - occupationWeight (N + j + 1)) =
-        occupationWeight (N + j + 1) := by
-      simp only [occupationWeight_eq, Nat.cast_add, Nat.cast_one]; field_simp; ring
-    exact ⟨hrec.symm.trans_le (mul_le_mul_of_nonneg_left hret (occupationWeight_pos _).le),
-      mul_le_of_le_one_right (occupationWeight_pos _).le u.property.2.le⟩
-  have hlen : ∀ j ∈ Finset.range N, occupationWeight (2 * N) ^ z.re ≤ ‖v_vec j‖ := by
-    intro j hj
-    dsimp only [v_vec]
-    rw [norm_scaled_occupation_chord z (occupationWeight_pos _) u.property.1]
-    have hj' := Finset.mem_range.mp hj
-    exact (Real.rpow_le_rpow (occupationWeight_pos _).le
-      (occupationWeight_antitone (show N + j ≤ 2 * N by omega)) hz0.le).trans
-      (le_mul_of_one_le_right (Real.rpow_nonneg (occupationWeight_pos _).le _)
-        (halfTurn_chord_one_le hzt))
-  obtain ⟨S, hS, hsel⟩ := exists_complex_subset (Finset.range N) v_vec
+private theorem hybrid_delta_bounds {σ Λ : ℝ} (hσ0 : 0 < σ) (hΛ : 0 < Λ) {N : ℕ}
+    (hN1_gt_M : max ((128 / (3 * Λ)) ^ (1 / (4 * σ))) ((32 ^ 4 / Λ ^ 4) ^ (1 / (12 * σ))) <
+      (N : ℝ) + 1) :
+    let δ₀ : ℝ := (32 / Λ) * occupationWeight N ^ (4 * σ)
+    0 < δ₀ ∧ δ₀ ≤ 3 / 4 ∧ 16 * δ₀ ^ 3 < Λ / 2 := by
+  dsimp only
   set δ₀ : ℝ := (32 / Λ) * occupationWeight N ^ (4 * σ)
-  have hδ₀_pos : 0 < δ₀ := by dsimp only [δ₀]; positivity
+  have hexp_4σ : 0 < 4 * σ := by positivity
+  have hδ₀_pos : 0 < δ₀ :=
+    mul_pos (by positivity) (Real.rpow_pos_of_pos (occupationWeight_pos N) _)
   have hN1_pos : (0 : ℝ) < (N : ℝ) + 1 := by positivity
   have hoccN_pow : occupationWeight N ^ (4 * σ) = (((N : ℝ) + 1) ^ (4 * σ))⁻¹ := by
     rw [occupationWeight_eq, Real.inv_rpow hN1_pos.le]
@@ -1368,6 +1269,60 @@ theorem exists_uvRegularRankOne_jointSurvivingPartition_ge_rpow_one_sub_re
     have hlhs : (Λ / 2) * (32 ^ 4 / Λ ^ 4) = 16 * 32 ^ 3 / Λ ^ 3 := by
       field_simp [hΛ.ne']; ring
     rwa [hlhs] at hmul
+  exact ⟨hδ₀_pos, hδ₀_le, h16δ₀3_lt⟩
+
+private theorem exists_hybrid_band_uv_strict_and_partition_ge
+    {σ Λ t : ℝ} (hσ0 : 0 < σ) (hσ_half : σ < 1 / 2) (hΛ : 0 < Λ) (ht_pos : 0 < t)
+    {N : ℕ} (hN_pos : 0 < N)
+    (hN_ge_half : t / (8 * Real.pi) ≤ (N : ℝ))
+    (hN1_gt_M : max ((128 / (3 * Λ)) ^ (1 / (4 * σ))) ((32 ^ 4 / Λ ^ 4) ^ (1 / (12 * σ))) <
+      (N : ℝ) + 1)
+    (hsize_t : (2 * (N : ℝ) + 1) * Real.pi ≤ t) :
+    ∃ b_hyb : SpectralBand 1,
+      relativeReading (powerResponse ⟨σ, hσ0⟩) b_hyb ^ 4 <
+        Λ * relativeReading quadraticResponse b_hyb ∧
+      ((1 / (32 * Real.pi)) * Real.pi ^ σ) * t ^ (1 - σ) - 2 ≤
+        ‖relativePartition b_hyb ((σ : ℂ) + (t : ℂ) * Complex.I)‖ := by
+  set z : ℂ := (σ : ℂ) + (t : ℂ) * Complex.I
+  have hz_re : z.re = σ := by simp [z]
+  have hz_im : z.im = t := by simp [z]
+  have hz0 : 0 < z.re := hz_re ▸ hσ0
+  have hzt : 0 < z.im := hz_im ▸ ht_pos
+  have hsize : (2 * (N : ℝ) + 1) * Real.pi ≤ z.im := hz_im ▸ hsize_t
+  have hpi_pos : 0 < Real.pi := Real.pi_pos
+  let u := halfTurnFraction hzt.ne'
+  let v_vec (j : ℕ) : ℂ :=
+    (occupationWeight (N + j) : ℂ) ^ z - ((occupationWeight (N + j) * u.val : ℝ) : ℂ) ^ z
+  have hx_win : ∀ j ∈ Finset.range N,
+      occupationWeight (N + j) * u.val ∈
+        Icc (occupationWeight (N + j + 1)) (occupationWeight (N + j)) := by
+    intro j hj
+    have hj' := Finset.mem_range.mp hj
+    have ha : Real.pi / z.im ≤ occupationWeight (2 * N) := by
+      rw [occupationWeight_eq, ← one_div, Nat.cast_mul, Nat.cast_ofNat]
+      apply (div_le_div_iff₀ hzt (by positivity : 0 < 2 * (N : ℝ) + 1)).mpr
+      simpa only [one_mul, mul_comm Real.pi] using hsize
+    have hcost := ((halfTurn_fraction_loss hzt).trans ha).trans
+      (occupationWeight_antitone (show N + j + 1 ≤ 2 * N by omega))
+    have hret : 1 - occupationWeight (N + j + 1) ≤ u.val := by
+      change 1 - u.val ≤ _ at hcost; linarith only [hcost]
+    have hrec : occupationWeight (N + j) * (1 - occupationWeight (N + j + 1)) =
+        occupationWeight (N + j + 1) := by
+      simp only [occupationWeight_eq, Nat.cast_add, Nat.cast_one]; field_simp; ring
+    exact ⟨hrec.symm.trans_le (mul_le_mul_of_nonneg_left hret (occupationWeight_pos _).le),
+      mul_le_of_le_one_right (occupationWeight_pos _).le u.property.2.le⟩
+  have hlen : ∀ j ∈ Finset.range N, occupationWeight (2 * N) ^ z.re ≤ ‖v_vec j‖ := by
+    intro j hj
+    dsimp only [v_vec]
+    rw [norm_scaled_occupation_chord z (occupationWeight_pos _) u.property.1]
+    have hj' := Finset.mem_range.mp hj
+    exact (Real.rpow_le_rpow (occupationWeight_pos _).le
+      (occupationWeight_antitone (show N + j ≤ 2 * N by omega)) hz0.le).trans
+      (le_mul_of_one_le_right (Real.rpow_nonneg (occupationWeight_pos _).le _)
+        (halfTurn_chord_one_le hzt))
+  obtain ⟨S, hS, hsel⟩ := exists_complex_subset (Finset.range N) v_vec
+  obtain ⟨hδ₀_pos, hδ₀_le, h16δ₀3_lt⟩ := hybrid_delta_bounds hσ0 hΛ hN1_gt_M
+  set δ₀ : ℝ := (32 / Λ) * occupationWeight N ^ (4 * σ)
   set τ₀ : ℝ := Real.sqrt (1 - δ₀)
   have h1mδ₀_ge : 1 / 4 ≤ 1 - δ₀ := by linarith
   have hτ₀_ge : 1 / 2 ≤ τ₀ := by
@@ -1378,9 +1333,7 @@ theorem exists_uvRegularRankOne_jointSurvivingPartition_ge_rpow_one_sub_re
   have hτ₀_sq : τ₀ ^ 2 = 1 - δ₀ := Real.sq_sqrt (by linarith)
   let S_img : Finset ℕ := S.image (fun j => N + j)
   have h0_not_mem : 0 ∉ S_img := by
-    intro hmem
-    obtain ⟨j, _, hj0⟩ := Finset.mem_image.mp hmem
-    omega
+    intro hmem; obtain ⟨j, _, hj0⟩ := Finset.mem_image.mp hmem; omega
   let F : Finset ℕ := insert 0 S_img
   let x_hyb : ℕ → ℝ := fun k => if k = 0 then τ₀ else occupationWeight k * u.val
   have hmem_hyb : ∀ k ∈ F, x_hyb k ∈ Icc (occupationWeight (k + 1)) (occupationWeight k) := by
@@ -1388,68 +1341,60 @@ theorem exists_uvRegularRankOne_jointSurvivingPartition_ge_rpow_one_sub_re
     rcases Finset.mem_insert.mp hk with rfl | hkS
     · simp only [x_hyb, ↓reduceIte, zero_add, occupationWeight_zero]
       have hocc1 : occupationWeight 1 = 1 / 2 := by rw [occupationWeight_eq]; norm_num
-      rw [hocc1]
-      exact ⟨hτ₀_ge, hτ₀_le1⟩
+      rw [hocc1]; exact ⟨hτ₀_ge, hτ₀_le1⟩
     · obtain ⟨j, hjS, rfl⟩ := Finset.mem_image.mp hkS
       have hne0 : N + j ≠ 0 := by omega
       simp only [x_hyb, if_neg hne0]
       exact hx_win j (hS hjS)
-  let b_hyb : SpectralBand 1 := finiteProfile F x_hyb hmem_hyb
-  have hinj : Function.Injective (fun j : ℕ => N + j) := fun _ _ he => Nat.add_left_cancel he
-  -- 1. Quadratic reading `≥ δ₀`.
-  have hL_ge : δ₀ ≤ relativeReading quadraticResponse b_hyb := by
-    rw [show relativeReading quadraticResponse b_hyb =
-        ∑ k ∈ F, (occupationWeight k ^ 2 - x_hyb k ^ 2) from finiteProfile_quadratic F x_hyb hmem_hyb]
-    rw [Finset.sum_insert h0_not_mem]
-    have h0_term : occupationWeight 0 ^ 2 - x_hyb 0 ^ 2 = δ₀ := by
-      simp only [x_hyb, ↓reduceIte, occupationWeight_zero, one_pow, hτ₀_sq]; ring
-    have hrest_nn : 0 ≤ ∑ k ∈ S_img, (occupationWeight k ^ 2 - x_hyb k ^ 2) :=
-      Finset.sum_nonneg fun k hk => sub_nonneg.mpr (pow_le_pow_left₀
-        ((occupationWeight_pos (k + 1)).le.trans (hmem_hyb k (Finset.mem_insert_of_mem hk)).1)
-        (hmem_hyb k (Finset.mem_insert_of_mem hk)).2 2)
-    linarith
-  -- 2. Power-`σ` reading `≤ δ₀ + occupationWeight N ^ σ`.
-  let β : GibbsExponent := ⟨σ, hσ0⟩
-  have hR_le : relativeReading (powerResponse β) b_hyb ≤ δ₀ + occupationWeight N ^ σ := by
-    unfold relativeReading
-    rw [tsum_eq_sum (s := F) (fun k hk => by
-      simp only [spectralDrop, b_hyb, finiteProfile, dif_neg hk, hotEdge, sub_self])]
-    have hcongr : (∑ k ∈ F, spectralDrop (powerResponse β) b_hyb k) =
-        ∑ k ∈ F, (occupationWeight k ^ σ - x_hyb k ^ σ) :=
-      Finset.sum_congr rfl fun k hk => by
-        simp only [spectralDrop, b_hyb, finiteProfile, dif_pos hk, powerResponse]
-    rw [hcongr, Finset.sum_insert h0_not_mem]
-    have h0_le : occupationWeight 0 ^ σ - x_hyb 0 ^ σ ≤ δ₀ := by
-      simp only [x_hyb, ↓reduceIte, occupationWeight_zero, Real.one_rpow]
-      have hle : τ₀ ^ (2 : ℝ) ≤ τ₀ ^ σ :=
-        Real.rpow_le_rpow_of_exponent_ge hτ₀_pos hτ₀_le1 (by linarith)
-      rw [Real.rpow_two, hτ₀_sq] at hle
+  refine ⟨finiteProfile F x_hyb hmem_hyb, ?_, ?_⟩
+  · have hinj : Function.Injective (fun j : ℕ => N + j) := fun _ _ he => Nat.add_left_cancel he
+    have hL_ge : δ₀ ≤ relativeReading quadraticResponse (finiteProfile F x_hyb hmem_hyb) := by
+      rw [finiteProfile_quadratic F x_hyb hmem_hyb, Finset.sum_insert h0_not_mem]
+      have h0_term : occupationWeight 0 ^ 2 - x_hyb 0 ^ 2 = δ₀ := by
+        simp only [x_hyb, ↓reduceIte, occupationWeight_zero, one_pow, hτ₀_sq]; ring
+      have hrest_nn : 0 ≤ ∑ k ∈ S_img, (occupationWeight k ^ 2 - x_hyb k ^ 2) :=
+        Finset.sum_nonneg fun k hk => sub_nonneg.mpr (pow_le_pow_left₀
+          ((occupationWeight_pos (k + 1)).le.trans (hmem_hyb k (Finset.mem_insert_of_mem hk)).1)
+          (hmem_hyb k (Finset.mem_insert_of_mem hk)).2 2)
       linarith
-    have hrest_le : (∑ k ∈ S_img, (occupationWeight k ^ σ - x_hyb k ^ σ)) ≤
-        occupationWeight N ^ σ := by
-      rw [Finset.sum_image hinj.injOn]
-      have hsub1 : (∑ j ∈ S, (occupationWeight (N + j) ^ σ - x_hyb (N + j) ^ σ)) ≤
-          ∑ j ∈ S, (occupationWeight (N + j) ^ σ - occupationWeight (N + j + 1) ^ σ) := by
-        refine Finset.sum_le_sum fun j hj => ?_
-        have hlo := (hmem_hyb (N + j)
-          (Finset.mem_insert_of_mem (Finset.mem_image_of_mem _ hj))).1
-        exact sub_le_sub_left (Real.rpow_le_rpow (occupationWeight_pos _).le hlo hσ0.le) _
-      have hsub2 : (∑ j ∈ S, (occupationWeight (N + j) ^ σ - occupationWeight (N + j + 1) ^ σ)) ≤
-          ∑ j ∈ Finset.range N, (occupationWeight (N + j) ^ σ - occupationWeight (N + j + 1) ^ σ) :=
-        Finset.sum_le_sum_of_subset_of_nonneg hS fun j _ _ => sub_nonneg.mpr
-          (Real.rpow_le_rpow (occupationWeight_pos _).le
-            (occupationWeight_antitone (Nat.le_succ _)) hσ0.le)
-      have htel := Finset.sum_range_sub' (fun j : ℕ => occupationWeight (N + j) ^ σ) N
-      simp only [Nat.add_zero, ← Nat.add_assoc] at htel
-      rw [htel] at hsub2
-      linarith [hsub1, hsub2, Real.rpow_nonneg (occupationWeight_pos (N + N)).le σ]
-    linarith
-  -- 3. Strict UV cap `R_σ(b_hyb)^4 < Λ * L(b_hyb)`.
-  have huv_strict : relativeReading (powerResponse β) b_hyb ^ 4 <
-      Λ * relativeReading quadraticResponse b_hyb := by
-    have hp4 : relativeReading (powerResponse β) b_hyb ^ 4 ≤
+    let β : GibbsExponent := ⟨σ, hσ0⟩
+    have hR_le : relativeReading (powerResponse β) (finiteProfile F x_hyb hmem_hyb) ≤
+        δ₀ + occupationWeight N ^ σ := by
+      unfold relativeReading
+      rw [tsum_eq_sum (s := F) (fun k hk => by
+        simp only [spectralDrop, finiteProfile, dif_neg hk, hotEdge, sub_self])]
+      have hcongr : (∑ k ∈ F, spectralDrop (powerResponse β) (finiteProfile F x_hyb hmem_hyb) k) =
+          ∑ k ∈ F, (occupationWeight k ^ σ - x_hyb k ^ σ) :=
+        Finset.sum_congr rfl fun k hk => by
+          simp only [spectralDrop, finiteProfile, dif_pos hk, powerResponse, β]
+      rw [hcongr, Finset.sum_insert h0_not_mem]
+      have h0_le : occupationWeight 0 ^ σ - x_hyb 0 ^ σ ≤ δ₀ := by
+        simp only [x_hyb, ↓reduceIte, occupationWeight_zero, Real.one_rpow]
+        have hle : τ₀ ^ (2 : ℝ) ≤ τ₀ ^ σ :=
+          Real.rpow_le_rpow_of_exponent_ge hτ₀_pos hτ₀_le1 (by linarith)
+        rw [Real.rpow_two, hτ₀_sq] at hle; linarith
+      have hrest_le : (∑ k ∈ S_img, (occupationWeight k ^ σ - x_hyb k ^ σ)) ≤
+          occupationWeight N ^ σ := by
+        rw [Finset.sum_image hinj.injOn]
+        have hsub1 : (∑ j ∈ S, (occupationWeight (N + j) ^ σ - x_hyb (N + j) ^ σ)) ≤
+            ∑ j ∈ S, (occupationWeight (N + j) ^ σ - occupationWeight (N + j + 1) ^ σ) := by
+          refine Finset.sum_le_sum fun j hj => ?_
+          have hlo := (hmem_hyb (N + j)
+            (Finset.mem_insert_of_mem (Finset.mem_image_of_mem _ hj))).1
+          exact sub_le_sub_left (Real.rpow_le_rpow (occupationWeight_pos _).le hlo hσ0.le) _
+        have hsub2 : (∑ j ∈ S, (occupationWeight (N + j) ^ σ - occupationWeight (N + j + 1) ^ σ)) ≤
+            ∑ j ∈ Finset.range N, (occupationWeight (N + j) ^ σ - occupationWeight (N + j + 1) ^ σ) :=
+          Finset.sum_le_sum_of_subset_of_nonneg hS fun j _ _ => sub_nonneg.mpr
+            (Real.rpow_le_rpow (occupationWeight_pos _).le
+              (occupationWeight_antitone (Nat.le_succ _)) hσ0.le)
+        have htel := Finset.sum_range_sub' (fun j : ℕ => occupationWeight (N + j) ^ σ) N
+        simp only [Nat.add_zero, ← Nat.add_assoc] at htel
+        rw [htel] at hsub2
+        linarith [hsub1, hsub2, Real.rpow_nonneg (occupationWeight_pos (N + N)).le σ]
+      linarith
+    have hp4 : relativeReading (powerResponse β) (finiteProfile F x_hyb hmem_hyb) ^ 4 ≤
         (δ₀ + occupationWeight N ^ σ) ^ 4 :=
-      pow_le_pow_left₀ (relativeReading_bounds (powerResponse β) b_hyb).1 hR_le 4
+      pow_le_pow_left₀ (relativeReading_bounds _ _).1 hR_le 4
     have hsplit4 := four_pow_add_le hδ₀_pos.le (Real.rpow_nonneg (occupationWeight_pos N).le σ)
     have hterm2 : 16 * (occupationWeight N ^ σ) ^ 4 = (Λ / 2) * δ₀ := by
       dsimp only [δ₀]
@@ -1460,15 +1405,13 @@ theorem exists_uvRegularRankOne_jointSurvivingPartition_ge_rpow_one_sub_re
     have hterm1 : 16 * δ₀ ^ 4 < (Λ / 2) * δ₀ := by
       calc 16 * δ₀ ^ 4 = (16 * δ₀ ^ 3) * δ₀ := by ring
         _ < (Λ / 2) * δ₀ := mul_lt_mul_of_pos_right h16δ₀3_lt hδ₀_pos
-    have hΛL : Λ * δ₀ ≤ Λ * relativeReading quadraticResponse b_hyb :=
+    have hΛL : Λ * δ₀ ≤ Λ * relativeReading quadraticResponse (finiteProfile F x_hyb hmem_hyb) :=
       mul_le_mul_of_nonneg_left hL_ge hΛ.le
     linarith
-  -- 4. Lower bound on `‖jointSurvivingPartition b_hyb z‖`.
-  have hrp_ge : c_win * t ^ (1 - σ) - 2 ≤ ‖relativePartition b_hyb z‖ := by
-    rw [show relativePartition b_hyb z =
-        ∑ k ∈ F, ((occupationWeight k : ℂ) ^ z - (x_hyb k : ℂ) ^ z) from
-          finiteProfile_partition F x_hyb hmem_hyb]
-    rw [Finset.sum_insert h0_not_mem, Finset.sum_image hinj.injOn]
+  · have hinj : Function.Injective (fun j : ℕ => N + j) := fun _ _ he => Nat.add_left_cancel he
+    set c_win : ℝ := (1 / (32 * Real.pi)) * Real.pi ^ σ
+    rw [finiteProfile_partition F x_hyb hmem_hyb z, Finset.sum_insert h0_not_mem,
+      Finset.sum_image hinj.injOn]
     have hwin_eq : (∑ j ∈ S, ((occupationWeight (N + j) : ℂ) ^ z - (x_hyb (N + j) : ℂ) ^ z)) =
         ∑ j ∈ S, v_vec j := by
       refine Finset.sum_congr rfl fun j _ => ?_
@@ -1480,9 +1423,7 @@ theorem exists_uvRegularRankOne_jointSurvivingPartition_ge_rpow_one_sub_re
       simp only [Finset.sum_const, Finset.card_range, nsmul_eq_mul, hz_re] at hs1
       exact hs1.trans hsel
     have hocc2N_ge : (t / Real.pi) ^ (-σ) ≤ occupationWeight (2 * N) ^ σ := by
-      have h2N1_le : 2 * (N : ℝ) + 1 ≤ t / Real.pi := by
-        rw [le_div_iff₀ hpi_pos]
-        simpa [hz_im] using hsize
+      have h2N1_le : 2 * (N : ℝ) + 1 ≤ t / Real.pi := (le_div_iff₀ hpi_pos).mpr hsize_t
       have hinv_ge : (t / Real.pi)⁻¹ ≤ occupationWeight (2 * N) := by
         rw [occupationWeight_eq]; push_cast
         exact inv_anti₀ (by positivity : (0 : ℝ) < 2 * (N : ℝ) + 1) h2N1_le
@@ -1504,23 +1445,84 @@ theorem exists_uvRegularRankOne_jointSurvivingPartition_ge_rpow_one_sub_re
             = (1 / (8 * Real.pi)) * Real.pi ^ σ * (t * t ^ (-σ)) := by ring
           _ = 4 * ((1 / (32 * Real.pi)) * Real.pi ^ σ) * t ^ (1 - σ) := by rw [ht1]; ring
       have hm := mul_le_mul hN_ge_half hocc2N_ge (by positivity) (Nat.cast_nonneg N)
-      rw [hprod] at hm
-      linarith
+      rw [hprod] at hm; linarith
     have h0_le2 : ‖(occupationWeight 0 : ℂ) ^ z - (x_hyb 0 : ℂ) ^ z‖ ≤ 2 := by
       simp only [x_hyb, ↓reduceIte, occupationWeight_zero, Complex.ofReal_one, Complex.one_cpow]
       have hτ_norm : ‖(τ₀ : ℂ) ^ z‖ ≤ 1 := by
         rw [Complex.norm_cpow_eq_rpow_re_of_pos hτ₀_pos, hz_re]
         exact Real.rpow_le_one hτ₀_pos.le hτ₀_le1 hσ0.le
       have htri := norm_sub_le (1 : ℂ) ((τ₀ : ℂ) ^ z)
-      rw [norm_one] at htri
-      linarith
-    have htri := norm_add_le ((occupationWeight 0 : ℂ) ^ z - (x_hyb 0 : ℂ) ^ z) (∑ j ∈ S, v_vec j)
+      rw [norm_one] at htri; linarith
     have hrev : ‖∑ j ∈ S, v_vec j‖ - ‖(occupationWeight 0 : ℂ) ^ z - (x_hyb 0 : ℂ) ^ z‖ ≤
         ‖((occupationWeight 0 : ℂ) ^ z - (x_hyb 0 : ℂ) ^ z) + ∑ j ∈ S, v_vec j‖ := by
       have h := norm_sub_le (((occupationWeight 0 : ℂ) ^ z - (x_hyb 0 : ℂ) ^ z) + ∑ j ∈ S, v_vec j)
         ((occupationWeight 0 : ℂ) ^ z - (x_hyb 0 : ℂ) ^ z)
-      simpa only [add_sub_cancel_left] using h
+      rw [add_sub_cancel_left] at h; linarith [h]
     linarith
+
+/-- **Matching `Ω_σ(|Im s|^{1 - σ})` lower bound inside `uvRegularRankOne` on `0 < σ < 1 / 2`:**
+the `O_σ(|Im s|^{1 - σ})` ceiling is **sharp** across `uvRegularRankOne`: for every `0 < σ < 1 / 2`
+and `Λ > 0`, there exist `c > 0` and `T₀ ≥ 1` such that at **every** `s` with `s.re = σ` and
+`|s.im| ≥ T₀` (including every Speiser-shadowed ordinate and any hypothetical zero of `ζ`), some
+conserving `v : MissingWave` in `uvRegularRankOne s hs0 Λ` achieves
+`c * |s.im|^{1 - σ} ≤ ‖jointSurvivingPartition (missingWaveSpectrum v) s‖`. -/
+theorem exists_uvRegularRankOne_jointSurvivingPartition_ge_rpow_one_sub_re
+    {σ Λ : ℝ} (hσ0 : 0 < σ) (hσ_half : σ < 1 / 2) (hΛ : 0 < Λ) :
+    ∃ c : ℝ, 0 < c ∧ ∃ T₀ : ℝ, 1 ≤ T₀ ∧
+      ∀ s : ℂ, ∀ hs0 : 0 < s.re, s.re = σ → T₀ ≤ |s.im| →
+        ∃ v : MissingWave, uvRegularRankOne s hs0 Λ v ∧
+          c * |s.im| ^ (1 - σ) ≤ ‖jointSurvivingPartition (missingWaveSpectrum v) s‖ := by
+  have hσ1 : σ < 1 := by linarith
+  have h1mσ : 0 < 1 - σ := sub_pos.mpr hσ1
+  set η : ℝ := (1 - σ) / 2
+  have hη0 : 0 < η := by dsimp only [η]; positivity
+  have hη_half : η ≤ 1 / 2 := by dsimp only [η]; linarith
+  obtain ⟨Cζ, hCζ, hconv⟩ := _root_.RHTower.exists_norm_riemannZeta_le_convexity hη0 hη_half
+  have h2_pos : 0 < (2 : ℝ) ^ σ - 1 := sub_pos.mpr (Real.one_lt_rpow one_lt_two hσ0)
+  set c_win : ℝ := (1 / (32 * Real.pi)) * (Real.pi) ^ σ
+  have hc_win_pos : 0 < c_win := by dsimp only [c_win]; positivity
+  set c_out : ℝ := ((2 : ℝ) ^ σ - 1) * (c_win / 4)
+  have hc_out_pos : 0 < c_out := by dsimp only [c_out]; positivity
+  set M_uv : ℝ := max ((128 / (3 * Λ)) ^ (1 / (4 * σ)))
+      ((32 ^ 4 / Λ ^ 4) ^ (1 / (12 * σ)))
+  have hexp_gap : 0 < (1 - σ) / 4 := by positivity
+  obtain ⟨T_gap, hT_gap⟩ := Filter.eventually_atTop.mp
+    ((tendsto_rpow_atTop hexp_gap).eventually_ge_atTop ((4 * (Cζ + 2)) / c_win))
+  set T₀ : ℝ := max (max 8 (8 * Real.pi * (M_uv + 2))) T_gap
+  have hT₀_ge1 : 1 ≤ T₀ := le_trans (by norm_num : (1 : ℝ) ≤ 8)
+    ((le_max_left 8 _).trans (le_max_left _ T_gap))
+  refine ⟨c_out, hc_out_pos, T₀, hT₀_ge1, fun s hs0 hs_re hT => ?_⟩
+  set t : ℝ := |s.im|
+  have ht8 : 8 ≤ t := ((le_max_left 8 _).trans (le_max_left _ T_gap)).trans hT
+  have ht_M : 8 * Real.pi * (M_uv + 2) ≤ t :=
+    ((le_max_right 8 _).trans (le_max_left _ T_gap)).trans hT
+  have ht_gap : T_gap ≤ t := (le_max_right _ T_gap).trans hT
+  have ht_pos : 0 < t := by linarith
+  set z : ℂ := (σ : ℂ) + (t : ℂ) * Complex.I
+  have hz_re : z.re = σ := by simp [z]
+  have hz0 : 0 < z.re := hz_re ▸ hσ0
+  set N : ℕ := ⌊t / (4 * Real.pi)⌋₊
+  have ht_div_ge2 : 2 * (M_uv + 2) ≤ t / (4 * Real.pi) := by
+    rw [le_div_iff₀ (by positivity : 0 < 4 * Real.pi)]; linarith
+  have hM_uv_nn : 0 ≤ M_uv := le_max_of_le_left (Real.rpow_nonneg (by positivity) _)
+  have hN_ge2 : 2 ≤ N := Nat.le_floor (by linarith : (2 : ℝ) ≤ t / (4 * Real.pi))
+  have hN_pos : 0 < N := by omega
+  have hN_le : (N : ℝ) ≤ t / (4 * Real.pi) := Nat.floor_le (by positivity)
+  have hN_gt : t / (4 * Real.pi) < (N : ℝ) + 1 := Nat.lt_floor_add_one _
+  have hN_ge_half : t / (8 * Real.pi) ≤ (N : ℝ) := by
+    have h2 : (2 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN_ge2
+    have hmul := (div_lt_iff₀ (by positivity : 0 < 4 * Real.pi)).mp hN_gt
+    rw [div_le_iff₀ (by positivity : 0 < 8 * Real.pi)]
+    nlinarith [Real.pi_pos]
+  have hN1_gt_M : M_uv < (N : ℝ) + 1 := by linarith
+  have hsize_t : (2 * (N : ℝ) + 1) * Real.pi ≤ t := by
+    have hmul := (le_div_iff₀ (by positivity : 0 < 4 * Real.pi)).mp hN_le
+    have hN1 : (1 : ℝ) ≤ (N : ℝ) := by exact_mod_cast hN_pos
+    nlinarith [Real.pi_pos]
+  obtain ⟨b_hyb, huv_strict, hrp_ge⟩ :=
+    exists_hybrid_band_uv_strict_and_partition_ge hσ0 hσ_half hΛ ht_pos hN_pos
+      hN_ge_half hN1_gt_M hsize_t
+  let β : GibbsExponent := ⟨σ, hσ0⟩
   have hζ_le : ‖riemannZeta z‖ + 2 ≤ (c_win / 2) * t ^ (1 - σ) := by
     have hc_z := hconv σ t (by linarith) (by linarith) ht8
     have hexp_eq : (1 + η - σ) / 2 = 3 * (1 - σ) / 4 := by dsimp only [η]; ring
@@ -1529,9 +1531,11 @@ theorem exists_uvRegularRankOne_jointSurvivingPartition_ge_rpow_one_sub_re
       have h1 : 1 ≤ t ^ (3 * (1 - σ) / 4) := Real.one_le_rpow (by linarith) (by positivity)
       linarith
     have hgap_ge : (4 * (Cζ + 2)) / c_win ≤ t ^ ((1 - σ) / 4) := hT_gap t ht_gap
-    have hmul := mul_le_mul_of_nonneg_right hgap_ge
-      (mul_nonneg (div_nonneg hc_win_pos.le (by norm_num))
-        (Real.rpow_nonneg ht_pos.le (3 * (1 - σ) / 4)))
+    have hmul : ((4 * (Cζ + 2)) / c_win) * ((c_win / 4) * t ^ (3 * (1 - σ) / 4)) ≤
+        t ^ ((1 - σ) / 4) * ((c_win / 4) * t ^ (3 * (1 - σ) / 4)) :=
+      mul_le_mul_of_nonneg_right hgap_ge
+        (mul_nonneg (div_nonneg hc_win_pos.le (by norm_num))
+          (Real.rpow_nonneg ht_pos.le (3 * (1 - σ) / 4)))
     have hlhs : ((4 * (Cζ + 2)) / c_win) * ((c_win / 4) * t ^ (3 * (1 - σ) / 4)) =
         (Cζ + 2) * t ^ (3 * (1 - σ) / 4) := by field_simp [hc_win_pos.ne']
     have hrhs : t ^ ((1 - σ) / 4) * ((c_win / 4) * t ^ (3 * (1 - σ) / 4)) =
@@ -1544,10 +1548,7 @@ theorem exists_uvRegularRankOne_jointSurvivingPartition_ge_rpow_one_sub_re
       linarith
     linarith
   have hjsp_gt : 2 * c_out * t ^ (1 - σ) ≤ ‖jointSurvivingPartition b_hyb z‖ := by
-    have hz_ne1 : z ≠ 1 := fun h => by
-      have := congrArg Complex.im h; rw [hz_im] at this; simp at this; linarith
-    have hcont_z : continued z = ((2 : ℂ) ^ z - 1) * riemannZeta z :=
-      continued_eq_zeta z hz_ne1
+    have hcont_z : continued z = ((2 : ℂ) ^ z - 1) * riemannZeta z := rfl
     rw [jointSurvivingPartition_eq_continued_sub, hcont_z, ← mul_sub, norm_mul]
     have h2_lo : (2 : ℝ) ^ σ - 1 ≤ ‖(2 : ℂ) ^ z - 1‖ := by
       have h2z : ‖(2 : ℂ) ^ z‖ = (2 : ℝ) ^ σ := by
@@ -1700,6 +1701,7 @@ theorem norm_riemannZeta_ge_exp_of_not_mem_speiserDisk_segment
       rw [hval, Complex.re_ofReal_mul, mul_div_cancel_left₀ _ hfu_pos.ne', logDeriv_apply]
     have hdiv2 : (2 * (z' * conj z).re) / f u = 2 * ((z' * conj z).re / f u) := by ring
     rw [hdiv2, hid]
+    rw [zero_add] at hle
     dsimp only [c]
     linarith
   have hgb_le : g b ≤ g σ := hg_anti hσ ⟨hab, le_rfl⟩ hσ.2
@@ -1807,9 +1809,11 @@ theorem exists_uniform_single_witness_of_not_mem_speiserDisk_segment
           show ((1 : ℝ) / 3) * (3 : ℕ) = 1 by norm_num, Real.rpow_one]
       rwa [hrhs3] at h1
     have hp4 : δ ^ 4 < ((a / b) * (Λ * (δ / 2)) ^ (1 / 4 : ℝ)) ^ 4 := by
-      have hrhs : ((a / b) * (Λ * (δ / 2)) ^ (1 / 4 : ℝ)) ^ 4 = (a / b) ^ 4 * (Λ * (δ / 2)) := by
-        rw [mul_pow, ← Real.rpow_natCast _ 4, ← Real.rpow_mul (by positivity),
+      have hp_rpow : ((Λ * (δ / 2)) ^ (1 / 4 : ℝ)) ^ 4 = Λ * (δ / 2) := by
+        rw [← Real.rpow_natCast _ 4, ← Real.rpow_mul (by positivity),
           show (1 / 4 : ℝ) * (4 : ℕ) = 1 by norm_num, Real.rpow_one]
+      have hrhs : ((a / b) * (Λ * (δ / 2)) ^ (1 / 4 : ℝ)) ^ 4 = (a / b) ^ 4 * (Λ * (δ / 2)) := by
+        rw [mul_pow, hp_rpow]
       rw [hrhs]
       have hlt3 : δ ^ 3 < (a / b) ^ 4 * (Λ / 2) := by
         have hpos_ab : 0 < (a / b) ^ 4 * Λ := by positivity
@@ -1887,30 +1891,31 @@ theorem exists_uniform_single_witness_of_not_mem_speiserDisk_segment
       (chordZeroThresholdFactor s * lineLoss v.val) ^ (s.re / 2) + triadTailBound K s <
         ‖finiteTriadReading (missingWaveSpectrum v) K s‖ := by
     intro s hs0 hs_re hs_im hζ_ge
+    have hσ_pos : 0 < σ := ha.trans_le hσ.1
     have hs1 : s.re < 1 := by rw [hs_re]; linarith [hσ.2]
     have hs_ne1 : s ≠ 1 := fun h => by
-      have := congrArg Complex.re h; rw [hs_re] at this; linarith [hσ.2]
+      have := congrArg Complex.re h; rw [hs_re, Complex.one_re] at this; linarith [hσ.2]
     have hnorm_s : ‖s‖ ≤ τ + 1 := by
       have h := Complex.norm_le_abs_re_add_abs_im s
-      rw [hs_re, abs_of_pos (ha.trans_le hσ.1), hs_im] at h
+      rw [hs_re, abs_of_pos hσ_pos, hs_im] at h
       linarith [hσ.2]
     have hratio_le : ‖s‖ / σ ≤ S_hi := by
       dsimp only [S_hi]
-      calc ‖s‖ / σ ≤ (τ + 1) / σ := div_le_div_of_nonneg_right hnorm_s (ha.trans_le hσ.1).le
+      calc ‖s‖ / σ ≤ (τ + 1) / σ := div_le_div_of_nonneg_right hnorm_s hσ_pos.le
         _ ≤ (τ + 1) / a := div_le_div_of_nonneg_left (by linarith) ha hσ.1
     have hratio_a_le : ‖s‖ / a ≤ S_hi :=
       div_le_div_of_nonneg_right hnorm_s ha.le
     -- 1. `uvRegularRankOne`
     have huv : uvRegularRankOne s hs0 Λ v := by
       unfold uvRegularRankOne
-      have hβ_eq : (⟨s.re, hs0⟩ : GibbsExponent) = ⟨σ, ha.trans_le hσ.1⟩ := Subtype.ext hs_re
+      have hβ_eq : (⟨s.re, hs0⟩ : GibbsExponent) = ⟨σ, hσ_pos⟩ := Subtype.ext hs_re
       rw [hβ_eq]
       have hpow_cmp := relativeReading_power_le_div_mul (missingWaveSpectrum v) ha hσ.1
       have hdiv_le : σ / a ≤ b / a := div_le_div_of_nonneg_right hσ.2 ha.le
       have hr_uv : r_cap ≤ (a / b) * (Λ * (δ / 2)) ^ (1 / 4 : ℝ) := min_le_left _ _
-      have hRσ_le : relativeReading (powerResponse ⟨σ, ha.trans_le hσ.1⟩) (missingWaveSpectrum v) ≤
+      have hRσ_le : relativeReading (powerResponse ⟨σ, hσ_pos⟩) (missingWaveSpectrum v) ≤
           (Λ * (δ / 2)) ^ (1 / 4 : ℝ) := by
-        calc relativeReading (powerResponse ⟨σ, ha.trans_le hσ.1⟩) (missingWaveSpectrum v)
+        calc relativeReading (powerResponse ⟨σ, hσ_pos⟩) (missingWaveSpectrum v)
             ≤ (σ / a) * relativeReading (powerResponse βa) (missingWaveSpectrum v) := hpow_cmp
           _ ≤ (b / a) * r_cap := mul_le_mul hdiv_le hRa_lt.le
               (relativeReading_bounds _ _).1 (by positivity)
@@ -1918,13 +1923,15 @@ theorem exists_uniform_single_witness_of_not_mem_speiserDisk_segment
               mul_le_mul_of_nonneg_left hr_uv (by positivity)
           _ = (Λ * (δ / 2)) ^ (1 / 4 : ℝ) := by field_simp [ha.ne', hb_pos.ne']
       have hp4 := pow_le_pow_left₀ (relativeReading_bounds _ _).1 hRσ_le 4
-      rw [← Real.rpow_natCast _ 4, ← Real.rpow_mul (by positivity),
-        show (1 / 4 : ℝ) * (4 : ℕ) = 1 by norm_num, Real.rpow_one] at hp4
+      have hrhs4 : ((Λ * (δ / 2)) ^ (1 / 4 : ℝ)) ^ 4 = Λ * (δ / 2) := by
+        rw [← Real.rpow_natCast _ 4, ← Real.rpow_mul (by positivity),
+          show (1 / 4 : ℝ) * (4 : ℕ) = 1 by norm_num, Real.rpow_one]
+      rw [hrhs4] at hp4
       exact hp4.trans (mul_le_mul_of_nonneg_left hL_lo.le hΛ.le)
     -- 2. Margin on `‖jointSurvivingPartition‖`
     have hrp_le : ‖relativePartition (missingWaveSpectrum v) s‖ ≤ μ / 4 := by
-      have h1 := relativePartition_norm_le (missingWaveSpectrum v) βa
-        (by simp [βa, hs_re]; exact hσ.1)
+      have h1 := relativePartition_norm_le (missingWaveSpectrum v) βa (z := s)
+        (by dsimp only [βa]; rw [hs_re]; exact hσ.1)
       dsimp only [βa] at h1
       have hr_m : r_cap ≤ m_target := min_le_right _ _
       calc ‖relativePartition (missingWaveSpectrum v) s‖
@@ -1942,7 +1949,8 @@ theorem exists_uniform_single_witness_of_not_mem_speiserDisk_segment
       linarith
     have hjsp_ge : ‖(2 : ℂ) ^ s - 1‖ * (μ / 4) + 2 * gap_u ≤
         ‖jointSurvivingPartition (missingWaveSpectrum v) s‖ := by
-      rw [jointSurvivingPartition_eq_continued_sub, continued_eq_zeta s hs_ne1, ← mul_sub, norm_mul]
+      have hcont_s : continued s = ((2 : ℂ) ^ s - 1) * riemannZeta s := rfl
+      rw [jointSurvivingPartition_eq_continued_sub, hcont_s, ← mul_sub, norm_mul]
       have hdiff : (3 / 4) * μ ≤ ‖riemannZeta s - relativePartition (missingWaveSpectrum v) s‖ := by
         have h := norm_sub_norm_le (riemannZeta s) (relativePartition (missingWaveSpectrum v) s)
         linarith
@@ -1982,7 +1990,9 @@ theorem exists_uniform_single_witness_of_not_mem_speiserDisk_segment
                 ((4 * ‖s‖ / σ) * occupationWeight (2 * K) ^ σ)
             ≤ (((2 : ℝ) ^ b + 1) / ((2 : ℝ) ^ (1 - b) - 1)) *
                 ((4 * S_hi) * occupationWeight (2 * K) ^ a) :=
-              mul_le_mul hfr_b hmid (by positivity) (by positivity)
+              mul_le_mul hfr_b hmid
+                (mul_nonneg (by positivity) (Real.rpow_nonneg (occupationWeight_pos _).le _))
+                (by positivity)
           _ = C_tail * occupationWeight (2 * K) ^ a := by dsimp only [C_tail]; ring
       exact htb_le.trans_lt hK_lt
     have happrox := norm_jointSurviving_sub_finiteTriadReading_le

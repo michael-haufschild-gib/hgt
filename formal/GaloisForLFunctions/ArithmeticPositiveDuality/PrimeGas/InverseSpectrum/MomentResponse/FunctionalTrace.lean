@@ -10,8 +10,12 @@ namespace GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.InverseSpectrum
 open ContinuousLinearMap
 open scoped InnerProductSpace
 
-/-- Fractional power of the physical squared propagator, formed on the gas itself by continuous functional calculus. -/
-def momentOperator (P : Projection) (q : ℝ) : GasOp := cfc (fun x : ℝ => x^q) (projected P^2)
+/-- Real power in the self-adjoint functional calculus of a complex Hilbert space. -/
+def heatPower {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteSpace H]
+    (A : H →L[ℂ] H) (q : ℝ) : H →L[ℂ] H := cfc (fun x : ℝ => x^q) A
+
+/-- Fractional power of the physical squared propagator on the original gas. -/
+def momentOperator (P : Projection) (q : ℝ) : GasOp := heatPower (projected P^2) q
 
 private theorem moment_on_basis {P : Projection} {b : ℕ → ℝ} (e : HilbertBasis ℕ ℂ Gas)
     (he : ∀ n, (projected P^2) (e n) = (b n:ℂ) • e n) {q : ℝ} (hq : 0 ≤ q) (n : ℕ) :
@@ -52,7 +56,7 @@ theorem momentOperator_half_product (P : Projection) {r : ℕ} (dim : MissingDim
 private theorem half_isHS (P : Projection) {r : ℕ} (dim : MissingDimension P r)
     (hc : Conserving (projected P)) (q : GibbsExponent) (hq : 1 < q.val) :
     (momentOperator P (q.val/2)).IsHilbertSchmidt :=
-  (momentOperator_hilbertSchmidt_iff P dim hc ⟨q.val/2,half_pos q.property⟩).mpr (by
+  (momentOperator_hilbertSchmidt_iff P dim hc ⟨q.val/2,show 0 < q.val/2 from half_pos q.property⟩).mpr (by
     change (1:ℝ)/2 < q.val/2
     linarith only [hq])
 
