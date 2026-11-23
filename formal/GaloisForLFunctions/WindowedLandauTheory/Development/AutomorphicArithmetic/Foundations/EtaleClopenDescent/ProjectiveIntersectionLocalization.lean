@@ -36,18 +36,20 @@ private theorem inv_chartDenominator_mem :
   rw [inv_div]
   exact Algebra.subset_adjoin ⟨j, hj, i, rfl⟩
 
-local notation "A" => rA k x (Finset.singleton i)
+local notation "A" => rA k x (Singleton.singleton i)
 local notation "C" => rA k x I
 local notation "s" => chartDenominator k x I i
 
 /-- The inclusion from one chart into a chart intersection as an algebra. -/
-def chartIntersectionAlgebra (hi : i ∈ I) : Algebra A C :=
-  (Subalgebra.inclusion (rA_mono (Finset.singleton_subset_iff.mpr hi))).toRingHom.toAlgebra
+abbrev chartIntersectionAlgebra (hi : i ∈ I) : Algebra A C := by
+  have hle : A ≤ C := rA_mono (Finset.singleton_subset_iff.mpr hi)
+  exact (Subalgebra.inclusion hle).toRingHom.toAlgebra
 
 theorem chartIntersection_tower (hi : i ∈ I) :
     letI := chartIntersectionAlgebra (k := k) (x := x) hi
-    IsScalarTower A C F :=
-  .of_algebraMap_eq fun _ => rfl
+    IsScalarTower A C F := by
+  letI := chartIntersectionAlgebra (k := k) (x := x) hi
+  exact .of_algebraMap_eq fun _ => rfl
 
 private theorem mem_rA_iff_fraction (h : IsPd k x) (hi : i ∈ I) (y : F) :
     y ∈ C ↔ ∃ a : A, ∃ n : ℕ, y = (a : F) * ((s : F) ^ n)⁻¹ := by
@@ -62,7 +64,7 @@ private theorem mem_rA_iff_fraction (h : IsPd k x) (hi : i ∈ I) (y : F) :
   have hmem (z : F) : z ∈ L ↔
       ∃ (a q : A) (_ : q ∈ M), z = algebraMap A F a * (algebraMap A F q)⁻¹ := Iff.rfl
   have hs : (s : F)⁻¹ ∈ L := (hmem _).mpr
-    ⟨1, s, ⟨1, pow_one _⟩, by change _ = 1 * _; rw [one_mul]⟩
+    ⟨1, s, ⟨1, pow_one _⟩, by change _ = 1 * _; rw [one_mul] <;> rfl⟩
   have hratio (j : Fin (d + 1)) : x j / x i ∈ L :=
     L.algebraMap_mem ⟨_, Algebra.subset_adjoin ⟨i, Finset.mem_singleton_self i, j, rfl⟩⟩
   have hle : C ≤ L.restrictScalars k := by
@@ -96,7 +98,7 @@ theorem chartIntersection_isLocalization (h : IsPd k x) (hi : i ∈ I) :
     letI := chartIntersectionAlgebra (k := k) (x := x) hi
     IsLocalization.Away s C := by
   letI := chartIntersectionAlgebra (k := k) (x := x) hi
-  refine IsLocalization.isLocalization_iff.mpr ⟨?_, ?_, ?_⟩
+  refine (isLocalization_iff (Submonoid.powers s) C).mpr ⟨?_, ?_, ?_⟩
   · rintro ⟨_, n, rfl⟩
     refine isUnit_iff_exists_inv.mpr ⟨⟨((s : F)⁻¹) ^ n, (C).pow_mem inv_chartDenominator_mem n⟩, ?_⟩
     apply Subtype.ext

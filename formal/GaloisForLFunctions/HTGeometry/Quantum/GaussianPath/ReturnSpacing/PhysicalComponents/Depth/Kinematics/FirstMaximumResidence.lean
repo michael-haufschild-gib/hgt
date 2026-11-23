@@ -59,7 +59,7 @@ theorem gaussian_first_maximum_residence :
   have hη : η∈Ioc (0:ℝ) ρ := by
     have hz := strictMonoOn_zeroGateArcTolerance (show (0:ℝ)∈Icc 0 (1/2:ℝ) by constructor <;> norm_num) hd' hd.1
     have hle := strictMonoOn_zeroGateArcTolerance.monotoneOn hd' (Ioo_subset_Icc_self hr) hd.2
-    exact ⟨by simpa only [zeroGateArcTolerance,mul_zero,zero_div,sin_zero] using hz,hle.trans_eq her⟩
+    exact ⟨by simpa only [η,zeroGateArcTolerance,mul_zero,zero_div,sin_zero] using hz,hle.trans_eq her⟩
   refine ⟨η,hη,?_⟩
   intro δ hδ v
   have hδs := (hδ.2.trans hη.2).trans_lt hsmall

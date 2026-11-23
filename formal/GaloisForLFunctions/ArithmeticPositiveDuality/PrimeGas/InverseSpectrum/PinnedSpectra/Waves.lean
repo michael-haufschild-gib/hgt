@@ -75,7 +75,6 @@ theorem prefixWave_continuous (m : ℕ) : Continuous (prefixWave (m := m)) := by
     have hc := probability_le_cap c k
     have hb := probability_le_cap b k
     have hprod := mul_nonneg (Real.sqrt_nonneg (prefixProbability c k)) (Real.sqrt_nonneg (prefixProbability b k))
-    dsimp only [f]
     nlinarith only [hc,hb,Real.sq_sqrt (probability_nonneg c k),Real.sq_sqrt (probability_nonneg b k),hprod,probability_nonneg c k]
   have he (c : PrefixData m) : ‖prefixWave c-prefixWave b‖^2 = ∑' k, f c k := by
     rw [gas_norm_sq]

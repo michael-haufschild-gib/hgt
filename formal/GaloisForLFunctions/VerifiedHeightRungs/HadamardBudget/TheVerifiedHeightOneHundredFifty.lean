@@ -21,7 +21,7 @@ This module proves without locating any zero or computing any value of `ζ`:
   the coupled Bohman edge inequality strictly reverses for all sufficiently large real heights `γ`.
 * **Upgraded rungs**: `PF_449` at the centre of `ξ`, slice nonnegativity across `|t| ≤ 299/2`,
   `Re(2 λ_n) ≥ 0` for `n ≤ 705`, and real-rootedness of unshifted `Ξ` Jensen polynomials and all
-  positive-integer Euler root filters through degree `160,037`.
+  positive-integer Euler root filters through degree `160,036`.
 -/
 
 open Complex Set Polynomial FiniteFreeProbability
@@ -54,8 +54,10 @@ private theorem hasDerivAt_monomial_div' (n : ℕ) (c x : ℝ) :
     HasDerivAt (fun y : ℝ => y ^ n / c) ((n : ℝ) * x ^ (n - 1) / c) x := by
   simpa only [mul_div_assoc] using ((hasDerivAt_pow n x).div_const c)
 
-private theorem cosPoly10_le_cos_of_nonneg {u : ℝ} (hu : 0 ≤ u) :
-    cosPoly10 u ≤ Real.cos u := by
+private theorem sin_cos_taylor_chain {u : ℝ} (hu : 0 ≤ u) :
+    u - u ^ 3 / 6 + u ^ 5 / 120 - u ^ 7 / 5040 ≤ Real.sin u ∧
+      Real.sin u ≤ u - u ^ 3 / 6 + u ^ 5 / 120 - u ^ 7 / 5040 + u ^ 9 / 362880 ∧
+      cosPoly10 u ≤ Real.cos u := by
   have h1 : ∀ x : ℝ, 0 ≤ x → 0 ≤ x - Real.sin x := fun x hx =>
     nonneg_of_deriv_nonneg' (by simp)
       (fun y => (hasDerivAt_id y).sub (Real.hasDerivAt_sin y))
@@ -118,8 +120,9 @@ private theorem cosPoly10_le_cos_of_nonneg {u : ℝ} (hu : 0 ≤ u) :
           (hasDerivAt_monomial_div' 9 362880 y)).sub (Real.hasDerivAt_sin y)).congr_deriv
         (by norm_num; ring))
       (fun y hy => h8 y hy) hx
-  have h10 : ∀ x : ℝ, 0 ≤ x → 0 ≤ Real.cos x - cosPoly10 x :=
-    fun x hx => nonneg_of_deriv_nonneg' (by unfold cosPoly10; norm_num)
+  have h10 : ∀ x : ℝ, 0 ≤ x →
+      0 ≤ Real.cos x - (1 - x ^ 2 / 2 + x ^ 4 / 24 - x ^ 6 / 720 + x ^ 8 / 40320 - x ^ 10 / 3628800) :=
+    fun x hx => nonneg_of_deriv_nonneg' (by norm_num)
       (fun y => ((Real.hasDerivAt_cos y).sub
         ((((((hasDerivAt_const y 1).sub (hasDerivAt_monomial_div' 2 2 y)).add
           (hasDerivAt_monomial_div' 4 24 y)).sub
@@ -128,14 +131,14 @@ private theorem cosPoly10_le_cos_of_nonneg {u : ℝ} (hu : 0 ≤ u) :
           (hasDerivAt_monomial_div' 10 3628800 y))).congr_deriv
         (by norm_num; ring))
       (fun y hy => h9 y hy) hx
-  exact sub_nonneg.mp (h10 u hu)
+  exact ⟨sub_nonneg.mp (h7 u hu), sub_nonneg.mp (h9 u hu), sub_nonneg.mp (h10 u hu)⟩
 
 theorem cosPoly10_le_cos (x : ℝ) : cosPoly10 x ≤ Real.cos x := by
   rcases le_or_gt 0 x with hx | hx
-  · exact cosPoly10_le_cos_of_nonneg hx
+  · exact (sin_cos_taylor_chain hx).2.2
   · have hneg : cosPoly10 (-x) = cosPoly10 x := by unfold cosPoly10; ring
     rw [← hneg, ← Real.cos_neg]
-    exact cosPoly10_le_cos_of_nonneg (by linarith only [hx])
+    exact (sin_cos_taylor_chain (by linarith only [hx])).2.2
 
 private theorem cos_abs_eq (x : ℝ) : Real.cos |x| = Real.cos x := by
   rcases le_or_gt 0 x with h | h
@@ -168,7 +171,6 @@ private theorem cos_mul_ge_of_even_shift {γ g_lo g_hi lp lp_lo lp_hi x_hi u_lo 
     (hu : u_lo ≤ cosPoly10 x_hi) :
     u_lo ≤ Real.cos (γ * lp) := by
   obtain ⟨hπ_lo, hπ_hi⟩ := pi_bounds_d10'
-  have hm0 : 0 ≤ (m : ℝ) := Nat.cast_nonneg m
   have hmul_lo : g_lo * lp_lo ≤ γ * lp := mul_le_mul hlo hlp_lo hlp0 (hg0.trans hlo)
   have hmul_hi : γ * lp ≤ g_hi * lp_hi :=
     mul_le_mul hhi hlp_hi (hlp0.trans hlp_lo) (hg0.trans (hlo.trans hhi))
@@ -181,11 +183,13 @@ private theorem cos_mul_ge_of_even_shift {γ g_lo g_hi lp lp_lo lp_hi x_hi u_lo 
   have hx_le_pi : x_hi ≤ Real.pi := hx_pi.trans hπ_lo.le
   have hcos_mono : Real.cos x_hi ≤ Real.cos |d| :=
     Real.cos_le_cos_of_nonneg_of_le_pi (abs_nonneg d) hx_le_pi hd_abs
-  rw [cos_abs_eq, d, cos_sub_nat_mul_two_pi] at hcos_mono
+  rw [cos_abs_eq] at hcos_mono
+  dsimp only [d] at hcos_mono
+  rw [cos_sub_nat_mul_two_pi] at hcos_mono
   exact hu.trans ((cosPoly10_le_cos x_hi).trans hcos_mono)
 
 private theorem cos_mul_le_of_odd_shift {c lp lp_lo lp_hi s_hi u_hi : ℝ} (m : ℕ)
-    (hc0 : 0 ≤ c) (hlp0 : 0 ≤ lp_lo) (hlp_lo : lp_lo ≤ lp) (hlp_hi : lp ≤ lp_hi)
+    (hc0 : 0 ≤ c) (hlp_lo : lp_lo ≤ lp) (hlp_hi : lp ≤ lp_hi)
     (hs_pi : s_hi ≤ 3.1415926535)
     (hsh_lo : -s_hi ≤ c * lp_lo - (2 * (m : ℝ) + 1) * 3.1415926536)
     (hsh_hi : c * lp_hi - (2 * (m : ℝ) + 1) * 3.1415926535 ≤ s_hi)
@@ -204,7 +208,9 @@ private theorem cos_mul_le_of_odd_shift {c lp lp_lo lp_hi s_hi u_hi : ℝ} (m : 
   have hs_le_pi : s_hi ≤ Real.pi := hs_pi.trans hπ_lo.le
   have hcos_mono : Real.cos s_hi ≤ Real.cos |d| :=
     Real.cos_le_cos_of_nonneg_of_le_pi (abs_nonneg d) hs_le_pi hd_abs
-  rw [cos_abs_eq, d, cos_sub_odd_mul_pi] at hcos_mono
+  rw [cos_abs_eq] at hcos_mono
+  dsimp only [d] at hcos_mono
+  rw [cos_sub_odd_mul_pi] at hcos_mono
   have hle : Real.cos (c * lp) ≤ -cosPoly10 s_hi := by
     linarith [cosPoly10_le_cos s_hi, hcos_mono]
   exact hle.trans hu
@@ -225,8 +231,8 @@ private theorem hasDerivAt_chebPoly6 (A B C D E G u : ℝ) :
   refine ((((((hasDerivAt_id u).const_mul A).add
       ((((hasDerivAt_pow 2 u).const_mul 2).sub (hasDerivAt_const u 1)).const_mul B)).add
       ((((hasDerivAt_pow 3 u).const_mul 4).sub ((hasDerivAt_id u).const_mul 3)).const_mul C)).add
-      ((((hasDerivAt_pow 4 u).const_mul 8).sub
-        (((hasDerivAt_pow 2 u).const_mul 8).sub (hasDerivAt_const u 1))).const_mul D)).add
+      (((((hasDerivAt_pow 4 u).const_mul 8).sub
+        ((hasDerivAt_pow 2 u).const_mul 8)).add (hasDerivAt_const u 1)).const_mul D)).add
       ((((((hasDerivAt_pow 5 u).const_mul 16).sub
         ((hasDerivAt_pow 3 u).const_mul 20)).add
         ((hasDerivAt_id u).const_mul 5))).const_mul E)).add
@@ -234,7 +240,6 @@ private theorem hasDerivAt_chebPoly6 (A B C D E G u : ℝ) :
         ((hasDerivAt_pow 4 u).const_mul 48)).add
         ((hasDerivAt_pow 2 u).const_mul 18)).sub
         (hasDerivAt_const u 1))).const_mul G) |>.congr_deriv ?_
-  dsimp only [id]
   norm_num
   ring
 
@@ -248,8 +253,7 @@ private theorem monotoneOn_chebPoly6_of_sos {A B C D E G E_hi G_hi : ℝ}
     (fun u _ => (hasDerivAt_chebPoly6 A B C D E G u).continuousAt.continuousWithinAt)
     (fun u _ => (hasDerivAt_chebPoly6 A B C D E G u).hasDerivWithinAt)
     fun u hu => ?_
-  have hu' : u ∈ Icc (-1) 1 := interior_subset hu
-  obtain ⟨hu0, hu1⟩ := hu'
+  obtain ⟨hu0, hu1⟩ := interior_subset hu
   have hu2 : u ^ 2 ≤ 1 := by nlinarith only [hu0, hu1]
   have he_lb : -((25 / 4) * E_hi) ≤ E * (80 * u ^ 4 - 60 * u ^ 2 + 5) := by
     have hid : 80 * u ^ 4 - 60 * u ^ 2 + 5 + 25 / 4 = 5 * (4 * u ^ 2 - 3 / 2) ^ 2 := by ring
@@ -257,10 +261,6 @@ private theorem monotoneOn_chebPoly6_of_sos {A B C D E G E_hi G_hi : ℝ}
       nlinarith only [hid, sq_nonneg (4 * u ^ 2 - 3 / 2)]
     nlinarith only [hge, hE0, hE]
   have hg_lb : -(228 * G_hi) ≤ G * (192 * u ^ 5 - 192 * u ^ 3 + 36 * u) := by
-    have hu3_lo : -1 ≤ u ^ 3 := by
-      have : 0 ≤ (u + 1) * (u ^ 2 - u + 1) :=
-        mul_nonneg (by linarith only [hu0]) (by nlinarith only [sq_nonneg (u - 1 / 2)])
-      linarith [show (u + 1) * (u ^ 2 - u + 1) = u ^ 3 + 1 by ring]
     have h1mu2 : 0 ≤ 1 - u ^ 2 := by linarith only [hu2]
     have h1mu2_le1 : 1 - u ^ 2 ≤ 1 := by nlinarith only [sq_nonneg u]
     have hterm1 : -192 ≤ 192 * u ^ 3 * (u ^ 2 - 1) := by
@@ -313,92 +313,173 @@ private theorem weighted_sign_lb {c_lo c_hi c t : ℝ} (hlo : c_lo ≤ c) (hhi :
   · rw [max_eq_left ht, min_eq_right ht]; nlinarith only [hlo, ht]
   · rw [max_eq_right ht, min_eq_left ht]; nlinarith only [hhi, ht]
 
-private theorem weighted_sign_ub {c_lo c_hi c t : ℝ} (hlo : c_lo ≤ c) (hhi : c ≤ c_hi) :
-    c * t ≤ c_hi * max t 0 + c_lo * min t 0 := by
-  rcases le_total 0 t with ht | ht
-  · rw [max_eq_left ht, min_eq_right ht]; nlinarith only [hhi, ht]
-  · rw [max_eq_right ht, min_eq_left ht]; nlinarith only [hlo, ht]
+/-! ## Fast inverse-hyperbolic-tangent logarithm enclosures (`max exponent ≤ 6`) -/
 
-/-! ## Tightened logarithm and Bohman harmonic enclosures -/
+private theorem log_one_add_div_one_sub_bounds {t : ℝ} (ht0 : 0 ≤ t) (ht_half : t ≤ 1 / 2) :
+    2 * (t + t ^ 3 / 3) ≤ Real.log ((1 + t) / (1 - t)) ∧
+      Real.log ((1 + t) / (1 - t)) ≤ 2 * (t + t ^ 3 / 3 + t ^ 5) := by
+  have hd_log : ∀ x ∈ Icc (0 : ℝ) (1 / 2),
+      HasDerivAt (fun y => Real.log ((1 + y) / (1 - y))) (2 / (1 - x ^ 2)) x := by
+    intro x hx
+    have h1p : 0 < 1 + x := by linarith [hx.1]
+    have h1m : 0 < 1 - x := by linarith [hx.2]
+    have hm1x : -1 < x := by linarith [hx.1]
+    have hx1 : x < 1 := by linarith [hx.2]
+    have hfg : ∀ᶠ y in nhds x, Real.log ((1 + y) / (1 - y)) = Real.log (1 + y) - Real.log (1 - y) := by
+      filter_upwards [lt_mem_nhds hm1x, gt_mem_nhds hx1] with y hy1 hy2
+      exact Real.log_div (by linarith) (by linarith)
+    have hd1 : HasDerivAt (fun y => Real.log (1 + y)) (1 / (1 + x)) x := by
+      simpa using (((hasDerivAt_const x (1 : ℝ)).add (hasDerivAt_id x)).log h1p.ne')
+    have hd2 : HasDerivAt (fun y => Real.log (1 - y)) (-1 / (1 - x)) x := by
+      refine (((hasDerivAt_const x (1 : ℝ)).sub (hasDerivAt_id x)).log h1m.ne').congr_deriv ?_
+      simp only [Pi.sub_apply, id_eq]; ring
+    exact ((hd1.sub hd2).congr_of_eventuallyEq hfg).congr_deriv (by
+      have hne : 1 - x ^ 2 ≠ 0 := by nlinarith [hx.1, hx.2]
+      field_simp [h1p.ne', h1m.ne', hne]; ring)
+  have hd_lo : ∀ x : ℝ, HasDerivAt (fun y : ℝ => 2 * (y + y ^ 3 / 3)) (2 * (1 + x ^ 2)) x := fun x => by
+    refine (((hasDerivAt_id x).add (hasDerivAt_monomial_div' 3 3 x)).const_mul 2).congr_deriv ?_
+    norm_num; ring
+  have hd_hi : ∀ x : ℝ, HasDerivAt (fun y : ℝ => 2 * (y + y ^ 3 / 3 + y ^ 5))
+      (2 * (1 + x ^ 2 + 5 * x ^ 4)) x := fun x => by
+    refine ((((hasDerivAt_id x).add (hasDerivAt_monomial_div' 3 3 x)).add
+      (hasDerivAt_pow 5 x)).const_mul 2).congr_deriv ?_
+    norm_num; ring
+  have hmono_lo : MonotoneOn (fun x => Real.log ((1 + x) / (1 - x)) - 2 * (x + x ^ 3 / 3))
+      (Icc 0 (1 / 2)) :=
+    monotoneOn_of_hasDerivWithinAt_nonneg (convex_Icc 0 (1 / 2))
+      (fun x hx => ((hd_log x hx).sub (hd_lo x)).continuousAt.continuousWithinAt)
+      (fun x hx => ((hd_log x (interior_subset hx)).sub (hd_lo x)).hasDerivWithinAt)
+      fun x hx => by
+        have hx' := interior_subset hx
+        have hden : 0 < 1 - x ^ 2 := by nlinarith [hx'.1, hx'.2]
+        rw [sub_nonneg, le_div_iff₀ hden]
+        nlinarith [sq_nonneg (x ^ 2)]
+  have hmono_hi : MonotoneOn (fun x => 2 * (x + x ^ 3 / 3 + x ^ 5) - Real.log ((1 + x) / (1 - x)))
+      (Icc 0 (1 / 2)) :=
+    monotoneOn_of_hasDerivWithinAt_nonneg (convex_Icc 0 (1 / 2))
+      (fun x hx => ((hd_hi x).sub (hd_log x hx)).continuousAt.continuousWithinAt)
+      (fun x hx => ((hd_hi x).sub (hd_log x (interior_subset hx))).hasDerivWithinAt)
+      fun x hx => by
+        have hx' := interior_subset hx
+        have hden : 0 < 1 - x ^ 2 := by nlinarith [hx'.1, hx'.2]
+        rw [sub_nonneg, div_le_iff₀ hden]
+        have hx2 : x ^ 2 ≤ 1 / 4 := by nlinarith [hx'.1, hx'.2]
+        have h4 : 0 ≤ x ^ 4 * (4 - 5 * x ^ 2) := mul_nonneg (by positivity) (by linarith)
+        nlinarith [h4]
+  have hlo := hmono_lo ⟨le_rfl, by norm_num⟩ ⟨ht0, ht_half⟩ ht0
+  have hhi := hmono_hi ⟨le_rfl, by norm_num⟩ ⟨ht0, ht_half⟩ ht0
+  simp only [add_zero, sub_zero, div_one, Real.log_one] at hlo hhi
+  norm_num at hlo hhi
+  exact ⟨by linarith only [hlo], by linarith only [hhi]⟩
 
-private theorem le_log_of_two_pow_le' {p : ℝ} {k m : ℕ} (hk : 0 < k)
-    (h : (2 : ℝ) ^ m ≤ p ^ k) : (m : ℝ) / k * Real.log 2 ≤ Real.log p := by
-  have hl := Real.log_le_log (by positivity) h
-  rw [Real.log_pow, Real.log_pow] at hl
-  have hk' : (0 : ℝ) < k := by exact_mod_cast hk
-  rw [div_mul_eq_mul_div, div_le_iff₀ hk']
-  linarith only [hl]
-
-private theorem log_le_of_pow_le_two_pow' {p : ℝ} (hp : 0 < p) {k m : ℕ} (hk : 0 < k)
-    (h : p ^ k ≤ (2 : ℝ) ^ m) : Real.log p ≤ (m : ℝ) / k * Real.log 2 := by
-  have hl := Real.log_le_log (by positivity) h
-  rw [Real.log_pow, Real.log_pow] at hl
-  have hk' : (0 : ℝ) < k := by exact_mod_cast hk
-  rw [div_mul_eq_mul_div, le_div_iff₀ hk']
-  linarith only [hl]
-
-private theorem log_prime_bounds' {p : ℝ} (hp : 0 < p) {k1 m1 k2 m2 : ℕ}
-    (hk1 : 0 < k1) (hk2 : 0 < k2) (h1 : (2 : ℝ) ^ m1 ≤ p ^ k1) (h2 : p ^ k2 ≤ (2 : ℝ) ^ m2)
-    {lo hi : ℝ} (hlo : lo ≤ (m1 : ℝ) / k1 * 0.6931471803)
-    (hhi : (m2 : ℝ) / k2 * 0.6931471808 ≤ hi) :
+private theorem log_atanh_pos_step {p M t lo hi base_lo base_hi : ℝ} {kp : ℕ}
+    (hp : 0 < p) (hM : 0 < M) (hkp : 0 < kp) (ht0 : 0 ≤ t) (ht_half : t ≤ 1 / 2)
+    (heq : p ^ kp / M = (1 + t) / (1 - t))
+    (hbase_lo : base_lo ≤ Real.log M) (hbase_hi : Real.log M ≤ base_hi)
+    (hlo : lo ≤ (base_lo + 2 * (t + t ^ 3 / 3)) / kp)
+    (hhi : (base_hi + 2 * (t + t ^ 3 / 3 + t ^ 5)) / kp ≤ hi) :
     lo ≤ Real.log p ∧ Real.log p ≤ hi := by
-  have hb1 := le_log_of_two_pow_le' hk1 h1
-  have hb2 := log_le_of_pow_le_two_pow' hp hk2 h2
-  have hl2a := Real.log_two_gt_d9
-  have hl2b := Real.log_two_lt_d9
-  have hpos1 : 0 ≤ (m1 : ℝ) / k1 := by positivity
-  have hpos2 : 0 ≤ (m2 : ℝ) / k2 := by positivity
-  exact ⟨hlo.trans ((mul_le_mul_of_nonneg_left hl2a.le hpos1).trans hb1),
-    hb2.trans ((mul_le_mul_of_nonneg_left hl2b.le hpos2).trans hhi)⟩
+  obtain ⟨hat_lo, hat_hi⟩ := log_one_add_div_one_sub_bounds ht0 ht_half
+  have hkp' : (0 : ℝ) < kp := by exact_mod_cast hkp
+  have hlog : (kp : ℝ) * Real.log p - Real.log M = Real.log ((1 + t) / (1 - t)) := by
+    rw [← Real.log_pow, ← Real.log_div (pow_pos hp kp).ne' hM.ne', heq]
+  refine ⟨hlo.trans ?_, ?_⟩
+  · rw [div_le_iff₀ hkp']; linarith only [hlog, hbase_lo, hat_lo]
+  · refine le_trans ?_ hhi
+    rw [le_div_iff₀ hkp']; linarith only [hlog, hbase_hi, hat_hi]
+
+private theorem log_atanh_neg_step {p M t lo hi base_lo base_hi : ℝ} {kp : ℕ}
+    (hp : 0 < p) (hM : 0 < M) (hkp : 0 < kp) (ht0 : 0 ≤ t) (ht_half : t ≤ 1 / 2)
+    (heq : M / p ^ kp = (1 + t) / (1 - t))
+    (hbase_lo : base_lo ≤ Real.log M) (hbase_hi : Real.log M ≤ base_hi)
+    (hlo : lo ≤ (base_lo - 2 * (t + t ^ 3 / 3 + t ^ 5)) / kp)
+    (hhi : (base_hi - 2 * (t + t ^ 3 / 3)) / kp ≤ hi) :
+    lo ≤ Real.log p ∧ Real.log p ≤ hi := by
+  obtain ⟨hat_lo, hat_hi⟩ := log_one_add_div_one_sub_bounds ht0 ht_half
+  have hkp' : (0 : ℝ) < kp := by exact_mod_cast hkp
+  have hlog : Real.log M - (kp : ℝ) * Real.log p = Real.log ((1 + t) / (1 - t)) := by
+    rw [← Real.log_pow, ← Real.log_div hM.ne' (pow_pos hp kp).ne', heq]
+  refine ⟨hlo.trans ?_, ?_⟩
+  · rw [div_le_iff₀ hkp']; linarith only [hlog, hbase_lo, hat_hi]
+  · refine le_trans ?_ hhi
+    rw [le_div_iff₀ hkp']; linarith only [hlog, hbase_hi, hat_lo]
+
+private theorem log_smooth_bounds {M : ℝ} {a2 b3 c5 d7 : ℕ}
+    (hM : M = (2 : ℝ) ^ a2 * (3 : ℝ) ^ b3 * (5 : ℝ) ^ c5 * (7 : ℝ) ^ d7)
+    {l3a l3b l5a l5b l7a l7b : ℝ}
+    (hl3a : l3a ≤ Real.log 3) (hl3b : Real.log 3 ≤ l3b)
+    (hl5a : l5a ≤ Real.log 5) (hl5b : Real.log 5 ≤ l5b)
+    (hl7a : l7a ≤ Real.log 7) (hl7b : Real.log 7 ≤ l7b) :
+    (a2 : ℝ) * 0.6931471803 + (b3 : ℝ) * l3a + (c5 : ℝ) * l5a + (d7 : ℝ) * l7a ≤ Real.log M ∧
+      Real.log M ≤ (a2 : ℝ) * 0.6931471808 + (b3 : ℝ) * l3b + (c5 : ℝ) * l5b + (d7 : ℝ) * l7b := by
+  have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
+  rw [hM, Real.log_mul (by positivity) (by positivity),
+    Real.log_mul (by positivity) (by positivity),
+    Real.log_mul (by positivity) (by positivity),
+    Real.log_pow, Real.log_pow, Real.log_pow, Real.log_pow]
+  exact ⟨add_le_add (add_le_add (add_le_add
+      (mul_le_mul_of_nonneg_left hl2a (Nat.cast_nonneg a2))
+      (mul_le_mul_of_nonneg_left hl3a (Nat.cast_nonneg b3)))
+      (mul_le_mul_of_nonneg_left hl5a (Nat.cast_nonneg c5)))
+      (mul_le_mul_of_nonneg_left hl7a (Nat.cast_nonneg d7)),
+    add_le_add (add_le_add (add_le_add
+      (mul_le_mul_of_nonneg_left hl2b (Nat.cast_nonneg a2))
+      (mul_le_mul_of_nonneg_left hl3b (Nat.cast_nonneg b3)))
+      (mul_le_mul_of_nonneg_left hl5b (Nat.cast_nonneg c5)))
+      (mul_le_mul_of_nonneg_left hl7b (Nat.cast_nonneg d7))⟩
 
 private theorem sharp_log_prime_bounds :
-    (1.0985728 ≤ Real.log 3 ∧ Real.log 3 ≤ 1.0986619) ∧
-    (1.6094307 ≤ Real.log 5 ∧ Real.log 5 ≤ 1.6095113) ∧
-    (1.9458994 ≤ Real.log 7 ∧ Real.log 7 ≤ 1.9459466) ∧
-    (2.3977758 ≤ Real.log 11 ∧ Real.log 11 ≤ 2.3979146) ∧
-    (2.5646445 ≤ Real.log 13 ∧ Real.log 13 ≤ 2.5650861) ∧
-    (2.8331549 ≤ Real.log 17 ∧ Real.log 17 ≤ 2.8332392) ∧
-    (2.9443944 ≤ Real.log 19 ∧ Real.log 19 ≤ 2.9444434) ∧
-    (3.1354442 ≤ Real.log 23 ∧ Real.log 23 ≤ 3.1356659) ∧
-    (3.3667148 ≤ Real.log 29 ∧ Real.log 29 ≤ 3.3673538) ∧
-    (3.4339401 ≤ Real.log 31 ∧ Real.log 31 ≤ 3.4339888) ∧
-    (3.6108132 ≤ Real.log 37 ∧ Real.log 37 ≤ 3.6109222) ∧
-    (3.7132884 ≤ Real.log 41 ∧ Real.log 41 ≤ 3.7136164) ∧
-    (3.7611756 ≤ Real.log 43 ∧ Real.log 43 ≤ 3.7612638) ∧
-    (3.8501175 ≤ Real.log 47 ∧ Real.log 47 ≤ 3.8501705) ∧
-    (3.9698429 ≤ Real.log 53 ∧ Real.log 53 ≤ 3.970911) ∧
-    (4.0773363 ≤ Real.log 59 ∧ Real.log 59 ≤ 4.0782846) ∧
-    (4.1105239 ≤ Real.log 61 ∧ Real.log 61 ≤ 4.1110799) ∧
-    (4.2040883 ≤ Real.log 67 ∧ Real.log 67 ≤ 4.2050929) ∧
-    (4.2621177 ≤ Real.log 71 ∧ Real.log 71 ≤ 4.2628552) ∧
-    (4.290342 ≤ Real.log 73 ∧ Real.log 73 ≤ 4.2909112) ∧
-    (4.3693027 ≤ Real.log 79 ∧ Real.log 79 ≤ 4.369841) ∧
-    (4.4188132 ≤ Real.log 83 ∧ Real.log 83 ≤ 4.4204481) ∧
-    (4.4881279 ≤ Real.log 89 ∧ Real.log 89 ≤ 4.4889532) := by
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
-  · exact log_prime_bounds' (p := 3) (by norm_num) (k1 := 53) (m1 := 84) (k2 := 147) (m2 := 233) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 1.0985728) (hi := 1.0986619) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 5) (by norm_num) (k1 := 146) (m1 := 339) (k2 := 59) (m2 := 137) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 1.6094307) (hi := 1.6095113) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 7) (by norm_num) (k1 := 109) (m1 := 306) (k2 := 135) (m2 := 379) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 1.9458994) (hi := 1.9459466) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 11) (by norm_num) (k1 := 135) (m1 := 467) (k2 := 37) (m2 := 128) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 2.3977758) (hi := 2.3979146) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 13) (by norm_num) (k1 := 10) (m1 := 37) (k2 := 157) (m2 := 581) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 2.5646445) (hi := 2.5650861) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 17) (by norm_num) (k1 := 103) (m1 := 421) (k2 := 80) (m2 := 327) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 2.8331549) (hi := 2.8332392) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 19) (by norm_num) (k1 := 117) (m1 := 497) (k2 := 121) (m2 := 514) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 2.9443944) (hi := 2.9444434) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 23) (by norm_num) (k1 := 149) (m1 := 674) (k2 := 21) (m2 := 95) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 3.1354442) (hi := 3.1356659) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 29) (by norm_num) (k1 := 7) (m1 := 34) (k2 := 155) (m2 := 753) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 3.3667148) (hi := 3.3673538) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 31) (by norm_num) (k1 := 109) (m1 := 540) (k2 := 131) (m2 := 649) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 3.4339401) (hi := 3.4339888) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 37) (by norm_num) (k1 := 43) (m1 := 224) (k2 := 148) (m2 := 771) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 3.6108132) (hi := 3.6109222) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 41) (by norm_num) (k1 := 14) (m1 := 75) (k2 := 151) (m2 := 809) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 3.7132884) (hi := 3.7136164) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 43) (by norm_num) (k1 := 61) (m1 := 331) (k2 := 129) (m2 := 700) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 3.7611756) (hi := 3.7612638) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 47) (by norm_num) (k1 := 110) (m1 := 611) (k2 := 119) (m2 := 661) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 3.8501175) (hi := 3.8501705) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 53) (by norm_num) (k1 := 11) (m1 := 63) (k2 := 59) (m2 := 338) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 3.9698429) (hi := 3.970911) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 59) (by norm_num) (k1 := 17) (m1 := 100) (k2 := 43) (m2 := 253) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 4.0773363) (hi := 4.0782846) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 61) (by norm_num) (k1 := 43) (m1 := 255) (k2 := 29) (m2 := 172) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 4.1105239) (hi := 4.1110799) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 67) (by norm_num) (k1 := 46) (m1 := 279) (k2 := 15) (m2 := 91) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 4.2040883) (hi := 4.2050929) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 71) (by norm_num) (k1 := 47) (m1 := 289) (k2 := 20) (m2 := 123) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 4.2621177) (hi := 4.2628552) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 73) (by norm_num) (k1 := 58) (m1 := 359) (k2 := 21) (m2 := 130) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 4.290342) (hi := 4.2909112) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 79) (by norm_num) (k1 := 56) (m1 := 353) (k2 := 23) (m2 := 145) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 4.3693027) (hi := 4.369841) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 83) (by norm_num) (k1 := 8) (m1 := 51) (k2 := 53) (m2 := 338) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 4.4188132) (hi := 4.4204481) (by norm_num) (by norm_num)
-  · exact log_prime_bounds' (p := 89) (by norm_num) (k1 := 40) (m1 := 259) (k2 := 21) (m2 := 136) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (lo := 4.4881279) (hi := 4.4889532) (by norm_num) (by norm_num)
+    (1.0986121 ≤ Real.log 3 ∧ Real.log 3 ≤ 1.0986129) ∧
+    (1.6094379 ≤ Real.log 5 ∧ Real.log 5 ≤ 1.609438) ∧
+    (1.945908 ≤ Real.log 7 ∧ Real.log 7 ≤ 1.9459107) ∧
+    (2.3978948 ≤ Real.log 11 ∧ Real.log 11 ≤ 2.397896) ∧
+    (2.5649491 ≤ Real.log 13 ∧ Real.log 13 ≤ 2.5649502) ∧
+    (2.8332133 ≤ Real.log 17 ∧ Real.log 17 ≤ 2.8332134) ∧
+    (2.9444385 ≤ Real.log 19 ∧ Real.log 19 ≤ 2.9444403) ∧
+    (3.135494 ≤ Real.log 23 ∧ Real.log 23 ≤ 3.1354949) ∧
+    (3.3672956 ≤ Real.log 29 ∧ Real.log 29 ≤ 3.3672966) ∧
+    (3.4339872 ≤ Real.log 31 ∧ Real.log 31 ≤ 3.4339873) ∧
+    (3.6109175 ≤ Real.log 37 ∧ Real.log 37 ≤ 3.6109192) ∧
+    (3.713572 ≤ Real.log 41 ∧ Real.log 41 ≤ 3.7135722) ∧
+    (3.7611977 ≤ Real.log 43 ∧ Real.log 43 ≤ 3.7612013) ∧
+    (3.8501474 ≤ Real.log 47 ∧ Real.log 47 ≤ 3.8501483) ∧
+    (3.9702913 ≤ Real.log 53 ∧ Real.log 53 ≤ 3.9702938) ∧
+    (4.0775372 ≤ Real.log 59 ∧ Real.log 59 ≤ 4.0775382) ∧
+    (4.1108736 ≤ Real.log 61 ∧ Real.log 61 ≤ 4.1108746) ∧
+    (4.2046926 ≤ Real.log 67 ∧ Real.log 67 ≤ 4.2046927) ∧
+    (4.2626794 ≤ Real.log 71 ∧ Real.log 71 ≤ 4.2626812) ∧
+    (4.290459 ≤ Real.log 73 ∧ Real.log 73 ≤ 4.2904607) ∧
+    (4.3694478 ≤ Real.log 79 ∧ Real.log 79 ≤ 4.369448) ∧
+    (4.4188382 ≤ Real.log 83 ∧ Real.log 83 ≤ 4.4188418) ∧
+    (4.4886359 ≤ Real.log 89 ∧ Real.log 89 ≤ 4.4886377) := by
+  have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
+  have hM3 : (3 : ℝ) * 0.6931471803 ≤ Real.log 8 ∧ Real.log 8 ≤ (3 : ℝ) * 0.6931471808 := by rw [show (8 : ℝ) = 2 ^ 3 by norm_num, Real.log_pow]; exact ⟨by nlinarith only [hl2a], by nlinarith only [hl2b]⟩
+  obtain ⟨hl3a, hl3b⟩ := log_atanh_pos_step (p := 3) (M := 8) (t := (1 / 17)) (lo := 1.0986121) (hi := 1.0986129) (kp := 2) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM3.1 hM3.2 (by norm_num) (by norm_num)
+  have hM5 : (7 : ℝ) * 0.6931471803 ≤ Real.log 128 ∧ Real.log 128 ≤ (7 : ℝ) * 0.6931471808 := by rw [show (128 : ℝ) = 2 ^ 7 by norm_num, Real.log_pow]; exact ⟨by nlinarith only [hl2a], by nlinarith only [hl2b]⟩
+  obtain ⟨hl5a, hl5b⟩ := log_atanh_neg_step (p := 5) (M := 128) (t := (3 / 253)) (lo := 1.6094379) (hi := 1.609438) (kp := 3) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM5.1 hM5.2 (by norm_num) (by norm_num)
+  have hM7 : (3 : ℝ) * 0.6931471803 ≤ Real.log 8 ∧ Real.log 8 ≤ (3 : ℝ) * 0.6931471808 := by rw [show (8 : ℝ) = 2 ^ 3 by norm_num, Real.log_pow]; exact ⟨by nlinarith only [hl2a], by nlinarith only [hl2b]⟩
+  obtain ⟨hl7a, hl7b⟩ := log_atanh_neg_step (p := 7) (M := 8) (t := (1 / 15)) (lo := 1.945908) (hi := 1.9459107) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM7.1 hM7.2 (by norm_num) (by norm_num)
+  refine ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 12) (a2 := 2) (b3 := 1) (c5 := 0) (d7 := 0) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_neg_step (p := 11) (M := 12) (t := (1 / 23)) (lo := 2.3978948) (hi := 2.397896) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 12) (a2 := 2) (b3 := 1) (c5 := 0) (d7 := 0) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_pos_step (p := 13) (M := 12) (t := 0.04) (lo := 2.5649491) (hi := 2.5649502) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 16) (a2 := 4) (b3 := 0) (c5 := 0) (d7 := 0) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_pos_step (p := 17) (M := 16) (t := (1 / 33)) (lo := 2.8332133) (hi := 2.8332134) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 18) (a2 := 1) (b3 := 2) (c5 := 0) (d7 := 0) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_pos_step (p := 19) (M := 18) (t := (1 / 37)) (lo := 2.9444385) (hi := 2.9444403) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 24) (a2 := 3) (b3 := 1) (c5 := 0) (d7 := 0) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_neg_step (p := 23) (M := 24) (t := (1 / 47)) (lo := 3.135494) (hi := 3.1354949) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 30) (a2 := 1) (b3 := 1) (c5 := 1) (d7 := 0) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_neg_step (p := 29) (M := 30) (t := (1 / 59)) (lo := 3.3672956) (hi := 3.3672966) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 32) (a2 := 5) (b3 := 0) (c5 := 0) (d7 := 0) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_neg_step (p := 31) (M := 32) (t := (1 / 63)) (lo := 3.4339872) (hi := 3.4339873) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 36) (a2 := 2) (b3 := 2) (c5 := 0) (d7 := 0) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_pos_step (p := 37) (M := 36) (t := (1 / 73)) (lo := 3.6109175) (hi := 3.6109192) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 40) (a2 := 3) (b3 := 0) (c5 := 1) (d7 := 0) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_pos_step (p := 41) (M := 40) (t := (1 / 81)) (lo := 3.713572) (hi := 3.7135722) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 42) (a2 := 1) (b3 := 1) (c5 := 0) (d7 := 1) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_pos_step (p := 43) (M := 42) (t := (1 / 85)) (lo := 3.7611977) (hi := 3.7612013) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 48) (a2 := 4) (b3 := 1) (c5 := 0) (d7 := 0) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_neg_step (p := 47) (M := 48) (t := (1 / 95)) (lo := 3.8501474) (hi := 3.8501483) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 54) (a2 := 1) (b3 := 3) (c5 := 0) (d7 := 0) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_neg_step (p := 53) (M := 54) (t := (1 / 107)) (lo := 3.9702913) (hi := 3.9702938) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 60) (a2 := 2) (b3 := 1) (c5 := 1) (d7 := 0) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_neg_step (p := 59) (M := 60) (t := (1 / 119)) (lo := 4.0775372) (hi := 4.0775382) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 60) (a2 := 2) (b3 := 1) (c5 := 1) (d7 := 0) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_pos_step (p := 61) (M := 60) (t := (1 / 121)) (lo := 4.1108736) (hi := 4.1108746) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 64) (a2 := 6) (b3 := 0) (c5 := 0) (d7 := 0) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_pos_step (p := 67) (M := 64) (t := (3 / 131)) (lo := 4.2046926) (hi := 4.2046927) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 72) (a2 := 3) (b3 := 2) (c5 := 0) (d7 := 0) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_neg_step (p := 71) (M := 72) (t := (1 / 143)) (lo := 4.2626794) (hi := 4.2626812) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 72) (a2 := 3) (b3 := 2) (c5 := 0) (d7 := 0) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_pos_step (p := 73) (M := 72) (t := (1 / 145)) (lo := 4.290459) (hi := 4.2904607) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 80) (a2 := 4) (b3 := 0) (c5 := 1) (d7 := 0) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_neg_step (p := 79) (M := 80) (t := (1 / 159)) (lo := 4.3694478) (hi := 4.369448) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 84) (a2 := 2) (b3 := 1) (c5 := 0) (d7 := 1) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_neg_step (p := 83) (M := 84) (t := (1 / 167)) (lo := 4.4188382) (hi := 4.4188418) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
+  · obtain ⟨hM_lo, hM_hi⟩ := log_smooth_bounds (M := 90) (a2 := 1) (b3 := 2) (c5 := 1) (d7 := 0) (by norm_num) hl3a hl3b hl5a hl5b hl7a hl7b; exact log_atanh_neg_step (p := 89) (M := 90) (t := (1 / 179)) (lo := 4.4886359) (hi := 4.4886377) (kp := 1) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) hM_lo hM_hi (by norm_num) (by norm_num)
 
 private theorem hasDerivAt_sin_sub_mul_cos' (x : ℝ) :
     HasDerivAt (fun y : ℝ => Real.sin y - y * Real.cos y) (x * Real.sin x) x := by
@@ -414,85 +495,8 @@ private theorem monotoneOn_sin_sub_mul_cos' :
       have hx' : x ∈ Ioo 0 Real.pi := by rwa [interior_Icc] at hx
       exact mul_nonneg hx'.1.le (Real.sin_nonneg_of_nonneg_of_le_pi hx'.1.le hx'.2.le)
 
-private theorem sin_taylor_bounds_of_nonneg' {u : ℝ} (hu : 0 ≤ u) :
-    u - u ^ 3 / 6 + u ^ 5 / 120 - u ^ 7 / 5040 ≤ Real.sin u ∧
-      Real.sin u ≤ u - u ^ 3 / 6 + u ^ 5 / 120 - u ^ 7 / 5040 + u ^ 9 / 362880 ∧
-      u - u ^ 3 / 6 + u ^ 5 / 120 - u ^ 7 / 5040 + u ^ 9 / 362880 - u ^ 11 / 39916800 ≤
-        Real.sin u := by
-  have h6 : ∀ x : ℝ, 0 ≤ x → 0 ≤ Real.cos x - (1 - x ^ 2 / 2 + x ^ 4 / 24 - x ^ 6 / 720) := by
-    intro x hx
-    have h1 : ∀ z : ℝ, 0 ≤ z → 0 ≤ z - Real.sin z := fun z hz =>
-      nonneg_of_deriv_nonneg' (by simp)
-        (fun y => (hasDerivAt_id y).sub (Real.hasDerivAt_sin y))
-        (fun y _ => sub_nonneg.mpr (Real.cos_le_one y)) hz
-    have h2 : ∀ z : ℝ, 0 ≤ z → 0 ≤ Real.cos z - (1 - z ^ 2 / 2) := fun z hz =>
-      nonneg_of_deriv_nonneg' (by norm_num)
-        (fun y => ((Real.hasDerivAt_cos y).sub
-          ((hasDerivAt_const y 1).sub (hasDerivAt_monomial_div' 2 2 y))).congr_deriv
-          (by norm_num; ring)) (fun y hy => h1 y hy) hz
-    have h3 : ∀ z : ℝ, 0 ≤ z → 0 ≤ Real.sin z - (z - z ^ 3 / 6) := fun z hz =>
-      nonneg_of_deriv_nonneg' (by norm_num)
-        (fun y => ((Real.hasDerivAt_sin y).sub
-          ((hasDerivAt_id y).sub (hasDerivAt_monomial_div' 3 6 y))).congr_deriv
-          (by norm_num; ring)) (fun y hy => h2 y hy) hz
-    have h4 : ∀ z : ℝ, 0 ≤ z → 0 ≤ 1 - z ^ 2 / 2 + z ^ 4 / 24 - Real.cos z := fun z hz =>
-      nonneg_of_deriv_nonneg' (by norm_num)
-        (fun y => ((((hasDerivAt_const y 1).sub (hasDerivAt_monomial_div' 2 2 y)).add
-          (hasDerivAt_monomial_div' 4 24 y)).sub (Real.hasDerivAt_cos y)).congr_deriv
-          (by norm_num; ring)) (fun y hy => h3 y hy) hz
-    have h5 : ∀ z : ℝ, 0 ≤ z → 0 ≤ z - z ^ 3 / 6 + z ^ 5 / 120 - Real.sin z := fun z hz =>
-      nonneg_of_deriv_nonneg' (by norm_num)
-        (fun y => ((((hasDerivAt_id y).sub (hasDerivAt_monomial_div' 3 6 y)).add
-          (hasDerivAt_monomial_div' 5 120 y)).sub (Real.hasDerivAt_sin y)).congr_deriv
-          (by norm_num; ring)) (fun y hy => h4 y hy) hz
-    exact nonneg_of_deriv_nonneg' (by norm_num)
-      (fun y => ((Real.hasDerivAt_cos y).sub
-        ((((hasDerivAt_const y 1).sub (hasDerivAt_monomial_div' 2 2 y)).add
-          (hasDerivAt_monomial_div' 4 24 y)).sub
-          (hasDerivAt_monomial_div' 6 720 y))).congr_deriv
-        (by norm_num; ring)) (fun y hy => h5 y hy) hx
-  have h7 : ∀ x : ℝ, 0 ≤ x → 0 ≤ Real.sin x - (x - x ^ 3 / 6 + x ^ 5 / 120 - x ^ 7 / 5040) :=
-    fun x hx => nonneg_of_deriv_nonneg' (by norm_num)
-      (fun y => ((Real.hasDerivAt_sin y).sub
-        ((((hasDerivAt_id y).sub (hasDerivAt_monomial_div' 3 6 y)).add
-          (hasDerivAt_monomial_div' 5 120 y)).sub
-          (hasDerivAt_monomial_div' 7 5040 y))).congr_deriv
-        (by norm_num; ring)) (fun y hy => h6 y hy) hx
-  have h8 : ∀ x : ℝ, 0 ≤ x →
-      0 ≤ 1 - x ^ 2 / 2 + x ^ 4 / 24 - x ^ 6 / 720 + x ^ 8 / 40320 - Real.cos x :=
-    fun x hx => nonneg_of_deriv_nonneg' (by norm_num)
-      (fun y => ((((((hasDerivAt_const y 1).sub (hasDerivAt_monomial_div' 2 2 y)).add
-          (hasDerivAt_monomial_div' 4 24 y)).sub
-          (hasDerivAt_monomial_div' 6 720 y)).add
-          (hasDerivAt_monomial_div' 8 40320 y)).sub (Real.hasDerivAt_cos y)).congr_deriv
-        (by norm_num; ring)) (fun y hy => h7 y hy) hx
-  have h9 : ∀ x : ℝ, 0 ≤ x →
-      0 ≤ x - x ^ 3 / 6 + x ^ 5 / 120 - x ^ 7 / 5040 + x ^ 9 / 362880 - Real.sin x :=
-    fun x hx => nonneg_of_deriv_nonneg' (by norm_num)
-      (fun y => ((((((hasDerivAt_id y).sub (hasDerivAt_monomial_div' 3 6 y)).add
-          (hasDerivAt_monomial_div' 5 120 y)).sub
-          (hasDerivAt_monomial_div' 7 5040 y)).add
-          (hasDerivAt_monomial_div' 9 362880 y)).sub (Real.hasDerivAt_sin y)).congr_deriv
-        (by norm_num; ring)) (fun y hy => h8 y hy) hx
-  have h10 : ∀ x : ℝ, 0 ≤ x → 0 ≤ Real.cos x - cosPoly10 x :=
-    fun x hx => sub_nonneg.mpr (cosPoly10_le_cos_of_nonneg hx)
-  have h11 : ∀ x : ℝ, 0 ≤ x →
-      0 ≤ Real.sin x -
-        (x - x ^ 3 / 6 + x ^ 5 / 120 - x ^ 7 / 5040 + x ^ 9 / 362880 - x ^ 11 / 39916800) :=
-    fun x hx => nonneg_of_deriv_nonneg' (by norm_num)
-      (fun y => ((Real.hasDerivAt_sin y).sub
-        ((((((hasDerivAt_id y).sub (hasDerivAt_monomial_div' 3 6 y)).add
-          (hasDerivAt_monomial_div' 5 120 y)).sub
-          (hasDerivAt_monomial_div' 7 5040 y)).add
-          (hasDerivAt_monomial_div' 9 362880 y)).sub
-          (hasDerivAt_monomial_div' 11 39916800 y))).congr_deriv
-        (by unfold cosPoly10; norm_num; ring)) (fun y hy => h10 y hy) hx
-  exact ⟨sub_nonneg.mp (h7 u hu), sub_nonneg.mp (h9 u hu), sub_nonneg.mp (h11 u hu)⟩
-
-private theorem bohmanP9_P11_P13_bounds {u : ℝ} (hu : 0 ≤ u) :
-    bohmanP9 u ≤ Real.sin u - u * Real.cos u ∧
-      Real.sin u - u * Real.cos u ≤ bohmanP11 u ∧
-      bohmanP13 u ≤ Real.sin u - u * Real.cos u := by
+private theorem bohmanP9_le_and_le_bohmanP11' {u : ℝ} (hu : 0 ≤ u) :
+    bohmanP9 u ≤ Real.sin u - u * Real.cos u ∧ Real.sin u - u * Real.cos u ≤ bohmanP11 u := by
   have hd9 : ∀ x : ℝ, HasDerivAt bohmanP9
       (x * (x - x ^ 3 / 6 + x ^ 5 / 120 - x ^ 7 / 5040)) x := fun x => by
     unfold bohmanP9
@@ -504,21 +508,13 @@ private theorem bohmanP9_P11_P13_bounds {u : ℝ} (hu : 0 ≤ u) :
       (x * (x - x ^ 3 / 6 + x ^ 5 / 120 - x ^ 7 / 5040 + x ^ 9 / 362880)) x := fun x => by
     unfold bohmanP11
     refine ((hd9 x).add (hasDerivAt_monomial_div' 11 3991680 x)).congr_deriv (by norm_num; ring)
-  have hd13 : ∀ x : ℝ, HasDerivAt bohmanP13
-      (x * (x - x ^ 3 / 6 + x ^ 5 / 120 - x ^ 7 / 5040 + x ^ 9 / 362880 - x ^ 11 / 39916800)) x :=
-    fun x => by
-      unfold bohmanP13
-      refine ((hd11 x).sub (hasDerivAt_monomial_div' 13 518918400 x)).congr_deriv (by norm_num; ring)
   have hlo := nonneg_of_deriv_nonneg' (by simp [bohmanP9])
     (fun x => ((hasDerivAt_sin_sub_mul_cos' x).sub (hd9 x)).congr_deriv (by ring))
-    (fun x hx => mul_nonneg hx (sub_nonneg.mpr (sin_taylor_bounds_of_nonneg' hx).1)) hu
+    (fun x hx => mul_nonneg hx (sub_nonneg.mpr (sin_cos_taylor_chain hx).1)) hu
   have hhi := nonneg_of_deriv_nonneg' (by simp [bohmanP11, bohmanP9])
     (fun x => ((hd11 x).sub (hasDerivAt_sin_sub_mul_cos' x)).congr_deriv (by ring))
-    (fun x hx => mul_nonneg hx (sub_nonneg.mpr (sin_taylor_bounds_of_nonneg' hx).2.1)) hu
-  have hlo13 := nonneg_of_deriv_nonneg' (by simp [bohmanP13, bohmanP11, bohmanP9])
-    (fun x => ((hasDerivAt_sin_sub_mul_cos' x).sub (hd13 x)).congr_deriv (by ring))
-    (fun x hx => mul_nonneg hx (sub_nonneg.mpr (sin_taylor_bounds_of_nonneg' hx).2.2)) hu
-  exact ⟨sub_nonneg.mp hlo, sub_nonneg.mp hhi, sub_nonneg.mp hlo13⟩
+    (fun x hx => mul_nonneg hx (sub_nonneg.mpr (sin_cos_taylor_chain hx).2.1)) hu
+  exact ⟨sub_nonneg.mp hlo, sub_nonneg.mp hhi⟩
 
 private theorem bohmanFn_eq_sin_sub_mul_cos' {L x : ℝ} (hL : 0 < L) (hx0 : 0 ≤ x) (hxL : x ≤ L) :
     bohmanFn L x =
@@ -563,11 +559,11 @@ private theorem bohman_coeff_bounds' {p pk k lp_lo lp_hi u_lo u_hi c_lo c_hi : �
   have hu_hi_lt_pi : u_hi ≤ Real.pi := hu_hi_pi.trans hπ_lo.le
   have hu_pi : u ≤ Real.pi := hu_le_hi.trans hu_hi_lt_pi
   have hH_lo : bohmanP9 u_lo ≤ Real.sin u - u * Real.cos u :=
-    (bohmanP9_P11_P13_bounds hu_lo0).1.trans
+    (bohmanP9_le_and_le_bohmanP11' hu_lo0).1.trans
       (monotoneOn_sin_sub_mul_cos' ⟨hu_lo0, hu_ge_lo.trans hu_pi⟩ ⟨hu0, hu_pi⟩ hu_ge_lo)
   have hH_hi : Real.sin u - u * Real.cos u ≤ bohmanP11 u_hi :=
     (monotoneOn_sin_sub_mul_cos' ⟨hu0, hu_pi⟩ ⟨hu_lo0.trans (hu_ge_lo.trans hu_le_hi), hu_hi_lt_pi⟩
-      hu_le_hi).trans (bohmanP9_P11_P13_bounds (hu_lo0.trans (hu_ge_lo.trans hu_le_hi))).2.1
+      hu_le_hi).trans (bohmanP9_le_and_le_bohmanP11' (hu_lo0.trans (hu_ge_lo.trans hu_le_hi))).2
   have hW_eq := bohmanFn_eq_sin_sub_mul_cos' (L := 9 / 2) (x := k * Real.log p) (by norm_num) hkx0 hkxL
   have hW_nonneg : 0 ≤ bohmanFn (9 / 2) (k * Real.log p) := bohmanFn_nonneg (by norm_num) _
   have hW_lo : bohmanP9 u_lo / 3.1415926536 ≤ bohmanFn (9 / 2) (k * Real.log p) := by
@@ -575,7 +571,7 @@ private theorem bohman_coeff_bounds' {p pk k lp_lo lp_hi u_lo u_hi c_lo c_hi : �
     by_cases hp9 : 0 ≤ bohmanP9 u_lo
     · exact (div_le_div_of_nonneg_left hp9 hπ_pos hπ_hi.le).trans
         (div_le_div_of_nonneg_right hH_lo hπ_pos.le)
-    · exact (div_nonpos_of_nonpos_of_nonneg (le_of_not_ge hp9) (by norm_num)).trans
+    · exact (div_nonpos_of_nonpos_of_nonneg (not_le.mp hp9).le (by norm_num)).trans
         (by rw [← hW_eq]; exact hW_nonneg)
   have hW_hi : bohmanFn (9 / 2) (k * Real.log p) ≤ bohmanP11 u_hi / 3.1415926535 := by
     rw [hW_eq]
@@ -588,40 +584,10 @@ private theorem bohman_coeff_bounds' {p pk k lp_lo lp_hi u_lo u_hi c_lo c_hi : �
   · by_cases hw0 : 0 ≤ bohmanP9 u_lo / 3.1415926536
     · exact mul_le_mul (div_le_div_of_nonneg_right hlp_lo hpk.le) hW_lo hw0
         (div_nonneg hlp_nonneg hpk.le)
-    · exact (mul_nonpos_of_nonpos_of_nonneg (div_nonneg hlp0 hpk.le) (le_of_not_ge hw0)).trans
+    · exact (mul_nonpos_of_nonneg_of_nonpos (div_nonneg hlp0 hpk.le) (not_le.mp hw0).le).trans
         (mul_nonneg (div_nonneg hlp_nonneg hpk.le) hW_nonneg)
   · exact (mul_le_mul (div_le_div_of_nonneg_right hlp_hi hpk.le) hW_hi hW_nonneg
       (div_nonneg (hlp_nonneg.trans hlp_hi) hpk.le)).trans h_chi
-
-private theorem bohman_coeff_lb_p13' {p lp_lo lp_hi u_lo c_lo : ℝ}
-    (hp : 0 < p) (hlp0 : 0 ≤ lp_lo)
-    (hlp_lo : lp_lo ≤ Real.log p) (hlp_hi : Real.log p ≤ lp_hi)
-    (hk_hi : 1 * lp_hi ≤ 9 / 2) (hu_lo0 : 0 ≤ u_lo)
-    (hu_lo : u_lo ≤ 3.1415926535 * (1 - 1 * lp_hi / (9 / 2)))
-    (h_clo : c_lo ≤ lp_lo / p * (bohmanP13 u_lo / 3.1415926536))
-    (hp13_pos : 0 ≤ bohmanP13 u_lo) :
-    c_lo ≤ Real.log p / p * bohmanFn (9 / 2) (1 * Real.log p) := by
-  obtain ⟨hπ_lo, hπ_hi⟩ := pi_bounds_d10'
-  have hπ_pos := Real.pi_pos
-  have hlp_nonneg : 0 ≤ Real.log p := hlp0.trans hlp_lo
-  set u : ℝ := Real.pi * (1 - 1 * Real.log p / (9 / 2))
-  have h1_lo : 0 ≤ 1 - 1 * lp_hi / (9 / 2) := by linarith
-  have h1_le : 1 - 1 * lp_hi / (9 / 2) ≤ 1 - 1 * Real.log p / (9 / 2) := by linarith
-  have hu_ge_lo : u_lo ≤ u := hu_lo.trans (mul_le_mul hπ_lo.le h1_le h1_lo hπ_pos.le)
-  have hu0 : 0 ≤ u := hu_lo0.trans hu_ge_lo
-  have hu_pi : u ≤ Real.pi := by
-    dsimp only [u]; exact mul_le_of_le_one_right hπ_pos.le (by linarith)
-  have hH_lo : bohmanP13 u_lo ≤ Real.sin u - u * Real.cos u :=
-    (bohmanP9_P11_P13_bounds hu_lo0).2.2.trans
-      (monotoneOn_sin_sub_mul_cos' ⟨hu_lo0, hu_ge_lo.trans hu_pi⟩ ⟨hu0, hu_pi⟩ hu_ge_lo)
-  have hW_eq := bohmanFn_eq_sin_sub_mul_cos' (L := 9 / 2) (x := 1 * Real.log p)
-    (by norm_num) (by linarith) (by linarith)
-  have hW_lo : bohmanP13 u_lo / 3.1415926536 ≤ bohmanFn (9 / 2) (1 * Real.log p) := by
-    rw [hW_eq]
-    exact (div_le_div_of_nonneg_left hp13_pos hπ_pos hπ_hi.le).trans
-      (div_le_div_of_nonneg_right hH_lo hπ_pos.le)
-  exact h_clo.trans (mul_le_mul (div_le_div_of_nonneg_right hlp_lo hp.le) hW_lo
-    (div_nonneg hp13_pos (by norm_num)) (div_nonneg hlp_nonneg hp.le))
 
 private theorem all_prime_bohman_coeff_bounds' :
     (0.3096269 ≤ Real.log 2 / 2 * bohmanFn (9 / 2) (1 * Real.log 2) ∧ Real.log 2 / 2 * bohmanFn (9 / 2) (1 * Real.log 2) ≤ 0.3109196) ∧
@@ -658,8 +624,7 @@ private theorem all_prime_bohman_coeff_bounds' :
     (0.0000043 ≤ Real.log 79 / 79 * bohmanFn (9 / 2) (1 * Real.log 79) ∧ Real.log 79 / 79 * bohmanFn (9 / 2) (1 * Real.log 79) ≤ 0.0000045) ∧
     (0.0000009 ≤ Real.log 83 / 83 * bohmanFn (9 / 2) (1 * Real.log 83) ∧ Real.log 83 / 83 * bohmanFn (9 / 2) (1 * Real.log 83) ≤ 0.0000011) ∧
     (0.0000000 ≤ Real.log 89 / 89 * bohmanFn (9 / 2) (1 * Real.log 89) ∧ Real.log 89 / 89 * bohmanFn (9 / 2) (1 * Real.log 89) ≤ 0.0000001) := by
-  have hl2a := Real.log_two_gt_d9.le
-  have hl2b := Real.log_two_lt_d9.le
+  have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
   obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, ⟨hl11a, hl11b⟩, ⟨hl13a, hl13b⟩, ⟨hl17a, hl17b⟩, ⟨hl19a, hl19b⟩, ⟨hl23a, hl23b⟩, ⟨hl29a, hl29b⟩, ⟨hl31a, hl31b⟩, ⟨hl37a, hl37b⟩, ⟨hl41a, hl41b⟩, ⟨hl43a, hl43b⟩, ⟨hl47a, hl47b⟩, ⟨hl53a, hl53b⟩, ⟨hl59a, hl59b⟩, ⟨hl61a, hl61b⟩, ⟨hl67a, hl67b⟩, ⟨hl71a, hl71b⟩, ⟨hl73a, hl73b⟩, ⟨hl79a, hl79b⟩, ⟨hl83a, hl83b⟩, ⟨hl89a, hl89b⟩⟩ := sharp_log_prime_bounds
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · exact bohman_coeff_bounds' (u_lo := 2.65768) (u_hi := 2.65769) (by norm_num) (by norm_num) (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by norm_num) (by unfold bohmanP9; norm_num) (by unfold bohmanP11 bohmanP9; norm_num)
@@ -775,8 +740,8 @@ theorem bohmanPhaseForm_ge_sum_excess (θ : ℕ → ℝ) :
         bohmanExcess 19 (θ 19) + bohmanExcess 23 (θ 23) + bohmanExcess 29 (θ 29) +
         bohmanExcess 31 (θ 31) + bohmanExcess 37 (θ 37) + bohmanExcess 41 (θ 41) +
         bohmanExcess 43 (θ 43) + bohmanExcess 47 (θ 47)) ≤ bohmanPhaseForm θ := by
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _,
-    _, _, _, _, _, _, _, _, _, _, _,
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -,
+    -, -, -, -, -, -, -, -, -, -, -,
     ⟨b53l, b53u⟩, ⟨b59l, b59u⟩, ⟨b61l, b61u⟩, ⟨b67l, b67u⟩, ⟨b71l, b71u⟩,
     ⟨b73l, b73u⟩, ⟨b79l, b79u⟩, ⟨b83l, b83u⟩, ⟨b89l, b89u⟩⟩ := all_prime_bohman_coeff_bounds'
   have s53 := neg_ub_le_mul_cos' (θ := θ 53) (by linarith only [b53l]) b53u
@@ -800,8 +765,8 @@ private theorem monotoneOn_bohman2 :
       (Real.log 2 / 16 * bohmanFn (9 / 2) (4 * Real.log 2))
       (Real.log 2 / 32 * bohmanFn (9 / 2) (5 * Real.log 2))
       (Real.log 2 / 64 * bohmanFn (9 / 2) (6 * Real.log 2))) (Icc (-1) 1) := by
-  obtain ⟨⟨b2_1l, _⟩, ⟨b2_2l, b2_2u⟩, ⟨b2_3l, b2_3u⟩, ⟨b2_4l, b2_4u⟩, ⟨b2_5l, b2_5u⟩,
-    ⟨b2_6l, b2_6u⟩, _⟩ := all_prime_bohman_coeff_bounds'
+  obtain ⟨⟨b2_1l, -⟩, ⟨b2_2l, b2_2u⟩, ⟨b2_3l, b2_3u⟩, ⟨b2_4l, b2_4u⟩, ⟨b2_5l, b2_5u⟩,
+    ⟨b2_6l, b2_6u⟩, -⟩ := all_prime_bohman_coeff_bounds'
   refine monotoneOn_chebPoly6_of_sos (E_hi := 0.0008210) (G_hi := 0.0000155)
     (by linarith only [b2_4l]) (by linarith only [b2_5l]) b2_5u
     (by linarith only [b2_6l]) b2_6u (by linarith only [b2_3l, b2_4u]) ?_
@@ -827,7 +792,7 @@ private theorem monotoneOn_bohman3 :
       (Real.log 3 / 9 * bohmanFn (9 / 2) (2 * Real.log 3))
       (Real.log 3 / 27 * bohmanFn (9 / 2) (3 * Real.log 3))
       (Real.log 3 / 81 * bohmanFn (9 / 2) (4 * Real.log 3)) 0 0) (Icc (-1) 1) := by
-  obtain ⟨_, _, _, _, _, _, ⟨b3_1l, _⟩, ⟨b3_2l, b3_2u⟩, ⟨b3_3l, b3_3u⟩, ⟨b3_4l, b3_4u⟩, _⟩ :=
+  obtain ⟨-, -, -, -, -, -, ⟨b3_1l, -⟩, ⟨b3_2l, b3_2u⟩, ⟨b3_3l, b3_3u⟩, ⟨b3_4l, b3_4u⟩, -⟩ :=
     all_prime_bohman_coeff_bounds'
   exact monotoneOn_chebPoly4_of_linear (by linarith only [b3_2l]) (by linarith only [b3_3l])
     (by linarith only [b3_4l]) (by linarith only [b3_1l, b3_2u, b3_3u, b3_4u])
@@ -836,7 +801,7 @@ private theorem monotoneOn_bohman5 :
     MonotoneOn (chebPoly6
       (Real.log 5 / 5 * bohmanFn (9 / 2) (1 * Real.log 5))
       (Real.log 5 / 25 * bohmanFn (9 / 2) (2 * Real.log 5)) 0 0 0 0) (Icc (-1) 1) := by
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, ⟨b5_1l, _⟩, ⟨b5_2l, b5_2u⟩, _⟩ :=
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, ⟨b5_1l, -⟩, ⟨b5_2l, b5_2u⟩, -⟩ :=
     all_prime_bohman_coeff_bounds'
   exact monotoneOn_chebPoly4_of_linear (by linarith only [b5_2l]) le_rfl le_rfl
     (by linarith only [b5_1l, b5_2u])
@@ -845,7 +810,7 @@ private theorem monotoneOn_bohman7 :
     MonotoneOn (chebPoly6
       (Real.log 7 / 7 * bohmanFn (9 / 2) (1 * Real.log 7))
       (Real.log 7 / 49 * bohmanFn (9 / 2) (2 * Real.log 7)) 0 0 0 0) (Icc (-1) 1) := by
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, ⟨b7_1l, _⟩, ⟨b7_2l, b7_2u⟩, _⟩ :=
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, ⟨b7_1l, -⟩, ⟨b7_2l, b7_2u⟩, -⟩ :=
     all_prime_bohman_coeff_bounds'
   exact monotoneOn_chebPoly4_of_linear (by linarith only [b7_2l]) le_rfl le_rfl
     (by linarith only [b7_1l, b7_2u])
@@ -863,7 +828,7 @@ private theorem bohmanExcess2_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_l
         0.0000155 * min (32 * u_lo ^ 6 - 48 * u_lo ^ 4 + 18 * u_lo ^ 2 - 1) 0) -
       (-0.3109196 + 0.1133596 - 0.0329207 + 0.0069486 - 0.0008210 + 0.0000154)) :
     g ≤ bohmanExcess 2 θ := by
-  obtain ⟨⟨b1l, b1u⟩, ⟨b2l, b2u⟩, ⟨b3l, b3u⟩, ⟨b4l, b4u⟩, ⟨b5l, b5u⟩, ⟨b6l, b6u⟩, _⟩ :=
+  obtain ⟨⟨b1l, b1u⟩, ⟨b2l, b2u⟩, ⟨b3l, b3u⟩, ⟨b4l, b4u⟩, ⟨b5l, b5u⟩, ⟨b6l, b6u⟩, -⟩ :=
     all_prime_bohman_coeff_bounds'
   obtain ⟨c2, c3, c4, c5, c6⟩ := cos_chebyshev_six' θ
   have hu1 : u_lo ≤ 1 := hu.trans (Real.cos_le_one θ)
@@ -876,6 +841,8 @@ private theorem bohmanExcess2_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_l
       (Real.log 2 / 32 * bohmanFn (9 / 2) (5 * Real.log 2))
       (Real.log 2 / 64 * bohmanFn (9 / 2) (6 * Real.log 2)) (Real.cos θ) = bohmanTerm2 θ := by
     unfold chebPoly6 bohmanTerm2; rw [c2, c3, c4, c5, c6]
+  rw [hterm] at hmono
+  unfold chebPoly6 at hmono
   have w1 := weighted_sign_lb b1l b1u (t := u_lo)
   have w2 := weighted_sign_lb b2l b2u (t := 2 * u_lo ^ 2 - 1)
   have w3 := weighted_sign_lb b3l b3u (t := 4 * u_lo ^ 3 - 3 * u_lo)
@@ -883,8 +850,7 @@ private theorem bohmanExcess2_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_l
   have w5 := weighted_sign_lb b5l b5u (t := 16 * u_lo ^ 5 - 20 * u_lo ^ 3 + 5 * u_lo)
   have w6 := weighted_sign_lb b6l b6u (t := 32 * u_lo ^ 6 - 48 * u_lo ^ 4 + 18 * u_lo ^ 2 - 1)
   unfold bohmanExcess; simp only [↓reduceIte]
-  unfold chebPoly6 at hmono
-  linarith only [hg, w1, w2, w3, w4, w5, w6, hmono, hterm]
+  linarith only [hg, w1, w2, w3, w4, w5, w6, hmono]
 
 private theorem bohmanExcess3_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_lo ≤ Real.cos θ)
     (hg : g ≤
@@ -895,7 +861,7 @@ private theorem bohmanExcess3_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_l
         0.0000006 * min (8 * u_lo ^ 4 - 8 * u_lo ^ 2 + 1) 0) -
       (-0.2802868 + 0.0411017 - 0.0023895 + 0.0000005)) :
     g ≤ bohmanExcess 3 θ := by
-  obtain ⟨_, _, _, _, _, _, ⟨b1l, b1u⟩, ⟨b2l, b2u⟩, ⟨b3l, b3u⟩, ⟨b4l, b4u⟩, _⟩ :=
+  obtain ⟨-, -, -, -, -, -, ⟨b1l, b1u⟩, ⟨b2l, b2u⟩, ⟨b3l, b3u⟩, ⟨b4l, b4u⟩, -⟩ :=
     all_prime_bohman_coeff_bounds'
   obtain ⟨c2, c3, c4, -, -⟩ := cos_chebyshev_six' θ
   have hu1 : u_lo ≤ 1 := hu.trans (Real.cos_le_one θ)
@@ -906,13 +872,14 @@ private theorem bohmanExcess3_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_l
       (Real.log 3 / 27 * bohmanFn (9 / 2) (3 * Real.log 3))
       (Real.log 3 / 81 * bohmanFn (9 / 2) (4 * Real.log 3)) 0 0 (Real.cos θ) = bohmanTerm3 θ := by
     unfold chebPoly6 bohmanTerm3; rw [c2, c3, c4]; ring
+  rw [hterm] at hmono
+  unfold chebPoly6 at hmono
   have w1 := weighted_sign_lb b1l b1u (t := u_lo)
   have w2 := weighted_sign_lb b2l b2u (t := 2 * u_lo ^ 2 - 1)
   have w3 := weighted_sign_lb b3l b3u (t := 4 * u_lo ^ 3 - 3 * u_lo)
   have w4 := weighted_sign_lb b4l b4u (t := 8 * u_lo ^ 4 - 8 * u_lo ^ 2 + 1)
   unfold bohmanExcess; simp only [↓reduceIte, Nat.reduceEqDiff]
-  unfold chebPoly6 at hmono
-  linarith only [hg, w1, w2, w3, w4, hmono, hterm]
+  linarith only [hg, w1, w2, w3, w4, hmono]
 
 private theorem bohmanExcess5_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_lo ≤ Real.cos θ)
     (hg : g ≤
@@ -920,7 +887,7 @@ private theorem bohmanExcess5_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_l
       (0.0044971 * max (2 * u_lo ^ 2 - 1) 0 + 0.0045154 * min (2 * u_lo ^ 2 - 1) 0) -
       (-0.1818962 + 0.0044971)) :
     g ≤ bohmanExcess 5 θ := by
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, ⟨b1l, b1u⟩, ⟨b2l, b2u⟩, _⟩ :=
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, ⟨b1l, b1u⟩, ⟨b2l, b2u⟩, -⟩ :=
     all_prime_bohman_coeff_bounds'
   have c2 : Real.cos (2 * θ) = 2 * Real.cos θ ^ 2 - 1 := Real.cos_two_mul θ
   have hu1 : u_lo ≤ 1 := hu.trans (Real.cos_le_one θ)
@@ -929,11 +896,12 @@ private theorem bohmanExcess5_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_l
       (Real.log 5 / 5 * bohmanFn (9 / 2) (1 * Real.log 5))
       (Real.log 5 / 25 * bohmanFn (9 / 2) (2 * Real.log 5)) 0 0 0 0 (Real.cos θ) = bohmanTerm5 θ := by
     unfold chebPoly6 bohmanTerm5; rw [c2]; ring
+  rw [hterm] at hmono
+  unfold chebPoly6 at hmono
   have w1 := weighted_sign_lb b1l b1u (t := u_lo)
   have w2 := weighted_sign_lb b2l b2u (t := 2 * u_lo ^ 2 - 1)
   unfold bohmanExcess; simp only [↓reduceIte, Nat.reduceEqDiff]
-  unfold chebPoly6 at hmono
-  linarith only [hg, w1, w2, hmono, hterm]
+  linarith only [hg, w1, w2, hmono]
 
 private theorem bohmanExcess7_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_lo ≤ Real.cos θ)
     (hg : g ≤
@@ -941,7 +909,7 @@ private theorem bohmanExcess7_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_l
       (0.0003159 * max (2 * u_lo ^ 2 - 1) 0 + 0.0003188 * min (2 * u_lo ^ 2 - 1) 0) -
       (-0.1198266 + 0.0003159)) :
     g ≤ bohmanExcess 7 θ := by
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, ⟨b1l, b1u⟩, ⟨b2l, b2u⟩, _⟩ :=
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, ⟨b1l, b1u⟩, ⟨b2l, b2u⟩, -⟩ :=
     all_prime_bohman_coeff_bounds'
   have c2 : Real.cos (2 * θ) = 2 * Real.cos θ ^ 2 - 1 := Real.cos_two_mul θ
   have hu1 : u_lo ≤ 1 := hu.trans (Real.cos_le_one θ)
@@ -950,11 +918,12 @@ private theorem bohmanExcess7_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_l
       (Real.log 7 / 7 * bohmanFn (9 / 2) (1 * Real.log 7))
       (Real.log 7 / 49 * bohmanFn (9 / 2) (2 * Real.log 7)) 0 0 0 0 (Real.cos θ) = bohmanTerm7 θ := by
     unfold chebPoly6 bohmanTerm7; rw [c2]; ring
+  rw [hterm] at hmono
+  unfold chebPoly6 at hmono
   have w1 := weighted_sign_lb b1l b1u (t := u_lo)
   have w2 := weighted_sign_lb b2l b2u (t := 2 * u_lo ^ 2 - 1)
   unfold bohmanExcess; simp only [↓reduceIte, Nat.reduceEqDiff]
-  unfold chebPoly6 at hmono
-  linarith only [hg, w1, w2, hmono, hterm]
+  linarith only [hg, w1, w2, hmono]
 
 private theorem linear_excess_ge {c c_lo c_hi u_lo g θ : ℝ}
     (hclo0 : 0 ≤ c_lo) (hlo : c_lo ≤ c) (hhi : c ≤ c_hi)
@@ -971,67 +940,67 @@ private theorem linear_excess_ge {c c_lo c_hi u_lo g θ : ℝ}
 
 private theorem bohmanExcess11_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_lo ≤ Real.cos θ)
     (hg : g ≤ 0.0585011 * (1 + u_lo)) : g ≤ bohmanExcess 11 θ := by
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, ⟨bl, bu⟩, _⟩ := all_prime_bohman_coeff_bounds'
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, ⟨bl, bu⟩, -⟩ := all_prime_bohman_coeff_bounds'
   unfold bohmanExcess; simp only [↓reduceIte, Nat.reduceEqDiff]
   exact linear_excess_ge (by norm_num) bl bu hu0 hu hg
 
 private theorem bohmanExcess13_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_lo ≤ Real.cos θ)
     (hg : g ≤ 0.0427132 * (1 + u_lo)) : g ≤ bohmanExcess 13 θ := by
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, ⟨bl, bu⟩, _⟩ := all_prime_bohman_coeff_bounds'
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, ⟨bl, bu⟩, -⟩ := all_prime_bohman_coeff_bounds'
   unfold bohmanExcess; simp only [↓reduceIte, Nat.reduceEqDiff]
   exact linear_excess_ge (by norm_num) bl bu hu0 hu hg
 
 private theorem bohmanExcess17_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_lo ≤ Real.cos θ)
     (hg : g ≤ 0.0242427 * (1 + u_lo)) : g ≤ bohmanExcess 17 θ := by
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, ⟨bl, bu⟩, _⟩ := all_prime_bohman_coeff_bounds'
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, ⟨bl, bu⟩, -⟩ := all_prime_bohman_coeff_bounds'
   unfold bohmanExcess; simp only [↓reduceIte, Nat.reduceEqDiff]
   exact linear_excess_ge (by norm_num) bl bu hu0 hu hg
 
 private theorem bohmanExcess19_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_lo ≤ Real.cos θ)
     (hg : g ≤ 0.0186189 * (1 + u_lo)) : g ≤ bohmanExcess 19 θ := by
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, ⟨bl, bu⟩, _⟩ := all_prime_bohman_coeff_bounds'
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, ⟨bl, bu⟩, -⟩ := all_prime_bohman_coeff_bounds'
   unfold bohmanExcess; simp only [↓reduceIte, Nat.reduceEqDiff]
   exact linear_excess_ge (by norm_num) bl bu hu0 hu hg
 
 private theorem bohmanExcess23_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_lo ≤ Real.cos θ)
     (hg : g ≤ 0.0113990 * (1 + u_lo)) : g ≤ bohmanExcess 23 θ := by
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, ⟨bl, bu⟩, _⟩ := all_prime_bohman_coeff_bounds'
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, ⟨bl, bu⟩, -⟩ := all_prime_bohman_coeff_bounds'
   unfold bohmanExcess; simp only [↓reduceIte, Nat.reduceEqDiff]
   exact linear_excess_ge (by norm_num) bl bu hu0 hu hg
 
 private theorem bohmanExcess29_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_lo ≤ Real.cos θ)
     (hg : g ≤ 0.0056981 * (1 + u_lo)) : g ≤ bohmanExcess 29 θ := by
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, ⟨bl, bu⟩, _⟩ := all_prime_bohman_coeff_bounds'
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, ⟨bl, bu⟩, -⟩ := all_prime_bohman_coeff_bounds'
   unfold bohmanExcess; simp only [↓reduceIte, Nat.reduceEqDiff]
   exact linear_excess_ge (by norm_num) bl bu hu0 hu hg
 
 private theorem bohmanExcess31_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_lo ≤ Real.cos θ)
     (hg : g ≤ 0.0045777 * (1 + u_lo)) : g ≤ bohmanExcess 31 θ := by
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, ⟨bl, bu⟩, _⟩ := all_prime_bohman_coeff_bounds'
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, ⟨bl, bu⟩, -⟩ := all_prime_bohman_coeff_bounds'
   unfold bohmanExcess; simp only [↓reduceIte, Nat.reduceEqDiff]
   exact linear_excess_ge (by norm_num) bl bu hu0 hu hg
 
 private theorem bohmanExcess37_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_lo ≤ Real.cos θ)
     (hg : g ≤ 0.0023761 * (1 + u_lo)) : g ≤ bohmanExcess 37 θ := by
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, ⟨bl, bu⟩, _⟩ := all_prime_bohman_coeff_bounds'
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, ⟨bl, bu⟩, -⟩ := all_prime_bohman_coeff_bounds'
   unfold bohmanExcess; simp only [↓reduceIte, Nat.reduceEqDiff]
   exact linear_excess_ge (by norm_num) bl bu hu0 hu hg
 
 private theorem bohmanExcess41_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_lo ≤ Real.cos θ)
     (hg : g ≤ 0.0015372 * (1 + u_lo)) : g ≤ bohmanExcess 41 θ := by
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, ⟨bl, bu⟩, _⟩ := all_prime_bohman_coeff_bounds'
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, ⟨bl, bu⟩, -⟩ := all_prime_bohman_coeff_bounds'
   unfold bohmanExcess; simp only [↓reduceIte, Nat.reduceEqDiff]
   exact linear_excess_ge (by norm_num) bl bu hu0 hu hg
 
 private theorem bohmanExcess43_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_lo ≤ Real.cos θ)
     (hg : g ≤ 0.0012316 * (1 + u_lo)) : g ≤ bohmanExcess 43 θ := by
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, ⟨bl, bu⟩, _⟩ := all_prime_bohman_coeff_bounds'
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, ⟨bl, bu⟩, -⟩ := all_prime_bohman_coeff_bounds'
   unfold bohmanExcess; simp only [↓reduceIte, Nat.reduceEqDiff]
   exact linear_excess_ge (by norm_num) bl bu hu0 hu hg
 
 private theorem bohmanExcess47_ge {u_lo g θ : ℝ} (hu0 : -1 ≤ u_lo) (hu : u_lo ≤ Real.cos θ)
     (hg : g ≤ 0.0007923 * (1 + u_lo)) : g ≤ bohmanExcess 47 θ := by
-  obtain ⟨_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, ⟨bl, bu⟩, _⟩ := all_prime_bohman_coeff_bounds'
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, ⟨bl, bu⟩, -⟩ := all_prime_bohman_coeff_bounds'
   unfold bohmanExcess; simp only [↓reduceIte, Nat.reduceEqDiff]
   exact linear_excess_ge (by norm_num) bl bu hu0 hu hg
 
@@ -1053,6 +1022,16 @@ private theorem bohmanExcess_all_nonneg (θ : ℕ → ℝ) :
   · exact bohmanExcess41_ge (u_lo := -1) le_rfl (Real.neg_one_le_cos _) (by norm_num)
   · exact bohmanExcess43_ge (u_lo := -1) le_rfl (Real.neg_one_le_cos _) (by norm_num)
   · exact bohmanExcess47_ge (u_lo := -1) le_rfl (Real.neg_one_le_cos _) (by norm_num)
+
+private theorem bohmanPhaseForm_coupled_ge_sum_excess (γ : ℝ) :
+    -(0.935816 : ℝ) + (bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) + bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) + bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) + bohmanExcess 7 (γ * Real.log ((7 : ℕ) : ℝ)) + bohmanExcess 11 (γ * Real.log ((11 : ℕ) : ℝ)) + bohmanExcess 13 (γ * Real.log ((13 : ℕ) : ℝ)) + bohmanExcess 17 (γ * Real.log ((17 : ℕ) : ℝ)) + bohmanExcess 19 (γ * Real.log ((19 : ℕ) : ℝ)) + bohmanExcess 23 (γ * Real.log ((23 : ℕ) : ℝ)) + bohmanExcess 29 (γ * Real.log ((29 : ℕ) : ℝ)) + bohmanExcess 31 (γ * Real.log ((31 : ℕ) : ℝ)) + bohmanExcess 37 (γ * Real.log ((37 : ℕ) : ℝ)) + bohmanExcess 41 (γ * Real.log ((41 : ℕ) : ℝ)) + bohmanExcess 43 (γ * Real.log ((43 : ℕ) : ℝ)) + bohmanExcess 47 (γ * Real.log ((47 : ℕ) : ℝ))) ≤
+      bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) :=
+  bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
+
+private theorem bohmanExcess_coupled_all_nonneg (γ : ℝ) :
+    0 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) ∧ 0 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) ∧ 0 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) ∧ 0 ≤ bohmanExcess 7 (γ * Real.log ((7 : ℕ) : ℝ)) ∧ 0 ≤ bohmanExcess 11 (γ * Real.log ((11 : ℕ) : ℝ)) ∧ 0 ≤ bohmanExcess 13 (γ * Real.log ((13 : ℕ) : ℝ)) ∧ 0 ≤ bohmanExcess 17 (γ * Real.log ((17 : ℕ) : ℝ)) ∧ 0 ≤ bohmanExcess 19 (γ * Real.log ((19 : ℕ) : ℝ)) ∧ 0 ≤ bohmanExcess 23 (γ * Real.log ((23 : ℕ) : ℝ)) ∧ 0 ≤ bohmanExcess 29 (γ * Real.log ((29 : ℕ) : ℝ)) ∧ 0 ≤ bohmanExcess 31 (γ * Real.log ((31 : ℕ) : ℝ)) ∧ 0 ≤ bohmanExcess 37 (γ * Real.log ((37 : ℕ) : ℝ)) ∧ 0 ≤ bohmanExcess 41 (γ * Real.log ((41 : ℕ) : ℝ)) ∧ 0 ≤ bohmanExcess 43 (γ * Real.log ((43 : ℕ) : ℝ)) ∧ 0 ≤ bohmanExcess 47 (γ * Real.log ((47 : ℕ) : ℝ)) :=
+  bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
+
 
 private theorem exp_nine_bounds' : (89 : ℝ) ^ 2 ≤ Real.exp 9 ∧ Real.exp 9 ≤ (91 : ℝ) ^ 2 := by
   have he9 : Real.exp 9 = Real.exp 1 ^ 9 := by rw [← Real.exp_nat_mul]; norm_num
@@ -1087,6 +1066,20 @@ private theorem exp_neg_nine_quarters_bounds' :
     exact (by norm_num : (0.105400 ^ 4 : ℝ)⁻¹ ≤ 2.7182818283 ^ 9).trans he9_lo
   exact ⟨(pow_le_pow_iff_left₀ (by norm_num) (Real.exp_pos _).le (by norm_num : 4 ≠ 0)).mp hlo4,
     (pow_le_pow_iff_left₀ (Real.exp_pos _).le (by norm_num) (by norm_num : 4 ≠ 0)).mp hhi4⟩
+
+private theorem le_log_of_two_pow_le' {p : ℝ} {k m : ℕ} (hk : 0 < k)
+    (h : (2 : ℝ) ^ m ≤ p ^ k) : (m : ℝ) / k * Real.log 2 ≤ Real.log p := by
+  have hl := Real.log_le_log (by positivity) h
+  rw [Real.log_pow, Real.log_pow] at hl
+  have hk' : (0 : ℝ) < k := by exact_mod_cast hk
+  rw [div_mul_eq_mul_div, div_le_iff₀ hk']; linarith only [hl]
+
+private theorem log_le_of_pow_le_two_pow' {p : ℝ} (hp : 0 < p) {k m : ℕ} (hk : 0 < k)
+    (h : p ^ k ≤ (2 : ℝ) ^ m) : Real.log p ≤ (m : ℝ) / k * Real.log 2 := by
+  have hl := Real.log_le_log (by positivity) h
+  rw [Real.log_pow, Real.log_pow] at hl
+  have hk' : (0 : ℝ) < k := by exact_mod_cast hk
+  rw [div_mul_eq_mul_div, le_div_iff₀ hk']; linarith only [hl]
 
 private theorem log_pi_lb_sharp' : (1.144498 : ℝ) ≤ Real.log Real.pi := by
   have hpow : (2 : ℝ) ^ 71 ≤ Real.pi ^ 43 :=
@@ -1143,8 +1136,8 @@ private theorem bohman_budget_left_bounds' :
 private theorem bohman_arch_lt_smooth {γ g_lo g_hi M logM4_hi ub : ℝ} {a2 b c d : ℕ}
     (hg0 : 0 < g_lo) (hlo : g_lo ≤ γ) (hhi : γ ≤ g_hi) (hM : 0 < M)
     (hM_eq : M / 4 = (2 : ℝ) ^ a2 * (3 : ℝ) ^ b * (5 : ℝ) ^ c * (7 : ℝ) ^ d)
-    (hlogM : (a2 : ℝ) * 0.6931471808 + (b : ℝ) * 1.0986619 +
-      (c : ℝ) * 1.6095113 + (d : ℝ) * 1.9459466 ≤ logM4_hi)
+    (hlogM : (a2 : ℝ) * 0.6931471808 + (b : ℝ) * 1.0986129 +
+      (c : ℝ) * 1.609438 + (d : ℝ) * 1.9459107 ≤ logM4_hi)
     (hub : 1 / 4 * (logM4_hi + (9 + g_hi ^ 2 - M) / M) - 1.144498 / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * g_lo ^ 2) + 1200 / ((9 / 2) ^ 3 * g_lo ^ 4) < ub) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
@@ -1183,18 +1176,18 @@ private theorem bohman_arch_lt_smooth {γ g_lo g_hi M logM4_hi ub : ℝ} {a2 b c
       (mul_le_mul_of_nonneg_left (pow_le_pow_left₀ hg0.le hlo 4) (by norm_num))
   linarith only [hlog_tot, hπ, ht1, ht2, hub]
 
-/-! ## 42-interval coupled prime-phase exclusion across `(169/2, 150]` -/
+/-! ## 41-interval coupled prime-phase exclusion across `(169/2, 150]` -/
 
-private theorem bohman_interval_0 {γ : ℝ} (hlo : 84.5 ≤ γ) (hhi : γ ≤ 88.140625) :
+private theorem bohman_interval_0 {γ : ℝ} (hlo : (169 / 2) ≤ γ) (hhi : γ ≤ 88.140625) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   obtain ⟨⟨hl3a, hl3b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 84.5) (g_hi := 88.140625) (M := 7840) (logM4_hi := 7.5808462) (ub := 1.321927) (a2 := 3) (b := 0) (c := 1) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.8516) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 84.5) (g_hi := 88.140625) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 2.5891) 15 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.02158 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.8516)) (by norm_num) hu_0 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := (169 / 2)) (g_hi := 88.140625) (M := 7776) (logM4_hi := 7.5725062) (ub := 1.321884) (a2 := 3) (b := 5) (c := 0) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨hn2, -, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.8493) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := (169 / 2)) (g_hi := 88.140625) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 2.5848) 15 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.02194 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.8493)) (by norm_num) hu_0 (by norm_num)
   linarith only [harch, hmaster, hn2, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0]
 
 private theorem bohman_interval_1 {γ : ℝ} (hlo : 88.140625 ≤ γ) (hhi : γ ≤ 93.53125) :
@@ -1202,11 +1195,11 @@ private theorem bohman_interval_1 {γ : ℝ} (hlo : 88.140625 ≤ γ) (hhi : γ 
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
-  have harch := bohman_arch_lt_smooth (g_lo := 88.140625) (g_hi := 93.53125) (M := 8820) (logM4_hi := 7.6987284) (ub := 1.351589) (a2 := 0) (b := 2) (c := 1) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.4156) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 88.140625) (g_hi := 93.53125) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.9992) 10 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.05078 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.4156)) (by norm_num) hu_0 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 88.140625) (g_hi := 93.53125) (M := 8748) (logM4_hi := 7.6902904) (ub := 1.351523) (a2 := 0) (b := 7) (c := 0) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.4156) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 88.140625) (g_hi := 93.53125) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.9992) 10 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.05078 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.4156)) (by norm_num) hu_0 (by norm_num)
   linarith only [harch, hmaster, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0]
 
 private theorem bohman_interval_2 {γ : ℝ} (hlo : 93.53125 ≤ γ) (hhi : γ ≤ 95.234375) :
@@ -1214,56 +1207,54 @@ private theorem bohman_interval_2 {γ : ℝ} (hlo : 93.53125 ≤ γ) (hhi : γ �
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   obtain ⟨-, ⟨hl5a, hl5b⟩, -, ⟨hl11a, hl11b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 93.53125) (g_hi := 95.234375) (M := 8960) (logM4_hi := 7.7143411) (ub := 1.360571) (a2 := 6) (b := 0) (c := 1) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.792) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 93.53125) (g_hi := 95.234375) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 2.4845) 24 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.03447 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.792)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.5637) ≤ Real.cos (γ * Real.log (11 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 93.53125) (g_hi := 95.234375) (lp_lo := 2.3977758) (lp_hi := 2.3979146) (x_hi := 2.1694) 36 (by norm_num) hlo hhi (by norm_num) hl11a hl11b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.02551 ≤ bohmanExcess 11 (γ * Real.log (11 : ℝ)) := bohmanExcess11_ge (u_lo := (-0.5637)) (by norm_num) hu_1 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 93.53125) (g_hi := 95.234375) (M := 9072) (logM4_hi := 7.7266568) (ub := 1.360523) (a2 := 2) (b := 4) (c := 0) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨hn2, hn3, -, hn7, -, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.7877) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 93.53125) (g_hi := 95.234375) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 2.4775) 24 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.03519 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.7877)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.5622) ≤ Real.cos (γ * Real.log ((11 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 93.53125) (g_hi := 95.234375) (lp := Real.log ((11 : ℕ) : ℝ)) (lp_lo := 2.3978948) (lp_hi := 2.397896) (x_hi := 2.1676) 36 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl11a) (by simpa only [Nat.cast_ofNat] using hl11b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.0256 ≤ bohmanExcess 11 (γ * Real.log ((11 : ℕ) : ℝ)) := bohmanExcess11_ge (u_lo := (-0.5622)) (by norm_num) hu_1 (by norm_num)
   linarith only [harch, hmaster, hn2, hn3, hn7, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1]
 
-private theorem bohman_interval_3 {γ : ℝ} (hlo : 95.234375 ≤ γ) (hhi : γ ≤ 96.96875) :
+private theorem bohman_interval_3 {γ : ℝ} (hlo : 95.234375 ≤ γ) (hhi : γ ≤ 96.984375) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
-  obtain ⟨⟨hl3a, hl3b⟩, -, -, -, -, -, ⟨hl19a, hl19b⟩, ⟨hl23a, hl23b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 95.234375) (g_hi := 96.96875) (M := 9408) (logM4_hi := 7.763144) (ub := 1.369564) (a2 := 4) (b := 1) (c := 0) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.5825) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 95.234375) (g_hi := 96.96875) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 2.1924) 17 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.06735 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.5825)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.9344) ≤ Real.cos (γ * Real.log (19 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 95.234375) (g_hi := 96.96875) (lp_lo := 2.9443944) (lp_hi := 2.9444434) (x_hi := 2.7758) 45 (by norm_num) hlo hhi (by norm_num) hl19a hl19b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.00121 ≤ bohmanExcess 19 (γ * Real.log (19 : ℝ)) := bohmanExcess19_ge (u_lo := (-0.9344)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.9899) ≤ Real.cos (γ * Real.log (23 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 95.234375) (g_hi := 96.96875) (lp_lo := 3.1354442) (lp_hi := 3.1356659) (x_hi := 2.991) 48 (by norm_num) hlo hhi (by norm_num) hl23a hl23b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.0001 ≤ bohmanExcess 23 (γ * Real.log (23 : ℝ)) := bohmanExcess23_ge (u_lo := (-0.9899)) (by norm_num) hu_2 (by norm_num)
-  linarith only [harch, hmaster, hn2, hn5, hn7, hn11, hn13, hn17, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1, hg_2]
+  obtain ⟨⟨hl3a, hl3b⟩, -, -, -, -, -, ⟨hl19a, hl19b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
+  have harch := bohman_arch_lt_smooth (g_lo := 95.234375) (g_hi := 96.984375) (M := 9408) (logM4_hi := 7.7630232) (ub := 1.369615) (a2 := 4) (b := 1) (c := 0) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨hn2, -, hn5, hn7, hn11, hn13, hn17, -, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.5795) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 95.234375) (g_hi := 96.984375) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 2.1887) 17 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.06791 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.5795)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.9499) ≤ Real.cos (γ * Real.log ((19 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 95.234375) (g_hi := 96.984375) (lp := Real.log ((19 : ℕ) : ℝ)) (lp_lo := 2.9444385) (lp_hi := 2.9444403) (x_hi := 2.8215) 45 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl19a) (by simpa only [Nat.cast_ofNat] using hl19b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.00092 ≤ bohmanExcess 19 (γ * Real.log ((19 : ℕ) : ℝ)) := bohmanExcess19_ge (u_lo := (-0.9499)) (by norm_num) hu_1 (by norm_num)
+  linarith only [harch, hmaster, hn2, hn5, hn7, hn11, hn13, hn17, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1]
 
-private theorem bohman_interval_4 {γ : ℝ} (hlo : 96.96875 ≤ γ) (hhi : γ ≤ 99.59375) :
+private theorem bohman_interval_4 {γ : ℝ} (hlo : 96.984375 ≤ γ) (hhi : γ ≤ 99.609375) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
   obtain ⟨⟨hl3a, hl3b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 96.96875) (g_hi := 99.59375) (M := 9800) (logM4_hi := 7.8040631) (ub := 1.382949) (a2 := 1) (b := 0) (c := 2) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.325) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 96.96875) (g_hi := 99.59375) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.9016) 11 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.06226 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.325)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.8603) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 96.96875) (g_hi := 99.59375) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 2.6059) 17 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.02025 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.8603)) (by norm_num) hu_1 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 96.984375) (g_hi := 99.609375) (M := 10000) (logM4_hi := 7.8240465) (ub := 1.382958) (a2 := 2) (b := 0) (c := 4) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, -, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.3146) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 96.984375) (g_hi := 99.609375) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.8907) 11 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.06367 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.3146)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.8664) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 96.984375) (g_hi := 99.609375) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 2.6181) 17 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.01932 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.8664)) (by norm_num) hu_1 (by norm_num)
   linarith only [harch, hmaster, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1]
 
-private theorem bohman_interval_5 {γ : ℝ} (hlo : 99.59375 ≤ γ) (hhi : γ ≤ 102.140625) :
+private theorem bohman_interval_5 {γ : ℝ} (hlo : 99.609375 ≤ γ) (hhi : γ ≤ 102.140625) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
-  have harch := bohman_arch_lt_smooth (g_lo := 99.59375) (g_hi := 102.140625) (M := 10368) (logM4_hi := 7.8603837) (ub := 1.395538) (a2 := 5) (b := 4) (c := 0) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.1127) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 99.59375) (g_hi := 102.140625) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.6836) 11 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.09547 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.1127)) (by norm_num) hu_0 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 99.609375) (g_hi := 102.140625) (M := 10500) (logM4_hi := 7.8728377) (ub := 1.395487) (a2 := 0) (b := 1) (c := 3) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.1127) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 99.609375) (g_hi := 102.140625) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.6836) 11 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.09547 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.1127)) (by norm_num) hu_0 (by norm_num)
   linarith only [harch, hmaster, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0]
 
 private theorem bohman_interval_6 {γ : ℝ} (hlo : 102.140625 ≤ γ) (hhi : γ ≤ 104.75) :
@@ -1271,66 +1262,67 @@ private theorem bohman_interval_6 {γ : ℝ} (hlo : 102.140625 ≤ γ) (hhi : γ
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   obtain ⟨⟨hl3a, hl3b⟩, -, ⟨hl7a, hl7b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 102.140625) (g_hi := 104.75) (M := 10976) (logM4_hi := 7.9172815) (ub := 1.408108) (a2 := 3) (b := 0) (c := 0) (d := 3) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.405) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 102.140625) (g_hi := 104.75) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 1.9876) 18 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.10266 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.405)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.9345) ≤ Real.cos (γ * Real.log (7 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 102.140625) (g_hi := 104.75) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (x_hi := 2.7761) 32 (by norm_num) hlo hhi (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.00775 ≤ bohmanExcess 7 (γ * Real.log (7 : ℝ)) := bohmanExcess7_ge (u_lo := (-0.9345)) (by norm_num) hu_1 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 102.140625) (g_hi := 104.75) (M := 10976) (logM4_hi := 7.9171738) (ub := 1.408081) (a2 := 3) (b := 0) (c := 0) (d := 3) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨hn2, -, hn5, -, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.4003) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 102.140625) (g_hi := 104.75) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 1.9825) 18 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.10365 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.4003)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.9332) ≤ Real.cos (γ * Real.log ((7 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 102.140625) (g_hi := 104.75) (lp := Real.log ((7 : ℕ) : ℝ)) (lp_lo := 1.945908) (lp_hi := 1.9459107) (x_hi := 2.7724) 32 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl7a) (by simpa only [Nat.cast_ofNat] using hl7b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.00791 ≤ bohmanExcess 7 (γ * Real.log ((7 : ℕ) : ℝ)) := bohmanExcess7_ge (u_lo := (-0.9332)) (by norm_num) hu_1 (by norm_num)
   linarith only [harch, hmaster, hn2, hn5, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1]
 
-private theorem bohman_interval_7 {γ : ℝ} (hlo : 104.75 ≤ γ) (hhi : γ ≤ 106.578125) :
+private theorem bohman_interval_7 {γ : ℝ} (hlo : 104.75 ≤ γ) (hhi : γ ≤ 106.59375) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
+  have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
   obtain ⟨-, ⟨hl5a, hl5b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 104.75) (g_hi := 106.578125) (M := 11520) (logM4_hi := 7.9657183) (ub := 1.416785) (a2 := 6) (b := 2) (c := 1) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.3166) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 104.75) (g_hi := 106.578125) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 1.8928) 27 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.11619 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.3166)) (by norm_num) hu_0 (by norm_num)
-  linarith only [harch, hmaster, hn2, hn3, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0]
+  have harch := bohman_arch_lt_smooth (g_lo := 104.75) (g_hi := 106.59375) (M := 11340) (logM4_hi := 7.9498004) (ub := 1.416795) (a2 := 0) (b := 4) (c := 1) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, hn3, -, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.3331) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 104.75) (g_hi := 106.59375) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 1.9102) 27 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.11328 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.3331)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.9398) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 104.75) (g_hi := 106.59375) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.7912) 12 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.00387 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.9398)) (by norm_num) hu_1 (by norm_num)
+  linarith only [harch, hmaster, hn3, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1]
 
-private theorem bohman_interval_8 {γ : ℝ} (hlo : 106.578125 ≤ γ) (hhi : γ ≤ 111.03125) :
+private theorem bohman_interval_8 {γ : ℝ} (hlo : 106.59375 ≤ γ) (hhi : γ ≤ 111.046875) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
   obtain ⟨⟨hl3a, hl3b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 106.578125) (g_hi := 111.03125) (M := 12288) (logM4_hi := 8.0301339) (ub := 1.437183) (a2 := 10) (b := 1) (c := 0) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : 0.0077 ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 106.578125) (g_hi := 111.03125) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.5629) 12 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.11949 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := 0.0077) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.86) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 106.578125) (g_hi := 111.03125) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 2.6054) 19 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.02029 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.86)) (by norm_num) hu_1 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 106.59375) (g_hi := 111.046875) (M := 12348) (logM4_hi := 8.034958) (ub := 1.43724) (a2 := 0) (b := 2) (c := 0) (d := 3) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, -, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.0032) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 106.59375) (g_hi := 111.046875) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.5738) 12 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.11713 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.0032)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.866) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 106.59375) (g_hi := 111.046875) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 2.6172) 19 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.01938 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.866)) (by norm_num) hu_1 (by norm_num)
   linarith only [harch, hmaster, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1]
 
-private theorem bohman_interval_9 {γ : ℝ} (hlo : 111.03125 ≤ γ) (hhi : γ ≤ 111.375) :
+private theorem bohman_interval_9 {γ : ℝ} (hlo : 111.046875 ≤ γ) (hhi : γ ≤ 111.375) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
-  obtain ⟨⟨hl3a, hl3b⟩, -, -, -, -, ⟨hl17a, hl17b⟩, ⟨hl19a, hl19b⟩, -, -, ⟨hl31a, hl31b⟩, ⟨hl37a, hl37b⟩, -, -, ⟨hl47a, hl47b⟩, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 111.03125) (g_hi := 111.375) (M := 12288) (logM4_hi := 8.0301339) (ub := 1.438732) (a2 := 10) (b := 1) (c := 0) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.2285) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.03125) (g_hi := 111.375) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.8012) 12 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.07613 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.2285)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : 0.1768 ≤ Real.cos (γ * Real.log (17 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.03125) (g_hi := 111.375) (lp_lo := 2.8331549) (lp_hi := 2.8332392) (x_hi := 1.3929) 50 (by norm_num) hlo hhi (by norm_num) hl17a hl17b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.02851 ≤ bohmanExcess 17 (γ * Real.log (17 : ℝ)) := bohmanExcess17_ge (u_lo := 0.1768) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : 0.3511 ≤ Real.cos (γ * Real.log (19 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.03125) (g_hi := 111.375) (lp_lo := 2.9443944) (lp_hi := 2.9444434) (x_hi := 1.2119) 52 (by norm_num) hlo hhi (by norm_num) hl19a hl19b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.02514 ≤ bohmanExcess 19 (γ * Real.log (19 : ℝ)) := bohmanExcess19_ge (u_lo := 0.3511) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : 0.352 ≤ Real.cos (γ * Real.log (37 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.03125) (g_hi := 111.375) (lp_lo := 3.6108132) (lp_hi := 3.6109222) (x_hi := 1.2109) 64 (by norm_num) hlo hhi (by norm_num) hl37a hl37b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.0032 ≤ bohmanExcess 37 (γ * Real.log (37 : ℝ)) := bohmanExcess37_ge (u_lo := 0.352) (by norm_num) hu_3 (by norm_num)
-  have hu_4 : (-0.4161) ≤ Real.cos (γ * Real.log (31 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.03125) (g_hi := 111.375) (lp_lo := 3.4339401) (lp_hi := 3.4339888) (x_hi := 1.9998) 61 (by norm_num) hlo hhi (by norm_num) hl31a hl31b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_4 : 0.00266 ≤ bohmanExcess 31 (γ * Real.log (31 : ℝ)) := bohmanExcess31_ge (u_lo := (-0.4161)) (by norm_num) hu_4 (by norm_num)
-  have hu_5 : (-0.9886) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.03125) (g_hi := 111.375) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 2.9831) 19 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_5 : 0.00156 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.9886)) (by norm_num) hu_5 (by norm_num)
-  have hu_6 : 0.0143 ≤ Real.cos (γ * Real.log (47 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.03125) (g_hi := 111.375) (lp_lo := 3.8501175) (lp_hi := 3.8501705) (x_hi := 1.5563) 68 (by norm_num) hlo hhi (by norm_num) hl47a hl47b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_6 : 0.00079 ≤ bohmanExcess 47 (γ * Real.log (47 : ℝ)) := bohmanExcess47_ge (u_lo := 0.0143) (by norm_num) hu_6 (by norm_num)
-  linarith only [harch, hmaster, hn5, hn7, hn11, hn13, hn23, hn29, hn41, hn43, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6]
+  obtain ⟨⟨hl3a, hl3b⟩, -, -, -, -, ⟨hl17a, hl17b⟩, ⟨hl19a, hl19b⟩, -, -, ⟨hl31a, hl31b⟩, ⟨hl37a, hl37b⟩, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
+  have harch := bohman_arch_lt_smooth (g_lo := 111.046875) (g_hi := 111.375) (M := 12348) (logM4_hi := 8.034958) (ub := 1.438711) (a2 := 0) (b := 2) (c := 0) (d := 3) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, -, hn5, hn7, hn11, hn13, -, -, hn23, hn29, -, -, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.2285) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.046875) (g_hi := 111.375) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.8012) 12 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.07613 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.2285)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : 0.1797 ≤ Real.cos (γ * Real.log ((17 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.046875) (g_hi := 111.375) (lp := Real.log ((17 : ℕ) : ℝ)) (lp_lo := 2.8332133) (lp_hi := 2.8332134) (x_hi := 1.39) 50 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl17a) (by simpa only [Nat.cast_ofNat] using hl17b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.02858 ≤ bohmanExcess 17 (γ * Real.log ((17 : ℕ) : ℝ)) := bohmanExcess17_ge (u_lo := 0.1797) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : 0.3514 ≤ Real.cos (γ * Real.log ((19 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.046875) (g_hi := 111.375) (lp := Real.log ((19 : ℕ) : ℝ)) (lp_lo := 2.9444385) (lp_hi := 2.9444403) (x_hi := 1.2116) 52 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl19a) (by simpa only [Nat.cast_ofNat] using hl19b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.02515 ≤ bohmanExcess 19 (γ * Real.log ((19 : ℕ) : ℝ)) := bohmanExcess19_ge (u_lo := 0.3514) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : 0.4148 ≤ Real.cos (γ * Real.log ((37 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.046875) (g_hi := 111.375) (lp := Real.log ((37 : ℕ) : ℝ)) (lp_lo := 3.6109175) (lp_hi := 3.6109192) (x_hi := 1.1429) 64 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl37a) (by simpa only [Nat.cast_ofNat] using hl37b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.00335 ≤ bohmanExcess 37 (γ * Real.log ((37 : ℕ) : ℝ)) := bohmanExcess37_ge (u_lo := 0.4148) (by norm_num) hu_3 (by norm_num)
+  have hu_4 : (-0.3619) ≤ Real.cos (γ * Real.log ((31 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.046875) (g_hi := 111.375) (lp := Real.log ((31 : ℕ) : ℝ)) (lp_lo := 3.4339872) (lp_hi := 3.4339873) (x_hi := 1.9409) 61 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl31a) (by simpa only [Nat.cast_ofNat] using hl31b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_4 : 0.00291 ≤ bohmanExcess 31 (γ * Real.log ((31 : ℕ) : ℝ)) := bohmanExcess31_ge (u_lo := (-0.3619)) (by norm_num) hu_4 (by norm_num)
+  have hu_5 : (-0.9877) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.046875) (g_hi := 111.375) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 2.9776) 19 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_5 : 0.00168 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.9877)) (by norm_num) hu_5 (by norm_num)
+  linarith only [harch, hmaster, hn5, hn7, hn11, hn13, hn23, hn29, hn41, hn43, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5]
 
 private theorem bohman_interval_10 {γ : ℝ} (hlo : 111.375 ≤ γ) (hhi : γ ≤ 111.4375) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
@@ -1338,29 +1330,29 @@ private theorem bohman_interval_10 {γ : ℝ} (hlo : 111.375 ≤ γ) (hhi : γ �
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
   obtain ⟨-, ⟨hl5a, hl5b⟩, -, -, -, ⟨hl17a, hl17b⟩, ⟨hl19a, hl19b⟩, ⟨hl23a, hl23b⟩, ⟨hl29a, hl29b⟩, ⟨hl31a, hl31b⟩, ⟨hl37a, hl37b⟩, ⟨hl41a, hl41b⟩, ⟨hl43a, hl43b⟩, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 111.375) (g_hi := 111.4375) (M := 12288) (logM4_hi := 8.0301339) (ub := 1.439015) (a2 := 10) (b := 1) (c := 0) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.2705) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.8445) 12 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.06987 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.2705)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : 0.0006 ≤ Real.cos (γ * Real.log (17 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp_lo := 2.8331549) (lp_hi := 2.8332392) (x_hi := 1.57) 50 (by norm_num) hlo hhi (by norm_num) hl17a hl17b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.02424 ≤ bohmanExcess 17 (γ * Real.log (17 : ℝ)) := bohmanExcess17_ge (u_lo := 0.0006) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : 0.1739 ≤ Real.cos (γ * Real.log (19 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp_lo := 2.9443944) (lp_hi := 2.9444434) (x_hi := 1.3959) 52 (by norm_num) hlo hhi (by norm_num) hl19a hl19b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.02184 ≤ bohmanExcess 19 (γ * Real.log (19 : ℝ)) := bohmanExcess19_ge (u_lo := 0.1739) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : 0.6825 ≤ Real.cos (γ * Real.log (31 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp_lo := 3.4339401) (lp_hi := 3.4339888) (x_hi := 0.8194) 61 (by norm_num) hlo hhi (by norm_num) hl31a hl31b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.00769 ≤ bohmanExcess 31 (γ * Real.log (31 : ℝ)) := bohmanExcess31_ge (u_lo := 0.6825) (by norm_num) hu_3 (by norm_num)
-  have hu_4 : 0.964 ≤ Real.cos (γ * Real.log (37 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp_lo := 3.6108132) (lp_hi := 3.6109222) (x_hi := 0.2684) 64 (by norm_num) hlo hhi (by norm_num) hl37a hl37b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_4 : 0.00465 ≤ bohmanExcess 37 (γ * Real.log (37 : ℝ)) := bohmanExcess37_ge (u_lo := 0.964) (by norm_num) hu_4 (by norm_num)
-  have hu_5 : (-0.4375) ≤ Real.cos (γ * Real.log (29 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp_lo := 3.3667148) (lp_hi := 3.3673538) (x_hi := 2.0234) 60 (by norm_num) hlo hhi (by norm_num) hl29a hl29b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_5 : 0.00319 ≤ bohmanExcess 29 (γ * Real.log (29 : ℝ)) := bohmanExcess29_ge (u_lo := (-0.4375)) (by norm_num) hu_5 (by norm_num)
-  have hu_6 : (-0.985) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 2.9622) 29 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_6 : 0.00245 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.985)) (by norm_num) hu_6 (by norm_num)
-  have hu_7 : 0.4329 ≤ Real.cos (γ * Real.log (41 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp_lo := 3.7132884) (lp_hi := 3.7136164) (x_hi := 1.1229) 66 (by norm_num) hlo hhi (by norm_num) hl41a hl41b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_7 : 0.00219 ≤ bohmanExcess 41 (γ * Real.log (41 : ℝ)) := bohmanExcess41_ge (u_lo := 0.4329) (by norm_num) hu_7 (by norm_num)
-  have hu_8 : (-0.8812) ≤ Real.cos (γ * Real.log (23 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp_lo := 3.1354442) (lp_hi := 3.1356659) (x_hi := 2.6484) 56 (by norm_num) hlo hhi (by norm_num) hl23a hl23b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_8 : 0.00134 ≤ bohmanExcess 23 (γ * Real.log (23 : ℝ)) := bohmanExcess23_ge (u_lo := (-0.8812)) (by norm_num) hu_8 (by norm_num)
-  have hu_9 : (-0.4812) ≤ Real.cos (γ * Real.log (43 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp_lo := 3.7611756) (lp_hi := 3.7612638) (x_hi := 2.0726) 67 (by norm_num) hlo hhi (by norm_num) hl43a hl43b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_9 : 0.00062 ≤ bohmanExcess 43 (γ * Real.log (43 : ℝ)) := bohmanExcess43_ge (u_lo := (-0.4812)) (by norm_num) hu_9 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 111.375) (g_hi := 111.4375) (M := 12500) (logM4_hi := 8.0471901) (ub := 1.438991) (a2 := 0) (b := 0) (c := 5) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, hn3, -, hn7, hn11, hn13, -, -, -, -, -, -, -, -, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.2705) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.8445) 12 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.06987 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.2705)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : 0.0035 ≤ Real.cos (γ * Real.log ((17 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp := Real.log ((17 : ℕ) : ℝ)) (lp_lo := 2.8332133) (lp_hi := 2.8332134) (x_hi := 1.5671) 50 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl17a) (by simpa only [Nat.cast_ofNat] using hl17b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.02431 ≤ bohmanExcess 17 (γ * Real.log ((17 : ℕ) : ℝ)) := bohmanExcess17_ge (u_lo := 0.0035) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : 0.1742 ≤ Real.cos (γ * Real.log ((19 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp := Real.log ((19 : ℕ) : ℝ)) (lp_lo := 2.9444385) (lp_hi := 2.9444403) (x_hi := 1.3956) 52 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl19a) (by simpa only [Nat.cast_ofNat] using hl19b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.02185 ≤ bohmanExcess 19 (γ * Real.log ((19 : ℕ) : ℝ)) := bohmanExcess19_ge (u_lo := 0.1742) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : 0.6864 ≤ Real.cos (γ * Real.log ((31 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp := Real.log ((31 : ℕ) : ℝ)) (lp_lo := 3.4339872) (lp_hi := 3.4339873) (x_hi := 0.8141) 61 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl31a) (by simpa only [Nat.cast_ofNat] using hl31b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.0077 ≤ bohmanExcess 31 (γ * Real.log ((31 : ℕ) : ℝ)) := bohmanExcess31_ge (u_lo := 0.6864) (by norm_num) hu_3 (by norm_num)
+  have hu_4 : 0.9641 ≤ Real.cos (γ * Real.log ((37 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp := Real.log ((37 : ℕ) : ℝ)) (lp_lo := 3.6109175) (lp_hi := 3.6109192) (x_hi := 0.2681) 64 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl37a) (by simpa only [Nat.cast_ofNat] using hl37b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_4 : 0.00465 ≤ bohmanExcess 37 (γ * Real.log ((37 : ℕ) : ℝ)) := bohmanExcess37_ge (u_lo := 0.9641) (by norm_num) hu_4 (by norm_num)
+  have hu_5 : (-0.3784) ≤ Real.cos (γ * Real.log ((29 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp := Real.log ((29 : ℕ) : ℝ)) (lp_lo := 3.3672956) (lp_hi := 3.3672966) (x_hi := 1.9587) 60 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl29a) (by simpa only [Nat.cast_ofNat] using hl29b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_5 : 0.00353 ≤ bohmanExcess 29 (γ * Real.log ((29 : ℕ) : ℝ)) := bohmanExcess29_ge (u_lo := (-0.3784)) (by norm_num) hu_5 (by norm_num)
+  have hu_6 : (-0.9849) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 2.9614) 29 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_6 : 0.00246 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.9849)) (by norm_num) hu_6 (by norm_num)
+  have hu_7 : 0.4612 ≤ Real.cos (γ * Real.log ((41 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp := Real.log ((41 : ℕ) : ℝ)) (lp_lo := 3.713572) (lp_hi := 3.7135722) (x_hi := 1.0913) 66 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl41a) (by simpa only [Nat.cast_ofNat] using hl41b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_7 : 0.00223 ≤ bohmanExcess 41 (γ * Real.log ((41 : ℕ) : ℝ)) := bohmanExcess41_ge (u_lo := 0.4612) (by norm_num) hu_7 (by norm_num)
+  have hu_8 : (-0.8786) ≤ Real.cos (γ * Real.log ((23 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp := Real.log ((23 : ℕ) : ℝ)) (lp_lo := 3.135494) (lp_hi := 3.1354949) (x_hi := 2.6429) 56 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl23a) (by simpa only [Nat.cast_ofNat] using hl23b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_8 : 0.00137 ≤ bohmanExcess 23 (γ * Real.log ((23 : ℕ) : ℝ)) := bohmanExcess23_ge (u_lo := (-0.8786)) (by norm_num) hu_8 (by norm_num)
+  have hu_9 : (-0.4791) ≤ Real.cos (γ * Real.log ((43 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.375) (g_hi := 111.4375) (lp := Real.log ((43 : ℕ) : ℝ)) (lp_lo := 3.7611977) (lp_hi := 3.7612013) (x_hi := 2.0702) 67 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl43a) (by simpa only [Nat.cast_ofNat] using hl43b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_9 : 0.00063 ≤ bohmanExcess 43 (γ * Real.log ((43 : ℕ) : ℝ)) := bohmanExcess43_ge (u_lo := (-0.4791)) (by norm_num) hu_9 (by norm_num)
   linarith only [harch, hmaster, hn3, hn7, hn11, hn13, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6, hg_7, hg_8, hg_9]
 
 private theorem bohman_interval_11 {γ : ℝ} (hlo : 111.4375 ≤ γ) (hhi : γ ≤ 111.46875) :
@@ -1368,699 +1360,676 @@ private theorem bohman_interval_11 {γ : ℝ} (hlo : 111.4375 ≤ γ) (hhi : γ 
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
-  obtain ⟨-, ⟨hl5a, hl5b⟩, -, -, -, ⟨hl17a, hl17b⟩, ⟨hl19a, hl19b⟩, ⟨hl23a, hl23b⟩, ⟨hl29a, hl29b⟩, ⟨hl31a, hl31b⟩, ⟨hl37a, hl37b⟩, ⟨hl41a, hl41b⟩, ⟨hl43a, hl43b⟩, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 111.4375) (g_hi := 111.46875) (M := 12544) (logM4_hi := 8.0507764) (ub := 1.439155) (a2 := 6) (b := 0) (c := 0) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.2913) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.4375) (g_hi := 111.46875) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.8662) 12 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.0669 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.2913)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.0877) ≤ Real.cos (γ * Real.log (17 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.4375) (g_hi := 111.46875) (lp_lo := 2.8331549) (lp_hi := 2.8332392) (x_hi := 1.6585) 50 (by norm_num) hlo hhi (by norm_num) hl17a hl17b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.0221 ≤ bohmanExcess 17 (γ * Real.log (17 : ℝ)) := bohmanExcess17_ge (u_lo := (-0.0877)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : 0.0827 ≤ Real.cos (γ * Real.log (19 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.4375) (g_hi := 111.46875) (lp_lo := 2.9443944) (lp_hi := 2.9444434) (x_hi := 1.4879) 52 (by norm_num) hlo hhi (by norm_num) hl19a hl19b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.02014 ≤ bohmanExcess 19 (γ * Real.log (19 : ℝ)) := bohmanExcess19_ge (u_lo := 0.0827) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : 0.8225 ≤ Real.cos (γ * Real.log (31 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.4375) (g_hi := 111.46875) (lp_lo := 3.4339401) (lp_hi := 3.4339888) (x_hi := 0.6048) 61 (by norm_num) hlo hhi (by norm_num) hl31a hl31b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.00833 ≤ bohmanExcess 31 (γ * Real.log (31 : ℝ)) := bohmanExcess31_ge (u_lo := 0.8225) (by norm_num) hu_3 (by norm_num)
-  have hu_4 : (-0.9618) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.4375) (g_hi := 111.46875) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 2.8616) 29 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_4 : 0.00626 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.9618)) (by norm_num) hu_4 (by norm_num)
-  have hu_5 : 0.928 ≤ Real.cos (γ * Real.log (37 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.4375) (g_hi := 111.46875) (lp_lo := 3.6108132) (lp_hi := 3.6109222) (x_hi := 0.3813) 64 (by norm_num) hlo hhi (by norm_num) hl37a hl37b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_5 : 0.00457 ≤ bohmanExcess 37 (γ * Real.log (37 : ℝ)) := bohmanExcess37_ge (u_lo := 0.928) (by norm_num) hu_5 (by norm_num)
-  have hu_6 : (-0.24) ≤ Real.cos (γ * Real.log (29 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.4375) (g_hi := 111.46875) (lp_lo := 3.3667148) (lp_hi := 3.3673538) (x_hi := 1.813) 60 (by norm_num) hlo hhi (by norm_num) hl29a hl29b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_6 : 0.00432 ≤ bohmanExcess 29 (γ * Real.log (29 : ℝ)) := bohmanExcess29_ge (u_lo := (-0.24)) (by norm_num) hu_6 (by norm_num)
-  have hu_7 : (-0.7721) ≤ Real.cos (γ * Real.log (23 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.4375) (g_hi := 111.46875) (lp_lo := 3.1354442) (lp_hi := 3.1356659) (x_hi := 2.4525) 56 (by norm_num) hlo hhi (by norm_num) hl23a hl23b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_7 : 0.00258 ≤ bohmanExcess 23 (γ * Real.log (23 : ℝ)) := bohmanExcess23_ge (u_lo := (-0.7721)) (by norm_num) hu_7 (by norm_num)
-  have hu_8 : 0.6286 ≤ Real.cos (γ * Real.log (41 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.4375) (g_hi := 111.46875) (lp_lo := 3.7132884) (lp_hi := 3.7136164) (x_hi := 0.8908) 66 (by norm_num) hlo hhi (by norm_num) hl41a hl41b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_8 : 0.00249 ≤ bohmanExcess 41 (γ * Real.log (41 : ℝ)) := bohmanExcess41_ge (u_lo := 0.6286) (by norm_num) hu_8 (by norm_num)
-  have hu_9 : (-0.2638) ≤ Real.cos (γ * Real.log (43 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.4375) (g_hi := 111.46875) (lp_lo := 3.7611756) (lp_hi := 3.7612638) (x_hi := 1.8376) 67 (by norm_num) hlo hhi (by norm_num) hl43a hl43b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_9 : 0.00089 ≤ bohmanExcess 43 (γ * Real.log (43 : ℝ)) := bohmanExcess43_ge (u_lo := (-0.2638)) (by norm_num) hu_9 (by norm_num)
-  linarith only [harch, hmaster, hn3, hn7, hn11, hn13, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6, hg_7, hg_8, hg_9]
+  obtain ⟨-, ⟨hl5a, hl5b⟩, -, -, -, ⟨hl17a, hl17b⟩, ⟨hl19a, hl19b⟩, ⟨hl23a, hl23b⟩, ⟨hl29a, hl29b⟩, ⟨hl31a, hl31b⟩, ⟨hl37a, hl37b⟩, ⟨hl41a, hl41b⟩, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
+  have harch := bohman_arch_lt_smooth (g_lo := 111.4375) (g_hi := 111.46875) (M := 12500) (logM4_hi := 8.0471901) (ub := 1.43913) (a2 := 0) (b := 0) (c := 5) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, hn3, -, hn7, hn11, hn13, -, -, -, -, -, -, -, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.2913) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.4375) (g_hi := 111.46875) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.8662) 12 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.0669 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.2913)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.0849) ≤ Real.cos (γ * Real.log ((17 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.4375) (g_hi := 111.46875) (lp := Real.log ((17 : ℕ) : ℝ)) (lp_lo := 2.8332133) (lp_hi := 2.8332134) (x_hi := 1.6556) 50 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl17a) (by simpa only [Nat.cast_ofNat] using hl17b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.02217 ≤ bohmanExcess 17 (γ * Real.log ((17 : ℕ) : ℝ)) := bohmanExcess17_ge (u_lo := (-0.0849)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : 0.083 ≤ Real.cos (γ * Real.log ((19 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.4375) (g_hi := 111.46875) (lp := Real.log ((19 : ℕ) : ℝ)) (lp_lo := 2.9444385) (lp_hi := 2.9444403) (x_hi := 1.4876) 52 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl19a) (by simpa only [Nat.cast_ofNat] using hl19b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.02015 ≤ bohmanExcess 19 (γ * Real.log ((19 : ℕ) : ℝ)) := bohmanExcess19_ge (u_lo := 0.083) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : 0.8255 ≤ Real.cos (γ * Real.log ((31 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.4375) (g_hi := 111.46875) (lp := Real.log ((31 : ℕ) : ℝ)) (lp_lo := 3.4339872) (lp_hi := 3.4339873) (x_hi := 0.5995) 61 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl31a) (by simpa only [Nat.cast_ofNat] using hl31b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.00834 ≤ bohmanExcess 31 (γ * Real.log ((31 : ℕ) : ℝ)) := bohmanExcess31_ge (u_lo := 0.8255) (by norm_num) hu_3 (by norm_num)
+  have hu_4 : (-0.9616) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.4375) (g_hi := 111.46875) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 2.8608) 29 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_4 : 0.00629 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.9616)) (by norm_num) hu_4 (by norm_num)
+  have hu_5 : (-0.1767) ≤ Real.cos (γ * Real.log ((29 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.4375) (g_hi := 111.46875) (lp := Real.log ((29 : ℕ) : ℝ)) (lp_lo := 3.3672956) (lp_hi := 3.3672966) (x_hi := 1.7483) 60 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl29a) (by simpa only [Nat.cast_ofNat] using hl29b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_5 : 0.00468 ≤ bohmanExcess 29 (γ * Real.log ((29 : ℕ) : ℝ)) := bohmanExcess29_ge (u_lo := (-0.1767)) (by norm_num) hu_5 (by norm_num)
+  have hu_6 : 0.9282 ≤ Real.cos (γ * Real.log ((37 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.4375) (g_hi := 111.46875) (lp := Real.log ((37 : ℕ) : ℝ)) (lp_lo := 3.6109175) (lp_hi := 3.6109192) (x_hi := 0.3809) 64 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl37a) (by simpa only [Nat.cast_ofNat] using hl37b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_6 : 0.00457 ≤ bohmanExcess 37 (γ * Real.log ((37 : ℕ) : ℝ)) := bohmanExcess37_ge (u_lo := 0.9282) (by norm_num) hu_6 (by norm_num)
+  have hu_7 : (-0.7685) ≤ Real.cos (γ * Real.log ((23 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.4375) (g_hi := 111.46875) (lp := Real.log ((23 : ℕ) : ℝ)) (lp_lo := 3.135494) (lp_hi := 3.1354949) (x_hi := 2.4469) 56 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl23a) (by simpa only [Nat.cast_ofNat] using hl23b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_7 : 0.00262 ≤ bohmanExcess 23 (γ * Real.log ((23 : ℕ) : ℝ)) := bohmanExcess23_ge (u_lo := (-0.7685)) (by norm_num) hu_7 (by norm_num)
+  have hu_8 : 0.6529 ≤ Real.cos (γ * Real.log ((41 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.4375) (g_hi := 111.46875) (lp := Real.log ((41 : ℕ) : ℝ)) (lp_lo := 3.713572) (lp_hi := 3.7135722) (x_hi := 0.8592) 66 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl41a) (by simpa only [Nat.cast_ofNat] using hl41b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_8 : 0.00253 ≤ bohmanExcess 41 (γ * Real.log ((41 : ℕ) : ℝ)) := bohmanExcess41_ge (u_lo := 0.6529) (by norm_num) hu_8 (by norm_num)
+  linarith only [harch, hmaster, hn3, hn7, hn11, hn13, hn43, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6, hg_7, hg_8]
 
 private theorem bohman_interval_12 {γ : ℝ} (hlo : 111.46875 ≤ γ) (hhi : γ ≤ 111.5) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
-  obtain ⟨-, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, ⟨hl11a, hl11b⟩, -, ⟨hl17a, hl17b⟩, ⟨hl19a, hl19b⟩, ⟨hl23a, hl23b⟩, ⟨hl29a, hl29b⟩, ⟨hl31a, hl31b⟩, ⟨hl37a, hl37b⟩, ⟨hl41a, hl41b⟩, ⟨hl43a, hl43b⟩, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 111.46875) (g_hi := 111.5) (M := 12544) (logM4_hi := 8.0507764) (ub := 1.439293) (a2 := 6) (b := 0) (c := 0) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.3119) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.8878) 12 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.06404 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.3119)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.1755) ≤ Real.cos (γ * Real.log (17 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp_lo := 2.8331549) (lp_hi := 2.8332392) (x_hi := 1.7471) 50 (by norm_num) hlo hhi (by norm_num) hl17a hl17b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.01997 ≤ bohmanExcess 17 (γ * Real.log (17 : ℝ)) := bohmanExcess17_ge (u_lo := (-0.1755)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.0094) ≤ Real.cos (γ * Real.log (19 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp_lo := 2.9443944) (lp_hi := 2.9444434) (x_hi := 1.58) 52 (by norm_num) hlo hhi (by norm_num) hl19a hl19b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.01843 ≤ bohmanExcess 19 (γ * Real.log (19 : ℝ)) := bohmanExcess19_ge (u_lo := (-0.0094)) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : (-0.9466) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 2.8113) 29 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.00876 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.9466)) (by norm_num) hu_3 (by norm_num)
-  have hu_4 : 0.8787 ≤ Real.cos (γ * Real.log (31 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp_lo := 3.4339401) (lp_hi := 3.4339888) (x_hi := 0.4974) 61 (by norm_num) hlo hhi (by norm_num) hl31a hl31b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_4 : 0.00859 ≤ bohmanExcess 31 (γ * Real.log (31 : ℝ)) := bohmanExcess31_ge (u_lo := 0.8787) (by norm_num) hu_4 (by norm_num)
-  have hu_5 : (-0.1367) ≤ Real.cos (γ * Real.log (29 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp_lo := 3.3667148) (lp_hi := 3.3673538) (x_hi := 1.7078) 60 (by norm_num) hlo hhi (by norm_num) hl29a hl29b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_5 : 0.0049 ≤ bohmanExcess 29 (γ * Real.log (29 : ℝ)) := bohmanExcess29_ge (u_lo := (-0.1367)) (by norm_num) hu_5 (by norm_num)
-  have hu_6 : 0.8802 ≤ Real.cos (γ * Real.log (37 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp_lo := 3.6108132) (lp_hi := 3.6109222) (x_hi := 0.4941) 64 (by norm_num) hlo hhi (by norm_num) hl37a hl37b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_6 : 0.00445 ≤ bohmanExcess 37 (γ * Real.log (37 : ℝ)) := bohmanExcess37_ge (u_lo := 0.8802) (by norm_num) hu_6 (by norm_num)
-  have hu_7 : (-0.7061) ≤ Real.cos (γ * Real.log (23 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp_lo := 3.1354442) (lp_hi := 3.1356659) (x_hi := 2.3545) 56 (by norm_num) hlo hhi (by norm_num) hl23a hl23b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_7 : 0.00334 ≤ bohmanExcess 23 (γ * Real.log (23 : ℝ)) := bohmanExcess23_ge (u_lo := (-0.7061)) (by norm_num) hu_7 (by norm_num)
-  have hu_8 : 0.7144 ≤ Real.cos (γ * Real.log (41 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp_lo := 3.7132884) (lp_hi := 3.7136164) (x_hi := 0.7748) 66 (by norm_num) hlo hhi (by norm_num) hl41a hl41b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_8 : 0.00262 ≤ bohmanExcess 41 (γ * Real.log (41 : ℝ)) := bohmanExcess41_ge (u_lo := 0.7144) (by norm_num) hu_8 (by norm_num)
-  have hu_9 : (-0.9718) ≤ Real.cos (γ * Real.log (11 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp_lo := 2.3977758) (lp_hi := 2.3979146) (x_hi := 2.9) 43 (by norm_num) hlo hhi (by norm_num) hl11a hl11b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_9 : 0.00163 ≤ bohmanExcess 11 (γ * Real.log (11 : ℝ)) := bohmanExcess11_ge (u_lo := (-0.9718)) (by norm_num) hu_9 (by norm_num)
-  have hu_10 : (-0.1488) ≤ Real.cos (γ * Real.log (43 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp_lo := 3.7611756) (lp_hi := 3.7612638) (x_hi := 1.72) 67 (by norm_num) hlo hhi (by norm_num) hl43a hl43b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_10 : 0.00103 ≤ bohmanExcess 43 (γ * Real.log (43 : ℝ)) := bohmanExcess43_ge (u_lo := (-0.1488)) (by norm_num) hu_10 (by norm_num)
-  have hu_11 : (-0.9919) ≤ Real.cos (γ * Real.log (7 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (x_hi := 3.0047) 35 (by norm_num) hlo hhi (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_11 : 0.00095 ≤ bohmanExcess 7 (γ * Real.log (7 : ℝ)) := bohmanExcess7_ge (u_lo := (-0.9919)) (by norm_num) hu_11 (by norm_num)
-  linarith only [harch, hmaster, hn3, hn13, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6, hg_7, hg_8, hg_9, hg_10, hg_11]
+  obtain ⟨-, ⟨hl5a, hl5b⟩, -, ⟨hl11a, hl11b⟩, -, ⟨hl17a, hl17b⟩, ⟨hl19a, hl19b⟩, ⟨hl23a, hl23b⟩, ⟨hl29a, hl29b⟩, ⟨hl31a, hl31b⟩, ⟨hl37a, hl37b⟩, ⟨hl41a, hl41b⟩, ⟨hl43a, hl43b⟩, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
+  have harch := bohman_arch_lt_smooth (g_lo := 111.46875) (g_hi := 111.5) (M := 12500) (logM4_hi := 8.0471901) (ub := 1.43927) (a2 := 0) (b := 0) (c := 5) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, hn3, -, hn7, -, hn13, -, -, -, -, -, -, -, -, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.3119) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.8878) 12 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.06404 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.3119)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.1727) ≤ Real.cos (γ * Real.log ((17 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp := Real.log ((17 : ℕ) : ℝ)) (lp_lo := 2.8332133) (lp_hi := 2.8332134) (x_hi := 1.7442) 50 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl17a) (by simpa only [Nat.cast_ofNat] using hl17b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.02004 ≤ bohmanExcess 17 (γ * Real.log ((17 : ℕ) : ℝ)) := bohmanExcess17_ge (u_lo := (-0.1727)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.009) ≤ Real.cos (γ * Real.log ((19 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp := Real.log ((19 : ℕ) : ℝ)) (lp_lo := 2.9444385) (lp_hi := 2.9444403) (x_hi := 1.5796) 52 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl19a) (by simpa only [Nat.cast_ofNat] using hl19b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.01844 ≤ bohmanExcess 19 (γ * Real.log ((19 : ℕ) : ℝ)) := bohmanExcess19_ge (u_lo := (-0.009)) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : (-0.9463) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 2.8105) 29 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.00881 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.9463)) (by norm_num) hu_3 (by norm_num)
+  have hu_4 : 0.8811 ≤ Real.cos (γ * Real.log ((31 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp := Real.log ((31 : ℕ) : ℝ)) (lp_lo := 3.4339872) (lp_hi := 3.4339873) (x_hi := 0.4922) 61 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl31a) (by simpa only [Nat.cast_ofNat] using hl31b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_4 : 0.0086 ≤ bohmanExcess 31 (γ * Real.log ((31 : ℕ) : ℝ)) := bohmanExcess31_ge (u_lo := 0.8811) (by norm_num) hu_4 (by norm_num)
+  have hu_5 : (-0.0723) ≤ Real.cos (γ * Real.log ((29 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp := Real.log ((29 : ℕ) : ℝ)) (lp_lo := 3.3672956) (lp_hi := 3.3672966) (x_hi := 1.643) 60 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl29a) (by simpa only [Nat.cast_ofNat] using hl29b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_5 : 0.00527 ≤ bohmanExcess 29 (γ * Real.log ((29 : ℕ) : ℝ)) := bohmanExcess29_ge (u_lo := (-0.0723)) (by norm_num) hu_5 (by norm_num)
+  have hu_6 : 0.8804 ≤ Real.cos (γ * Real.log ((37 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp := Real.log ((37 : ℕ) : ℝ)) (lp_lo := 3.6109175) (lp_hi := 3.6109192) (x_hi := 0.4938) 64 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl37a) (by simpa only [Nat.cast_ofNat] using hl37b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_6 : 0.00445 ≤ bohmanExcess 37 (γ * Real.log ((37 : ℕ) : ℝ)) := bohmanExcess37_ge (u_lo := 0.8804) (by norm_num) hu_6 (by norm_num)
+  have hu_7 : (-0.7021) ≤ Real.cos (γ * Real.log ((23 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp := Real.log ((23 : ℕ) : ℝ)) (lp_lo := 3.135494) (lp_hi := 3.1354949) (x_hi := 2.3489) 56 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl23a) (by simpa only [Nat.cast_ofNat] using hl23b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_7 : 0.00338 ≤ bohmanExcess 23 (γ * Real.log ((23 : ℕ) : ℝ)) := bohmanExcess23_ge (u_lo := (-0.7021)) (by norm_num) hu_7 (by norm_num)
+  have hu_8 : 0.7362 ≤ Real.cos (γ * Real.log ((41 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp := Real.log ((41 : ℕ) : ℝ)) (lp_lo := 3.713572) (lp_hi := 3.7135722) (x_hi := 0.7432) 66 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl41a) (by simpa only [Nat.cast_ofNat] using hl41b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_8 : 0.00265 ≤ bohmanExcess 41 (γ * Real.log ((41 : ℕ) : ℝ)) := bohmanExcess41_ge (u_lo := 0.7362) (by norm_num) hu_8 (by norm_num)
+  have hu_9 : (-0.9685) ≤ Real.cos (γ * Real.log ((11 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp := Real.log ((11 : ℕ) : ℝ)) (lp_lo := 2.3978948) (lp_hi := 2.397896) (x_hi := 2.8868) 43 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl11a) (by simpa only [Nat.cast_ofNat] using hl11b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_9 : 0.00183 ≤ bohmanExcess 11 (γ * Real.log ((11 : ℕ) : ℝ)) := bohmanExcess11_ge (u_lo := (-0.9685)) (by norm_num) hu_9 (by norm_num)
+  have hu_10 : (-0.1464) ≤ Real.cos (γ * Real.log ((43 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.46875) (g_hi := 111.5) (lp := Real.log ((43 : ℕ) : ℝ)) (lp_lo := 3.7611977) (lp_hi := 3.7612013) (x_hi := 1.7176) 67 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl43a) (by simpa only [Nat.cast_ofNat] using hl43b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_10 : 0.00104 ≤ bohmanExcess 43 (γ * Real.log ((43 : ℕ) : ℝ)) := bohmanExcess43_ge (u_lo := (-0.1464)) (by norm_num) hu_10 (by norm_num)
+  linarith only [harch, hmaster, hn3, hn7, hn13, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6, hg_7, hg_8, hg_9, hg_10]
 
 private theorem bohman_interval_13 {γ : ℝ} (hlo : 111.5 ≤ γ) (hhi : γ ≤ 111.53125) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
-  obtain ⟨-, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, ⟨hl11a, hl11b⟩, -, ⟨hl17a, hl17b⟩, ⟨hl19a, hl19b⟩, ⟨hl23a, hl23b⟩, ⟨hl29a, hl29b⟩, ⟨hl31a, hl31b⟩, ⟨hl37a, hl37b⟩, ⟨hl41a, hl41b⟩, ⟨hl43a, hl43b⟩, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 111.5) (g_hi := 111.53125) (M := 12544) (logM4_hi := 8.0507764) (ub := 1.439432) (a2 := 6) (b := 0) (c := 0) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.3324) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.9095) 12 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.06127 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.3324)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.2619) ≤ Real.cos (γ * Real.log (17 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp_lo := 2.8331549) (lp_hi := 2.8332392) (x_hi := 1.8356) 50 (by norm_num) hlo hhi (by norm_num) hl17a hl17b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.01788 ≤ bohmanExcess 17 (γ * Real.log (17 : ℝ)) := bohmanExcess17_ge (u_lo := (-0.2619)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.1012) ≤ Real.cos (γ * Real.log (19 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp_lo := 2.9443944) (lp_hi := 2.9444434) (x_hi := 1.672) 52 (by norm_num) hlo hhi (by norm_num) hl19a hl19b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.01672 ≤ bohmanExcess 19 (γ * Real.log (19 : ℝ)) := bohmanExcess19_ge (u_lo := (-0.1012)) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : (-0.929) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 2.761) 29 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.01167 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.929)) (by norm_num) hu_3 (by norm_num)
-  have hu_4 : 0.9247 ≤ Real.cos (γ * Real.log (31 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp_lo := 3.4339401) (lp_hi := 3.4339888) (x_hi := 0.3901) 61 (by norm_num) hlo hhi (by norm_num) hl31a hl31b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_4 : 0.0088 ≤ bohmanExcess 31 (γ * Real.log (31 : ℝ)) := bohmanExcess31_ge (u_lo := 0.9247) (by norm_num) hu_4 (by norm_num)
-  have hu_5 : (-0.0319) ≤ Real.cos (γ * Real.log (29 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp_lo := 3.3667148) (lp_hi := 3.3673538) (x_hi := 1.6026) 60 (by norm_num) hlo hhi (by norm_num) hl29a hl29b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_5 : 0.0055 ≤ bohmanExcess 29 (γ * Real.log (29 : ℝ)) := bohmanExcess29_ge (u_lo := (-0.0319)) (by norm_num) hu_5 (by norm_num)
-  have hu_6 : 0.8212 ≤ Real.cos (γ * Real.log (37 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp_lo := 3.6108132) (lp_hi := 3.6109222) (x_hi := 0.607) 64 (by norm_num) hlo hhi (by norm_num) hl37a hl37b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_6 : 0.00431 ≤ bohmanExcess 37 (γ * Real.log (37 : ℝ)) := bohmanExcess37_ge (u_lo := 0.8212) (by norm_num) hu_6 (by norm_num)
-  have hu_7 : (-0.6334) ≤ Real.cos (γ * Real.log (23 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp_lo := 3.1354442) (lp_hi := 3.1356659) (x_hi := 2.2565) 56 (by norm_num) hlo hhi (by norm_num) hl23a hl23b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_7 : 0.00416 ≤ bohmanExcess 23 (γ * Real.log (23 : ℝ)) := bohmanExcess23_ge (u_lo := (-0.6334)) (by norm_num) hu_7 (by norm_num)
-  have hu_8 : (-0.951) ≤ Real.cos (γ * Real.log (11 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp_lo := 2.3977758) (lp_hi := 2.3979146) (x_hi := 2.8251) 43 (by norm_num) hlo hhi (by norm_num) hl11a hl11b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_8 : 0.00285 ≤ bohmanExcess 11 (γ * Real.log (11 : ℝ)) := bohmanExcess11_ge (u_lo := (-0.951)) (by norm_num) hu_8 (by norm_num)
-  have hu_9 : 0.7906 ≤ Real.cos (γ * Real.log (41 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp_lo := 3.7132884) (lp_hi := 3.7136164) (x_hi := 0.6587) 66 (by norm_num) hlo hhi (by norm_num) hl41a hl41b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_9 : 0.00274 ≤ bohmanExcess 41 (γ * Real.log (41 : ℝ)) := bohmanExcess41_ge (u_lo := 0.7906) (by norm_num) hu_9 (by norm_num)
-  have hu_10 : (-0.9815) ≤ Real.cos (γ * Real.log (7 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (x_hi := 2.9439) 35 (by norm_num) hlo hhi (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_10 : 0.00218 ≤ bohmanExcess 7 (γ * Real.log (7 : ℝ)) := bohmanExcess7_ge (u_lo := (-0.9815)) (by norm_num) hu_10 (by norm_num)
-  have hu_11 : (-0.0318) ≤ Real.cos (γ * Real.log (43 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp_lo := 3.7611756) (lp_hi := 3.7612638) (x_hi := 1.6025) 67 (by norm_num) hlo hhi (by norm_num) hl43a hl43b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_11 : 0.00118 ≤ bohmanExcess 43 (γ * Real.log (43 : ℝ)) := bohmanExcess43_ge (u_lo := (-0.0318)) (by norm_num) hu_11 (by norm_num)
-  linarith only [harch, hmaster, hn3, hn13, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6, hg_7, hg_8, hg_9, hg_10, hg_11]
-
-private theorem bohman_interval_14 {γ : ℝ} (hlo : 111.53125 ≤ γ) (hhi : γ ≤ 111.5625) :
-    1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
-      18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
-      bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
-  have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
   obtain ⟨-, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, ⟨hl11a, hl11b⟩, -, ⟨hl17a, hl17b⟩, ⟨hl19a, hl19b⟩, ⟨hl23a, hl23b⟩, ⟨hl29a, hl29b⟩, ⟨hl31a, hl31b⟩, ⟨hl37a, hl37b⟩, ⟨hl41a, hl41b⟩, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 111.53125) (g_hi := 111.5625) (M := 12544) (logM4_hi := 8.0507764) (ub := 1.439571) (a2 := 6) (b := 0) (c := 0) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.3528) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.5625) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.9312) 12 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.05859 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.3528)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.3462) ≤ Real.cos (γ * Real.log (17 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.5625) (lp_lo := 2.8331549) (lp_hi := 2.8332392) (x_hi := 1.9241) 50 (by norm_num) hlo hhi (by norm_num) hl17a hl17b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.01583 ≤ bohmanExcess 17 (γ * Real.log (17 : ℝ)) := bohmanExcess17_ge (u_lo := (-0.3462)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.1922) ≤ Real.cos (γ * Real.log (19 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.5625) (lp_lo := 2.9443944) (lp_hi := 2.9444434) (x_hi := 1.764) 52 (by norm_num) hlo hhi (by norm_num) hl19a hl19b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.01503 ≤ bohmanExcess 19 (γ * Real.log (19 : ℝ)) := bohmanExcess19_ge (u_lo := (-0.1922)) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : (-0.9091) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.5625) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 2.7107) 29 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.01496 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.9091)) (by norm_num) hu_3 (by norm_num)
-  have hu_4 : 0.9601 ≤ Real.cos (γ * Real.log (31 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.5625) (lp_lo := 3.4339401) (lp_hi := 3.4339888) (x_hi := 0.2828) 61 (by norm_num) hlo hhi (by norm_num) hl31a hl31b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_4 : 0.00896 ≤ bohmanExcess 31 (γ * Real.log (31 : ℝ)) := bohmanExcess31_ge (u_lo := 0.9601) (by norm_num) hu_4 (by norm_num)
-  have hu_5 : 0.0732 ≤ Real.cos (γ * Real.log (29 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.5625) (lp_lo := 3.3667148) (lp_hi := 3.3673538) (x_hi := 1.4974) 60 (by norm_num) hlo hhi (by norm_num) hl29a hl29b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_5 : 0.0061 ≤ bohmanExcess 29 (γ * Real.log (29 : ℝ)) := bohmanExcess29_ge (u_lo := 0.0732) (by norm_num) hu_5 (by norm_num)
-  have hu_6 : (-0.5546) ≤ Real.cos (γ * Real.log (23 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.5625) (lp_lo := 3.1354442) (lp_hi := 3.1356659) (x_hi := 2.1585) 56 (by norm_num) hlo hhi (by norm_num) hl23a hl23b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_6 : 0.00506 ≤ bohmanExcess 23 (γ * Real.log (23 : ℝ)) := bohmanExcess23_ge (u_lo := (-0.5546)) (by norm_num) hu_6 (by norm_num)
-  have hu_7 : (-0.9249) ≤ Real.cos (γ * Real.log (11 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.5625) (lp_lo := 2.3977758) (lp_hi := 2.3979146) (x_hi := 2.7502) 43 (by norm_num) hlo hhi (by norm_num) hl11a hl11b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_7 : 0.00438 ≤ bohmanExcess 11 (γ * Real.log (11 : ℝ)) := bohmanExcess11_ge (u_lo := (-0.9249)) (by norm_num) hu_7 (by norm_num)
-  have hu_8 : 0.7518 ≤ Real.cos (γ * Real.log (37 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.5625) (lp_lo := 3.6108132) (lp_hi := 3.6109222) (x_hi := 0.7198) 64 (by norm_num) hlo hhi (by norm_num) hl37a hl37b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_8 : 0.00415 ≤ bohmanExcess 37 (γ * Real.log (37 : ℝ)) := bohmanExcess37_ge (u_lo := 0.7518) (by norm_num) hu_8 (by norm_num)
-  have hu_9 : (-0.9676) ≤ Real.cos (γ * Real.log (7 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.5625) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (x_hi := 2.883) 35 (by norm_num) hlo hhi (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_9 : 0.00383 ≤ bohmanExcess 7 (γ * Real.log (7 : ℝ)) := bohmanExcess7_ge (u_lo := (-0.9676)) (by norm_num) hu_9 (by norm_num)
-  have hu_10 : 0.8562 ≤ Real.cos (γ * Real.log (41 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.5625) (lp_lo := 3.7132884) (lp_hi := 3.7136164) (x_hi := 0.5427) 66 (by norm_num) hlo hhi (by norm_num) hl41a hl41b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_10 : 0.00284 ≤ bohmanExcess 41 (γ * Real.log (41 : ℝ)) := bohmanExcess41_ge (u_lo := 0.8562) (by norm_num) hu_10 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 111.5) (g_hi := 111.53125) (M := 12500) (logM4_hi := 8.0471901) (ub := 1.439409) (a2 := 0) (b := 0) (c := 5) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, hn3, -, -, -, hn13, -, -, -, -, -, -, -, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.3324) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.9095) 12 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.06127 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.3324)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.2591) ≤ Real.cos (γ * Real.log ((17 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp := Real.log ((17 : ℕ) : ℝ)) (lp_lo := 2.8332133) (lp_hi := 2.8332134) (x_hi := 1.8327) 50 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl17a) (by simpa only [Nat.cast_ofNat] using hl17b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.01795 ≤ bohmanExcess 17 (γ * Real.log ((17 : ℕ) : ℝ)) := bohmanExcess17_ge (u_lo := (-0.2591)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.1008) ≤ Real.cos (γ * Real.log ((19 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp := Real.log ((19 : ℕ) : ℝ)) (lp_lo := 2.9444385) (lp_hi := 2.9444403) (x_hi := 1.6716) 52 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl19a) (by simpa only [Nat.cast_ofNat] using hl19b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.01673 ≤ bohmanExcess 19 (γ * Real.log ((19 : ℕ) : ℝ)) := bohmanExcess19_ge (u_lo := (-0.1008)) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : (-0.9287) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 2.7602) 29 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.01172 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.9287)) (by norm_num) hu_3 (by norm_num)
+  have hu_4 : 0.9267 ≤ Real.cos (γ * Real.log ((31 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp := Real.log ((31 : ℕ) : ℝ)) (lp_lo := 3.4339872) (lp_hi := 3.4339873) (x_hi := 0.3849) 61 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl31a) (by simpa only [Nat.cast_ofNat] using hl31b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_4 : 0.0088 ≤ bohmanExcess 31 (γ * Real.log ((31 : ℕ) : ℝ)) := bohmanExcess31_ge (u_lo := 0.9267) (by norm_num) hu_4 (by norm_num)
+  have hu_5 : 0.0328 ≤ Real.cos (γ * Real.log ((29 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp := Real.log ((29 : ℕ) : ℝ)) (lp_lo := 3.3672956) (lp_hi := 3.3672966) (x_hi := 1.5378) 60 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl29a) (by simpa only [Nat.cast_ofNat] using hl29b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_5 : 0.00587 ≤ bohmanExcess 29 (γ * Real.log ((29 : ℕ) : ℝ)) := bohmanExcess29_ge (u_lo := 0.0328) (by norm_num) hu_5 (by norm_num)
+  have hu_6 : 0.8214 ≤ Real.cos (γ * Real.log ((37 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp := Real.log ((37 : ℕ) : ℝ)) (lp_lo := 3.6109175) (lp_hi := 3.6109192) (x_hi := 0.6066) 64 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl37a) (by simpa only [Nat.cast_ofNat] using hl37b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_6 : 0.00431 ≤ bohmanExcess 37 (γ * Real.log ((37 : ℕ) : ℝ)) := bohmanExcess37_ge (u_lo := 0.8214) (by norm_num) hu_6 (by norm_num)
+  have hu_7 : (-0.6291) ≤ Real.cos (γ * Real.log ((23 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp := Real.log ((23 : ℕ) : ℝ)) (lp_lo := 3.135494) (lp_hi := 3.1354949) (x_hi := 2.2509) 56 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl23a) (by simpa only [Nat.cast_ofNat] using hl23b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_7 : 0.00421 ≤ bohmanExcess 23 (γ * Real.log ((23 : ℕ) : ℝ)) := bohmanExcess23_ge (u_lo := (-0.6291)) (by norm_num) hu_7 (by norm_num)
+  have hu_8 : (-0.9467) ≤ Real.cos (γ * Real.log ((11 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp := Real.log ((11 : ℕ) : ℝ)) (lp_lo := 2.3978948) (lp_hi := 2.397896) (x_hi := 2.8118) 43 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl11a) (by simpa only [Nat.cast_ofNat] using hl11b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_8 : 0.0031 ≤ bohmanExcess 11 (γ * Real.log ((11 : ℕ) : ℝ)) := bohmanExcess11_ge (u_lo := (-0.9467)) (by norm_num) hu_8 (by norm_num)
+  have hu_9 : 0.8096 ≤ Real.cos (γ * Real.log ((41 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp := Real.log ((41 : ℕ) : ℝ)) (lp_lo := 3.713572) (lp_hi := 3.7135722) (x_hi := 0.6271) 66 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl41a) (by simpa only [Nat.cast_ofNat] using hl41b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_9 : 0.00277 ≤ bohmanExcess 41 (γ * Real.log ((41 : ℕ) : ℝ)) := bohmanExcess41_ge (u_lo := 0.8096) (by norm_num) hu_9 (by norm_num)
+  have hu_10 : (-0.9813) ≤ Real.cos (γ * Real.log ((7 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5) (g_hi := 111.53125) (lp := Real.log ((7 : ℕ) : ℝ)) (lp_lo := 1.945908) (lp_hi := 1.9459107) (x_hi := 2.9429) 35 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl7a) (by simpa only [Nat.cast_ofNat] using hl7b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_10 : 0.0022 ≤ bohmanExcess 7 (γ * Real.log ((7 : ℕ) : ℝ)) := bohmanExcess7_ge (u_lo := (-0.9813)) (by norm_num) hu_10 (by norm_num)
   linarith only [harch, hmaster, hn3, hn13, hn43, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6, hg_7, hg_8, hg_9, hg_10]
 
-private theorem bohman_interval_15 {γ : ℝ} (hlo : 111.5625 ≤ γ) (hhi : γ ≤ 111.625) :
+private theorem bohman_interval_14 {γ : ℝ} (hlo : 111.53125 ≤ γ) (hhi : γ ≤ 111.578125) :
+    1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
+      18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
+      bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
+  have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
+  obtain ⟨-, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, ⟨hl11a, hl11b⟩, -, ⟨hl17a, hl17b⟩, ⟨hl19a, hl19b⟩, ⟨hl23a, hl23b⟩, ⟨hl29a, hl29b⟩, ⟨hl31a, hl31b⟩, ⟨hl37a, hl37b⟩, ⟨hl41a, hl41b⟩, ⟨hl43a, hl43b⟩, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
+  have harch := bohman_arch_lt_smooth (g_lo := 111.53125) (g_hi := 111.578125) (M := 12500) (logM4_hi := 8.0471901) (ub := 1.439618) (a2 := 0) (b := 0) (c := 5) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, hn3, -, -, -, hn13, -, -, -, -, -, -, -, -, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.3629) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.578125) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.942) 12 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.05729 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.3629)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.9087) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.578125) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 2.7099) 29 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.01502 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.9087)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.3847) ≤ Real.cos (γ * Real.log ((17 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.578125) (lp := Real.log ((17 : ℕ) : ℝ)) (lp_lo := 2.8332133) (lp_hi := 2.8332134) (x_hi := 1.9655) 50 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl17a) (by simpa only [Nat.cast_ofNat] using hl17b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.0149 ≤ bohmanExcess 17 (γ * Real.log ((17 : ℕ) : ℝ)) := bohmanExcess17_ge (u_lo := (-0.3847)) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : (-0.2367) ≤ Real.cos (γ * Real.log ((19 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.578125) (lp := Real.log ((19 : ℕ) : ℝ)) (lp_lo := 2.9444385) (lp_hi := 2.9444403) (x_hi := 1.8096) 52 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl19a) (by simpa only [Nat.cast_ofNat] using hl19b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.0142 ≤ bohmanExcess 19 (γ * Real.log ((19 : ℕ) : ℝ)) := bohmanExcess19_ge (u_lo := (-0.2367)) (by norm_num) hu_3 (by norm_num)
+  have hu_4 : 0.9616 ≤ Real.cos (γ * Real.log ((31 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.578125) (lp := Real.log ((31 : ℕ) : ℝ)) (lp_lo := 3.4339872) (lp_hi := 3.4339873) (x_hi := 0.2776) 61 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl31a) (by simpa only [Nat.cast_ofNat] using hl31b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_4 : 0.00896 ≤ bohmanExcess 31 (γ * Real.log ((31 : ℕ) : ℝ)) := bohmanExcess31_ge (u_lo := 0.9616) (by norm_num) hu_4 (by norm_num)
+  have hu_5 : 0.1376 ≤ Real.cos (γ * Real.log ((29 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.578125) (lp := Real.log ((29 : ℕ) : ℝ)) (lp_lo := 3.3672956) (lp_hi := 3.3672966) (x_hi := 1.4326) 60 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl29a) (by simpa only [Nat.cast_ofNat] using hl29b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_5 : 0.00647 ≤ bohmanExcess 29 (γ * Real.log ((29 : ℕ) : ℝ)) := bohmanExcess29_ge (u_lo := 0.1376) (by norm_num) hu_5 (by norm_num)
+  have hu_6 : (-0.55) ≤ Real.cos (γ * Real.log ((23 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.578125) (lp := Real.log ((23 : ℕ) : ℝ)) (lp_lo := 3.135494) (lp_hi := 3.1354949) (x_hi := 2.153) 56 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl23a) (by simpa only [Nat.cast_ofNat] using hl23b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_6 : 0.00511 ≤ bohmanExcess 23 (γ * Real.log ((23 : ℕ) : ℝ)) := bohmanExcess23_ge (u_lo := (-0.55)) (by norm_num) hu_6 (by norm_num)
+  have hu_7 : (-0.9197) ≤ Real.cos (γ * Real.log ((11 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.578125) (lp := Real.log ((11 : ℕ) : ℝ)) (lp_lo := 2.3978948) (lp_hi := 2.397896) (x_hi := 2.7369) 43 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl11a) (by simpa only [Nat.cast_ofNat] using hl11b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_7 : 0.00468 ≤ bohmanExcess 11 (γ * Real.log ((11 : ℕ) : ℝ)) := bohmanExcess11_ge (u_lo := (-0.9197)) (by norm_num) hu_7 (by norm_num)
+  have hu_8 : 0.7136 ≤ Real.cos (γ * Real.log ((37 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.578125) (lp := Real.log ((37 : ℕ) : ℝ)) (lp_lo := 3.6109175) (lp_hi := 3.6109192) (x_hi := 0.7759) 64 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl37a) (by simpa only [Nat.cast_ofNat] using hl37b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_8 : 0.00406 ≤ bohmanExcess 37 (γ * Real.log ((37 : ℕ) : ℝ)) := bohmanExcess37_ge (u_lo := 0.7136) (by norm_num) hu_8 (by norm_num)
+  have hu_9 : (-0.9673) ≤ Real.cos (γ * Real.log ((7 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.578125) (lp := Real.log ((7 : ℕ) : ℝ)) (lp_lo := 1.945908) (lp_hi := 1.9459107) (x_hi := 2.8821) 35 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl7a) (by simpa only [Nat.cast_ofNat] using hl7b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_9 : 0.00386 ≤ bohmanExcess 7 (γ * Real.log ((7 : ℕ) : ℝ)) := bohmanExcess7_ge (u_lo := (-0.9673)) (by norm_num) hu_9 (by norm_num)
+  have hu_10 : 0.8721 ≤ Real.cos (γ * Real.log ((41 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.578125) (lp := Real.log ((41 : ℕ) : ℝ)) (lp_lo := 3.713572) (lp_hi := 3.7135722) (x_hi := 0.5111) 66 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl41a) (by simpa only [Nat.cast_ofNat] using hl41b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_10 : 0.00286 ≤ bohmanExcess 41 (γ * Real.log ((41 : ℕ) : ℝ)) := bohmanExcess41_ge (u_lo := 0.8721) (by norm_num) hu_10 (by norm_num)
+  have hu_11 : 0.088 ≤ Real.cos (γ * Real.log ((43 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.53125) (g_hi := 111.578125) (lp := Real.log ((43 : ℕ) : ℝ)) (lp_lo := 3.7611977) (lp_hi := 3.7612013) (x_hi := 1.4825) 67 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl43a) (by simpa only [Nat.cast_ofNat] using hl43b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_11 : 0.00132 ≤ bohmanExcess 43 (γ * Real.log ((43 : ℕ) : ℝ)) := bohmanExcess43_ge (u_lo := 0.088) (by norm_num) hu_11 (by norm_num)
+  linarith only [harch, hmaster, hn3, hn13, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6, hg_7, hg_8, hg_9, hg_10, hg_11]
+
+private theorem bohman_interval_15 {γ : ℝ} (hlo : 111.578125 ≤ γ) (hhi : γ ≤ 111.65625) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
   obtain ⟨-, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, ⟨hl11a, hl11b⟩, ⟨hl13a, hl13b⟩, ⟨hl17a, hl17b⟩, ⟨hl19a, hl19b⟩, ⟨hl23a, hl23b⟩, ⟨hl29a, hl29b⟩, ⟨hl31a, hl31b⟩, ⟨hl37a, hl37b⟩, ⟨hl41a, hl41b⟩, ⟨hl43a, hl43b⟩, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 111.5625) (g_hi := 111.625) (M := 12544) (logM4_hi := 8.0507764) (ub := 1.439849) (a2 := 6) (b := 0) (c := 0) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.393) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5625) (g_hi := 111.625) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.9745) 12 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.05352 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.393)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.8868) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5625) (g_hi := 111.625) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 2.6604) 29 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.01865 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.8868)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.506) ≤ Real.cos (γ * Real.log (17 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5625) (g_hi := 111.625) (lp_lo := 2.8331549) (lp_hi := 2.8332392) (x_hi := 2.1012) 50 (by norm_num) hlo hhi (by norm_num) hl17a hl17b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.01196 ≤ bohmanExcess 17 (γ * Real.log (17 : ℝ)) := bohmanExcess17_ge (u_lo := (-0.506)) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : (-0.3685) ≤ Real.cos (γ * Real.log (19 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5625) (g_hi := 111.625) (lp_lo := 2.9443944) (lp_hi := 2.9444434) (x_hi := 1.948) 52 (by norm_num) hlo hhi (by norm_num) hl19a hl19b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.01174 ≤ bohmanExcess 19 (γ * Real.log (19 : ℝ)) := bohmanExcess19_ge (u_lo := (-0.3685)) (by norm_num) hu_3 (by norm_num)
-  have hu_4 : 0.9845 ≤ Real.cos (γ * Real.log (31 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5625) (g_hi := 111.625) (lp_lo := 3.4339401) (lp_hi := 3.4339888) (x_hi := 0.1755) 61 (by norm_num) hlo hhi (by norm_num) hl31a hl31b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_4 : 0.00907 ≤ bohmanExcess 31 (γ * Real.log (31 : ℝ)) := bohmanExcess31_ge (u_lo := 0.9845) (by norm_num) hu_4 (by norm_num)
-  have hu_5 : 0.1776 ≤ Real.cos (γ * Real.log (29 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5625) (g_hi := 111.625) (lp_lo := 3.3667148) (lp_hi := 3.3673538) (x_hi := 1.3921) 60 (by norm_num) hlo hhi (by norm_num) hl29a hl29b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_5 : 0.0067 ≤ bohmanExcess 29 (γ * Real.log (29 : ℝ)) := bohmanExcess29_ge (u_lo := 0.1776) (by norm_num) hu_5 (by norm_num)
-  have hu_6 : (-0.8937) ≤ Real.cos (γ * Real.log (11 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5625) (g_hi := 111.625) (lp_lo := 2.3977758) (lp_hi := 2.3979146) (x_hi := 2.6753) 43 (by norm_num) hlo hhi (by norm_num) hl11a hl11b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_6 : 0.0062 ≤ bohmanExcess 11 (γ * Real.log (11 : ℝ)) := bohmanExcess11_ge (u_lo := (-0.8937)) (by norm_num) hu_6 (by norm_num)
-  have hu_7 : (-0.4705) ≤ Real.cos (γ * Real.log (23 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5625) (g_hi := 111.625) (lp_lo := 3.1354442) (lp_hi := 3.1356659) (x_hi := 2.0605) 56 (by norm_num) hlo hhi (by norm_num) hl23a hl23b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_7 : 0.00602 ≤ bohmanExcess 23 (γ * Real.log (23 : ℝ)) := bohmanExcess23_ge (u_lo := (-0.4705)) (by norm_num) hu_7 (by norm_num)
-  have hu_8 : (-0.9501) ≤ Real.cos (γ * Real.log (7 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5625) (g_hi := 111.625) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (x_hi := 2.8222) 35 (by norm_num) hlo hhi (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_8 : 0.0059 ≤ bohmanExcess 7 (γ * Real.log (7 : ℝ)) := bohmanExcess7_ge (u_lo := (-0.9501)) (by norm_num) hu_8 (by norm_num)
-  have hu_9 : 0.5852 ≤ Real.cos (γ * Real.log (37 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5625) (g_hi := 111.625) (lp_lo := 3.6108132) (lp_hi := 3.6109222) (x_hi := 0.9455) 64 (by norm_num) hlo hhi (by norm_num) hl37a hl37b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_9 : 0.00375 ≤ bohmanExcess 37 (γ * Real.log (37 : ℝ)) := bohmanExcess37_ge (u_lo := 0.5852) (by norm_num) hu_9 (by norm_num)
-  have hu_10 : 0.9102 ≤ Real.cos (γ * Real.log (41 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5625) (g_hi := 111.625) (lp_lo := 3.7132884) (lp_hi := 3.7136164) (x_hi := 0.4266) 66 (by norm_num) hlo hhi (by norm_num) hl41a hl41b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_10 : 0.00292 ≤ bohmanExcess 41 (γ * Real.log (41 : ℝ)) := bohmanExcess41_ge (u_lo := 0.9102) (by norm_num) hu_10 (by norm_num)
-  have hu_11 : 0.2018 ≤ Real.cos (γ * Real.log (43 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5625) (g_hi := 111.625) (lp_lo := 3.7611756) (lp_hi := 3.7612638) (x_hi := 1.3674) 67 (by norm_num) hlo hhi (by norm_num) hl43a hl43b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_11 : 0.00147 ≤ bohmanExcess 43 (γ * Real.log (43 : ℝ)) := bohmanExcess43_ge (u_lo := 0.2018) (by norm_num) hu_11 (by norm_num)
-  have hu_12 : (-0.9738) ≤ Real.cos (γ * Real.log (13 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.5625) (g_hi := 111.625) (lp_lo := 2.5646445) (lp_hi := 2.5650861) (x_hi := 2.9085) 46 (by norm_num) hlo hhi (by norm_num) hl13a hl13b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_12 : 0.0011 ≤ bohmanExcess 13 (γ * Real.log (13 : ℝ)) := bohmanExcess13_ge (u_lo := (-0.9738)) (by norm_num) hu_12 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 111.578125) (g_hi := 111.65625) (M := 12500) (logM4_hi := 8.0471901) (ub := 1.439967) (a2 := 0) (b := 0) (c := 5) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, hn3, -, -, -, -, -, -, -, -, -, -, -, -, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.4128) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.578125) (g_hi := 111.65625) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.9961) 12 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.05111 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.4128)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.8745) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.578125) (g_hi := 111.65625) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 2.6345) 29 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.0207 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.8745)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.578) ≤ Real.cos (γ * Real.log ((17 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.578125) (g_hi := 111.65625) (lp := Real.log ((17 : ℕ) : ℝ)) (lp_lo := 2.8332133) (lp_hi := 2.8332134) (x_hi := 2.1869) 50 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl17a) (by simpa only [Nat.cast_ofNat] using hl17b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.01022 ≤ bohmanExcess 17 (γ * Real.log ((17 : ℕ) : ℝ)) := bohmanExcess17_ge (u_lo := (-0.578)) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : (-0.4521) ≤ Real.cos (γ * Real.log ((19 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.578125) (g_hi := 111.65625) (lp := Real.log ((19 : ℕ) : ℝ)) (lp_lo := 2.9444385) (lp_hi := 2.9444403) (x_hi := 2.0397) 52 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl19a) (by simpa only [Nat.cast_ofNat] using hl19b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.01019 ≤ bohmanExcess 19 (γ * Real.log ((19 : ℕ) : ℝ)) := bohmanExcess19_ge (u_lo := (-0.4521)) (by norm_num) hu_3 (by norm_num)
+  have hu_4 : 0.9883 ≤ Real.cos (γ * Real.log ((31 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.578125) (g_hi := 111.65625) (lp := Real.log ((31 : ℕ) : ℝ)) (lp_lo := 3.4339872) (lp_hi := 3.4339873) (x_hi := 0.152) 61 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl31a) (by simpa only [Nat.cast_ofNat] using hl31b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_4 : 0.00909 ≤ bohmanExcess 31 (γ * Real.log ((31 : ℕ) : ℝ)) := bohmanExcess31_ge (u_lo := 0.9883) (by norm_num) hu_4 (by norm_num)
+  have hu_5 : (-0.8696) ≤ Real.cos (γ * Real.log ((11 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.578125) (g_hi := 111.65625) (lp := Real.log ((11 : ℕ) : ℝ)) (lp_lo := 2.3978948) (lp_hi := 2.397896) (x_hi := 2.6245) 43 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl11a) (by simpa only [Nat.cast_ofNat] using hl11b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_5 : 0.00761 ≤ bohmanExcess 11 (γ * Real.log ((11 : ℕ) : ℝ)) := bohmanExcess11_ge (u_lo := (-0.8696)) (by norm_num) hu_5 (by norm_num)
+  have hu_6 : 0.2916 ≤ Real.cos (γ * Real.log ((29 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.578125) (g_hi := 111.65625) (lp := Real.log ((29 : ℕ) : ℝ)) (lp_lo := 3.3672956) (lp_hi := 3.3672966) (x_hi := 1.2747) 60 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl29a) (by simpa only [Nat.cast_ofNat] using hl29b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_6 : 0.00734 ≤ bohmanExcess 29 (γ * Real.log ((29 : ℕ) : ℝ)) := bohmanExcess29_ge (u_lo := 0.2916) (by norm_num) hu_6 (by norm_num)
+  have hu_7 : (-0.9397) ≤ Real.cos (γ * Real.log ((7 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.578125) (g_hi := 111.65625) (lp := Real.log ((7 : ℕ) : ℝ)) (lp_lo := 1.945908) (lp_hi := 1.9459107) (x_hi := 2.7909) 35 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl7a) (by simpa only [Nat.cast_ofNat] using hl7b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_7 : 0.00714 ≤ bohmanExcess 7 (γ * Real.log ((7 : ℕ) : ℝ)) := bohmanExcess7_ge (u_lo := (-0.9397)) (by norm_num) hu_7 (by norm_num)
+  have hu_8 : (-0.4218) ≤ Real.cos (γ * Real.log ((23 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.578125) (g_hi := 111.65625) (lp := Real.log ((23 : ℕ) : ℝ)) (lp_lo := 3.135494) (lp_hi := 3.1354949) (x_hi := 2.006) 56 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl23a) (by simpa only [Nat.cast_ofNat] using hl23b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_8 : 0.00658 ≤ bohmanExcess 23 (γ * Real.log ((23 : ℕ) : ℝ)) := bohmanExcess23_ge (u_lo := (-0.4218)) (by norm_num) hu_8 (by norm_num)
+  have hu_9 : 0.4905 ≤ Real.cos (γ * Real.log ((37 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.578125) (g_hi := 111.65625) (lp := Real.log ((37 : ℕ) : ℝ)) (lp_lo := 3.6109175) (lp_hi := 3.6109192) (x_hi := 1.058) 64 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl37a) (by simpa only [Nat.cast_ofNat] using hl37b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_9 : 0.00353 ≤ bohmanExcess 37 (γ * Real.log ((37 : ℕ) : ℝ)) := bohmanExcess37_ge (u_lo := 0.4905) (by norm_num) hu_9 (by norm_num)
+  have hu_10 : 0.9436 ≤ Real.cos (γ * Real.log ((41 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.578125) (g_hi := 111.65625) (lp := Real.log ((41 : ℕ) : ℝ)) (lp_lo := 3.713572) (lp_hi := 3.7135722) (x_hi := 0.337) 66 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl41a) (by simpa only [Nat.cast_ofNat] using hl41b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_10 : 0.00297 ≤ bohmanExcess 41 (γ * Real.log ((41 : ℕ) : ℝ)) := bohmanExcess41_ge (u_lo := 0.9436) (by norm_num) hu_10 (by norm_num)
+  have hu_11 : (-0.9539) ≤ Real.cos (γ * Real.log ((13 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.578125) (g_hi := 111.65625) (lp := Real.log ((13 : ℕ) : ℝ)) (lp_lo := 2.5649491) (lp_hi := 2.5649502) (x_hi := 2.8345) 46 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl13a) (by simpa only [Nat.cast_ofNat] using hl13b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_11 : 0.00195 ≤ bohmanExcess 13 (γ * Real.log ((13 : ℕ) : ℝ)) := bohmanExcess13_ge (u_lo := (-0.9539)) (by norm_num) hu_11 (by norm_num)
+  have hu_12 : 0.2614 ≤ Real.cos (γ * Real.log ((43 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.578125) (g_hi := 111.65625) (lp := Real.log ((43 : ℕ) : ℝ)) (lp_lo := 3.7611977) (lp_hi := 3.7612013) (x_hi := 1.3062) 67 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl43a) (by simpa only [Nat.cast_ofNat] using hl43b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_12 : 0.00154 ≤ bohmanExcess 43 (γ * Real.log ((43 : ℕ) : ℝ)) := bohmanExcess43_ge (u_lo := 0.2614) (by norm_num) hu_12 (by norm_num)
   linarith only [harch, hmaster, hn3, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6, hg_7, hg_8, hg_9, hg_10, hg_11, hg_12]
 
-private theorem bohman_interval_16 {γ : ℝ} (hlo : 111.625 ≤ γ) (hhi : γ ≤ 111.75) :
+private theorem bohman_interval_16 {γ : ℝ} (hlo : 111.65625 ≤ γ) (hhi : γ ≤ 111.859375) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
-  obtain ⟨-, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, ⟨hl11a, hl11b⟩, ⟨hl13a, hl13b⟩, ⟨hl17a, hl17b⟩, ⟨hl19a, hl19b⟩, ⟨hl23a, hl23b⟩, ⟨hl29a, hl29b⟩, ⟨hl31a, hl31b⟩, ⟨hl37a, hl37b⟩, ⟨hl41a, hl41b⟩, ⟨hl43a, hl43b⟩, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 111.625) (g_hi := 111.75) (M := 12544) (logM4_hi := 8.0507764) (ub := 1.440406) (a2 := 6) (b := 0) (c := 0) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.4711) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.625) (g_hi := 111.75) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.0611) 12 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.04436 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.4711)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.8358) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.625) (g_hi := 111.75) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 2.5598) 29 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.02714 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.8358)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.9048) ≤ Real.cos (γ * Real.log (7 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.625) (g_hi := 111.75) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (x_hi := 2.7006) 35 (by norm_num) hlo hhi (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.01128 ≤ bohmanExcess 7 (γ * Real.log (7 : ℝ)) := bohmanExcess7_ge (u_lo := (-0.9048)) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : (-0.8164) ≤ Real.cos (γ * Real.log (11 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.625) (g_hi := 111.75) (lp_lo := 2.3977758) (lp_hi := 2.3979146) (x_hi := 2.5254) 43 (by norm_num) hlo hhi (by norm_num) hl11a hl11b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.01073 ≤ bohmanExcess 11 (γ * Real.log (11 : ℝ)) := bohmanExcess11_ge (u_lo := (-0.8164)) (by norm_num) hu_3 (by norm_num)
-  have hu_4 : 0.8896 ≤ Real.cos (γ * Real.log (31 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.625) (g_hi := 111.75) (lp_lo := 3.4339401) (lp_hi := 3.4339888) (x_hi := 0.4741) 61 (by norm_num) hlo hhi (by norm_num) hl31a hl31b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_4 : 0.00864 ≤ bohmanExcess 31 (γ * Real.log (31 : ℝ)) := bohmanExcess31_ge (u_lo := 0.8896) (by norm_num) hu_4 (by norm_num)
-  have hu_5 : (-0.2897) ≤ Real.cos (γ * Real.log (23 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.625) (g_hi := 111.75) (lp_lo := 3.1354442) (lp_hi := 3.1356659) (x_hi := 1.8646) 56 (by norm_num) hlo hhi (by norm_num) hl23a hl23b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_5 : 0.00808 ≤ bohmanExcess 23 (γ * Real.log (23 : ℝ)) := bohmanExcess23_ge (u_lo := (-0.2897)) (by norm_num) hu_5 (by norm_num)
-  have hu_6 : 0.3792 ≤ Real.cos (γ * Real.log (29 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.625) (g_hi := 111.75) (lp_lo := 3.3667148) (lp_hi := 3.3673538) (x_hi := 1.1817) 60 (by norm_num) hlo hhi (by norm_num) hl29a hl29b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_6 : 0.00784 ≤ bohmanExcess 29 (γ * Real.log (29 : ℝ)) := bohmanExcess29_ge (u_lo := 0.3792) (by norm_num) hu_6 (by norm_num)
-  have hu_7 : (-0.6784) ≤ Real.cos (γ * Real.log (19 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.625) (g_hi := 111.75) (lp_lo := 2.9443944) (lp_hi := 2.9444434) (x_hi := 2.3161) 52 (by norm_num) hlo hhi (by norm_num) hl19a hl19b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_7 : 0.00597 ≤ bohmanExcess 19 (γ * Real.log (19 : ℝ)) := bohmanExcess19_ge (u_lo := (-0.6784)) (by norm_num) hu_7 (by norm_num)
-  have hu_8 : (-0.7739) ≤ Real.cos (γ * Real.log (17 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.625) (g_hi := 111.75) (lp_lo := 2.8331549) (lp_hi := 2.8332392) (x_hi := 2.4554) 50 (by norm_num) hlo hhi (by norm_num) hl17a hl17b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_8 : 0.00547 ≤ bohmanExcess 17 (γ * Real.log (17 : ℝ)) := bohmanExcess17_ge (u_lo := (-0.7739)) (by norm_num) hu_8 (by norm_num)
-  have hu_9 : (-0.9241) ≤ Real.cos (γ * Real.log (13 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.625) (g_hi := 111.75) (lp_lo := 2.5646445) (lp_hi := 2.5650861) (x_hi := 2.7482) 46 (by norm_num) hlo hhi (by norm_num) hl13a hl13b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_9 : 0.00323 ≤ bohmanExcess 13 (γ * Real.log (13 : ℝ)) := bohmanExcess13_ge (u_lo := (-0.9241)) (by norm_num) hu_9 (by norm_num)
-  have hu_10 : 0.9532 ≤ Real.cos (γ * Real.log (41 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.625) (g_hi := 111.75) (lp_lo := 3.7132884) (lp_hi := 3.7136164) (x_hi := 0.3066) 66 (by norm_num) hlo hhi (by norm_num) hl41a hl41b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_10 : 0.00299 ≤ bohmanExcess 41 (γ * Real.log (41 : ℝ)) := bohmanExcess41_ge (u_lo := 0.9532) (by norm_num) hu_10 (by norm_num)
-  have hu_11 : 0.173 ≤ Real.cos (γ * Real.log (37 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.625) (g_hi := 111.75) (lp_lo := 3.6108132) (lp_hi := 3.6109222) (x_hi := 1.3968) 64 (by norm_num) hlo hhi (by norm_num) hl37a hl37b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_11 : 0.00277 ≤ bohmanExcess 37 (γ * Real.log (37 : ℝ)) := bohmanExcess37_ge (u_lo := 0.173) (by norm_num) hu_11 (by norm_num)
-  have hu_12 : 0.4244 ≤ Real.cos (γ * Real.log (43 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.625) (g_hi := 111.75) (lp_lo := 3.7611756) (lp_hi := 3.7612638) (x_hi := 1.1323) 67 (by norm_num) hlo hhi (by norm_num) hl43a hl43b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_12 : 0.00174 ≤ bohmanExcess 43 (γ * Real.log (43 : ℝ)) := bohmanExcess43_ge (u_lo := 0.4244) (by norm_num) hu_12 (by norm_num)
-  linarith only [harch, hmaster, hn3, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6, hg_7, hg_8, hg_9, hg_10, hg_11, hg_12]
+  obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, ⟨hl11a, hl11b⟩, ⟨hl13a, hl13b⟩, ⟨hl17a, hl17b⟩, ⟨hl19a, hl19b⟩, ⟨hl23a, hl23b⟩, ⟨hl29a, hl29b⟩, ⟨hl31a, hl31b⟩, ⟨hl37a, hl37b⟩, ⟨hl41a, hl41b⟩, ⟨hl43a, hl43b⟩, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
+  have harch := bohman_arch_lt_smooth (g_lo := 111.65625) (g_hi := 111.859375) (M := 12500) (logM4_hi := 8.0471901) (ub := 1.440875) (a2 := 0) (b := 0) (c := 5) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, -, -, -, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.5365) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.65625) (g_hi := 111.859375) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.1369) 12 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.03735 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.5365)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.8066) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.65625) (g_hi := 111.859375) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 2.5087) 29 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.03202 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.8066)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.8766) ≤ Real.cos (γ * Real.log ((7 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.65625) (g_hi := 111.859375) (lp := Real.log ((7 : ℕ) : ℝ)) (lp_lo := 1.945908) (lp_hi := 1.9459107) (x_hi := 2.6388) 35 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl7a) (by simpa only [Nat.cast_ofNat] using hl7b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.01463 ≤ bohmanExcess 7 (γ * Real.log ((7 : ℕ) : ℝ)) := bohmanExcess7_ge (u_lo := (-0.8766)) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : (-0.7622) ≤ Real.cos (γ * Real.log ((11 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.65625) (g_hi := 111.859375) (lp := Real.log ((11 : ℕ) : ℝ)) (lp_lo := 2.3978948) (lp_hi := 2.397896) (x_hi := 2.4372) 43 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl11a) (by simpa only [Nat.cast_ofNat] using hl11b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.0139 ≤ bohmanExcess 11 (γ * Real.log ((11 : ℕ) : ℝ)) := bohmanExcess11_ge (u_lo := (-0.7622)) (by norm_num) hu_3 (by norm_num)
+  have hu_4 : (-0.1892) ≤ Real.cos (γ * Real.log ((23 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.65625) (g_hi := 111.859375) (lp := Real.log ((23 : ℕ) : ℝ)) (lp_lo := 3.135494) (lp_hi := 3.1354949) (x_hi := 1.761) 56 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl23a) (by simpa only [Nat.cast_ofNat] using hl23b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_4 : 0.00923 ≤ bohmanExcess 23 (γ * Real.log ((23 : ℕ) : ℝ)) := bohmanExcess23_ge (u_lo := (-0.1892)) (by norm_num) hu_4 (by norm_num)
+  have hu_5 : 0.5303 ≤ Real.cos (γ * Real.log ((29 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.65625) (g_hi := 111.859375) (lp := Real.log ((29 : ℕ) : ℝ)) (lp_lo := 3.3672956) (lp_hi := 3.3672966) (x_hi := 1.0117) 60 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl29a) (by simpa only [Nat.cast_ofNat] using hl29b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_5 : 0.0087 ≤ bohmanExcess 29 (γ * Real.log ((29 : ℕ) : ℝ)) := bohmanExcess29_ge (u_lo := 0.5303) (by norm_num) hu_5 (by norm_num)
+  have hu_6 : 0.6602 ≤ Real.cos (γ * Real.log ((31 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.65625) (g_hi := 111.859375) (lp := Real.log ((31 : ℕ) : ℝ)) (lp_lo := 3.4339872) (lp_hi := 3.4339873) (x_hi := 0.8495) 61 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl31a) (by simpa only [Nat.cast_ofNat] using hl31b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_6 : 0.00758 ≤ bohmanExcess 31 (γ * Real.log ((31 : ℕ) : ℝ)) := bohmanExcess31_ge (u_lo := 0.6602) (by norm_num) hu_6 (by norm_num)
+  have hu_7 : (-0.8743) ≤ Real.cos (γ * Real.log ((13 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.65625) (g_hi := 111.859375) (lp := Real.log ((13 : ℕ) : ℝ)) (lp_lo := 2.5649491) (lp_hi := 2.5649502) (x_hi := 2.6341) 46 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl13a) (by simpa only [Nat.cast_ofNat] using hl13b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_7 : 0.00535 ≤ bohmanExcess 13 (γ * Real.log ((13 : ℕ) : ℝ)) := bohmanExcess13_ge (u_lo := (-0.8743)) (by norm_num) hu_7 (by norm_num)
+  have hu_8 : 0.7596 ≤ Real.cos (γ * Real.log ((41 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.65625) (g_hi := 111.859375) (lp := Real.log ((41 : ℕ) : ℝ)) (lp_lo := 3.713572) (lp_hi := 3.7135722) (x_hi := 0.7078) 66 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl41a) (by simpa only [Nat.cast_ofNat] using hl41b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_8 : 0.00269 ≤ bohmanExcess 41 (γ * Real.log ((41 : ℕ) : ℝ)) := bohmanExcess41_ge (u_lo := 0.7596) (by norm_num) hu_8 (by norm_num)
+  have hu_9 : (-0.8761) ≤ Real.cos (γ * Real.log ((19 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.65625) (g_hi := 111.859375) (lp := Real.log ((19 : ℕ) : ℝ)) (lp_lo := 2.9444385) (lp_hi := 2.9444403) (x_hi := 2.6378) 52 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl19a) (by simpa only [Nat.cast_ofNat] using hl19b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_9 : 0.00229 ≤ bohmanExcess 19 (γ * Real.log ((19 : ℕ) : ℝ)) := bohmanExcess19_ge (u_lo := (-0.8761)) (by norm_num) hu_9 (by norm_num)
+  have hu_10 : 0.5298 ≤ Real.cos (γ * Real.log ((43 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.65625) (g_hi := 111.859375) (lp := Real.log ((43 : ℕ) : ℝ)) (lp_lo := 3.7611977) (lp_hi := 3.7612013) (x_hi := 1.0123) 67 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl43a) (by simpa only [Nat.cast_ofNat] using hl43b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_10 : 0.00187 ≤ bohmanExcess 43 (γ * Real.log ((43 : ℕ) : ℝ)) := bohmanExcess43_ge (u_lo := 0.5298) (by norm_num) hu_10 (by norm_num)
+  have hu_11 : (-0.2191) ≤ Real.cos (γ * Real.log ((37 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.65625) (g_hi := 111.859375) (lp := Real.log ((37 : ℕ) : ℝ)) (lp_lo := 3.6109175) (lp_hi := 3.6109192) (x_hi := 1.7915) 64 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl37a) (by simpa only [Nat.cast_ofNat] using hl37b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_11 : 0.00184 ≤ bohmanExcess 37 (γ * Real.log ((37 : ℕ) : ℝ)) := bohmanExcess37_ge (u_lo := (-0.2191)) (by norm_num) hu_11 (by norm_num)
+  have hu_12 : (-0.9295) ≤ Real.cos (γ * Real.log ((17 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.65625) (g_hi := 111.859375) (lp := Real.log ((17 : ℕ) : ℝ)) (lp_lo := 2.8332133) (lp_hi := 2.8332134) (x_hi := 2.7624) 50 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl17a) (by simpa only [Nat.cast_ofNat] using hl17b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_12 : 0.00169 ≤ bohmanExcess 17 (γ * Real.log ((17 : ℕ) : ℝ)) := bohmanExcess17_ge (u_lo := (-0.9295)) (by norm_num) hu_12 (by norm_num)
+  have hu_13 : (-0.9907) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.65625) (g_hi := 111.859375) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 2.9969) 20 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_13 : 0.00127 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.9907)) (by norm_num) hu_13 (by norm_num)
+  linarith only [harch, hmaster, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6, hg_7, hg_8, hg_9, hg_10, hg_11, hg_12, hg_13]
 
-private theorem bohman_interval_17 {γ : ℝ} (hlo : 111.75 ≤ γ) (hhi : γ ≤ 112.4375) :
+private theorem bohman_interval_17 {γ : ℝ} (hlo : 111.859375 ≤ γ) (hhi : γ ≤ 113.671875) :
+    1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
+      18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
+      bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
+  obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, ⟨hl11a, hl11b⟩, ⟨hl13a, hl13b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
+  have harch := bohman_arch_lt_smooth (g_lo := 111.859375) (g_hi := 113.671875) (M := 12960) (logM4_hi := 8.0833313) (ub := 1.448906) (a2 := 3) (b := 4) (c := 1) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨hn2, -, -, -, -, -, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.5739) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.859375) (g_hi := 113.671875) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 2.1818) 29 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.07145 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.5739)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.6234) ≤ Real.cos (γ * Real.log ((7 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.859375) (g_hi := 113.671875) (lp := Real.log ((7 : ℕ) : ℝ)) (lp_lo := 1.945908) (lp_hi := 1.9459107) (x_hi := 2.2436) 35 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl7a) (by simpa only [Nat.cast_ofNat] using hl7b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.04472 ≤ bohmanExcess 7 (γ * Real.log ((7 : ℕ) : ℝ)) := bohmanExcess7_ge (u_lo := (-0.6234)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.7352) ≤ Real.cos (γ * Real.log ((11 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.859375) (g_hi := 113.671875) (lp := Real.log ((11 : ℕ) : ℝ)) (lp_lo := 2.3978948) (lp_hi := 2.397896) (x_hi := 2.3965) 43 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl11a) (by simpa only [Nat.cast_ofNat] using hl11b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.01548 ≤ bohmanExcess 11 (γ * Real.log ((11 : ℕ) : ℝ)) := bohmanExcess11_ge (u_lo := (-0.7352)) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : (-0.9337) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.859375) (g_hi := 113.671875) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 2.7738) 20 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.00933 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.9337)) (by norm_num) hu_3 (by norm_num)
+  have hu_4 : (-0.8226) ≤ Real.cos (γ * Real.log ((13 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.859375) (g_hi := 113.671875) (lp := Real.log ((13 : ℕ) : ℝ)) (lp_lo := 2.5649491) (lp_hi := 2.5649502) (x_hi := 2.5363) 46 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl13a) (by simpa only [Nat.cast_ofNat] using hl13b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_4 : 0.00756 ≤ bohmanExcess 13 (γ * Real.log ((13 : ℕ) : ℝ)) := bohmanExcess13_ge (u_lo := (-0.8226)) (by norm_num) hu_4 (by norm_num)
+  linarith only [harch, hmaster, hn2, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1, hg_2, hg_3, hg_4]
+
+private theorem bohman_interval_18 {γ : ℝ} (hlo : 113.671875 ≤ γ) (hhi : γ ≤ 115.96875) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
-  obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, ⟨hl11a, hl11b⟩, ⟨hl13a, hl13b⟩, -, -, ⟨hl23a, hl23b⟩, ⟨hl29a, hl29b⟩, -, -, -, ⟨hl43a, hl43b⟩, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 111.75) (g_hi := 112.4375) (M := 12544) (logM4_hi := 8.0507764) (ub := 1.443477) (a2 := 6) (b := 0) (c := 0) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.709) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.75) (g_hi := 112.4375) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 2.3586) 29 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.04844 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.709)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.7752) ≤ Real.cos (γ * Real.log (7 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.75) (g_hi := 112.4375) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (x_hi := 2.4574) 35 (by norm_num) hlo hhi (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.02667 ≤ bohmanExcess 7 (γ * Real.log (7 : ℝ)) := bohmanExcess7_ge (u_lo := (-0.7752)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.6093) ≤ Real.cos (γ * Real.log (11 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.75) (g_hi := 112.4375) (lp_lo := 2.3977758) (lp_hi := 2.3979146) (x_hi := 2.2257) 43 (by norm_num) hlo hhi (by norm_num) hl11a hl11b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.02284 ≤ bohmanExcess 11 (γ * Real.log (11 : ℝ)) := bohmanExcess11_ge (u_lo := (-0.6093)) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : 0.0979 ≤ Real.cos (γ * Real.log (23 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.75) (g_hi := 112.4375) (lp_lo := 3.1354442) (lp_hi := 3.1356659) (x_hi := 1.4726) 56 (by norm_num) hlo hhi (by norm_num) hl23a hl23b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.0125 ≤ bohmanExcess 23 (γ * Real.log (23 : ℝ)) := bohmanExcess23_ge (u_lo := 0.0979) (by norm_num) hu_3 (by norm_num)
-  have hu_4 : (-0.8234) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.75) (g_hi := 112.4375) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.5377) 12 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_4 : 0.01209 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.8234)) (by norm_num) hu_4 (by norm_num)
-  have hu_5 : (-0.7561) ≤ Real.cos (γ * Real.log (13 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.75) (g_hi := 112.4375) (lp_lo := 2.5646445) (lp_hi := 2.5650861) (x_hi := 2.4277) 46 (by norm_num) hlo hhi (by norm_num) hl13a hl13b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_5 : 0.0104 ≤ bohmanExcess 13 (γ * Real.log (13 : ℝ)) := bohmanExcess13_ge (u_lo := (-0.7561)) (by norm_num) hu_5 (by norm_num)
-  have hu_6 : (-0.0552) ≤ Real.cos (γ * Real.log (29 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.75) (g_hi := 112.4375) (lp_lo := 3.3667148) (lp_hi := 3.3673538) (x_hi := 1.6259) 60 (by norm_num) hlo hhi (by norm_num) hl29a hl29b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_6 : 0.00537 ≤ bohmanExcess 29 (γ * Real.log (29 : ℝ)) := bohmanExcess29_ge (u_lo := (-0.0552)) (by norm_num) hu_6 (by norm_num)
-  have hu_7 : (-0.9714) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.75) (g_hi := 112.4375) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 2.8983) 20 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_7 : 0.00396 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.9714)) (by norm_num) hu_7 (by norm_num)
-  have hu_8 : (-0.3552) ≤ Real.cos (γ * Real.log (43 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 111.75) (g_hi := 112.4375) (lp_lo := 3.7611756) (lp_hi := 3.7612638) (x_hi := 1.9338) 67 (by norm_num) hlo hhi (by norm_num) hl43a hl43b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_8 : 0.00078 ≤ bohmanExcess 43 (γ * Real.log (43 : ℝ)) := bohmanExcess43_ge (u_lo := (-0.3552)) (by norm_num) hu_8 (by norm_num)
-  linarith only [harch, hmaster, hn17, hn19, hn31, hn37, hn41, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6, hg_7, hg_8]
+  obtain ⟨⟨hl3a, hl3b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
+  have harch := bohman_arch_lt_smooth (g_lo := 113.671875) (g_hi := 115.96875) (M := 13440) (logM4_hi := 8.1196977) (ub := 1.458899) (a2 := 5) (b := 1) (c := 1) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, -, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.1697) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 113.671875) (g_hi := 115.96875) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 1.7412) 20 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.15639 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.1697)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.9694) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 113.671875) (g_hi := 115.96875) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.8902) 13 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.00193 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.9694)) (by norm_num) hu_1 (by norm_num)
+  linarith only [harch, hmaster, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1]
 
-private theorem bohman_interval_18 {γ : ℝ} (hlo : 112.4375 ≤ γ) (hhi : γ ≤ 114.546875) :
-    1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
-      18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
-      bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
-  obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 112.4375) (g_hi := 114.546875) (M := 12960) (logM4_hi := 8.0836006) (ub := 1.452825) (a2 := 3) (b := 4) (c := 1) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.5495) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 112.4375) (g_hi := 114.546875) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 2.1523) 29 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.07564 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.5495)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.5417) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 112.4375) (g_hi := 114.546875) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 2.1431) 20 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.07509 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.5417)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.9898) ≤ Real.cos (γ * Real.log (7 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 112.4375) (g_hi := 114.546875) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (x_hi := 2.9908) 35 (by norm_num) hlo hhi (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.00119 ≤ bohmanExcess 7 (γ * Real.log (7 : ℝ)) := bohmanExcess7_ge (u_lo := (-0.9898)) (by norm_num) hu_2 (by norm_num)
-  linarith only [harch, hmaster, hn2, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1, hg_2]
-
-private theorem bohman_interval_19 {γ : ℝ} (hlo : 114.546875 ≤ γ) (hhi : γ ≤ 116.1875) :
+private theorem bohman_interval_19 {γ : ℝ} (hlo : 115.96875 ≤ γ) (hhi : γ ≤ 119.78125) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
-  obtain ⟨⟨hl3a, hl3b⟩, -, -, ⟨hl11a, hl11b⟩, -, ⟨hl17a, hl17b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 114.546875) (g_hi := 116.1875) (M := 13440) (logM4_hi := 8.1198559) (ub := 1.459882) (a2 := 5) (b := 1) (c := 1) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.4046) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 114.546875) (g_hi := 116.1875) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 1.9872) 20 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.10274 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.4046)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.5456) ≤ Real.cos (γ * Real.log (11 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 114.546875) (g_hi := 116.1875) (lp_lo := 2.3977758) (lp_hi := 2.3979146) (x_hi := 2.1477) 44 (by norm_num) hlo hhi (by norm_num) hl11a hl11b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.02657 ≤ bohmanExcess 11 (γ * Real.log (11 : ℝ)) := bohmanExcess11_ge (u_lo := (-0.5456)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.6542) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 114.546875) (g_hi := 116.1875) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.2837) 13 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.026 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.6542)) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : (-0.7778) ≤ Real.cos (γ * Real.log (17 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 114.546875) (g_hi := 116.1875) (lp_lo := 2.8331549) (lp_hi := 2.8332392) (x_hi := 2.4615) 52 (by norm_num) hlo hhi (by norm_num) hl17a hl17b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.00537 ≤ bohmanExcess 17 (γ * Real.log (17 : ℝ)) := bohmanExcess17_ge (u_lo := (-0.7778)) (by norm_num) hu_3 (by norm_num)
-  linarith only [harch, hmaster, hn5, hn7, hn13, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1, hg_2, hg_3]
-
-private theorem bohman_interval_20 {γ : ℝ} (hlo : 116.1875 ≤ γ) (hhi : γ ≤ 119.78125) :
-    1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
-      18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
-      bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
-  have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
-  have harch := bohman_arch_lt_smooth (g_lo := 116.1875) (g_hi := 119.78125) (M := 14336) (logM4_hi := 8.1842714) (ub := 1.475068) (a2 := 9) (b := 0) (c := 0) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : 0.2239 ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 116.1875) (g_hi := 119.78125) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.3448) 13 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.176 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := 0.2239) (by norm_num) hu_0 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 115.96875) (g_hi := 119.78125) (M := 14336) (logM4_hi := 8.1842355) (ub := 1.475059) (a2 := 9) (b := 0) (c := 0) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : 0.2239 ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 115.96875) (g_hi := 119.78125) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.3448) 13 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.176 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := 0.2239) (by norm_num) hu_0 (by norm_num)
   linarith only [harch, hmaster, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0]
 
-private theorem bohman_interval_21 {γ : ℝ} (hlo : 119.78125 ≤ γ) (hhi : γ ≤ 122) :
+private theorem bohman_interval_20 {γ : ℝ} (hlo : 119.78125 ≤ γ) (hhi : γ ≤ 122) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
-  have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
   obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 119.78125) (g_hi := 122) (M := 14700) (logM4_hi := 8.2095778) (ub := 1.484314) (a2 := 0) (b := 1) (c := 2) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.4157) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 119.78125) (g_hi := 122) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 1.9993) 31 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.09882 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.4157)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.4964) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 119.78125) (g_hi := 122) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 2.09) 21 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.08394 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.4964)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.9675) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 119.78125) (g_hi := 122) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.8827) 13 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.00205 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.9675)) (by norm_num) hu_2 (by norm_num)
-  linarith only [harch, hmaster, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1, hg_2]
+  have harch := bohman_arch_lt_smooth (g_lo := 119.78125) (g_hi := 122) (M := 15000) (logM4_hi := 8.2295122) (ub := 1.484232) (a2 := 1) (b := 1) (c := 4) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨hn2, -, -, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.4148) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 119.78125) (g_hi := 122) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 1.9984) 31 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.09897 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.4148)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.4911) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 119.78125) (g_hi := 122) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 2.084) 21 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.08499 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.4911)) (by norm_num) hu_1 (by norm_num)
+  linarith only [harch, hmaster, hn2, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1]
 
-private theorem bohman_interval_22 {γ : ℝ} (hlo : 122 ≤ γ) (hhi : γ ≤ 123.125) :
+private theorem bohman_interval_21 {γ : ℝ} (hlo : 122 ≤ γ) (hhi : γ ≤ 123.140625) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   obtain ⟨-, -, ⟨hl7a, hl7b⟩, ⟨hl11a, hl11b⟩, ⟨hl13a, hl13b⟩, -, -, -, -, ⟨hl31a, hl31b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 122) (g_hi := 123.125) (M := 15360) (logM4_hi := 8.2533508) (ub := 1.48886) (a2 := 8) (b := 1) (c := 1) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : 0.2076 ≤ Real.cos (γ * Real.log (7 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 122) (g_hi := 123.125) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (x_hi := 1.3615) 38 (by norm_num) hlo hhi (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.14405 ≤ bohmanExcess 7 (γ * Real.log (7 : ℝ)) := bohmanExcess7_ge (u_lo := 0.2076) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.0963) ≤ Real.cos (γ * Real.log (13 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 122) (g_hi := 123.125) (lp_lo := 2.5646445) (lp_hi := 2.5650861) (x_hi := 1.6671) 50 (by norm_num) hlo hhi (by norm_num) hl13a hl13b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.03858 ≤ bohmanExcess 13 (γ * Real.log (13 : ℝ)) := bohmanExcess13_ge (u_lo := (-0.0963)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.9363) ≤ Real.cos (γ * Real.log (11 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 122) (g_hi := 123.125) (lp_lo := 2.3977758) (lp_hi := 2.3979146) (x_hi := 2.7812) 47 (by norm_num) hlo hhi (by norm_num) hl11a hl11b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.00371 ≤ bohmanExcess 11 (γ * Real.log (11 : ℝ)) := bohmanExcess11_ge (u_lo := (-0.9363)) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : (-0.446) ≤ Real.cos (γ * Real.log (31 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 122) (g_hi := 123.125) (lp_lo := 3.4339401) (lp_hi := 3.4339888) (x_hi := 2.0329) 67 (by norm_num) hlo hhi (by norm_num) hl31a hl31b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.00252 ≤ bohmanExcess 31 (γ * Real.log (31 : ℝ)) := bohmanExcess31_ge (u_lo := (-0.446)) (by norm_num) hu_3 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 122) (g_hi := 123.140625) (M := 15120) (logM4_hi := 8.2374819) (ub := 1.488876) (a2 := 2) (b := 3) (c := 1) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨hn2, hn3, hn5, -, -, -, hn17, hn19, hn23, hn29, -, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : 0.2087 ≤ Real.cos (γ * Real.log ((7 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 122) (g_hi := 123.140625) (lp := Real.log ((7 : ℕ) : ℝ)) (lp_lo := 1.945908) (lp_hi := 1.9459107) (x_hi := 1.3604) 38 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl7a) (by simpa only [Nat.cast_ofNat] using hl7b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.14418 ≤ bohmanExcess 7 (γ * Real.log ((7 : ℕ) : ℝ)) := bohmanExcess7_ge (u_lo := 0.2087) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.1196) ≤ Real.cos (γ * Real.log ((13 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 122) (g_hi := 123.140625) (lp := Real.log ((13 : ℕ) : ℝ)) (lp_lo := 2.5649491) (lp_hi := 2.5649502) (x_hi := 1.6905) 50 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl13a) (by simpa only [Nat.cast_ofNat] using hl13b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.03759 ≤ bohmanExcess 13 (γ * Real.log ((13 : ℕ) : ℝ)) := bohmanExcess13_ge (u_lo := (-0.1196)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.9311) ≤ Real.cos (γ * Real.log ((11 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 122) (g_hi := 123.140625) (lp := Real.log ((11 : ℕ) : ℝ)) (lp_lo := 2.3978948) (lp_hi := 2.397896) (x_hi := 2.7667) 47 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl11a) (by simpa only [Nat.cast_ofNat] using hl11b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.00402 ≤ bohmanExcess 11 (γ * Real.log ((11 : ℕ) : ℝ)) := bohmanExcess11_ge (u_lo := (-0.9311)) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : (-0.4408) ≤ Real.cos (γ * Real.log ((31 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 122) (g_hi := 123.140625) (lp := Real.log ((31 : ℕ) : ℝ)) (lp_lo := 3.4339872) (lp_hi := 3.4339873) (x_hi := 2.0271) 67 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl31a) (by simpa only [Nat.cast_ofNat] using hl31b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.00254 ≤ bohmanExcess 31 (γ * Real.log ((31 : ℕ) : ℝ)) := bohmanExcess31_ge (u_lo := (-0.4408)) (by norm_num) hu_3 (by norm_num)
   linarith only [harch, hmaster, hn2, hn3, hn5, hn17, hn19, hn23, hn29, hn37, hn41, hn43, hn47, hg_0, hg_1, hg_2, hg_3]
 
-private theorem bohman_interval_23 {γ : ℝ} (hlo : 123.125 ≤ γ) (hhi : γ ≤ 123.671875) :
+private theorem bohman_interval_22 {γ : ℝ} (hlo : 123.140625 ≤ γ) (hhi : γ ≤ 123.6875) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
-  obtain ⟨-, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, ⟨hl11a, hl11b⟩, -, -, ⟨hl19a, hl19b⟩, -, ⟨hl29a, hl29b⟩, -, ⟨hl37a, hl37b⟩, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 123.125) (g_hi := 123.671875) (M := 15360) (logM4_hi := 8.2533508) (ub := 1.491056) (a2 := 8) (b := 1) (c := 1) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.3216) ≤ Real.cos (γ * Real.log (7 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.125) (g_hi := 123.671875) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (x_hi := 1.898) 38 (by norm_num) hlo hhi (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.08071 ≤ bohmanExcess 7 (γ * Real.log (7 : ℝ)) := bohmanExcess7_ge (u_lo := (-0.3216)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : 0.3199 ≤ Real.cos (γ * Real.log (11 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.125) (g_hi := 123.671875) (lp_lo := 2.3977758) (lp_hi := 2.3979146) (x_hi := 1.245) 47 (by norm_num) hlo hhi (by norm_num) hl11a hl11b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.0772 ≤ bohmanExcess 11 (γ * Real.log (11 : ℝ)) := bohmanExcess11_ge (u_lo := 0.3199) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.3199) ≤ Real.cos (γ * Real.log (19 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.125) (g_hi := 123.671875) (lp_lo := 2.9443944) (lp_hi := 2.9444434) (x_hi := 1.8963) 58 (by norm_num) hlo hhi (by norm_num) hl19a hl19b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.01265 ≤ bohmanExcess 19 (γ * Real.log (19 : ℝ)) := bohmanExcess19_ge (u_lo := (-0.3199)) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : (-0.8679) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.125) (g_hi := 123.671875) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.621) 14 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.00882 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.8679)) (by norm_num) hu_3 (by norm_num)
-  have hu_4 : (-0.1852) ≤ Real.cos (γ * Real.log (29 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.125) (g_hi := 123.671875) (lp_lo := 3.3667148) (lp_hi := 3.3673538) (x_hi := 1.7569) 66 (by norm_num) hlo hhi (by norm_num) hl29a hl29b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_4 : 0.00463 ≤ bohmanExcess 29 (γ * Real.log (29 : ℝ)) := bohmanExcess29_ge (u_lo := (-0.1852)) (by norm_num) hu_4 (by norm_num)
-  have hu_5 : (-0.972) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.125) (g_hi := 123.671875) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 2.9009) 32 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_5 : 0.00458 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.972)) (by norm_num) hu_5 (by norm_num)
-  have hu_6 : 0.0457 ≤ Real.cos (γ * Real.log (37 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.125) (g_hi := 123.671875) (lp_lo := 3.6108132) (lp_hi := 3.6109222) (x_hi := 1.5249) 71 (by norm_num) hlo hhi (by norm_num) hl37a hl37b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_6 : 0.00247 ≤ bohmanExcess 37 (γ * Real.log (37 : ℝ)) := bohmanExcess37_ge (u_lo := 0.0457) (by norm_num) hu_6 (by norm_num)
-  linarith only [harch, hmaster, hn3, hn13, hn17, hn23, hn31, hn41, hn43, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6]
+  obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, ⟨hl11a, hl11b⟩, -, -, ⟨hl19a, hl19b⟩, -, ⟨hl29a, hl29b⟩, -, ⟨hl37a, hl37b⟩, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
+  have harch := bohman_arch_lt_smooth (g_lo := 123.140625) (g_hi := 123.6875) (M := 15360) (logM4_hi := 8.2532285) (ub := 1.491088) (a2 := 8) (b := 1) (c := 1) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, -, -, -, -, hn13, hn17, -, hn23, -, hn31, -, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.346) ≤ Real.cos (γ * Real.log ((7 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.140625) (g_hi := 123.6875) (lp := Real.log ((7 : ℕ) : ℝ)) (lp_lo := 1.945908) (lp_hi := 1.9459107) (x_hi := 1.9239) 38 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl7a) (by simpa only [Nat.cast_ofNat] using hl7b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.07779 ≤ bohmanExcess 7 (γ * Real.log ((7 : ℕ) : ℝ)) := bohmanExcess7_ge (u_lo := (-0.346)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : 0.2864 ≤ Real.cos (γ * Real.log ((11 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.140625) (g_hi := 123.6875) (lp := Real.log ((11 : ℕ) : ℝ)) (lp_lo := 2.3978948) (lp_hi := 2.397896) (x_hi := 1.2802) 47 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl11a) (by simpa only [Nat.cast_ofNat] using hl11b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.07524 ≤ bohmanExcess 11 (γ * Real.log ((11 : ℕ) : ℝ)) := bohmanExcess11_ge (u_lo := 0.2864) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.2708) ≤ Real.cos (γ * Real.log ((19 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.140625) (g_hi := 123.6875) (lp := Real.log ((19 : ℕ) : ℝ)) (lp_lo := 2.9444385) (lp_hi := 2.9444403) (x_hi := 1.8449) 58 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl19a) (by simpa only [Nat.cast_ofNat] using hl19b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.01356 ≤ bohmanExcess 19 (γ * Real.log ((19 : ℕ) : ℝ)) := bohmanExcess19_ge (u_lo := (-0.2708)) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : (-0.8625) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.140625) (g_hi := 123.6875) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.6102) 14 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.00921 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.8625)) (by norm_num) hu_3 (by norm_num)
+  have hu_4 : (-0.9654) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.140625) (g_hi := 123.6875) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 2.8749) 32 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_4 : 0.00567 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.9654)) (by norm_num) hu_4 (by norm_num)
+  have hu_5 : (-0.2297) ≤ Real.cos (γ * Real.log ((29 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.140625) (g_hi := 123.6875) (lp := Real.log ((29 : ℕ) : ℝ)) (lp_lo := 3.3672956) (lp_hi := 3.3672966) (x_hi := 1.8024) 66 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl29a) (by simpa only [Nat.cast_ofNat] using hl29b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_5 : 0.00437 ≤ bohmanExcess 29 (γ * Real.log ((29 : ℕ) : ℝ)) := bohmanExcess29_ge (u_lo := (-0.2297)) (by norm_num) hu_5 (by norm_num)
+  have hu_6 : 0.1147 ≤ Real.cos (γ * Real.log ((37 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.140625) (g_hi := 123.6875) (lp := Real.log ((37 : ℕ) : ℝ)) (lp_lo := 3.6109175) (lp_hi := 3.6109192) (x_hi := 1.4557) 71 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl37a) (by simpa only [Nat.cast_ofNat] using hl37b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_6 : 0.00263 ≤ bohmanExcess 37 (γ * Real.log ((37 : ℕ) : ℝ)) := bohmanExcess37_ge (u_lo := 0.1147) (by norm_num) hu_6 (by norm_num)
+  have hu_7 : (-0.982) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.140625) (g_hi := 123.6875) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 2.9464) 22 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_7 : 0.00248 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.982)) (by norm_num) hu_7 (by norm_num)
+  linarith only [harch, hmaster, hn13, hn17, hn23, hn31, hn41, hn43, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6, hg_7]
 
-private theorem bohman_interval_24 {γ : ℝ} (hlo : 123.671875 ≤ γ) (hhi : γ ≤ 124.828125) :
+private theorem bohman_interval_23 {γ : ℝ} (hlo : 123.6875 ≤ γ) (hhi : γ ≤ 124.90625) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
   obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, -, -, -, ⟨hl17a, hl17b⟩, -, ⟨hl23a, hl23b⟩, -, ⟨hl31a, hl31b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 123.671875) (g_hi := 124.828125) (M := 15680) (logM4_hi := 8.2739934) (ub := 1.495714) (a2 := 4) (b := 0) (c := 1) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.4351) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.671875) (g_hi := 124.828125) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 2.0208) 32 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.09544 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.4351)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.7154) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.671875) (g_hi := 124.828125) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 2.3677) 22 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.04364 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.7154)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.622) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.671875) (g_hi := 124.828125) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.2419) 14 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.02896 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.622)) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : (-0.2368) ≤ Real.cos (γ * Real.log (17 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.671875) (g_hi := 124.828125) (lp_lo := 2.8331549) (lp_hi := 2.8332392) (x_hi := 1.8097) 56 (by norm_num) hlo hhi (by norm_num) hl17a hl17b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.01849 ≤ bohmanExcess 17 (γ * Real.log (17 : ℝ)) := bohmanExcess17_ge (u_lo := (-0.2368)) (by norm_num) hu_3 (by norm_num)
-  have hu_4 : (-0.2873) ≤ Real.cos (γ * Real.log (23 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.671875) (g_hi := 124.828125) (lp_lo := 3.1354442) (lp_hi := 3.1356659) (x_hi := 1.862) 62 (by norm_num) hlo hhi (by norm_num) hl23a hl23b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_4 : 0.00811 ≤ bohmanExcess 23 (γ * Real.log (23 : ℝ)) := bohmanExcess23_ge (u_lo := (-0.2873)) (by norm_num) hu_4 (by norm_num)
-  have hu_5 : (-0.844) ≤ Real.cos (γ * Real.log (31 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.671875) (g_hi := 124.828125) (lp_lo := 3.4339401) (lp_hi := 3.4339888) (x_hi := 2.5749) 68 (by norm_num) hlo hhi (by norm_num) hl31a hl31b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_5 : 0.0007 ≤ bohmanExcess 31 (γ * Real.log (31 : ℝ)) := bohmanExcess31_ge (u_lo := (-0.844)) (by norm_num) hu_5 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 123.6875) (g_hi := 124.90625) (M := 15552) (logM4_hi := 8.2656534) (ub := 1.495989) (a2 := 4) (b := 5) (c := 0) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, -, -, hn7, hn11, hn13, -, hn19, -, hn29, -, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.4115) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.6875) (g_hi := 124.90625) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 1.9947) 32 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.09955 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.4115)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.6998) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.6875) (g_hi := 124.90625) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 2.3456) 22 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.0463 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.6998)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.6135) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.6875) (g_hi := 124.90625) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.2311) 14 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.02975 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.6135)) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : (-0.4414) ≤ Real.cos (γ * Real.log ((17 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.6875) (g_hi := 124.90625) (lp := Real.log ((17 : ℕ) : ℝ)) (lp_lo := 2.8332133) (lp_hi := 2.8332134) (x_hi := 2.0278) 56 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl17a) (by simpa only [Nat.cast_ofNat] using hl17b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.01353 ≤ bohmanExcess 17 (γ * Real.log ((17 : ℕ) : ℝ)) := bohmanExcess17_ge (u_lo := (-0.4414)) (by norm_num) hu_3 (by norm_num)
+  have hu_4 : (-0.4925) ≤ Real.cos (γ * Real.log ((23 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.6875) (g_hi := 124.90625) (lp := Real.log ((23 : ℕ) : ℝ)) (lp_lo := 3.135494) (lp_hi := 3.1354949) (x_hi := 2.0856) 62 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl23a) (by simpa only [Nat.cast_ofNat] using hl23b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_4 : 0.00577 ≤ bohmanExcess 23 (γ * Real.log ((23 : ℕ) : ℝ)) := bohmanExcess23_ge (u_lo := (-0.4925)) (by norm_num) hu_4 (by norm_num)
+  have hu_5 : (-0.8106) ≤ Real.cos (γ * Real.log ((31 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 123.6875) (g_hi := 124.90625) (lp := Real.log ((31 : ℕ) : ℝ)) (lp_lo := 3.4339872) (lp_hi := 3.4339873) (x_hi := 2.5155) 68 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl31a) (by simpa only [Nat.cast_ofNat] using hl31b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_5 : 0.00085 ≤ bohmanExcess 31 (γ * Real.log ((31 : ℕ) : ℝ)) := bohmanExcess31_ge (u_lo := (-0.8106)) (by norm_num) hu_5 (by norm_num)
   linarith only [harch, hmaster, hn7, hn11, hn13, hn19, hn29, hn37, hn41, hn43, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5]
 
-private theorem bohman_interval_25 {γ : ℝ} (hlo : 124.828125 ≤ γ) (hhi : γ ≤ 127.859375) :
+private theorem bohman_interval_24 {γ : ℝ} (hlo : 124.90625 ≤ γ) (hhi : γ ≤ 127.96875) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
   obtain ⟨⟨hl3a, hl3b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 124.828125) (g_hi := 127.859375) (M := 16384) (logM4_hi := 8.3177663) (ub := 1.507663) (a2 := 12) (b := 0) (c := 0) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : 0.1298 ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 124.828125) (g_hi := 127.859375) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.4405) 14 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.14889 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := 0.1298) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.6239) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 124.828125) (g_hi := 127.859375) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 2.2443) 22 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.05972 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.6239)) (by norm_num) hu_1 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 124.90625) (g_hi := 127.96875) (M := 16384) (logM4_hi := 8.3177663) (ub := 1.508089) (a2 := 12) (b := 0) (c := 0) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, -, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : 0.1833 ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 124.90625) (g_hi := 127.96875) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.3863) 14 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.16377 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := 0.1833) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.7087) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 124.90625) (g_hi := 127.96875) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 2.3582) 22 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.04478 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.7087)) (by norm_num) hu_1 (by norm_num)
   linarith only [harch, hmaster, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1]
 
-private theorem bohman_interval_26 {γ : ℝ} (hlo : 127.859375 ≤ γ) (hhi : γ ≤ 129.875) :
+private theorem bohman_interval_25 {γ : ℝ} (hlo : 127.96875 ≤ γ) (hhi : γ ≤ 129.921875) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
   obtain ⟨-, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 127.859375) (g_hi := 129.875) (M := 16800) (logM4_hi := 8.3430728) (ub := 1.515537) (a2 := 3) (b := 1) (c := 2) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.1194) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 127.859375) (g_hi := 129.875) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 1.6903) 33 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.15128 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.1194)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.4683) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 127.859375) (g_hi := 129.875) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.058) 14 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.04468 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.4683)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.8168) ≤ Real.cos (γ * Real.log (7 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 127.859375) (g_hi := 129.875) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (x_hi := 2.5261) 40 (by norm_num) hlo hhi (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.02173 ≤ bohmanExcess 7 (γ * Real.log (7 : ℝ)) := bohmanExcess7_ge (u_lo := (-0.8168)) (by norm_num) hu_2 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 127.96875) (g_hi := 129.921875) (M := 16800) (logM4_hi := 8.3428413) (ub := 1.51566) (a2 := 3) (b := 1) (c := 2) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, hn3, -, -, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.1845) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 127.96875) (g_hi := 129.921875) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 1.7562) 33 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.13962 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.1845)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.4968) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 127.96875) (g_hi := 129.921875) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.0905) 14 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.04154 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.4968)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.6754) ≤ Real.cos (γ * Real.log ((7 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 127.96875) (g_hi := 129.921875) (lp := Real.log ((7 : ℕ) : ℝ)) (lp_lo := 1.945908) (lp_hi := 1.9459107) (x_hi := 2.3121) 40 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl7a) (by simpa only [Nat.cast_ofNat] using hl7b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.03854 ≤ bohmanExcess 7 (γ * Real.log ((7 : ℕ) : ℝ)) := bohmanExcess7_ge (u_lo := (-0.6754)) (by norm_num) hu_2 (by norm_num)
   linarith only [harch, hmaster, hn3, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1, hg_2]
 
-private theorem bohman_interval_27 {γ : ℝ} (hlo : 129.875 ≤ γ) (hhi : γ ≤ 130.640625) :
+private theorem bohman_interval_26 {γ : ℝ} (hlo : 129.921875 ≤ γ) (hhi : γ ≤ 130.71875) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
-  obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, ⟨hl11a, hl11b⟩, ⟨hl13a, hl13b⟩, ⟨hl17a, hl17b⟩, ⟨hl19a, hl19b⟩, ⟨hl23a, hl23b⟩, -, -, -, ⟨hl41a, hl41b⟩, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 129.875) (g_hi := 130.640625) (M := 17280) (logM4_hi := 8.3712331) (ub := 1.518485) (a2 := 5) (b := 3) (c := 1) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.2625) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.875) (g_hi := 130.640625) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 1.8363) 23 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.13421 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.2625)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : 0.1799 ≤ Real.cos (γ * Real.log (19 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.875) (g_hi := 130.640625) (lp_lo := 2.9443944) (lp_hi := 2.9444434) (x_hi := 1.3898) 61 (by norm_num) hlo hhi (by norm_num) hl19a hl19b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.02195 ≤ bohmanExcess 19 (γ * Real.log (19 : ℝ)) := bohmanExcess19_ge (u_lo := 0.1799) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.5014) ≤ Real.cos (γ * Real.log (13 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.875) (g_hi := 130.640625) (lp_lo := 2.5646445) (lp_hi := 2.5650861) (x_hi := 2.0958) 53 (by norm_num) hlo hhi (by norm_num) hl13a hl13b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.02128 ≤ bohmanExcess 13 (γ * Real.log (13 : ℝ)) := bohmanExcess13_ge (u_lo := (-0.5014)) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : 0.3261 ≤ Real.cos (γ * Real.log (23 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.875) (g_hi := 130.640625) (lp_lo := 3.1354442) (lp_hi := 3.1356659) (x_hi := 1.2385) 65 (by norm_num) hlo hhi (by norm_num) hl23a hl23b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.0151 ≤ bohmanExcess 23 (γ * Real.log (23 : ℝ)) := bohmanExcess23_ge (u_lo := 0.3261) (by norm_num) hu_3 (by norm_num)
-  have hu_4 : (-0.8513) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.875) (g_hi := 130.640625) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.5887) 14 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_4 : 0.01002 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.8513)) (by norm_num) hu_4 (by norm_num)
-  have hu_5 : (-0.9242) ≤ Real.cos (γ * Real.log (11 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.875) (g_hi := 130.640625) (lp_lo := 2.3977758) (lp_hi := 2.3979146) (x_hi := 2.7483) 50 (by norm_num) hlo hhi (by norm_num) hl11a hl11b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_5 : 0.00442 ≤ bohmanExcess 11 (γ * Real.log (11 : ℝ)) := bohmanExcess11_ge (u_lo := (-0.9242)) (by norm_num) hu_5 (by norm_num)
-  have hu_6 : (-0.977) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.875) (g_hi := 130.640625) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 2.9226) 33 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_6 : 0.00376 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.977)) (by norm_num) hu_6 (by norm_num)
-  have hu_7 : (-0.9699) ≤ Real.cos (γ * Real.log (7 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.875) (g_hi := 130.640625) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (x_hi := 2.8924) 40 (by norm_num) hlo hhi (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_7 : 0.00355 ≤ bohmanExcess 7 (γ * Real.log (7 : ℝ)) := bohmanExcess7_ge (u_lo := (-0.9699)) (by norm_num) hu_7 (by norm_num)
-  have hu_8 : (-0.9256) ≤ Real.cos (γ * Real.log (17 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.875) (g_hi := 130.640625) (lp_lo := 2.8331549) (lp_hi := 2.8332392) (x_hi := 2.7521) 59 (by norm_num) hlo hhi (by norm_num) hl17a hl17b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_8 : 0.00179 ≤ bohmanExcess 17 (γ * Real.log (17 : ℝ)) := bohmanExcess17_ge (u_lo := (-0.9256)) (by norm_num) hu_8 (by norm_num)
-  have hu_9 : 0.0285 ≤ Real.cos (γ * Real.log (41 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.875) (g_hi := 130.640625) (lp_lo := 3.7132884) (lp_hi := 3.7136164) (x_hi := 1.5421) 77 (by norm_num) hlo hhi (by norm_num) hl41a hl41b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_9 : 0.00157 ≤ bohmanExcess 41 (γ * Real.log (41 : ℝ)) := bohmanExcess41_ge (u_lo := 0.0285) (by norm_num) hu_9 (by norm_num)
-  linarith only [harch, hmaster, hn29, hn31, hn37, hn43, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6, hg_7, hg_8, hg_9]
+  obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, ⟨hl11a, hl11b⟩, ⟨hl13a, hl13b⟩, ⟨hl17a, hl17b⟩, ⟨hl19a, hl19b⟩, ⟨hl23a, hl23b⟩, ⟨hl29a, hl29b⟩, -, ⟨hl37a, hl37b⟩, ⟨hl41a, hl41b⟩, ⟨hl43a, hl43b⟩, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
+  have harch := bohman_arch_lt_smooth (g_lo := 129.921875) (g_hi := 130.71875) (M := 17280) (logM4_hi := 8.3710128) (ub := 1.518725) (a2 := 5) (b := 3) (c := 1) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, -, -, -, -, -, -, -, -, -, hn31, -, -, -, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.2075) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.921875) (g_hi := 130.71875) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 1.7797) 23 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.1472 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.2075)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.0487) ≤ Real.cos (γ * Real.log ((19 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.921875) (g_hi := 130.71875) (lp := Real.log ((19 : ℕ) : ℝ)) (lp_lo := 2.9444385) (lp_hi := 2.9444403) (x_hi := 1.6194) 61 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl19a) (by simpa only [Nat.cast_ofNat] using hl19b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.0177 ≤ bohmanExcess 19 (γ * Real.log ((19 : ℕ) : ℝ)) := bohmanExcess19_ge (u_lo := (-0.0487)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.6502) ≤ Real.cos (γ * Real.log ((13 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.921875) (g_hi := 130.71875) (lp := Real.log ((13 : ℕ) : ℝ)) (lp_lo := 2.5649491) (lp_hi := 2.5649502) (x_hi := 2.2784) 53 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl13a) (by simpa only [Nat.cast_ofNat] using hl13b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.01493 ≤ bohmanExcess 13 (γ * Real.log ((13 : ℕ) : ℝ)) := bohmanExcess13_ge (u_lo := (-0.6502)) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : 0.1093 ≤ Real.cos (γ * Real.log ((23 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.921875) (g_hi := 130.71875) (lp := Real.log ((23 : ℕ) : ℝ)) (lp_lo := 3.135494) (lp_hi := 3.1354949) (x_hi := 1.4611) 65 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl23a) (by simpa only [Nat.cast_ofNat] using hl23b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.01263 ≤ bohmanExcess 23 (γ * Real.log ((23 : ℕ) : ℝ)) := bohmanExcess23_ge (u_lo := 0.1093) (by norm_num) hu_3 (by norm_num)
+  have hu_4 : (-0.8786) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.921875) (g_hi := 130.71875) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.6429) 14 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_4 : 0.00806 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.8786)) (by norm_num) hu_4 (by norm_num)
+  have hu_5 : (-0.8676) ≤ Real.cos (γ * Real.log ((11 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.921875) (g_hi := 130.71875) (lp := Real.log ((11 : ℕ) : ℝ)) (lp_lo := 2.3978948) (lp_hi := 2.397896) (x_hi := 2.6204) 50 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl11a) (by simpa only [Nat.cast_ofNat] using hl11b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_5 : 0.00773 ≤ bohmanExcess 11 (γ * Real.log ((11 : ℕ) : ℝ)) := bohmanExcess11_ge (u_lo := (-0.8676)) (by norm_num) hu_5 (by norm_num)
+  have hu_6 : (-0.8632) ≤ Real.cos (γ * Real.log ((17 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.921875) (g_hi := 130.71875) (lp := Real.log ((17 : ℕ) : ℝ)) (lp_lo := 2.8332133) (lp_hi := 2.8332134) (x_hi := 2.6117) 59 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl17a) (by simpa only [Nat.cast_ofNat] using hl17b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_6 : 0.0033 ≤ bohmanExcess 17 (γ * Real.log ((17 : ℕ) : ℝ)) := bohmanExcess17_ge (u_lo := (-0.8632)) (by norm_num) hu_6 (by norm_num)
+  have hu_7 : (-0.6942) ≤ Real.cos (γ * Real.log ((29 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.921875) (g_hi := 130.71875) (lp := Real.log ((29 : ℕ) : ℝ)) (lp_lo := 3.3672956) (lp_hi := 3.3672966) (x_hi := 2.3378) 70 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl29a) (by simpa only [Nat.cast_ofNat] using hl29b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_7 : 0.00173 ≤ bohmanExcess 29 (γ * Real.log ((29 : ℕ) : ℝ)) := bohmanExcess29_ge (u_lo := (-0.6942)) (by norm_num) hu_7 (by norm_num)
+  have hu_8 : (-0.0577) ≤ Real.cos (γ * Real.log ((41 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.921875) (g_hi := 130.71875) (lp := Real.log ((41 : ℕ) : ℝ)) (lp_lo := 3.713572) (lp_hi := 3.7135722) (x_hi := 1.6284) 77 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl41a) (by simpa only [Nat.cast_ofNat] using hl41b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_8 : 0.00143 ≤ bohmanExcess 41 (γ * Real.log ((41 : ℕ) : ℝ)) := bohmanExcess41_ge (u_lo := (-0.0577)) (by norm_num) hu_8 (by norm_num)
+  have hu_9 : (-0.0006) ≤ Real.cos (γ * Real.log ((43 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.921875) (g_hi := 130.71875) (lp := Real.log ((43 : ℕ) : ℝ)) (lp_lo := 3.7611977) (lp_hi := 3.7612013) (x_hi := 1.5712) 78 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl43a) (by simpa only [Nat.cast_ofNat] using hl43b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_9 : 0.00122 ≤ bohmanExcess 43 (γ * Real.log ((43 : ℕ) : ℝ)) := bohmanExcess43_ge (u_lo := (-0.0006)) (by norm_num) hu_9 (by norm_num)
+  have hu_10 : (-0.5067) ≤ Real.cos (γ * Real.log ((37 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.921875) (g_hi := 130.71875) (lp := Real.log ((37 : ℕ) : ℝ)) (lp_lo := 3.6109175) (lp_hi := 3.6109192) (x_hi := 2.1019) 75 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl37a) (by simpa only [Nat.cast_ofNat] using hl37b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_10 : 0.00116 ≤ bohmanExcess 37 (γ * Real.log ((37 : ℕ) : ℝ)) := bohmanExcess37_ge (u_lo := (-0.5067)) (by norm_num) hu_10 (by norm_num)
+  have hu_11 : (-0.9961) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.921875) (g_hi := 130.71875) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 3.0388) 33 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_11 : 0.00062 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.9961)) (by norm_num) hu_11 (by norm_num)
+  have hu_12 : (-0.9962) ≤ Real.cos (γ * Real.log ((7 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 129.921875) (g_hi := 130.71875) (lp := Real.log ((7 : ℕ) : ℝ)) (lp_lo := 1.945908) (lp_hi := 1.9459107) (x_hi := 3.0398) 40 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl7a) (by simpa only [Nat.cast_ofNat] using hl7b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_12 : 0.00044 ≤ bohmanExcess 7 (γ * Real.log ((7 : ℕ) : ℝ)) := bohmanExcess7_ge (u_lo := (-0.9962)) (by norm_num) hu_12 (by norm_num)
+  linarith only [harch, hmaster, hn31, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6, hg_7, hg_8, hg_9, hg_10, hg_11, hg_12]
 
-private theorem bohman_interval_28 {γ : ℝ} (hlo : 130.640625 ≤ γ) (hhi : γ ≤ 132.875) :
+private theorem bohman_interval_27 {γ : ℝ} (hlo : 130.71875 ≤ γ) (hhi : γ ≤ 132.875) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   obtain ⟨⟨hl3a, hl3b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 130.640625) (g_hi := 132.875) (M := 17920) (logM4_hi := 8.4074883) (ub := 1.526939) (a2 := 7) (b := 0) (c := 1) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : 0.0989 ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 130.640625) (g_hi := 132.875) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 1.4716) 23 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.22819 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := 0.0989) (by norm_num) hu_0 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 130.71875) (g_hi := 132.875) (M := 17640) (logM4_hi := 8.3916325) (ub := 1.526887) (a2 := 1) (b := 2) (c := 1) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨hn2, -, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : 0.1053 ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 130.71875) (g_hi := 132.875) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 1.4651) 23 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.23004 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := 0.1053) (by norm_num) hu_0 (by norm_num)
   linarith only [harch, hmaster, hn2, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0]
 
-private theorem bohman_interval_29 {γ : ℝ} (hlo : 132.875 ≤ γ) (hhi : γ ≤ 133.890625) :
+private theorem bohman_interval_28 {γ : ℝ} (hlo : 132.875 ≤ γ) (hhi : γ ≤ 133.890625) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
-  obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, ⟨hl11a, hl11b⟩, -, ⟨hl17a, hl17b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 132.875) (g_hi := 133.890625) (M := 17920) (logM4_hi := 8.4074883) (ub := 1.530717) (a2 := 7) (b := 0) (c := 1) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.2952) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 132.875) (g_hi := 133.890625) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 1.8703) 34 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.11996 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.2952)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.2643) ≤ Real.cos (γ * Real.log (11 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 132.875) (g_hi := 133.890625) (lp_lo := 2.3977758) (lp_hi := 2.3979146) (x_hi := 1.8381) 51 (by norm_num) hlo hhi (by norm_num) hl11a hl11b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.04302 ≤ bohmanExcess 11 (γ * Real.log (11 : ℝ)) := bohmanExcess11_ge (u_lo := (-0.2643)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.5442) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 132.875) (g_hi := 133.890625) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.146) 15 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.03656 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.5442)) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : (-0.8507) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 132.875) (g_hi := 133.890625) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 2.5874) 23 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.02172 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.8507)) (by norm_num) hu_3 (by norm_num)
-  have hu_4 : (-0.7052) ≤ Real.cos (γ * Real.log (17 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 132.875) (g_hi := 133.890625) (lp_lo := 2.8331549) (lp_hi := 2.8332392) (x_hi := 2.3532) 60 (by norm_num) hlo hhi (by norm_num) hl17a hl17b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_4 : 0.00713 ≤ bohmanExcess 17 (γ * Real.log (17 : ℝ)) := bohmanExcess17_ge (u_lo := (-0.7052)) (by norm_num) hu_4 (by norm_num)
-  have hu_5 : (-0.9794) ≤ Real.cos (γ * Real.log (7 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 132.875) (g_hi := 133.890625) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (x_hi := 2.9336) 41 (by norm_num) hlo hhi (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_5 : 0.00243 ≤ bohmanExcess 7 (γ * Real.log (7 : ℝ)) := bohmanExcess7_ge (u_lo := (-0.9794)) (by norm_num) hu_5 (by norm_num)
-  linarith only [harch, hmaster, hn13, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5]
+  obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, -, ⟨hl11a, hl11b⟩, -, ⟨hl17a, hl17b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
+  have harch := bohman_arch_lt_smooth (g_lo := 132.875) (g_hi := 133.890625) (M := 17920) (logM4_hi := 8.4073791) (ub := 1.53069) (a2 := 7) (b := 0) (c := 1) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, -, -, hn7, -, hn13, -, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.2858) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 132.875) (g_hi := 133.890625) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 1.8605) 34 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.12162 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.2858)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.249) ≤ Real.cos (γ * Real.log ((11 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 132.875) (g_hi := 133.890625) (lp := Real.log ((11 : ℕ) : ℝ)) (lp_lo := 2.3978948) (lp_hi := 2.397896) (x_hi := 1.8223) 51 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl11a) (by simpa only [Nat.cast_ofNat] using hl11b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.04392 ≤ bohmanExcess 11 (γ * Real.log ((11 : ℕ) : ℝ)) := bohmanExcess11_ge (u_lo := (-0.249)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.5442) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 132.875) (g_hi := 133.890625) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.146) 15 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.03656 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.5442)) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : (-0.8472) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 132.875) (g_hi := 133.890625) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 2.5809) 23 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.02226 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.8472)) (by norm_num) hu_3 (by norm_num)
+  have hu_4 : (-0.7027) ≤ Real.cos (γ * Real.log ((17 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 132.875) (g_hi := 133.890625) (lp := Real.log ((17 : ℕ) : ℝ)) (lp_lo := 2.8332133) (lp_hi := 2.8332134) (x_hi := 2.3497) 60 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl17a) (by simpa only [Nat.cast_ofNat] using hl17b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_4 : 0.00719 ≤ bohmanExcess 17 (γ * Real.log ((17 : ℕ) : ℝ)) := bohmanExcess17_ge (u_lo := (-0.7027)) (by norm_num) hu_4 (by norm_num)
+  linarith only [harch, hmaster, hn7, hn13, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1, hg_2, hg_3, hg_4]
 
-private theorem bohman_interval_30 {γ : ℝ} (hlo : 133.890625 ≤ γ) (hhi : γ ≤ 134.546875) :
+private theorem bohman_interval_29 {γ : ℝ} (hlo : 133.890625 ≤ γ) (hhi : γ ≤ 134.5625) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
   obtain ⟨-, ⟨hl5a, hl5b⟩, -, ⟨hl11a, hl11b⟩, ⟨hl13a, hl13b⟩, -, ⟨hl19a, hl19b⟩, ⟨hl23a, hl23b⟩, ⟨hl29a, hl29b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 133.890625) (g_hi := 134.546875) (M := 17920) (logM4_hi := 8.4074883) (ub := 1.533174) (a2 := 7) (b := 0) (c := 1) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : 0.1283 ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 133.890625) (g_hi := 134.546875) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.442) 15 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.14849 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := 0.1283) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.5802) ≤ Real.cos (γ * Real.log (11 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 133.890625) (g_hi := 134.546875) (lp_lo := 2.3977758) (lp_hi := 2.3979146) (x_hi := 2.1896) 51 (by norm_num) hlo hhi (by norm_num) hl11a hl11b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.02454 ≤ bohmanExcess 11 (γ * Real.log (11 : ℝ)) := bohmanExcess11_ge (u_lo := (-0.5802)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.0433) ≤ Real.cos (γ * Real.log (19 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 133.890625) (g_hi := 134.546875) (lp_lo := 2.9443944) (lp_hi := 2.9444434) (x_hi := 1.614) 63 (by norm_num) hlo hhi (by norm_num) hl19a hl19b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.0178 ≤ bohmanExcess 19 (γ * Real.log (19 : ℝ)) := bohmanExcess19_ge (u_lo := (-0.0433)) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : (-0.5834) ≤ Real.cos (γ * Real.log (13 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 133.890625) (g_hi := 134.546875) (lp_lo := 2.5646445) (lp_hi := 2.5650861) (x_hi := 2.1935) 55 (by norm_num) hlo hhi (by norm_num) hl13a hl13b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.01778 ≤ bohmanExcess 13 (γ * Real.log (13 : ℝ)) := bohmanExcess13_ge (u_lo := (-0.5834)) (by norm_num) hu_3 (by norm_num)
-  have hu_4 : 0.3928 ≤ Real.cos (γ * Real.log (23 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 133.890625) (g_hi := 134.546875) (lp_lo := 3.1354442) (lp_hi := 3.1356659) (x_hi := 1.167) 67 (by norm_num) hlo hhi (by norm_num) hl23a hl23b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_4 : 0.01586 ≤ bohmanExcess 23 (γ * Real.log (23 : ℝ)) := bohmanExcess23_ge (u_lo := 0.3928) (by norm_num) hu_4 (by norm_num)
-  have hu_5 : (-0.0472) ≤ Real.cos (γ * Real.log (29 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 133.890625) (g_hi := 134.546875) (lp_lo := 3.3667148) (lp_hi := 3.3673538) (x_hi := 1.6179) 72 (by norm_num) hlo hhi (by norm_num) hl29a hl29b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_5 : 0.00541 ≤ bohmanExcess 29 (γ * Real.log (29 : ℝ)) := bohmanExcess29_ge (u_lo := (-0.0472)) (by norm_num) hu_5 (by norm_num)
-  have hu_6 : (-0.9779) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 133.890625) (g_hi := 134.546875) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 2.9266) 34 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_6 : 0.00361 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.9779)) (by norm_num) hu_6 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 133.890625) (g_hi := 134.5625) (M := 18144) (logM4_hi := 8.419804) (ub := 1.533191) (a2 := 3) (b := 4) (c := 0) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, hn3, -, hn7, -, -, hn17, -, -, -, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : 0.1283 ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 133.890625) (g_hi := 134.5625) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.442) 15 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.14849 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := 0.1283) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.6084) ≤ Real.cos (γ * Real.log ((11 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 133.890625) (g_hi := 134.5625) (lp := Real.log ((11 : ℕ) : ℝ)) (lp_lo := 2.3978948) (lp_hi := 2.397896) (x_hi := 2.2246) 51 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl11a) (by simpa only [Nat.cast_ofNat] using hl11b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.02289 ≤ bohmanExcess 11 (γ * Real.log ((11 : ℕ) : ℝ)) := bohmanExcess11_ge (u_lo := (-0.6084)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.5498) ≤ Real.cos (γ * Real.log ((13 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 133.890625) (g_hi := 134.5625) (lp := Real.log ((13 : ℕ) : ℝ)) (lp_lo := 2.5649491) (lp_hi := 2.5649502) (x_hi := 2.1527) 55 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl13a) (by simpa only [Nat.cast_ofNat] using hl13b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.01921 ≤ bohmanExcess 13 (γ * Real.log ((13 : ℕ) : ℝ)) := bohmanExcess13_ge (u_lo := (-0.5498)) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : (-0.0374) ≤ Real.cos (γ * Real.log ((19 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 133.890625) (g_hi := 134.5625) (lp := Real.log ((19 : ℕ) : ℝ)) (lp_lo := 2.9444385) (lp_hi := 2.9444403) (x_hi := 1.6081) 63 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl19a) (by simpa only [Nat.cast_ofNat] using hl19b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.01791 ≤ bohmanExcess 19 (γ * Real.log ((19 : ℕ) : ℝ)) := bohmanExcess19_ge (u_lo := (-0.0374)) (by norm_num) hu_3 (by norm_num)
+  have hu_4 : 0.3989 ≤ Real.cos (γ * Real.log ((23 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 133.890625) (g_hi := 134.5625) (lp := Real.log ((23 : ℕ) : ℝ)) (lp_lo := 3.135494) (lp_hi := 3.1354949) (x_hi := 1.1603) 67 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl23a) (by simpa only [Nat.cast_ofNat] using hl23b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_4 : 0.01593 ≤ bohmanExcess 23 (γ * Real.log ((23 : ℕ) : ℝ)) := bohmanExcess23_ge (u_lo := 0.3989) (by norm_num) hu_4 (by norm_num)
+  have hu_5 : 0.0304 ≤ Real.cos (γ * Real.log ((29 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 133.890625) (g_hi := 134.5625) (lp := Real.log ((29 : ℕ) : ℝ)) (lp_lo := 3.3672956) (lp_hi := 3.3672966) (x_hi := 1.5402) 72 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl29a) (by simpa only [Nat.cast_ofNat] using hl29b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_5 : 0.00586 ≤ bohmanExcess 29 (γ * Real.log ((29 : ℕ) : ℝ)) := bohmanExcess29_ge (u_lo := 0.0304) (by norm_num) hu_5 (by norm_num)
+  have hu_6 : (-0.9811) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 133.890625) (g_hi := 134.5625) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 2.9419) 34 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_6 : 0.00309 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.9811)) (by norm_num) hu_6 (by norm_num)
   linarith only [harch, hmaster, hn3, hn7, hn17, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6]
 
-private theorem bohman_interval_31 {γ : ℝ} (hlo : 134.546875 ≤ γ) (hhi : γ ≤ 137.625) :
+private theorem bohman_interval_30 {γ : ℝ} (hlo : 134.5625 ≤ γ) (hhi : γ ≤ 137.625) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
-  have harch := bohman_arch_lt_smooth (g_lo := 134.546875) (g_hi := 137.625) (M := 18816) (logM4_hi := 8.4562912) (ub := 1.544473) (a2 := 5) (b := 1) (c := 0) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : 0.4113 ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 134.546875) (g_hi := 137.625) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.1468) 15 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.24501 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := 0.4113) (by norm_num) hu_0 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 134.5625) (g_hi := 137.625) (M := 18900) (logM4_hi := 8.4606255) (ub := 1.544438) (a2 := 0) (b := 3) (c := 2) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : 0.4113 ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 134.5625) (g_hi := 137.625) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.1468) 15 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.24501 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := 0.4113) (by norm_num) hu_0 (by norm_num)
   linarith only [harch, hmaster, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0]
 
-private theorem bohman_interval_32 {γ : ℝ} (hlo : 137.625 ≤ γ) (hhi : γ ≤ 138.828125) :
+private theorem bohman_interval_31 {γ : ℝ} (hlo : 137.625 ≤ γ) (hhi : γ ≤ 138.84375) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
   obtain ⟨⟨hl3a, hl3b⟩, -, ⟨hl7a, hl7b⟩, -, -, -, -, ⟨hl23a, hl23b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 137.625) (g_hi := 138.828125) (M := 19208) (logM4_hi := 8.4769337) (ub := 1.548822) (a2 := 1) (b := 0) (c := 0) (d := 4) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.1576) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 137.625) (g_hi := 138.828125) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 1.7289) 24 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.15938 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.1576)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.3987) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 137.625) (g_hi := 138.828125) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.9807) 15 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.05282 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.3987)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.7189) ≤ Real.cos (γ * Real.log (7 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 137.625) (g_hi := 138.828125) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (x_hi := 2.3727) 43 (by norm_num) hlo hhi (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.03336 ≤ bohmanExcess 7 (γ * Real.log (7 : ℝ)) := bohmanExcess7_ge (u_lo := (-0.7189)) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : (-0.4384) ≤ Real.cos (γ * Real.log (23 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 137.625) (g_hi := 138.828125) (lp_lo := 3.1354442) (lp_hi := 3.1356659) (x_hi := 2.0244) 69 (by norm_num) hlo hhi (by norm_num) hl23a hl23b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.00639 ≤ bohmanExcess 23 (γ * Real.log (23 : ℝ)) := bohmanExcess23_ge (u_lo := (-0.4384)) (by norm_num) hu_3 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 137.625) (g_hi := 138.84375) (M := 19200) (logM4_hi := 8.4763721) (ub := 1.548843) (a2 := 6) (b := 1) (c := 2) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, -, hn5, -, hn11, hn13, hn17, hn19, -, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.1678) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 137.625) (g_hi := 138.84375) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 1.7392) 24 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.15685 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.1678)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.4086) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 137.625) (g_hi := 138.84375) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.9915) 15 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.05162 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.4086)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.7181) ≤ Real.cos (γ * Real.log ((7 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 137.625) (g_hi := 138.84375) (lp := Real.log ((7 : ℕ) : ℝ)) (lp_lo := 1.945908) (lp_hi := 1.9459107) (x_hi := 2.3715) 43 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl7a) (by simpa only [Nat.cast_ofNat] using hl7b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.03346 ≤ bohmanExcess 7 (γ * Real.log ((7 : ℕ) : ℝ)) := bohmanExcess7_ge (u_lo := (-0.7181)) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : (-0.4322) ≤ Real.cos (γ * Real.log ((23 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 137.625) (g_hi := 138.84375) (lp := Real.log ((23 : ℕ) : ℝ)) (lp_lo := 3.135494) (lp_hi := 3.1354949) (x_hi := 2.0176) 69 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl23a) (by simpa only [Nat.cast_ofNat] using hl23b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.00646 ≤ bohmanExcess 23 (γ * Real.log ((23 : ℕ) : ℝ)) := bohmanExcess23_ge (u_lo := (-0.4322)) (by norm_num) hu_3 (by norm_num)
   linarith only [harch, hmaster, hn5, hn11, hn13, hn17, hn19, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1, hg_2, hg_3]
 
-private theorem bohman_interval_33 {γ : ℝ} (hlo : 138.828125 ≤ γ) (hhi : γ ≤ 139.609375) :
+private theorem bohman_interval_32 {γ : ℝ} (hlo : 138.84375 ≤ γ) (hhi : γ ≤ 139.625) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
   obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, ⟨hl11a, hl11b⟩, ⟨hl13a, hl13b⟩, ⟨hl17a, hl17b⟩, -, -, -, ⟨hl31a, hl31b⟩, ⟨hl37a, hl37b⟩, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 138.828125) (g_hi := 139.609375) (M := 19600) (logM4_hi := 8.4972103) (ub := 1.551646) (a2 := 2) (b := 0) (c := 2) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : 0.075 ≤ Real.cos (γ * Real.log (7 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 138.828125) (g_hi := 139.609375) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (x_hi := 1.4956) 43 (by norm_num) hlo hhi (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.12816 ≤ bohmanExcess 7 (γ * Real.log (7 : ℝ)) := bohmanExcess7_ge (u_lo := 0.075) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.1909) ≤ Real.cos (γ * Real.log (11 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 138.828125) (g_hi := 139.609375) (lp_lo := 2.3977758) (lp_hi := 2.3979146) (x_hi := 1.7627) 53 (by norm_num) hlo hhi (by norm_num) hl11a hl11b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.04732 ≤ bohmanExcess 11 (γ * Real.log (11 : ℝ)) := bohmanExcess11_ge (u_lo := (-0.1909)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.8506) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 138.828125) (g_hi := 139.609375) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 2.5872) 24 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.02174 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.8506)) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : (-0.5023) ≤ Real.cos (γ * Real.log (13 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 138.828125) (g_hi := 139.609375) (lp_lo := 2.5646445) (lp_hi := 2.5650861) (x_hi := 2.0969) 57 (by norm_num) hlo hhi (by norm_num) hl13a hl13b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.02124 ≤ bohmanExcess 13 (γ * Real.log (13 : ℝ)) := bohmanExcess13_ge (u_lo := (-0.5023)) (by norm_num) hu_3 (by norm_num)
-  have hu_4 : (-0.8145) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 138.828125) (g_hi := 139.609375) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.5222) 15 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_4 : 0.01276 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.8145)) (by norm_num) hu_4 (by norm_num)
-  have hu_5 : (-0.9288) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 138.828125) (g_hi := 139.609375) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 2.7606) 36 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_5 : 0.0117 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.9288)) (by norm_num) hu_5 (by norm_num)
-  have hu_6 : (-0.8128) ≤ Real.cos (γ * Real.log (17 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 138.828125) (g_hi := 139.609375) (lp_lo := 2.8331549) (lp_hi := 2.8332392) (x_hi := 2.5192) 63 (by norm_num) hlo hhi (by norm_num) hl17a hl17b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_6 : 0.00452 ≤ bohmanExcess 17 (γ * Real.log (17 : ℝ)) := bohmanExcess17_ge (u_lo := (-0.8128)) (by norm_num) hu_6 (by norm_num)
-  have hu_7 : (-0.3188) ≤ Real.cos (γ * Real.log (31 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 138.828125) (g_hi := 139.609375) (lp_lo := 3.4339401) (lp_hi := 3.4339888) (x_hi := 1.8951) 76 (by norm_num) hlo hhi (by norm_num) hl31a hl31b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_7 : 0.0031 ≤ bohmanExcess 31 (γ * Real.log (31 : ℝ)) := bohmanExcess31_ge (u_lo := (-0.3188)) (by norm_num) hu_7 (by norm_num)
-  have hu_8 : 0.1065 ≤ Real.cos (γ * Real.log (37 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 138.828125) (g_hi := 139.609375) (lp_lo := 3.6108132) (lp_hi := 3.6109222) (x_hi := 1.4639) 80 (by norm_num) hlo hhi (by norm_num) hl37a hl37b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_8 : 0.00261 ≤ bohmanExcess 37 (γ * Real.log (37 : ℝ)) := bohmanExcess37_ge (u_lo := 0.1065) (by norm_num) hu_8 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 138.84375) (g_hi := 139.625) (M := 19440) (logM4_hi := 8.488797) (ub := 1.551646) (a2 := 2) (b := 5) (c := 1) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, -, -, -, -, -, -, hn19, hn23, hn29, -, -, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : 0.0496 ≤ Real.cos (γ * Real.log ((7 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 138.84375) (g_hi := 139.625) (lp := Real.log ((7 : ℕ) : ℝ)) (lp_lo := 1.945908) (lp_hi := 1.9459107) (x_hi := 1.521) 43 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl7a) (by simpa only [Nat.cast_ofNat] using hl7b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.12511 ≤ bohmanExcess 7 (γ * Real.log ((7 : ℕ) : ℝ)) := bohmanExcess7_ge (u_lo := 0.0496) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.225) ≤ Real.cos (γ * Real.log ((11 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 138.84375) (g_hi := 139.625) (lp := Real.log ((11 : ℕ) : ℝ)) (lp_lo := 2.3978948) (lp_hi := 2.397896) (x_hi := 1.7976) 53 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl11a) (by simpa only [Nat.cast_ofNat] using hl11b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.04532 ≤ bohmanExcess 11 (γ * Real.log ((11 : ℕ) : ℝ)) := bohmanExcess11_ge (u_lo := (-0.225)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.4295) ≤ Real.cos (γ * Real.log ((13 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 138.84375) (g_hi := 139.625) (lp := Real.log ((13 : ℕ) : ℝ)) (lp_lo := 2.5649491) (lp_hi := 2.5649502) (x_hi := 2.0146) 57 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl13a) (by simpa only [Nat.cast_ofNat] using hl13b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.02435 ≤ bohmanExcess 13 (γ * Real.log ((13 : ℕ) : ℝ)) := bohmanExcess13_ge (u_lo := (-0.4295)) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : (-0.8559) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 138.84375) (g_hi := 139.625) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 2.5975) 24 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.02092 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.8559)) (by norm_num) hu_3 (by norm_num)
+  have hu_4 : (-0.9187) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 138.84375) (g_hi := 139.625) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 2.7344) 36 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_4 : 0.01337 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.9187)) (by norm_num) hu_4 (by norm_num)
+  have hu_5 : (-0.8207) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 138.84375) (g_hi := 139.625) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.533) 15 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_5 : 0.01229 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.8207)) (by norm_num) hu_5 (by norm_num)
+  have hu_6 : (-0.7812) ≤ Real.cos (γ * Real.log ((17 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 138.84375) (g_hi := 139.625) (lp := Real.log ((17 : ℕ) : ℝ)) (lp_lo := 2.8332133) (lp_hi := 2.8332134) (x_hi := 2.4669) 63 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl17a) (by simpa only [Nat.cast_ofNat] using hl17b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_6 : 0.00529 ≤ bohmanExcess 17 (γ * Real.log ((17 : ℕ) : ℝ)) := bohmanExcess17_ge (u_lo := (-0.7812)) (by norm_num) hu_6 (by norm_num)
+  have hu_7 : (-0.3689) ≤ Real.cos (γ * Real.log ((31 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 138.84375) (g_hi := 139.625) (lp := Real.log ((31 : ℕ) : ℝ)) (lp_lo := 3.4339872) (lp_hi := 3.4339873) (x_hi := 1.9485) 76 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl31a) (by simpa only [Nat.cast_ofNat] using hl31b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_7 : 0.00287 ≤ bohmanExcess 31 (γ * Real.log ((31 : ℕ) : ℝ)) := bohmanExcess31_ge (u_lo := (-0.3689)) (by norm_num) hu_7 (by norm_num)
+  have hu_8 : 0.0507 ≤ Real.cos (γ * Real.log ((37 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 138.84375) (g_hi := 139.625) (lp := Real.log ((37 : ℕ) : ℝ)) (lp_lo := 3.6109175) (lp_hi := 3.6109192) (x_hi := 1.5199) 80 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl37a) (by simpa only [Nat.cast_ofNat] using hl37b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_8 : 0.00248 ≤ bohmanExcess 37 (γ * Real.log ((37 : ℕ) : ℝ)) := bohmanExcess37_ge (u_lo := 0.0507) (by norm_num) hu_8 (by norm_num)
   linarith only [harch, hmaster, hn19, hn23, hn29, hn41, hn43, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6, hg_7, hg_8]
 
-private theorem bohman_interval_34 {γ : ℝ} (hlo : 139.609375 ≤ γ) (hhi : γ ≤ 140.328125) :
+private theorem bohman_interval_33 {γ : ℝ} (hlo : 139.625 ≤ γ) (hhi : γ ≤ 140.359375) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
-  obtain ⟨-, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, -, ⟨hl13a, hl13b⟩, ⟨hl17a, hl17b⟩, -, ⟨hl23a, hl23b⟩, ⟨hl29a, hl29b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 139.609375) (g_hi := 140.328125) (M := 19600) (logM4_hi := 8.4972103) (ub := 1.554212) (a2 := 2) (b := 0) (c := 2) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : 0.0674 ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 139.609375) (g_hi := 140.328125) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 1.5032) 36 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.18515 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := 0.0674) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.2393) ≤ Real.cos (γ * Real.log (13 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 139.609375) (g_hi := 140.328125) (lp_lo := 2.5646445) (lp_hi := 2.5650861) (x_hi := 1.8123) 57 (by norm_num) hlo hhi (by norm_num) hl13a hl13b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.03248 ≤ bohmanExcess 13 (γ * Real.log (13 : ℝ)) := bohmanExcess13_ge (u_lo := (-0.2393)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.1711) ≤ Real.cos (γ * Real.log (17 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 139.609375) (g_hi := 140.328125) (lp_lo := 2.8331549) (lp_hi := 2.8332392) (x_hi := 1.7426) 63 (by norm_num) hlo hhi (by norm_num) hl17a hl17b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.02008 ≤ bohmanExcess 17 (γ * Real.log (17 : ℝ)) := bohmanExcess17_ge (u_lo := (-0.1711)) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : 0.2715 ≤ Real.cos (γ * Real.log (29 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 139.609375) (g_hi := 140.328125) (lp_lo := 3.3667148) (lp_hi := 3.3673538) (x_hi := 1.2957) 75 (by norm_num) hlo hhi (by norm_num) hl29a hl29b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.00723 ≤ bohmanExcess 29 (γ * Real.log (29 : ℝ)) := bohmanExcess29_ge (u_lo := 0.2715) (by norm_num) hu_3 (by norm_num)
-  have hu_4 : (-0.4926) ≤ Real.cos (γ * Real.log (23 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 139.609375) (g_hi := 140.328125) (lp_lo := 3.1354442) (lp_hi := 3.1356659) (x_hi := 2.0857) 70 (by norm_num) hlo hhi (by norm_num) hl23a hl23b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_4 : 0.00577 ≤ bohmanExcess 23 (γ * Real.log (23 : ℝ)) := bohmanExcess23_ge (u_lo := (-0.4926)) (by norm_num) hu_4 (by norm_num)
-  have hu_5 : (-0.9704) ≤ Real.cos (γ * Real.log (7 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 139.609375) (g_hi := 140.328125) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (x_hi := 2.8942) 43 (by norm_num) hlo hhi (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_5 : 0.0035 ≤ bohmanExcess 7 (γ * Real.log (7 : ℝ)) := bohmanExcess7_ge (u_lo := (-0.9704)) (by norm_num) hu_5 (by norm_num)
-  linarith only [harch, hmaster, hn2, hn3, hn11, hn19, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5]
+  have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
+  obtain ⟨-, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, -, ⟨hl13a, hl13b⟩, ⟨hl17a, hl17b⟩, -, ⟨hl23a, hl23b⟩, ⟨hl29a, hl29b⟩, -, -, -, ⟨hl43a, hl43b⟩, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
+  have harch := bohman_arch_lt_smooth (g_lo := 139.625) (g_hi := 140.359375) (M := 19600) (logM4_hi := 8.4969919) (ub := 1.554269) (a2 := 2) (b := 0) (c := 2) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, hn3, -, -, hn11, -, -, hn19, -, -, hn31, hn37, hn41, -, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : 0.0934 ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 139.625) (g_hi := 140.359375) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 1.4771) 36 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.18991 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := 0.0934) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.2982) ≤ Real.cos (γ * Real.log ((13 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 139.625) (g_hi := 140.359375) (lp := Real.log ((13 : ℕ) : ℝ)) (lp_lo := 2.5649491) (lp_hi := 2.5649502) (x_hi := 1.8734) 57 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl13a) (by simpa only [Nat.cast_ofNat] using hl13b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.02996 ≤ bohmanExcess 13 (γ * Real.log ((13 : ℕ) : ℝ)) := bohmanExcess13_ge (u_lo := (-0.2982)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.254) ≤ Real.cos (γ * Real.log ((17 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 139.625) (g_hi := 140.359375) (lp := Real.log ((17 : ℕ) : ℝ)) (lp_lo := 2.8332133) (lp_hi := 2.8332134) (x_hi := 1.8275) 63 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl17a) (by simpa only [Nat.cast_ofNat] using hl17b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.01807 ≤ bohmanExcess 17 (γ * Real.log ((17 : ℕ) : ℝ)) := bohmanExcess17_ge (u_lo := (-0.254)) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : 0.1768 ≤ Real.cos (γ * Real.log ((29 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 139.625) (g_hi := 140.359375) (lp := Real.log ((29 : ℕ) : ℝ)) (lp_lo := 3.3672956) (lp_hi := 3.3672966) (x_hi := 1.3929) 75 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl29a) (by simpa only [Nat.cast_ofNat] using hl29b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.00669 ≤ bohmanExcess 29 (γ * Real.log ((29 : ℕ) : ℝ)) := bohmanExcess29_ge (u_lo := 0.1768) (by norm_num) hu_3 (by norm_num)
+  have hu_4 : (-0.4432) ≤ Real.cos (γ * Real.log ((23 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 139.625) (g_hi := 140.359375) (lp := Real.log ((23 : ℕ) : ℝ)) (lp_lo := 3.135494) (lp_hi := 3.1354949) (x_hi := 2.0298) 70 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl23a) (by simpa only [Nat.cast_ofNat] using hl23b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_4 : 0.00633 ≤ bohmanExcess 23 (γ * Real.log ((23 : ℕ) : ℝ)) := bohmanExcess23_ge (u_lo := (-0.4432)) (by norm_num) hu_4 (by norm_num)
+  have hu_5 : (-0.9827) ≤ Real.cos (γ * Real.log ((7 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 139.625) (g_hi := 140.359375) (lp := Real.log ((7 : ℕ) : ℝ)) (lp_lo := 1.945908) (lp_hi := 1.9459107) (x_hi := 2.95) 43 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl7a) (by simpa only [Nat.cast_ofNat] using hl7b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_5 : 0.00204 ≤ bohmanExcess 7 (γ * Real.log ((7 : ℕ) : ℝ)) := bohmanExcess7_ge (u_lo := (-0.9827)) (by norm_num) hu_5 (by norm_num)
+  have hu_6 : (-0.9965) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 139.625) (g_hi := 140.359375) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 3.0421) 15 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_6 : 0.0002 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.9965)) (by norm_num) hu_6 (by norm_num)
+  have hu_7 : (-0.8726) ≤ Real.cos (γ * Real.log ((43 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 139.625) (g_hi := 140.359375) (lp := Real.log ((43 : ℕ) : ℝ)) (lp_lo := 3.7611977) (lp_hi := 3.7612013) (x_hi := 2.6305) 84 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl43a) (by simpa only [Nat.cast_ofNat] using hl43b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_7 : 0.00014 ≤ bohmanExcess 43 (γ * Real.log ((43 : ℕ) : ℝ)) := bohmanExcess43_ge (u_lo := (-0.8726)) (by norm_num) hu_7 (by norm_num)
+  linarith only [harch, hmaster, hn3, hn11, hn19, hn31, hn37, hn41, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6, hg_7]
 
-private theorem bohman_interval_35 {γ : ℝ} (hlo : 140.328125 ≤ γ) (hhi : γ ≤ 141.3125) :
+private theorem bohman_interval_34 {γ : ℝ} (hlo : 140.359375 ≤ γ) (hhi : γ ≤ 141.34375) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
-  obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, -, ⟨hl11a, hl11b⟩, -, -, ⟨hl19a, hl19b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 140.328125) (g_hi := 141.3125) (M := 20160) (logM4_hi := 8.5253706) (ub := 1.557709) (a2 := 4) (b := 2) (c := 1) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : 0.3156 ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 140.328125) (g_hi := 141.3125) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 1.2495) 36 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.23109 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := 0.3156) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : 0.0616 ≤ Real.cos (γ * Real.log (19 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 140.328125) (g_hi := 141.3125) (lp_lo := 2.9443944) (lp_hi := 2.9444434) (x_hi := 1.509) 66 (by norm_num) hlo hhi (by norm_num) hl19a hl19b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.01975 ≤ bohmanExcess 19 (γ * Real.log (19 : ℝ)) := bohmanExcess19_ge (u_lo := 0.0616) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.9763) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 140.328125) (g_hi := 141.3125) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 2.9191) 25 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.00327 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.9763)) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : (-0.9484) ≤ Real.cos (γ * Real.log (11 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 140.328125) (g_hi := 141.3125) (lp_lo := 2.3977758) (lp_hi := 2.3979146) (x_hi := 2.8168) 54 (by norm_num) hlo hhi (by norm_num) hl11a hl11b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.003 ≤ bohmanExcess 11 (γ * Real.log (11 : ℝ)) := bohmanExcess11_ge (u_lo := (-0.9484)) (by norm_num) hu_3 (by norm_num)
-  linarith only [harch, hmaster, hn2, hn7, hn13, hn17, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1, hg_2, hg_3]
+  obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, -, ⟨hl11a, hl11b⟩, -, -, ⟨hl19a, hl19b⟩, -, -, ⟨hl31a, hl31b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
+  have harch := bohman_arch_lt_smooth (g_lo := 140.359375) (g_hi := 141.34375) (M := 20000) (logM4_hi := 8.5171937) (ub := 1.557757) (a2 := 3) (b := 0) (c := 4) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨hn2, -, -, hn7, -, hn13, hn17, -, hn23, hn29, -, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : 0.2775 ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 140.359375) (g_hi := 141.34375) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 1.2895) 36 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.22397 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := 0.2775) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : 0.0824 ≤ Real.cos (γ * Real.log ((19 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 140.359375) (g_hi := 141.34375) (lp := Real.log ((19 : ℕ) : ℝ)) (lp_lo := 2.9444385) (lp_hi := 2.9444403) (x_hi := 1.4882) 66 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl19a) (by simpa only [Nat.cast_ofNat] using hl19b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.02014 ≤ bohmanExcess 19 (γ * Real.log ((19 : ℕ) : ℝ)) := bohmanExcess19_ge (u_lo := 0.0824) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.915) ≤ Real.cos (γ * Real.log ((11 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 140.359375) (g_hi := 141.34375) (lp := Real.log ((11 : ℕ) : ℝ)) (lp_lo := 2.3978948) (lp_hi := 2.397896) (x_hi := 2.7251) 54 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl11a) (by simpa only [Nat.cast_ofNat] using hl11b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.00496 ≤ bohmanExcess 11 (γ * Real.log ((11 : ℕ) : ℝ)) := bohmanExcess11_ge (u_lo := (-0.915)) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : (-0.9666) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 140.359375) (g_hi := 141.34375) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 2.8793) 25 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.00463 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.9666)) (by norm_num) hu_3 (by norm_num)
+  have hu_4 : (-0.2401) ≤ Real.cos (γ * Real.log ((31 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 140.359375) (g_hi := 141.34375) (lp := Real.log ((31 : ℕ) : ℝ)) (lp_lo := 3.4339872) (lp_hi := 3.4339873) (x_hi := 1.8131) 77 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl31a) (by simpa only [Nat.cast_ofNat] using hl31b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_4 : 0.00346 ≤ bohmanExcess 31 (γ * Real.log ((31 : ℕ) : ℝ)) := bohmanExcess31_ge (u_lo := (-0.2401)) (by norm_num) hu_4 (by norm_num)
+  linarith only [harch, hmaster, hn2, hn7, hn13, hn17, hn23, hn29, hn37, hn41, hn43, hn47, hg_0, hg_1, hg_2, hg_3, hg_4]
 
-private theorem bohman_interval_36 {γ : ℝ} (hlo : 141.3125 ≤ γ) (hhi : γ ≤ 142.9375) :
+private theorem bohman_interval_35 {γ : ℝ} (hlo : 141.34375 ≤ γ) (hhi : γ ≤ 142.984375) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
   obtain ⟨⟨hl3a, hl3b⟩, -, ⟨hl7a, hl7b⟩, -, ⟨hl13a, hl13b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 141.3125) (g_hi := 142.9375) (M := 20480) (logM4_hi := 8.5409833) (ub := 1.563379) (a2 := 10) (b := 0) (c := 1) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.2639) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 141.3125) (g_hi := 142.9375) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 1.8377) 25 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.13389 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.2639)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.1178) ≤ Real.cos (γ * Real.log (7 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 141.3125) (g_hi := 142.9375) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (x_hi := 1.6887) 44 (by norm_num) hlo hhi (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.10507 ≤ bohmanExcess 7 (γ * Real.log (7 : ℝ)) := bohmanExcess7_ge (u_lo := (-0.1178)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.6066) ≤ Real.cos (γ * Real.log (13 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 141.3125) (g_hi := 142.9375) (lp_lo := 2.5646445) (lp_hi := 2.5650861) (x_hi := 2.2224) 58 (by norm_num) hlo hhi (by norm_num) hl13a hl13b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.01679 ≤ bohmanExcess 13 (γ * Real.log (13 : ℝ)) := bohmanExcess13_ge (u_lo := (-0.6066)) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : (-0.8472) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 141.3125) (g_hi := 142.9375) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.5808) 16 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.01032 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.8472)) (by norm_num) hu_3 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 141.34375) (g_hi := 142.984375) (M := 20480) (logM4_hi := 8.54091) (ub := 1.563524) (a2 := 10) (b := 0) (c := 1) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, -, hn5, -, hn11, -, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.2252) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 141.34375) (g_hi := 142.984375) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 1.7978) 25 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.14297 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.2252)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.2027) ≤ Real.cos (γ * Real.log ((7 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 141.34375) (g_hi := 142.984375) (lp := Real.log ((7 : ℕ) : ℝ)) (lp_lo := 1.945908) (lp_hi := 1.9459107) (x_hi := 1.7748) 44 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl7a) (by simpa only [Nat.cast_ofNat] using hl7b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.09491 ≤ bohmanExcess 7 (γ * Real.log ((7 : ℕ) : ℝ)) := bohmanExcess7_ge (u_lo := (-0.2027)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.6836) ≤ Real.cos (γ * Real.log ((13 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 141.34375) (g_hi := 142.984375) (lp := Real.log ((13 : ℕ) : ℝ)) (lp_lo := 2.5649491) (lp_hi := 2.5649502) (x_hi := 2.3232) 58 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl13a) (by simpa only [Nat.cast_ofNat] using hl13b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.0135 ≤ bohmanExcess 13 (γ * Real.log ((13 : ℕ) : ℝ)) := bohmanExcess13_ge (u_lo := (-0.6836)) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : (-0.8354) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 141.34375) (g_hi := 142.984375) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 2.5591) 16 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.01119 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.8354)) (by norm_num) hu_3 (by norm_num)
   linarith only [harch, hmaster, hn5, hn11, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1, hg_2, hg_3]
 
-private theorem bohman_interval_37 {γ : ℝ} (hlo : 142.9375 ≤ γ) (hhi : γ ≤ 144.875) :
+private theorem bohman_interval_36 {γ : ℝ} (hlo : 142.984375 ≤ γ) (hhi : γ ≤ 145) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
-  obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 142.9375) (g_hi := 144.875) (M := 21168) (logM4_hi := 8.5741734) (ub := 1.570152) (a2 := 2) (b := 3) (c := 0) (d := 2) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : 0.116 ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 142.9375) (g_hi := 144.875) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.4544) 16 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.14526 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := 0.116) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.4957) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 142.9375) (g_hi := 144.875) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 2.0892) 25 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.08408 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.4957)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.7576) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 142.9375) (g_hi := 144.875) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 2.43) 37 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.04024 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.7576)) (by norm_num) hu_2 (by norm_num)
-  linarith only [harch, hmaster, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1, hg_2]
+  obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, -, ⟨hl11a, hl11b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
+  have harch := bohman_arch_lt_smooth (g_lo := 142.984375) (g_hi := 145) (M := 21000) (logM4_hi := 8.5659849) (ub := 1.57052) (a2 := 1) (b := 1) (c := 3) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, -, -, hn7, -, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : 0.1482 ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 142.984375) (g_hi := 145) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.4219) 16 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.15385 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := 0.1482) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.6043) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 142.984375) (g_hi := 145) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 2.2194) 25 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.0633 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.6043)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.7054) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 142.984375) (g_hi := 145) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 2.3535) 37 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.04905 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.7054)) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : (-0.9104) ≤ Real.cos (γ * Real.log ((11 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 142.984375) (g_hi := 145) (lp := Real.log ((11 : ℕ) : ℝ)) (lp_lo := 2.3978948) (lp_hi := 2.397896) (x_hi := 2.7139) 55 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl11a) (by simpa only [Nat.cast_ofNat] using hl11b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.00523 ≤ bohmanExcess 11 (γ * Real.log ((11 : ℕ) : ℝ)) := bohmanExcess11_ge (u_lo := (-0.9104)) (by norm_num) hu_3 (by norm_num)
+  linarith only [harch, hmaster, hn7, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1, hg_2, hg_3]
 
-private theorem bohman_interval_38 {γ : ℝ} (hlo : 144.875 ≤ γ) (hhi : γ ≤ 146.625) :
+private theorem bohman_interval_37 {γ : ℝ} (hlo : 145 ≤ γ) (hhi : γ ≤ 146.640625) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
   obtain ⟨-, -, ⟨hl7a, hl7b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 144.875) (g_hi := 146.625) (M := 21504) (logM4_hi := 8.5897861) (ub := 1.57611) (a2 := 8) (b := 1) (c := 0) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : 0.4518 ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 144.875) (g_hi := 146.625) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.1019) 16 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.26313 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := 0.4518) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.8474) ≤ Real.cos (γ * Real.log (7 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 144.875) (g_hi := 146.625) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (x_hi := 2.5812) 45 (by norm_num) hlo hhi (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.01809 ≤ bohmanExcess 7 (γ * Real.log (7 : ℝ)) := bohmanExcess7_ge (u_lo := (-0.8474)) (by norm_num) hu_1 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 145) (g_hi := 146.640625) (M := 21504) (logM4_hi := 8.5897012) (ub := 1.576142) (a2 := 8) (b := 1) (c := 0) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, hn3, hn5, -, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : 0.4421 ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 145) (g_hi := 146.640625) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.1127) 16 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.25867 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := 0.4421) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.8605) ≤ Real.cos (γ * Real.log ((7 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 145) (g_hi := 146.640625) (lp := Real.log ((7 : ℕ) : ℝ)) (lp_lo := 1.945908) (lp_hi := 1.9459107) (x_hi := 2.6064) 45 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl7a) (by simpa only [Nat.cast_ofNat] using hl7b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.01654 ≤ bohmanExcess 7 (γ * Real.log ((7 : ℕ) : ℝ)) := bohmanExcess7_ge (u_lo := (-0.8605)) (by norm_num) hu_1 (by norm_num)
   linarith only [harch, hmaster, hn3, hn5, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1]
 
-private theorem bohman_interval_39 {γ : ℝ} (hlo : 146.625 ≤ γ) (hhi : γ ≤ 147.46875) :
+private theorem bohman_interval_38 {γ : ℝ} (hlo : 146.640625 ≤ γ) (hhi : γ ≤ 147.484375) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
-  obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, -, ⟨hl11a, hl11b⟩, ⟨hl13a, hl13b⟩, -, ⟨hl19a, hl19b⟩, -, ⟨hl29a, hl29b⟩, -, -, ⟨hl41a, hl41b⟩, ⟨hl43a, hl43b⟩, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 146.625) (g_hi := 147.46875) (M := 21952) (logM4_hi := 8.6104287) (ub := 1.578992) (a2 := 4) (b := 0) (c := 0) (d := 3) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : (-0.1158) ≤ Real.cos (γ * Real.log (2 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 146.625) (g_hi := 147.46875) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.6867) 16 (by norm_num) hlo hhi (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.09491 ≤ bohmanExcess 2 (γ * Real.log (2 : ℝ)) := bohmanExcess2_ge (u_lo := (-0.1158)) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : 0.2874 ≤ Real.cos (γ * Real.log (13 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 146.625) (g_hi := 147.46875) (lp_lo := 2.5646445) (lp_hi := 2.5650861) (x_hi := 1.2791) 60 (by norm_num) hlo hhi (by norm_num) hl13a hl13b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.05497 ≤ bohmanExcess 13 (γ * Real.log (13 : ℝ)) := bohmanExcess13_ge (u_lo := 0.2874) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.655) ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 146.625) (g_hi := 147.46875) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 2.2847) 26 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.05413 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := (-0.655)) (by norm_num) hu_2 (by norm_num)
-  have hu_3 : (-0.1874) ≤ Real.cos (γ * Real.log (11 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 146.625) (g_hi := 147.46875) (lp_lo := 2.3977758) (lp_hi := 2.3979146) (x_hi := 1.7592) 56 (by norm_num) hlo hhi (by norm_num) hl11a hl11b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_3 : 0.04752 ≤ bohmanExcess 11 (γ * Real.log (11 : ℝ)) := bohmanExcess11_ge (u_lo := (-0.1874)) (by norm_num) hu_3 (by norm_num)
-  have hu_4 : (-0.2449) ≤ Real.cos (γ * Real.log (19 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 146.625) (g_hi := 147.46875) (lp_lo := 2.9443944) (lp_hi := 2.9444434) (x_hi := 1.8181) 69 (by norm_num) hlo hhi (by norm_num) hl19a hl19b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_4 : 0.01404 ≤ bohmanExcess 19 (γ * Real.log (19 : ℝ)) := bohmanExcess19_ge (u_lo := (-0.2449)) (by norm_num) hu_4 (by norm_num)
-  have hu_5 : (-0.9353) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 146.625) (g_hi := 147.46875) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 2.7784) 38 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_5 : 0.01063 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.9353)) (by norm_num) hu_5 (by norm_num)
-  have hu_6 : (-0.1771) ≤ Real.cos (γ * Real.log (43 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 146.625) (g_hi := 147.46875) (lp_lo := 3.7611756) (lp_hi := 3.7612638) (x_hi := 1.7487) 88 (by norm_num) hlo hhi (by norm_num) hl43a hl43b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_6 : 0.001 ≤ bohmanExcess 43 (γ * Real.log (43 : ℝ)) := bohmanExcess43_ge (u_lo := (-0.1771)) (by norm_num) hu_6 (by norm_num)
-  have hu_7 : (-0.5694) ≤ Real.cos (γ * Real.log (41 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 146.625) (g_hi := 147.46875) (lp_lo := 3.7132884) (lp_hi := 3.7136164) (x_hi := 2.1764) 87 (by norm_num) hlo hhi (by norm_num) hl41a hl41b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_7 : 0.00065 ≤ bohmanExcess 41 (γ * Real.log (41 : ℝ)) := bohmanExcess41_ge (u_lo := (-0.5694)) (by norm_num) hu_7 (by norm_num)
-  have hu_8 : (-0.9159) ≤ Real.cos (γ * Real.log (29 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 146.625) (g_hi := 147.46875) (lp_lo := 3.3667148) (lp_hi := 3.3673538) (x_hi := 2.7272) 79 (by norm_num) hlo hhi (by norm_num) hl29a hl29b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_8 : 0.00046 ≤ bohmanExcess 29 (γ * Real.log (29 : ℝ)) := bohmanExcess29_ge (u_lo := (-0.9159)) (by norm_num) hu_8 (by norm_num)
-  linarith only [harch, hmaster, hn7, hn17, hn23, hn31, hn37, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6, hg_7, hg_8]
+  obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, -, ⟨hl11a, hl11b⟩, ⟨hl13a, hl13b⟩, -, ⟨hl19a, hl19b⟩, -, -, -, -, -, ⟨hl43a, hl43b⟩, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
+  have harch := bohman_arch_lt_smooth (g_lo := 146.640625) (g_hi := 147.484375) (M := 21600) (logM4_hi := 8.5941564) (ub := 1.579015) (a2 := 3) (b := 3) (c := 2) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨-, -, -, hn7, -, -, hn17, -, hn23, hn29, hn31, hn37, hn41, -, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : (-0.1266) ≤ Real.cos (γ * Real.log ((2 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 146.640625) (g_hi := 147.484375) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (x_hi := 1.6976) 16 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.09297 ≤ bohmanExcess 2 (γ * Real.log ((2 : ℕ) : ℝ)) := bohmanExcess2_ge (u_lo := (-0.1266)) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.6375) ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 146.640625) (g_hi := 147.484375) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 2.2618) 26 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.05726 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := (-0.6375)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : 0.2682 ≤ Real.cos (γ * Real.log ((13 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 146.640625) (g_hi := 147.484375) (lp := Real.log ((13 : ℕ) : ℝ)) (lp_lo := 2.5649491) (lp_hi := 2.5649502) (x_hi := 1.2991) 60 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl13a) (by simpa only [Nat.cast_ofNat] using hl13b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.05415 ≤ bohmanExcess 13 (γ * Real.log ((13 : ℕ) : ℝ)) := bohmanExcess13_ge (u_lo := 0.2682) (by norm_num) hu_2 (by norm_num)
+  have hu_3 : (-0.2215) ≤ Real.cos (γ * Real.log ((11 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 146.640625) (g_hi := 147.484375) (lp := Real.log ((11 : ℕ) : ℝ)) (lp_lo := 2.3978948) (lp_hi := 2.397896) (x_hi := 1.794) 56 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl11a) (by simpa only [Nat.cast_ofNat] using hl11b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_3 : 0.04553 ≤ bohmanExcess 11 (γ * Real.log ((11 : ℕ) : ℝ)) := bohmanExcess11_ge (u_lo := (-0.2215)) (by norm_num) hu_3 (by norm_num)
+  have hu_4 : (-0.1937) ≤ Real.cos (γ * Real.log ((19 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 146.640625) (g_hi := 147.484375) (lp := Real.log ((19 : ℕ) : ℝ)) (lp_lo := 2.9444385) (lp_hi := 2.9444403) (x_hi := 1.7656) 69 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl19a) (by simpa only [Nat.cast_ofNat] using hl19b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_4 : 0.015 ≤ bohmanExcess 19 (γ * Real.log ((19 : ℕ) : ℝ)) := bohmanExcess19_ge (u_lo := (-0.1937)) (by norm_num) hu_4 (by norm_num)
+  have hu_5 : (-0.9257) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 146.640625) (g_hi := 147.484375) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 2.7522) 38 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_5 : 0.01221 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.9257)) (by norm_num) hu_5 (by norm_num)
+  have hu_6 : (-0.2257) ≤ Real.cos (γ * Real.log ((43 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 146.640625) (g_hi := 147.484375) (lp := Real.log ((43 : ℕ) : ℝ)) (lp_lo := 3.7611977) (lp_hi := 3.7612013) (x_hi := 1.7983) 88 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl43a) (by simpa only [Nat.cast_ofNat] using hl43b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_6 : 0.00094 ≤ bohmanExcess 43 (γ * Real.log ((43 : ℕ) : ℝ)) := bohmanExcess43_ge (u_lo := (-0.2257)) (by norm_num) hu_6 (by norm_num)
+  linarith only [harch, hmaster, hn7, hn17, hn23, hn29, hn31, hn37, hn41, hn47, hg_0, hg_1, hg_2, hg_3, hg_4, hg_5, hg_6]
 
-private theorem bohman_interval_40 {γ : ℝ} (hlo : 147.46875 ≤ γ) (hhi : γ ≤ 149.9375) :
+private theorem bohman_interval_39 {γ : ℝ} (hlo : 147.484375 ≤ γ) (hhi : γ ≤ 149.953125) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 147.46875) (g_hi := 149.9375) (M := 22400) (logM4_hi := 8.6307053) (ub := 1.5873) (a2 := 5) (b := 0) (c := 2) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : 0.2013 ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 147.46875) (g_hi := 149.9375) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 1.368) 26 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.2587 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := 0.2013) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : (-0.8387) ≤ Real.cos (γ * Real.log (5 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 147.46875) (g_hi := 149.9375) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (x_hi := 2.5652) 38 (by norm_num) hlo hhi (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.02666 ≤ bohmanExcess 5 (γ * Real.log (5 : ℝ)) := bohmanExcess5_ge (u_lo := (-0.8387)) (by norm_num) hu_1 (by norm_num)
-  have hu_2 : (-0.9225) ≤ Real.cos (γ * Real.log (7 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 147.46875) (g_hi := 149.9375) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (x_hi := 2.744) 46 (by norm_num) hlo hhi (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_2 : 0.00918 ≤ bohmanExcess 7 (γ * Real.log (7 : ℝ)) := bohmanExcess7_ge (u_lo := (-0.9225)) (by norm_num) hu_2 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 147.484375) (g_hi := 149.953125) (M := 22500) (logM4_hi := 8.6349779) (ub := 1.587305) (a2 := 0) (b := 2) (c := 4) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨hn2, -, -, -, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : 0.1917 ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 147.484375) (g_hi := 149.953125) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 1.3778) 26 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.25576 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := 0.1917) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : (-0.8464) ≤ Real.cos (γ * Real.log ((5 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 147.484375) (g_hi := 149.953125) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (x_hi := 2.5794) 38 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.02537 ≤ bohmanExcess 5 (γ * Real.log ((5 : ℕ) : ℝ)) := bohmanExcess5_ge (u_lo := (-0.8464)) (by norm_num) hu_1 (by norm_num)
+  have hu_2 : (-0.9319) ≤ Real.cos (γ * Real.log ((7 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 147.484375) (g_hi := 149.953125) (lp := Real.log ((7 : ℕ) : ℝ)) (lp_lo := 1.945908) (lp_hi := 1.9459107) (x_hi := 2.769) 46 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl7a) (by simpa only [Nat.cast_ofNat] using hl7b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_2 : 0.00806 ≤ bohmanExcess 7 (γ * Real.log ((7 : ℕ) : ℝ)) := bohmanExcess7_ge (u_lo := (-0.9319)) (by norm_num) hu_2 (by norm_num)
   linarith only [harch, hmaster, hn2, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1, hg_2]
 
-private theorem bohman_interval_41 {γ : ℝ} (hlo : 149.9375 ≤ γ) (hhi : γ ≤ 150) :
+private theorem bohman_interval_40 {γ : ℝ} (hlo : 149.953125 ≤ γ) (hhi : γ ≤ 150) :
     1 / 4 * Real.log (9 / 4 + γ ^ 2 / 4) - Real.log Real.pi / 2 + 1 / 1215 +
       18 / ((9 / 2) ^ 2 * γ ^ 2) + 1200 / ((9 / 2) ^ 3 * γ ^ 4) -
       bohmanPhaseForm (fun p => γ * Real.log (p : ℝ)) < 2.236881 := by
   obtain ⟨⟨hl3a, hl3b⟩, -, -, ⟨hl11a, hl11b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have harch := bohman_arch_lt_smooth (g_lo := 149.9375) (g_hi := 150) (M := 22400) (logM4_hi := 8.6307053) (ub := 1.587508) (a2 := 5) (b := 0) (c := 2) (d := 1) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
-  have hmaster := bohmanPhaseForm_ge_sum_excess (fun p => γ * Real.log (p : ℝ))
-  obtain ⟨hn2, hn3, hn5, hn7, hn11, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_all_nonneg (fun p => γ * Real.log (p : ℝ))
-  have hu_0 : 0.1336 ≤ Real.cos (γ * Real.log (3 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 149.9375) (g_hi := 150) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (x_hi := 1.4366) 26 (by norm_num) hlo hhi (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_0 : 0.23833 ≤ bohmanExcess 3 (γ * Real.log (3 : ℝ)) := bohmanExcess3_ge (u_lo := 0.1336) (by norm_num) hu_0 (by norm_num)
-  have hu_1 : 0.0248 ≤ Real.cos (γ * Real.log (11 : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 149.9375) (g_hi := 150) (lp_lo := 2.3977758) (lp_hi := 2.3979146) (x_hi := 1.5458) 57 (by norm_num) hlo hhi (by norm_num) hl11a hl11b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have hg_1 : 0.05994 ≤ bohmanExcess 11 (γ * Real.log (11 : ℝ)) := bohmanExcess11_ge (u_lo := 0.0248) (by norm_num) hu_1 (by norm_num)
+  have harch := bohman_arch_lt_smooth (g_lo := 149.953125) (g_hi := 150) (M := 22500) (logM4_hi := 8.6349779) (ub := 1.58746) (a2 := 0) (b := 2) (c := 4) (d := 0) (by norm_num) hlo hhi (by norm_num) (by norm_num) (by norm_num) (by norm_num)
+  have hmaster := bohmanPhaseForm_coupled_ge_sum_excess γ
+  obtain ⟨hn2, -, hn5, hn7, -, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47⟩ := bohmanExcess_coupled_all_nonneg γ
+  have hu_0 : 0.1409 ≤ Real.cos (γ * Real.log ((3 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 149.953125) (g_hi := 150) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (x_hi := 1.4293) 26 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_0 : 0.24048 ≤ bohmanExcess 3 (γ * Real.log ((3 : ℕ) : ℝ)) := bohmanExcess3_ge (u_lo := 0.1409) (by norm_num) hu_0 (by norm_num)
+  have hu_1 : 0.0276 ≤ Real.cos (γ * Real.log ((11 : ℕ) : ℝ)) := cos_mul_ge_of_even_shift (g_lo := 149.953125) (g_hi := 150) (lp := Real.log ((11 : ℕ) : ℝ)) (lp_lo := 2.3978948) (lp_hi := 2.397896) (x_hi := 1.543) 57 (by norm_num) hlo hhi (by norm_num) (by simpa only [Nat.cast_ofNat] using hl11a) (by simpa only [Nat.cast_ofNat] using hl11b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have hg_1 : 0.0601 ≤ bohmanExcess 11 (γ * Real.log ((11 : ℕ) : ℝ)) := bohmanExcess11_ge (u_lo := 0.0276) (by norm_num) hu_1 (by norm_num)
   linarith only [harch, hmaster, hn2, hn5, hn7, hn13, hn17, hn19, hn23, hn29, hn31, hn37, hn41, hn43, hn47, hg_0, hg_1]
 
 private theorem bohman_coupled_lt_on_band {γ : ℝ} (hlo : 169 / 2 ≤ γ) (hhi : γ ≤ 150) :
@@ -2073,17 +2042,17 @@ private theorem bohman_coupled_lt_on_band {γ : ℝ} (hlo : 169 / 2 ≤ γ) (hhi
   · exact bohman_interval_1 h0.le h1
   rcases le_or_gt γ 95.234375 with h2 | h2
   · exact bohman_interval_2 h1.le h2
-  rcases le_or_gt γ 96.96875 with h3 | h3
+  rcases le_or_gt γ 96.984375 with h3 | h3
   · exact bohman_interval_3 h2.le h3
-  rcases le_or_gt γ 99.59375 with h4 | h4
+  rcases le_or_gt γ 99.609375 with h4 | h4
   · exact bohman_interval_4 h3.le h4
   rcases le_or_gt γ 102.140625 with h5 | h5
   · exact bohman_interval_5 h4.le h5
   rcases le_or_gt γ 104.75 with h6 | h6
   · exact bohman_interval_6 h5.le h6
-  rcases le_or_gt γ 106.578125 with h7 | h7
+  rcases le_or_gt γ 106.59375 with h7 | h7
   · exact bohman_interval_7 h6.le h7
-  rcases le_or_gt γ 111.03125 with h8 | h8
+  rcases le_or_gt γ 111.046875 with h8 | h8
   · exact bohman_interval_8 h7.le h8
   rcases le_or_gt γ 111.375 with h9 | h9
   · exact bohman_interval_9 h8.le h9
@@ -2095,61 +2064,59 @@ private theorem bohman_coupled_lt_on_band {γ : ℝ} (hlo : 169 / 2 ≤ γ) (hhi
   · exact bohman_interval_12 h11.le h12
   rcases le_or_gt γ 111.53125 with h13 | h13
   · exact bohman_interval_13 h12.le h13
-  rcases le_or_gt γ 111.5625 with h14 | h14
+  rcases le_or_gt γ 111.578125 with h14 | h14
   · exact bohman_interval_14 h13.le h14
-  rcases le_or_gt γ 111.625 with h15 | h15
+  rcases le_or_gt γ 111.65625 with h15 | h15
   · exact bohman_interval_15 h14.le h15
-  rcases le_or_gt γ 111.75 with h16 | h16
+  rcases le_or_gt γ 111.859375 with h16 | h16
   · exact bohman_interval_16 h15.le h16
-  rcases le_or_gt γ 112.4375 with h17 | h17
+  rcases le_or_gt γ 113.671875 with h17 | h17
   · exact bohman_interval_17 h16.le h17
-  rcases le_or_gt γ 114.546875 with h18 | h18
+  rcases le_or_gt γ 115.96875 with h18 | h18
   · exact bohman_interval_18 h17.le h18
-  rcases le_or_gt γ 116.1875 with h19 | h19
+  rcases le_or_gt γ 119.78125 with h19 | h19
   · exact bohman_interval_19 h18.le h19
-  rcases le_or_gt γ 119.78125 with h20 | h20
+  rcases le_or_gt γ 122 with h20 | h20
   · exact bohman_interval_20 h19.le h20
-  rcases le_or_gt γ 122 with h21 | h21
+  rcases le_or_gt γ 123.140625 with h21 | h21
   · exact bohman_interval_21 h20.le h21
-  rcases le_or_gt γ 123.125 with h22 | h22
+  rcases le_or_gt γ 123.6875 with h22 | h22
   · exact bohman_interval_22 h21.le h22
-  rcases le_or_gt γ 123.671875 with h23 | h23
+  rcases le_or_gt γ 124.90625 with h23 | h23
   · exact bohman_interval_23 h22.le h23
-  rcases le_or_gt γ 124.828125 with h24 | h24
+  rcases le_or_gt γ 127.96875 with h24 | h24
   · exact bohman_interval_24 h23.le h24
-  rcases le_or_gt γ 127.859375 with h25 | h25
+  rcases le_or_gt γ 129.921875 with h25 | h25
   · exact bohman_interval_25 h24.le h25
-  rcases le_or_gt γ 129.875 with h26 | h26
+  rcases le_or_gt γ 130.71875 with h26 | h26
   · exact bohman_interval_26 h25.le h26
-  rcases le_or_gt γ 130.640625 with h27 | h27
+  rcases le_or_gt γ 132.875 with h27 | h27
   · exact bohman_interval_27 h26.le h27
-  rcases le_or_gt γ 132.875 with h28 | h28
+  rcases le_or_gt γ 133.890625 with h28 | h28
   · exact bohman_interval_28 h27.le h28
-  rcases le_or_gt γ 133.890625 with h29 | h29
+  rcases le_or_gt γ 134.5625 with h29 | h29
   · exact bohman_interval_29 h28.le h29
-  rcases le_or_gt γ 134.546875 with h30 | h30
+  rcases le_or_gt γ 137.625 with h30 | h30
   · exact bohman_interval_30 h29.le h30
-  rcases le_or_gt γ 137.625 with h31 | h31
+  rcases le_or_gt γ 138.84375 with h31 | h31
   · exact bohman_interval_31 h30.le h31
-  rcases le_or_gt γ 138.828125 with h32 | h32
+  rcases le_or_gt γ 139.625 with h32 | h32
   · exact bohman_interval_32 h31.le h32
-  rcases le_or_gt γ 139.609375 with h33 | h33
+  rcases le_or_gt γ 140.359375 with h33 | h33
   · exact bohman_interval_33 h32.le h33
-  rcases le_or_gt γ 140.328125 with h34 | h34
+  rcases le_or_gt γ 141.34375 with h34 | h34
   · exact bohman_interval_34 h33.le h34
-  rcases le_or_gt γ 141.3125 with h35 | h35
+  rcases le_or_gt γ 142.984375 with h35 | h35
   · exact bohman_interval_35 h34.le h35
-  rcases le_or_gt γ 142.9375 with h36 | h36
+  rcases le_or_gt γ 145 with h36 | h36
   · exact bohman_interval_36 h35.le h36
-  rcases le_or_gt γ 144.875 with h37 | h37
+  rcases le_or_gt γ 146.640625 with h37 | h37
   · exact bohman_interval_37 h36.le h37
-  rcases le_or_gt γ 146.625 with h38 | h38
+  rcases le_or_gt γ 147.484375 with h38 | h38
   · exact bohman_interval_38 h37.le h38
-  rcases le_or_gt γ 147.46875 with h39 | h39
+  rcases le_or_gt γ 149.953125 with h39 | h39
   · exact bohman_interval_39 h38.le h39
-  rcases le_or_gt γ 149.9375 with h40 | h40
-  · exact bohman_interval_40 h39.le h40
-  exact bohman_interval_41 h40.le hhi
+  exact bohman_interval_40 h39.le hhi
 
 /-- **The Riemann hypothesis through height `150` via prime-phase-coupled Bohman analysis.**
 Every zero of `ξ` in the critical strip with `0 < Im ρ ≤ 150` lies on `Re ρ = 1/2`, proved without
@@ -2177,6 +2144,10 @@ theorem rhVerifiedThrough_oneHundredFifty : RHVerifiedThrough 150 := by
 
 /-! ## Exact coupled real-height saturation at `γ = 301/2 = 150.5` and universal finite-band ceiling -/
 
+private theorem mul_cos_le_ub {c ub θ : ℝ} (hc0 : 0 ≤ c) (hc : c ≤ ub) :
+    c * Real.cos θ ≤ ub := by
+  have := Real.cos_le_one θ; nlinarith only [this, hc0, hc]
+
 /-- **Exact coupled real-height saturation at `γ = 301/2 = 150.5` (`L = 9/2`).**
 Unlike `bohman_phaseFree_saturates_at_eightyFive` (which sets independent phases `θ ≡ π`),
 evaluating at the **actual coupled real height `γ = 301/2`** strictly reverses the `L = 9/2` Bohman
@@ -2192,83 +2163,53 @@ theorem bohman_coupled_saturates_at_threeHundredOne_halves :
   rw [bohman_prime_sum_eq_phaseForm]
   have hleft_ub := bohman_budget_left_bounds'.2
   have hl2a := Real.log_two_gt_d9.le; have hl2b := Real.log_two_lt_d9.le
-  obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, ⟨hl11a, hl11b⟩, ⟨hl13a, hl13b⟩, ⟨hl17a, hl17b⟩, ⟨hl19a, hl19b⟩, ⟨hl23a, hl23b⟩, ⟨hl29a, hl29b⟩, ⟨hl31a, hl31b⟩, ⟨hl37a, hl37b⟩, ⟨hl41a, hl41b⟩, ⟨hl43a, hl43b⟩, ⟨hl47a, hl47b⟩, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
-  have b2_1l : (0.3108480 : ℝ) ≤ Real.log 2 / 2 * bohmanFn (9 / 2) (1 * Real.log 2) :=
-    bohman_coeff_lb_p13' (u_lo := 2.65768) (by norm_num) (by norm_num) hl2a hl2b (by norm_num)
-      (by norm_num) (by norm_num) (by unfold bohmanP13 bohmanP11 bohmanP9; norm_num)
-      (by unfold bohmanP13 bohmanP11 bohmanP9; norm_num)
-  have b3_1l : (0.2801437 : ℝ) ≤ Real.log 3 / 3 * bohmanFn (9 / 2) (1 * Real.log 3) :=
-    bohman_coeff_lb_p13' (u_lo := 2.37442) (by norm_num) (by norm_num) hl3a hl3b (by norm_num)
-      (by norm_num) (by norm_num) (by unfold bohmanP13 bohmanP11 bohmanP9; norm_num)
-      (by unfold bohmanP13 bohmanP11 bohmanP9; norm_num)
-  have b5_1l : (0.1816976 : ℝ) ≤ Real.log 5 / 5 * bohmanFn (9 / 2) (1 * Real.log 5) :=
-    bohman_coeff_lb_p13' (u_lo := 2.01767) (by norm_num) (by norm_num) hl5a hl5b (by norm_num)
-      (by norm_num) (by norm_num) (by unfold bohmanP13 bohmanP11 bohmanP9; norm_num)
-      (by unfold bohmanP13 bohmanP11 bohmanP9; norm_num)
-  have b7_1l : (0.1196791 : ℝ) ≤ Real.log 7 / 7 * bohmanFn (9 / 2) (1 * Real.log 7) :=
-    bohman_coeff_lb_p13' (u_lo := 1.78292) (by norm_num) (by norm_num) hl7a hl7b (by norm_num)
-      (by norm_num) (by norm_num) (by unfold bohmanP13 bohmanP11 bohmanP9; norm_num)
-      (by unfold bohmanP13 bohmanP11 bohmanP9; norm_num)
-  obtain ⟨⟨cb_2_1_l, cb_2_1_u⟩, ⟨cb_2_2_l, cb_2_2_u⟩, ⟨cb_2_3_l, cb_2_3_u⟩, ⟨cb_2_4_l, cb_2_4_u⟩, ⟨cb_2_5_l, cb_2_5_u⟩, ⟨cb_2_6_l, cb_2_6_u⟩, ⟨cb_3_1_l, cb_3_1_u⟩, ⟨cb_3_2_l, cb_3_2_u⟩, ⟨cb_3_3_l, cb_3_3_u⟩, ⟨cb_3_4_l, cb_3_4_u⟩, ⟨cb_5_1_l, cb_5_1_u⟩, ⟨cb_5_2_l, cb_5_2_u⟩, ⟨cb_7_1_l, cb_7_1_u⟩, ⟨cb_7_2_l, cb_7_2_u⟩, ⟨cb_11_1_l, cb_11_1_u⟩, ⟨cb_13_1_l, cb_13_1_u⟩, ⟨cb_17_1_l, cb_17_1_u⟩, ⟨cb_19_1_l, cb_19_1_u⟩, ⟨cb_23_1_l, cb_23_1_u⟩, ⟨cb_29_1_l, cb_29_1_u⟩, ⟨cb_31_1_l, cb_31_1_u⟩, ⟨cb_37_1_l, cb_37_1_u⟩, ⟨cb_41_1_l, cb_41_1_u⟩, ⟨cb_43_1_l, cb_43_1_u⟩, ⟨cb_47_1_l, cb_47_1_u⟩, ⟨cb_53_1_l, cb_53_1_u⟩, ⟨cb_59_1_l, cb_59_1_u⟩, ⟨cb_61_1_l, cb_61_1_u⟩, ⟨cb_67_1_l, cb_67_1_u⟩, ⟨cb_71_1_l, cb_71_1_u⟩, ⟨cb_73_1_l, cb_73_1_u⟩, ⟨cb_79_1_l, cb_79_1_u⟩, ⟨cb_83_1_l, cb_83_1_u⟩, ⟨cb_89_1_l, cb_89_1_u⟩⟩ := all_prime_bohman_coeff_bounds'
-  have hcu_0 : Real.cos ((301 / 2 : ℝ) * Real.log (2 : ℝ)) ≤ (-0.7982) := by rw [show ((301 / 2 : ℝ) * Real.log (2 : ℝ)) = 150.5 * Real.log (2 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (s_hi := 0.6462) 16 (by norm_num) (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_0 : Real.log 2 / 2 * bohmanFn (9 / 2) (1 * Real.log 2) * Real.cos ((301 / 2 : ℝ) * Real.log (2 : ℝ)) ≤ (-0.248117) := by nlinarith only [b2_1l, cb_2_1_u, hcu_0]
-  have hcu_1 : Real.cos (2 * ((301 / 2 : ℝ) * Real.log (2 : ℝ))) ≤ 0.2754 := by rw [show (2 * ((301 / 2 : ℝ) * Real.log (2 : ℝ))) = 301 * Real.log (2 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 301) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (s_hi := 1.8496) 33 (by norm_num) (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_1 : Real.log 2 / 4 * bohmanFn (9 / 2) (2 * Real.log 2) * Real.cos (2 * ((301 / 2 : ℝ) * Real.log (2 : ℝ))) ≤ 0.031241 := by nlinarith only [cb_2_2_l, cb_2_2_u, hcu_1]
-  have hcu_2 : Real.cos (3 * ((301 / 2 : ℝ) * Real.log (2 : ℝ))) ≤ 0.3595 := by rw [show (3 * ((301 / 2 : ℝ) * Real.log (2 : ℝ))) = 451.5 * Real.log (2 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 451.5) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (s_hi := 1.9384) 49 (by norm_num) (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_2 : Real.log 2 / 8 * bohmanFn (9 / 2) (3 * Real.log 2) * Real.cos (3 * ((301 / 2 : ℝ) * Real.log (2 : ℝ))) ≤ 0.011836 := by nlinarith only [cb_2_3_l, cb_2_3_u, hcu_2]
-  have hcu_3 : Real.cos (4 * ((301 / 2 : ℝ) * Real.log (2 : ℝ))) ≤ (-0.8485) := by rw [show (4 * ((301 / 2 : ℝ) * Real.log (2 : ℝ))) = 602 * Real.log (2 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 602) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (s_hi := 0.5574) 66 (by norm_num) (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_3 : Real.log 2 / 16 * bohmanFn (9 / 2) (4 * Real.log 2) * Real.cos (4 * ((301 / 2 : ℝ) * Real.log (2 : ℝ))) ≤ (-0.005894) := by nlinarith only [cb_2_4_l, cb_2_4_u, hcu_3]
-  have hcu_4 : Real.cos (5 * ((301 / 2 : ℝ) * Real.log (2 : ℝ))) ≤ 0.9975 := by rw [show (5 * ((301 / 2 : ℝ) * Real.log (2 : ℝ))) = 752.5 * Real.log (2 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 752.5) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (s_hi := 3.0529) 83 (by norm_num) (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_4 : Real.log 2 / 32 * bohmanFn (9 / 2) (5 * Real.log 2) * Real.cos (5 * ((301 / 2 : ℝ) * Real.log (2 : ℝ))) ≤ 0.00082 := by nlinarith only [cb_2_5_l, cb_2_5_u, hcu_4]
-  have hcu_5 : Real.cos (6 * ((301 / 2 : ℝ) * Real.log (2 : ℝ))) ≤ (-0.7416) := by rw [show (6 * ((301 / 2 : ℝ) * Real.log (2 : ℝ))) = 903 * Real.log (2 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 903) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (s_hi := 0.7351) 99 (by norm_num) (by norm_num) hl2a hl2b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_5 : Real.log 2 / 64 * bohmanFn (9 / 2) (6 * Real.log 2) * Real.cos (6 * ((301 / 2 : ℝ) * Real.log (2 : ℝ))) ≤ (-0.00001) := by nlinarith only [cb_2_6_l, cb_2_6_u, hcu_5]
-  have hcu_6 : Real.cos ((301 / 2 : ℝ) * Real.log (3 : ℝ)) ≤ (-0.3906) := by rw [show ((301 / 2 : ℝ) * Real.log (3 : ℝ)) = 150.5 * Real.log (3 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (s_hi := 1.1694) 26 (by norm_num) (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_6 : Real.log 3 / 3 * bohmanFn (9 / 2) (1 * Real.log 3) * Real.cos ((301 / 2 : ℝ) * Real.log (3 : ℝ)) ≤ (-0.109423) := by nlinarith only [b3_1l, cb_3_1_u, hcu_6]
-  have hcu_7 : Real.cos (2 * ((301 / 2 : ℝ) * Real.log (3 : ℝ))) ≤ (-0.6746) := by rw [show (2 * ((301 / 2 : ℝ) * Real.log (3 : ℝ))) = 301 * Real.log (3 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 301) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (s_hi := 0.8302) 52 (by norm_num) (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_7 : Real.log 3 / 9 * bohmanFn (9 / 2) (2 * Real.log 3) * Real.cos (2 * ((301 / 2 : ℝ) * Real.log (3 : ℝ))) ≤ (-0.027726) := by nlinarith only [cb_3_2_l, cb_3_2_u, hcu_7]
-  have hcu_8 : Real.cos (3 * ((301 / 2 : ℝ) * Real.log (3 : ℝ))) ≤ 0.9481 := by rw [show (3 * ((301 / 2 : ℝ) * Real.log (3 : ℝ))) = 451.5 * Real.log (3 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 451.5) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (s_hi := 2.816) 78 (by norm_num) (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_8 : Real.log 3 / 27 * bohmanFn (9 / 2) (3 * Real.log 3) * Real.cos (3 * ((301 / 2 : ℝ) * Real.log (3 : ℝ))) ≤ 0.002267 := by nlinarith only [cb_3_3_l, cb_3_3_u, hcu_8]
-  have hcu_9 : Real.cos (4 * ((301 / 2 : ℝ) * Real.log (3 : ℝ))) ≤ (-0.0352) := by rw [show (4 * ((301 / 2 : ℝ) * Real.log (3 : ℝ))) = 602 * Real.log (3 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 602) (lp_lo := 1.0985728) (lp_hi := 1.0986619) (s_hi := 1.5354) 105 (by norm_num) (by norm_num) hl3a hl3b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_9 : Real.log 3 / 81 * bohmanFn (9 / 2) (4 * Real.log 3) * Real.cos (4 * ((301 / 2 : ℝ) * Real.log (3 : ℝ))) ≤ 0.000001 := by nlinarith only [cb_3_4_l, cb_3_4_u, hcu_9]
-  have hcu_10 : Real.cos ((301 / 2 : ℝ) * Real.log (5 : ℝ)) ≤ (-0.9462) := by rw [show ((301 / 2 : ℝ) * Real.log (5 : ℝ)) = 150.5 * Real.log (5 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (s_hi := 0.329) 38 (by norm_num) (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_10 : Real.log 5 / 5 * bohmanFn (9 / 2) (1 * Real.log 5) * Real.cos ((301 / 2 : ℝ) * Real.log (5 : ℝ)) ≤ (-0.171921) := by nlinarith only [b5_1l, cb_5_1_u, hcu_10]
-  have hcu_11 : Real.cos (2 * ((301 / 2 : ℝ) * Real.log (5 : ℝ))) ≤ 0.8064 := by rw [show (2 * ((301 / 2 : ℝ) * Real.log (5 : ℝ))) = 301 * Real.log (5 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 301) (lp_lo := 1.6094307) (lp_hi := 1.6095113) (s_hi := 2.5084) 77 (by norm_num) (by norm_num) hl5a hl5b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_11 : Real.log 5 / 25 * bohmanFn (9 / 2) (2 * Real.log 5) * Real.cos (2 * ((301 / 2 : ℝ) * Real.log (5 : ℝ))) ≤ 0.003643 := by nlinarith only [cb_5_2_l, cb_5_2_u, hcu_11]
-  have hcu_12 : Real.cos ((301 / 2 : ℝ) * Real.log (7 : ℝ)) ≤ (-0.7666) := by rw [show ((301 / 2 : ℝ) * Real.log (7 : ℝ)) = 150.5 * Real.log (7 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (s_hi := 0.697) 46 (by norm_num) (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_12 : Real.log 7 / 7 * bohmanFn (9 / 2) (1 * Real.log 7) * Real.cos ((301 / 2 : ℝ) * Real.log (7 : ℝ)) ≤ (-0.091744) := by nlinarith only [b7_1l, cb_7_1_u, hcu_12]
-  have hcu_13 : Real.cos (2 * ((301 / 2 : ℝ) * Real.log (7 : ℝ))) ≤ 0.1905 := by rw [show (2 * ((301 / 2 : ℝ) * Real.log (7 : ℝ))) = 301 * Real.log (7 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 301) (lp_lo := 1.9458994) (lp_hi := 1.9459466) (s_hi := 1.7623) 93 (by norm_num) (by norm_num) hl7a hl7b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_13 : Real.log 7 / 49 * bohmanFn (9 / 2) (2 * Real.log 7) * Real.cos (2 * ((301 / 2 : ℝ) * Real.log (7 : ℝ))) ≤ 0.000062 := by nlinarith only [cb_7_2_l, cb_7_2_u, hcu_13]
-  have hcu_14 : Real.cos ((301 / 2 : ℝ) * Real.log (11 : ℝ)) ≤ (-0.9138) := by rw [show ((301 / 2 : ℝ) * Real.log (11 : ℝ)) = 150.5 * Real.log (11 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp_lo := 2.3977758) (lp_hi := 2.3979146) (s_hi := 0.418) 57 (by norm_num) (by norm_num) hl11a hl11b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_14 : Real.log 11 / 11 * bohmanFn (9 / 2) (1 * Real.log 11) * Real.cos ((301 / 2 : ℝ) * Real.log (11 : ℝ)) ≤ (-0.053457) := by nlinarith only [cb_11_1_l, cb_11_1_u, hcu_14]
-  have hcu_15 : Real.cos ((301 / 2 : ℝ) * Real.log (13 : ℝ)) ≤ (-0.9059) := by rw [show ((301 / 2 : ℝ) * Real.log (13 : ℝ)) = 150.5 * Real.log (13 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp_lo := 2.5646445) (lp_hi := 2.5650861) (s_hi := 0.437) 61 (by norm_num) (by norm_num) hl13a hl13b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_15 : Real.log 13 / 13 * bohmanFn (9 / 2) (1 * Real.log 13) * Real.cos ((301 / 2 : ℝ) * Real.log (13 : ℝ)) ≤ (-0.038692) := by nlinarith only [cb_13_1_l, cb_13_1_u, hcu_15]
-  have hcu_16 : Real.cos ((301 / 2 : ℝ) * Real.log (17 : ℝ)) ≤ 0.6572 := by rw [show ((301 / 2 : ℝ) * Real.log (17 : ℝ)) = 150.5 * Real.log (17 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp_lo := 2.8331549) (lp_hi := 2.8332392) (s_hi := 2.2876) 67 (by norm_num) (by norm_num) hl17a hl17b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_16 : Real.log 17 / 17 * bohmanFn (9 / 2) (1 * Real.log 17) * Real.cos ((301 / 2 : ℝ) * Real.log (17 : ℝ)) ≤ 0.015962 := by nlinarith only [cb_17_1_l, cb_17_1_u, hcu_16]
-  have hcu_17 : Real.cos ((301 / 2 : ℝ) * Real.log (19 : ℝ)) ≤ (-0.9847) := by rw [show ((301 / 2 : ℝ) * Real.log (19 : ℝ)) = 150.5 * Real.log (19 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp_lo := 2.9443944) (lp_hi := 2.9444434) (s_hi := 0.1743) 70 (by norm_num) (by norm_num) hl19a hl19b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_17 : Real.log 19 / 19 * bohmanFn (9 / 2) (1 * Real.log 19) * Real.cos ((301 / 2 : ℝ) * Real.log (19 : ℝ)) ≤ (-0.018333) := by nlinarith only [cb_19_1_l, cb_19_1_u, hcu_17]
-  have hcu_18 : Real.cos ((301 / 2 : ℝ) * Real.log (23 : ℝ)) ≤ 0.7992 := by rw [show ((301 / 2 : ℝ) * Real.log (23 : ℝ)) = 150.5 * Real.log (23 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp_lo := 3.1354442) (lp_hi := 3.1356659) (s_hi := 2.4963) 75 (by norm_num) (by norm_num) hl23a hl23b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_18 : Real.log 23 / 23 * bohmanFn (9 / 2) (1 * Real.log 23) * Real.cos ((301 / 2 : ℝ) * Real.log (23 : ℝ)) ≤ 0.009128 := by nlinarith only [cb_23_1_l, cb_23_1_u, hcu_18]
-  have hcu_19 : Real.cos ((301 / 2 : ℝ) * Real.log (29 : ℝ)) ≤ (-0.5481) := by rw [show ((301 / 2 : ℝ) * Real.log (29 : ℝ)) = 150.5 * Real.log (29 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp_lo := 3.3667148) (lp_hi := 3.3673538) (s_hi := 0.9905) 80 (by norm_num) (by norm_num) hl29a hl29b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_19 : Real.log 29 / 29 * bohmanFn (9 / 2) (1 * Real.log 29) * Real.cos ((301 / 2 : ℝ) * Real.log (29 : ℝ)) ≤ (-0.003122) := by nlinarith only [cb_29_1_l, cb_29_1_u, hcu_19]
-  have hcu_20 : Real.cos ((301 / 2 : ℝ) * Real.log (31 : ℝ)) ≤ (-0.0156) := by rw [show ((301 / 2 : ℝ) * Real.log (31 : ℝ)) = 150.5 * Real.log (31 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp_lo := 3.4339401) (lp_hi := 3.4339888) (s_hi := 1.555) 82 (by norm_num) (by norm_num) hl31a hl31b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_20 : Real.log 31 / 31 * bohmanFn (9 / 2) (1 * Real.log 31) * Real.cos ((301 / 2 : ℝ) * Real.log (31 : ℝ)) ≤ (-0.00007) := by nlinarith only [cb_31_1_l, cb_31_1_u, hcu_20]
-  have hcu_21 : Real.cos ((301 / 2 : ℝ) * Real.log (37 : ℝ)) ≤ (-0.9975) := by rw [show ((301 / 2 : ℝ) * Real.log (37 : ℝ)) = 150.5 * Real.log (37 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp_lo := 3.6108132) (lp_hi := 3.6109222) (s_hi := 0.0683) 86 (by norm_num) (by norm_num) hl37a hl37b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_21 : Real.log 37 / 37 * bohmanFn (9 / 2) (1 * Real.log 37) * Real.cos ((301 / 2 : ℝ) * Real.log (37 : ℝ)) ≤ (-0.002369) := by nlinarith only [cb_37_1_l, cb_37_1_u, hcu_21]
-  have hcu_22 : Real.cos ((301 / 2 : ℝ) * Real.log (41 : ℝ)) ≤ 0.9548 := by rw [show ((301 / 2 : ℝ) * Real.log (41 : ℝ)) = 150.5 * Real.log (41 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp_lo := 3.7132884) (lp_hi := 3.7136164) (s_hi := 2.8375) 88 (by norm_num) (by norm_num) hl41a hl41b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_22 : Real.log 41 / 41 * bohmanFn (9 / 2) (1 * Real.log 41) * Real.cos ((301 / 2 : ℝ) * Real.log (41 : ℝ)) ≤ 0.001477 := by nlinarith only [cb_41_1_l, cb_41_1_u, hcu_22]
-  have hcu_23 : Real.cos ((301 / 2 : ℝ) * Real.log (43 : ℝ)) ≤ 0.8422 := by rw [show ((301 / 2 : ℝ) * Real.log (43 : ℝ)) = 150.5 * Real.log (43 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp_lo := 3.7611756) (lp_hi := 3.7612638) (s_hi := 2.5715) 90 (by norm_num) (by norm_num) hl43a hl43b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_23 : Real.log 43 / 43 * bohmanFn (9 / 2) (1 * Real.log 43) * Real.cos ((301 / 2 : ℝ) * Real.log (43 : ℝ)) ≤ 0.00105 := by nlinarith only [cb_43_1_l, cb_43_1_u, hcu_23]
-  have hcu_24 : Real.cos ((301 / 2 : ℝ) * Real.log (47 : ℝ)) ≤ 0.1805 := by rw [show ((301 / 2 : ℝ) * Real.log (47 : ℝ)) = 150.5 * Real.log (47 : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp_lo := 3.8501175) (lp_hi := 3.8501705) (s_hi := 1.7521) 92 (by norm_num) (by norm_num) hl47a hl47b (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
-  have ht_24 : Real.log 47 / 47 * bohmanFn (9 / 2) (1 * Real.log 47) * Real.cos ((301 / 2 : ℝ) * Real.log (47 : ℝ)) ≤ 0.000146 := by nlinarith only [cb_47_1_l, cb_47_1_u, hcu_24]
-  have ht_25 : Real.log 53 / 53 * bohmanFn (9 / 2) (1 * Real.log 53) * Real.cos ((301 / 2 : ℝ) * Real.log (53 : ℝ)) ≤ 0.0003977 := by have hc := Real.cos_le_one ((301 / 2 : ℝ) * Real.log (53 : ℝ)); nlinarith only [cb_53_1_l, cb_53_1_u, hc]
-  have ht_26 : Real.log 59 / 59 * bohmanFn (9 / 2) (1 * Real.log 59) * Real.cos ((301 / 2 : ℝ) * Real.log (59 : ℝ)) ≤ 0.0001869 := by have hc := Real.cos_le_one ((301 / 2 : ℝ) * Real.log (59 : ℝ)); nlinarith only [cb_59_1_l, cb_59_1_u, hc]
-  have ht_27 : Real.log 61 / 61 * bohmanFn (9 / 2) (1 * Real.log 61) * Real.cos ((301 / 2 : ℝ) * Real.log (61 : ℝ)) ≤ 0.0001440 := by have hc := Real.cos_le_one ((301 / 2 : ℝ) * Real.log (61 : ℝ)); nlinarith only [cb_61_1_l, cb_61_1_u, hc]
-  have ht_28 : Real.log 67 / 67 * bohmanFn (9 / 2) (1 * Real.log 67) * Real.cos ((301 / 2 : ℝ) * Real.log (67 : ℝ)) ≤ 0.0000588 := by have hc := Real.cos_le_one ((301 / 2 : ℝ) * Real.log (67 : ℝ)); nlinarith only [cb_67_1_l, cb_67_1_u, hc]
-  have ht_29 : Real.log 71 / 71 * bohmanFn (9 / 2) (1 * Real.log 71) * Real.cos ((301 / 2 : ℝ) * Real.log (71 : ℝ)) ≤ 0.0000294 := by have hc := Real.cos_le_one ((301 / 2 : ℝ) * Real.log (71 : ℝ)); nlinarith only [cb_71_1_l, cb_71_1_u, hc]
-  have ht_30 : Real.log 73 / 73 * bohmanFn (9 / 2) (1 * Real.log 73) * Real.cos ((301 / 2 : ℝ) * Real.log (73 : ℝ)) ≤ 0.0000197 := by have hc := Real.cos_le_one ((301 / 2 : ℝ) * Real.log (73 : ℝ)); nlinarith only [cb_73_1_l, cb_73_1_u, hc]
-  have ht_31 : Real.log 79 / 79 * bohmanFn (9 / 2) (1 * Real.log 79) * Real.cos ((301 / 2 : ℝ) * Real.log (79 : ℝ)) ≤ 0.0000045 := by have hc := Real.cos_le_one ((301 / 2 : ℝ) * Real.log (79 : ℝ)); nlinarith only [cb_79_1_l, cb_79_1_u, hc]
-  have ht_32 : Real.log 83 / 83 * bohmanFn (9 / 2) (1 * Real.log 83) * Real.cos ((301 / 2 : ℝ) * Real.log (83 : ℝ)) ≤ 0.0000011 := by have hc := Real.cos_le_one ((301 / 2 : ℝ) * Real.log (83 : ℝ)); nlinarith only [cb_83_1_l, cb_83_1_u, hc]
-  have ht_33 : Real.log 89 / 89 * bohmanFn (9 / 2) (1 * Real.log 89) * Real.cos ((301 / 2 : ℝ) * Real.log (89 : ℝ)) ≤ 0.0000001 := by have hc := Real.cos_le_one ((301 / 2 : ℝ) * Real.log (89 : ℝ)); nlinarith only [cb_89_1_l, cb_89_1_u, hc]
+  obtain ⟨⟨hl3a, hl3b⟩, ⟨hl5a, hl5b⟩, ⟨hl7a, hl7b⟩, ⟨hl11a, hl11b⟩, ⟨hl13a, hl13b⟩, -, ⟨hl19a, hl19b⟩, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -, -⟩ := sharp_log_prime_bounds
+  obtain ⟨⟨cb_2_1_l, -⟩, ⟨cb_2_2_l, cb_2_2_u⟩, ⟨cb_2_3_l, cb_2_3_u⟩, ⟨cb_2_4_l, -⟩, ⟨cb_2_5_l, cb_2_5_u⟩, ⟨cb_2_6_l, cb_2_6_u⟩, ⟨cb_3_1_l, -⟩, ⟨cb_3_2_l, -⟩, ⟨cb_3_3_l, cb_3_3_u⟩, ⟨cb_3_4_l, cb_3_4_u⟩, ⟨cb_5_1_l, -⟩, ⟨cb_5_2_l, cb_5_2_u⟩, ⟨cb_7_1_l, -⟩, ⟨cb_7_2_l, cb_7_2_u⟩, ⟨cb_11_1_l, -⟩, ⟨cb_13_1_l, -⟩, ⟨cb_17_1_l, cb_17_1_u⟩, ⟨cb_19_1_l, -⟩, ⟨cb_23_1_l, cb_23_1_u⟩, ⟨cb_29_1_l, cb_29_1_u⟩, ⟨cb_31_1_l, cb_31_1_u⟩, ⟨cb_37_1_l, cb_37_1_u⟩, ⟨cb_41_1_l, cb_41_1_u⟩, ⟨cb_43_1_l, cb_43_1_u⟩, ⟨cb_47_1_l, cb_47_1_u⟩, ⟨cb_53_1_l, cb_53_1_u⟩, ⟨cb_59_1_l, cb_59_1_u⟩, ⟨cb_61_1_l, cb_61_1_u⟩, ⟨cb_67_1_l, cb_67_1_u⟩, ⟨cb_71_1_l, cb_71_1_u⟩, ⟨cb_73_1_l, cb_73_1_u⟩, ⟨cb_79_1_l, cb_79_1_u⟩, ⟨cb_83_1_l, cb_83_1_u⟩, ⟨cb_89_1_l, cb_89_1_u⟩⟩ := all_prime_bohman_coeff_bounds'
+  have hcu_0 : Real.cos ((301 / 2 : ℝ) * Real.log ((2 : ℕ) : ℝ)) ≤ (-0.7982) := by rw [show ((301 / 2 : ℝ) * Real.log ((2 : ℕ) : ℝ)) = 150.5 * Real.log ((2 : ℕ) : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (s_hi := 0.6462) 16 (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have ht_0 : Real.log 2 / 2 * bohmanFn (9 / 2) (1 * Real.log 2) * Real.cos ((301 / 2 : ℝ) * Real.log ((2 : ℕ) : ℝ)) ≤ (-0.247143) := by nlinarith only [cb_2_1_l, hcu_0]
+  have hcu_1 : Real.cos (2 * ((301 / 2 : ℝ) * Real.log ((2 : ℕ) : ℝ))) ≤ 0.2754 := by rw [show (2 * ((301 / 2 : ℝ) * Real.log ((2 : ℕ) : ℝ))) = 301 * Real.log ((2 : ℕ) : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 301) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (s_hi := 1.8496) 33 (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have ht_1 : Real.log 2 / 4 * bohmanFn (9 / 2) (2 * Real.log 2) * Real.cos (2 * ((301 / 2 : ℝ) * Real.log ((2 : ℕ) : ℝ))) ≤ 0.031241 := by nlinarith only [cb_2_2_l, cb_2_2_u, hcu_1]
+  have hcu_2 : Real.cos (3 * ((301 / 2 : ℝ) * Real.log ((2 : ℕ) : ℝ))) ≤ 0.3595 := by rw [show (3 * ((301 / 2 : ℝ) * Real.log ((2 : ℕ) : ℝ))) = 451.5 * Real.log ((2 : ℕ) : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 451.5) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (s_hi := 1.9384) 49 (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have ht_2 : Real.log 2 / 8 * bohmanFn (9 / 2) (3 * Real.log 2) * Real.cos (3 * ((301 / 2 : ℝ) * Real.log ((2 : ℕ) : ℝ))) ≤ 0.011836 := by nlinarith only [cb_2_3_l, cb_2_3_u, hcu_2]
+  have hcu_3 : Real.cos (4 * ((301 / 2 : ℝ) * Real.log ((2 : ℕ) : ℝ))) ≤ (-0.8485) := by rw [show (4 * ((301 / 2 : ℝ) * Real.log ((2 : ℕ) : ℝ))) = 602 * Real.log ((2 : ℕ) : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 602) (lp := Real.log ((2 : ℕ) : ℝ)) (lp_lo := 0.6931471803) (lp_hi := 0.6931471808) (s_hi := 0.5574) 66 (by norm_num) (by simpa only [Nat.cast_ofNat] using hl2a) (by simpa only [Nat.cast_ofNat] using hl2b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have ht_3 : Real.log 2 / 16 * bohmanFn (9 / 2) (4 * Real.log 2) * Real.cos (4 * ((301 / 2 : ℝ) * Real.log ((2 : ℕ) : ℝ))) ≤ (-0.005894) := by nlinarith only [cb_2_4_l, hcu_3]
+  have ht_4 : Real.log 2 / 32 * bohmanFn (9 / 2) (5 * Real.log 2) * Real.cos (5 * ((301 / 2 : ℝ) * Real.log ((2 : ℕ) : ℝ))) ≤ 0.0008210 := mul_cos_le_ub (by linarith only [cb_2_5_l]) cb_2_5_u
+  have ht_5 : Real.log 2 / 64 * bohmanFn (9 / 2) (6 * Real.log 2) * Real.cos (6 * ((301 / 2 : ℝ) * Real.log ((2 : ℕ) : ℝ))) ≤ 0.0000155 := mul_cos_le_ub (by linarith only [cb_2_6_l]) cb_2_6_u
+  have hcu_6 : Real.cos ((301 / 2 : ℝ) * Real.log ((3 : ℕ) : ℝ)) ≤ (-0.3961) := by rw [show ((301 / 2 : ℝ) * Real.log ((3 : ℕ) : ℝ)) = 150.5 * Real.log ((3 : ℕ) : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (s_hi := 1.1634) 26 (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have ht_6 : Real.log 3 / 3 * bohmanFn (9 / 2) (1 * Real.log 3) * Real.cos ((301 / 2 : ℝ) * Real.log ((3 : ℕ) : ℝ)) ≤ (-0.110814) := by nlinarith only [cb_3_1_l, hcu_6]
+  have hcu_7 : Real.cos (2 * ((301 / 2 : ℝ) * Real.log ((3 : ℕ) : ℝ))) ≤ (-0.6854) := by rw [show (2 * ((301 / 2 : ℝ) * Real.log ((3 : ℕ) : ℝ))) = 301 * Real.log ((3 : ℕ) : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 301) (lp := Real.log ((3 : ℕ) : ℝ)) (lp_lo := 1.0986121) (lp_hi := 1.0986129) (s_hi := 0.8154) 52 (by norm_num) (by simpa only [Nat.cast_ofNat] using hl3a) (by simpa only [Nat.cast_ofNat] using hl3b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have ht_7 : Real.log 3 / 9 * bohmanFn (9 / 2) (2 * Real.log 3) * Real.cos (2 * ((301 / 2 : ℝ) * Real.log ((3 : ℕ) : ℝ))) ≤ (-0.02817) := by nlinarith only [cb_3_2_l, hcu_7]
+  have ht_8 : Real.log 3 / 27 * bohmanFn (9 / 2) (3 * Real.log 3) * Real.cos (3 * ((301 / 2 : ℝ) * Real.log ((3 : ℕ) : ℝ))) ≤ 0.0023895 := mul_cos_le_ub (by linarith only [cb_3_3_l]) cb_3_3_u
+  have ht_9 : Real.log 3 / 81 * bohmanFn (9 / 2) (4 * Real.log 3) * Real.cos (4 * ((301 / 2 : ℝ) * Real.log ((3 : ℕ) : ℝ))) ≤ 0.0000006 := mul_cos_le_ub (by linarith only [cb_3_4_l]) cb_3_4_u
+  have hcu_10 : Real.cos ((301 / 2 : ℝ) * Real.log ((5 : ℕ) : ℝ)) ≤ (-0.9497) := by rw [show ((301 / 2 : ℝ) * Real.log ((5 : ℕ) : ℝ)) = 150.5 * Real.log ((5 : ℕ) : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp := Real.log ((5 : ℕ) : ℝ)) (lp_lo := 1.6094379) (lp_hi := 1.609438) (s_hi := 0.3179) 38 (by norm_num) (by simpa only [Nat.cast_ofNat] using hl5a) (by simpa only [Nat.cast_ofNat] using hl5b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have ht_10 : Real.log 5 / 5 * bohmanFn (9 / 2) (1 * Real.log 5) * Real.cos ((301 / 2 : ℝ) * Real.log ((5 : ℕ) : ℝ)) ≤ (-0.172503) := by nlinarith only [cb_5_1_l, hcu_10]
+  have ht_11 : Real.log 5 / 25 * bohmanFn (9 / 2) (2 * Real.log 5) * Real.cos (2 * ((301 / 2 : ℝ) * Real.log ((5 : ℕ) : ℝ))) ≤ 0.0045154 := mul_cos_le_ub (by linarith only [cb_5_2_l]) cb_5_2_u
+  have hcu_12 : Real.cos ((301 / 2 : ℝ) * Real.log ((7 : ℕ) : ℝ)) ≤ (-0.7701) := by rw [show ((301 / 2 : ℝ) * Real.log ((7 : ℕ) : ℝ)) = 150.5 * Real.log ((7 : ℕ) : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp := Real.log ((7 : ℕ) : ℝ)) (lp_lo := 1.945908) (lp_hi := 1.9459107) (s_hi := 0.6916) 46 (by norm_num) (by simpa only [Nat.cast_ofNat] using hl7a) (by simpa only [Nat.cast_ofNat] using hl7b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have ht_12 : Real.log 7 / 7 * bohmanFn (9 / 2) (1 * Real.log 7) * Real.cos ((301 / 2 : ℝ) * Real.log ((7 : ℕ) : ℝ)) ≤ (-0.092154) := by nlinarith only [cb_7_1_l, hcu_12]
+  have ht_13 : Real.log 7 / 49 * bohmanFn (9 / 2) (2 * Real.log 7) * Real.cos (2 * ((301 / 2 : ℝ) * Real.log ((7 : ℕ) : ℝ))) ≤ 0.0003188 := mul_cos_le_ub (by linarith only [cb_7_2_l]) cb_7_2_u
+  have hcu_14 : Real.cos ((301 / 2 : ℝ) * Real.log ((11 : ℕ) : ℝ)) ≤ (-0.9209) := by rw [show ((301 / 2 : ℝ) * Real.log ((11 : ℕ) : ℝ)) = 150.5 * Real.log ((11 : ℕ) : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp := Real.log ((11 : ℕ) : ℝ)) (lp_lo := 2.3978948) (lp_hi := 2.397896) (s_hi := 0.4001) 57 (by norm_num) (by simpa only [Nat.cast_ofNat] using hl11a) (by simpa only [Nat.cast_ofNat] using hl11b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have ht_14 : Real.log 11 / 11 * bohmanFn (9 / 2) (1 * Real.log 11) * Real.cos ((301 / 2 : ℝ) * Real.log ((11 : ℕ) : ℝ)) ≤ (-0.053872) := by nlinarith only [cb_11_1_l, hcu_14]
+  have hcu_15 : Real.cos ((301 / 2 : ℝ) * Real.log ((13 : ℕ) : ℝ)) ≤ (-0.9243) := by rw [show ((301 / 2 : ℝ) * Real.log ((13 : ℕ) : ℝ)) = 150.5 * Real.log ((13 : ℕ) : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp := Real.log ((13 : ℕ) : ℝ)) (lp_lo := 2.5649491) (lp_hi := 2.5649502) (s_hi := 0.3912) 61 (by norm_num) (by simpa only [Nat.cast_ofNat] using hl13a) (by simpa only [Nat.cast_ofNat] using hl13b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have ht_15 : Real.log 13 / 13 * bohmanFn (9 / 2) (1 * Real.log 13) * Real.cos ((301 / 2 : ℝ) * Real.log ((13 : ℕ) : ℝ)) ≤ (-0.039478) := by nlinarith only [cb_13_1_l, hcu_15]
+  have ht_16 : Real.log 17 / 17 * bohmanFn (9 / 2) (1 * Real.log 17) * Real.cos ((301 / 2 : ℝ) * Real.log ((17 : ℕ) : ℝ)) ≤ 0.0242863 := mul_cos_le_ub (by linarith only [cb_17_1_l]) cb_17_1_u
+  have hcu_17 : Real.cos ((301 / 2 : ℝ) * Real.log ((19 : ℕ) : ℝ)) ≤ (-0.9848) := by rw [show ((301 / 2 : ℝ) * Real.log ((19 : ℕ) : ℝ)) = 150.5 * Real.log ((19 : ℕ) : ℝ) by ring]; exact cos_mul_le_of_odd_shift (c := 150.5) (lp := Real.log ((19 : ℕ) : ℝ)) (lp_lo := 2.9444385) (lp_hi := 2.9444403) (s_hi := 0.1739) 70 (by norm_num) (by simpa only [Nat.cast_ofNat] using hl19a) (by simpa only [Nat.cast_ofNat] using hl19b) (by norm_num) (by norm_num) (by norm_num) (by unfold cosPoly10; norm_num)
+  have ht_17 : Real.log 19 / 19 * bohmanFn (9 / 2) (1 * Real.log 19) * Real.cos ((301 / 2 : ℝ) * Real.log ((19 : ℕ) : ℝ)) ≤ (-0.018334) := by nlinarith only [cb_19_1_l, hcu_17]
+  have ht_18 : Real.log 23 / 23 * bohmanFn (9 / 2) (1 * Real.log 23) * Real.cos ((301 / 2 : ℝ) * Real.log ((23 : ℕ) : ℝ)) ≤ 0.0114201 := mul_cos_le_ub (by linarith only [cb_23_1_l]) cb_23_1_u
+  have ht_19 : Real.log 29 / 29 * bohmanFn (9 / 2) (1 * Real.log 29) * Real.cos ((301 / 2 : ℝ) * Real.log ((29 : ℕ) : ℝ)) ≤ 0.0057307 := mul_cos_le_ub (by linarith only [cb_29_1_l]) cb_29_1_u
+  have ht_20 : Real.log 31 / 31 * bohmanFn (9 / 2) (1 * Real.log 31) * Real.cos ((301 / 2 : ℝ) * Real.log ((31 : ℕ) : ℝ)) ≤ 0.0045883 := mul_cos_le_ub (by linarith only [cb_31_1_l]) cb_31_1_u
+  have ht_21 : Real.log 37 / 37 * bohmanFn (9 / 2) (1 * Real.log 37) * Real.cos ((301 / 2 : ℝ) * Real.log ((37 : ℕ) : ℝ)) ≤ 0.0023836 := mul_cos_le_ub (by linarith only [cb_37_1_l]) cb_37_1_u
+  have ht_22 : Real.log 41 / 41 * bohmanFn (9 / 2) (1 * Real.log 41) * Real.cos ((301 / 2 : ℝ) * Real.log ((41 : ℕ) : ℝ)) ≤ 0.0015452 := mul_cos_le_ub (by linarith only [cb_41_1_l]) cb_41_1_u
+  have ht_23 : Real.log 43 / 43 * bohmanFn (9 / 2) (1 * Real.log 43) * Real.cos ((301 / 2 : ℝ) * Real.log ((43 : ℕ) : ℝ)) ≤ 0.0012449 := mul_cos_le_ub (by linarith only [cb_43_1_l]) cb_43_1_u
+  have ht_24 : Real.log 47 / 47 * bohmanFn (9 / 2) (1 * Real.log 47) * Real.cos ((301 / 2 : ℝ) * Real.log ((47 : ℕ) : ℝ)) ≤ 0.0008002 := mul_cos_le_ub (by linarith only [cb_47_1_l]) cb_47_1_u
+  have ht_25 : Real.log 53 / 53 * bohmanFn (9 / 2) (1 * Real.log 53) * Real.cos ((301 / 2 : ℝ) * Real.log ((53 : ℕ) : ℝ)) ≤ 0.0003977 := mul_cos_le_ub (by linarith only [cb_53_1_l]) cb_53_1_u
+  have ht_26 : Real.log 59 / 59 * bohmanFn (9 / 2) (1 * Real.log 59) * Real.cos ((301 / 2 : ℝ) * Real.log ((59 : ℕ) : ℝ)) ≤ 0.0001869 := mul_cos_le_ub (by linarith only [cb_59_1_l]) cb_59_1_u
+  have ht_27 : Real.log 61 / 61 * bohmanFn (9 / 2) (1 * Real.log 61) * Real.cos ((301 / 2 : ℝ) * Real.log ((61 : ℕ) : ℝ)) ≤ 0.0001440 := mul_cos_le_ub (by linarith only [cb_61_1_l]) cb_61_1_u
+  have ht_28 : Real.log 67 / 67 * bohmanFn (9 / 2) (1 * Real.log 67) * Real.cos ((301 / 2 : ℝ) * Real.log ((67 : ℕ) : ℝ)) ≤ 0.0000588 := mul_cos_le_ub (by linarith only [cb_67_1_l]) cb_67_1_u
+  have ht_29 : Real.log 71 / 71 * bohmanFn (9 / 2) (1 * Real.log 71) * Real.cos ((301 / 2 : ℝ) * Real.log ((71 : ℕ) : ℝ)) ≤ 0.0000294 := mul_cos_le_ub (by linarith only [cb_71_1_l]) cb_71_1_u
+  have ht_30 : Real.log 73 / 73 * bohmanFn (9 / 2) (1 * Real.log 73) * Real.cos ((301 / 2 : ℝ) * Real.log ((73 : ℕ) : ℝ)) ≤ 0.0000197 := mul_cos_le_ub (by linarith only [cb_73_1_l]) cb_73_1_u
+  have ht_31 : Real.log 79 / 79 * bohmanFn (9 / 2) (1 * Real.log 79) * Real.cos ((301 / 2 : ℝ) * Real.log ((79 : ℕ) : ℝ)) ≤ 0.0000045 := mul_cos_le_ub (by linarith only [cb_79_1_l]) cb_79_1_u
+  have ht_32 : Real.log 83 / 83 * bohmanFn (9 / 2) (1 * Real.log 83) * Real.cos ((301 / 2 : ℝ) * Real.log ((83 : ℕ) : ℝ)) ≤ 0.0000011 := mul_cos_le_ub (by linarith only [cb_83_1_l]) cb_83_1_u
+  have ht_33 : Real.log 89 / 89 * bohmanFn (9 / 2) (1 * Real.log 89) * Real.cos ((301 / 2 : ℝ) * Real.log ((89 : ℕ) : ℝ)) ≤ 0.0000001 := mul_cos_le_ub (by linarith only [cb_89_1_l]) cb_89_1_u
   have hlog_rev : 2 * Real.log 3 + 4 * Real.log 5 + 637 / 90637 ≤
       Real.log (9 / 4 + (301 / 2 : ℝ) ^ 2 / 4) := by
     have heq : (9 / 4 + (301 / 2 : ℝ) ^ 2 / 4) = (3 ^ 2 * 5 ^ 4 : ℝ) * (90637 / 90000) := by norm_num
@@ -2306,7 +2247,6 @@ theorem bohman_any_band_eventually_reverses (L : ℝ) (hL : 0 < L) (N : ℕ) :
   set T_max : ℝ := max 1 (2 * Real.exp (2 * M_req))
   refine ⟨T_max, lt_of_lt_of_le zero_lt_one (le_max_left _ _), fun γ hγ => ?_⟩
   have hγ_exp : 2 * Real.exp (2 * M_req) ≤ γ := (le_max_right _ _).trans hγ
-  have hγ_pos : 0 < γ := (mul_pos two_pos (Real.exp_pos _)).trans_le hγ_exp
   have hsum_le : ∑ n ∈ Finset.range N,
       vonMangoldt n / (n : ℝ) * bohmanFn L (Real.log n) * Real.cos (γ * Real.log n) ≤ B_N := by
     refine Finset.sum_le_sum fun n _ => ?_
@@ -2325,8 +2265,7 @@ theorem bohman_any_band_eventually_reverses (L : ℝ) (hL : 0 < L) (N : ℕ) :
       pow_le_pow_left₀ (Real.exp_pos _).le (by linarith) 2
     have h2 : Real.exp (2 * M_req) ^ 2 = Real.exp (4 * M_req) := by
       rw [← Real.exp_nat_mul]; congr 1; push_cast; ring
-    rw [h2] at h1
-    linarith
+    rw [h2] at h1; linarith
   have hlog : 4 * M_req < Real.log (9 / 4 + γ ^ 2 / 4) := by
     rw [← Real.log_exp (4 * M_req)]
     exact Real.log_lt_log (Real.exp_pos _) hsq
@@ -2359,20 +2298,22 @@ theorem re_xiLiPaired_nonneg_of_le_sevenHundredFive {n : ℕ} (hn : n ≤ 705) :
 
 /-- Exact largest Jensen degree paid by width `8999/24000` at coupled Bohman verified height `150`. -/
 theorem jensen_sector_at_oneHundredFifty_iff (d : ℕ) :
-    ((d : ℝ) - 1) * (8999 / 24000 : ℝ) ^ 2 ≤ 150 ^ 2 ↔ d ≤ 160037 := by
+    ((d : ℝ) - 1) * (8999 / 24000 : ℝ) ^ 2 ≤ 150 ^ 2 ↔ d ≤ 160036 := by
   constructor
   · intro h
     by_contra! hd
-    have hn : 160038 ≤ d := by omega
-    have h' : (160038 : ℝ) ≤ d := by exact_mod_cast hn
+    have hn : 160037 ≤ d := by omega
+    have h' : (160037 : ℝ) ≤ d := by exact_mod_cast hn
+    norm_num at h ⊢
     linarith
   · intro h
-    have h' : (d : ℝ) ≤ 160037 := by exact_mod_cast h
+    have h' : (d : ℝ) ≤ 160036 := by exact_mod_cast h
+    norm_num
     linarith
 
-/-- Unshifted `Ξ` Jensen polynomials have only real zeros through degree `160,037` (upgraded from
+/-- Unshifted `Ξ` Jensen polynomials have only real zeros through degree `160,036` (upgraded from
 `50,787` at height `84.5`). -/
-theorem jensenNonrealCount_eq_zero_through_160037 (d : Fin 160038) :
+theorem jensenNonrealCount_eq_zero_through_160036 (d : Fin 160037) :
     jensenNonrealCount d.val = 0 := by
   apply jensenNonrealCount_eq_zero_of_rhVerifiedThrough_width (T := 150) (by norm_num)
     rhVerifiedThrough_oneHundredFifty
@@ -2384,11 +2325,11 @@ theorem jensenNonrealCount_eq_zero_through_160037 (d : Fin 160038) :
         zetaZeroWidth_le_8999_div_24000 2) hd.le).trans h
 
 /-- All positive-integer Euler root filters preserve real-rootedness of `xiJensenReal` through
-degree `160,037` (upgraded from `50,787`). -/
-theorem weightedXiJensen_splits_through_160037 (w : List ℕ) (d : Fin 160038) :
+degree `160,036` (upgraded from `50,787`). -/
+theorem weightedXiJensen_splits_through_160036 (w : List ℕ) (d : Fin 160037) :
     (eulerWord w (xiJensenReal d.val)).Splits := by
   have h := weightedXiJensen_nonreal_le w d
-  rw [jensenNonrealCount_eq_zero_through_160037 d, nonrealRootCount] at h
+  rw [jensenNonrealCount_eq_zero_through_160036 d, nonrealRootCount] at h
   have hc := Polynomial.card_roots' (eulerWord w (xiJensenReal d))
   rw [splits_iff_card_roots]
   omega
@@ -2399,8 +2340,8 @@ theorem weightedXiJensen_splits_through_160037 (w : List ℕ) (d : Fin 160038) :
 #print axioms xi_centre_pfSeq_fourHundredFortyNine
 #print axioms xiSliceCoeff_nonneg_of_abs_le_twoHundredNinetyNine_halves
 #print axioms re_xiLiPaired_nonneg_of_le_sevenHundredFive
-#print axioms jensenNonrealCount_eq_zero_through_160037
-#print axioms weightedXiJensen_splits_through_160037
+#print axioms jensenNonrealCount_eq_zero_through_160036
+#print axioms weightedXiJensen_splits_through_160036
 
 end
 
