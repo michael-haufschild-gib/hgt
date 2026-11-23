@@ -16,8 +16,8 @@ theorem matched_block_chord (r : ℕ) {z : ℂ} (hz : 0 < z.re) {p K : ℝ} (hp 
   let d := K*(1-t.val^2)
   have hd (N : ℕ) : relativeReading quadraticResponse (blockSpectrum N r) =
       occupationWeight N^(2:ℝ) * normalizedBlock fourthTraceExponent r N := by
-    rw [← reading_at_two _ fourthTraceExponent rfl,relativeReading_block,power_tailCeiling_eq_scaled]
-    rfl
+    exact (reading_at_two _ fourthTraceExponent rfl).symm.trans
+      ((relativeReading_block _ N r).trans (power_tailCeiling_eq_scaled fourthTraceExponent r N))
   have hn (N : ℕ) : c*‖complexBlock z r N‖^p ≤ d*normalizedBlock fourthTraceExponent r N := by
     have hb := trace_block_chord N r hz hp.le h t
     rw [relativePartition_block_scaled N r hz,norm_mul,norm_mul,Complex.norm_cpow_eq_rpow_re_of_pos (occupationWeight_pos N),
@@ -40,7 +40,7 @@ theorem matched_chord_factor (r : ℕ) {z : ℂ} (hz : 0 < z.re) {p K : ℝ} (hp
   have he : ((r+1:ℕ):ℝ)^p = ((r+1:ℕ):ℝ)^(p-1)*((r+1:ℕ):ℝ) := by
     rw [← Real.rpow_add_one hr.ne',sub_add_cancel]
   have hb := matched_block_chord (r+1) hz hp hm h t
-  rw [he,← mul_assoc,mul_comm ‖1-(t.val:ℂ)^z‖^p _] at hb
+  rw [he,← mul_assoc,mul_comm (‖1-(t.val:ℂ)^z‖^p) _] at hb
   exact le_of_mul_le_mul_right hb hr
 
 #print axioms matched_chord_factor

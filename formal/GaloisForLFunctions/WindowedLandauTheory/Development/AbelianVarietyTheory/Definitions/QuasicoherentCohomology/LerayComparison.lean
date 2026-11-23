@@ -223,4 +223,41 @@ theorem lerayCechEquiv_natural (hcov : V ≤ ⨆ i, U i) :
       rw [AddEquiv.symm_apply_apply, AddEquiv.symm_apply_apply,
         lerayCechEquiv_natural hcov (n + 1) _ _ a.τ₃, godementExtShift_natural]
 
+/-- The Leray comparison sends the degree-zero class of a section to the
+corresponding morphism from the free sheaf on the covered open. -/
+theorem lerayCechEquiv_zero_sections (hcov : V ≤ ⨆ i, U i)
+    (F : TopCat.Sheaf AddCommGrpCat.{u} X)
+    (hF : ∀ a : Finset ι, a.Nonempty → DeningerAcyclicOn.{w} F (coverInter V U a))
+    (z : F.1.obj (op (coverInter V U ∅))) :
+    lerayCechEquiv hcov 0 F hF (sectionsToCechH0 F hcov z) =
+      Ext.mk₀ ((deningerOpenFreeHomEquiv (coverInter V U ∅) F).symm z) := by
+  simp only [lerayCechEquiv, AddEquiv.trans_apply, AddEquiv.symm_apply_apply]
+  rfl
+
+/-- The Leray comparison intertwines the Godement connecting maps. -/
+theorem lerayCechEquiv_godement_boundary (hcov : V ≤ ⨆ i, U i)
+    {F : TopCat.Sheaf AddCommGrpCat.{u} X}
+    (hF : ∀ a : Finset ι, a.Nonempty → DeningerAcyclicOn.{w} F (coverInter V U a))
+    (n : ℕ) (z : (sheafCechComplex V U (deningerGodementComplex F).X₃).homology n) :
+    lerayCechEquiv hcov (n + 1) F hF ((godementCech_shortExact hF).δ n (n + 1) rfl z) =
+      (lerayCechEquiv hcov n (deningerGodementComplex F).X₃
+        (fun a ha => godementQuotient_acyclicOn (hF a ha)) z).comp
+          (deningerGodementShortExact F).extClass rfl := by
+  let Q := (deningerGodementComplex F).X₃
+  let W := coverInter V U ∅
+  cases n with
+  | zero =>
+    obtain ⟨s, rfl⟩ := (sectionsToCechH0 Q hcov).surjective z
+    change cechH1ToExt hcov hF (cechOneProj hcov hF s) =
+      ((extZeroSections W Q).symm ((sectionsToCechH0 Q hcov).symm
+        (sectionsToCechH0 Q hcov s))).comp (deningerGodementShortExact F).extClass rfl
+    rw [AddEquiv.symm_apply_apply]
+    exact cechH1ToExt_apply_proj hcov hF s
+  | succ n =>
+    let e := (godementCechShift hcov hF n).addCommGroupIsoToAddEquiv
+    change godementExtShift F W n
+      (lerayCechEquiv hcov (n + 1) Q _ (e.symm (e z))) = _
+    rw [AddEquiv.symm_apply_apply]
+    rfl
+
 end GlobalTheory.SchemeCohomology

@@ -12,16 +12,13 @@ namespace GlobalTheory.SchemeCohomology
 
 private def sheafCechFunctor (X : TopCat.{0}) (V : Opens X) {ι : Type}
     [DecidableEq ι] [LinearOrder ι] (U : ι → Opens X) :
-    TopCat.Sheaf AddCommGrpCat.{0} X ⥤ CochainComplex AddCommGrpCat.{0} ℕ where
-  obj := sheafCechComplex V U
-  map := sheafCechComplexMap V U
-  map_id _ := by ext n c; rfl
-  map_comp _ _ := by ext n c; rfl
+    TopCat.Sheaf AddCommGrpCat.{0} X ⥤ CochainComplex AddCommGrpCat.{0} ℕ :=
+  abelianCechFunctor X V U
 
 private instance sheafCechFunctor_additive (X : TopCat.{0}) (V : Opens X) {ι : Type}
     [DecidableEq ι] [LinearOrder ι] (U : ι → Opens X) :
-    (sheafCechFunctor X V U).Additive where
-  map_add := by intros; ext n c; rfl
+    (sheafCechFunctor X V U).Additive :=
+  abelianCechFunctor_additive X V U
 
 variable {X : Scheme.{0}} {ι : Type} [DecidableEq ι] [LinearOrder ι]
   (V : X.Opens) (U : ι → X.Opens)
@@ -122,5 +119,31 @@ def moduleLerayLinearEquiv (M : X.Modules) (n : ℕ) (hcov : V ≤ ⨆ i, U i)
       change φ.comp (e (r • y)) (zero_add n) =
         (φ.comp (e y) (zero_add n)).comp (Ext.mk₀ g) (add_zero n)
       rw [h, Ext.comp_assoc_of_third_deg_zero] }
+
+/-- Change the free-sheaf source in the Ext description of sheaf cohomology. -/
+abbrev deningerToOpenFreeExt {Y : TopCat.{0}} (W : Opens Y)
+    (F : TopCat.Sheaf AddCommGrpCat.{0} Y) (n : ℕ) :=
+  changeFreeSource W F n
+
+theorem deningerToOpenFreeExt_section {Y : TopCat.{0}} (W : Opens Y)
+    (F : TopCat.Sheaf AddCommGrpCat.{0} Y) (z : F.1.obj (op W)) :
+    deningerToOpenFreeExt W F 0 (Ext.mk₀ ((deningerOpenFreeHomEquiv W F).symm z)) =
+      Ext.mk₀ ((openFreeHomEquiv W F).symm z) := by
+  let e := asIso (freeSheafComparison W)
+  let a := (openFreeHomEquiv W F).symm z
+  have he : e.hom ≫ a = (deningerOpenFreeHomEquiv W F).symm z := by
+    apply (deningerOpenFreeHomEquiv W F).injective
+    rw [Equiv.apply_symm_apply]
+    exact (freeSheafComparison_apply W a).trans (Equiv.apply_symm_apply _ _)
+  change (Ext.mk₀ e.inv).comp (Ext.mk₀ ((deningerOpenFreeHomEquiv W F).symm z)) rfl = _
+  rw [Ext.mk₀_comp_mk₀, ← he, Iso.inv_hom_id_assoc]
+
+theorem deningerToOpenFreeExt_comp {Y : TopCat.{0}} (W : Opens Y)
+    {F G : TopCat.Sheaf AddCommGrpCat.{0} Y} {n m q : ℕ} (h : n + m = q)
+    (x : deningerSheafCohomology.{0} W F n) (γ : Ext F G m) :
+    (deningerToOpenFreeExt W F n x).comp γ h =
+      deningerToOpenFreeExt W G q (x.comp γ h) := by
+  let e := Ext.mk₀ (asIso (freeSheafComparison W)).inv
+  exact Ext.comp_assoc e x γ (zero_add n) h (by omega)
 
 end GlobalTheory.SchemeCohomology

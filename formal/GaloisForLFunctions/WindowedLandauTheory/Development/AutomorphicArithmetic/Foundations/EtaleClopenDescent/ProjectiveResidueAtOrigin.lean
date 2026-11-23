@@ -29,7 +29,8 @@ private theorem chartPolynomialEquiv_origin_X (h : IsPd k x) (j : Fin d) :
   Subtype.ext (by simpa [chartCoordinates, originChartCoordinate] using h.chartPolynomialEquiv_X 0 j)
 
 private theorem ker_aeval_zero :
-    RingHom.ker (aeval (fun _ : Fin d => (0 : k))).toRingHom = Ideal.span (Set.range X) := by
+    RingHom.ker (aeval (fun _ : Fin d => (0 : k))).toRingHom =
+      Ideal.span (Set.range (X : Fin d → MvPolynomial (Fin d) k)) := by
   refine le_antisymm ?_ (Ideal.span_le.mpr ?_)
   · intro p hp
     rw [← Set.image_univ, MvPolynomial.mem_ideal_span_X_image]
@@ -50,13 +51,18 @@ theorem ker_originEval (h : IsPd k x) :
       Ideal.span (Set.range (originChartCoordinate (k := k) (x := x))) := by
   let e := h.chartPolynomialEquiv 0
   have he : Set.range (originChartCoordinate (k := k) (x := x)) =
-      e '' Set.range X := by
+      e.toRingEquiv.toRingHom '' Set.range X := by
     rw [← Set.range_comp]
     exact congrArg Set.range (funext fun j => (chartPolynomialEquiv_origin_X h j).symm)
   rw [he, ← Ideal.map_span e.toRingEquiv.toRingHom, ← ker_aeval_zero]
-  ext a
-  rw [Ideal.map_comap_of_equiv, Ideal.mem_comap]
-  rfl
+  let J : Ideal (MvPolynomial (Fin d) k) :=
+    RingHom.ker (aeval (fun _ : Fin d => (0 : k))).toRingHom
+  have hJ : J.map e.toRingEquiv.toRingHom = J.comap e.symm.toRingEquiv.toRingHom :=
+    Ideal.map_comap_of_equiv e.toRingEquiv
+  have hleft : RingHom.ker (originEval h).toRingHom = J.comap e.symm.toRingEquiv.toRingHom := by
+    ext a
+    rfl
+  exact hleft.trans hJ.symm
 
 private theorem res_aeval (ρ : F →ₗ[k] k) (hρ : IsRes x ρ) (p : MvPolynomial (Fin d) k) :
     ρ (aeval (fun j : Fin d => x j.succ / x 0) p) = aeval (fun _ : Fin d => (0 : k)) p := by
@@ -82,7 +88,7 @@ private theorem res_aeval (ρ : F →ₗ[k] k) (hρ : IsRes x ρ) (p : MvPolynom
         rw [Fin.prod_univ_succ]
         simp only [m, Fin.cons_zero, Fin.cons_succ, zpow_natCast, zpow_neg, div_pow,
           Finset.prod_div_distrib, Finset.prod_pow_eq_pow_sum, ← Nat.cast_sum]
-        rw [zpow_natCast, div_eq_inv_mul]
+        rw [div_eq_inv_mul]
       rw [he, hρ.2 m hs hm, hz, smul_zero, mul_zero]
   | add p q hp hq => rw [map_add, map_add, hp, hq, map_add]
 

@@ -57,7 +57,10 @@ theorem gaussian_startup_trace {κ : ℝ} (hκ : 0<κ) :
   filter_upwards [h] with ω hw
   filter_upwards [hw] with n hn
   intro t ht hs
-  have hh := hn t ht hs (TwoQubitCircuit.one (n+2)) (show (0:ℝ) ≤ c*(n+2:ℕ) by positivity)
+  have hh := hn t ht hs (TwoQubitCircuit.one (n+2)) (by
+    change ((0:ℕ):ℝ) ≤ c*(n+2:ℕ)
+    rw [Nat.cast_zero]
+    positivity)
   simpa only [PhysicalTimes.amplitude,norm_div,norm_pow,Complex.norm_ofNat,
     TwoQubitCircuit.one_eval,OneMemClass.coe_one,Matrix.conjTranspose_one,one_mul] using hh
 

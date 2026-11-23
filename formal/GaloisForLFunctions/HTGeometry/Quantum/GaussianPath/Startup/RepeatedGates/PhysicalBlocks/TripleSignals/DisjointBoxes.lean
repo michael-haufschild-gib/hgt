@@ -52,7 +52,7 @@ private theorem source_row_bounds {n k : ℕ} {e f : Fin (n+1)}
     rcases hv with rfl|rfl|rfl <;> simp only [Fin.val_castSucc,Fin.val_succ] <;> omega
   rcases l with ⟨s,a⟩ | ⟨r,ab⟩
   · change s=v at hi
-    change 4*k≤s.val ∧ s.val<4*k+4
+    change 4*k ≤ s.val ∧ s.val < 4*k+4
     rw [hi]
     omega
   · change r.castSucc=v ∨ r.succ=v at hi

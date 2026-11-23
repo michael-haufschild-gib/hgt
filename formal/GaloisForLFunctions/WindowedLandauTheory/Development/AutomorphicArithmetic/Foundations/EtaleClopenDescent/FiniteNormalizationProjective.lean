@@ -42,7 +42,7 @@ theorem projective_of_finite_regular (h : Function.Injective (algebraMap A B)) :
     letI : IsIntegrallyClosed Ap :=
       isIntegrallyClosed_of_isLocalization _ p.primeCompl p.primeCompl_le_nonZeroDivisors
     letI : FaithfulSMul Ap T := (faithfulSMul_iff_algebraMap_injective Ap T).mpr
-      (localizationAlgebra_injective p.primeCompl B Ap T h)
+      (localizationAlgebra_injective (M := p.primeCompl) Ap T h)
     letI : Module.Finite Ap T := .of_isLocalization A B p.primeCompl
     letI : Module.Free Ap T := free_of_finite_integral_regular_of_goingDown
     exact (Module.flat_iff_of_isLocalization Ap p.primeCompl T).mp inferInstance

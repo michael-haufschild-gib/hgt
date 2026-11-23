@@ -15,16 +15,14 @@ private theorem exp_supported {S : Finset (Fin N)} {H : Reg N} (h : IsSiteSuppor
   have hs := isSiteSupported_unitaryEvolution (IsSiteSupported.complex_smul Complex.I h) 1
   simpa only [unitaryEvolution,one_smul,smul_smul,neg_mul,Complex.I_mul_I,neg_neg] using hs
 
-/-- Independent sites factor the normalized trace. Each traceless involution
-contributes exactly one hyperbolic cosine for each complex field strength. -/
-theorem disjoint_complex_partition (s : Finset ι) (S : ι → Finset (Fin N)) (P : ι → Reg N)
-    (b : ι → ℂ) (hd : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → Disjoint (S i) (S j))
-    (hp : ∀ i ∈ s, IsSiteSupported (S i) (P i))
-    (hinv : ∀ i ∈ s, P i*P i=1) (htr : ∀ i ∈ s, (P i).trace=0) :
-    (exp (∑ i ∈ s, (b i) • P i)).trace =
-      (Fintype.card (Fin N → Bool):ℂ) * ∏ i ∈ s, Complex.cosh (b i) := by
+/-- The normalized trace of the exponential factors over disjoint supports,
+with no commutation condition inside any one support. -/
+theorem disjoint_trace_factors (s : Finset ι) (S : ι → Finset (Fin N)) (F : ι → Reg N)
+    (z : ι → ℂ) (hd : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → Disjoint (S i) (S j))
+    (hp : ∀ i ∈ s, IsSiteSupported (S i) (F i))
+    (hz : ∀ i ∈ s, (exp (F i)).trace=z i*(Fintype.card (Fin N → Bool):ℂ)) :
+    (exp (∑ i ∈ s, F i)).trace = (Fintype.card (Fin N → Bool):ℂ) * ∏ i ∈ s, z i := by
   classical
-  let F (i) := (b i) • P i
   have hs (u : Finset ι) (T : Finset (Fin N))
       (h : ∀ i ∈ u, IsSiteSupported T (F i)) : IsSiteSupported T (∑ i ∈ u, F i) := by
     induction u using Finset.induction_on with
@@ -45,25 +43,34 @@ theorem disjoint_complex_partition (s : Finset ι) (S : ι → Finset (Fin N)) (
       intro v hv h
       obtain ⟨j,hj,hv'⟩ := mem_biUnion.mp h
       exact Finset.disjoint_left.mp (hd i hin j (inc j hj) (fun e => hi (e ▸ hj))) hv hv'
-    have h₁ := IsSiteSupported.complex_smul (b i) (hp i hin)
+    have h₁ := hp i hin
     have h₂ := hs s (s.biUnion S) fun j hj =>
       IsSiteSupported.mono (fun _ hk => mem_biUnion.mpr ⟨j,hj,hk⟩)
-        (IsSiteSupported.complex_smul (b j:ℂ) (hp j (inc j hj)))
+        (hp j (inc j hj))
     have hcomm := commute_of_isSiteSupported_disjoint hd' h₁ h₂
     have hfac := SpanningDensity.FixedHorizon.disjoint_trace_product hd' (exp_supported h₁) (exp_supported h₂)
     change d*(exp (F i)*exp (∑ j ∈ s, F j)).trace = _ at hfac
-    have hsingle : (exp (F i)).trace=Complex.cosh (b i)*d := by
-      change (exp ((b i) • P i)).trace = _
-      rw [QuantumAlg.exp_smul_of_mul_self_eq_one _ (hinv i hin),Matrix.trace_add,
-        Matrix.trace_smul,Matrix.trace_smul,htr i hin,smul_zero,add_zero,Matrix.trace_one]
-      rfl
     have hrest := ih (fun j hj k hk => hd j (inc j hj) k (inc k hk))
-      (fun j hj => hp j (inc j hj)) (fun j hj => hinv j (inc j hj))
-      (fun j hj => htr j (inc j hj))
+      (fun j hj => hp j (inc j hj)) (fun j hj => hz j (inc j hj))
     rw [sum_insert hi,prod_insert hi,QuantumAlg.exp_add_of_commute_ℂ hcomm]
     apply mul_left_cancel₀ hd₀
-    rw [hfac,hsingle,hrest]
+    rw [hfac,hz i hin,hrest]
+    change (z i*d)*(d*_) = _
     ring
+
+/-- Each disjoint traceless involution contributes one hyperbolic cosine
+to the normalized trace at complex field strength. -/
+theorem disjoint_complex_partition (s : Finset ι) (S : ι → Finset (Fin N)) (P : ι → Reg N)
+    (b : ι → ℂ) (hd : ∀ i ∈ s, ∀ j ∈ s, i ≠ j → Disjoint (S i) (S j))
+    (hp : ∀ i ∈ s, IsSiteSupported (S i) (P i))
+    (hinv : ∀ i ∈ s, P i*P i=1) (htr : ∀ i ∈ s, (P i).trace=0) :
+    (exp (∑ i ∈ s, (b i) • P i)).trace =
+      (Fintype.card (Fin N → Bool):ℂ) * ∏ i ∈ s, Complex.cosh (b i) := by
+  apply disjoint_trace_factors s S _ _ hd (fun i hi => IsSiteSupported.complex_smul (b i) (hp i hi))
+  intro i hi
+  rw [QuantumAlg.exp_smul_of_mul_self_eq_one _ (hinv i hi),Matrix.trace_add,
+    Matrix.trace_smul,Matrix.trace_smul,htr i hi,smul_zero,add_zero,Matrix.trace_one]
+  rfl
 
 /-- Independent sites factor the normalized trace. Each traceless involution
 contributes exactly one hyperbolic cosine, at every real temperature. -/

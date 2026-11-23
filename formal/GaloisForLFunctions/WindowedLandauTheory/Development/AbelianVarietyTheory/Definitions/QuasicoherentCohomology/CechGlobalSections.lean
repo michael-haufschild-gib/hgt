@@ -214,16 +214,71 @@ private theorem augCycles_natural {ι : Type u} [DecidableEq ι] [LinearOrder ι
       rw [augCycles_i, augDiff_natural]
     _ = _ := by rw [Category.assoc, augCycles_i]
 
-theorem sectionsToCechH0_natural {G : TopCat.Sheaf AddCommGrpCat.{u} X}
-    (φ : F ⟶ G) (hcov : V ≤ ⨆ i, U i) (z : (sheafCech F V U).obj ∅) :
-    HomologicalComplex.homologyMap (sheafCechMap φ V U).cochainMap 0 (sectionsToCechH0 F hcov z) =
-      sectionsToCechH0 G hcov ((sheafCechMap φ V U).app ∅ z) := by
+/-- The degree-zero cochain of restrictions of a section on the covered open. -/
+abbrev sectionRestrictions (F : TopCat.Sheaf AddCommGrpCat.{u} X) (V : Opens X)
+    (U : ι → Opens X) : AddCommGrpCat.of ((sheafCech F V U).obj ∅) ⟶
+      (sheafCech F V U).cochainComplex.X 0 :=
+  augDiff (sheafCech F V U)
+
+theorem sectionRestrictions_singleton (F : TopCat.Sheaf AddCommGrpCat.{u} X)
+    (V : Opens X) (U : ι → Opens X) (a : (sheafCech F V U).obj ∅) (i : ι) :
+    (sectionRestrictions F V U a).val {i} =
+      (sheafCech F V U).res (Finset.empty_subset {i}) a := by
   let D := sheafCech F V U
-  let E := sheafCech G V U
-  let a := sheafCechMap φ V U
+  change D.d (augment D a) {i} = _
+  rw [FinsetCechDatum.d, Finset.sum_singleton,
+    D.res_cochain_congr (augment D a) (Finset.erase_singleton i) _ (Finset.empty_subset _),
+    augment_at_empty]
+  have hs : (cechSign ({i} : Finset ι) i : ℤ) = 1 := by
+    simp [cechSign, belowCard, Finset.filter_singleton]
+  rw [hs, one_smul]
+
+/-- A map on cochains that carries the restrictions of each section to the
+restrictions of its image also carries its degree-zero class to that image. -/
+theorem sectionsToCechH0_of_commutes {Y : TopCat.{u}} {κ : Type u}
+    [DecidableEq κ] [LinearOrder κ] {W : Opens Y} {T : κ → Opens Y}
+    {G : TopCat.Sheaf AddCommGrpCat.{u} Y}
+    (h₁ : V ≤ ⨆ i, U i) (h₂ : W ≤ ⨆ j, T j)
+    (f : (sheafCech F V U).cochainComplex ⟶ (sheafCech G W T).cochainComplex)
+    (g : AddCommGrpCat.of ((sheafCech F V U).obj ∅) ⟶ AddCommGrpCat.of ((sheafCech G W T).obj ∅))
+    (hf : sectionRestrictions F V U ≫ f.f 0 = g ≫ sectionRestrictions G W T)
+    (z : (sheafCech F V U).obj ∅) :
+    HomologicalComplex.homologyMap f 0 (sectionsToCechH0 F h₁ z) =
+      sectionsToCechH0 G h₂ (g z) := by
+  let D := sheafCech F V U
+  let E := sheafCech G W T
+  have e : augCycles D ≫ HomologicalComplex.cyclesMap f 0 =
+      g ≫ augCycles E := by
+    apply (cancel_mono (E.cochainComplex.iCycles 0)).mp
+    calc
+      _ = (augCycles D ≫ D.cochainComplex.iCycles 0) ≫ f.f 0 := by
+        rw [Category.assoc, HomologicalComplex.cyclesMap_i, Category.assoc]
+      _ = g ≫ augDiff E := by rw [augCycles_i]; exact hf
+      _ = _ := by rw [Category.assoc, augCycles_i]
+  have h : augCycles D ≫ D.cochainComplex.homologyπ 0 ≫ HomologicalComplex.homologyMap f 0 =
+      g ≫ augCycles E ≫ E.cochainComplex.homologyπ 0 := by
+    rw [HomologicalComplex.homologyπ_naturality, ← Category.assoc, e, Category.assoc]
+  exact ConcreteCategory.congr_hom h z
+
+/-- A map of the underlying Čech data carries the class of a section to
+the class of its image on the covered open. -/
+theorem sectionsToCechH0_natural_datum {Y : TopCat.{u}} {W : Opens Y} {T : ι → Opens Y}
+    (G : TopCat.Sheaf AddCommGrpCat.{u} Y)
+    (hcov : V ≤ ⨆ i, U i) (hcov' : W ≤ ⨆ i, T i)
+    (a : (sheafCech F V U).Hom (sheafCech G W T)) (z : (sheafCech F V U).obj ∅) :
+    HomologicalComplex.homologyMap a.cochainMap 0 (sectionsToCechH0 F hcov z) =
+      sectionsToCechH0 G hcov' (a.app ∅ z) := by
+  let D := sheafCech F V U
+  let E := sheafCech G W T
   have h : augCycles D ≫ D.cochainComplex.homologyπ 0 ≫ HomologicalComplex.homologyMap a.cochainMap 0 =
       AddCommGrpCat.ofHom (a.app ∅) ≫ augCycles E ≫ E.cochainComplex.homologyπ 0 := by
     rw [HomologicalComplex.homologyπ_naturality, ← Category.assoc, augCycles_natural, Category.assoc]
   exact ConcreteCategory.congr_hom h z
+
+theorem sectionsToCechH0_natural {G : TopCat.Sheaf AddCommGrpCat.{u} X}
+    (φ : F ⟶ G) (hcov : V ≤ ⨆ i, U i) (z : (sheafCech F V U).obj ∅) :
+    HomologicalComplex.homologyMap (sheafCechMap φ V U).cochainMap 0 (sectionsToCechH0 F hcov z) =
+      sectionsToCechH0 G hcov ((sheafCechMap φ V U).app ∅ z) :=
+  sectionsToCechH0_natural_datum F G hcov hcov (sheafCechMap φ V U) z
 
 end GlobalTheory.SchemeCohomology

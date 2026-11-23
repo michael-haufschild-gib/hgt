@@ -85,7 +85,7 @@ theorem gaussian_strict_spanning_floor {a T : ℝ} (ha : 0<a) :
   obtain ⟨z,hz,C,hC,hfit⟩ := habs
   have h₁ := hn |t| ht C z hz hfit
   have h₂ := hn' |t| ht C z hz hfit
-  have hs' : (C.gateCount:ℝ)≤s := Nat.cast_le.mpr hC
+  have hs' : (C.gateCount:ℝ) ≤ s := Nat.cast_le.mpr hC
   linarith only [h₁,h₂,hs']
 
 #print axioms gaussian_positive_mark_density

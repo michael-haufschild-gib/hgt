@@ -1,5 +1,7 @@
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.PhaseFluctuations.HaarGateCount
 import GaloisForLFunctions.HTGeometry.Quantum.AttainedOrbitCircuitMaximum
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.OrbitMaximumAtError
+import Mathlib.MeasureTheory.Measure.Haar.Unique
 
 /-! # Phase maxima bounded by the sum of two Haar means -/
 open Matrix MeasureTheory Set
@@ -18,9 +20,9 @@ private theorem phase_mul {n d : ℕ} (e : Config n ≃ Fin (d+1))
   have ha (i : Fin (d+1)) : RHTower.zeroAnchoredPhase d (x+y) i =
       RHTower.zeroAnchoredPhase d x i+RHTower.zeroAnchoredPhase d y i := by
     exact Fin.cases (zero_add _).symm (fun _ => rfl) i
-  have hp : p x*p y=p (x+y) := by
+  have hp : (fun i => p x i*p y i)=p (x+y) := by
     funext i
-    simp only [Pi.mul_apply,p,ha,fourier_one,AddCircle.toCircle_add,Circle.coe_mul]
+    simp only [p,ha,fourier_one,AddCircle.toCircle_add,Circle.coe_mul]
   change (V.val*diagonal (p x)*star V.val)*(V.val*diagonal (p y)*star V.val)=_
   calc _ = V.val*(diagonal (p x)*(star V.val*V.val)*diagonal (p y))*star V.val := by
          simp only [mul_assoc]
@@ -43,11 +45,15 @@ theorem phaseCost_le_sum_means {n d : ℕ} (hn : 2 ≤ n) (e : Config n ≃ Fin 
     have h := LocalPatches.approx_product hU ((phaseCost_le hn e V hε x).mp le_rfl)
       ((phaseCost_le hn e V hδ y).mp le_rfl)
     rw [phase_mul,show x+y=z by dsimp only [y]; abel] at h
+    change (phaseCost hn e V (add_nonneg hε hδ) z:ℝ) ≤
+      (phaseCost hn e V hε x:ℝ)+(phaseCost hn e V hδ y:ℝ)
     exact_mod_cast (phaseCost_le hn e V (add_nonneg hε hδ) z).mpr h
   have hf : Integrable f volume := integrable_phaseCost hn e V hε
   have hg : Integrable g volume := integrable_phaseCost hn e V hδ
+  letI : (volume : Measure (Fin d → UnitAddCircle)).IsNegInvariant :=
+    ⟨(volume_preserving_pi (fun _ : Fin d => volume.measurePreserving_neg (G:=UnitAddCircle))).map_eq⟩
   have hT := volume.measurePreserving_sub_left z
-  have hr : Integrable (fun x => g (z-x)) volume := hg.comp_measurePreserving hT
+  have hr : Integrable (fun x => g (z-x)) volume := hT.integrable_comp_of_integrable hg
   have h := integral_mono (μ:=volume) (integrable_const c) (hf.add hr) hs
   change (∫ _ : Fin d → UnitAddCircle, c) ≤ ∫ x, f x+g (z-x) at h
   rwa [integral_const,probReal_univ,one_smul,integral_add hf hr,integral_sub_left_eq_self] at h

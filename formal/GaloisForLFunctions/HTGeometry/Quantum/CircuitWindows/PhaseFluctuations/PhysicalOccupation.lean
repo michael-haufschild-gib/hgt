@@ -19,7 +19,7 @@ private theorem haar_tails {n d : ℕ} (hn : 2 ≤ n) (e : (Fin n → Bool) ≃ 
   intro p m q
   let A := projectiveContinuousCircuitCaptureTarget e V s ε
   let f := phaseCost hn e V hε
-  have hmem (x) : x∈A ↔ f x≤s :=
+  have hmem (x) : x ∈ A ↔ f x ≤ s :=
     (mem_projectiveContinuousCircuitCaptureTarget_iff e V s ε x).trans (phaseCost_le hn e V hε x).symm
   have h := phaseCost_moment hn e V hε
   constructor

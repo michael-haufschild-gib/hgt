@@ -29,7 +29,7 @@ theorem linear_trace_factor_iff (r : ℕ) {z : ℂ} (hz : 0 < z.re) (K : ℝ) :
     traceControlsAt (r+1) z 1 K ↔ 2 ≤ z.re ∧ ‖z‖/2 ≤ K := by
   constructor
   · intro h
-    have he := trace_control_forces_exponent r hz ⟨1,zero_lt_one⟩ h
+    have he := trace_control_forces_exponent r hz ⟨1,show (0:ℝ) < 1 from zero_lt_one⟩ h
     change 2 ≤ z.re*1 at he
     exact ⟨by simpa only [mul_one] using he,linear_control_forces_factor r hz h⟩
   · rintro ⟨h₂,hK⟩ P hd hc

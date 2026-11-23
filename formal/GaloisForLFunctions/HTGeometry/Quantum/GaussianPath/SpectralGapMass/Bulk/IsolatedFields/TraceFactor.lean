@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralGapMass.Bulk.IsolatedFields.Coefficients
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralGapMass.SpectatorCost.DisjointLayers
+import GaloisForLFunctions.RHTower.InverseSquareChainCubicProjectiveFirstReturnLaw
 
 /-! # A cosine factor for each isolated spin missed by a circuit -/
 open Matrix Finset
@@ -69,12 +70,10 @@ theorem reference_overlap {S : Finset (Fin (n+2))} (u : PathShell n) (C : TwoQub
     mul_left_cancel₀ hd₀ (hfac.trans (by ring))
   have hu : C.eval.valᴴ*U ∈ unitary _ := mul_mem (Unitary.star_mem C.eval.property)
     (unitaryEvolution_mem_unitary (isSelfAdjoint_pathHamiltonianOnSites _ _) t)
-  have hn := _root_.RHTower.norm_normalizedTrace_sub_le_l2OpNorm (C.eval.valᴴ*U) 0
-  simp only [Matrix.trace_zero,mul_zero,sub_zero,CStarRing.norm_of_mem_unitary hu] at hn
-  change ‖d⁻¹*(C.eval.valᴴ*U).trace‖ ≤ 1 at hn
   have hbound : ‖(C.eval.valᴴ*U).trace‖ ≤ (2:ℝ)^(n+2) := by
-    rw [norm_mul,norm_inv,inv_mul_eq_div,div_le_iff₀ (norm_pos_iff.mpr hd₀),one_mul] at hn
-    simpa [d] using hn
+    simpa only [CStarRing.norm_of_mem_unitary hu,mul_one,Fintype.card_fun,Fintype.card_bool,
+      Fintype.card_fin,Nat.cast_pow,Nat.cast_ofNat] using
+      _root_.RHTower.norm_trace_le_card_mul_l2OpNorm (C.eval.valᴴ*U)
   rw [fieldReference_generator,unitaryEvolution_pathHamiltonianPacketReference disjoint_compl_left,←mul_assoc]
   change ‖(C.eval.valᴴ*U*V).trace‖ ≤ _
   rw [he,norm_mul,norm_pow,Complex.norm_real,Real.norm_eq_abs]

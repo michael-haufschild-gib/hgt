@@ -34,18 +34,18 @@ private theorem width_one_le (N : ℕ) (hh : 64 ≤ N.sqrt) : 1 ≤ localCrossin
 
 /-- Uniform lower separation in physical time for every robust point and
 every affordable half-budget point of the same fixed trajectory. -/
-theorem gaussian_local_robust_travel_time :
+theorem gaussian_local_travel_at_error :
     ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ k : ℕ in atTop,
       let N := k+3
       let x := pathPauliDisorderShell ω (k+1)
       let H : selfAdjoint (Reg N) := ⟨pathHamiltonian x,isSelfAdjoint_pathHamiltonian x⟩
       let P := nearHilbertContinuousCircuitBudget N
-      ∀ σ t : ℝ, 9/80 ≤ orbitCircuitDistance H P σ → ∀ s ≤ P/2,
-        HasProjectiveCircuitApproximation N (1/10:ℝ) s (unitaryEvolution H.val t) →
+      ∀ ε : ℝ, ε+1/100 < 9/80 → ∀ σ t : ℝ, 9/80 ≤ orbitCircuitDistance H P σ → ∀ s ≤ P/2,
+        HasProjectiveCircuitApproximation N ε s (unitaryEvolution H.val t) →
           localCrossingWidth N < |σ-t| := by
   filter_upwards [gaussian_path_spacetime_upper] with ω hw
   filter_upwards [(tendsto_add_atTop_nat 1).eventually hw,eventually_ge_atTop (64*64)] with k hc hk
-  intro N x H P σ t hhard s hs ht
+  intro N x H P ε hε σ t hhard s hs ht
   let B := localCrossingWidth N
   let F := (2:ℝ)^(5*N.sqrt+17)
   have hF : 1 ≤ F := one_le_pow₀ (by norm_num)
@@ -78,17 +78,33 @@ theorem gaussian_local_robust_travel_time :
     have h := (mul_le_mul_of_nonneg_left hcost (show 0 ≤ 128*((N:ℝ)+1) by positivity)).trans hb
     have h' : 2*(j:ℝ)*(64*((N:ℝ)+1)) ≤ (2:ℝ)^N := by linarith only [h]
     exact_mod_cast h'
-  have hsep : ProjectiveCircuitSeparated N (11/100:ℝ) P (unitaryEvolution H.val σ) := by
+  have hsep : ProjectiveCircuitSeparated N (ε+1/100) P (unitaryEvolution H.val σ) := by
     intro z hz C hC
     by_contra! he
-    have hd : orbitCircuitDistance H P σ ≤ 11/100 :=
+    have hd : orbitCircuitDistance H P σ ≤ ε+1/100 :=
       (hasProjectiveCircuitApproximation_iff_infDist _ _ _).mp ⟨z,hz,C,hC,he⟩
-    linarith only [hd,hhard]
+    exact hε.not_ge (hhard.trans hd)
   have h := projectiveCircuitSeparated_unitaryEvolution_backward_cone H (show j ≤ P by omega)
-    hsep hj (by norm_num : (1/10:ℝ)+1/100 ≤ 11/100)
+    hsep hj (show ε+1/100 ≤ ε+1/100 from le_rfl)
   rw [show σ-(σ-t)=t by ring] at h
   obtain ⟨z,hz,C,hC,he⟩ := ht
   exact (h z hz C (hC.trans (by omega))).not_ge he
+
+/-- The physical error leaves room for the local increment simulator. -/
+theorem gaussian_local_robust_travel_time :
+    ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ k : ℕ in atTop,
+      let N := k+3
+      let x := pathPauliDisorderShell ω (k+1)
+      let H : selfAdjoint (Reg N) := ⟨pathHamiltonian x,isSelfAdjoint_pathHamiltonian x⟩
+      let P := nearHilbertContinuousCircuitBudget N
+      ∀ σ t : ℝ, 9/80 ≤ orbitCircuitDistance H P σ → ∀ s ≤ P/2,
+        HasProjectiveCircuitApproximation N (1/10:ℝ) s (unitaryEvolution H.val t) →
+          localCrossingWidth N < |σ-t| := by
+  filter_upwards [gaussian_local_travel_at_error] with ω hw
+  filter_upwards [hw] with k hk
+  exact hk (1/10) (by norm_num)
+
+#print axioms gaussian_local_travel_at_error
 
 /-- The true first robust crossing from the identity and its first subsequent
 low-budget visit each require a full local-simulation travel width. -/

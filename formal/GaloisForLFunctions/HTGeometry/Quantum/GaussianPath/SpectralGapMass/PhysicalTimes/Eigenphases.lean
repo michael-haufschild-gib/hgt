@@ -55,7 +55,7 @@ def uniformAngles : ProbabilityMeasure (AddCircle (2*Real.pi)) := ⟨AddCircle.h
 
 /-- Vanishing positive Fourier moments determine Haar probability on the circle. -/
 theorem haar_of_positive_moments (μ : ℕ → ProbabilityMeasure (AddCircle (2*Real.pi)))
-    (h : ∀ k : ℕ, Tendsto (fun n => ∫ z, fourier ((k+1:ℕ):ℤ) z ∂(μ n : Measure _))
+    (h : ∀ k : ℕ, Tendsto (fun n => ∫ z, fourier ((k+1:ℕ):ℤ) z ∂(μ n : Measure (AddCircle (2*Real.pi))))
       atTop (𝓝 0)) : Tendsto μ atTop (𝓝 uniformAngles) := by
   apply tendsto_nhds_of_unique_mapClusterPt
   intro ν hν

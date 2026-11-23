@@ -19,7 +19,7 @@ theorem exists_ground_attenuation (r : ℕ) (t : Ioc (0:ℝ) 1) :
   refine ⟨b,hb,fun {z} hz => ?_⟩
   rw [he hz,Finset.sum_eq_single (0 : Fin (r+1))]
   · simp only [Fin.val_zero,Nat.zero_add,occupationWeight_zero,Complex.ofReal_one,Complex.one_cpow,
-      groundFraction,if_pos rfl,mul_one]
+      groundFraction,if_true,mul_one]
   · intro j _ hj
     simp only [groundFraction,if_neg hj,one_mul,sub_self]
   · exact fun h => (h (Finset.mem_univ _)).elim

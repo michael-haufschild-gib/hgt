@@ -41,7 +41,9 @@ theorem IsPd.adjoin_chartCoordinates (h : IsPd k x) (i : Fin (d + 1)) :
       exact IntermediateField.subset_adjoin k _ ⟨l, rfl⟩
   rw [eq_top_iff, ← h.gen, IntermediateField.adjoin_le_iff]
   rintro _ ⟨j, rfl⟩
-  exact (div_div_div_cancel_right₀ (h.ne i)) ▸ E.div_mem (hmem j.succ) (hmem 0)
+  change x j.succ / x 0 ∈ E
+  rw [← div_div_div_cancel_right₀ (h.ne i) (x j.succ) (x 0)]
+  exact E.div_mem (hmem j.succ) (hmem 0)
 
 private theorem isFractionRing_adjoin_of_adjoin_eq_top (S : Set F)
     (h : IntermediateField.adjoin k S = ⊤) : IsFractionRing (Algebra.adjoin k S) F := by

@@ -77,8 +77,10 @@ abbrev originIdeal : Ideal (rB k E x {0}) :=
 def originFibrePointEquiv :
     OriginFibrePoint k E x ≃ ((rB k E x {0} ⧸ originIdeal k E x) →ₐ[k] k) where
   toFun e := Ideal.Quotient.liftₐ (originIdeal k E x) e.1
-    (show originIdeal k E x ≤ RingHom.ker e.1.toRingHom from
-      Ideal.span_le.mpr fun _ ⟨j, rfl⟩ => e.2 j)
+    (show originIdeal k E x ≤ RingHom.ker e.1.toRingHom from Ideal.span_le.mpr (by
+      rintro a ⟨j, hj⟩
+      change e.1 a = 0
+      exact hj ▸ e.2 j))
   invFun f := ⟨f.comp (Ideal.Quotient.mkₐ _ _), fun j => by
     simp only [AlgHom.comp_apply, Ideal.Quotient.mkₐ_eq_mk]
     rw [Ideal.Quotient.eq_zero_iff_mem.mpr (Ideal.subset_span (Set.mem_range_self j)), map_zero]⟩

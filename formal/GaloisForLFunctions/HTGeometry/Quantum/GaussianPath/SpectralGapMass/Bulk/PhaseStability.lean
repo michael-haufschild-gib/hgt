@@ -68,13 +68,13 @@ theorem path_overlap_stability {n : ℕ} (u v : PathShell n) (t : ℝ)
   let U := unitaryEvolution (pathHamiltonian u) t
   let V := unitaryEvolution (pathHamiltonian v) t
   let m := ∑ l : PathLabel n, (u l-v l)^2
-  have hm : 0≤m := Finset.sum_nonneg fun _ _ => sq_nonneg _
+  have hm : 0 ≤ m := Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hD : 0≤D := by dsimp only [D]; positivity
   have hcard : (Fintype.card (Fin (n+2) → Bool):ℝ)=D := by simp [D]
   have ht := trace_sq_le_energy (W.valᴴ*(U-V))
   have heq : hsNormSq (W.valᴴ*(U-V))=hsNormSq (U-V) := by
     simpa only [mul_one] using translate_frob W.valᴴ (U-V) 1
-      (by simpa only [Matrix.conjTranspose_conjTranspose] using W.2.2)
+      (by rw [Matrix.conjTranspose_conjTranspose]; exact W.2.2)
       (by rw [Matrix.conjTranspose_one,mul_one])
   rw [hcard,heq,mul_sub,Matrix.trace_sub] at ht
   have he : hsNormSq (U-V)≤|t|^2*(D*m) := path_evolution_displacement u v t

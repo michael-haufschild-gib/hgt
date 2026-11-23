@@ -55,6 +55,20 @@ private theorem sheafCechComplexMap_comp {H : TopCat.Sheaf AddCommGrpCat.{u} X}
   ext n c
   rfl
 
+/-- Alternating Čech cochains on a fixed cover are functorial in the sheaf. -/
+abbrev abelianCechFunctor (X : TopCat.{u}) (V : Opens X) {ι : Type u}
+    [DecidableEq ι] [LinearOrder ι] (U : ι → Opens X) :
+    TopCat.Sheaf AddCommGrpCat.{u} X ⥤ CochainComplex AddCommGrpCat.{u} ℕ where
+  obj := sheafCechComplex V U
+  map := sheafCechComplexMap V U
+  map_id _ := by ext n c; rfl
+  map_comp _ _ := sheafCechComplexMap_comp V U _ _
+
+instance abelianCechFunctor_additive (X : TopCat.{u}) (V : Opens X) {ι : Type u}
+    [DecidableEq ι] [LinearOrder ι] (U : ι → Opens X) :
+    (abelianCechFunctor X V U).Additive where
+  map_add := by intros; ext n c; rfl
+
 /-- The Godement short complex on the Čech cochains of the three sheaves. -/
 def godementCechSequence (F : TopCat.Sheaf AddCommGrpCat.{u} X) :
     ShortComplex (CochainComplex AddCommGrpCat.{u} ℕ) :=
@@ -82,19 +96,25 @@ def godementCechSequenceMap (φ : F ⟶ G) :
 
 variable {V U}
 
-/-- A sheaf and its Godement quotient form a termwise short exact sequence of Čech
-complexes if the original sheaf is acyclic on the intersections. -/
-theorem godementCech_shortExact [HasExt.{w} (TopCat.Sheaf AddCommGrpCat.{u} X)]
-    (hF : ∀ a : Finset ι, a.Nonempty → DeningerAcyclicOn.{w} F (coverInter V U a)) :
-    (godementCechSequence V U F).ShortExact := by
-  have hS := deningerGodementShortExact F
+/-- A short exact sequence of sheaves induces a termwise short exact sequence
+of Čech complexes when the kernel is acyclic on the intersections. -/
+theorem coverCech_shortExact [HasExt.{w} (TopCat.Sheaf AddCommGrpCat.{u} X)]
+    {S : ShortComplex (TopCat.Sheaf AddCommGrpCat.{u} X)} (hS : S.ShortExact)
+    (h₁ : ∀ a : Finset ι, a.Nonempty → DeningerAcyclicOn.{w} S.X₁ (coverInter V U a)) :
+    (S.map (abelianCechFunctor X V U)).ShortExact := by
   exact FinsetCechDatum.shortExact_cochainMap _ _
     (sheafCech_comp_zero V U)
     (fun a _ => sheafCech_injective hS a)
     (fun a _ y => ⟨fun h => sheafCech_exact hS a y h, by
       rintro ⟨x, rfl⟩
       exact sheafCech_comp_zero V U a x⟩)
-    (fun a ha => deningerSections_surjective_of_acyclic hS _ (hF a ha))
+    (fun a ha => deningerSections_surjective_of_acyclic hS _ (h₁ a ha))
+
+/-- The Godement sequence is termwise short exact on an acyclic cover. -/
+theorem godementCech_shortExact [HasExt.{w} (TopCat.Sheaf AddCommGrpCat.{u} X)]
+    (hF : ∀ a : Finset ι, a.Nonempty → DeningerAcyclicOn.{w} F (coverInter V U a)) :
+    (godementCechSequence V U F).ShortExact :=
+  coverCech_shortExact (deningerGodementShortExact F) hF
 
 theorem isZero_godementCech_homology (hcov : V ≤ ⨆ i, U i) (n : ℕ) :
     IsZero ((sheafCechComplex V U (deningerGodementSheaf F)).homology (n + 1)) :=

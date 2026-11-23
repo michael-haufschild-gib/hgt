@@ -16,11 +16,12 @@ theorem trace_control_on_closure {r : ℕ} {z : ℂ} (hz : 0 < z.re) {p K : ℝ}
   let S := {c : SpectralBand r | ‖relativePartition c z‖^p ≤ K*relativeReading quadraticResponse c}
   have hs : IsClosed S := isClosed_le ((Real.continuous_rpow_const hp).comp (continuous_relativePartition_spectrum hz r).norm)
     (continuous_const.mul (continuous_relativeReading _ r))
-  apply closure_minimal (t := S) _ hs hb
-  rintro _ ⟨P,hd,hc,rfl⟩
-  change _ ≤ K*relativeReading quadraticResponse _
-  rw [quadratic_physicalReading]
-  exact h P hd hc
+  have hsub : physicalSpectra r ⊆ S := by
+    rintro _ ⟨P,hd,hc,rfl⟩
+    change _ ≤ K*relativeReading quadraticResponse _
+    rw [quadratic_physicalReading]
+    exact h P hd hc
+  exact closure_minimal hsub hs hb
 
 theorem partition_at_two {r : ℕ} (b : SpectralBand r) :
     relativePartition b (2:ℂ) = (relativeReading quadraticResponse b : ℂ) := by

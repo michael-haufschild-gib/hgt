@@ -27,6 +27,7 @@ theorem spectral_displacement (U V : Mat (I:=I)) (hu : U∈unitary _) (hv : V∈
   let M := U*diagonal x*Uᴴ-V*diagonal y*Vᴴ
   let Q := Uᴴ*V
   have hU : Uᴴ*U=1 := (Unitary.mem_iff.mp hu).1
+  have hUU : U*Uᴴ=1 := (Unitary.mem_iff.mp hu).2
   have hV : Vᴴ*V=1 := (Unitary.mem_iff.mp hv).1
   have h : Uᴴ*M*V=diagonal x*Q-Q*diagonal y := by
     dsimp only [M,Q]
@@ -36,8 +37,8 @@ theorem spectral_displacement (U V : Mat (I:=I)) (hu : U∈unitary _) (hv : V∈
   have he (i j : I) : (diagonal x*Q-Q*diagonal y) i j=(x i-y j)*Q i j := by
     rw [Matrix.sub_apply,Matrix.diagonal_mul,Matrix.mul_diagonal,sub_mul,mul_comm (y j)]
   change hsNormSq M=_
-  rw [←translate_frob Uᴴ M V (by simpa only [Matrix.conjTranspose_conjTranspose] using
-    (Unitary.mem_iff.mp hu).2) (Unitary.mem_iff.mp hv).2,h,hsNormSq]
+  rw [←translate_frob Uᴴ M V (by rw [Matrix.conjTranspose_conjTranspose]; exact hUU)
+    (Unitary.mem_iff.mp hv).2,h,hsNormSq]
   simp only [he,norm_mul,mul_pow,Q]
 
 /-- A scalar Lipschitz estimate transfers to Frobenius distance with

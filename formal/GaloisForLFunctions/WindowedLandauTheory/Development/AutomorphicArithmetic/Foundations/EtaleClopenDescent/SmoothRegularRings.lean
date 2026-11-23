@@ -55,8 +55,11 @@ theorem isRegularRing_of_smooth (A B : Type) [CommRing A] [IsRegularRing A]
     [CommRing B] [Algebra A B] [Algebra.Smooth A B] : IsRegularRing B := by
   haveI : IsNoetherianRing B := Algebra.FiniteType.isNoetherianRing A B
   refine isRegularRing_iff.mpr fun q _ => ?_
-  obtain ⟨f, hf, n, _, _, _⟩ := Algebra.IsSmoothAt.exists_isStandardEtale_mvPolynomial (R := A) (p := q)
+  obtain ⟨f, hf, n, hAlg, _, hStd⟩ :=
+    Algebra.IsSmoothAt.exists_isStandardEtale_mvPolynomial (R := A) (p := q)
   let T := Localization.Away f
+  letI := hAlg
+  letI := hStd
   letI : IsRegularRing T := isRegularRing_of_etale (MvPolynomial (Fin n) A) T
   have hd : Disjoint (Submonoid.powers f : Set B) (q : Set B) :=
     (Ideal.disjoint_powers_iff_notMem_of_isPrime _).mpr hf

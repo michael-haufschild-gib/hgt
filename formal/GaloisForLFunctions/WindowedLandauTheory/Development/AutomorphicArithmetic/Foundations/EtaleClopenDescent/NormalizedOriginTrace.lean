@@ -16,13 +16,18 @@ namespace GlobalTheory.PD
 variable {k F E : Type} [Field k] [IsAlgClosed k] [Field F] [Field E] [Algebra k F]
   [Algebra k E] [Algebra F E] [IsScalarTower k F E] {d : ℕ} {x : Fin (d + 1) → F}
 
+omit [IsAlgClosed k] in
 private theorem map_ker_originEval (h : IsPd k x) :
-    (RingHom.ker (originEval h).toRingHom).map
-      (algebraMap (rA k x {0}) (integralClosure (rA k x {0}) E)) =
+    let A := rA k x {0}
+    let B := integralClosure A E
+    letI : Algebra A B := B.algebra
+    (RingHom.ker (originEval h).toRingHom).map (algebraMap A B) =
       originIdeal k E x := by
+  intro A B
   rw [ker_originEval h, Ideal.map_span, ← Set.range_comp]
   unfold originIdeal
-  congr 2
+  apply congrArg Ideal.span
+  apply congrArg Set.range
   funext j
   exact Subtype.ext rfl
 
@@ -34,6 +39,7 @@ theorem IsFinCover.residue_trace_origin (h : IsFinCover k E x)
     ρ (Algebra.trace F E b) = ∑ᶠ e : OriginFibrePoint k E x, e.1 b := by
   let A := rA k x {0}
   let B := integralClosure A E
+  letI : Algebra A B := B.algebra
   letI : IsFractionRing A F := h.pd.isFractionRing_rA 0
   letI := h.fin
   letI : IsFractionRing B E := integralClosure.isFractionRing_of_finite_extension F E
@@ -43,10 +49,15 @@ theorem IsFinCover.residue_trace_origin (h : IsFinCover k E x)
     apply Subtype.ext
     exact (algebraMap F E).injective (congrArg (fun b : B => (b : E)) haa')
   have htr := (projectiveAlgebraTrace_eq_trace (R := F) (A := E) (algebraMap B E b)).symm.trans
-    (projectiveAlgebraTrace_baseChange (R := A) (A := B) (S := F) b)
-  rw [htr, res_eq_originEval h.pd ρ hρ]
-  have hspecial := projectiveAlgebraTrace_rationalFibre (originEval h.pd) (b : B)
-  rw [map_ker_originEval h.pd] at hspecial
-  exact hspecial.trans ((trace_originFibre h).2.2 b)
+    (projectiveAlgebraTrace_baseChange (R := A) (A := B) (S := F) (B := E) b)
+  calc
+    _ = ρ (projectiveAlgebraTrace A B b : A) := congrArg ρ htr
+    _ = originEval h.pd (projectiveAlgebraTrace A B b) := res_eq_originEval h.pd ρ hρ _
+    _ = _ := ?_
+  let J : Ideal B := (RingHom.ker (originEval h.pd).toRingHom).map (algebraMap A B)
+  have hJ : J = originIdeal k E x := map_ker_originEval (E := E) h.pd
+  have hspecial := projectiveAlgebraTrace_rationalFibre (A := A) (B := B) (originEval h.pd) b
+  have htrace := congrArg (fun I : Ideal B => Algebra.trace k (B ⧸ I) (Ideal.Quotient.mk I b)) hJ
+  exact hspecial.trans (htrace.trans ((trace_originFibre h).2.2 b))
 
 end GlobalTheory.PD
