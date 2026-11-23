@@ -71,7 +71,9 @@ theorem positive_thermal_tests_iff (s : ℂ) :
   · intro h
     have he (n : ℕ+) : heat s n = heat (1/2) n := by
       obtain ⟨i,rfl⟩ := number_surjective n
-      simpa only [thermalKernel,if_pos rfl] using congrFun (congrFun h i) i
+      have hh := congrFun (congrFun h i) i
+      change thermalKernel s i i = thermalKernel (1/2) i i at hh
+      simpa [thermalKernel] using hh
     exact two_prime_heat_injective (Prod.ext (he 2) (he 3))
   · rintro rfl
     rfl

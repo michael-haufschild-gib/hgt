@@ -8,9 +8,9 @@ namespace GaloisForLFunctions.HTGeometry.ClockSpectrum
 noncomputable section
 
 /-- Number of points strictly below a specified angular threshold, in turns. -/
-def countBelow {n : ℕ} (x : Fin n→ℝ) (a : ℝ) : ℕ := (univ.filter (fun i => x i<a)).card
+def countBelow {ι : Type*} [Fintype ι] (x : ι→ℝ) (a : ℝ) : ℕ := (univ.filter (fun i => x i<a)).card
 
-private theorem count_perm {n : ℕ} (x : Fin n→ℝ) (e : Equiv.Perm (Fin n)) (a : ℝ) :
+theorem countBelow_comp_equiv {ι κ : Type*} [Fintype ι] [Fintype κ] (x : κ→ℝ) (e : ι ≃ κ) (a : ℝ) :
     countBelow (x ∘ e) a=countBelow x a := by
   apply Finset.card_bij (fun i _ => e i)
   · intro i hi
@@ -24,7 +24,7 @@ private theorem count_perm {n : ℕ} (x : Fin n→ℝ) (e : Equiv.Perm (Fin n)) 
 of their uniform values, the order statistics match the clock to
 within two bins. Each of the Q clock phases is repeated m times. -/
 theorem match_repeated_clock {Q m : ℕ} (hQ : 0 < Q) (hm : 0 < m)
-    (x : Fin (Q*m)→ℝ) (hx : ∀ i, x i∈Icc 0 1)
+    (x : Fin (Q*m)→ℝ) (hx : ∀ i, x i∈Set.Icc (0:ℝ) 1)
     (h : ∀ b : ℕ, b ≤ Q →
       b*m ≤ countBelow x (b/(Q:ℝ))+m ∧ countBelow x (b/(Q:ℝ)) ≤ b*m+m) :
     ∃ p : Equiv.Perm (Fin (Q*m)), ∀ i : Fin (Q*m),
@@ -44,26 +44,28 @@ theorem match_repeated_clock {Q m : ℕ} (hQ : 0 < Q) (hm : 0 < m)
     · rw [hz,Nat.cast_zero,zero_div,zero_sub]
       exact (neg_nonpos.mpr (by positivity)).trans (hx (p i)).1
     have hcount := (h (b-1) (by omega)).2
-    have hbm : (b-1)*m+m=b*m := by rw [←Nat.succ_mul,show b-1+1=b by omega]
-    rw [hbm,←count_perm x p] at hcount
+    have hbpos : 1≤b := Nat.pos_of_ne_zero hz
+    have hbm : (b-1)*m+m=b*m := by rw [←Nat.succ_mul,show (b-1).succ=b from Nat.sub_add_cancel hbpos]
+    rw [hbm,←countBelow_comp_equiv x p] at hcount
     have hy : ((b-1:ℕ):ℝ)/Q ≤ y i := by
       by_contra! hh
       have ht := (Tuple.lt_card_lt_iff_apply_lt_of_monotone hs).mpr hh
       exact (not_lt_of_ge (hcount.trans hlow)) ht
     apply le_trans _ hy
-    rw [Nat.cast_sub (by omega : 1 ≤ b),Nat.cast_one,←sub_div]
+    rw [Nat.cast_sub hbpos,Nat.cast_one,←sub_div]
     exact div_le_div_of_nonneg_right (by linarith) hp.le
   have hu : y i ≤ (b:ℝ)/Q+2/Q := by
     by_cases hh : b+2 ≤ Q
     · have hcount := (h (b+2) hh).1
       have hstep : (b+2)*m=(b+1)*m+m := Nat.succ_mul _ _
-      rw [hstep,←count_perm x p] at hcount
+      rw [hstep,←countBelow_comp_equiv x p] at hcount
       have ht : i.val < countBelow y (((b+2:ℕ):ℝ)/Q) := hhigh.trans_le (Nat.le_of_add_le_add_right hcount)
       have hy := (Tuple.lt_card_lt_iff_apply_lt_of_monotone hs).mp ht
       simpa only [Nat.cast_add,Nat.cast_ofNat,add_div] using hy.le
-    · apply (hx (p i)).2.trans
-      rw [←add_div]
-      exact (one_le_div hp).mpr (by exact_mod_cast (show Q ≤ b+2 by omega))
+    · calc y i ≤ 1 := (hx (p i)).2
+           _ ≤ ((b:ℝ)+2)/Q := (one_le_div hp).mpr (by exact_mod_cast (show Q ≤ b+2 by omega))
+           _ = _ := add_div ..
+  change |y i-(b:ℝ)/Q| ≤ 2/Q
   exact abs_le.mpr ⟨by linarith only [hl],by linarith only [hu]⟩
 
 #print axioms match_repeated_clock

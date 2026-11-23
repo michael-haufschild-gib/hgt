@@ -38,12 +38,13 @@ theorem longitudinalPacket_restriction {n : ℕ} (S : Finset (Fin (n+2))) (q : �
   · rw [if_pos h]
   · rw [if_neg h,packet_coefficient_outside S q l h]
 
-/-- Replacing all interactions on nearly isolated sites by their uniform
-longitudinal field costs at most 21η in operator norm per site. -/
-theorem isolated_field_replacement_error {n : ℕ} (u : PathShell n) (S : Finset (Fin (n+2))) (q η : ℝ)
-    (hη : 0 ≤ η) (hs : ∀ s ∈ S, isolatedLongitudinalSite u q η s) :
-    ‖pathHamiltonian u-(pathHamiltonianOnSites Sᶜ u + pathHamiltonian (longitudinalPacket S q))‖ ≤
-      21*(S.card:ℝ)*η := by
+/-- The coefficient error vanishes outside the incident labels and is at
+most η on each of them, including when selected sites are adjacent. -/
+theorem isolated_field_coefficient_bounds {n : ℕ} (u : PathShell n) (S : Finset (Fin (n+2))) (q η : ℝ)
+    (hs : ∀ s ∈ S, isolatedLongitudinalSite u q η s) :
+    let W := S.biUnion pathIncidentLabels
+    let err (l : PathLabel n) := |u l-pathPacketReferenceCoeff Sᶜ S u (longitudinalPacket S q) l|
+    (∀ l ∈ W, err l ≤ η) ∧ ∀ l ∉ W, err l = 0 := by
   classical
   let p := longitudinalPacket S q
   let W := S.biUnion pathIncidentLabels
@@ -74,6 +75,18 @@ theorem isolated_field_replacement_error {n : ℕ} (u : PathShell n) (S : Finset
   have hz (l) (hl : l ∉ W) : |u l-pathPacketReferenceCoeff Sᶜ S u p l| = 0 := by
     rw [pathPacketReferenceCoeff,if_pos (path_supported_compl_of_not_incident S l hl),
       hp l,ho l hl,add_zero,sub_self,abs_zero]
+  exact ⟨hc,hz⟩
+
+/-- Replacing all interactions on nearly isolated sites by their uniform
+longitudinal field costs at most 21η in operator norm per site. -/
+theorem isolated_field_replacement_error {n : ℕ} (u : PathShell n) (S : Finset (Fin (n+2))) (q η : ℝ)
+    (hη : 0 ≤ η) (hs : ∀ s ∈ S, isolatedLongitudinalSite u q η s) :
+    ‖pathHamiltonian u-(pathHamiltonianOnSites Sᶜ u + pathHamiltonian (longitudinalPacket S q))‖ ≤
+      21*(S.card:ℝ)*η := by
+  classical
+  let p := longitudinalPacket S q
+  let W := S.biUnion pathIncidentLabels
+  obtain ⟨hc,hz⟩ := isolated_field_coefficient_bounds u S q η hs
   have herr := norm_pathHamiltonian_sub_packetReference_le Sᶜ S u p
   have hres : pathHamiltonianOnSites S p = pathHamiltonian p := longitudinalPacket_restriction S q
   rw [pathHamiltonianPacketReference,hres] at herr

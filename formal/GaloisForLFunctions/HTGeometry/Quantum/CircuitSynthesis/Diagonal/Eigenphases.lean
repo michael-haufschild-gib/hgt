@@ -7,7 +7,8 @@ namespace GaloisForLFunctions.HTGeometry.DiagonalSynthesis
 noncomputable section
 private abbrev Config (n : ℕ) := Fin n → Bool
 private def origin (n : ℕ) : Config n := fun _ => false
-private def pointPhase {α : Type*} [DecidableEq α] (i : α) (z : ℂ) (x : α) :=
+/-- A phase on one basis vector, equal to one on its complement. -/
+def pointPhase {α : Type*} [DecidableEq α] (i : α) (z : ℂ) (x : α) :=
   if x=i then z else 1
 
 /-- When column i of a unitary is supported on one row, that row vanishes in
@@ -27,9 +28,11 @@ private theorem isolated_row {α : Type*} [Fintype α] [DecidableEq α]
   have hne : star (R a i) ≠ 0 := by intro he; simp [he] at hdiag
   exact (mul_eq_zero.mp (by simpa [Matrix.one_apply,hj.symm] using h j : star (R a i)*R a j=0)).resolve_left hne
 
-private def eigenphaseCost (n : ℕ) := 2*(n*(2*(2^n*(2*n+1)+1))) + 2^n*(2*n+1)
+/-- Two state preparations and one computational-basis point phase. -/
+def eigenphaseCost (n : ℕ) := 2*(n*(2*(2^n*(2*n+1)+1))) + 2^n*(2*n+1)
 
-private theorem eigenline {n : ℕ} (hn : 2 ≤ n) (V : Matrix.unitaryGroup (Config n) ℂ)
+/-- An exact phase rotation about one column of an arbitrary eigenbasis. -/
+theorem eigenline_phase {n : ℕ} (hn : 2 ≤ n) (V : Matrix.unitaryGroup (Config n) ℂ)
     (i : Config n) (z : ℂ) (hz : ‖z‖=1) :
     Realizes (eigenphaseCost n) ((V : Register n)*diagonal (pointPhase i z)*star (V : Register n)) := by
   let v (x : Config n) := (V : Register n) x i
@@ -95,7 +98,7 @@ theorem eigenbasis_phases {n : ℕ} (hn : 2 ≤ n) (V : Matrix.unitaryGroup (Con
       have he : U (insert i s)=((V : Register n)*D*star (V : Register n))*U s := by
         simp only [U,hf,hconj]
       rw [he,Finset.card_insert_of_notMem hi,Nat.add_mul,Nat.one_mul,Nat.add_comm]
-      exact (eigenline hn V i (p i) (hp i)).mul ih
+      exact (eigenline_phase hn V i (p i) (hp i)).mul ih
   obtain ⟨z,hz,C,hC,he⟩ := h Finset.univ
   refine ⟨z,hz,C,?_,by simpa [U,f] using he⟩
   simp only [Finset.card_univ,Fintype.card_fun,Fintype.card_bool,Fintype.card_fin] at hC

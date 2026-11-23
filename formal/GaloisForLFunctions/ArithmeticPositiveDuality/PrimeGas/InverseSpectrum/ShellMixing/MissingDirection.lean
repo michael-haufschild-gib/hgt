@@ -32,6 +32,7 @@ def advanced (s : HeatVectorDomain) : HeatVectorDomain :=
 theorem critical_packet (s : HeatVectorDomain) : criticalOperator (packet s) = packet (advanced s) := by
   apply lp.ext
   funext n
+  change criticalOperator (packet s) n = packet (advanced s) n
   rw [critical_apply,critical_heat,packet_apply,packet_apply,← heat_add]
   rfl
 
@@ -98,7 +99,8 @@ theorem omitted_packet_ne_critical (s : HeatVectorDomain) :
   intro h
   have hI := (projected_eq_critical_iff _).mp h
   have hk := omitLine_kills (packet s)
-  rw [hI,one_apply] at hk
+  rw [hI] at hk
+  change packet s = 0 at hk
   exact groundState_ne_zero s.property hk
 
 /-- Every admissible thermal omission produces strict fourth-trace loss. -/

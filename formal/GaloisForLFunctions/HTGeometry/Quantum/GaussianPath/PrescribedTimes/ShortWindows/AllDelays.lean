@@ -42,18 +42,17 @@ private theorem eventually_linear_budget {c : ℝ} (hc : 0 < c) :
 
 /-- On the initial polynomial interval after the near-Hilbert crossing,
 the exponential travel estimate excludes every low-cost visit simultaneously. -/
-theorem gaussian_initial_window_gap {c : ℝ} (hc : 0 < c) :
+theorem initial_window_gap_all_budgets :
     ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ k : ℕ in atTop,
       let N := k+3
       let P := nearHilbertContinuousCircuitBudget N
-      ∀ L w : ℝ, 0 ≤ L → L+w ≤ (N:ℝ)^2+N →
-        prefixPoint k ω ∉ hitWindow (k+1) P ⌊c*sqrt N⌋₊ L w := by
+      ∀ s ≤ P/2, ∀ L w : ℝ, 0 ≤ L → L+w ≤ (N:ℝ)^2+N →
+        prefixPoint k ω ∉ hitWindow (k+1) P s L w := by
   obtain ⟨_,hfirst⟩ := ReturnExcursions.gaussian_initial_crossing_short_return_tradeoff
   filter_upwards [hfirst,ReturnExcursions.gaussian_robust_travel_time] with ω hσ hf
-  filter_upwards [hσ,hf,(tendsto_add_atTop_nat 3).eventually (eventually_linear_budget hc),
-    eventually_ge_atTop (64*64)] with k hdate htravel hbudget hk
-  intro N P L w hL hw hhit
-  let s := ⌊c*sqrt N⌋₊
+  filter_upwards [hσ,hf,
+    eventually_ge_atTop (64*64)] with k hdate htravel hk
+  intro N P s hbudget L w hL hw hhit
   let H : selfAdjoint (Matrix (Fin N→Bool) (Fin N→Bool) ℂ) :=
     ⟨pathHamiltonian (pathPauliDisorderShell ω (k+1)),isSelfAdjoint_pathHamiltonian _⟩
   let x := prefixPoint k ω
@@ -75,6 +74,54 @@ theorem gaussian_initial_window_gap {c : ℝ} (hc : 0 < c) :
   change (2:ℝ)^(N-10*N.sqrt) < t-σ at hlow
   linarith only [hbig,hlow,ht.2,hw]
 
+/-- On the initial polynomial interval after the near-Hilbert crossing,
+the exponential travel estimate excludes every low-cost visit simultaneously. -/
+theorem gaussian_initial_window_gap {c : ℝ} (hc : 0 < c) :
+    ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ k : ℕ in atTop,
+      let N := k+3
+      let P := nearHilbertContinuousCircuitBudget N
+      ∀ L w : ℝ, 0 ≤ L → L+w ≤ (N:ℝ)^2+N →
+        prefixPoint k ω ∉ hitWindow (k+1) P ⌊c*sqrt N⌋₊ L w := by
+  filter_upwards [initial_window_gap_all_budgets] with ω hω
+  filter_upwards [hω,(tendsto_add_atTop_nat 3).eventually (eventually_linear_budget hc)] with k hk hb
+  exact hk _ hb
+
+/-- Once initial travel excludes every delay below the cutoff, only the
+probability at the larger of the prescribed delay and the cutoff matters. -/
+theorem remove_initial_delay_cutoff (s : ℕ → ℕ) (w d : ℕ → ℝ)
+    (hs : ∀ᶠ k : ℕ in atTop, s k ≤ nearHilbertContinuousCircuitBudget (k+3)/2)
+    (hw : ∀ᶠ k : ℕ in atTop, w k ≤ ((k+3:ℕ):ℝ))
+    (hlate : Tendsto (fun k => pathPauliDisorderLaw.real (prefixPoint k ⁻¹'
+      hitWindow (k+1) (nearHilbertContinuousCircuitBudget (k+3)) (s k)
+        (max (max (d k) 0) (((k+3:ℕ):ℝ)^2)) (w k))) atTop (𝓝 0)) :
+    Tendsto (fun k => pathPauliDisorderLaw.real (prefixPoint k ⁻¹'
+      hitWindow (k+1) (nearHilbertContinuousCircuitBudget (k+3)) (s k)
+        (max (d k) 0) (w k))) atTop (𝓝 0) := by
+  letI : IsProbabilityMeasure pathPauliDisorderLaw := by unfold pathPauliDisorderLaw; infer_instance
+  let N (k : ℕ) := k+3
+  let P (k : ℕ) := nearHilbertContinuousCircuitBudget (N k)
+  let L (k : ℕ) := max (d k) 0
+  let A (k : ℕ) (u : ℝ) := prefixPoint k ⁻¹' hitWindow (k+1) (P k) (s k) u (w k)
+  let B (k : ℕ) := A k (max (L k) ((N k:ℝ)^2))
+  let C (k : ℕ) := A k (L k) \ B k
+  have hm (k : ℕ) (u : ℝ) : MeasurableSet (A k u) :=
+    (measurable_hitWindow ..).preimage (gaussian_pauli_prefix_coordinates_law (k+1)).measurable
+  have hmiss : ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ k : ℕ in atTop, ω∉C k := by
+    filter_upwards [initial_window_gap_all_budgets] with ω hf
+    filter_upwards [hf,hs,hw] with k hk hsk hwk
+    rintro ⟨hcheap,hout⟩
+    by_cases hL : (N k:ℝ)^2 ≤ L k
+    · apply hout
+      change ω ∈ A k (max (L k) ((N k:ℝ)^2))
+      rwa [max_eq_left hL]
+    exact hk _ hsk _ _ (le_max_right (d k) 0) (add_le_add (le_of_not_ge hL) hwk) hcheap
+  have hC := probability_vanishes pathPauliDisorderLaw C (fun k => (hm k _).diff (hm k _)) hmiss
+  have hB : Tendsto (fun k => pathPauliDisorderLaw.real (B k)) atTop (𝓝 0) := hlate
+  have hupper (k : ℕ) : pathPauliDisorderLaw.real (A k (L k)) ≤ pathPauliDisorderLaw.real (B k)+pathPauliDisorderLaw.real (C k) :=
+    (measureReal_mono (μ:=pathPauliDisorderLaw) (show A k (L k) ⊆ B k ∪ C k from fun ω h =>
+      (em (ω∈B k)).elim Or.inl (fun hb => Or.inr ⟨h,hb⟩))).trans (measureReal_union_le _ _)
+  exact squeeze_zero (fun _ => measureReal_nonneg) hupper (by simpa only [add_zero] using hB.add hC)
+
 /-- Choose any nonnegative delay before drawing the Gaussian couplings.
 Starting that long after the chain's first near-Hilbert crossing, a whole
 interval of length N^(1/96) excludes ⌊c√N⌋ gates at error 1/10 with
@@ -85,36 +132,13 @@ theorem gaussian_any_prescribed_delay :
                         let P := nearHilbertContinuousCircuitBudget N
                         pathPauliDisorderLaw.real (prefixPoint k ⁻¹'
                           hitWindow (k+1) P ⌊c*sqrt N⌋₊ (max (d k) 0) (delayWindowWidth N))) atTop (𝓝 0) := by
-  letI : IsProbabilityMeasure pathPauliDisorderLaw := by unfold pathPauliDisorderLaw; infer_instance
   obtain ⟨c,hc,hh⟩ := gaussian_prescribed_growing_window
-  refine ⟨c,hc,fun d => ?_⟩
-  let N (k : ℕ) := k+3
-  let P (k : ℕ) := nearHilbertContinuousCircuitBudget (N k)
-  let s (k : ℕ) := ⌊c*sqrt (N k)⌋₊
-  let L (k : ℕ) := max (d k) 0
-  let A (k : ℕ) (u : ℝ) := prefixPoint k ⁻¹' hitWindow (k+1) (P k) (s k) u (delayWindowWidth (N k))
-  let B (k : ℕ) := A k (max (L k) ((N k:ℝ)^2))
-  let C (k : ℕ) := A k (L k) \ B k
-  have hm (k : ℕ) (u : ℝ) : MeasurableSet (A k u) :=
-    (measurable_hitWindow ..).preimage (gaussian_pauli_prefix_coordinates_law (k+1)).measurable
-  have hmiss : ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ k : ℕ in atTop, ω∉C k := by
-    filter_upwards [gaussian_initial_window_gap hc] with ω hf
-    filter_upwards [hf] with k hk
-    rintro ⟨hcheap,hout⟩
-    by_cases hL : (N k:ℝ)^2 ≤ L k
-    · apply hout
-      change ω ∈ A k (max (L k) ((N k:ℝ)^2))
-      rwa [max_eq_left hL]
-    have hN : 1 ≤ (N k:ℝ) := by exact_mod_cast (show 1 ≤ N k by dsimp [N]; omega)
-    have hw : delayWindowWidth (N k) ≤ N k :=
-      (Real.rpow_le_rpow_of_exponent_le hN (by norm_num : (96:ℝ)⁻¹ ≤ 1)).trans_eq (Real.rpow_one _)
-    exact hk _ _ (le_max_right (d k) 0) (add_le_add (le_of_not_ge hL) hw) hcheap
-  have hC := probability_vanishes pathPauliDisorderLaw C (fun k => (hm k _).diff (hm k _)) hmiss
-  have hB : Tendsto (fun k => pathPauliDisorderLaw.real (B k)) atTop (𝓝 0) := hh P L
-  have hupper (k : ℕ) : pathPauliDisorderLaw.real (A k (L k)) ≤ pathPauliDisorderLaw.real (B k)+pathPauliDisorderLaw.real (C k) :=
-    (measureReal_mono (μ:=pathPauliDisorderLaw) (show A k (L k) ⊆ B k ∪ C k from fun ω h =>
-      (em (ω∈B k)).elim Or.inl (fun hb => Or.inr ⟨h,hb⟩))).trans (measureReal_union_le _ _)
-  exact squeeze_zero (fun _ => measureReal_nonneg) hupper (by simpa only [add_zero] using hB.add hC)
+  refine ⟨c,hc,fun d => remove_initial_delay_cutoff _ _ _
+    ((tendsto_add_atTop_nat 3).eventually (eventually_linear_budget hc)) ?_ ?_⟩
+  · filter_upwards with k
+    have hN : 1 ≤ ((k+3:ℕ):ℝ) := by exact_mod_cast (show 1 ≤ k+3 by omega)
+    exact (Real.rpow_le_rpow_of_exponent_le hN (by norm_num : (96:ℝ)⁻¹ ≤ 1)).trans_eq (Real.rpow_one _)
+  · exact hh (fun k => nearHilbertContinuousCircuitBudget (k+3)) (fun k => max (d k) 0)
 
 #print axioms gaussian_any_prescribed_delay
 end

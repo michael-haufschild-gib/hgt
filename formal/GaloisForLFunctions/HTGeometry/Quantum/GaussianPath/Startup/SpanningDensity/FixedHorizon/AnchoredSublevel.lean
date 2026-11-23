@@ -42,21 +42,21 @@ private theorem taylor_bound {b q M : ℝ} (hb : 0<b) (hq : 1≤q) (hM : 0≤M)
     _ ≤ M * (1/(2*q))^k / (1/2) := by gcongr
     _ = _ := by rw [div_pow,one_pow,mul_pow]; ring
 
-/-- A family of real entire responses with a common growth envelope and a
-nonzero calibration has a common signal threshold outside a prescribed
-Lebesgue measure of field values. The calibration can vary across the family. -/
-theorem anchored_sublevel {b h δ : ℝ} (hb : 0<b) (hh : 0<h) (hδ : 0<δ)
-    (M : ℝ → ℝ) (hM : ∀ R, 0≤M R) :
-    ∃ ε : ℝ, 0<ε ∧ ∀ (f : ℂ → ℂ), Differentiable ℂ f → (∀ x : ℝ, (f x).im=0) →
+/-- The extrapolation loss per Taylor degree on the sampled field interval. -/
+def releaseFactor (b δ : ℝ) := 1+8*Real.exp 1*b/δ
+
+/-- An explicit Taylor degree controls the signal threshold after one field is released. -/
+theorem anchored_sublevel_at_degree {b h δ : ℝ} (hb : 0<b) (hh : 0<h) (hδ : 0<δ)
+    (M : ℝ → ℝ) (hM : ∀ R, 0≤M R) (k : ℕ) (hk : 8*M (2*releaseFactor b δ*b)/h < 2^k) :
+    ∀ (f : ℂ → ℂ), Differentiable ℂ f → (∀ x : ℝ, (f x).im=0) →
       (∀ z : ℂ, ‖f z‖≤M ‖z‖) → ∀ u : ℝ, |u|≤b → h≤|(f u).re| →
-      volume.real {x ∈ Ioo (-b) b | |(f (x:ℂ)).re|≤ε} ≤ δ := by
-  let q := 1+8*Real.exp 1*b/δ
+      volume.real {x ∈ Ioo (-b) b | |(f (x:ℂ)).re|≤h/(4*(releaseFactor b δ)^k)} ≤ δ := by
+  let q := releaseFactor b δ
   have hq : 1≤q := by exact le_add_of_nonneg_right (by positivity)
   have hq' : 0<q := zero_lt_one.trans_le hq
   let B := M (2*q*b)
-  obtain ⟨k,hk⟩ := ((tendsto_pow_atTop_atTop_of_one_lt (by norm_num : (1:ℝ)<2)).eventually (Filter.eventually_gt_atTop (8*B/h))).exists
+  change 8*B/h < 2^k at hk
   let ε := h/(4*q^k)
-  have hε : 0<ε := by dsimp only [ε]; positivity
   have hk' := (div_lt_iff₀ hh).mp hk
   have hres : (2*B/2^k)/q^k ≤ ε := by
     calc
@@ -66,7 +66,6 @@ theorem anchored_sublevel {b h δ : ℝ} (hb : 0<b) (hh : 0<h) (hδ : 0<δ)
   have hsmall : ε≤h/4 := by
     apply div_le_div_of_nonneg_left hh.le (by norm_num)
     linarith only [one_le_pow₀ hq (n := k)]
-  refine ⟨ε,hε,?_⟩
   intro f hf hr hbound u hu hcal
   let P := entireRealTaylorPolynomial f k
   have hnear (x : ℝ) (hx : |x|≤b) : |P.eval x-(f x).re|≤ε :=
@@ -92,9 +91,23 @@ theorem anchored_sublevel {b h δ : ℝ} (hb : 0<b) (hh : 0<h) (hδ : 0<δ)
     have he := hnear x (abs_le.mpr ⟨hx.1.1.le,hx.1.2.le⟩)
     exact ⟨hx.1,by linarith only [ht,he,hx.2]⟩
   · rw [one_mul,div_le_iff₀ hq']
-    dsimp only [q]
+    dsimp only [q,releaseFactor]
     rw [mul_add,mul_one,show δ*(8*Real.exp 1*b/δ)=8*Real.exp 1*b by field_simp]
     linarith only [hδ]
+
+/-- A family of real entire responses with a common growth envelope and a
+nonzero calibration has a common signal threshold outside a prescribed
+Lebesgue measure of field values. The calibration can vary across the family. -/
+theorem anchored_sublevel {b h δ : ℝ} (hb : 0<b) (hh : 0<h) (hδ : 0<δ)
+    (M : ℝ → ℝ) (hM : ∀ R, 0≤M R) :
+    ∃ ε : ℝ, 0<ε ∧ ∀ (f : ℂ → ℂ), Differentiable ℂ f → (∀ x : ℝ, (f x).im=0) →
+      (∀ z : ℂ, ‖f z‖≤M ‖z‖) → ∀ u : ℝ, |u|≤b → h≤|(f u).re| →
+      volume.real {x ∈ Ioo (-b) b | |(f (x:ℂ)).re|≤ε} ≤ δ := by
+  let q := releaseFactor b δ
+  obtain ⟨k,hk⟩ := ((tendsto_pow_atTop_atTop_of_one_lt (by norm_num : (1:ℝ)<2)).eventually
+    (Filter.eventually_gt_atTop (8*M (2*q*b)/h))).exists
+  have hq : 0<q := by dsimp only [q,releaseFactor]; positivity
+  exact ⟨h/(4*q^k),by positivity,anchored_sublevel_at_degree hb hh hδ M hM k hk⟩
 
 end
 end GaloisForLFunctions.HTGeometry.SpanningDensity.FixedHorizon

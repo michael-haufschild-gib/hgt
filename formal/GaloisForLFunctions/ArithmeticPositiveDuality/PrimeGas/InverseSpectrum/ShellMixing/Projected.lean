@@ -1,7 +1,7 @@
 import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.InverseSpectrum.ShellMixing.FullSpace
 import GaloisForLFunctions.RHTower.HilbertDouglasFactorization
 import GaloisForLFunctions.RHTower.WeylSpectrumCompactTransfer
-import Mathlib.Analysis.InnerProductSpace.StarOrder
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.InverseSpectrum.ShellMixing.PositiveRoot
 
 /-!
 # Classification by the missing range
@@ -19,7 +19,7 @@ open ContinuousLinearMap
 
 abbrev Projection := {P : GasOp // IsStarProjection P}
 
-def projected (P : Projection) : GasOp := CFC.sqrt (criticalOperator*(P.val*criticalOperator))
+def projected (P : Projection) : GasOp := positiveRoot (criticalOperator*(P.val*criticalOperator))
 
 private theorem self_critical : star criticalOperator = criticalOperator :=
   critical_isPositive.isSelfAdjoint.star_eq
@@ -30,12 +30,12 @@ private theorem projection_gram (P : Projection) :
     P.property.isIdempotentElem.eq]
 
 theorem projected_positive (P : Projection) : (projected P).IsPositive :=
-  (nonneg_iff_isPositive _).mp (CFC.sqrt_nonneg _)
+  positiveRoot_positive _
 
 theorem projected_square (P : Projection) : projected P^2 = criticalOperator*(P.val*criticalOperator) := by
-  apply CFC.sq_sqrt
+  apply sq_positiveRoot
   rw [← projection_gram]
-  exact (nonneg_iff_isPositive _).mpr (isPositive_adjoint_comp_self _)
+  exact isPositive_adjoint_comp_self _
 
 private theorem cancel_outer {C X Y : GasOp} (hi : Function.Injective C)
     (h : C*X*star C = C*Y*star C) : X = Y := by
@@ -53,10 +53,10 @@ private theorem projected_injective : Function.Injective projected := by
   rw [self_critical,mul_assoc,mul_assoc,← projected_square,← projected_square,h]
 
 theorem projected_eq_critical_iff (P : Projection) : projected P = criticalOperator ↔ P.val = 1 := by
-  let I : Projection := ⟨1,IsStarProjection.one⟩
+  let I : Projection := ⟨1,IsStarProjection.one GasOp⟩
   have hI : projected I = criticalOperator := by
-    change CFC.sqrt (criticalOperator*(1*criticalOperator)) = criticalOperator
-    rw [one_mul,← pow_two,CFC.sqrt_sq _ ((nonneg_iff_isPositive _).mpr critical_isPositive)]
+    change positiveRoot (criticalOperator*(1*criticalOperator)) = criticalOperator
+    rw [one_mul,← pow_two,positiveRoot_sq critical_isPositive]
   constructor
   · intro h
     exact congrArg Subtype.val (projected_injective (h.trans hI.symm))
@@ -91,7 +91,7 @@ theorem projected_conserves_iff (P : Projection) :
       exact congrArg F hxy
     let Q : Projection := ⟨1-P.val,P.property.one_sub⟩
     have hdiff : D*star D-F*star F = star (Q.val*D)*(Q.val*D) := by
-      rw [show star D = D from self_critical,hsa,← pow_two,hF,projection_gram]
+      rw [show star D = D from self_critical,hsa,← pow_two F,hF,projection_gram]
       change D*D-D*(P.val*D) = D*((1-P.val)*D)
       noncomm_ring
     have hpos : (D ∘L adjoint D-F ∘L adjoint F).IsPositive := by
@@ -144,8 +144,8 @@ theorem positive_propagators_iff (G : GasOp) :
           rw [hu,star_mul,self_critical]
           noncomm_ring
     have he : G = projected P :=
-      (CFC.sqrt_sq G ((nonneg_iff_isPositive _).mpr hg)).symm.trans
-        ((congrArg (fun A : GasOp => CFC.sqrt A) hsq).trans (CFC.sqrt_sq _ (CFC.sqrt_nonneg _)))
+      (positiveRoot_sq hg).symm.trans
+        ((congrArg (fun A : GasOp => positiveRoot A) hsq).trans (positiveRoot_sq (projected_positive P)))
     refine ⟨P,⟨(projected_conserves_iff P).mp (he ▸ hc),he⟩,?_⟩
     exact fun R hr => projected_injective (hr.2.symm.trans he)
   · rintro ⟨P,⟨hi,rfl⟩,_⟩

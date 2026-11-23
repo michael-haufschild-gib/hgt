@@ -23,14 +23,15 @@ private theorem prefix_measure (n : ℕ) :
     (gaussian_pauli_prefix_coordinates_law n)
   convert h using 1
   funext ω l
-  change pathPauliDisorderShell ω n l=pathPauliDisorderShell ω n (e (e.symm l))
-  rw [Equiv.apply_symm_apply]
+  obtain ⟨i,rfl⟩ := e.surjective l
+  simp only [Function.comp_apply,MeasurableEquiv.piCongrLeft_apply_apply,e]
 
 private theorem shell_split (e : Fin (n+1)) (u : PathShell n) :
     pathHamiltonian u=affineHamiltonian (pathHamiltonian (exteriorShell u e))
       (fun i => M (localNumbering e i).val) (fun i => u (localNumbering e i).val) := by
   classical
   let p := fun l => l∈localLabels e
+  letI : Fintype (Subtype p) := Subtype.fintype p
   let f := fun l : PathLabel n => (u l:ℂ) • M l
   have hE : pathHamiltonian (exteriorShell u e)=∑ l : {l // ¬p l}, f l := by
     rw [pathHamiltonian_eq_sum,←Fintype.sum_subtype_add_sum_subtype p]
@@ -38,8 +39,11 @@ private theorem shell_split (e : Fin (n+1)) (u : PathShell n) :
     have he (l : {l // ¬p l}) : exteriorShell u e l=u l := if_neg l.property
     simp only [hz,he,Complex.ofReal_zero,zero_smul,Finset.sum_const_zero,zero_add]
     rfl
-  rw [affineHamiltonian,hE,(localNumbering e).sum_comp (fun l => f l.val),add_comm]
-  exact (pathHamiltonian_eq_sum u).trans (Fintype.sum_subtype_add_sum_subtype p f).symm
+  rw [affineHamiltonian,hE,(localNumbering e).sum_comp (fun l => f l.val)]
+  apply (pathHamiltonian_eq_sum u).trans
+  apply (Fintype.sum_subtype_add_sum_subtype p f).symm.trans
+  apply (add_comm _ _).trans
+  congr! 3
 
 private theorem signal_measurable (e : Fin (n+1)) (t : ℝ) :
     Measurable (fun x : PathLabel n → ℝ => bondSignal e (WithLp.toLp 2 x) t) := by
@@ -51,17 +55,24 @@ private theorem signal_measurable (e : Fin (n+1)) (t : ℝ) :
   simp_rw [he]
   exact continuous_finsetSum _ fun i _ => (Complex.continuous_ofReal.comp (continuous_apply i)).smul continuous_const
 
-/-- At every prescribed date in a compact positive interval, each path
-bond has a detectable correlation outside any fixed failure probability.
-The threshold is independent of prefix length and position. -/
-theorem gaussian_bond_signal_probability {a T η : ℝ} (ha : 0<a) (hη : 0<η) :
-    ∃ r : ℝ, 0<r ∧ ∀ (n : ℕ) (e : Fin (n+1)) (t : ℝ), t∈Icc a T →
-      pathPauliDisorderLaw {ω | |bondSignal e (pathPauliDisorderShell ω n) t|≤r} ≤ ENNReal.ofReal η := by
+theorem measurable_bondSignal (e : Fin (n+1)) (t : ℝ) :
+    Measurable (fun ω => bondSignal e (pathPauliDisorderShell ω n) t) :=
+  (signal_measurable e t).comp (prefix_measure n).measurable
+
+/-- Integrating a bound for every fixed exterior gives the same bound
+for the physical Gaussian path. -/
+theorem bond_probability_of_sections (e : Fin (n+1)) (t r η : ℝ)
+    (hs : ∀ u : PathShell n,
+      let H := pathHamiltonian (exteriorShell u e)
+      let P := finitePauliMatrix (pathWord (bondLabel e))
+      let Y := finitePauliMatrix (bondReporter e)
+      let S := fun i => finitePauliMatrix (pathWord ((localNumbering e i).val))
+      (Measure.pi (fun _ : Fin (localLabels e).card => gaussianReal 0 1))
+        {x | |signal (affineHamiltonian H S x) Y (Complex.I • (P*Y)) t| ≤ r} ≤ ENNReal.ofReal η) :
+    pathPauliDisorderLaw {ω | |bondSignal e (pathPauliDisorderShell ω n) t|≤r} ≤ ENNReal.ofReal η := by
   classical
-  obtain ⟨r,hr,hs⟩ := gaussian_bond_sections (T:=T) ha hη
-  refine ⟨r,hr,?_⟩
-  intro n e t ht
   let p := fun l => l∈localLabels e
+  letI : Fintype (Subtype p) := Subtype.fintype p
   let S := {x : PathLabel n → ℝ | |bondSignal e (WithLp.toLp 2 x) t|≤r}
   have hS : MeasurableSet S := measurableSet_le (signal_measurable e t).abs measurable_const
   let E := (MeasurableEquiv.piEquivPiSubtypeProd (fun _ : PathLabel n => ℝ) p).symm
@@ -74,14 +85,14 @@ theorem gaussian_bond_signal_probability {a T η : ℝ} (ha : 0<a) (hη : 0<η) 
   calc _ ≤ ∫⁻ _y : {l // ¬p l} → ℝ, ENNReal.ofReal η ∂(Measure.pi fun _ => gaussianReal 0 1) := by
          apply lintegral_mono
          intro y
-         let A := (fun x => E (x,y)) ⁻¹' S
-         have hA : MeasurableSet A := (E.measurable.comp (measurable_id.prodMk measurable_const)) hS
-         change (Measure.pi fun _ : Subtype p => gaussianReal 0 1) A≤_
+         let A := (fun x : Subtype p → ℝ => (x,y)) ⁻¹' (E ⁻¹' S)
+         have hA : MeasurableSet A := (measurable_id.prodMk measurable_const) (E.measurable hS)
+         change (Measure.pi fun _ : Subtype p => gaussianReal 0 1) A ≤ ENNReal.ofReal η
          rw [←hG.measure_preimage hA.nullMeasurableSet]
          let u : PathShell n := WithLp.toLp 2 (E (0,y))
          apply (measure_mono (t := {x | |signal (affineHamiltonian (pathHamiltonian (exteriorShell u e))
            (fun i => M (localNumbering e i).val) x) (finitePauliMatrix (bondReporter e))
-           (Complex.I • (M (bondLabel e)*finitePauliMatrix (bondReporter e))) t|≤r}) ?_).trans (hs n e u t ht)
+           (Complex.I • (M (bondLabel e)*finitePauliMatrix (bondReporter e))) t|≤r}) ?_).trans (hs u)
          intro x hx
          let v : PathShell n := WithLp.toLp 2 (E (G x,y))
          change |bondSignal e v t|≤r at hx
@@ -92,13 +103,25 @@ theorem gaussian_bond_signal_probability {a T η : ℝ} (ha : 0<a) (hη : 0<η) 
              rw [if_pos hl,if_pos hl]
            · change (if l∈localLabels e then 0 else (if h : p l then _ else y ⟨l,h⟩))=
                  (if l∈localLabels e then 0 else (if h : p l then _ else y ⟨l,h⟩))
-             simp only [if_neg hl,dif_neg hl]
+             simp only [dif_neg hl]
          have hx' (i : Fin (localLabels e).card) : v (localNumbering e i).val=x i := by
            change (if h : p _ then G x ⟨(localNumbering e i).val,h⟩ else _)=x i
            rw [dif_pos (localNumbering e i).property]
            exact MeasurableEquiv.piCongrLeft_apply_apply ..
-         simpa only [bondSignal,shell_split e v,hv,hx'] using hx
+         simpa only [Set.mem_setOf_eq,bondSignal,shell_split e v,hv,hx'] using hx
        _ = _ := by simp
+
+/-- At every prescribed date in a compact positive interval, each path
+bond has a detectable correlation outside any fixed failure probability.
+The threshold is independent of prefix length and position. -/
+theorem gaussian_bond_signal_probability {a T η : ℝ} (ha : 0<a) (hη : 0<η) :
+    ∃ r : ℝ, 0<r ∧ ∀ (n : ℕ) (e : Fin (n+1)) (t : ℝ), t∈Icc a T →
+      pathPauliDisorderLaw {ω | |bondSignal e (pathPauliDisorderShell ω n) t|≤r} ≤ ENNReal.ofReal η := by
+  classical
+  obtain ⟨r,hr,hs⟩ := gaussian_bond_sections (T:=T) ha hη
+  refine ⟨r,hr,?_⟩
+  intro n e t ht
+  exact bond_probability_of_sections e t r η (fun u => hs n e u t ht)
 
 #print axioms gaussian_bond_signal_probability
 end

@@ -33,8 +33,9 @@ private theorem packet_mass (s : HeatVectorDomain) :
   groundState_overlap_zeta s s
 
 private theorem packet_norm (s : HeatVectorDomain) :
-    ((‖packet s‖^2:ℝ):ℂ) = riemannZeta (massParameter s) :=
-  (inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (packet s)).symm.trans (packet_mass s)
+    ((‖packet s‖^2:ℝ):ℂ) = riemannZeta (massParameter s) := by
+  rw [Complex.ofReal_pow]
+  exact (inner_self_eq_norm_sq_to_K (𝕜 := ℂ) (packet s)).symm.trans (packet_mass s)
 
 private theorem packet_mass_ne_zero (s : HeatVectorDomain) : riemannZeta (massParameter s) ≠ 0 := by
   rw [← packet_norm]
@@ -43,6 +44,12 @@ private theorem packet_mass_ne_zero (s : HeatVectorDomain) : riemannZeta (massPa
 
 private theorem adjoint_critical : adjoint criticalOperator = criticalOperator :=
   critical_isPositive.isSelfAdjoint.star_eq
+
+private theorem orthogonal_subtract {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H]
+    [CompleteSpace H] (v f : H) :
+    (ℂ ∙ v)ᗮ.starProjection f = f - (inner ℂ v f / ((‖v‖^2:ℝ):ℂ)) • v := by
+  simp only [Submodule.starProjection_orthogonal',sub_apply,one_apply_eq_self,
+    Submodule.starProjection_singleton,RCLike.ofReal_eq_complex_ofReal]
 
 /-- The exact rank-one correction to the squared physical propagator. -/
 theorem omitted_packet_square (s : HeatVectorDomain) :
@@ -54,8 +61,7 @@ theorem omitted_packet_square (s : HeatVectorDomain) :
   change criticalOperator ((ℂ ∙ packet s)ᗮ.starProjection (criticalOperator f)) =
     criticalOperator (criticalOperator f) -
       (riemannZeta (massParameter s))⁻¹ • ((inner ℂ (criticalOperator (packet s)) f) • criticalOperator (packet s))
-  rw [Submodule.starProjection_orthogonal',sub_apply,one_apply,Submodule.starProjection_singleton,
-    packet_norm,map_sub,map_smul,smul_smul,div_eq_inv_mul]
+  rw [orthogonal_subtract,packet_norm s,map_sub,map_smul,smul_smul,div_eq_inv_mul]
   rw [← adjoint_inner_left criticalOperator f (packet s),adjoint_critical]
 
 /-- Omitting a heat packet changes the fourth trace by a ratio of three adjacent partition values. -/
@@ -72,8 +78,8 @@ theorem omitted_packet_trace (s : HeatVectorDomain) :
     rw [critical_packet,packet_mass,mass_advanced,mass_advanced]
     congr 1
     ring
-  change opTrace (((projected (omitLine (packet s)))^2)^2) = _
-  rw [omitted_packet_square,rank_one_trace_square squareHeat v,ha,hv]
+  dsimp only
+  rw [show (4:ℕ) = 2*2 from rfl,pow_mul,omitted_packet_square,rank_one_trace_square squareHeat v,ha,hv]
   change opTrace ((criticalOperator^2)^2) - _ + _ = _
   rw [critical_fourth_trace]
   simp only [div_eq_mul_inv]
@@ -103,7 +109,7 @@ theorem omitted_packet_mixes (s : HeatVectorDomain) (ij : {ij : ℕ × ℕ // ij
   change (riemannZeta (massParameter s))⁻¹*(conj (packet (advanced s) j)*packet (advanced s) i) ≠ 0
   rw [packet_apply,packet_apply]
   exact mul_ne_zero (inv_ne_zero (packet_mass_ne_zero s))
-    (mul_ne_zero (map_ne_zero _ (Complex.exp_ne_zero _)) (Complex.exp_ne_zero _))
+    (mul_ne_zero ((map_ne_zero _).mpr (Complex.exp_ne_zero _)) (Complex.exp_ne_zero _))
 
 #print axioms omitted_packet_square
 #print axioms omitted_packet_trace

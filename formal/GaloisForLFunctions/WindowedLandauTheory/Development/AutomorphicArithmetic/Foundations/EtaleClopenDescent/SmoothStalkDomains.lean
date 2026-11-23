@@ -100,6 +100,13 @@ private theorem isIntegrallyClosedIn_tensor_of_smooth {A B L : Type*}
       Subalgebra.coe_val, ← ha, Algebra.algebraMap_eq_smul_one a, ← TensorProduct.smul_tmul]
     rfl
 
+/-- Smooth base change preserves integral closedness in a base-changed algebra. -/
+theorem isIntegrallyClosedIn_smooth_tensor {A B L : Type*}
+    [CommRing A] [CommRing B] [CommRing L] [Algebra A B] [Algebra A L]
+    [Algebra.Smooth A B] [IsIntegrallyClosedIn A L] :
+    IsIntegrallyClosedIn B (B ⊗[A] L) :=
+  isIntegrallyClosedIn_tensor_of_smooth
+
 private theorem isDomain_atPrime_of_etale (A : Type*) {B : Type*} [CommRing A] [CommRing B]
     [IsDomain A] [IsIntegrallyClosed A] [Algebra A B] [Algebra.Etale A B]
     (p : Ideal B) [p.IsPrime] (Bp : Type*) [CommRing Bp] [Algebra B Bp]
@@ -123,6 +130,11 @@ private theorem isIntegrallyClosed_mvPolynomial_fin (A : Type*) [CommRing A] [Is
   induction n with
   | zero => exact IsIntegrallyClosed.of_equiv (MvPolynomial.isEmptyRingEquiv A (Fin 0)).symm
   | succ n ih => exact IsIntegrallyClosed.of_equiv (MvPolynomial.finSuccEquiv A n).symm.toRingEquiv
+
+/-- A finite-variable polynomial ring over an integrally closed domain is integrally closed. -/
+theorem isIntegrallyClosed_fin_polynomialRing (A : Type*) [CommRing A] [IsDomain A]
+    [IsIntegrallyClosed A] (n : ℕ) : IsIntegrallyClosed (MvPolynomial (Fin n) A) :=
+  isIntegrallyClosed_mvPolynomial_fin A n
 
 private theorem isDomain_atPrime_of_smooth (A : Type*) {B : Type*} [CommRing A] [CommRing B]
     [IsDomain A] [IsIntegrallyClosed A] [Algebra A B] [Algebra.Smooth A B]

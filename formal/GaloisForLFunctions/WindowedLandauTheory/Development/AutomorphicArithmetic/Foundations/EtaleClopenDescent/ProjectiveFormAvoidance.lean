@@ -27,7 +27,7 @@ theorem PSpace.exists_form_nonvanishing {K : Type*} [Field K] [Infinite K] (N d 
     change MvPolynomial.X i ∉ x.1.asHomogeneousIdeal at hi
     have hXi : MvPolynomial.X i ∈ 𝒜 1 := MvPolynomial.isHomogeneous_X K i
     let z : 𝒜 d := ⟨MvPolynomial.X i ^ d, by
-      simpa only [nsmul_eq_mul, mul_one] using SetLike.pow_mem_graded d hXi⟩
+      simpa only [nsmul_eq_mul, Nat.cast_id, mul_one] using SetLike.pow_mem_graded d hXi⟩
     intro htop
     have hz : z ∈ L x := htop.symm ▸ Submodule.mem_top
     change MvPolynomial.X i ^ d ∈ x.1.asHomogeneousIdeal.toIdeal at hz

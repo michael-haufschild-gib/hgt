@@ -15,8 +15,7 @@ private theorem linearPhase_wrap {d : ℕ} (θ : ℝ) (b x : Fin d) :
       linearPhase θ b*(if d ≤ x.val+b.val then Complex.exp (-(θ:ℂ)*Complex.I) else 1) := by
   have hd : (d:ℂ) ≠ 0 := by exact_mod_cast (Nat.pos_of_ne_zero (fun h => by have := x.isLt; omega)).ne'
   have he (j : Fin d) : star (linearPhase θ j)=Complex.exp (-((θ:ℂ)*(j.val:ℂ)/d)*Complex.I) := by
-    simp [linearPhase,Complex.star_def,←Complex.exp_conj]
-    ring_nf
+    simp [linearPhase,←Complex.exp_conj]
   rw [he]
   simp only [linearPhase,Complex.ofReal_div,Complex.ofReal_mul,Complex.ofReal_natCast,Fin.val_add_eq_ite]
   split_ifs with h
@@ -54,7 +53,8 @@ theorem addition_phase_commutator {d : ℕ} [NeZero d] (b : Fin d) (θ : ℝ) :
   ext x y
   by_cases h : x=y
   · subst y
-    simpa only [Matrix.diagonal_apply_eq,Matrix.smul_apply,smul_eq_mul,Function.comp_apply] using linearPhase_wrap θ b x
+    simpa only [Matrix.diagonal_apply_eq,Matrix.smul_apply,smul_eq_mul,Function.comp_apply,
+      Equiv.coe_addRight,Pi.star_apply] using linearPhase_wrap θ b x
   · simp [Matrix.diagonal_apply_ne _ h]
 
 #print axioms addition_phase_commutator

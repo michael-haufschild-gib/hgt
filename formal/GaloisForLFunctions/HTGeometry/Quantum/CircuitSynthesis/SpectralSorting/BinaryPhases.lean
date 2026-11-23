@@ -23,6 +23,9 @@ theorem binary_sum {n : ℕ} (x : Fin n→Bool) :
     rw [QuantumAlg.nat_ofBits_succ_last,Fin.sum_univ_castSucc,ih]
     rfl
 
+theorem binary_weight_im (k : ℕ) : ((2:ℂ)^k).im=0 := by
+  rw [show (2:ℂ)^k=(((2:ℝ)^k:ℝ):ℂ) by norm_cast,Complex.ofReal_im]
+
 /-- A binary-angle phase is a product of one phase per bit. The
 parameter can be an arbitrary real number. -/
 theorem realizes_binary_phase {n : ℕ} (hn : 2 ≤ n) (θ : ℝ) (p : Equiv.Perm (Fin n)) :
@@ -30,7 +33,7 @@ theorem realizes_binary_phase {n : ℕ} (hn : 2 ≤ n) (θ : ℝ) (p : Equiv.Per
       (Complex.I*(θ:ℂ)*(Nat.ofBits (x ∘ p):ℂ)))) := by
   let f (i : Fin n) (b : Bool) := Complex.exp (Complex.I*(θ:ℂ)*2^i.val*(b.toNat:ℂ))
   have h := realizes_phase_product Finset.univ (fun i (x : Fin n→Bool) => f i (x (p i)))
-    (fun i _ => realizes_single_phase hn (p i) (f i) (fun b => by simp [f,Complex.norm_exp]))
+    (fun i _ => realizes_single_phase hn (p i) (f i) (fun b => by simp [f,Complex.norm_exp,binary_weight_im]))
   have he (x : Fin n→Bool) : (∏ i, f i (x (p i))) =
       Complex.exp (Complex.I*(θ:ℂ)*(Nat.ofBits (x ∘ p):ℂ)) := by
     rw [binary_sum]
@@ -46,7 +49,7 @@ theorem realizes_twiddle (n : ℕ) (θ : ℝ) :
   let f (i : Fin n) (p : Bool×Bool) := Complex.exp (Complex.I*(θ:ℂ)*(p.2.toNat:ℂ)*2^i.val*(p.1.toNat:ℂ))
   have h := realizes_phase_product Finset.univ (fun i (x : Fin (n+1)→Bool) => f i (x i.castSucc,x (Fin.last n)))
     (fun i _ => realizes_pair_phase i.castSucc (Fin.last n) (Fin.castSucc_ne_last i)
-      (f i) (fun p => by simp [f,Complex.norm_exp]))
+      (f i) (fun p => by simp [f,Complex.norm_exp,binary_weight_im]))
   have he (x : Fin (n+1)→Bool) : (∏ i, f i (x i.castSucc,x (Fin.last n))) =
       Complex.exp (Complex.I*(θ:ℂ)*((x (Fin.last n)).toNat:ℂ)*(Nat.ofBits (x ∘ Fin.castSucc):ℂ)) := by
     rw [binary_sum]

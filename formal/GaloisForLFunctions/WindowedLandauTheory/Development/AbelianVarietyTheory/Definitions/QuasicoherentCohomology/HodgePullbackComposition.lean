@@ -25,24 +25,27 @@ theorem hodgePullback_comp (hf : f ≫ s = t) (hg : g ≫ t = v)
   let χ := A.map (relativeFormsPullback hgf p)
   let T := TopCat.Sheaf.pushforward AddCommGrpCat.{0} f.base
   have he : φ ≫ T.map ψ = χ := by
-    change φ ≫ T.map ψ = A.map (relativeFormsPullback hgf p)
-    rw [← relativeFormsPullback_comp hf hg hgf p, Functor.map_comp]
-    apply congrArg (φ ≫ ·)
+    let c := (Scheme.Modules.pushforward f).map (relativeFormsPullback hg p) ≫
+      (Scheme.Modules.pushforwardComp g f).hom.app (relativeForms v p)
+    have h : χ = φ ≫ A.map c :=
+      (congrArg A.map (relativeFormsPullback_comp hf hg hgf p).symm).trans (A.map_comp _ _)
+    refine (congrArg (φ ≫ ·) ?_).trans h.symm
     apply CategoryTheory.Sheaf.hom_ext
     apply NatTrans.ext
-    intro U
+    funext U
     apply AddCommGrpCat.ext
     intro u
     change (relativeFormsPullback hg p).app (f ⁻¹ᵁ U.unop) u =
       ((Scheme.Modules.pushforward f).map (relativeFormsPullback hg p) ≫
         (Scheme.Modules.pushforwardComp g f).hom.app (relativeForms v p)).app U.unop u
-    rw [Scheme.Modules.Hom.comp_app, ConcreteCategory.comp_apply,
-      Scheme.Modules.pushforwardComp_hom_app_app, ConcreteCategory.id_apply,
-      Scheme.Modules.pushforward_map_app]
-  change abelianCohomologyPullback g.base ψ ⊤ q
-      (abelianCohomologyPullback f.base φ ⊤ q x) =
-    abelianCohomologyPullback (g ≫ f).base χ ⊤ q x
-  exact (abelianCohomologyPullback_comp f.base g.base φ ψ ⊤ q x).trans
-    (congrArg (fun a => abelianCohomologyPullback (g ≫ f).base a ⊤ q x) he)
+    rfl
+  have hg' := CohomologyOn.pullback_apply g (relativeFormsPullback hg p) ⊤ q
+    (hodgePullback hf p q x)
+  have hf' := congrArg (abelianCohomologyPullback g.base ψ (f ⁻¹ᵁ (⊤ : X.Opens)) q)
+    (CohomologyOn.pullback_apply f (relativeFormsPullback hf p) ⊤ q x)
+  have hcomp := abelianCohomologyPullback_comp f.base g.base φ ψ (⊤ : X.Opens) q x
+  have he' := congrArg (fun a => abelianCohomologyPullback (g ≫ f).base a (⊤ : X.Opens) q x) he
+  have hgf' := CohomologyOn.pullback_apply (g ≫ f) (relativeFormsPullback hgf p) ⊤ q x
+  exact hg'.trans (hf'.trans (hcomp.trans (he'.trans hgf'.symm)))
 
 end GlobalTheory.SchemeCohomology

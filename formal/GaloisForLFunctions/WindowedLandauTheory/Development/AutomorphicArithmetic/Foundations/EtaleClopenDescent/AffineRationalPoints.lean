@@ -22,7 +22,8 @@ def affinePointEval (y : X.BaseFieldPointOver K s) (hy : y.hom default ∈ U) :
   commutes' r := pointEval_structureSection s y.hom y.commutes U hy r
 
 private theorem fromSpec_over (hU : IsAffineOpen U) :
-    hU.fromSpec ≫ s = Spec.map (CommRingCat.ofHom (algebraMap K (SectionRing s U))) := by
+    hU.fromSpec ≫ s = Spec.map
+      (CommRingCat.ofHom (algebraMap K (SectionRing s U)) : CommRingCat.of K ⟶ Γ(X, U)) := by
   let Z := Spec (CommRingCat.of K)
   have e : U ≤ s ⁻¹ᵁ ⊤ := by simp
   let hZ := isAffineOpen_top Z
@@ -49,19 +50,17 @@ private theorem pointEval_fromSpec (hU : IsAffineOpen U) (y : Spec (CommRingCat.
 field gives a rational point in that open. -/
 def affinePointOfAlgHom (hU : IsAffineOpen U) (χ : SectionRing s U →ₐ[K] K) :
     {y : X.BaseFieldPointOver K s // y.hom default ∈ U} := by
-  let y := Spec.map (CommRingCat.ofHom χ.toRingHom) ≫ hU.fromSpec
+  let b : CommRingCat.of K ⟶ Γ(X, U) := CommRingCat.ofHom (algebraMap K (SectionRing s U))
+  let c : Γ(X, U) ⟶ CommRingCat.of K := CommRingCat.ofHom χ.toRingHom
+  let y := Spec.map c ≫ hU.fromSpec
   have hy : y ≫ s = 𝟙 _ := by
-    have hχ : CommRingCat.ofHom (algebraMap K (SectionRing s U)) ≫ CommRingCat.ofHom χ.toRingHom =
-        𝟙 (CommRingCat.of K) := by
-      apply CommRingCat.ext
-      intro r
-      exact χ.commutes r
-    change Spec.map (CommRingCat.ofHom χ.toRingHom) ≫ hU.fromSpec ≫ s = _
-    rw [fromSpec_over hU, ← Spec.map_comp, hχ, Spec.map_id]
+    have hχ : b ≫ c = 𝟙 (CommRingCat.of K) :=
+      CommRingCat.hom_ext (RingHom.ext χ.commutes)
+    change (Spec.map c ≫ hU.fromSpec) ≫ s = _
+    have hb : hU.fromSpec ≫ s = Spec.map b := fromSpec_over hU
+    rw [Category.assoc, hb, ← Spec.map_comp, hχ, Spec.map_id]
   refine ⟨⟨y, hy⟩, ?_⟩
-  change hU.fromSpec (Spec.map (CommRingCat.ofHom χ.toRingHom) default) ∈ U
-  rw [← hU.range_fromSpec]
-  exact Set.mem_range_self _
+  exact hU.range_fromSpec.le ⟨Spec.map c default, rfl⟩
 
 /-- The affine correspondence between rational points and algebra homomorphisms. -/
 def affinePointEquiv (hU : IsAffineOpen U) :
@@ -83,9 +82,11 @@ def affinePointEquiv (hU : IsAffineOpen U) :
     · intro χ
       let y := affinePointOfAlgHom hU χ
       refine ⟨y, ?_⟩
-      have h := pointEval_fromSpec hU y.1.hom y.2
-      change Spec.map (CommRingCat.ofHom (affinePointEval y.1 y.2).toRingHom) ≫ hU.fromSpec =
-        Spec.map (CommRingCat.ofHom χ.toRingHom) ≫ hU.fromSpec at h
+      let b : Γ(X, U) ⟶ CommRingCat.of K :=
+        CommRingCat.ofHom (affinePointEval y.1 y.2).toRingHom
+      let c : Γ(X, U) ⟶ CommRingCat.of K := CommRingCat.ofHom χ.toRingHom
+      have h : Spec.map b ≫ hU.fromSpec = Spec.map c ≫ hU.fromSpec :=
+        (pointEval_fromSpec hU y.1.hom y.2).trans (show y.1.hom = _ from rfl)
       have e := Spec.map_injective ((cancel_mono hU.fromSpec).mp h)
       exact AlgHom.ext fun r => ConcreteCategory.congr_hom e r)
 

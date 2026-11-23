@@ -17,6 +17,12 @@ private theorem continuous_distance (n j : ℕ) :
   exact (Metric.continuous_infDist_pt _).comp
     (continuous_unitaryEvolution.comp ((hH.comp continuous_fst).prodMk continuous_snd))
 
+/-- At a prescribed date the distance to a bounded circuit set varies
+continuously with the coefficients of the physical Hamiltonian. -/
+theorem continuous_distance_at_time (n j : ℕ) (t : ℝ) :
+    Continuous (fun x => pathGateDistance n j x t) :=
+  (continuous_distance n j).comp (continuous_id.prodMk continuous_const)
+
 theorem distance_dilate (n j : ℕ) (a : ℝ) (x : PrefixIndex n → ℝ) (t : ℝ) :
     pathGateDistance n j (a • x) t = pathGateDistance n j x (a*t) := by
   have hH : numberedGenerator n (a • x) = (a:ℂ) • numberedGenerator n x := by

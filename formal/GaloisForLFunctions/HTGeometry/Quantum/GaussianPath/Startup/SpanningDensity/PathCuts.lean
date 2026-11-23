@@ -113,8 +113,8 @@ theorem mem_crossed_iff {C : TwoQubitCircuit (n+1)} (x : Cut C) (i : Fin n) :
 
 /-- Toggling a witness cut pairs the two parity classes at each flexible
 edge. Some single cut therefore crosses at least half the flexible edges. -/
-theorem many_crossed (C : TwoQubitCircuit (n+1)) :
-    ∃ x : Cut C, n ≤ C.gateCount+2*(crossed x).card := by
+theorem exists_cut_half_flexible (C : TwoQubitCircuit (n+1)) :
+    ∃ x : Cut C, (flexible C).card ≤ 2*(crossed x).card := by
   classical
   let F := flexible C
   let cuts := Finset.univ (α:=Cut C)
@@ -140,7 +140,7 @@ theorem many_crossed (C : TwoQubitCircuit (n+1)) :
     have hsum := Finset.card_filter_add_card_filter_not (s:=cuts) (fun x => i∈crossed x)
     omega
   obtain ⟨x,hx,hmax⟩ := cuts.exists_max_image (fun x => (crossed x).card) Finset.univ_nonempty
-  refine ⟨x,(flexible_card C).trans (Nat.add_le_add_left ?_ _)⟩
+  refine ⟨x,?_⟩
   have hcount (y : Cut C) : (F.filter fun i => i∈crossed y).card=(crossed y).card := by
     congr 1
     ext i
@@ -157,6 +157,13 @@ theorem many_crossed (C : TwoQubitCircuit (n+1)) :
   rw [Nat.mul_comm F.card] at hsum
   exact Nat.le_of_mul_le_mul_left hsum (Finset.card_pos.mpr Finset.univ_nonempty)
 
+/-- The gate deficit forces at least half as many crossed physical bonds. -/
+theorem many_crossed (C : TwoQubitCircuit (n+1)) :
+    ∃ x : Cut C, n ≤ C.gateCount+2*(crossed x).card := by
+  obtain ⟨x,hx⟩ := exists_cut_half_flexible C
+  exact ⟨x,(flexible_card C).trans (Nat.add_le_add_left hx _)⟩
+
+#print axioms exists_cut_half_flexible
 #print axioms many_crossed
 end
 end GaloisForLFunctions.HTGeometry.SpanningDensity

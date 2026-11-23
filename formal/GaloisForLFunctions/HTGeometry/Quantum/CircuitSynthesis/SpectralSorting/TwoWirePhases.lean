@@ -36,7 +36,7 @@ theorem realizes_pair_phase {n : ℕ} (i j : Fin n) (hij : i≠j) (f : Bool×Boo
   let R := {k : Fin n // k≠i ∧ k≠j}→Bool
   have he : twoQubitLiftMatrix i j hij U.val=diagonal (fun x : Fin n→Bool => f (x i,x j)) := by
     change (Matrix.kronecker (diagonal f) (1 : Matrix R R ℂ)).submatrix e e=_
-    rw [←Matrix.diagonal_one,Matrix.diagonal_kronecker_diagonal,Matrix.submatrix_diagonal_equiv]
+    rw [←Matrix.diagonal_one,Matrix.kronecker,Matrix.diagonal_kronecker_diagonal,Matrix.submatrix_diagonal_equiv]
     congr 1
     funext x
     exact mul_one _

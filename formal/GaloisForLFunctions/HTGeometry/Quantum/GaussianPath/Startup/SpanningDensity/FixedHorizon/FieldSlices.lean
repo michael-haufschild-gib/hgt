@@ -12,16 +12,16 @@ def EntireFieldSlice {n : ℕ} (F : (Fin n → ℝ) → ℝ) (M : ℝ → ℝ) (
   ∀ x : Fin n → ℝ, ∃ f : ℂ → ℂ, Differentiable ℂ f ∧
     (∀ t : ℝ, f (t:ℂ) = (F (update x i t):ℂ)) ∧ ∀ z : ℂ, ‖f z‖≤M ‖z‖
 
-/-- Replacing one calibrated coordinate costs at most `δ` probability on a
-bounded interval. Other coordinates can already be random. -/
-theorem gaussian_release_field {b h δ : ℝ} (hb : 0<b) (hh : 0<h) (hδ : 0<δ)
-    (M : ℝ → ℝ) (hM : ∀ R, 0≤M R) :
-    ∃ ε : ℝ, 0<ε ∧ ∀ {n : ℕ} (F : (Fin n → ℝ) → ℝ), Continuous F →
+/-- A uniform bound on real one-dimensional sublevel sets transfers to
+a Gaussian coordinate with all other coordinates integrated out. -/
+theorem gaussian_release_field_at {b h δ ε : ℝ} (M : ℝ → ℝ)
+    (hs : ∀ (f : ℂ → ℂ), Differentiable ℂ f → (∀ x : ℝ, (f x).im=0) →
+      (∀ z : ℂ, ‖f z‖≤M ‖z‖) → ∀ u : ℝ, |u|≤b → h≤|(f u).re| →
+      volume.real {x ∈ Ioo (-b) b | |(f (x:ℂ)).re|≤ε} ≤ δ) :
+    ∀ {n : ℕ} (F : (Fin n → ℝ) → ℝ), Continuous F →
       ∀ i : Fin n, EntireFieldSlice F M i → ∀ u : ℝ, |u|≤b →
       (Measure.pi (fun _ : Fin n => gaussianReal 0 1))
         {x | x i ∈ Ioo (-b) b ∧ h≤|F (update x i u)| ∧ |F x|≤ε} ≤ ENNReal.ofReal δ := by
-  obtain ⟨ε,hε,hs⟩ := anchored_sublevel hb hh hδ M hM
-  refine ⟨ε,hε,?_⟩
   intro n F hc i ha u hu
   have hc' : Continuous (fun x : Fin n → ℝ => F (update x i u)) := by
     apply hc.comp
@@ -47,6 +47,17 @@ theorem gaussian_release_field {b h δ : ℝ} (hb : 0<b) (hh : 0<h) (hδ : 0<δ)
       (by simp)
     exact (ENNReal.ofReal_toReal hfin).ge.trans (ENNReal.ofReal_le_ofReal hv)
   · simp [hx]
+
+/-- Replacing one calibrated coordinate costs at most `δ` probability on a
+bounded interval. Other coordinates can already be random. -/
+theorem gaussian_release_field {b h δ : ℝ} (hb : 0<b) (hh : 0<h) (hδ : 0<δ)
+    (M : ℝ → ℝ) (hM : ∀ R, 0≤M R) :
+    ∃ ε : ℝ, 0<ε ∧ ∀ {n : ℕ} (F : (Fin n → ℝ) → ℝ), Continuous F →
+      ∀ i : Fin n, EntireFieldSlice F M i → ∀ u : ℝ, |u|≤b →
+      (Measure.pi (fun _ : Fin n => gaussianReal 0 1))
+        {x | x i ∈ Ioo (-b) b ∧ h≤|F (update x i u)| ∧ |F x|≤ε} ≤ ENNReal.ofReal δ := by
+  obtain ⟨ε,hε,hs⟩ := anchored_sublevel hb hh hδ M hM
+  exact ⟨ε,hε,gaussian_release_field_at M hs⟩
 
 end
 end GaloisForLFunctions.HTGeometry.SpanningDensity.FixedHorizon

@@ -35,7 +35,7 @@ theorem outer_absence_before_inner_entry {I : Type*} [Fintype I] (w : I → ℝ)
       rw [show w j-w i = -d by dsimp only [d]; ring]
       dsimp only [t]
       field_simp [hd.ne']
-      <;> ring
+      ring
   let h := min (t-u) ((1-2*x)/d)
   have hh : 0<h := lt_min (sub_pos.mpr ht) (div_pos (by linarith only [hx]) hd)
   have h₁ : h≤t-u := min_le_left ..

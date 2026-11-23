@@ -99,7 +99,7 @@ def pspaceRatioLinear {u : MvPolynomial (Fin (N + 1)) K} (hu : u ∈ Grade K N d
     (((algebraMap K Γ(PSpace K N, W) r).1 x) * (homogeneousRatio hu v.2).1 x).val
   rw [HomogeneousLocalization.val_mul]
   erw [homogeneousRatio_val, homogeneousRatio_val, pspace_algebraMap_basicOpen_val N hu hd]
-  rw [MvPolynomial.smul_eq_C_mul, Localization.mk_eq_mk', Localization.mk_eq_mk']
+  rw [MvPolynomial.smul_eq_C_mul, Localization.mk_eq_mk']
   exact (IsLocalization.mul_mk'_eq_mk'_of_mul _ _ _).symm
 
 /-- The ratio after pullback to a scheme over projective space. -/

@@ -48,8 +48,7 @@ theorem gaussian_physical_circuit_forward_wait :
           (∀ t∈Ico 0 σ, orbitCircuitDistance H P t < 9/80) ∧ ∀ j ≤ s N,
           ∀ᶠ T : ℝ in atTop,
             let A := entriesAfter E (physicalArc ρ) σ T
-            ((followed A (visitSet H j ε) (g^D)).card:ℝ)/(A.card:ℝ) < 
-              K*q^D := by
+            ((followed A (visitSet H j ε) (g^D)).card:ℝ)/(A.card:ℝ) < K*q^D := by
   obtain ⟨c,C,hc,_,hR⟩ := gaussian_pair_rate_scale
   refine ⟨c⁻¹+3,by positivity,?_⟩
   filter_upwards [hR,gaussian_first_crossing_flux,gaussian_physical_return_rates] with ω hr hf hs

@@ -254,6 +254,18 @@ def CohomologyOn.pullback {F : X.Modules} {G : Y.Modules}
     CohomologyOn F U n →ₛₗ[f.appTop.hom] CohomologyOn G (f ⁻¹ᵁ U) n :=
   (CohomologyOn.pushforwardComparison f G U n).comp (CohomologyOn.map φ U n)
 
+/-- Module pullback on cohomology is the pullback of the underlying abelian sheaves. -/
+theorem CohomologyOn.pullback_apply {F : X.Modules} {G : Y.Modules}
+    (φ : F ⟶ (Scheme.Modules.pushforward f).obj G) (U : X.Opens) (n : ℕ)
+    (x : CohomologyOn F U n) :
+    CohomologyOn.pullback f φ U n x =
+      abelianCohomologyPullback f.base ((forgetModule X).map φ) U n x := by
+  let B := (forgetModule Y).obj G
+  let a : (forgetModule X).obj F ⟶ (abPushforward f.base).obj B := (forgetModule X).map φ
+  have h := abelianCohomologyPullback_precomp f.base a (𝟙 ((abPushforward f.base).obj B)) U n x
+  rw [Category.comp_id] at h
+  exact h.symm
+
 end Schemes
 
 end GlobalTheory.SchemeCohomology

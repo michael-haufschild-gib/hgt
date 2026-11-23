@@ -23,33 +23,29 @@ private theorem central_mem (e : Fin (n+1)) : bondLabel e ∈ localLabels e := b
     simp [bondLabel,pathWord,couplingWord]
   exact ⟨_,h,h⟩
 
-/-- On every fixed positive time interval the chance of a near-zero bond
-correlation can be made arbitrarily small by a threshold common to all
-chain lengths, bonds, and fixed exterior coefficients. -/
-theorem gaussian_bond_sections {a T η : ℝ} (ha : 0<a) (hη : 0<η) :
-    ∃ r : ℝ, 0<r ∧ ∀ (n : ℕ) (e : Fin (n+1)) (u : PathShell n) (t : ℝ),
-      t∈Set.Icc a T →
-      let H := pathHamiltonian (exteriorShell u e)
-      let P := finitePauliMatrix (pathWord (bondLabel e))
-      let Y := finitePauliMatrix (bondReporter e)
-      let S := fun i => finitePauliMatrix (pathWord ((localNumbering e i).val))
-      (Measure.pi (fun _ : Fin (localLabels e).card => gaussianReal 0 1))
-        {x | |signal (affineHamiltonian H S x) Y (Complex.I • (P*Y)) t|≤r} ≤ ENNReal.ofReal η := by
+/-- A single longitudinal field realizes a unit-strength signal with every
+exterior held fixed. Both probes and every released field have norm at most one. -/
+theorem bond_affine_witness {a t : ℝ} (ha : 0 < a) (ht : a ≤ t) (u : PathShell n)
+    (e : Fin (n+1)) :
+    let H := pathHamiltonian (exteriorShell u e)
+    let P := finitePauliMatrix (pathWord (bondLabel e))
+    let Y := finitePauliMatrix (bondReporter e)
+    let S := fun i => finitePauliMatrix (pathWord ((localNumbering e i).val))
+    Y.IsHermitian ∧ (Complex.I • (P*Y)).IsHermitian ∧ ‖Y‖ ≤ 1 ∧
+      ‖Complex.I • (P*Y)‖ ≤ 1 ∧ ∃ v : Fin (localLabels e).card → ℝ,
+        (∀ i, |v i| ≤ π/(4*a)) ∧ 1 ≤ |signal (affineHamiltonian H S v) Y (Complex.I • (P*Y)) t| := by
   classical
+  intro H P Y S
   let A := π/(4*a)
-  choose r hr h using fun m => affine_gaussian_signal (a:=A) (h:=1) (T:=T) m zero_lt_one hη
-  let I := Finset.range 43
-  have hI : I.Nonempty := ⟨0,by decide⟩
-  refine ⟨I.inf' hI r,(Finset.lt_inf'_iff hI).mpr (fun i _ => hr i),?_⟩
-  intro n e u t ht H P Y S
   let m := (localLabels e).card
   let q := (localNumbering e).symm ⟨bondLabel e,central_mem e⟩
   let v (i : Fin m) : ℝ := if i=q then π/(4*t) else 0
-  have ht' : 0<t := ha.trans_le ht.1
+  have ht' : 0<t := ha.trans_le ht
   have hv (i : Fin m) : |v i|≤A := by
     by_cases hi : i=q
-    · rw [v,if_pos hi,abs_of_pos (by positivity)]
-      exact div_le_div_of_nonneg_left pi_pos.le (by positivity) (mul_le_mul_of_nonneg_left ht.1 (by norm_num))
+    · simp only [v,if_pos hi]
+      rw [abs_of_pos (by positivity)]
+      exact div_le_div_of_nonneg_left pi_pos.le (by positivity) (mul_le_mul_of_nonneg_left ht (by norm_num))
     · simp only [v,if_neg hi,abs_zero]
       exact div_nonneg pi_pos.le (by positivity)
   have hq : S q=P := by
@@ -79,10 +75,33 @@ theorem gaussian_bond_sections {a T η : ℝ} (ha : 0<a) (hη : 0<η) :
   have hnB : ‖Complex.I • (P*Y)‖≤1 := by
     rw [norm_smul,Complex.norm_I,one_mul]
     exact (norm_mul_le _ _).trans (by rw [hnP,hnY,one_mul])
+  exact ⟨hY,hB,hnY.le,hnB,v,hv,hsig⟩
+
+/-- On every fixed positive time interval the chance of a near-zero bond
+correlation can be made arbitrarily small by a threshold common to all
+chain lengths, bonds, and fixed exterior coefficients. -/
+theorem gaussian_bond_sections {a T η : ℝ} (ha : 0<a) (hη : 0<η) :
+    ∃ r : ℝ, 0<r ∧ ∀ (n : ℕ) (e : Fin (n+1)) (u : PathShell n) (t : ℝ),
+      t∈Set.Icc a T →
+      let H := pathHamiltonian (exteriorShell u e)
+      let P := finitePauliMatrix (pathWord (bondLabel e))
+      let Y := finitePauliMatrix (bondReporter e)
+      let S := fun i => finitePauliMatrix (pathWord ((localNumbering e i).val))
+      (Measure.pi (fun _ : Fin (localLabels e).card => gaussianReal 0 1))
+        {x | |signal (affineHamiltonian H S x) Y (Complex.I • (P*Y)) t|≤r} ≤ ENNReal.ofReal η := by
+  classical
+  let A := π/(4*a)
+  choose r hr h using fun m => affine_gaussian_signal (a:=A) (h:=1) (T:=T) m zero_lt_one hη
+  let I := Finset.range 43
+  have hI : I.Nonempty := ⟨0,by decide⟩
+  refine ⟨I.inf' hI r,(Finset.lt_inf'_iff hI).mpr (fun i _ => hr i),?_⟩
+  intro n e u t ht H P Y S
+  let m := (localLabels e).card
+  obtain ⟨hY,hB,hnY,hnB,v,hv,hsig⟩ := bond_affine_witness ha ht.1 u e
   have hb := h m (Fin (n+2) → Bool) H Y (Complex.I • (P*Y)) S
-    (isSelfAdjoint_pathHamiltonian _) hY hB hnY.le hnB
+    (isSelfAdjoint_pathHamiltonian _) hY hB hnY hnB
     (fun i => (finitePauliMatrix_isHermitian _).isSelfAdjoint) (fun i => (norm_finitePauliMatrix _).le)
-    t (by simpa only [abs_of_pos ht'] using ht.2) v hv hsig
+    t (by simpa only [abs_of_pos (ha.trans_le ht.1)] using ht.2) v hv hsig
   have hm : m∈I := Finset.mem_range.mpr (Nat.lt_succ_of_le (pathOverlaps_card_le _))
   exact (measure_mono fun x hx => hx.trans (Finset.inf'_le r hm)).trans hb
 

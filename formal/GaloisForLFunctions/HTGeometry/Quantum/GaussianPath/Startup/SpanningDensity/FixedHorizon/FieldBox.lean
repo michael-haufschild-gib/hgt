@@ -6,7 +6,7 @@ namespace GaloisForLFunctions.HTGeometry.SpanningDensity.FixedHorizon
 noncomputable section
 
 /-- Release the first `k` fields while retaining the calibration elsewhere. -/
-private def release {n : ℕ} (k : ℕ) (u x : Fin n → ℝ) (i : Fin n) : ℝ :=
+def release {n : ℕ} (k : ℕ) (u x : Fin n → ℝ) (i : Fin n) : ℝ :=
   if i.val<k then x i else u i
 
 private theorem continuous_release {n : ℕ} (k : ℕ) (u : Fin n → ℝ) : Continuous (release k u) := by
@@ -34,6 +34,40 @@ private theorem release_calibration {n : ℕ} (i : Fin n) (u x : Fin n → ℝ) 
   · subst j; simp [release]
   · exact update_of_ne hj ..
 
+/-- One successive release adds only the loss of its calibrated field.
+The preceding fields may have arbitrary values inside the box. -/
+theorem field_box_step {n k : ℕ} (hk : k<n) {b r s δ : ℝ} (M : ℝ→ℝ)
+    (hnew : ∀ (G : (Fin n→ℝ)→ℝ), Continuous G → ∀ i : Fin n, EntireFieldSlice G M i →
+      ∀ u : ℝ, |u|≤b → (Measure.pi (fun _ : Fin n => gaussianReal 0 1))
+        {x | x i∈Ioo (-b) b ∧ r≤|G (update x i u)| ∧ |G x| ≤ s}≤ENNReal.ofReal δ)
+    (F : (Fin n→ℝ)→ℝ) (hc : Continuous F) (hf : ∀ i, EntireFieldSlice F M i)
+    (u : Fin n→ℝ) (hu : ∀ i, |u i|≤b) :
+    let μ := Measure.pi (fun _ : Fin n => gaussianReal 0 1)
+    let B := {x : Fin n→ℝ | ∀ i, x i∈Ioo (-b) b}
+    μ {x ∈ B | |F (release (k+1) u x)| ≤ s} ≤
+      μ {x ∈ B | |F (release k u x)|≤r}+ENNReal.ofReal δ := by
+  intro μ B
+  let i : Fin n := ⟨k,hk⟩
+  let G := F ∘ release (k+1) u
+  have hslice : EntireFieldSlice G M i := by
+    intro x
+    obtain ⟨f,hf',he,hg⟩ := hf i (release k u x)
+    refine ⟨f,hf',fun t => ?_,hg⟩
+    rw [he]
+    change _ = (F (release (i.val+1) u (update x i t)):ℂ)
+    rw [release_update]
+  have h2 := hnew G (hc.comp (continuous_release _ _)) i hslice (u i) (hu i)
+  refine (measure_mono (t :=
+    {x ∈ B | |F (release k u x)|≤r} ∪
+    {x | x i ∈ Ioo (-b) b ∧ r ≤ |G (update x i (u i))| ∧ |G x| ≤ s}) ?_).trans
+    ((measure_union_le _ _).trans (add_le_add le_rfl h2))
+  · rintro x ⟨hx,hsig⟩
+    rcases le_total |F (release k u x)| r with hr'|hr'
+    · exact Or.inl ⟨hx,hr'⟩
+    · refine Or.inr ⟨hx i,?_,hsig⟩
+      change r ≤ |F (release (i.val+1) u (update x i (u i)))|
+      rwa [release_calibration]
+
 /-- From a signal at one calibration, releasing `n` coordinates loses at
 most `n*δ` probability within the box. Thresholds depend only on the common
 one-variable envelope, the box, and the calibration strength. -/
@@ -56,32 +90,13 @@ theorem gaussian_field_box (n : ℕ) {b h δ : ℝ} (hb : 0<b) (hh : 0<h) (hδ :
       have hlo : ¬|F u|≤h/2 := by linarith only [hu,hh]
       simp [he,hlo]
     | succ k ih =>
-      let i : Fin n := ⟨k,by omega⟩
       obtain ⟨r,hr,hold⟩ := ih (by omega)
       obtain ⟨s,hs,hnew⟩ := gaussian_release_field hb hr hδ M hM
       refine ⟨s,hs,?_⟩
       intro F hc hf u hu hcal
-      let G := F ∘ release (k+1) u
-      have hslice : EntireFieldSlice G M i := by
-        intro x
-        obtain ⟨f,hf',he,hg⟩ := hf i (release k u x)
-        refine ⟨f,hf',fun t => ?_,hg⟩
-        rw [he]
-        change _ = (F (release (i.val+1) u (update x i t)):ℂ)
-        rw [release_update]
-      have h1 := hold F hc hf u hu hcal
-      have h2 := hnew G (hc.comp (continuous_release _ _)) i hslice (u i) (hu i)
-      refine (measure_mono (t :=
-        {x ∈ B | |F (release k u x)|≤r} ∪
-        {x | x i ∈ Ioo (-b) b ∧ r ≤ |G (update x i (u i))| ∧ |G x| ≤ s}) ?_).trans
-        ((measure_union_le _ _).trans ((add_le_add h1 h2).trans_eq ?_))
-      · rintro x ⟨hx,hsig⟩
-        rcases le_total |F (release k u x)| r with hr'|hr'
-        · exact Or.inl ⟨hx,hr'⟩
-        · refine Or.inr ⟨hx i,?_,hsig⟩
-          change r ≤ |F (release (i.val+1) u (update x i (u i)))|
-          rwa [release_calibration]
-      · rw [Nat.cast_succ,add_mul,one_mul]
+      have hstep := field_box_step (k:=k) (by omega : k<n) M (fun G hG j hG' => hnew G hG j hG') F hc hf u hu
+      apply hstep.trans ((add_le_add (hold F hc hf u hu hcal) le_rfl).trans_eq ?_)
+      rw [Nat.cast_succ,add_mul,one_mul]
   obtain ⟨ε,hε,ht⟩ := steps n le_rfl
   refine ⟨ε,hε,?_⟩
   intro F hc hf u hu hcal

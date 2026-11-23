@@ -49,7 +49,9 @@ theorem rank_one_trace_square (A : {T : H →L[ℂ] H // IsSelfAdjoint T ∧ T.I
       A.val^2-c • rankOne ℂ (A.val v) v-c • rankOne ℂ v (A.val v)+
         (c*c*inner ℂ v v) • R := by
     calc
-      _ = A.val*A.val - A.val*(c • R) - (c • R)*A.val + (c • R)*(c • R) := by noncomm_ring
+      _ = A.val*A.val - A.val*(c • R) - (c • R)*A.val + (c • R)*(c • R) := by
+        simp only [pow_two,sub_mul,mul_sub]
+        abel
       _ = _ := by simp only [pow_two,smul_mul_assoc,mul_smul_comm,smul_smul,hl,hr,hrr,mul_assoc]
   have ha : HasSum (diagonalReading (A.val^2)) (opTrace (A.val^2)) :=
     (summable_inner_diag_comp A.property.2 A.property.2 (hsBasis ℂ H)).hasSum
@@ -60,8 +62,8 @@ theorem rank_one_trace_square (A : {T : H →L[ℂ] H // IsSelfAdjoint T ∧ T.I
   rw [he,opTrace]
   have Hsum := hh.tsum_eq
   calc
-    _ = ∑' i, ((diagonalReading (A.val^2) i-c*diagonalReading (rankOne ℂ (A.val v) v) i)-
-      c*diagonalReading (rankOne ℂ v (A.val v)) i)+(c*c*inner ℂ v v)*diagonalReading R i := by
+    _ = ∑' i, (((diagonalReading (A.val^2) i-c*diagonalReading (rankOne ℂ (A.val v) v) i)-
+      c*diagonalReading (rankOne ℂ v (A.val v)) i)+(c*c*inner ℂ v v)*diagonalReading R i) := by
         apply tsum_congr
         intro i
         simp only [diagonalReading,add_apply,sub_apply,smul_apply,inner_add_right,inner_sub_right,inner_smul_right]

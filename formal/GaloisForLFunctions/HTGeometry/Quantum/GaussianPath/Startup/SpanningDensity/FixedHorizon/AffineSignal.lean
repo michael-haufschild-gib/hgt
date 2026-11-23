@@ -35,11 +35,31 @@ theorem continuous_signal (Y B : Op ι) (t : ℝ) : Continuous (fun K => signal 
   exact Complex.continuous_re.comp (continuous_const.mul (L.continuous.comp
     ((((flow (-t)).mul continuous_const).mul (flow t)).mul continuous_const)))
 
-private theorem continuous_signal_fields {m : ℕ} (H : Op ι) (P : Fin m → Op ι)
+theorem continuous_signal_fields {m : ℕ} (H : Op ι) (P : Fin m → Op ι)
     (Y B : Op ι) (t : ℝ) : Continuous (fun x => signal (affineHamiltonian H P x) Y B t) := by
   apply (continuous_signal Y B t).comp
   exact continuous_const.add
     (continuous_finsetSum _ fun i _ => (Complex.continuous_ofReal.comp (continuous_apply i)).smul continuous_const)
+
+/-- Varying one field while all others are fixed gives an entire
+response with growth controlled by the observation horizon. -/
+theorem entire_signal_fields {m : ℕ} (H Y B : Op ι) (P : Fin m → Op ι)
+    (hH : IsSelfAdjoint H) (hY : Y.IsHermitian) (hB : B.IsHermitian)
+    (hYn : ‖Y‖ ≤ 1) (hBn : ‖B‖ ≤ 1) (hP : ∀ i, IsSelfAdjoint (P i)) (hPn : ∀ i, ‖P i‖ ≤ 1)
+    {t T : ℝ} (ht : |t| ≤ T) :
+    ∀ i, EntireFieldSlice (fun x => signal (affineHamiltonian H P x) Y B t) (fun R => Real.exp (2*T*R)) i := by
+  intro i x
+  let R := H+∑ j∈Finset.univ.erase i, (x j:ℂ) • P j
+  have hR : IsSelfAdjoint R := by
+    change star (H+∑ j∈Finset.univ.erase i, (x j:ℂ) • P j)=H+∑ j∈Finset.univ.erase i, (x j:ℂ) • P j
+    simp only [star_add,star_sum,star_smul,hH.star_eq,fun j => (hP j).star_eq,Complex.star_def,Complex.conj_ofReal]
+  refine ⟨fieldTrace R (P i) Y B t,fieldTrace_differentiable R (P i) Y B t,fun s => ?_,fun z => ?_⟩
+  · change _ = Complex.ofReal (signal (affineHamiltonian H P (update x i s)) Y B t)
+    rw [shiftField]
+    have him := fieldTrace_real R (P i) Y B hR (hP i) hY hB t s
+    exact Complex.ext rfl (by simpa only [Complex.ofReal_im] using him)
+  · apply (norm_fieldTrace R (P i) Y B hR (hP i) hYn hBn (hPn i) t z).trans
+    exact Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left ht (by norm_num)) (norm_nonneg _))
 
 /-- A single threshold detects a calibrated physical signal uniformly over
 matrix size, exterior Hamiltonian, normalized probes and bounded times. -/
@@ -56,19 +76,8 @@ theorem affine_gaussian_signal (m : ℕ) {a h η T : ℝ} (hh : 0<h) (hη : 0<η
   obtain ⟨r,hr,hg⟩ := gaussian_fields_signal (a:=a) m hh hη M (fun _ => (Real.exp_pos _).le)
   refine ⟨r,hr,?_⟩
   intro κ _ _ _ H Y B P hH hY hB hYn hBn hP hPn t ht u hu hsig
-  apply hg _ (continuous_signal_fields H P Y B t) _ u hu hsig
-  intro i x
-  let R := H+∑ j∈Finset.univ.erase i, (x j:ℂ) • P j
-  have hR : IsSelfAdjoint R := by
-    change star (H+∑ j∈Finset.univ.erase i, (x j:ℂ) • P j)=H+∑ j∈Finset.univ.erase i, (x j:ℂ) • P j
-    simp only [star_add,star_sum,star_smul,hH.star_eq,fun j => (hP j).star_eq,Complex.star_def,Complex.conj_ofReal]
-  refine ⟨fieldTrace R (P i) Y B t,fieldTrace_differentiable R (P i) Y B t,fun s => ?_,fun z => ?_⟩
-  · change _ = Complex.ofReal (signal (affineHamiltonian H P (update x i s)) Y B t)
-    rw [shiftField]
-    have him := fieldTrace_real R (P i) Y B hR (hP i) hY hB t s
-    exact Complex.ext rfl (by simpa only [Complex.ofReal_im] using him)
-  · apply (norm_fieldTrace R (P i) Y B hR (hP i) hYn hBn (hPn i) t z).trans
-    exact Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left ht (by norm_num)) (norm_nonneg _))
+  exact hg _ (continuous_signal_fields H P Y B t)
+    (entire_signal_fields H Y B P hH hY hB hYn hBn hP hPn ht) u hu hsig
 
 end
 end GaloisForLFunctions.HTGeometry.SpanningDensity.FixedHorizon

@@ -1,7 +1,7 @@
 import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.InverseSpectrum.ShellMixing.FullSpace
 import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.InverseSpectrum.ShellMixing.Compression
 import GaloisForLFunctions.HTGeometry.OperatorFredholmGerm
-import Mathlib.Analysis.InnerProductSpace.StarOrder
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.InverseSpectrum.ShellMixing.PositiveRoot
 
 /-!
 # The fourth trace measures the missing range
@@ -126,8 +126,8 @@ theorem positive_fourth_iff (G : GasOp) :
     rw [hu] at hz
     have hs := output_square hu ((fourth_trace_eq_iff U).mp hz)
     rw [hp.isSelfAdjoint.star_eq,← pow_two] at hs
-    exact (CFC.sqrt_sq G ((nonneg_iff_isPositive G).mpr hp)).symm.trans
-      ((congrArg (fun A : GasOp => CFC.sqrt A) hs).trans (CFC.sqrt_sq _ ((nonneg_iff_isPositive _).mpr critical_isPositive)))
+    exact (positiveRoot_sq hp).symm.trans
+      ((congrArg (fun A : GasOp => positiveRoot A) hs).trans (positiveRoot_sq critical_isPositive))
   · rintro rfl
     refine ⟨critical_isPositive,?_,?_⟩
     · have h := conserves_factor (LinearIsometry.id : Gas →ₗᵢ[ℂ] Gas)
