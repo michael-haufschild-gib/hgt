@@ -40,6 +40,7 @@ theorem normalizedIntersection_isLocalization (h : IsPd k x) (hi : i ∈ I) :
   letI : IsScalarTower A C E := .of_algebraMap_eq fun _ => rfl
   letI := normalizedIntersectionAlgebra (k := k) (x := x) (E := E) hi
   letI := normalizedIntersection_tower (k := k) (x := x) (E := E) hi
+  letI : Algebra A T := (T).algebra'
   letI : IsScalarTower A B T := .of_algebraMap_eq fun _ => rfl
   letI := chartIntersection_isLocalization h hi
   letI : IsLocalization.Away (algebraMap A E s) E := IsLocalization.of_le_isUnit <| by
@@ -47,7 +48,7 @@ theorem normalizedIntersection_isLocalization (h : IsPd k x) (hi : i ∈ I) :
     have hn : algebraMap A E s ≠ 0 :=
       (map_ne_zero _).mpr (chartDenominator_ne_zero h)
     exact (Ne.isUnit hn).pow _
-  exact IsLocalization.Away.integralClosure s
+  exact IsLocalization.Away.integralClosure (S := E) (Rf := C) (Sf := E) s
 
 /-- A rational form is regular on the intersection exactly when a
 power of the coordinate product makes it regular on the single chart. -/

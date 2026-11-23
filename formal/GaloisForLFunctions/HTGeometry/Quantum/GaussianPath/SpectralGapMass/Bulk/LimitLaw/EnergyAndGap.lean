@@ -58,12 +58,11 @@ theorem gaussian_energy_and_gap_laws :
     ring
   · apply ProbabilityMeasure.tendsto_of_tendsto_charFun
     intro s
-    simp only [charFun_listLaw,scaledGap,gap_characteristic,ProbabilityMeasure.coe_mk,characteristic_limit,NNReal.coe_ofNat]
+    simp only [charFun_listLaw,ProbabilityMeasure.coe_mk,characteristic_limit,NNReal.coe_ofNat]
     have hh := (h s).mul (h (-s))
     simp only [neg_sq,←Complex.ofReal_mul,←exp_add] at hh
-    convert hh using 2
-    congr 2
-    ring
+    rw [show -6*s^2 + -6*s^2= -(24*s^2/2) by ring] at hh
+    exact hh.congr fun n => (gap_characteristic (scaledEnergy (u n)) s).symm
 
 #print axioms gaussian_energy_and_gap_laws
 end

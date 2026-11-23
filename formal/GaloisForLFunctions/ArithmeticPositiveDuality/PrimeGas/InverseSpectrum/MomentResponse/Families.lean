@@ -63,6 +63,8 @@ theorem pinned_band_envelope {σ t R : ℝ} (hs : 0 < σ) (ht : 1 ≤ t) (hR : t
   simpa only [all_moment_ceilings_iff _ (one_div_pos.mpr hRp).le] using simultaneous_band_envelope hs ht hR
 
 #print axioms pinned_band_envelope
+#print axioms momentLoss_nonneg
+#print axioms physical_moment_probe
 #print axioms physical_moment_family_probe
 #print axioms own_moment_amplitude_cap
 #print axioms simultaneous_band_envelope

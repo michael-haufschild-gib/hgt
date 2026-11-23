@@ -1,4 +1,5 @@
 import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.FiniteEigenvalueCertificatesAndExceptionDensity
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.InverseSpectrum.QuarticGrowth.Window
 import GaloisForLFunctions.RHTower.ZetaConvexityBound
 import GaloisForLFunctions.RHTower.ZetaLocalWindowTailUpper
 import GaloisForLFunctions.RHTower.SpeiserShadowExponentialDensity
@@ -156,8 +157,8 @@ private theorem projected_omitLine_sq_unitPhaseDiag (u : ℕ+ → ℂ) (hu : ∀
         (((projected (omitLine v)) ^ 2).comp (unitPhaseDiag (starPhase u) (norm_starPhase u hu))) := by
   apply ContinuousLinearMap.ext
   intro x
-  rw [line_square, comp_apply, comp_apply, line_square, sub_apply, sub_apply, map_sub, map_smul,
-    smul_apply, smul_apply, map_smul, norm_unitPhaseDiag_eq]
+  simp only [line_square, comp_apply, sub_apply, smul_apply, map_sub, map_smul,
+    norm_unitPhaseDiag_eq]
   change squareHeat.val x - ((‖v‖ ^ 2 : ℝ) : ℂ)⁻¹ •
       (inner ℂ (criticalOperator (unitPhaseDiag u hu v)) x •
         criticalOperator (unitPhaseDiag u hu v)) =
@@ -187,7 +188,7 @@ private theorem approxNumber_unitPhaseDiag_conj (u : ℕ+ → ℂ) (hu : ∀ n, 
   · have hA_eq : A = U'.comp ((U.comp (A.comp U')).comp U) := by
       apply ContinuousLinearMap.ext
       intro x
-      simp only [U, U', comp_apply, unitPhaseDiag_star_apply, unitPhaseDiag_apply_star]
+      simp only [U, U', comp_apply, unitPhaseDiag_star_apply]
     conv_lhs => rw [hA_eq]
     have h1 := _root_.RHTower.rectApproxNumber_comp_le_left U' ((U.comp (A.comp U')).comp U) k
     have h2 := _root_.RHTower.rectApproxNumber_comp_le_right (U.comp (A.comp U')) U k
@@ -227,13 +228,13 @@ theorem mem_range_criticalOperator_iff_of_coord_norm_eq {v w : Gas}
     refine ⟨unitPhaseDiag (phaseRatio v w) (norm_phaseRatio v w h) f, ?_⟩
     change criticalOperator (unitPhaseDiag (phaseRatio v w) (norm_phaseRatio v w h) f) = w
     change criticalOperator f = v at hf
-    rw [unitPhaseDiag_comm_criticalOperator, hf, unitPhaseDiag_phaseRatio_apply]
+    rw [unitPhaseDiag_comm_criticalOperator, hf, unitPhaseDiag_phaseRatio_apply v w h]
   · rintro ⟨f, hf⟩
     have hsymm : ∀ n : ℕ+, ‖w n‖ = ‖v n‖ := fun n => (h n).symm
     refine ⟨unitPhaseDiag (phaseRatio w v) (norm_phaseRatio w v hsymm) f, ?_⟩
     change criticalOperator (unitPhaseDiag (phaseRatio w v) (norm_phaseRatio w v hsymm) f) = v
     change criticalOperator f = w at hf
-    rw [unitPhaseDiag_comm_criticalOperator, hf, unitPhaseDiag_phaseRatio_apply]
+    rw [unitPhaseDiag_comm_criticalOperator, hf, unitPhaseDiag_phaseRatio_apply w v hsymm]
 
 private def toModulusPhase (v : Gas) (n : ℕ+) : ℂ :=
   if v n = 0 then 1 else ((‖v n‖ : ℝ) : ℂ) / v n
@@ -473,7 +474,8 @@ private theorem sum_range_norm_complexDrop_le (b : SpectralBand 1) {s : ℂ}
           Real.rpow_le_rpow (occupationWeight_pos N).le hinv hs0.le
       _ = t ^ (-σ) := by rw [Real.inv_rpow ht_pos.le, Real.rpow_neg ht_pos.le]
   have hprod_t : t * t ^ (-σ) = t ^ (1 - σ) := by
-    conv_lhs => rw [← Real.rpow_one t, ← Real.rpow_add ht_pos, sub_eq_add_neg]
+    calc t * t ^ (-σ) = t ^ (1 : ℝ) * t ^ (-σ) := by rw [Real.rpow_one]
+      _ = t ^ (1 - σ) := by rw [← Real.rpow_add ht_pos, sub_eq_add_neg]
   rcases le_or_gt M N with hMN | hNM
   · calc (∑ n ∈ Finset.range M, ‖complexDrop b n s‖)
         ≤ ∑ n ∈ Finset.range N, ‖complexDrop b n s‖ :=
@@ -483,10 +485,9 @@ private theorem sum_range_norm_complexDrop_le (b : SpectralBand 1) {s : ℂ}
       _ = 2 * ∑ n ∈ Finset.range N, occupationWeight n ^ σ := (Finset.mul_sum _ _ _).symm
       _ ≤ 2 * ((N : ℝ) ^ (1 - σ) / (1 - σ)) :=
           mul_le_mul_of_nonneg_left (sum_range_occupationWeight_rpow_le hs0 hs1 N) zero_le_two
-      _ ≤ (2 / (1 - σ)) * t ^ (1 - σ) := by
-          have hdiv : (N : ℝ) ^ (1 - σ) / (1 - σ) ≤ t ^ (1 - σ) / (1 - σ) :=
-            div_le_div_of_nonneg_right hN_pow h1mσ.le
-          linarith
+      _ ≤ 2 * (t ^ (1 - σ) / (1 - σ)) :=
+          mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hN_pow h1mσ.le) zero_le_two
+      _ = (2 / (1 - σ)) * t ^ (1 - σ) := by ring
       _ ≤ (2 / (1 - σ) + (σ + 1) / σ) * t ^ (1 - σ) := by
           have hadd_nn : 0 ≤ ((σ + 1) / σ) * t ^ (1 - σ) := by positivity
           linarith
@@ -499,10 +500,9 @@ private theorem sum_range_norm_complexDrop_le (b : SpectralBand 1) {s : ℂ}
             exact Finset.sum_le_sum fun n _ => norm_complexDrop_le_two_mul_occ b n hs0
         _ ≤ 2 * ((N : ℝ) ^ (1 - σ) / (1 - σ)) :=
             mul_le_mul_of_nonneg_left (sum_range_occupationWeight_rpow_le hs0 hs1 N) zero_le_two
-        _ ≤ (2 / (1 - σ)) * t ^ (1 - σ) := by
-            have hdiv : (N : ℝ) ^ (1 - σ) / (1 - σ) ≤ t ^ (1 - σ) / (1 - σ) :=
-              div_le_div_of_nonneg_right hN_pow h1mσ.le
-            linarith
+        _ ≤ 2 * (t ^ (1 - σ) / (1 - σ)) :=
+            mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hN_pow h1mσ.le) zero_le_two
+        _ = (2 / (1 - σ)) * t ^ (1 - σ) := by ring
     let β : GibbsExponent := ⟨σ, hs0⟩
     have htail : (∑ j ∈ Finset.range m, ‖complexDrop b (N + j) s‖) ≤
         ((σ + 1) / σ) * t ^ (1 - σ) := by
@@ -518,7 +518,7 @@ private theorem sum_range_norm_complexDrop_le (b : SpectralBand 1) {s : ℂ}
           (occupationWeight (N + j) ^ σ - occupationWeight (N + j + 1) ^ σ)) ≤
           occupationWeight N ^ σ := by
         have ht := Finset.sum_range_sub' (fun j : ℕ => occupationWeight (N + j) ^ σ) m
-        simp only [Nat.add_zero, Nat.add_assoc] at ht
+        simp only [Nat.add_zero, ← Nat.add_assoc] at ht
         rw [ht]
         linarith [Real.rpow_nonneg (occupationWeight_pos (N + m)).le σ]
       calc (∑ j ∈ Finset.range m, ‖complexDrop b (N + j) s‖)
@@ -615,7 +615,8 @@ private theorem sum_range_norm_etaTerm_le {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re
           Real.rpow_le_rpow (occupationWeight_pos _).le hinv hs0.le
       _ = t ^ (-σ) := by rw [Real.inv_rpow ht_pos.le, Real.rpow_neg ht_pos.le]
   have hprod_t : t * t ^ (-σ) = t ^ (1 - σ) := by
-    conv_lhs => rw [← Real.rpow_one t, ← Real.rpow_add ht_pos, sub_eq_add_neg]
+    calc t * t ^ (-σ) = t ^ (1 : ℝ) * t ^ (-σ) := by rw [Real.rpow_one]
+      _ = t ^ (1 - σ) := by rw [← Real.rpow_add ht_pos, sub_eq_add_neg]
   rcases le_or_gt M N with hMN | hNM
   · calc (∑ k ∈ Finset.range M, ‖_root_.RHTower.etaTerm s k‖)
         ≤ ∑ k ∈ Finset.range N, ‖_root_.RHTower.etaTerm s k‖ :=
@@ -625,10 +626,9 @@ private theorem sum_range_norm_etaTerm_le {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re
           exact Finset.sum_le_sum fun k _ => norm_etaTerm_le_two_mul_occ k hs0
       _ ≤ 2 * ((N : ℝ) ^ (1 - σ) / (1 - σ)) :=
           mul_le_mul_of_nonneg_left (sum_range_occupationWeight_rpow_le hs0 hs1 N) zero_le_two
-      _ ≤ (2 / (1 - σ)) * t ^ (1 - σ) := by
-          have hdiv : (N : ℝ) ^ (1 - σ) / (1 - σ) ≤ t ^ (1 - σ) / (1 - σ) :=
-            div_le_div_of_nonneg_right hN_pow h1mσ.le
-          linarith
+      _ ≤ 2 * (t ^ (1 - σ) / (1 - σ)) :=
+          mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hN_pow h1mσ.le) zero_le_two
+      _ = (2 / (1 - σ)) * t ^ (1 - σ) := by ring
       _ ≤ (2 / (1 - σ) + (σ + 1) / σ) * t ^ (1 - σ) := by
           have hadd_nn : 0 ≤ ((σ + 1) / σ) * t ^ (1 - σ) := by positivity
           linarith
@@ -642,10 +642,9 @@ private theorem sum_range_norm_etaTerm_le {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re
             exact Finset.sum_le_sum fun k _ => norm_etaTerm_le_two_mul_occ k hs0
         _ ≤ 2 * ((N : ℝ) ^ (1 - σ) / (1 - σ)) :=
             mul_le_mul_of_nonneg_left (sum_range_occupationWeight_rpow_le hs0 hs1 N) zero_le_two
-        _ ≤ (2 / (1 - σ)) * t ^ (1 - σ) := by
-            have hdiv : (N : ℝ) ^ (1 - σ) / (1 - σ) ≤ t ^ (1 - σ) / (1 - σ) :=
-              div_le_div_of_nonneg_right hN_pow h1mσ.le
-            linarith
+        _ ≤ 2 * (t ^ (1 - σ) / (1 - σ)) :=
+            mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hN_pow h1mσ.le) zero_le_two
+        _ = (2 / (1 - σ)) * t ^ (1 - σ) := by ring
     have htail : (∑ j ∈ Finset.range m, ‖_root_.RHTower.etaTerm s (N + j)‖) ≤
         ((σ + 1) / σ) * t ^ (1 - σ) := by
       have h1 : (∑ j ∈ Finset.range m, ‖_root_.RHTower.etaTerm s (N + j)‖) ≤
@@ -657,7 +656,7 @@ private theorem sum_range_norm_etaTerm_le {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re
           (occupationWeight (2 * (N + j)) ^ σ - occupationWeight (2 * (N + j + 1)) ^ σ)) ≤
           occupationWeight (2 * N) ^ σ := by
         have ht := Finset.sum_range_sub' (fun j : ℕ => occupationWeight (2 * (N + j)) ^ σ) m
-        simp only [Nat.add_zero, Nat.add_assoc] at ht
+        simp only [Nat.add_zero, ← Nat.add_assoc] at ht
         rw [ht]
         linarith [Real.rpow_nonneg (occupationWeight_pos (2 * (N + m))).le σ]
       calc (∑ j ∈ Finset.range m, ‖_root_.RHTower.etaTerm s (N + j)‖)
@@ -684,7 +683,7 @@ theorem sharpOrdinateCeilingConstant_pos {σ : ℝ} (hσ0 : 0 < σ) (hσ1 : σ <
   unfold sharpOrdinateCeilingConstant
   positivity
 
-private theorem factor_ratio_le {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re < 1) :
+private theorem factor_ratio_le {s : ℂ} (_hs0 : 0 < s.re) (hs1 : s.re < 1) :
     ‖(2 : ℂ) ^ s - 1‖ / ‖1 - (2 : ℂ) ^ (1 - s)‖ ≤
       ((2 : ℝ) ^ s.re + 1) / ((2 : ℝ) ^ (1 - s.re) - 1) := by
   have h2s : ‖(2 : ℂ) ^ s‖ = (2 : ℝ) ^ s.re := by
@@ -753,8 +752,9 @@ theorem norm_finiteTriadReading_le_rpow_one_sub_re_uniform (b : SpectralBand 1) 
           rw [Complex.ofReal_ofNat] at h
           refine h.trans ?_
           congr 1; push_cast; ring
-        rw [occupationWeight_eq, Complex.ofReal_inv, Complex.inv_cpow _ s harg, Complex.cpow_neg,
-          hsplit, mul_assoc, hmul]
+        have hocc_k : (occupationWeight k : ℂ) ^ s = (((k : ℝ) + 1 : ℝ) : ℂ) ^ (-s) := by
+          rw [occupationWeight_eq, Complex.ofReal_inv, Complex.inv_cpow _ s harg, Complex.cpow_neg]
+        rw [hocc_k, hsplit, mul_assoc, hmul]
       unfold dyadicSpectralTriad _root_.RHTower.etaTerm complexDrop
       linear_combination heven + hodd - h2pow
     have hpair_sum : ∀ m : ℕ,
@@ -867,7 +867,8 @@ theorem capped_witness_lineLoss_lt_rpow_neg_four_re
     have hp := pow_le_pow_left₀ (norm_nonneg _) hle 4
     have heq : (‖(2 : ℂ) ^ s - 1‖ * (‖s‖ / σ) * r4) ^ 4 =
         uvZeroThresholdFactor s Λ * lineLoss v.val := by
-      rw [mul_pow, mul_pow, hr4_pow, uvZeroThresholdFactor]
+      dsimp only [σ]
+      rw [mul_pow, mul_pow, hr4_pow, uvZeroThresholdFactor]; ring
     rw [heq] at hp
     exact hgt.not_ge hp
   have hub := norm_jointSurvivingPartition_le_rpow_one_sub_re_uniform
@@ -898,7 +899,7 @@ theorem capped_witness_lineLoss_lt_rpow_neg_four_re
   rw [hr4_pow, mul_pow, ← Real.rpow_natCast (t ^ (-σ)) 4, ← Real.rpow_mul ht_pos.le,
     show (-σ) * (4 : ℕ) = -4 * σ by push_cast; ring] at hp4
   have hdiv := (lt_div_iff₀' hΛ).mpr hp4
-  simpa only [div_eq_mul_inv, mul_assoc, mul_left_comm Λ⁻¹] using hdiv
+  exact hdiv.trans_eq (by ring)
 
 /-- **Explicit no-go for the `|Im s|^{-4σ / (1 + σ)}` loss scale:**
 for every `0 < σ < 1`, `Λ > 0`, and `c > 0`, at all sufficiently large ordinates `|Im s| ≥ T₀`
@@ -969,8 +970,8 @@ theorem uncapped_witness_lineLoss_lt_inv_sq
   have hexp_pos : 0 < 2 / σ := div_pos two_pos hs0
   set A : ℝ := chordZeroThresholdFactor s * lineLoss v.val
   have hA_pos : 0 < A := by
-    dsimp only [A, chordZeroThresholdFactor]
-    have hs_ne : s ≠ 0 := fun h => hs0.ne' (by rw [h, Complex.zero_re])
+    dsimp only [A, chordZeroThresholdFactor, σ]
+    have hs_ne : s ≠ 0 := fun h => hs0.ne' (by dsimp only [σ]; rw [h, Complex.zero_re])
     have hnorm_pos : 0 < ‖s‖ := norm_pos_iff.mpr hs_ne
     have hf_pos : 0 < ‖(2 : ℂ) ^ s - 1‖ := h2_pos.trans_le h2_lo
     positivity
@@ -1030,27 +1031,24 @@ theorem uncapped_witness_operator_sq_dist_le_inv_im
       ‖jointSurvivingPartition (missingWaveSpectrum v) s‖ ^ (2 / s.re)) :
     ‖criticalOperator ^ 2 - (projected (omitLine v.val)) ^ 2‖ ≤
       sharpWitnessLossConstant s.re ^ (1 / s.re) * |s.im| ^ (-1 : ℝ) := by
+  have hcons := ((nonzero_line_conserves_iff v.val).mpr v.property).2
+  obtain ⟨hop_le, hhs_le, _⟩ := norm_critical_sq_sub_sq_le_sqrt_fourth_trace_defect hcons
+  change _ ≤ Real.sqrt (traceLoss (projected (omitLine v.val))) at hhs_le
+  rw [traceLoss_omitLine] at hhs_le
   have hloss := uncapped_witness_lineLoss_lt_inv_sq hs0 hs1 him v hgt
-  have hstab := propagator_sq_opNorm_sub_le_sqrt_trace_deficit (linePropagator v)
-  have hhs_le : ‖criticalOperator ^ 2 - (linePropagator v).val ^ 2‖ ≤
-      Real.sqrt (lineLoss v.val) := by
-    have h1 := (opNorm_le_hsNorm _).trans hstab
-    change _ ≤ Real.sqrt (traceLoss (projected (omitLine v.val))) at h1
-    rw [traceLoss_omitLine] at h1
-    exact h1
   have ht_pos : 0 < |s.im| := zero_lt_one.trans_le him
   have hM_nn : 0 ≤ sharpWitnessLossConstant s.re := (sharpWitnessLossConstant_pos hs0 hs1).le
-  have hsqrt_lt := Real.sqrt_lt_sqrt (line_loss_bounds v).1.le hloss
+  have hsqrt_le := Real.sqrt_le_sqrt hloss.le
   have hrhs_eq : Real.sqrt (sharpWitnessLossConstant s.re ^ (2 / s.re) * |s.im| ^ (-2 : ℝ)) =
       sharpWitnessLossConstant s.re ^ (1 / s.re) * |s.im| ^ (-1 : ℝ) := by
     rw [Real.sqrt_eq_rpow, Real.mul_rpow (Real.rpow_nonneg hM_nn _) (Real.rpow_nonneg ht_pos.le _),
       ← Real.rpow_mul hM_nn, ← Real.rpow_mul ht_pos.le,
       show (2 / s.re) * (1 / 2) = 1 / s.re by ring, show (-2 : ℝ) * (1 / 2) = -1 by ring]
-  rw [hrhs_eq] at hsqrt_lt
-  exact hhs_le.trans hsqrt_lt.le
+  rw [hrhs_eq] at hsqrt_le
+  exact (hop_le.trans hhs_le).trans hsqrt_le
 
 private theorem norm_dyadicSpectralTriad_le_four_mul_occ (b : SpectralBand 1) (k : ℕ)
-    {s : ℂ} (hs0 : 0 < s.re) (hs1 : s.re < 1) :
+    {s : ℂ} (hs0 : 0 < s.re) (_hs1 : s.re < 1) :
     ‖dyadicSpectralTriad b s k‖ ≤ 4 * occupationWeight k ^ s.re := by
   unfold dyadicSpectralTriad
   have hb2k_pos := band_pos b (2 * k)
@@ -1213,7 +1211,7 @@ private theorem norm_jointSurvivingPartition_conj (b : SpectralBand 1) {s : ℂ}
   have htsum : (∑' k : ℕ, dyadicSpectralTriad b (conj s) k) =
       conj (∑' k : ℕ, dyadicSpectralTriad b s k) := by
     simp_rw [dyadicSpectralTriad_conj]
-    exact Complex.conjCLE.map_tsum
+    exact (Complex.conjCLE.map_tsum (f := fun k : ℕ => dyadicSpectralTriad b s k)).symm
   have hf1 : (2 : ℂ) ^ (conj s) - 1 = conj ((2 : ℂ) ^ s - 1) := by
     rw [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num, ofReal_cpow_conj two_pos s, map_sub, map_one]
   have hf2 : 1 - (2 : ℂ) ^ (1 - conj s) = conj (1 - (2 : ℂ) ^ (1 - s)) := by
@@ -1366,7 +1364,6 @@ theorem exists_uvRegularRankOne_jointSurvivingPartition_ge_rpow_one_sub_re
     have hden_pos : 0 < ((N : ℝ) + 1) ^ (12 * σ) := Real.rpow_pos_of_pos hN1_pos _
     rw [show 16 * ((32 ^ 3 / Λ ^ 3) / ((N : ℝ) + 1) ^ (12 * σ)) =
       (16 * 32 ^ 3 / Λ ^ 3) / ((N : ℝ) + 1) ^ (12 * σ) by ring, div_lt_iff₀ hden_pos]
-    have hp' : 32 ^ 4 / Λ ^ 4 < Λ ^ 0 * ((N : ℝ) + 1) ^ (12 * σ) := by simpa using hp
     have hmul := mul_lt_mul_of_pos_left hp (by positivity : 0 < Λ / 2)
     have hlhs : (Λ / 2) * (32 ^ 4 / Λ ^ 4) = 16 * 32 ^ 3 / Λ ^ 3 := by
       field_simp [hΛ.ne']; ring
@@ -1443,8 +1440,9 @@ theorem exists_uvRegularRankOne_jointSurvivingPartition_ge_rpow_one_sub_re
           (Real.rpow_le_rpow (occupationWeight_pos _).le
             (occupationWeight_antitone (Nat.le_succ _)) hσ0.le)
       have htel := Finset.sum_range_sub' (fun j : ℕ => occupationWeight (N + j) ^ σ) N
-      simp only [Nat.add_zero, Nat.add_assoc] at htel
-      linarith [Real.rpow_nonneg (occupationWeight_pos (N + N)).le σ]
+      simp only [Nat.add_zero, ← Nat.add_assoc] at htel
+      rw [htel] at hsub2
+      linarith [hsub1, hsub2, Real.rpow_nonneg (occupationWeight_pos (N + N)).le σ]
     linarith
   -- 3. Strict UV cap `R_σ(b_hyb)^4 < Λ * L(b_hyb)`.
   have huv_strict : relativeReading (powerResponse β) b_hyb ^ 4 <
@@ -1498,7 +1496,8 @@ theorem exists_uvRegularRankOne_jointSurvivingPartition_ge_rpow_one_sub_re
           rw [div_eq_mul_inv, Real.mul_rpow ht_pos.le (inv_nonneg.mpr hpi_pos.le),
             Real.inv_rpow hpi_pos.le, Real.rpow_neg hpi_pos.le, inv_inv]
         have ht1 : t * t ^ (-σ) = t ^ (1 - σ) := by
-          conv_lhs => rw [← Real.rpow_one t, ← Real.rpow_add ht_pos, sub_eq_add_neg]
+          calc t * t ^ (-σ) = t ^ (1 : ℝ) * t ^ (-σ) := by rw [Real.rpow_one]
+            _ = t ^ (1 - σ) := by rw [← Real.rpow_add ht_pos, sub_eq_add_neg]
         dsimp only [c_win]
         rw [htp]
         calc (t / (8 * Real.pi)) * (t ^ (-σ) * Real.pi ^ σ)
@@ -1644,7 +1643,7 @@ theorem norm_riemannZeta_ge_exp_of_not_mem_speiserDisk_segment
         ‖riemannZeta ((σ : ℂ) - (τ : ℂ) * Complex.I)‖ := by
   have hb_ne0 : riemannZeta ((b : ℂ) + (τ : ℂ) * Complex.I) ≠ 0 :=
     (_root_.RHTower.re_logDeriv_riemannZeta_le_of_not_mem_speiserDisk
-      (s := (b : ℂ) + (τ : ℂ) * Complex.I) (by simp; linarith) (by simp; exact hb)
+      (s := (b : ℂ) + (τ : ℂ) * Complex.I) (by simp; linarith) (by simp; linarith [hb])
       (by simp; exact hτ) (by simpa using hno b ⟨hab, le_rfl⟩)).1
   refine ⟨norm_pos_iff.mpr hb_ne0, fun σ hσ => ?_⟩
   set c : ℝ := Real.log (τ / (2 * Real.pi)) - 1 / 5
@@ -1672,10 +1671,14 @@ theorem norm_riemannZeta_ge_exp_of_not_mem_speiserDisk_segment
       ((2 * (deriv riemannZeta ((u : ℂ) + (τ : ℂ) * Complex.I) *
         conj (riemannZeta ((u : ℂ) + (τ : ℂ) * Complex.I))).re) / f u + c) u := by
     intro u hu
-    exact ((hf_deriv u).log (hf_pos u hu).ne').add ((hasDerivAt_id u).const_mul c)
+    have hc_deriv : HasDerivAt (fun x : ℝ => c * x) c u := by
+      simpa only [id_eq, mul_one] using (hasDerivAt_id u).const_mul c
+    exact ((hf_deriv u).log (hf_pos u hu).ne').add hc_deriv
   have hg_anti : AntitoneOn g (Icc a b) := by
     refine antitoneOn_of_deriv_nonpos (convex_Icc a b)
-      (fun u hu => (hg_deriv u hu).continuousAt.continuousWithinAt) ?_
+      (fun u hu => (hg_deriv u hu).continuousAt.continuousWithinAt)
+      (fun u hu => (hg_deriv u (Ioo_subset_Icc_self (by rwa [interior_Icc] at hu))).differentiableAt.differentiableWithinAt)
+      ?_
     intro u hu
     rw [interior_Icc] at hu
     have hu_mem : u ∈ Icc a b := Ioo_subset_Icc_self hu
@@ -1796,10 +1799,13 @@ theorem exists_uniform_single_witness_of_not_mem_speiserDisk_segment
   have hδ_lt_uv : δ < (a / b) * (Λ * (δ / 2)) ^ (1 / 4 : ℝ) := by
     have hd : δ ≤ ((a / b) ^ 4 * (Λ / 4)) ^ ((1 : ℝ) / 3) :=
       (min_le_right _ _).trans (min_le_left _ _)
-    have hp3 : δ ^ 3 ≤ (((a / b) ^ 4 * (Λ / 4)) ^ ((1 : ℝ) / 3)) ^ 3 :=
-      pow_le_pow_left₀ hδ_pos.le hd 3
-    rw [← Real.rpow_natCast _ 3, ← Real.rpow_mul (by positivity),
-      show ((1 : ℝ) / 3) * (3 : ℕ) = 1 by norm_num, Real.rpow_one] at hp3
+    have hp3 : δ ^ 3 ≤ (a / b) ^ 4 * (Λ / 4) := by
+      have h1 : δ ^ 3 ≤ (((a / b) ^ 4 * (Λ / 4)) ^ ((1 : ℝ) / 3)) ^ 3 :=
+        pow_le_pow_left₀ hδ_pos.le hd 3
+      have hrhs3 : (((a / b) ^ 4 * (Λ / 4)) ^ ((1 : ℝ) / 3)) ^ 3 = (a / b) ^ 4 * (Λ / 4) := by
+        rw [← Real.rpow_natCast _ 3, ← Real.rpow_mul (by positivity),
+          show ((1 : ℝ) / 3) * (3 : ℕ) = 1 by norm_num, Real.rpow_one]
+      rwa [hrhs3] at h1
     have hp4 : δ ^ 4 < ((a / b) * (Λ * (δ / 2)) ^ (1 / 4 : ℝ)) ^ 4 := by
       have hrhs : ((a / b) * (Λ * (δ / 2)) ^ (1 / 4 : ℝ)) ^ 4 = (a / b) ^ 4 * (Λ * (δ / 2)) := by
         rw [mul_pow, ← Real.rpow_natCast _ 4, ← Real.rpow_mul (by positivity),
@@ -1870,9 +1876,8 @@ theorem exists_uniform_single_witness_of_not_mem_speiserDisk_segment
     have h2K : Tendsto (fun K : ℕ => 2 * K) atTop atTop :=
       tendsto_atTop_mono (fun K => by omega : ∀ K : ℕ, K ≤ 2 * K) tendsto_natCast_atTop_atTop
     have h0 := ((occupationWeight_tendsto.comp h2K).rpow_const (Or.inr ha.le)).const_mul C_tail
-    simpa only [Real.zero_rpow ha.ne', mul_zero] using h0
+    simpa only [Function.comp_apply, Real.zero_rpow ha.ne', mul_zero] using h0
   obtain ⟨K, hK_lt⟩ := (htend_occ.eventually (gt_mem_nhds hgap_pos)).exists
-  dsimp only at hK_lt
   refine ⟨v, K, fun σ hσ => ?_⟩
   -- Shared verifier at any `s` with `s.re = σ ∈ [a, b]`, `|s.im| = τ`, and `μ ≤ ‖ζ(s)‖`.
   have hpoint : ∀ s : ℂ, ∀ hs0 : 0 < s.re, s.re = σ → |s.im| = τ → μ ≤ ‖riemannZeta s‖ →
@@ -2269,7 +2274,9 @@ theorem exists_all_ordinates_littlewood_strip_uniform_witness :
       have hlogρ_le : Real.log ρ.im ≤ 2 * Real.log γ := by
         have h1 := Real.log_le_log hρ_im_pos hhi
         rw [Real.log_mul (by norm_num) (by linarith)] at h1
-        linarith [Real.log_two_lt_d9]
+        have hl2 : Real.log 2 < 1 := by linarith [Real.log_two_lt_d9]
+        have hlg16 : 16 ≤ Real.log γ := by nlinarith [sq_nonneg (c + 4)]
+        linarith
       have hlogρ_pos : 0 < Real.log ρ.im := Real.log_pos (by linarith)
       have hll : Real.log (Real.log γ) / 2 ≤ Real.log (Real.log ρ.im) := by
         have h1 := hT₁ γ (by linarith)
@@ -2294,7 +2301,8 @@ theorem exists_all_ordinates_littlewood_strip_uniform_witness :
         have hw0 : 0 < w.re := by rw [hwre]; linarith
         have hw1 : w ≠ 1 := fun h' => by rw [h', Complex.one_re] at hwre; linarith
         refine ⟨w, (_root_.RHTower.xi_eq_zero_iff hw0 hw1).mp hxw, ?_, hwim, by rw [hwre]; linarith⟩
-        rw [abs_of_neg (by linarith), hwre] at hdist ⊢; linarith
+        rw [abs_of_neg (by linarith : ρ.re - 1 / 2 < 0)] at hdist
+        rw [hwre]; linarith
     have hwT : T ≤ |w.im| := by rw [hw_im, habsρ]; linarith
     have hlt_w : 1 - c * Real.log (Real.log |w.im|) / Real.log |w.im| < w.re := by
       rw [hw_im]; linarith

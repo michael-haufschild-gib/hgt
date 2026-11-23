@@ -6,20 +6,20 @@ open MeasureTheory Finset
 namespace GaloisForLFunctions.HTGeometry.SpectralGapMass.Bulk
 open FourierLLogL
 noncomputable section
-variable {I : Type*} [Fintype I] [Nonempty I]
+variable {I : Type*} [Fintype I]
 
 /-- A uniform index samples the list with multiplicity. -/
-def listLaw (E : I → ℝ) : ProbabilityMeasure ℝ := (Law.uniform I).atomicProbability E
+def listLaw [Nonempty I] (E : I → ℝ) : ProbabilityMeasure ℝ := (Law.uniform I).atomicProbability E
 
-theorem integral_listLaw (E : I → ℝ) (f : ℝ → ℝ) :
+theorem integral_listLaw [Nonempty I] (E : I → ℝ) (f : ℝ → ℝ) :
     (∫ x, f x ∂(listLaw E : Measure ℝ)) = (Fintype.card I:ℝ)⁻¹*∑ i, f (E i) := by
   rw [listLaw,Law.integral_atomicProbability,Law.Ex,mul_sum]
   rfl
 
-theorem integrable_listLaw (E : I → ℝ) (f : ℝ → ℝ) :
+theorem integrable_listLaw [Nonempty I] (E : I → ℝ) (f : ℝ → ℝ) :
     Integrable f (listLaw E : Measure ℝ) := Law.integrable_atomicProbability _ _ _
 
-theorem charFun_listLaw (E : I → ℝ) (t : ℝ) :
+theorem charFun_listLaw [Nonempty I] (E : I → ℝ) (t : ℝ) :
     charFun (listLaw E : Measure ℝ) t = energyCharacteristic E t := by
   rw [charFun_apply_real]
   change (∫ x : ℝ, _ ∂(∑ i, ENNReal.ofReal ((Fintype.card I:ℝ)⁻¹) • Measure.dirac (E i)))=_

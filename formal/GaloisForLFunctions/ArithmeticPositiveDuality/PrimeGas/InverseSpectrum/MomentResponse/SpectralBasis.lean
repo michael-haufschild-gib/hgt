@@ -47,7 +47,7 @@ theorem exists_physical_heat_basis (P : Projection) {r : ℕ} (dim : MissingDime
     · exact h
   have ho : Orthonormal ℂ (sgVec S) := ⟨hn,fun _ _ h => inner_sgVec_sgVec_of_ne S h⟩
   have hspan : (Submodule.span ℂ (Set.range (sgVec S)))ᗮ = ⊥ := by
-    apply le_antisymm _ bot_le
+    refine le_antisymm ?_ bot_le
     intro x hx
     have hz := apply_eq_zero_of_forall_inner_sgVec hhs.isCompactOperator hp.isSymmetric
       (fun n => (Submodule.mem_orthogonal _ _).mp hx _ (Submodule.subset_span ⟨n,rfl⟩))
@@ -59,6 +59,7 @@ theorem exists_physical_heat_basis (P : Projection) {r : ℕ} (dim : MissingDime
   rw [HilbertBasis.coe_mkOfOrthogonalEqBot,← projected_square_sgVal P dim hc n]
   exact apply_sgVec S n
 
+#print axioms projected_square_positive
 #print axioms projected_square_sgVal
 #print axioms exists_physical_heat_basis
 

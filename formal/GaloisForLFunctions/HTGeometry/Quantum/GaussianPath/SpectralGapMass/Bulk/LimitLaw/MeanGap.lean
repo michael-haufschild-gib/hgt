@@ -15,8 +15,9 @@ private theorem gap_second_moment_le {n : ℕ} (u : PathShell n) :
   have hN : 0 < N := by dsimp only [N]; positivity
   have hD : 0 < D := Nat.cast_pos.mpr Fintype.card_pos
   have hE : (∑ i, (scaledEnergy u i)^2)=D*(shellVariance u/N) := by
-    simp only [scaledEnergy,div_pow,sq_sqrt hN.le,←sum_div]
-    rw [(FluxOccupation.path_spectral_moments u).2]
+    change (∑ i, ((isSelfAdjoint_pathHamiltonian u).isHermitian.eigenvalues i/sqrt N)^2)=_
+    simp only [div_pow,←sum_div]
+    rw [sq_sqrt hN.le,(FluxOccupation.path_spectral_moments u).2]
     simp only [D,Fintype.card_fun,Fintype.card_fin,Fintype.card_bool,N,shellVariance]
     ring
   have hpair (i j : Fin (n+2)→Bool) :
@@ -62,7 +63,8 @@ theorem gaussian_mean_absolute_gap :
     change _ ≤ (52:ℝ)
     exact (mul_le_mul_of_nonneg_left hn.le (by norm_num : (0:ℝ) ≤ 4)).trans_eq (by norm_num)
   · exact (memLp_id_gaussianReal' (μ:=0) (v:=24) 2 (by simp)).integrable_sq
-  · rw [gaussianZero_integral_sq]
+  · change (∫ x : ℝ, x^2 ∂gaussianReal 0 24) ≤ 52
+    rw [gaussianZero_integral_sq]
     norm_num
 
 #print axioms gaussian_mean_absolute_gap

@@ -30,7 +30,7 @@ private theorem changed_level_exceeds_cap (b : SpectralBand 1) {h : ℝ} (hh : 0
     (tendsto_pow_atTop_nhds_zero_of_lt_one (div_nonneg hh ha.le) ((div_lt_one ha).mpr hhot))
   rw [add_zero] at ht
   obtain ⟨n,hn,hl⟩ := ((eventually_gt_atTop (1:ℕ)).and (ht.eventually_lt_const zero_lt_one)).exists
-  let q : GibbsExponent := ⟨n,Nat.cast_pos.mpr (Nat.zero_lt_one.trans hn)⟩
+  let q : GibbsExponent := ⟨n,show 0 < (n:ℝ) from Nat.cast_pos.mpr (Nat.zero_lt_one.trans hn)⟩
   refine ⟨q,lt_of_not_ge (fun hbad => ?_)⟩
   have he := (summable_spectralDrop (powerResponse q) b).le_tsum k (fun j _ => drop_nonneg _ b j)
   change a^(n:ℝ)-x^(n:ℝ) ≤ momentLoss q b at he
@@ -59,7 +59,7 @@ theorem all_moment_ceilings_iff (b : SpectralBand 1) {h : ℝ} (hh : 0 ≤ h) :
       have hhead (k : ℕ) (hk : k < j) : (b k).val = occupationWeight k := not_not.mp (Nat.find_min hex hk)
       exact (momentLoss_le_tail q b j hhead).trans (Real.rpow_le_rpow (occupationWeight_pos j).le
         (le_of_not_gt (fun hl => hj (hfixed j hl))) q.property.le)
-    · push_neg at hex
+    · push Not at hex
       have hz : momentLoss q b = 0 := by
         change (∑' k, spectralDrop (powerResponse q) b k) = 0
         simp only [spectralDrop,hex,sub_self,tsum_zero]
@@ -107,9 +107,11 @@ theorem ordinary_moment_energy_cutoff (b : SpectralBand 1) {t : ℝ} (ht : 0 < t
   apply forall_congr'
   intro k
   have hk : 0 < (k:ℝ)+1 := by positivity
-  rw [occupationWeight_eq,← one_div ((k:ℝ)+1),one_div_lt_one_div (sq_pos_of_pos ht) hk,
-    ← Real.log_lt_log_iff hk (sq_pos_of_pos ht),Real.log_pow]
-  norm_num
+  have hiff : 1/t^2 < occupationWeight k ↔ Real.log ((k:ℝ)+1) < 2*Real.log t := by
+    rw [occupationWeight_eq,← one_div ((k:ℝ)+1),one_div_lt_one_div (sq_pos_of_pos ht) hk,
+      ← Real.log_lt_log_iff hk (sq_pos_of_pos ht),Real.log_pow]
+    norm_num
+  rw [hiff]
 
 #print axioms all_moment_ceilings_iff
 #print axioms cofinal_moment_ceilings_iff

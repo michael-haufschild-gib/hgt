@@ -11,7 +11,8 @@ namespace GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.InverseSpectrum
 open Set ContinuousLinearMap _root_.RHTower
 
 /-- Natural orders starting with the first ordinary trace of squared critical heat. -/
-def ordinaryMomentOrder (m : ℕ) : GibbsExponent := ⟨(m+2:ℕ),Nat.cast_pos.mpr (by omega)⟩
+def ordinaryMomentOrder (m : ℕ) : GibbsExponent :=
+  ⟨(m+2:ℕ),show 0 < ((m+2:ℕ):ℝ) from Nat.cast_pos.mpr (by omega)⟩
 
 /-- Every even operator trace from the fourth onward is the convergent moment of the physical spectrum. -/
 theorem projected_even_trace (P : Projection) {r : ℕ} (dim : MissingDimension P r) (hc : Conserving (projected P)) (m : ℕ) :

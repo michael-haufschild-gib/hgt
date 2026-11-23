@@ -72,13 +72,12 @@ theorem IsFinCover.intersection_trace_dual_iff (h : IsFinCover k E x)
   · rintro ⟨a, ha⟩
     obtain ⟨n, hn⟩ := a.property
     have ht : algebraMap A E (a : A) = algebraMap F E (s : F) ^ n := by
-      rw [← hn, map_pow]
-      rfl
+      rw [← hn, map_pow] <;> rfl
     refine ⟨n, ?_⟩
-    simpa only [ht, ← smul_smul, Submodule.coe_smul_of_tower] using
+    simpa only [ht, mul_smul, Submodule.coe_smul_of_tower] using
       (h.affine_trace_dual_iff i _).mp ha
   · rintro ⟨n, hn⟩
     refine ⟨⟨s ^ n, ⟨n, rfl⟩⟩, (h.affine_trace_dual_iff i _).mpr ?_⟩
-    simpa only [map_pow, ← smul_smul, Submodule.coe_smul_of_tower] using hn
+    simpa only [map_pow, mul_smul, Submodule.coe_smul_of_tower] using hn
 
 end GlobalTheory.PD

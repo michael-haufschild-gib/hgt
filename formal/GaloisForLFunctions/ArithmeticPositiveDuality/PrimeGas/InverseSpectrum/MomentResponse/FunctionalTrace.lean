@@ -70,21 +70,27 @@ theorem momentOperator_traceClass_iff (P : Projection) {r : ℕ} (dim : MissingD
   · intro hq
     exact ⟨_,_,half_isHS P dim hc q hq,half_isHS P dim hc q hq,momentOperator_half_product P dim hc q⟩
 
-/-- Real spectral loss equals the difference of the zeta trace and the fractional operator trace on the original gas. -/
-theorem momentLoss_eq_fractional_trace (P : Projection) {r : ℕ} (dim : MissingDimension P r)
+/-- The trace of the fractional power on the gas is the ordinary moment of its interlacing levels. -/
+theorem momentOperator_trace (P : Projection) {r : ℕ} (dim : MissingDimension P r)
     (hc : Conserving (projected P)) (q : GibbsExponent) (hq : 1 < q.val) :
-    momentLoss q (physicalSpectrum P dim hc) = (riemannZeta (q.val:ℂ)).re - (opTrace (momentOperator P q.val)).re := by
+    opTrace (momentOperator P q.val) = ((∑' n, (physicalSpectrum P dim hc n).val^q.val : ℝ) : ℂ) := by
   obtain ⟨e,he⟩ := exists_physical_heat_basis P dim hc
   have hhs := half_isHS P dim hc q hq
   have htrace := opTrace_comp_eq_tsum_basis hhs hhs e
   rw [← momentOperator_half_product P dim hc q] at htrace
   simp only [moment_diagonal e he q.property.le] at htrace
-  rw [← Complex.ofReal_tsum] at htrace
-  rw [momentLoss_eq_trace_difference q hq,htrace,Complex.ofReal_re]
+  rwa [← Complex.ofReal_tsum] at htrace
+
+/-- Real spectral loss equals the difference of the zeta trace and the fractional operator trace on the original gas. -/
+theorem momentLoss_eq_fractional_trace (P : Projection) {r : ℕ} (dim : MissingDimension P r)
+    (hc : Conserving (projected P)) (q : GibbsExponent) (hq : 1 < q.val) :
+    momentLoss q (physicalSpectrum P dim hc) = (riemannZeta (q.val:ℂ)).re - (opTrace (momentOperator P q.val)).re := by
+  rw [momentLoss_eq_trace_difference q hq,momentOperator_trace P dim hc q hq,Complex.ofReal_re]
 
 #print axioms momentOperator_hilbertSchmidt_iff
 #print axioms momentOperator_half_product
 #print axioms momentOperator_traceClass_iff
+#print axioms momentOperator_trace
 #print axioms momentLoss_eq_fractional_trace
 
 end GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.InverseSpectrum.ShellMixing
