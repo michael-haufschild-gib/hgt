@@ -24,7 +24,7 @@ private theorem strict_profile_mem (b : SpectralBand 1)
     (hb : ∀ k, occupationWeight (k+1) < (b k).val ∧ (b k).val < occupationWeight k) :
     b ∈ closure (physicalSpectra 1) := by
   choose c hc he using fun m => realize_strict_prefix (fun j : Fin m => (b j.val).val) (fun j => hb j.val)
-  apply isClosed_closure.mem_of_tendsto (f := c) _ (Eventually.of_forall hc)
+  apply isClosed_closure.mem_of_tendsto (f := c) (b := atTop) _ (Eventually.of_forall hc)
   apply tendsto_pi_nhds.mpr
   intro k
   apply tendsto_const_nhds.congr'
@@ -60,7 +60,7 @@ theorem closure_rank_one_spectra : closure (physicalSpectra 1) = univ := by
   let c (n : ℕ) : SpectralBand 1 := fun k => ⟨interiorWeight b n k,(interiorWeight_strict b n k).1.le,
     (interiorWeight_strict b n k).2.le⟩
   have hc (n : ℕ) := strict_profile_mem (c n) (interiorWeight_strict b n)
-  apply isClosed_closure.mem_of_tendsto (f := c) _ (Eventually.of_forall hc)
+  apply isClosed_closure.mem_of_tendsto (f := c) (b := atTop) _ (Eventually.of_forall hc)
   apply tendsto_pi_nhds.mpr
   intro k
   apply tendsto_subtype_rng.mpr

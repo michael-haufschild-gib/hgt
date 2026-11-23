@@ -123,4 +123,20 @@ theorem abelianPushforwardComparison_bijective (hB : Opens.IsBasis B)
       refine ⟨x₃.comp hT.extClass rfl, (abelianPushforwardComparison_boundary f hS hT U n x₃).trans ?_⟩
       rw [hx₃, hy₃]
 
+/-- Pushforward preserves a short exact sequence when the kernel is
+acyclic on preimages of a basis. -/
+theorem abelianPushforward_shortExact_of_acyclic (hB : Opens.IsBasis B)
+    {S : ShortComplex (AbSheaf Y)} (hS : S.ShortExact) (h₁ : AcyclicOnPreimages f B S.X₁) :
+    (S.map (push f)).ShortExact :=
+  push_shortExact_of_acyclic f hB hS h₁
+
+theorem AcyclicOnPreimages.quotient_injective {S : ShortComplex (AbSheaf Y)}
+    (h₁ : AcyclicOnPreimages f B S.X₁) (hS : S.ShortExact) [Injective S.X₂] :
+    AcyclicOnPreimages f B S.X₃ :=
+  quotient_acyclic f hS h₁
+
+theorem injective_abelianPushforward (G : AbSheaf Y) [Injective G] :
+    Injective ((push f).obj G) :=
+  inferInstance
+
 end GlobalTheory.SchemeCohomology

@@ -12,14 +12,10 @@ noncomputable section
 def amplitude (ω : PathPauliDisorder) (n : ℕ) (t : ℝ) : ℂ :=
   (unitaryEvolution (pathHamiltonian (pathPauliDisorderShell ω n)) t).trace / (2:ℂ)^(n+2)
 
-/-- A circuit implementing the identity has no gates, so a cut crossing
-at least half the bonds tests the spectral survival amplitude itself. -/
-theorem gaussian_uniform_trace_decay {a T ε : ℝ} (ha : 0<a) (hε : 0<ε) :
-    ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop,
-      ∀ t∈Icc a T, ‖amplitude ω n t‖ < ε := by
-  filter_upwards [gaussian_uniform_cut_overlap (T:=T) ha (by norm_num : (0:ℝ)<1/2) hε] with ω hω
-  filter_upwards [hω] with n hn
-  intro t ht
+/-- The empty circuit leaves a cut across at least half the bonds.
+A large normalized trace therefore witnesses the corresponding cut event. -/
+theorem trace_lt_of_no_cut_event {ω : PathPauliDisorder} {n : ℕ} {t ε : ℝ}
+    (hno : ω ∉ cutOverlapEvent n t (1/2) ε) : ‖amplitude ω n t‖ < ε := by
   let C := TwoQubitCircuit.one (n+2)
   obtain ⟨c,hc⟩ := SpanningDensity.many_crossed C
   change n+1 ≤ 0+2*(SpanningDensity.crossed c).card at hc
@@ -29,10 +25,20 @@ theorem gaussian_uniform_trace_decay {a T ε : ℝ} (ha : 0<a) (hε : 0<ε) :
     linarith only [h]
   apply lt_of_not_ge
   intro h
-  apply hn t ht ⟨C,c,hcut,?_⟩
+  apply hno ⟨C,c,hcut,?_⟩
   rw [norm_inner_symm,inner_choiVector Fintype.card_pos,show C.eval.val=1 from
     congrArg Subtype.val (TwoQubitCircuit.one_eval _),Matrix.conjTranspose_one,Matrix.one_mul]
   simpa [amplitude] using h
+
+/-- A circuit implementing the identity has no gates, so a cut crossing
+at least half the bonds tests the spectral survival amplitude itself. -/
+theorem gaussian_uniform_trace_decay {a T ε : ℝ} (ha : 0<a) (hε : 0<ε) :
+    ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop,
+      ∀ t∈Icc a T, ‖amplitude ω n t‖ < ε := by
+  filter_upwards [gaussian_uniform_cut_overlap (T:=T) ha (by norm_num : (0:ℝ)<1/2) hε] with ω hω
+  filter_upwards [hω] with n hn
+  intro t ht
+  exact trace_lt_of_no_cut_event (hn t ht)
 
 /-- On a single full-measure event all bounded, positive dates separated
 from zero have vanishing normalized trace, even when chosen from the draw. -/

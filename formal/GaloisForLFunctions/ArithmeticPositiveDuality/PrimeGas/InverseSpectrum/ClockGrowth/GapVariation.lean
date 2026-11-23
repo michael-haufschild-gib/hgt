@@ -58,10 +58,11 @@ theorem gap_variation_ratio_tendsto {z : ℂ} (hz : 0 < z.re) :
   have h₂ : 1-x^2 ≠ 0 := by
     rw [show 1-x^2 = (1-x)*(1+x) by ring]
     exact (mul_pos (sub_pos.mpr hx.2) (add_pos zero_lt_one hx.1)).ne'
-  change (‖1-(x:ℂ)^z‖/(1-x^2))/(‖1-(x:ℂ)^(z.re:ℂ)‖/(1-x^2)) = _
+  change (‖1-(x:ℂ)^z‖/(1-x^2))/(‖1-(x:ℂ)^(z.re:ℂ)‖/(1-x^2)) = ‖gapAmplitude z n‖/gapPower z.re n
   rw [div_div_div_cancel_right₀ h₂,← Complex.ofReal_cpow hx.1.le,← Complex.ofReal_one,← Complex.ofReal_sub,
     Complex.norm_real,Real.norm_of_nonneg hp,gap_amplitude_factor,gap_power_factor,
     mul_div_mul_left _ _ (Real.rpow_pos_of_pos (occupationWeight_pos n) z.re).ne']
+  simp only [Complex.ofReal_one,x]
 
 #print axioms gap_variation_ratio_tendsto
 

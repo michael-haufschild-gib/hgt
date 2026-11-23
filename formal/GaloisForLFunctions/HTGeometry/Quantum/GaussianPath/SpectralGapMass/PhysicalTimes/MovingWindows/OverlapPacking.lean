@@ -26,7 +26,7 @@ theorem common_target_card {I E : Type*} [NormedAddCommGroup E] [InnerProductSpa
              exact (norm_inner_le_norm (𝕜:=ℂ) _ _).trans
                (((mul_le_mul (hu i hi) (hu i hi) (norm_nonneg _) zero_le_one).trans_eq (one_mul _)).trans
                  (le_add_of_nonneg_right hd))
-           · simpa only [if_neg h,zero_add] using hsep i hi j hj h.symm
+           · simpa only [if_neg h,zero_add] using hsep i hi j hj (Ne.symm h)
          _ = _ := by simp [sum_add_distrib,hi]
   have hs := _root_.RHTower.Sieve.sum_norm_inner_sq_le_of_schur S u
     (show 0 ≤ 1+(S.card:ℝ)*d by positivity) hrow z
@@ -70,11 +70,14 @@ theorem cover_of_separated_card (B : ℕ) (s : Set ℝ) {r : ℝ} (hr : 0 ≤ r)
         · exact hx
         · exact (hF hv).1) (by
         intro v hv w hw hne
-        rcases mem_insert.mp hv with rfl|hv <;> rcases mem_insert.mp hw with rfl|hw
-        · exact (hne rfl).elim
-        · rw [abs_sub_comm]; exact hfar w hw
-        · exact hfar v hv
-        · exact hd v hv w hw hne)
+        by_cases hvx : v=x
+        · subst v
+          rw [abs_sub_comm]
+          exact hfar w ((mem_insert.mp hw).resolve_left (Ne.symm hne))
+        · have hvF := (mem_insert.mp hv).resolve_left hvx
+          rcases mem_insert.mp hw with hwx|hwF
+          · rw [hwx]; exact hfar v hvF
+          · exact hd v hvF w hwF hne)
       rwa [card_insert_of_notMem hxF,Nat.succ_le_succ_iff] at hp
     obtain ⟨F,hsize,hcover⟩ := ih A hprev
     refine ⟨insert x F,(card_insert_le ..).trans (Nat.succ_le_succ hsize),?_⟩
@@ -97,7 +100,8 @@ theorem volume_of_separated_card (B : ℕ) (s : Set ℝ) {r : ℝ} (hr : 0 ≤ r
   apply (measureReal_mono hsub hfin).trans
   apply (measureReal_biUnion_finset_le F I).trans
   have hlen (x) : volume.real (I x)=2*r := by
-    rw [I,Real.volume_real_Icc_of_le (by linarith only [hr])]
+    dsimp only [I]
+    rw [Real.volume_real_Icc_of_le (by linarith only [hr])]
     ring
   simp only [hlen,sum_const,nsmul_eq_mul]
   exact mul_le_mul_of_nonneg_right (Nat.cast_le.mpr hF) (by positivity)

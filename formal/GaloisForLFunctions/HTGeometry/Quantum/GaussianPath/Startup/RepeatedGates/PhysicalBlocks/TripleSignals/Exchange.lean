@@ -11,6 +11,7 @@ variable {R : Type*} [NormedRing R] [NormedAlgebra ℂ R]
 def oddProbe (A B P : R) : Prop :=
   (A*P=-(P*A) ∧ Commute B P) ∨ (Commute A P ∧ B*P=-(P*B))
 
+omit [NormedAlgebra ℂ R] in
 private theorem odd_product {A B Q : R} (h : oddProbe A B Q) : A*B*Q=-(Q*(A*B)) := by
   rcases h with ⟨hA,hB⟩|⟨hA,hB⟩
   · rw [mul_assoc,hB.eq,←mul_assoc,hA,neg_mul,mul_assoc]
@@ -44,11 +45,12 @@ theorem quarter_exchange_norm {N : ℕ} (A B P Q : Reg N)
   have hs : IsSelfAdjoint (mix A B) := by
     change star (((1/sqrt 2:ℝ):ℂ) • (A+B))=_
     rw [star_smul,star_add,hA.star_eq,hB.star_eq,Complex.star_def,Complex.conj_ofReal]
+    rfl
   have he : star U*P*U=mix A B*P*mix A B := by
     dsimp only [U]
     rw [mix_quarter A B ha hb hab,star_smul,hs.star_eq,Complex.star_def,map_neg,Complex.conj_I,
-      neg_neg,smul_mul_assoc,mul_smul_comm,smul_smul]
-    simp only [mul_neg,Complex.I_mul_I,neg_neg,one_smul]
+      neg_neg,smul_mul_assoc,mul_smul_comm,smul_mul_assoc,smul_smul]
+    simp only [neg_mul,Complex.I_mul_I,neg_neg,one_smul]
   let M := Q*(star U*P*U)
   have hu := unitaryEvolution_mem_unitary hs (π/2)
   have hm : M∈unitary _ := mul_mem hQ (mul_mem (mul_mem (Unitary.star_mem hu) hP) hu)

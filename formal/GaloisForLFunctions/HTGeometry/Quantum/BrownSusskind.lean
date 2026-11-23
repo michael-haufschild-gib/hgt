@@ -127,6 +127,10 @@ import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralGapMass.Physi
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralGapMass.PhysicalTimes.BasisTracking
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralGapMass.PhysicalTimes.BasisCover
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralGapMass.PhysicalTimes.FirstThreeDate
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralGapMass.Bulk.IsolatedFields.FirstThreeScale
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralGapMass.PhysicalTimes.MovingWindows.CrossingBasis
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralGapMass.PhysicalTimes.MovingWindows.InitialWindow
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralGapMass.PhysicalTimes.MovingWindows.Sharpness
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralGapMass.SpectatorCost.InverseSize
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.SpanningDensity.FixedHorizon.GrowingHorizon.Occupation
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.SpanningDensity.FixedHorizon.GrowingHorizon.LogarithmicWindow
@@ -143,4 +147,3 @@ import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.SharpOccupation.Lon
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPauliEarlyLateCircuitLaw
 
 /-! # Circuit complexity along static local Hamiltonian trajectories -/
-import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralGapMass.Bulk.IsolatedFields.GaussianWindow

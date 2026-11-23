@@ -30,6 +30,27 @@ private theorem density_contraction (x : ι → ℝ) {a : ℝ} (ha : 1 ≤ a) :
   rw [one_pow,one_mul,← mul_pow] at h
   linarith only [h]
 
+/-- Lebesgue density after dilating all independent coordinates. -/
+theorem gaussian_dilation_density {a : ℝ} (ha : 0<a) :
+    Measure.map (fun x : ι → ℝ => a • x) (Measure.pi fun _ : ι => gaussianReal 0 1) =
+      volume.withDensity (fun x : ι → ℝ => ENNReal.ofReal
+        ((a^(Fintype.card ι))⁻¹*coordinateGaussianDensityReal (a⁻¹ • x))) := by
+  let e := scaleEquiv (ι:=ι) a ha.ne'
+  let m := Fintype.card ι
+  let ρ (x : ι → ℝ) := ENNReal.ofReal (coordinateGaussianDensityReal x)
+  let ν := (volume : Measure (ι → ℝ))
+  have hρ : Measurable ρ := ENNReal.measurable_ofReal.comp measurable_coordinateGaussianDensityReal
+  have hv : Measure.map e ν=ENNReal.ofReal ((a^m)⁻¹) • ν := by
+    change Measure.map (fun x : ι → ℝ => a • x) ν=_
+    simpa only [Module.finrank_fintype_fun_eq_card,abs_of_pos (inv_pos.mpr (pow_pos ha _))] using
+      Measure.map_addHaar_smul ν ha.ne'
+  change Measure.map e _=_
+  rw [measure_pi_gaussianReal_eq_withDensity,map_withDensity_measurableEquiv ν e hρ,hv,
+    withDensity_smul_measure,←withDensity_smul' _ _ ENNReal.ofReal_ne_top]
+  apply congrArg ν.withDensity
+  funext x
+  exact (ENNReal.ofReal_mul (inv_nonneg.mpr (pow_nonneg ha.le m)) _).symm
+
 /-- Expanding a standard Gaussian by a ≥ 1 lowers its mass on a measurable
 set by at most the Jacobian a^m. This compares the full joint laws. -/
 theorem gaussian_dilation_comparison {a : ℝ} (ha : 1 ≤ a) (E : Set (ι → ℝ)) (hE : MeasurableSet E) :

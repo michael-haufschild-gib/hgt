@@ -32,6 +32,7 @@ def mix {R : Type*} [NormedRing R] [NormedAlgebra ℂ R] (A B : R) :=
 private theorem factor_sq : ((1/sqrt 2:ℝ):ℂ)*((1/sqrt 2:ℝ):ℂ)=1/2 := by
   norm_cast
   rw [←sq,div_pow,sq_sqrt (by norm_num : (0:ℝ)≤2),one_pow]
+  norm_num
 
 private theorem mix_square {R : Type*} [NormedRing R] [NormedAlgebra ℂ R] (A B : R)
     (ha : A*A=1) (hb : B*B=1) (hab : A*B=-(B*A)) : mix A B*mix A B=1 := by

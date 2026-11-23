@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.LocalPacketComparison
-import Mathlib.Analysis.CStarAlgebra.Spectrum
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.FirstAscent.DisjointSites
 
 /-! # A unimodular spectator phase for every packet configuration -/
 open Matrix
@@ -14,15 +14,11 @@ theorem spectator_phase {N : ℕ} {S T : Finset (Fin N)} (hd : Disjoint S T)
     {Y X : Reg N} (hy : IsSiteSupported T Y) (hx : IsSiteSupported S X)
     (hu : Y ∈ unitary _) : ∃ z : ℂ, ‖z‖=1 ∧
       ∀ w, ‖z-X w w‖ ≤ ‖Y-X‖ := by
-  letI : CStarAlgebra (Reg N) := {}
-  obtain ⟨z,hz⟩ := spectrum.nonempty Y
-  refine ⟨z,spectrum.norm_eq_one_of_unitary hu hz,fun w => ?_⟩
-  have hs : z-X w w ∈ spectrum ℂ (Y-algebraMap ℂ (Reg N) (X w w)) := by
-    rw [←spectrum.sub_singleton_eq]
-    exact Set.sub_mem_sub hz (Set.mem_singleton _)
-  have hn := spectrum.norm_le_norm_of_mem hs
-  rw [Algebra.algebraMap_eq_smul_one] at hn
-  exact hn.trans (disjoint_site_diagonal_bound hd.symm hy hx w)
+  obtain ⟨z,hz,h⟩ := FirstAscent.disjoint_unitary_phase hd hx hy hu
+  refine ⟨z,hz,fun w => ?_⟩
+  have he := norm_entry_le_l2_opNorm (X-z • 1) w w
+  simpa only [Matrix.sub_apply,Matrix.smul_apply,Matrix.one_apply_eq,smul_eq_mul,mul_one,
+    norm_sub_rev (X w w) z,norm_sub_rev X Y] using he.trans h
 
 /-- Deleting the packet couplings costs the elapsed time times their
 operator norm. Unitarity keeps the same comparison phase on the unit circle. -/

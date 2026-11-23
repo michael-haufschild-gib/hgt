@@ -1,5 +1,6 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.MaximalError.FieldDeficit
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.IsolatedFieldDensity
+import GaloisForLFunctions.HTGeometry.Quantum.PhysicalCircuitInversion
 
 /-! # Extensive physical gate cost up to every error strictly below two -/
 open Matrix MeasureTheory Filter Real Finset
@@ -9,7 +10,7 @@ noncomputable section
 
 /-- Even an error arbitrarily close to two requires a positive density of
 gates throughout each bounded horizon from inverse-size onset. -/
-theorem gaussian_positive_density_below_diameter {ε T : ℝ} (hε : ε < 2) (hT : 0 ≤ T) :
+private theorem positive_window {ε T : ℝ} (hε : ε < 2) (hT : 0 ≤ T) :
     ∃ A c : ℝ, 0 < A ∧ 0 < c ∧ ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop,
       ∀ t : ℝ, A ≤ (n+2:ℕ)*t → t ≤ T → ∀ s : ℕ,
         HasProjectiveCircuitApproximation (n+2) ε s
@@ -66,6 +67,26 @@ theorem gaussian_positive_density_below_diameter {ε T : ℝ} (hε : ε < 2) (hT
   change (m:ℝ)*t ≤ L at hm
   nlinarith only [hbad,herr,hqeq,hδeq,mul_le_mul_of_nonneg_left ht hq.le,
     mul_le_mul_of_nonneg_right hm hδ.le,hq,show g=2-ε from rfl,hg]
+
+/-- At every fixed tolerance below the projective diameter, a physical
+fit on either side of the identity needs a positive density of gates
+from inverse-size onset through any bounded horizon. -/
+theorem gaussian_positive_density_below_diameter {ε T : ℝ} (hε : ε < 2) (hT : 0 ≤ T) :
+    ∃ A c : ℝ, 0 < A ∧ 0 < c ∧ ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop,
+      ∀ t : ℝ, A ≤ (n+2:ℕ)*|t| → |t| ≤ T → ∀ s : ℕ,
+        HasProjectiveCircuitApproximation (n+2) ε s
+          (unitaryEvolution (pathHamiltonian (pathPauliDisorderShell ω n)) t) → c*(n+2:ℕ) < s := by
+  obtain ⟨A,c,hA,hc,h⟩ := positive_window hε hT
+  refine ⟨A,c,hA,hc,?_⟩
+  filter_upwards [h] with ω hw
+  filter_upwards [hw] with n hn
+  intro t hlo hhi s hf
+  apply hn |t| hlo hhi s
+  rcases le_total 0 t with ht|ht
+  · simpa only [abs_of_nonneg ht] using hf
+  · rw [abs_of_nonpos ht]
+    exact HasProjectiveCircuitApproximation.neg_time
+      ⟨pathHamiltonian (pathPauliDisorderShell ω n),isSelfAdjoint_pathHamiltonian _⟩ hf
 
 #print axioms gaussian_positive_density_below_diameter
 end

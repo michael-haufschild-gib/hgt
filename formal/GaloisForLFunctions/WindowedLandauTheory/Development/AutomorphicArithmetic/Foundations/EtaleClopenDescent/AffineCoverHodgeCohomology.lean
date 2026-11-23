@@ -1,5 +1,7 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.AffineCoverFormCochains
+import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.GradedCechNaturality
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.AffineFormsAcyclic
+import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.AffineFormsCechComparison
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.HodgeCohomology
 
 /-! Hodge cohomology computed by Čech cochains of regular rational forms. -/
@@ -142,17 +144,75 @@ def IsAffCover.formCechLinearEquiv :
 local instance affineHodgeHasExt : HasExt.{0} (TopCat.Sheaf AddCommGrpCat.{0} X) :=
   hasExt_of_enoughInjectives _
 
+include h in
+omit [Smooth s] [LinearOrder ι] in
+private theorem affineCoverAcyclic :
+    CoverAcyclic ⊤ U ((SheafOfModules.toSheaf X.ringCatSheaf).obj (relativeForms s p)) :=
+  fun I hi => relativeForms_acyclicOn s p (by
+    simpa only [coverInter, top_inf_eq] using h.affine I hi)
+
+private def hodgeCoverLeray :
+    FormCechCohomology (s := s) (U := U) p q ≃ₗ[K] HodgeCohomology s p q := by
+  letI := sectionAlgebra s ⊤
+  let e := moduleLerayLinearEquivAt (relativeForms s p) q h.cover.ge
+    (coverInter_empty ⊤ U) (affineCoverAcyclic h p)
+  exact { e.toAddEquiv with map_smul' := fun r x => e.map_smul (algebraMap K Γ(X, ⊤) r) x }
+
 /-- On a smooth integral scheme, the regular rational forms of an affine cover
 compute the Hodge cohomology in every bidegree. -/
 def IsAffCover.hodgeCechEquiv :
-    HodgeCohomology s p q ≃ₗ[K] (R (K := K) (X := X) (B := B) p).H q := by
-  letI := sectionAlgebra s ⊤
-  have e := moduleLerayLinearEquiv ⊤ U (relativeForms s p) q h.cover.ge fun I hi => by
-    apply relativeForms_acyclicOn
-    simpa only [coverInter, top_inf_eq] using h.affine I hi
-  rw [coverInter_empty] at e
-  let eK : FormCechCohomology (s := s) (U := U) p q ≃ₗ[K] HodgeCohomology s p q :=
-    { e.toAddEquiv with map_smul' := fun r x => e.map_smul (algebraMap K Γ(X, ⊤) r) x }
-  exact eK.symm.trans (h.formCechLinearEquiv p q)
+    HodgeCohomology s p q ≃ₗ[K] (R (K := K) (X := X) (B := B) p).H q :=
+  (hodgeCoverLeray h p q).symm.trans (h.formCechLinearEquiv p q)
+
+theorem IsAffCover.hodgeCechEquiv_moduleLeray (x : FormCechCohomology (s := s) (U := U) p q) :
+    h.hodgeCechEquiv p q
+        (moduleLerayLinearEquivAt (relativeForms s p) q h.cover.ge (coverInter_empty ⊤ U)
+          (affineCoverAcyclic h p) x) = h.formCechLinearEquiv p q x :=
+  congrArg (h.formCechLinearEquiv p q) ((hodgeCoverLeray h p q).symm_apply_apply x)
+
+theorem IsAffCover.hodgeCechEquiv_affineFormsLeray
+    (hU : ∀ I : Finset ι, I.Nonempty → IsAffineOpen (coverInter ⊤ U I))
+    (x : FormCechCohomology (s := s) (U := U) p q) :
+    h.hodgeCechEquiv p q (affineFormsLeray s p q h.cover.ge hU x) =
+      h.formCechLinearEquiv p q x :=
+  h.hodgeCechEquiv_moduleLeray p q x
+
+section Naturality
+
+variable {Y : Scheme.{0}} [IsIntegral Y] {t : Y ⟶ Spec (CommRingCat.of K)}
+  [Algebra K Y.functionField] [Smooth t] {κ : Type} [LinearOrder κ]
+  {V : κ → Y.Opens} {B' : Finset κ → Subalgebra K Y.functionField}
+  (g : IsAffCover t V B')
+
+/-- A compatible cochain map becomes the map of regular rational
+cohomology under the affine Čech comparison. -/
+theorem IsAffCover.formCechLinearEquiv_natural
+    (φ : C h p ⟶ C g p)
+    (f : (Finset ι → DR K X.functionField) →ₗ[K] (Finset κ → DR K Y.functionField))
+    (hf : IsMap (R (K := K) (X := X) (B := B) p) (R (K := K) (X := Y) (B := B') p) f)
+    (hφ : ∀ x : (C h p).X q,
+      (g.formCochainsEquiv p q (φ.f q x)).val = f (h.formCochainsEquiv p q x).val)
+    (x : FormCechCohomology (s := s) (U := U) p q) :
+    g.formCechLinearEquiv p q (HomologicalComplex.homologyMap φ q x) =
+      (R (K := K) (X := X) (B := B) p).hmap (R (K := K) (X := Y) (B := B') p) f hf q
+        (h.formCechLinearEquiv p q x) := by
+  let S := (C h p).sc q
+  let T := (C g p).sc q
+  let Φ : S ⟶ T :=
+    (HomologicalComplex.shortComplexFunctor AddCommGrpCat (ComplexShape.up ℕ) q).map φ
+  let K₀ := R (K := K) (X := X) (B := B) p
+  let K₁ := R (K := K) (X := Y) (B := B') p
+  have he (z : S.X₂) :
+      (g.formCochainsEquiv p q (Φ.τ₂ z)).val = f (h.formCochainsEquiv p q z).val := by
+    change (g.formCochainsEquiv p q (φ.f q z)).val = _
+    exact hφ z
+  change cohomologyAddEquiv g p q (ShortComplex.homologyMap Φ x) =
+    K₀.hmap K₁ f hf q (cohomologyAddEquiv h p q x)
+  exact Cx.homologyAddEquiv_natural (K := K₀) (L := K₁) (S := S) (T := T) (n := (q : ℤ))
+    (h.formCochainsEquiv p q) (g.formCochainsEquiv p q)
+    (formCochainsEquiv_cycles h p q) (formCochainsEquiv_cycles g p q)
+    (formCochainsEquiv_boundaries h p q) (formCochainsEquiv_boundaries g p q) Φ f hf he x
+
+end Naturality
 
 end GlobalTheory.PD

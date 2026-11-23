@@ -47,7 +47,15 @@ theorem harmonic_cover_volume {k : ℕ} {s : Set ℝ} (E : Fin k → Set ℝ)
     exact mem_iUnion.mpr ⟨j,hj,hx.2⟩
   have hsub : A ⊆ L := iUnion_subset fun _ => inter_subset_right
   apply (measureReal_mono hs (measure_ne_top_of_subset hsub measure_Icc_lt_top.ne)).trans
-  have he : A=⋃ j∈(univ : Finset (Fin k)), E j∩L := by simp only [mem_univ,iUnion_true,A]
+  have he : A=⋃ j∈(univ : Finset (Fin k)), E j∩L := by
+    ext x
+    constructor
+    · intro hx
+      obtain ⟨j,hj⟩ := mem_iUnion.mp (show x ∈ ⋃ j, E j∩L from hx)
+      exact mem_iUnion₂.mpr ⟨j,Finset.mem_univ _,hj⟩
+    · intro hx
+      obtain ⟨j,_,hj⟩ := mem_iUnion₂.mp hx
+      exact mem_iUnion.mpr ⟨j,hj⟩
   rw [he]
   exact (measureReal_biUnion_finset_le univ _).trans (sum_le_sum (fun i _ => hb i))
 
@@ -81,17 +89,11 @@ theorem exact_three_of_grids {n : ℕ} (hn : 7 ≤ n) (u : PathShell n) (t : ℝ
   obtain ⟨f,hf⟩ := seventeen_phases_of_cdf _ (D:=(2:ℝ)^(n+2)) (by positivity) hl
   exact ⟨⟨W,hW.symm ▸ hp⟩,two_gates_excluded u t f hf⟩
 
-/-- Almost surely on long prefixes, every length-B interval has at most η
-exceptional time for the three-gate minimum after a free change of basis.
-The origin may be any real time on the frozen trajectory. -/
-theorem gaussian_moving_exact_three {η B : ℝ} (hη : 0 < η) :
-    ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop, ∀ v : ℝ,
-      volume.real ({t | ¬exactThreeAt (pathPauliDisorderShell ω n) t} ∩ Icc v (v+B)) ≤ η := by
-  filter_upwards [gaussian_moving_grid (B:=B) 512 (by decide) (by norm_num : (0:ℝ) < 1/512) (half_pos hη),
-    gaussian_moving_grid (B:=B) 17408 (by decide) (by norm_num : (0:ℝ) < 1/(4*17408)) (half_pos hη)] with ω hω hω'
-  filter_upwards [hω,hω',eventually_ge_atTop 7] with n hn hn' hN
-  intro v
-  let u := pathPauliDisorderShell ω n
+/-- Failure of the exact count lies in the union of the two grid exceptions. -/
+theorem bound_exact_three_exception {n : ℕ} (hN : 7 ≤ n) (u : PathShell n) (v B a b : ℝ)
+    (ha : volume.real ({t | ¬goodGrid u t 512 (1/512)} ∩ Icc v (v+B)) ≤ a)
+    (hb : volume.real ({t | ¬goodGrid u t 17408 (1/(4*17408))} ∩ Icc v (v+B)) ≤ b) :
+    volume.real ({t | ¬exactThreeAt u t} ∩ Icc v (v+B)) ≤ a+b := by
   let L := Icc v (v+B)
   let E := {t | ¬goodGrid u t 512 (1/512)}∩L
   let F := {t | ¬goodGrid u t 17408 (1/(4*17408))}∩L
@@ -103,7 +105,19 @@ theorem gaussian_moving_exact_three {η B : ℝ} (hη : 0 < η) :
   have hf : E∪F ⊆ L := union_subset inter_subset_right inter_subset_right
   apply ((measureReal_mono he (measure_ne_top_of_subset hf measure_Icc_lt_top.ne)).trans
     (measureReal_union_le E F)).trans
-  exact (add_le_add (hn v) (hn' v)).trans_eq (add_halves _)
+  exact add_le_add ha hb
+
+/-- Almost surely on long prefixes, every length-B interval has at most η
+exceptional time for the three-gate minimum after a free change of basis.
+The origin may be any real time on the frozen trajectory. -/
+theorem gaussian_moving_exact_three {η B : ℝ} (hη : 0 < η) :
+    ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop, ∀ v : ℝ,
+      volume.real ({t | ¬exactThreeAt (pathPauliDisorderShell ω n) t} ∩ Icc v (v+B)) ≤ η := by
+  filter_upwards [gaussian_moving_grid (B:=B) 512 (by decide) (by norm_num : (0:ℝ) < 1/512) (half_pos hη),
+    gaussian_moving_grid (B:=B) 17408 (by decide) (by norm_num : (0:ℝ) < 1/(4*17408)) (half_pos hη)] with ω hω hω'
+  filter_upwards [hω,hω',eventually_ge_atTop 7] with n hn hn' hN
+  intro v
+  exact (bound_exact_three_exception hN _ v B _ _ (hn v) (hn' v)).trans_eq (add_halves _)
 
 #print axioms grid_failure_cover
 #print axioms gaussian_moving_exact_three

@@ -144,6 +144,33 @@ private theorem adjoint_id (G : AbSheaf Y) :
   exact (congrArg (fun a => a ≫ (abAdj f).counit.app G)
     ((abPullback f).map_id ((abPushforward f).obj G))).trans (Category.id_comp _)
 
+private theorem abelianPushforwardComparison_zero_mk₀ (G : AbSheaf Y) (U : Opens X)
+    (a : openFree U ⟶ (abPushforward f).obj G) :
+    abelianPushforwardComparison f G U 0 (Ext.mk₀ a) =
+      Ext.mk₀ ((openFreeHomEquiv ((Opens.map f).obj U) G).symm
+        (openFreeHomEquiv U ((abPushforward f).obj G) a)) := by
+  let V := (Opens.map f).obj U
+  change ((Ext.mk₀ (pullbackOpenFree f U)).comp
+      ((Ext.mk₀ a).mapExactFunctor (abPullback f)) rfl).comp
+      (Ext.mk₀ (((abAdj f).homEquiv _ G).symm (𝟙 _))) rfl = _
+  rw [Ext.mapExactFunctor_mk₀, Ext.mk₀_comp_mk₀, Ext.mk₀_comp_mk₀]
+  apply congrArg (fun m : openFree V ⟶ G => Ext.mk₀ m)
+  apply (openFreeHomEquiv V G).injective
+  rw [Category.assoc, pullbackOpenFree_comp, ← Adjunction.homEquiv_naturality_left_symm,
+    Category.comp_id]
+  change openFreeHomEquiv U _ ((abAdj f).homEquiv _ G (((abAdj f).homEquiv _ G).symm a)) =
+    openFreeHomEquiv V G ((openFreeHomEquiv V G).symm (openFreeHomEquiv U _ a))
+  rw [Equiv.apply_symm_apply, Equiv.apply_symm_apply]
+
+/-- The direct-image comparison sends the degree-zero class of a section
+to the class of that section on the inverse-image open. -/
+theorem abelianPushforwardComparison_zero_section (G : AbSheaf Y) (U : Opens X)
+    (z : ((abPushforward f).obj G).1.obj (op U)) :
+    abelianPushforwardComparison f G U 0
+      (Ext.mk₀ ((openFreeHomEquiv U ((abPushforward f).obj G)).symm z)) =
+        Ext.mk₀ ((openFreeHomEquiv ((Opens.map f).obj U) G).symm z) := by
+  rw [abelianPushforwardComparison_zero_mk₀, Equiv.apply_symm_apply]
+
 theorem abelianPushforwardComparison_bijective_zero (G : AbSheaf Y) (U : Opens X) :
     Function.Bijective (abelianPushforwardComparison f G U 0) := by
   let V := (Opens.map f).obj U
@@ -152,20 +179,10 @@ theorem abelianPushforwardComparison_bijective_zero (G : AbSheaf Y) (U : Opens X
   have he : (abelianPushforwardComparison f G U 0 : _ → _) = E := by
     funext x
     obtain ⟨a, rfl⟩ := (Ext.mk₀_bijective _ _).surjective x
-    change ((Ext.mk₀ (pullbackOpenFree f U)).comp
-        ((Ext.mk₀ a).mapExactFunctor (abPullback f)) rfl).comp
-        (Ext.mk₀ (((abAdj f).homEquiv _ G).symm (𝟙 _))) rfl =
-      Ext.addEquiv₀.symm (e (Ext.addEquiv₀ (Ext.mk₀ a)))
-    have e₀ : Ext.addEquiv₀ (Ext.mk₀ a) = a := Ext.addEquiv₀.apply_symm_apply a
-    rw [Ext.mapExactFunctor_mk₀, Ext.mk₀_comp_mk₀, Ext.mk₀_comp_mk₀,
-      ← Ext.addEquiv₀_symm_apply, e₀]
-    apply congrArg (fun m : openFree V ⟶ G => Ext.addEquiv₀.symm m)
-    apply (openFreeHomEquiv V G).injective
-    rw [Category.assoc, pullbackOpenFree_comp, ← Adjunction.homEquiv_naturality_left_symm,
-      Category.comp_id]
-    change openFreeHomEquiv U _ ((abAdj f).homEquiv _ G (((abAdj f).homEquiv _ G).symm a)) =
-      openFreeHomEquiv V G ((openFreeHomEquiv V G).symm (openFreeHomEquiv U _ a))
-    rw [Equiv.apply_symm_apply, Equiv.apply_symm_apply]
+    change _ = Ext.addEquiv₀.symm (e (Ext.addEquiv₀ (Ext.mk₀ a)))
+    have ea : Ext.addEquiv₀ (Ext.mk₀ a) = a := Ext.addEquiv₀.apply_symm_apply a
+    rw [ea, Ext.addEquiv₀_symm_apply]
+    exact abelianPushforwardComparison_zero_mk₀ f G U a
   exact he.symm ▸ E.bijective
 
 theorem abelianPushforwardComparison_boundary {S : ShortComplex (AbSheaf Y)} (hS : S.ShortExact)

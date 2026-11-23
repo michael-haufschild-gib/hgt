@@ -79,26 +79,17 @@ theorem overlap_vertical_shift_eq (t : ExceptionalTime) (j : ℕ) (a : ℝ) (s :
       ← Complex.exp_add]
     suffices h0 : conj ((Real.log v : ℂ) * z) + (Real.log v : ℂ) * z = 0 by
       rw [h0, Complex.exp_zero]
-    simp [z, mul_assoc]
+    simp [z]
   have hCv_split : ((((tailRadix t j).val : ℝ) * v : ℝ) : ℂ) ^ z =
       ((tailRadix t j).val : ℂ) ^ z * (v : ℂ) ^ z := by
     rw [Complex.ofReal_mul, Complex.mul_cpow_ofReal_nonneg hC_pos.le hv.le, Complex.ofReal_natCast]
   unfold ComplementaryHalves.overlap ComplementaryHalves.reading
-  rw [Complex.cpow_add _ _ hv_ne, Complex.cpow_add _ _ hCv_ne, hCv_split, map_mul, map_mul]
-  calc (conj ((v : ℂ) ^ s) * conj ((v : ℂ) ^ z) * conj (cutoffHeat t j a v : ℂ)) *
-          (((↑((tailRadix t j).val : ℝ) * ↑v) ^ s *
-            (((tailRadix t j).val : ℂ) ^ z * (v : ℂ) ^ z)) *
-            (cutoffHeat t j a (((tailRadix t j).val : ℝ) * v) : ℂ))
-      = ((tailRadix t j).val : ℂ) ^ z * (conj ((v : ℂ) ^ z) * (v : ℂ) ^ z) *
-          ((conj ((v : ℂ) ^ s) * conj (cutoffHeat t j a v : ℂ)) *
-            ((↑((tailRadix t j).val : ℝ) * ↑v) ^ s *
-              (cutoffHeat t j a (((tailRadix t j).val : ℝ) * v) : ℂ))) := by
-        push_cast; ring
-    _ = ((tailRadix t j).val : ℂ) ^ z *
-          ((conj ((v : ℂ) ^ s) * conj (cutoffHeat t j a v : ℂ)) *
-            (((((tailRadix t j).val : ℝ) * v : ℝ) : ℂ) ^ s *
-              (cutoffHeat t j a (((tailRadix t j).val : ℝ) * v) : ℂ))) := by
-        rw [hconj_unit, mul_one]; push_cast; ring
+  rw [Complex.cpow_add _ _ hv_ne, Complex.cpow_add _ _ hCv_ne, hCv_split]
+  simp only [map_mul]
+  linear_combination
+    (((tailRadix t j).val : ℂ) ^ z * conj ((v : ℂ) ^ s) * conj (cutoffHeat t j a v : ℂ) *
+      ((((tailRadix t j).val : ℝ) * v : ℝ) : ℂ) ^ s *
+      (cutoffHeat t j a (((tailRadix t j).val : ℝ) * v) : ℂ)) * hconj_unit
 
 /-- The positive-time norm of `overlap t j a s s v` is strictly invariant under vertical shifts. -/
 theorem norm_self_overlap_vertical_invariant (t : ExceptionalTime) (j : ℕ) (a : ℝ) (s : ℂ)
@@ -137,7 +128,7 @@ theorem exists_nonvanishing_real_with_identical_self_overlap
 
 /-! ### Part 2: Two-sided heat pinch, Haar-`L^2` reading frontier, and the dyadic overlap integral -/
 
-private theorem singleHeat_nonneg (C : Radix) (a : ℝ) {v : ℝ} (hv : 0 < v) :
+private theorem singleHeat_nonneg (C : Radix) (a : ℝ) {v : ℝ} (_hv : 0 < v) :
     0 ≤ singleHeat C a v :=
   tsum_nonneg fun _ => (Real.exp_pos _).le
 
@@ -206,8 +197,7 @@ private theorem integrableOn_exp_neg_mul_rpow {α q : ℝ} (hα : 0 < α) (hq : 
   have hcomp := (integrableOn_Ioi_comp_mul_left_iff
     (fun u : ℝ => Real.exp (-u) * u ^ (q - 1)) 0 hα).mpr hG
   have hpow_pos : 0 < α ^ (q - 1) := Real.rpow_pos_of_pos hα _
-  refine (hcomp.const_mul (α ^ (q - 1))⁻¹).congr_fun (fun v hv => ?_) measurableSet_Ioi
-  dsimp only
+  refine IntegrableOn.congr_fun (hcomp.const_mul (α ^ (q - 1))⁻¹) (fun v hv => ?_) measurableSet_Ioi
   rw [Real.mul_rpow hα.le (le_of_lt hv), neg_mul]
   field_simp [hpow_pos.ne']
 
@@ -245,8 +235,7 @@ private theorem integrableOn_rpow_mul_kernel_iff (C : Radix) {a : ℝ} (ha : 0 <
         (mul_le_mul hexp_ge hinv_ge (inv_nonneg.mpr hv0.le) (Real.exp_pos _).le)
         (Real.rpow_nonneg hv0.le _)
     have hrpow : IntegrableOn (fun v : ℝ => v ^ (p - 1)) (Ioo 0 1) := by
-      refine (hlow.const_mul (Real.exp α)).congr_fun (fun v _ => ?_) measurableSet_Ioo
-      dsimp only
+      refine IntegrableOn.congr_fun (hlow.const_mul (Real.exp α)) (fun v _ => ?_) measurableSet_Ioo
       rw [← mul_assoc, ← Real.exp_add, add_neg_cancel, Real.exp_zero, one_mul]
     have hgt := (intervalIntegral.integrableOn_Ioo_rpow_iff zero_lt_one).mp hrpow
     linarith
@@ -306,6 +295,7 @@ theorem integrableOn_norm_sq_reading_haar_iff (t : ExceptionalTime) (j : ℕ) {a
     refine (h1.mul h2).congr ?_
     filter_upwards [ae_restrict_mem measurableSet_Ioi] with v hv
     have hv0 : 0 < v := hv
+    dsimp only [Pi.mul_apply]
     unfold ComplementaryHalves.reading
     rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hv0, Complex.norm_real, Real.norm_eq_abs,
       mul_pow, sq_abs, ← Real.rpow_natCast (v ^ s.re) 2, ← Real.rpow_mul hv0.le]
@@ -357,9 +347,9 @@ theorem integrableOn_norm_sq_reading_haar_iff (t : ExceptionalTime) (j : ℕ) {a
         (Ioi 0) := by
       have hc_pos : 0 < (((tailRadix t j).val : ℝ)⁻¹) ^ (2 * s.re - 1) :=
         Real.rpow_pos_of_pos hC_inv _
-      refine (hcomp.const_mul ((((tailRadix t j).val : ℝ)⁻¹) ^ (2 * s.re - 1))⁻¹).congr_fun
+      refine IntegrableOn.congr_fun
+        (hcomp.const_mul ((((tailRadix t j).val : ℝ)⁻¹) ^ (2 * s.re - 1))⁻¹)
         (fun v hv => ?_) measurableSet_Ioi
-      dsimp only
       rw [Real.mul_rpow hC_inv.le (le_of_lt hv), inv_mul_eq_div]
       field_simp [hc_pos.ne']
     refine hdom.mono' hmeas_rd ?_
@@ -400,19 +390,20 @@ theorem split_isometric_iff_reading_haar_frontier (t : ExceptionalTime) (j : ℕ
   let U : Set ℂ := {z : ℂ | (1 / 2 : ℝ) < z.re}
   have hU_open : IsOpen U := isOpen_lt continuous_const Complex.continuous_re
   have hU_cl_sub : closure U ⊆ {z : ℂ | (1 / 2 : ℝ) ≤ z.re} :=
-    closure_minimal (fun _ hz => le_of_lt hz) (isClosed_le continuous_const Complex.continuous_re)
+    closure_minimal (fun _ hz => show (1 / 2 : ℝ) ≤ _ from le_of_lt hz)
+      (isClosed_le continuous_const Complex.continuous_re)
   constructor
   · intro hs_eq
     rw [frontier, hU_open.interior_eq]
-    refine ⟨?_, fun hgt => hs_eq.not_lt hgt⟩
-    have htend : Tendsto (fun n : ℕ => s + ((((n : ℝ) + 1)⁻¹ : ℝ) : ℂ)) atTop (𝓝 s) := by
-      have h0 : Tendsto (fun n : ℕ => ((((n : ℝ) + 1)⁻¹ : ℝ) : ℂ)) atTop (𝓝 0) :=
+    refine ⟨?_, fun hgt => (show (1 / 2 : ℝ) < s.re from hgt).ne hs_eq.symm⟩
+    have htend : Tendsto (fun n : ℕ => s + (((1 / ((n : ℝ) + 1) : ℝ) : ℂ))) atTop (𝓝 s) := by
+      have h0 : Tendsto (fun n : ℕ => (((1 / ((n : ℝ) + 1) : ℝ) : ℂ))) atTop (𝓝 0) :=
         (Complex.continuous_ofReal.tendsto 0).comp tendsto_one_div_add_atTop_nhds_zero_nat
       simpa only [add_zero] using tendsto_const_nhds.add h0
     refine mem_closure_of_tendsto htend (Eventually.of_forall fun n => ?_)
-    show (1 / 2 : ℝ) < (s + ((((n : ℝ) + 1)⁻¹ : ℝ) : ℂ)).re
+    show (1 / 2 : ℝ) < (s + (((1 / ((n : ℝ) + 1) : ℝ) : ℂ))).re
     rw [Complex.add_re, Complex.ofReal_re, hs_eq]
-    have hpos : (0 : ℝ) < ((n : ℝ) + 1)⁻¹ := inv_pos.mpr (by positivity)
+    have hpos : (0 : ℝ) < 1 / ((n : ℝ) + 1) := div_pos one_pos (by positivity)
     linarith
   · intro hmem
     rw [frontier, hU_open.interior_eq] at hmem
@@ -433,14 +424,14 @@ def dyadicOverlapContrast (t : ExceptionalTime) (j : ℕ) (s : ℂ) (v : ℝ) : 
 
 private theorem kernel_center_eq_inv_two_sinh (t : ExceptionalTime) (j : ℕ) {v : ℝ} (hv : 0 < v) :
     kernel (clockRadix t j) (BalancedShift.center t j) v = 1 / (2 * Real.sinh (v / 2)) := by
-  have h1 := heat_product (clockRadix t j) (midpoint (clockRadix t j)) ⟨v, hv⟩
+  have h1 := heat_product (clockRadix t j) (ComplementaryHalves.midpoint (clockRadix t j)) ⟨v, hv⟩
   have h2 := centered_heat_product (clockRadix t j) ⟨v, hv⟩
   exact h1.symm.trans h2
 
 /-- Positive-time factorization and modulus coupling of `holomorphicOverlap`:
 1. `holomorphicOverlap t j s v` is the unconjugated product of complementary half-time readings;
 2. `holomorphicOverlap t j s v = C^{s / 2} v^s / (2 sinh(v / 2))`;
-3. `‖holomorphicOverlap t j s v‖^2 = (v * kernel C a_* v) * ‖overlap t j a_* s s v‖`. -/
+3. `‖holomorphicOverlap t j s v‖^2 = kernel C a_* v * ‖overlap t j a_* s s v‖`. -/
 theorem holomorphicOverlap_eq_mul_reading_and_norm_sq (t : ExceptionalTime) (j : ℕ) (s : ℂ)
     {v : ℝ} (hv : 0 < v) :
     holomorphicOverlap t j s v =
@@ -451,7 +442,7 @@ theorem holomorphicOverlap_eq_mul_reading_and_norm_sq (t : ExceptionalTime) (j :
         ((tailRadix t j).val : ℂ) ^ (s / 2) * (v : ℂ) ^ s *
           (((1 / (2 * Real.sinh (v / 2)) : ℝ) : ℂ)) ∧
       ‖holomorphicOverlap t j s v‖ ^ 2 =
-        (v * kernel (clockRadix t j) (BalancedShift.center t j) v) *
+        kernel (clockRadix t j) (BalancedShift.center t j) v *
           ‖ComplementaryHalves.overlap t j (BalancedShift.center t j) s s v‖ := by
   set a₀ := BalancedShift.center t j
   have hC_pos : (0 : ℝ) < (tailRadix t j).val := Nat.cast_pos.mpr (tailRadix t j).pos
@@ -523,8 +514,8 @@ theorem integrableOn_holomorphicOverlap_div_iff (t : ExceptionalTime) (j : ℕ) 
   let C := clockRadix t j
   let a₀ := BalancedShift.center t j
   have ha₀ : 0 < a₀ := by
-    change 0 < midpoint C
-    unfold midpoint
+    change 0 < ComplementaryHalves.midpoint C
+    unfold ComplementaryHalves.midpoint
     exact div_pos one_pos (by positivity)
   have hC_pos : (0 : ℝ) < (tailRadix t j).val := Nat.cast_pos.mpr (tailRadix t j).pos
   have hc_pos : 0 < ((tailRadix t j).val : ℝ) ^ (s.re / 2) := Real.rpow_pos_of_pos hC_pos _
@@ -560,9 +551,12 @@ theorem integrableOn_holomorphicOverlap_div_iff (t : ExceptionalTime) (j : ℕ) 
       Real.norm_of_nonneg hker_pos.le, Real.norm_of_nonneg hv.le]
     have hre_half : (s / 2).re = s.re / 2 := by simp
     have hvp : v ^ s.re / v = v ^ (s.re - 1) := by
-      rw [div_eq_mul_inv, ← Real.rpow_neg_one v, ← Real.rpow_add hv]
-      congr 1; ring
-    rw [hre_half, mul_div_assoc, mul_div_right_comm (v ^ s.re), hvp, mul_assoc]
+      rw [sub_eq_add_neg, Real.rpow_add hv, Real.rpow_neg_one, div_eq_mul_inv]
+    rw [hre_half]
+    calc (((tailRadix t j).val : ℝ) ^ (s.re / 2) * v ^ s.re * kernel C a₀ v) / v
+        = ((tailRadix t j).val : ℝ) ^ (s.re / 2) * ((v ^ s.re / v) * kernel C a₀ v) := by ring
+      _ = ((tailRadix t j).val : ℝ) ^ (s.re / 2) * (v ^ (s.re - 1) * kernel C a₀ v) := by
+        rw [hvp]
   rw [IntegrableOn, ← integrable_norm_iff (hcont.aestronglyMeasurable measurableSet_Ioi)]
   have hcongr : Integrable (fun v : ℝ => ‖holomorphicOverlap t j s v / (v : ℂ)‖)
       (volume.restrict (Ioi 0)) ↔
@@ -573,9 +567,9 @@ theorem integrableOn_holomorphicOverlap_div_iff (t : ExceptionalTime) (j : ℕ) 
   constructor
   · intro hint
     have hker : IntegrableOn (fun v : ℝ => v ^ (s.re - 1) * kernel C a₀ v) (Ioi 0) := by
-      refine (hint.const_mul (((tailRadix t j).val : ℝ) ^ (s.re / 2))⁻¹).congr_fun
+      refine IntegrableOn.congr_fun
+        (hint.const_mul (((tailRadix t j).val : ℝ) ^ (s.re / 2))⁻¹)
         (fun v _ => ?_) measurableSet_Ioi
-      dsimp only
       field_simp [hc_pos.ne']
     have hp := (integrableOn_rpow_mul_kernel_iff C ha₀ (s.re - 1)).mp hker
     linarith
@@ -589,26 +583,25 @@ private theorem boson_fermion_dyadic_sinh_eq {v : ℝ} (hv : 0 < v) :
   set u : ℝ := Real.exp (v / 2)
   have hu0 : 0 < u := Real.exp_pos _
   have hu1 : 1 < u := Real.one_lt_exp_iff.mpr (half_pos hv)
-  have hu_add : u + 1 ≠ 0 := by linarith
-  have hu2_add : u ^ 2 + 1 ≠ 0 := by nlinarith
+  have hu_m1 : u - 1 ≠ 0 := by linarith
+  have hu_p1 : u + 1 ≠ 0 := by linarith
+  have hu2_p1 : u ^ 2 + 1 ≠ 0 := by nlinarith
   have hexp_v : Real.exp v = u ^ 2 := by
     dsimp only [u]; rw [sq, ← Real.exp_add, add_halves]
-  have hexp_nv2 : Real.exp (-(v / 2)) = u⁻¹ := Real.exp_neg (v / 2)
-  have hexp_nv : Real.exp (-v) = (u ^ 2)⁻¹ := by rw [Real.exp_neg, hexp_v]
-  rw [Real.sinh_eq, Real.sinh_eq, hexp_nv2, hexp_v, hexp_nv]
-  change 1 / (2 * ((u - u⁻¹) / 2)) - 1 / ((u ^ 2 - (u ^ 2)⁻¹) / 2) =
+  have hsh1 : 2 * Real.sinh (v / 2) = ((u - 1) * (u + 1)) / u := by
+    rw [Real.sinh_eq, show Real.exp (-(v / 2)) = u⁻¹ from Real.exp_neg _]
+    change 2 * ((u - u⁻¹) / 2) = _
+    field_simp [hu0.ne']
+    ring
+  have hsh2 : Real.sinh v = ((u - 1) * (u + 1) * (u ^ 2 + 1)) / (2 * u ^ 2) := by
+    rw [Real.sinh_eq, hexp_v, Real.exp_neg, hexp_v]
+    field_simp [hu0.ne']
+    ring
+  rw [hsh1, hsh2, hexp_v]
+  change 1 / (((u - 1) * (u + 1)) / u) -
+      1 / (((u - 1) * (u + 1) * (u ^ 2 + 1)) / (2 * u ^ 2)) =
     (u + 1)⁻¹ - (u ^ 2 + 1)⁻¹
-  have hd1 : u - u⁻¹ ≠ 0 := by
-    intro h
-    have hm := congrArg (fun x => u * x) h
-    simp only [mul_sub, mul_inv_cancel₀ hu0.ne', mul_zero] at hm
-    nlinarith
-  have hd2 : u ^ 2 - (u ^ 2)⁻¹ ≠ 0 := by
-    intro h
-    have hm := congrArg (fun x => u ^ 2 * x) h
-    simp only [mul_sub, mul_inv_cancel₀ (pow_ne_zero 2 hu0.ne'), mul_zero] at hm
-    nlinarith
-  field_simp [hu0.ne', hu_add, hu2_add, hd1, hd2]
+  field_simp [hu0.ne', hu_m1, hu_p1, hu2_p1]
   ring
 
 private theorem dyadicOverlapContrast_div_eq_salemFermi (t : ExceptionalTime) (j : ℕ) (s : ℂ)
@@ -669,7 +662,8 @@ theorem integrableOn_dyadicOverlapContrast_div (t : ExceptionalTime) (j : ℕ)
   have hf_half : MellinConvergent
       (fun v : ℝ => _root_.RHTower.salemFermiKernel ((1 / 2 : ℝ) * v)) s :=
     (MellinConvergent.comp_mul_left (by norm_num : (0 : ℝ) < 1 / 2)).mpr hf
-  refine ((hf_half.sub hf).const_mul (((tailRadix t j).val : ℂ) ^ (s / 2))).congr_fun
+  exact IntegrableOn.congr_fun
+    ((hf_half.sub hf).const_mul (((tailRadix t j).val : ℂ) ^ (s / 2)))
     (fun v hv => (dyadicOverlapContrast_div_eq_salemFermi t j s hv).symm) measurableSet_Ioi
 
 /-- **Unrenormalized Haar integral of `dyadicOverlapContrast` for `continued`:**
@@ -752,9 +746,10 @@ theorem integral_holomorphicOverlap_div_eq (t : ExceptionalTime) (j : ℕ)
     have hsplit : EqOn (fun v : ℝ => dyadicOverlapContrast t j s v / (v : ℂ))
         (fun v : ℝ => g v - (2 : ℂ) ^ (1 - s) * ((2 : ℂ) * g (2 * v))) (Ioi 0) := by
       intro v hv
+      have h2 : holomorphicOverlap t j s (2 * v) / (v : ℂ) = (2 : ℂ) * g (2 * v) := h2v_eq hv
+      dsimp only
       unfold dyadicOverlapContrast
-      rw [sub_div, mul_div_assoc, h2v_eq hv]
-      rfl
+      rw [sub_div, mul_div_assoc, h2]
     rw [setIntegral_congr_fun measurableSet_Ioi hsplit,
       integral_sub hg_int ((hg2_int.const_mul 2).const_mul _),
       integral_const_mul, integral_const_mul,
@@ -817,7 +812,7 @@ def jointSurvivingControlsAt (r : ℕ) (z : ℂ) (p K : ℝ) : Prop :=
 def jointSurvivingTracePowers (r : ℕ) (z : ℂ) : Set ℝ :=
   {p | 0 < p ∧ ∃ K : ℝ, jointSurvivingControlsAt r z p K}
 
-private theorem relativeReading_hot (f : ℝ → ℝ) (r : ℕ) :
+private theorem relativeReading_hot (f : SpectralResponse) (r : ℕ) :
     relativeReading f (hotEdge r) = 0 := by
   simp [relativeReading, spectralDrop, hotEdge]
 
@@ -859,9 +854,9 @@ theorem exists_small_trace_jointSurviving_violation (r : ℕ) {z : ℂ} (hz : 0 
     have hcont_jsp : Continuous (fun b : SpectralBand (r + 1) =>
         ‖jointSurvivingPartition b z‖ ^ p) := by
       have hc1 : Continuous (fun b : SpectralBand (r + 1) => jointSurvivingPartition b z) := by
-        simpa only [jointSurvivingPartition_eq_continued_sub] using
-          continuous_const.sub (continuous_const.mul
-            (continuous_relativePartition_spectrum hz (r + 1)))
+        simp_rw [jointSurvivingPartition_eq_continued_sub]
+        exact Continuous.sub continuous_const (continuous_const.mul
+          (continuous_relativePartition_spectrum hz (r + 1)))
       exact (Real.continuous_rpow_const hp.le).comp hc1.norm
     let S : Set (SpectralBand (r + 1)) :=
       {b | ‖jointSurvivingPartition b z‖ ^ p ≤ A * relativeReading quadraticResponse b}

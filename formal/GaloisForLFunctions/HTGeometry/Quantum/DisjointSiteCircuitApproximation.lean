@@ -80,28 +80,24 @@ section Site
 variable {Q : Type*} [Fintype Q] [DecidableEq Q] {A : Q → Type*}
     [∀ q, Fintype (A q)] [∀ q, DecidableEq (A q)] [∀ q, Nonempty (A q)]
 
-/-- Every individual diagonal entry of an operator on disjoint sites
-gives a scalar approximation at least as accurate as the full operator. -/
-theorem disjoint_site_diagonal_bound {S T : Finset Q} (hST : Disjoint S T)
-    {X Y : Matrix (∀ q, A q) (∀ q, A q) ℂ} (hX : IsSiteSupported S X) (hY : IsSiteSupported T Y) (x : ∀ q, A q) :
-    ‖X - (Y x x) • (1 : Matrix (∀ q, A q) (∀ q, A q) ℂ)‖ ≤ ‖X-Y‖ := by
+/-- A matrix on disjoint sites approximates an operator no better than a
+complex scalar at the same error. -/
+theorem disjoint_site_scalar_bound {S T : Finset Q} (hST : Disjoint S T)
+    {X Y : Matrix (∀ q, A q) (∀ q, A q) ℂ} (hX : IsSiteSupported S X) (hY : IsSiteSupported T Y) :
+    ∃ z : ℂ, ‖X - z • (1 : Matrix (∀ q, A q) (∀ q, A q) ℂ)‖ ≤ ‖X-Y‖ := by
   classical
   obtain ⟨B,rfl⟩ := exists_liftLocalMatrix_of_isSiteSupported hX
   obtain ⟨C,rfl⟩ := exists_liftLocalMatrix_of_isSiteSupported hY
   let Z := liftLocalMatrixOutsideDisjoint hST C
+  let a : OutsideConfiguration A S := Classical.arbitrary _
   let e := configurationSplitEquiv A S
   let Φ := Matrix.reindexAlgEquiv ℂ ℂ e
   have hB : Φ (liftLocalMatrix S B) = B ⊗ₖ (1 : Matrix (OutsideConfiguration A S) (OutsideConfiguration A S) ℂ) :=
     reindex_liftLocalMatrix_eq_kronecker_one S B
   have hC : Φ (liftLocalMatrix T C) = (1 : Matrix (LocalConfiguration A S) (LocalConfiguration A S) ℂ) ⊗ₖ Z :=
     reindex_liftLocalMatrix_disjoint_eq_one_kronecker hST C
-  let a := (e x).2
   let z := Z a a
-  have hz : liftLocalMatrix T C x x = z := by
-    have h := congrArg (fun M => M (e x) (e x)) hC
-    simpa only [Φ,Matrix.reindexAlgEquiv_apply,Matrix.reindex_apply,Matrix.submatrix_apply,
-      Equiv.symm_apply_apply,Matrix.kroneckerMap_apply,Matrix.one_apply_eq,one_mul,z,a] using h
-  rw [hz]
+  refine ⟨z,?_⟩
   rw [← l2_opNorm_reindexAlgEquiv_eq e (liftLocalMatrix S B - z • 1),
     ← l2_opNorm_reindexAlgEquiv_eq e (liftLocalMatrix S B - liftLocalMatrix T C)]
   change ‖Φ _‖ ≤ ‖Φ _‖
@@ -113,14 +109,6 @@ theorem disjoint_site_diagonal_bound {S T : Finset Q} (hST : Disjoint S T)
       simp [Matrix.kroneckerMap_apply,hij,hab]
   rw [he,l2_opNorm_kronecker_one]
   exact disjoint_factor_scalar_bound B Z a
-
-/-- A matrix on disjoint sites approximates an operator no better than a
-complex scalar at the same error. -/
-theorem disjoint_site_scalar_bound {S T : Finset Q} (hST : Disjoint S T)
-    {X Y : Matrix (∀ q, A q) (∀ q, A q) ℂ} (hX : IsSiteSupported S X) (hY : IsSiteSupported T Y) :
-    ∃ z : ℂ, ‖X - z • (1 : Matrix (∀ q, A q) (∀ q, A q) ℂ)‖ ≤ ‖X-Y‖ := by
-  let x : ∀ q, A q := fun _ => Classical.arbitrary _
-  exact ⟨Y x x,disjoint_site_diagonal_bound hST hX hY x⟩
 
 /-- Deleting the terms incident on a circuit's sites costs at most twice the
 elapsed time times their total operator norm when testing against scalars. -/

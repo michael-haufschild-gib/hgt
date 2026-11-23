@@ -42,6 +42,7 @@ theorem matchedTraceCoefficient_bounds {z : ℂ} (hz : 0 < z.re) (h₂ : z.re �
   have he := matchedTraceCoefficient_isLeast 0 hz h₂
   have hm : z.re*(2/z.re) = 2 := by rw [mul_comm,div_mul_cancel₀ _ hz.ne']
   refine ⟨matched_height_factor_lower hz (div_pos (by norm_num) hz) hm he.1,he.2 ?_⟩
+  change traceControlsAt 1 z (2/z.re) ((‖z‖/z.re)^(2/z.re))
   simpa only [Nat.cast_one,Real.one_rpow,mul_one] using matched_trace_control 1 hz h₂
 
 /-- On the isometric composition line the optimal rank-one coefficient grows to fourth order in the complex modulus. -/
