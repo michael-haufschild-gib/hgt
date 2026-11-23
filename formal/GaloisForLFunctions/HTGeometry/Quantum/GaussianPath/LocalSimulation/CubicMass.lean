@@ -1,23 +1,24 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.LocalSimulation.ShellSums
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.LocalSimulation.CoordinateLaw
 
-/-! # An extensive cubic coefficient bound on one fixed Gaussian chain -/
+/-! # Extensive coefficient moments on one fixed Gaussian chain -/
 open Filter MeasureTheory ProbabilityTheory
 open scoped Topology
 namespace GaloisForLFunctions.HTGeometry.LocalPatches
 noncomputable section
 
-/-- A deterministic multiple of the number of sites bounds the sum of
-cubed absolute couplings eventually on almost every infinite draw. -/
-theorem gaussian_cubic_mass : ∃ B : ℝ, 0<B ∧ ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop,
-    (∑ l, |pathPauliDisorderShell ω n l|^3) ≤ B*(n+2:ℕ) := by
+/-- Every natural power of the absolute physical couplings
+has an eventual extensive bound on one infinite Gaussian sample. -/
+theorem gaussian_power_mass (p : ℕ) : ∃ B : ℝ, 0<B ∧
+    ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop,
+      (∑ l, |pathPauliDisorderShell ω n l|^p) ≤ B*(n+2:ℕ) := by
   let γ := gaussianReal 0 1
-  let f (x : ℝ) := |x|^3
+  let f (x : ℝ) := |x|^p
   let M := ∫ x, f x ∂γ
   have hf (x) : 0≤f x := pow_nonneg (abs_nonneg _) _
   have hM : 0≤M := integral_nonneg hf
   have hi : Integrable f γ := by
-    have h : MemLp id (3:ℕ) γ := memLp_id_gaussianReal' _ (by simp)
+    have h : MemLp id (p:ℕ) γ := memLp_id_gaussianReal' _ (by simp)
     simpa only [id_eq,Real.norm_eq_abs] using h.integrable_norm_pow'
   have hs (d : PathPauliDirections) := coordinate_strong_law γ d f (by fun_prop) hi
   refine ⟨12*(M+1),by positivity,?_⟩
@@ -29,6 +30,12 @@ theorem gaussian_cubic_mass : ∃ B : ℝ, 0<B ∧ ∀ᵐ ω ∂pathPauliDisorde
   calc
     _ ≤ ∑ _d : PathPauliDirections, (M+1)*(n+2:ℕ) := Finset.sum_le_sum fun d _ => ((div_lt_iff₀ hp).mp (hn d)).le
     _ = _ := by simp [PathPauliDirections,Fintype.card_sum,Fintype.card_prod]; ring
+
+/-- A deterministic multiple of the number of sites bounds the sum of
+cubed absolute couplings eventually on almost every infinite draw. -/
+theorem gaussian_cubic_mass : ∃ B : ℝ, 0<B ∧ ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop,
+    (∑ l, |pathPauliDisorderShell ω n l|^3) ≤ B*(n+2:ℕ) :=
+  gaussian_power_mass 3
 
 #print axioms gaussian_cubic_mass
 end

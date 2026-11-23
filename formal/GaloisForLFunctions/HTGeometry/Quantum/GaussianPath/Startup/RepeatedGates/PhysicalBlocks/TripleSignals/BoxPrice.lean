@@ -38,7 +38,8 @@ theorem packet_probability_formula (q r : ℝ) :
     packetProbabilityFloor q r = (2*r/(sqrt (2*π)))^48 * exp (-24*(|q|+r)^2) := by
   unfold packetProbabilityFloor pdfFloor
   rw [←mul_assoc,mul_pow,←Real.exp_nat_mul]
-  congr 2 <;> ring
+  congr 2
+  ring
 
 theorem calibrated_box_mass (q : ℝ) {r : ℝ} (hr : 0≤r) :
     packetProbabilityFloor q r ≤ gaussianBoxMass
@@ -48,7 +49,7 @@ theorem calibrated_box_mass (q : ℝ) {r : ℝ} (hr : 0≤r) :
   have hc (i : TripleBoxIndex) : |boxField q i|≤|q| := by
     unfold boxField
     split <;> simp [abs_nonneg]
-  have hi (i : TripleBoxIndex) := interval_mass (add_le_add_right (hc i) r)
+  have hi (i : TripleBoxIndex) := interval_mass (add_le_add (hc i) (le_refl r))
   apply (ENNReal.ofReal_le_iff_le_toReal (measure_ne_top _ _)).mp
   change ENNReal.ofReal (b^48) ≤ (Measure.infinitePi _ ) _
   rw [Measure.infinitePi_eq_pi,Measure.pi_pi]

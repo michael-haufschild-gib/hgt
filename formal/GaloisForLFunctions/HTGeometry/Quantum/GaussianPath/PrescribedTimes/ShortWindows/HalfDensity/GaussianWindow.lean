@@ -28,10 +28,11 @@ theorem gaussian_half_density_delayed_window (s : ℕ → ℕ) (W : ℝ) (hW : 0
     have hsc : s k ≤ k+2 := by exact_mod_cast (show (s k:ℝ) ≤ (k+2:ℕ) by linarith only [hk])
     have hpow := Nat.mul_le_mul_right 2 (ReturnExcursions.dimension_dominates_speed (n:=k+2) (by omega))
     rw [←Nat.pow_succ] at hpow
+    change 64*(k+3)^2*2 ≤ 2^(k+3) at hpow
     apply (Nat.le_div_iff_mul_le (by decide)).mpr
     apply (Nat.le_div_iff_mul_le (by positivity)).mpr
-    exact le_trans (Nat.mul_le_mul_right _ (Nat.mul_le_mul_right 2 hsc)) (by
-      nlinarith only [hpow,Nat.zero_le k])
+    exact (Nat.mul_le_mul_right _ (Nat.mul_le_mul_right 2 hsc)).trans
+      ((by nlinarith only : (k+2)*2*(64*(k+3+1)) ≤ 64*(k+3)^2*2).trans hpow)
   · obtain ⟨K,hK⟩ := exists_nat_gt W
     filter_upwards [eventually_ge_atTop K] with k hk
     exact hK.le.trans (Nat.cast_le.mpr (by omega))
@@ -56,8 +57,8 @@ theorem gaussian_half_density_delayed_window (s : ℕ → ℕ) (W : ℝ) (hW : 0
     rwa [pathGateDistance,show numberedGenerator (k+1) (prefixPoint k ω)=H.val from numberedGenerator_shell _] at hx
   have hl : 1≤|v-t| := by dsimp only [g] at hlo; linarith only [hlo,hW]
   have h := hn t v ⟨hl,hhi⟩ (s k) (s k) (1/10) (1/10) (by norm_num) (fit t ht) (fit v hv)
-  rw [Nat.cast_add] at h
-  linarith only [h,hcost]
+  rw [show s k+s k=2*s k by omega,Nat.cast_mul,Nat.cast_ofNat] at h
+  exact h.not_ge hcost
 
 #print axioms gaussian_half_density_delayed_window
 end

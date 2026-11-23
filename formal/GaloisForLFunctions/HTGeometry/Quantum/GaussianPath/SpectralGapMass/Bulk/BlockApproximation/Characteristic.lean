@@ -41,13 +41,20 @@ private theorem scalar_gaussian_error {v A : ℝ} (hv : 0≤v) (hA : 0≤A) (hva
 the third-order error in replacing its characteristic function by the Gaussian
 one is at most three times |t|³ A v. -/
 theorem packet_gaussian_error {I : Type*} [Fintype I] [Nonempty I] (E : I → ℝ)
-    {v A : ℝ} (hv : 0≤v) (hA : 0≤A) (hvar : v≤A^2)
+    {v A : ℝ} (hv : 0≤v) (hA : 0≤A)
     (h₁ : ∑ i, E i=0) (h₂ : ∑ i, E i^2=(Fintype.card I:ℝ)*v)
     (hb : ∀ i, |E i| ≤ A) (t : ℝ) :
     ‖energyCharacteristic E t-(exp (-(t^2*v/2)):ℂ)‖ ≤ 3* |t|^3*A*v := by
   let d := Fintype.card I
   have hd : (0:ℝ)<d := Nat.cast_pos.mpr Fintype.card_pos
   have hd' : (d:ℂ)≠0 := Nat.cast_ne_zero.mpr Fintype.card_pos.ne'
+  have hvar : v≤A^2 := by
+    apply le_of_mul_le_mul_left _ hd
+    change (Fintype.card I:ℝ)*v≤(Fintype.card I:ℝ)*A^2
+    rw [←h₂]
+    exact (sum_le_sum (g:=fun _ => A^2) fun i _ => by
+      simpa only [sq_abs] using pow_le_pow_left₀ (abs_nonneg (E i)) (hb i) 2).trans_eq
+      (by simp)
   let X (i : I) : ℂ := Complex.exp (((t*E i:ℝ):ℂ)*Complex.I)
   let Q (i : I) : ℂ := 1+((t*E i:ℝ):ℂ)*Complex.I-((t*E i:ℝ):ℂ)^2/2
   have hQ : ∑ i, Q i=(d:ℂ)*((1-t^2*v/2:ℝ):ℂ) := by
@@ -55,7 +62,7 @@ theorem packet_gaussian_error {I : Type*} [Fintype I] [Nonempty I] (E : I → �
     have h₂' : ∑ i, (E i:ℂ)^2=(d:ℂ)*(v:ℂ) := by exact_mod_cast h₂
     simp only [Q,Complex.ofReal_mul,Complex.ofReal_sub,Complex.ofReal_one,Complex.ofReal_div,
       Complex.ofReal_ofNat,Complex.ofReal_pow,sum_sub_distrib,sum_add_distrib,sum_const,
-      card_univ,nsmul_eq_mul,mul_one,←Finset.sum_mul,←Finset.mul_sum,mul_pow,Finset.sum_div]
+      card_univ,nsmul_eq_mul,mul_one,←Finset.sum_mul,←Finset.mul_sum,mul_pow,←Finset.sum_div]
     rw [h₁',h₂']
     dsimp only [d]
     ring

@@ -24,7 +24,8 @@ theorem gaussian_excluded_compact_lags {a T : ℝ} (ha : 0<a) :
   filter_upwards [h] with ω hw
   filter_upwards [hw] with n hn
   intro v w hlag j s ε δ hsum hv hw
-  have hfit := affordable_add_time (Hpath ω n) (x := -v) (y := w) (hv.neg_time _) hw
+  have hinv := HasProjectiveCircuitApproximation.neg_time (t:=v) (Hpath ω n) hv
+  have hfit := affordable_add_time (Hpath ω n) (x := -v) (y := w) hinv hw
   rw [show -v+w=w-v by ring] at hfit
   obtain ⟨z,hz,C,hC,he⟩ := hfit
   exact hn (w-v) hlag (j+s) ⟨z,hz,C,hC,he.trans hsum⟩
@@ -54,10 +55,10 @@ theorem gaussian_half_density_residence (T : ℝ) (hT : 0≤T) :
   filter_upwards [hw m,hs (c m) (hc m)] with n hn hb
   let E := {t | HasProjectiveCircuitApproximation (n+2) (1/10) (s n)
     (unitaryEvolution (Hpath ω n).val t)}
-  have hg (u : ℝ) (hu : u∈E) (w : ℝ) (hw : w∈E) : |w-u|<j m ∨ B<|w-u| := by
+  have hg (u : ℝ) (hu : u∈E) (w : ℝ) (hw : w∈E) : |w-u| < j m ∨ B < |w-u| := by
     by_contra! hx
     have hh := hn u w hx (s n) (s n) (1/10) (1/10) (by norm_num) hu hw
-    rw [Nat.cast_add] at hh
+    simp only [Nat.cast_add,Nat.cast_one] at hh hb
     linarith only [hh,hb]
   have hmass := SpanningDensity.LocalEcho.occupation_of_forbidden_lags E (j m) B (hj m).le hB hg (v n) T hT
   have hratio : T/B≤1 := (div_le_one hB).mpr (le_max_left ..)

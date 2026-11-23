@@ -37,11 +37,15 @@ theorem IsFinCover.trace_rationalCech_eq_zero_of_dim_lt (h : IsFinCover k E x)
     {a : ℕ} (ha : d < a) (q : ℤ)
     (u : (cech (fun I => omB k E (rB k E x I) a)).H q →ₗ[k]
       (cech (fun I => omB k E (rB k E x I) a)).H q) : LinearMap.trace k _ u = 0 := by
-  apply trace_eq_zero_of_bot _ _ q u
-  intro I
-  apply bot_unique
-  intro z hz
-  exact (Submodule.mem_bot k).mpr (h.topDegreeForms.2.2 a ha z (omB_le_degree hz))
+  let A (I : Finset (Fin (d + 1))) := omB k E (rB k E x I) a
+  have hzero : ∀ z ∈ ⋀[E]^a Ω[E⁄k], z = 0 := h.topDegreeForms.2.2 a ha
+  have hA (I : Finset (Fin (d + 1))) : A I = ⊥ := by
+    apply bot_unique
+    intro z hz
+    have hdeg : z ∈ (⋀[E]^a Ω[E⁄k]).restrictScalars k :=
+      omB_le_degree (B := rB k E x I) (p := a) hz
+    exact (Submodule.mem_bot k).mpr (hzero z hdeg)
+  exact trace_eq_zero_of_bot A hA q u
 
 /-- The fixed-point numerator has no coefficient above the dimension. -/
 theorem coeff_det_one_add_X_smul_eq_zero_of_dim_lt {a : ℕ} (ha : d < a)

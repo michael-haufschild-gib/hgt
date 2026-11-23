@@ -36,6 +36,48 @@ private theorem least_crossing {f : ℝ→ℝ} {η : ℝ} (hc : Continuous f) (h
   have huτ : u=τ := le_antisymm hu.2 (hmin.2 ⟨hu.1,he.ge⟩)
   exact ⟨hmin,huτ ▸ he⟩
 
+private theorem increment_fit {N s k : ℕ} (H : selfAdjoint (Register N)) {v t δ η : ℝ}
+    (hv : HasProjectiveCircuitApproximation N δ s (unitaryEvolution H.val v))
+    (ht : HasProjectiveCircuitApproximation N η k (unitaryEvolution H.val (v+t))) :
+    HasProjectiveCircuitApproximation N (δ+η) (s+k) (unitaryEvolution H.val t) := by
+  have hn := HasProjectiveCircuitApproximation.neg_time (t:=v) H hv
+  have h := affordable_add_time H (x := -v) (y := v+t) hn ht
+  rwa [neg_add_cancel_left] at h
+
+/-- An unaffordable increment bounds the elapsed time of the first
+attained crossing even when the initial low-cost visit is chosen on the orbit. -/
+theorem firstExcessAfter_le_of_increment (ω : PathPauliDisorder) (n s q : ℕ)
+    {v t δ η : ℝ} (ht : 0≤t) (hδη : δ<η)
+    (hv : HasProjectiveCircuitApproximation (n+2) δ s (unitaryEvolution (Hprefix ω n).val v))
+    (hgap : ¬HasProjectiveCircuitApproximation (n+2) (δ+η) (s+(n+1+(s+q)))
+      (unitaryEvolution (Hprefix ω n).val t)) :
+    let J := n+1+(s+q)
+    let u := firstExcessAfter ω n (s+q) v η
+    0≤u ∧ u≤t ∧ orbitCircuitDistance (Hprefix ω n) J (v+u)=η ∧
+      ∀ x∈Ico 0 u, orbitCircuitDistance (Hprefix ω n) J (v+x)<η := by
+  intro J u
+  let f (x : ℝ) := orbitCircuitDistance (Hprefix ω n) J (v+x)
+  have hstart : f 0≤δ := by
+    obtain ⟨z,hz,C,hC,he⟩ := hv
+    dsimp only [f]
+    rw [add_zero]
+    apply (hasProjectiveCircuitApproximation_iff_infDist (unitaryEvolution (Hprefix ω n).val v) J δ).mp
+    exact ⟨z,hz,C,hC.trans (by dsimp only [J]; omega),he⟩
+  have hend : η<f t := by
+    apply lt_of_not_ge
+    intro h
+    have fit : HasProjectiveCircuitApproximation (n+2) η J
+        (unitaryEvolution (Hprefix ω n).val (v+t)) :=
+      (hasProjectiveCircuitApproximation_iff_infDist _ J η).mpr h
+    exact hgap (increment_fit (v:=v) (t:=t) (Hprefix ω n) hv fit)
+  have hc : Continuous f := (orbitCircuitDistance_lipschitz (Hprefix ω n) J).continuous.comp
+    (continuous_const.add continuous_id)
+  have hleast : IsLeast {x : ℝ | 0≤x ∧ η≤f x} u ∧ f u=η :=
+    least_crossing hc (hstart.trans_lt hδη) ht hend.le
+  obtain ⟨hu,he⟩ := hleast
+  exact ⟨hu.1.1,hu.2 ⟨ht,hend.le⟩,he,fun x hx => lt_of_not_ge
+    (fun h => hx.2.not_ge (hu.2 ⟨hx.1,h⟩))⟩
+
 /-- From any sublinear-budget visit, the first departure above the
 one-sweep budget plus the initial and excess gates tends to zero. Its
 square times N stays bounded below. The origins may be actual first
@@ -63,9 +105,10 @@ theorem gaussian_first_excess_after_visit {δ η : ℝ} (hmargin : δ<η) (hpay 
     filter_upwards [hf j,hq.eventually_lt_const (hc j),hv] with n hn hs hanc
     apply lt_of_not_ge
     intro h
-    have hfit := (hasProjectiveCircuitApproximation_iff_infDist _ (J n) η).mpr h
-    have he := affordable_add_time (Hprefix ω n) (hanc.neg_time _) hfit
-    rw [show -(v n)+(v n+a j)=a j by ring] at he
+    have hfit : HasProjectiveCircuitApproximation (n+2) η (J n)
+        (unitaryEvolution (Hprefix ω n).val (v n+a j)) :=
+      (hasProjectiveCircuitApproximation_iff_infDist _ (J n) η).mpr h
+    have he := increment_fit (v:=v n) (t:=a j) (Hprefix ω n) hanc hfit
     obtain ⟨z,hz,C,hC,herr⟩ := he
     have hh := hn (a j) (by rw [abs_of_pos (ha j)]; exact ⟨le_rfl,le_rfl⟩)
       (s n+J n) ⟨z,hz,C,hC,herr.trans hpay⟩
@@ -81,7 +124,7 @@ theorem gaussian_first_excess_after_visit {δ η : ℝ} (hmargin : δ<η) (hpay 
       rw [add_zero]
       apply (hasProjectiveCircuitApproximation_iff_infDist _ _ _).mp
       exact ⟨z,hz,C,hC.trans (by dsimp only [J]; omega),he⟩
-    have hcont : Continuous (f n) := (orbitCircuitDistance_lipschitz _ _).continuous.comp
+    have hcont : Continuous (f n) := (orbitCircuitDistance_lipschitz (Hprefix ω n) (J n)).continuous.comp
       (continuous_const.add continuous_id)
     exact least_crossing hcont (hid.trans_lt hmargin) (ha 0).le hn.le
   constructor
@@ -100,7 +143,7 @@ theorem gaussian_first_excess_after_visit {δ η : ℝ} (hmargin : δ<η) (hpay 
     obtain ⟨z,hz,C,hC,he⟩ := BondProducts.bond_sweep_error x (u n) hn.1.1.1 1 one_pos
     have hinc : HasProjectiveCircuitApproximation (n+2) g (n+1)
         (unitaryEvolution (Hprefix ω n).val (u n)) := ⟨z,hz,C,by simpa only [one_mul] using hC.le,he⟩
-    obtain ⟨z',hz',D,hD,hpaid⟩ := affordable_add_time (Hprefix ω n) hanc hinc
+    obtain ⟨z',hz',D,hD,hpaid⟩ := affordable_add_time (Hprefix ω n) (x:=v n) (y:=u n) hanc hinc
     have hh : f n (u n)≤δ+g := (hasProjectiveCircuitApproximation_iff_infDist _ _ _).mp
       ⟨z',hz',D,hD.trans (by dsimp only [J]; omega),hpaid⟩
     rw [hn.2] at hh

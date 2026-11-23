@@ -1,0 +1,1 @@
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.InverseSpectrum.QuarticGrowth.InverseSquare

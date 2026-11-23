@@ -393,6 +393,13 @@ theorem relativeReading_quadratic_mesoscopicBlockProfile (N m : ℕ) :
   have ht := Finset.sum_range_sub' (fun j : ℕ => occupationWeight (N + j) ^ 2) m
   simpa only [Function.Embedding.coeFn_mk, Nat.add_zero, Nat.add_assoc] using ht
 
+private theorem pow_three_mul_div_pow_four {a b c d e : ℝ}
+    (he : a / c = e) (hc : c ≠ 0) (hb : 1 - b ^ 2 ≠ 0) :
+    e * (1 - b ^ 2) ^ 3 * (d / (1 - b ^ 2)) ^ 4 =
+      (a * d ^ 4) / (c * (1 - b ^ 2)) := by
+  rw [← he, div_pow]
+  field_simp [hc, hb]
+
 /-- **Mesoscopic phase-coherence saturation on `0 < Re s < 1 / 2`:**
 at every left-half-plane parameter `0 < Re s < 1 / 2` (independent of imaginary height `Im s`),
 every UV cap `Λ > 0`, and every threshold `K < Λ * (‖s‖ / s.re) ^ 4`, there exists a physical
@@ -569,13 +576,7 @@ theorem exists_uvRegularRankOne_exceeding_lt_chordBound_of_re_lt_half
     have hy_comb : y N ^ (-4 * σ) / y N ^ (-2 : ℝ) = y N ^ (2 - 4 * σ) := by
       rw [← Real.rpow_sub hyN]; congr 1; ring
     have hy2_ne : y N ^ (-2 : ℝ) ≠ 0 := (Real.rpow_pos_of_pos hyN _).ne'
-    calc y N ^ (2 - 4 * σ) * (1 - x N ^ 2) ^ 3 * ((1 - x N ^ σ) / (1 - x N ^ 2)) ^ 4
-        = (y N ^ (-4 * σ) / y N ^ (-2 : ℝ)) *
-            ((1 - x N ^ 2) ^ 3 * ((1 - x N ^ σ) ^ 4 / (1 - x N ^ 2) ^ 4)) := by
-          rw [hy_comb, div_pow]; ring
-      _ = (y N ^ (-4 * σ) * (1 - x N ^ σ) ^ 4) / (y N ^ (-2 : ℝ) * (1 - x N ^ 2)) := by
-          generalize x N = xN at hd_pos ⊢
-          field_simp [hd_pos.ne', hy2_ne]
+    exact pow_three_mul_div_pow_four hy_comb hy2_ne hd_pos.ne'
   have hpart_lim : Tendsto (fun N =>
       ‖relativePartition (mesoscopicBlockProfile N (m N)) s‖ ^ 4 /
         relativeReading quadraticResponse (mesoscopicBlockProfile N (m N))) atTop
@@ -616,13 +617,7 @@ theorem exists_uvRegularRankOne_exceeding_lt_chordBound_of_re_lt_half
     have hy_comb : y N ^ (-4 * σ) / y N ^ (-2 : ℝ) = y N ^ (2 - 4 * σ) := by
       rw [← Real.rpow_sub hyN]; congr 1; ring
     have hy2_ne : y N ^ (-2 : ℝ) ≠ 0 := (Real.rpow_pos_of_pos hyN _).ne'
-    calc y N ^ (2 - 4 * σ) * (1 - x N ^ 2) ^ 3 * (‖1 - (x N : ℂ) ^ s‖ / (1 - x N ^ 2)) ^ 4
-        = (y N ^ (-4 * σ) / y N ^ (-2 : ℝ)) *
-            ((1 - x N ^ 2) ^ 3 * (‖1 - (x N : ℂ) ^ s‖ ^ 4 / (1 - x N ^ 2) ^ 4)) := by
-          rw [hy_comb, div_pow]; ring
-      _ = (y N ^ (-4 * σ) * ‖1 - (x N : ℂ) ^ s‖ ^ 4) / (y N ^ (-2 : ℝ) * (1 - x N ^ 2)) := by
-          generalize x N = xN at hd_pos ⊢
-          field_simp [hd_pos.ne', hy2_ne]
+    exact pow_three_mul_div_pow_four hy_comb hy2_ne hd_pos.ne'
   have hθΛ_lt : θ * Λ < Λ := by nlinarith [hθ_lt1, hΛ]
   obtain ⟨N, hxN, huv_N, hpart_N⟩ :=
     (hx_mem.and ((huv_lim.eventually (gt_mem_nhds hθΛ_lt)).and
@@ -928,8 +923,7 @@ theorem exists_uvRegular_witness_of_norm_zeta_ge
   let v : MissingWave := ⟨w, (nonzero_line_conserves_iff w).mp ⟨hw_ne, hc⟩⟩
   have hspec : physicalSpectrum (omitLine w) hd hc = missingWaveSpectrum v := rfl
   rw [hspec] at hb_U
-  dsimp only [U] at hb_U
-  rw [relativeReading_quadratic_missingWaveSpectrum] at hb_U
+  rw [Set.mem_setOf_eq, relativeReading_quadratic_missingWaveSpectrum] at hb_U
   exact ⟨v, hb_U.1, hb_U.2.1.le, hb_U.2.2⟩
 
 /-- **Converse `|ζ(s)|^4` attenuation bottleneck for ground-state witnesses:**
@@ -1059,7 +1053,7 @@ lie strictly above Bohman height `84.5`, have nonzero dyadic overlap integral, a
 UV-capped rank-one witness beating `uvZeroThresholdFactor` for every `Λ > 0`. -/
 theorem moebius_powerSaving_left_strip_witnesses (tc : ExceptionalTime) (j : ℕ) :
     ∃ B_mob : ℝ, 0 < B_mob ∧
-      ∀ {σ U T₁ T₂ : ℝ} (hσ0 : 0 < σ) (_hσ_half : σ < 1 / 2),
+      ∀ {σ U T₁ T₂ : ℝ}, 0 < σ → σ < 1 / 2 →
         Real.exp 100 ≤ U → U / 4 < T₁ → T₁ ≤ T₂ → T₂ < U / 2 →
         let M : ℕ := ⌊U ^ (1 / 4 : ℝ)⌋₊
         let badSet : Set ℝ := {γ ∈ Icc T₁ T₂ |

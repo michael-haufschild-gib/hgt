@@ -54,13 +54,14 @@ theorem gaussian_prescribed_excess {t : ℝ} (ht : 0<t) :
   change gaussianBoxMass lo hi/2*m≤((goodBoxes q r ω m).card:ℝ) at hfreq
   have hsize : ((n+1:ℕ):ℝ)≤5*(m:ℝ) := by exact_mod_cast (by dsimp only [m]; omega : n+1≤5*m)
   have hmarks : (p/10)*(n+1:ℕ) ≤ ((marked (circuitWord C)).card:ℝ) := by
-    have hh := mul_le_mul_of_nonneg_right hm (Nat.cast_nonneg m (R:=ℝ))
+    have hh := mul_le_mul_of_nonneg_right hm (show 0≤(m:ℝ) by positivity)
     have hh' := mul_le_mul_of_nonneg_left hsize hp.le
     have hh'' : ((goodBoxes q r ω m).card:ℝ) ≤ ((marked (circuitWord C)).card:ℝ) := Nat.cast_le.mpr hc
     linarith only [hh,hh',hh'',hfreq]
   have hg := hn t ⟨le_rfl,le_rfl⟩ C z hz he
   change (1+p/40)*(n+1:ℕ)<(s:ℝ)
-  linarith only [hg,hmarks,show (C.gateCount:ℝ)≤s from Nat.cast_le.mpr hC]
+  have hcount : (C.gateCount:ℝ) ≤ s := Nat.cast_le.mpr hC
+  linarith only [hg,hmarks,hcount]
 
 /-- The excess is at least a Gaussian tail in reciprocal time before
 one time unit, and an inverse 48th power afterwards. -/
@@ -79,8 +80,10 @@ theorem prescribed_excess_scales :
         exp (-24*(z/t+1/(1008*(1+t)))^2)/40 := by
     rw [prescribedExcess,packet_probability_formula,
       abs_of_pos (by positivity : 0<π/(2*sqrt 2*t))]
-    dsimp only [z,K]
-    congr 2 <;> ring
+    have hcoeff : 2*(1/(1008*(1+t)))/sqrt (2*π)=2*K/(1+t) := by
+      simp only [K,div_eq_mul_inv,mul_inv_rev]
+      ring
+    rw [hcoeff,show π/(2*sqrt 2*t)=z/t from (div_div ..).symm]
   constructor
   · intro t ht ht'
     rw [hformula ht]
@@ -88,11 +91,11 @@ theorem prescribed_excess_scales :
       (by linarith only [mul_le_mul_of_nonneg_left ht' hK.le])
     have hr : 1/(1008*(1+t))≤1/t := one_div_le_one_div_of_le ht (by linarith only [ht])
     have hsq := pow_le_pow_left₀ (by positivity : 0≤z/t+1/(1008*(1+t)))
-      (show z/t+1/(1008*(1+t))≤(z+1)/t by rw [add_div]; exact add_le_add_left hr _) 2
+      (show z/t+1/(1008*(1+t))≤(z+1)/t by rw [add_div]; exact add_le_add le_rfl hr) 2
     rw [div_pow] at hsq
     have he : -A/t^2≤ -24*(z/t+1/(1008*(1+t)))^2 := by
-      dsimp only [A]
-      linarith only [hsq]
+      calc -A/t^2 = -24*((z+1)^2/t^2) := by dsimp only [A]; ring
+           _ ≤ _ := mul_le_mul_of_nonpos_left hsq (by norm_num)
     have hh := mul_le_mul (pow_le_pow_left₀ hK.le hb 48) (exp_le_exp.mpr he) (exp_pos _).le (by positivity)
     linarith only [hh]
   · intro t ht
