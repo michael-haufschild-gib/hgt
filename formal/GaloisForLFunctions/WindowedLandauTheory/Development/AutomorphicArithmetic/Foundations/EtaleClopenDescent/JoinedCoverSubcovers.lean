@@ -18,12 +18,10 @@ def joinedRight : κ ↪o ι ⊕ₗ κ where
 
 @[simp] theorem map_joinedLeft (I : Finset ι) :
     I.map (joinedLeft (κ := κ)).toEmbedding = uni I ∅ := by
-  rw [uni, Finset.disjSum_empty, Finset.map_map]
-  rfl
+  simp only [joinedLeft, uni, Finset.disjSum_empty, Finset.map_map]
 
 @[simp] theorem map_joinedRight (I : Finset κ) :
     I.map (joinedRight (ι := ι)).toEmbedding = uni ∅ I := by
-  rw [uni, Finset.empty_disjSum, Finset.map_map]
-  rfl
+  simp only [joinedRight, uni, Finset.empty_disjSum, Finset.map_map]
 
 end GlobalTheory.WH

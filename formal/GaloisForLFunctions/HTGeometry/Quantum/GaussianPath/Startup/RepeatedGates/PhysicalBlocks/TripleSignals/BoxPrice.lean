@@ -11,7 +11,7 @@ private theorem pdf_floor_pos (R : ℝ) : 0 < pdfFloor R := by
   unfold pdfFloor
   positivity
 
-private theorem interval_mass {c r R : ℝ} (hr : 0≤r) (hc : |c|+r≤R) :
+private theorem interval_mass {c r R : ℝ} (hc : |c|+r≤R) :
     ENNReal.ofReal (2*r*pdfFloor R) ≤ gaussianReal 0 1 (Set.Icc (c-r) (c+r)) := by
   rw [gaussianReal_apply _ one_ne_zero]
   have hl (x : ℝ) (hx : x∈Set.Icc (c-r) (c+r)) : ENNReal.ofReal (pdfFloor R) ≤ gaussianPDF 0 1 x := by
@@ -24,7 +24,8 @@ private theorem interval_mass {c r R : ℝ} (hr : 0≤r) (hc : |c|+r≤R) :
     exact mul_le_mul_of_nonneg_left (exp_le_exp.mpr (by linarith only [hsq])) (by positivity)
   refine (setLIntegral_mono' measurableSet_Icc hl).trans_eq' ?_
   rw [setLIntegral_const,Real.volume_Icc,show c+r-(c-r)=2*r by ring,
-    ←ENNReal.ofReal_mul (pdf_floor_pos R).le,mul_comm]
+    ←ENNReal.ofReal_mul (pdf_floor_pos R).le]
+  exact congrArg ENNReal.ofReal (mul_comm _ _)
 
 /-- A lower bound on the exact probability that all 48 coefficients
 fall in the calibrated box. -/
@@ -47,7 +48,7 @@ theorem calibrated_box_mass (q : ℝ) {r : ℝ} (hr : 0≤r) :
   have hc (i : TripleBoxIndex) : |boxField q i|≤|q| := by
     unfold boxField
     split <;> simp [abs_nonneg]
-  have hi (i : TripleBoxIndex) := interval_mass hr (add_le_add_right (hc i) r)
+  have hi (i : TripleBoxIndex) := interval_mass (add_le_add_right (hc i) r)
   apply (ENNReal.ofReal_le_iff_le_toReal (measure_ne_top _ _)).mp
   change ENNReal.ofReal (b^48) ≤ (Measure.infinitePi _ ) _
   rw [Measure.infinitePi_eq_pi,Measure.pi_pi]

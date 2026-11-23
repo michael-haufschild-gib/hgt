@@ -27,7 +27,7 @@ private theorem map_mem_cycles {k M N : Type} [Field k]
 
 variable {k : Type} [Field k] [IsAlgClosed k] [CharZero k]
   {Y Z : Scheme.{0}} [IsIntegral Y] [IsIntegral Z] {c₁ c₂ : Y ⟶ Z}
-  [IsFinite c₁] [IsFinite c₂] [Etale c₁] [Etale c₂] [IsDominant c₁] [IsDominant c₂]
+  [IsFinite c₁] [IsFinite c₂] [Etale c₁] [IsDominant c₁] [IsDominant c₂]
   {s : Z ⟶ Spec (CommRingCat.of k)} {t : Y ⟶ Spec (CommRingCat.of k)}
   {d : ℕ} [Smooth s] [SmoothOfRelativeDimension d t] [IsSeparated s]
 
@@ -63,6 +63,9 @@ theorem exists_joinedChartCocycle (h₁ : c₁ ≫ s = t) (h₂ : c₂ ≫ s = t
   letI := finiteDimensional_functionFieldPullback c₁
   letI := functionFieldPullback_etale (f := c₁) s
   intro F _ _ _ _ _ _ _ x U hfin h p q j₂ C D b
+  letI : Smooth t := by
+    rw [← h₁]
+    infer_instance
   have hff : algebraMap Z.functionField Y.functionField = c₁.functionFieldPullback.hom := rfl
   obtain ⟨-, hL⟩ := isFinCover_pullback h₁ hff x U hfin h
   have hR := isAffCover_pullbackChartAlgebra d h₂ U (rB k Z.functionField x) h
@@ -71,30 +74,32 @@ theorem exists_joinedChartCocycle (h₁ : c₁ ≫ s = t) (h₂ : c₂ ≫ s = t
   let B (I : Finset (ι ⊕ₗ ι)) := omB k Y.functionField (RY x j₂ (lft I) (rgt I)) p
   let L (I : Finset ι) := omB k Y.functionField (rB k Y.functionField x I) p
   let R (I : Finset ι) := omB k Y.functionField (R2 x j₂ I) p
+  let jL : ι ↪o ι ⊕ₗ ι := joinedLeft
+  let jR : ι ↪o ι ⊕ₗ ι := joinedRight
   have eL (I : Finset ι) (_ : I.Nonempty) :
-      RY x j₂ (lft (I.map joinedLeft.toEmbedding)) (rgt (I.map joinedLeft.toEmbedding)) =
+      RY x j₂ (lft (I.map jL.toEmbedding)) (rgt (I.map jL.toEmbedding)) =
         rB k Y.functionField x I := by
-    rw [map_joinedLeft, lft_uni, rgt_uni]
-    change rB k Y.functionField x I ⊔ R2 x j₂ ∅ = _
+    simp only [jL, map_joinedLeft, lft_uni, rgt_uni]
+    change rB k Y.functionField x I ⊔ pullbackChartAlgebra j₂ (rB k Z.functionField x ∅) = _
     rw [pullbackChartAlgebra_rB_empty, sup_bot_eq]
   have eR (I : Finset ι) (_ : I.Nonempty) :
-      RY x j₂ (lft (I.map joinedRight.toEmbedding)) (rgt (I.map joinedRight.toEmbedding)) =
+      RY x j₂ (lft (I.map jR.toEmbedding)) (rgt (I.map jR.toEmbedding)) =
         R2 x j₂ I := by
-    rw [map_joinedRight, lft_uni, rgt_uni]
+    simp only [jR, map_joinedRight, lft_uni, rgt_uni]
     change rB k Y.functionField x ∅ ⊔ R2 x j₂ I = _
     rw [rB_empty, bot_sup_eq]
-  have eL' I hI : B (I.map joinedLeft.toEmbedding) = L I := congrArg (fun A => omB k _ A p) (eL I hI)
-  have eR' I hI : B (I.map joinedRight.toEmbedding) = R I := congrArg (fun A => omB k _ A p) (eR I hI)
-  let l := restrictIndex (k := k) (M := DR k Y.functionField) (joinedLeft (ι := ι) (κ := ι))
-  let r := restrictIndex (k := k) (M := DR k Y.functionField) (joinedRight (ι := ι) (κ := ι))
-  have hl : IsMap D (cech L) l := isMap_restrictIndex B L joinedLeft fun I hI => (eL' I hI).le
-  have hr : IsMap D (cech R) r := isMap_restrictIndex B R joinedRight fun I hI => (eR' I hI).le
+  have eL' I hI : B (I.map jL.toEmbedding) = L I := congrArg (fun A => omB k _ A p) (eL I hI)
+  have eR' I hI : B (I.map jR.toEmbedding) = R I := congrArg (fun A => omB k _ A p) (eR I hI)
+  let l := restrictIndex (k := k) (M := DR k Y.functionField) jL
+  let r := restrictIndex (k := k) (M := DR k Y.functionField) jR
+  have hl : IsMap D (cech L) l := isMap_restrictIndex B L jL fun I hI => (eL' I hI).le
+  have hr : IsMap D (cech R) r := isMap_restrictIndex B R jR fun I hI => (eR' I hI).le
   have hleft (z : HodgeCohomology t p q) :
       D.hmap (cech L) l hl q (hD.hodgeCechEquiv p q z) = hL.hodgeCechEquiv p q z :=
-    hD.hodgeCechEquiv_subcover joinedLeft hL eL p q z
+    hD.hodgeCechEquiv_subcover jL hL eL p q z
   have hright (z : HodgeCohomology t p q) :
       D.hmap (cech R) r hr q (hD.hodgeCechEquiv p q z) = hR.hodgeCechEquiv p q z :=
-    hD.hodgeCechEquiv_subcover joinedRight hR eR p q z
+    hD.hodgeCechEquiv_subcover jR hR eR p q z
   have hright' : D.hmap (cech R) r hr q =
       (hR.hodgeCechEquiv p q).toLinearMap.comp (hD.hodgeCechEquiv p q).symm.toLinearMap := by
     apply LinearMap.ext
@@ -110,7 +115,7 @@ theorem exists_joinedChartCocycle (h₁ : c₁ ≫ s = t) (h₂ : c₂ ≫ s = t
     exact isIntegral_algebraMap (x := (⟨a, ha⟩ : (rB k Z.functionField x I).map j₂))
   have hP : IsMap C (cech R) P := isMap_mapCochain _ R _ fun I hI =>
     IsDRMap.regularForms k (isDRMap_pullbackDR k j₂) (hB I hI) p
-  obtain ⟨bt, hbt⟩ := exists_cycleLift_restrictIndex B R joinedRight eR'
+  obtain ⟨bt, hbt⟩ := exists_cycleLift_restrictIndex B R jR eR'
     (hD.isCechComplex p) q hbij.surjective ⟨P b.val, map_mem_cycles hP b.property⟩
   let z := (h.hodgeCechEquiv p q).symm (Submodule.Quotient.mk b)
   let w := hodgePullback h₂ p q z
@@ -131,10 +136,11 @@ theorem exists_joinedChartCocycle (h₁ : c₁ ≫ s = t) (h₂ : c₂ ≫ s = t
   · intro J
     have he := congrFun hbt J
     change r bt.val J = P b.val J at he
-    simpa only [r, restrictIndex_apply, map_joinedRight, P, mapCochain_apply] using he
+    simpa only [r, jR, restrictIndex_apply, map_joinedRight, P, mapCochain_apply,
+      AlgHom.toLinearMap_apply] using he
   · intro I
     change T (l bt.val) I = _
-    rw [T, mapCochain_apply, l, restrictIndex_apply, map_joinedLeft]
+    simp only [T, mapCochain_apply, l, jL, restrictIndex_apply, map_joinedLeft]
   · calc
       _ = (cech L).hmap C T hT q (hL.hodgeCechEquiv p q w) :=
         IsAffCover.hodgeCechEquiv_trace h₁ h hL p q w

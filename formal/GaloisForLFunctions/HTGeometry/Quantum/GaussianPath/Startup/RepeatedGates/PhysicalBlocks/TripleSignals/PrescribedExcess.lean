@@ -62,6 +62,56 @@ theorem gaussian_prescribed_excess {t : ℝ} (ht : 0<t) :
   change (1+p/40)*(n+1:ℕ)<(s:ℝ)
   linarith only [hg,hmarks,show (C.gateCount:ℝ)≤s from Nat.cast_le.mpr hC]
 
+/-- The excess is at least a Gaussian tail in reciprocal time before
+one time unit, and an inverse 48th power afterwards. -/
+theorem prescribed_excess_scales :
+    ∃ c>0, ∃ A>0, (∀ t : ℝ, 0<t → t≤1 → c*exp (-A/t^2)≤prescribedExcess t) ∧
+      ∀ t : ℝ, 1≤t → c*exp (-A)/t^48≤prescribedExcess t := by
+  let z := π/(2*sqrt 2)
+  let K := 1/(1008*sqrt (2*π))
+  let A := 24*(z+1)^2
+  have hz : 0<z := by dsimp [z]; positivity
+  have hK : 0<K := by dsimp [K]; positivity
+  have hA : 0<A := by dsimp only [A]; positivity
+  refine ⟨K^48/40,by positivity,A,hA,?_⟩
+  have hformula {t : ℝ} (ht : 0<t) :
+      prescribedExcess t = (2*K/(1+t))^48 *
+        exp (-24*(z/t+1/(1008*(1+t)))^2)/40 := by
+    rw [prescribedExcess,packet_probability_formula,
+      abs_of_pos (by positivity : 0<π/(2*sqrt 2*t))]
+    dsimp only [z,K]
+    congr 2 <;> ring
+  constructor
+  · intro t ht ht'
+    rw [hformula ht]
+    have hb : K ≤ 2*K/(1+t) := (le_div_iff₀ (by positivity)).mpr
+      (by linarith only [mul_le_mul_of_nonneg_left ht' hK.le])
+    have hr : 1/(1008*(1+t))≤1/t := one_div_le_one_div_of_le ht (by linarith only [ht])
+    have hsq := pow_le_pow_left₀ (by positivity : 0≤z/t+1/(1008*(1+t)))
+      (show z/t+1/(1008*(1+t))≤(z+1)/t by rw [add_div]; exact add_le_add_left hr _) 2
+    rw [div_pow] at hsq
+    have he : -A/t^2≤ -24*(z/t+1/(1008*(1+t)))^2 := by
+      dsimp only [A]
+      linarith only [hsq]
+    have hh := mul_le_mul (pow_le_pow_left₀ hK.le hb 48) (exp_le_exp.mpr he) (exp_pos _).le (by positivity)
+    linarith only [hh]
+  · intro t ht
+    have ht' := zero_lt_one.trans_le ht
+    rw [hformula ht']
+    have hb : K/t ≤ 2*K/(1+t) := by
+      apply (div_le_div_iff₀ ht' (by positivity)).mpr
+      linarith only [mul_le_mul_of_nonneg_left ht hK.le]
+    have hz' : z/t≤z := div_le_self hz.le ht
+    have hr : 1/(1008*(1+t))≤1 := (div_le_one (by positivity)).mpr (by linarith only [ht])
+    have hsq := pow_le_pow_left₀ (by positivity : 0≤z/t+1/(1008*(1+t))) (add_le_add hz' hr) 2
+    have he : -A≤ -24*(z/t+1/(1008*(1+t)))^2 := by dsimp only [A]; linarith only [hsq]
+    have hh := mul_le_mul (pow_le_pow_left₀ (div_nonneg hK.le ht'.le) hb 48)
+      (exp_le_exp.mpr he) (exp_pos _).le (by positivity)
+    rw [div_pow] at hh
+    calc K^48/40*exp (-A)/t^48 = K^48/t^48*exp (-A)/40 := by ring
+         _ ≤ _ := div_le_div_of_nonneg_right hh (by norm_num)
+
 #print axioms gaussian_prescribed_excess
+#print axioms prescribed_excess_scales
 end
 end GaloisForLFunctions.HTGeometry.RepeatedGates.PhysicalBlocks

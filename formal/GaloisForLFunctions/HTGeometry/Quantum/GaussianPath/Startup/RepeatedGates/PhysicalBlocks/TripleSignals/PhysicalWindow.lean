@@ -2,7 +2,7 @@ import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.RepeatedGates
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.RepeatedGates.PhysicalBlocks.UniformMarks
 
 /-! # More than one physical gate per bond at every fixed positive date -/
-open MeasureTheory Filter Set Finset Real
+open MeasureTheory Filter Finset Real
 open scoped Matrix.Norms.L2Operator
 namespace GaloisForLFunctions.HTGeometry.RepeatedGates.PhysicalBlocks
 open Temporal
@@ -11,7 +11,7 @@ noncomputable section
 /-- On any positive compact time interval, a deterministic positive
 fraction of the wires must participate in a nonmerging gate. -/
 theorem gaussian_positive_mark_density {a T : ℝ} (ha : 0<a) :
-    ∃ d>0, ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop, ∀ t∈Icc a T,
+    ∃ d : ℝ, 0<d ∧ ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop, ∀ t∈Set.Icc a T,
       ∀ (C : TwoQubitCircuit (n+2)) (z : ℂ), ‖z‖=1 →
       ‖unitaryEvolution (pathHamiltonian (pathPauliDisorderShell ω n)) t-z • C.eval.val‖ ≤ 1/4 →
       d*(n+1:ℕ) ≤ ((marked (circuitWord C)).card:ℝ) := by
@@ -24,7 +24,7 @@ theorem gaussian_positive_mark_density {a T : ℝ} (ha : 0<a) :
   obtain ⟨B,hB⟩ := exists_nat_gt ((z₀/a)/δ)
   choose p hp hfreq using fun j : Fin (B+1) => good_boxes_density (j.val*δ) hδ
   let m := univ.inf' (univ_nonempty : (univ : Finset (Fin (B+1))).Nonempty) p
-  have hm : 0<m := (lt_inf'_iff _).mpr (fun j _ => hp j)
+  have hm : 0 < m := (lt_inf'_iff _).mpr (fun j _ => hp j)
   refine ⟨m/5,by positivity,?_⟩
   filter_upwards [ae_all_iff.mpr hfreq] with ω hw
   choose K hK using fun j => eventually_atTop.mp (hw j)
@@ -66,7 +66,7 @@ theorem gaussian_positive_mark_density {a T : ℝ} (ha : 0<a) :
 /-- The physical gate density exceeds one by a fixed positive amount,
 uniformly on the interval and for one draw of the infinite chain. -/
 theorem gaussian_strict_spanning_floor {a T : ℝ} (ha : 0<a) :
-    ∃ c>0, ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop, ∀ t : ℝ, |t| ∈ Icc a T →
+    ∃ c : ℝ, 0<c ∧ ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop, ∀ t : ℝ, |t| ∈ Set.Icc a T →
       ∀ s : ℕ, HasProjectiveCircuitApproximation (n+2) (1/4) s
         (unitaryEvolution (pathHamiltonian (pathPauliDisorderShell ω n)) t) →
       (1+c)*(n+1:ℕ) < (s:ℝ) := by

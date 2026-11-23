@@ -20,7 +20,7 @@ private theorem color_path {A : Type*} [DecidableEq A] (f : ℕ → A) (n : ℕ)
     let F := (range (n+1)).image f
     let B := (range n).filter fun k => c (f k)≠c (f (k+1))
     have hF : ((range (n+1+1)).image f)=insert (f (n+1)) F := by
-      rw [range_succ,image_insert]
+      rw [range_add_one,image_insert]
     rw [hF]
     by_cases hnew : f (n+1)∈F
     · refine ⟨c,?_⟩

@@ -30,11 +30,14 @@ open scoped Classical in
 def goodBoxes (q δ : ℝ) (ω : PathPauliDisorder) (m : ℕ) :=
   (range m).filter (goodBox q δ ω)
 
+/-- Product probability of the four-row coefficient box. -/
+def boxProbability (q δ : ℝ) : ℝ :=
+  gaussianBoxMass (fun i : TripleBoxIndex => boxField q i-δ) (fun i => boxField q i+δ)
+
 /-- At least half the exact Gaussian probability appears as a block frequency. -/
 theorem good_boxes_half_mass (q : ℝ) {δ : ℝ} (hδ : 0<δ) :
-    let mass := gaussianBoxMass (fun i => boxField q i-δ) (fun i => boxField q i+δ)
-    0<mass/2 ∧ ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ m : ℕ in atTop,
-      mass/2*m ≤ ((goodBoxes q δ ω m).card:ℝ) := by
+    (0 : ℝ) < boxProbability q δ / 2 ∧ ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ m : ℕ in atTop,
+      (boxProbability q δ / 2) * (m : ℝ) ≤ ((goodBoxes q δ ω m).card:ℝ) := by
   classical
   let lo (i : TripleBoxIndex) := boxField q i-δ
   let hi (i : TripleBoxIndex) := boxField q i+δ
