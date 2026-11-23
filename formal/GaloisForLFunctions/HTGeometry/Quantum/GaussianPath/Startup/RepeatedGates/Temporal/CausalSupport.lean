@@ -73,7 +73,7 @@ theorem missing_of_incomplete (C : TwoQubitCircuit N)
         Commute (star C.eval.val*A*C.eval.val) B := by
   push Not at h
   obtain ⟨j,i,h₁,h₂,hm⟩ := h
-  exact ⟨i,j,fun he => hm (he ▸ knows_self _ j),h₂,h₁,commute_of_absent C i j hm⟩
+  exact ⟨i,j,by rintro rfl; exact hm (knows_self _ _),h₂,h₁,commute_of_absent C i j hm⟩
 
 end
 end GaloisForLFunctions.HTGeometry.RepeatedGates.Temporal

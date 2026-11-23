@@ -14,7 +14,7 @@ private abbrev Hpath (ω : PathPauliDisorder) (n : ℕ) :
 /-- Two physical visits whose total budget approaches one gate per bond
 cannot have a separation in any positive compact interval. -/
 theorem gaussian_excluded_compact_lags {a T : ℝ} (ha : 0<a) :
-    ∃ c>0, ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop, ∀ v w : ℝ, |w-v|∈Icc a T →
+    ∃ c>0, ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop, ∀ v w : ℝ, |w-v| ∈ Icc a T →
       ∀ j s : ℕ, ∀ ε δ : ℝ, ε+δ≤1/4 →
       HasProjectiveCircuitApproximation (n+2) ε j (unitaryEvolution (Hpath ω n).val v) →
       HasProjectiveCircuitApproximation (n+2) δ s (unitaryEvolution (Hpath ω n).val w) →

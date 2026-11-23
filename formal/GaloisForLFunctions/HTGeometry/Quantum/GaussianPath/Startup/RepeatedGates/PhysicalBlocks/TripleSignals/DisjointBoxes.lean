@@ -3,7 +3,7 @@ import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Disorder.BoxFrequency
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PauliThresholdObstruction
 
 /-! # Disjoint four-row boxes forcing nonmerging gates -/
-open MeasureTheory Filter Set Finset Real
+open MeasureTheory Filter Finset Real
 open scoped Matrix.Norms.L2Operator
 namespace GaloisForLFunctions.HTGeometry.RepeatedGates.PhysicalBlocks
 open Temporal
@@ -11,31 +11,50 @@ noncomputable section
 abbrev TripleBoxIndex := Fin 4 × PathPauliDirections
 def blockCoordinate (p : ℕ × TripleBoxIndex) : ℕ × PathPauliDirections :=
   (4*p.1+p.2.1.val,p.2.2)
-private theorem block_injective : Function.Injective blockCoordinate := by
+theorem blockCoordinate_injective : Function.Injective blockCoordinate := by
   rintro ⟨a,i,d⟩ ⟨b,j,e⟩ h
   obtain ⟨he,hd⟩ := Prod.mk.inj h
   change 4*a+i.val=4*b+j.val at he
   have h₁ := i.isLt
   have h₂ := j.isLt
-  exact Prod.ext (by omega) (Prod.ext (Fin.ext (by omega)) hd)
+  have hab : a=b := by omega
+  have hij : i=j := Fin.ext (by omega : i.val=j.val)
+  exact Prod.ext hab (Prod.ext hij hd)
 
 private def leftDirection : TripleBoxIndex := (1,.inr (2,0))
 private def rightDirection : TripleBoxIndex := (2,.inr (2,2))
 def boxField (q : ℝ) (i : TripleBoxIndex) : ℝ := if i=leftDirection ∨ i=rightDirection then q else 0
 def goodBox (q δ : ℝ) (ω : PathPauliDisorder) (k : ℕ) : Prop :=
-  ∀ i, ω (blockCoordinate (k,i)) ∈ Icc (boxField q i-δ) (boxField q i+δ)
+  ∀ i, ω (blockCoordinate (k,i)) ∈ Set.Icc (boxField q i-δ) (boxField q i+δ)
 open scoped Classical in
 def goodBoxes (q δ : ℝ) (ω : PathPauliDisorder) (m : ℕ) :=
   (range m).filter (goodBox q δ ω)
 
+/-- At least half the exact Gaussian probability appears as a block frequency. -/
+theorem good_boxes_half_mass (q : ℝ) {δ : ℝ} (hδ : 0<δ) :
+    let mass := gaussianBoxMass (fun i => boxField q i-δ) (fun i => boxField q i+δ)
+    0<mass/2 ∧ ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ m : ℕ in atTop,
+      mass/2*m ≤ ((goodBoxes q δ ω m).card:ℝ) := by
+  classical
+  let lo (i : TripleBoxIndex) := boxField q i-δ
+  let hi (i : TripleBoxIndex) := boxField q i+δ
+  have hbox (i : TripleBoxIndex) : lo i<hi i := by dsimp only [lo,hi]; linarith only [hδ]
+  obtain ⟨hp,h⟩ := gaussian_disjoint_box_half_mass blockCoordinate blockCoordinate_injective lo hi hbox
+  refine ⟨hp,?_⟩
+  filter_upwards [h] with ω hw
+  filter_upwards [hw] with m hm
+  have he : goodBoxes q δ ω m = (range m).filter (fun k => ∀ j, ω (blockCoordinate (k,j)) ∈ Set.Icc (lo j) (hi j)) := by
+    ext k
+    simp only [goodBoxes,goodBox,mem_filter,lo,hi]
+  rw [he]
+  exact hm
+
 /-- Every open coefficient neighborhood of the calibrated packet has
 positive frequency in the same infinite Gaussian sample. -/
 theorem good_boxes_density (q : ℝ) {δ : ℝ} (hδ : 0<δ) :
-    ∃ p>0, ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ m : ℕ in atTop,
-      p*m ≤ ((goodBoxes q δ ω m).card:ℝ) := by
-  classical
-  exact gaussian_disjoint_box_frequency blockCoordinate block_injective _ _
-    (fun i => by linarith only [hδ] : ∀ i, boxField q i-δ < boxField q i+δ)
+    ∃ p : ℝ, 0<p ∧ ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ m : ℕ in atTop,
+      p*m ≤ ((goodBoxes q δ ω m).card:ℝ) :=
+  ⟨_,good_boxes_half_mass q hδ⟩
 
 private theorem source_inj {n : ℕ} : Function.Injective (@pathPauliSourceCoordinate n) := by
   rintro (⟨i,a⟩ | ⟨i,a⟩) (⟨j,b⟩ | ⟨j,b⟩) h <;>
@@ -45,6 +64,7 @@ private theorem source_row_bounds {n k : ℕ} {e f : Fin (n+1)}
     (he : e.val=4*k+1) (hf : f.val=4*k+2) {l : PathLabel n}
     (hl : l∈(tripleSites e f).biUnion pathIncidentLabels) :
     4*k ≤ (pathPauliSourceCoordinate l).1 ∧ (pathPauliSourceCoordinate l).1 < 4*k+4 := by
+  classical
   obtain ⟨v,hv,h⟩ := mem_biUnion.mp hl
   have hi := (mem_filter.mp h).2
   have hv' : 4*k+1≤v.val ∧ v.val≤4*k+3 := by
@@ -77,9 +97,9 @@ private theorem box_controls {n k : ℕ} {e f : Fin (n+1)} (he : e.val=4*k+1) (h
     · intro h
       exact source_inj (hi.symm.trans ((congrArg (fun a => blockCoordinate (k,a)) h).trans hj))
     · intro h
-      exact congrArg Prod.snd (block_injective (hi.trans ((congrArg pathPauliSourceCoordinate h).trans hj.symm)))
+      exact congrArg Prod.snd (blockCoordinate_injective (hi.trans ((congrArg pathPauliSourceCoordinate h).trans hj.symm)))
   have hs := hg i
-  change ω (blockCoordinate (k,i)) ∈ Icc _ _ at hs
+  change ω (blockCoordinate (k,i)) ∈ Set.Icc _ _ at hs
   rw [hi] at hs
   have hc : |ω c-boxField q' i| ≤ δ := abs_le.mpr ⟨by linarith only [hs.1],by linarith only [hs.2]⟩
   rw [pathPauliDisorderShell_apply_source]
@@ -101,7 +121,7 @@ private theorem box_controls {n k : ℕ} {e f : Fin (n+1)} (he : e.val=4*k+1) (h
 /-- Each calibrated box contributes a different marked wire, including
 when the circuit can use gates between arbitrarily distant sites. -/
 theorem count_good_boxes {n : ℕ} {q q' δ t : ℝ} {ω : PathPauliDisorder}
-    (hq : |q'-q|≤δ) (ht : (q*sqrt 2)*t=π/2) (hsmall : |t|*(63*(2*δ))≤1/8)
+    (hq : |q'-q|≤δ) (ht : (q*sqrt 2)*t=π/2) (hsmall : |t| * (63*(2*δ))≤1/8)
     (C : TwoQubitCircuit (n+2)) (z : ℂ) (hz : ‖z‖=1)
     (he : ‖unitaryEvolution (pathHamiltonian (pathPauliDisorderShell ω n)) t-z • C.eval.val‖ ≤ 1/4) :
     (goodBoxes q' δ ω ((n+1)/4)).card ≤ (marked (circuitWord C)).card := by

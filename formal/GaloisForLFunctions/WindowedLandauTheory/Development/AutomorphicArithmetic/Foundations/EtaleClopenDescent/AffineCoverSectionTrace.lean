@@ -1,5 +1,6 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.AffineCoverGenericGerms
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.AffineTraceFunctionField
+import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.RelativeFormsTrace
 
 /-! Trace of a section on an affine intersection is computed by trace
 in the function fields. -/
@@ -55,10 +56,33 @@ theorem IsAffCover.sectionRationalForms_trace (hf : f ≫ s = t) :
   have hYB : (genericSectionAlg hY.alg hηY).comp (sectionRes t a) =
       sectionToFunctionField t (f ⁻¹ᵁ W) := by
     exact (genericSectionAlg_res hY.alg a hη' hηY).trans (AlgHom.ext fun _ => rfl)
-  rw [← hω, relativeFormsTrace_app hf p hW, formsOnToSections_res,
-    hY.sectionRationalForms_formsOn, hX.sectionRationalForms_formsOn,
-    ← ExteriorDifferentials.map_comp, hYB, hXA]
-  exact affineFormTrace_functionField hf hW hηX p ω
+  let res := (relativeForms t p).presheaf.map a.op
+  let v := ExteriorDifferentials.map (sectionRes t a) p ω
+  have hres : res x = formsOnToSections t p Q v :=
+    (congrArg (fun z => res z) hω.symm).trans (formsOnToSections_res t p a ω)
+  have hYω : (hY.sectionRationalForms hj p (res x) : DR k Y.functionField) =
+      (ExteriorDifferentials.map (sectionToFunctionField t (f ⁻¹ᵁ W)) p ω : DR k Y.functionField) := by
+    calc
+      _ = (hY.sectionRationalForms hj p (formsOnToSections t p Q v) : DR k Y.functionField) :=
+        congrArg (fun z => (hY.sectionRationalForms hj p z : DR k Y.functionField)) hres
+      _ = (ExteriorDifferentials.map (genericSectionAlg hY.alg hηY) p v : DR k Y.functionField) :=
+        hY.sectionRationalForms_formsOn hj p v
+      _ = _ := congrArg (fun z : ExteriorDifferentials k Y.functionField p => (z : DR k Y.functionField))
+        ((ExteriorDifferentials.map_comp (genericSectionAlg hY.alg hηY) (sectionRes t a) p ω).symm.trans
+          (congrArg (fun g : SectionRing t (f ⁻¹ᵁ W) →ₐ[k] Y.functionField =>
+            ExteriorDifferentials.map g p ω) hYB))
+  let τ := (relativeFormsTrace hf p).app W
+  let u := affineFormTrace hf hW p ω
+  have hτ : τ x = formsOnToSections s p W u :=
+    (congrArg (fun z => τ z) hω.symm).trans (relativeFormsTrace_app hf p hW ω)
+  have hXω : (hX.sectionRationalForms hi p (τ x) : DR k X.functionField) =
+      (ExteriorDifferentials.map (sectionToFunctionField s W) p u : DR k X.functionField) :=
+    (congrArg (fun z => (hX.sectionRationalForms hi p z : DR k X.functionField)) hτ).trans
+      ((hX.sectionRationalForms_formsOn hi p u).trans
+        (congrArg (fun g : SectionRing s W →ₐ[k] X.functionField =>
+          (ExteriorDifferentials.map g p u : DR k X.functionField)) hXA))
+  exact (congrArg (traceDR k X.functionField Y.functionField) hYω).trans
+    ((affineFormTrace_functionField hf hW hηX p ω).trans hXω.symm)
 
 /-- Finite étale trace carries regular rational forms on the inverse
 image of an affine intersection to regular forms on that intersection. -/

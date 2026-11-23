@@ -28,6 +28,7 @@ private theorem triple_field_sum (e f : Fin (n+1)) (q : ℝ) :
   simp only [tripleField,Complex.ofReal_add,add_smul,sum_add_distrib,single_field,
     tripleGenerator,mix,smul_smul,←smul_add,←Complex.ofReal_mul]
   rw [show (q*sqrt 2)*(1/sqrt 2)=q by field_simp [(sqrt_pos.mpr (by norm_num : (0:ℝ)<2)).ne']]
+  rfl
 
 /-- Only the at most 63 labels incident to the triple need to be controlled.
 The exterior keeps its actual Hamiltonian. -/
@@ -69,8 +70,9 @@ theorem triple_local_error {e f : Fin (n+1)} (u : PathShell n) (q δ : ℝ) (hδ
     have h : ¬PathWordSupportedIn Sᶜ l := fun hs => he (hs v (by simpa using hv))
     simpa only [x,if_neg h,zero_add] using hw l hl
   rw [←sum_subset (subset_univ W) (fun l _ h => hout l h)] at herr
-  exact herr.trans ((sum_le_sum hin).trans (by simpa only [sum_const,nsmul_eq_mul] using
-    mul_le_mul_of_nonneg_right hwcard hδ))
+  have hs : (∑ _l ∈ W, δ) ≤ 63 * δ := by
+    simpa only [sum_const,nsmul_eq_mul] using mul_le_mul_of_nonneg_right hwcard hδ
+  exact herr.trans ((sum_le_sum hin).trans hs)
 
 private theorem triple_supported {e f : Fin (n+1)} (hm : e.succ=f.castSucc) :
     IsSiteSupported (tripleSites e f) (tripleGenerator e f) := by
@@ -89,7 +91,7 @@ private theorem triple_supported {e f : Fin (n+1)} (hm : e.succ=f.castSucc) :
 signals if the incident coefficient errors cost at most 1/8. -/
 theorem triple_exchange_of_fit {e f : Fin (n+1)} (hm : e.succ=f.castSucc)
     (u : PathShell n) (q δ t : ℝ) (hδ : 0≤δ) (ht : (q*sqrt 2)*t=π/2)
-    (hsmall : |t|*(63*δ)≤1/8)
+    (hsmall : |t| *(63*δ)≤1/8)
     (hw : ∀ l ∈ (tripleSites e f).biUnion pathIncidentLabels, |u l-tripleField e f q l|≤δ)
     (C : TwoQubitCircuit (n+2)) (z : ℂ) (hz : ‖z‖=1)
     (he : ‖unitaryEvolution (pathHamiltonian u) t-z • C.eval.val‖ ≤ 1/4) :

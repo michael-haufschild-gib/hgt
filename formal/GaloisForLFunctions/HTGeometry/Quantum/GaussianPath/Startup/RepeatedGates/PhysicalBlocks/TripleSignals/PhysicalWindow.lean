@@ -47,7 +47,7 @@ theorem gaussian_positive_mark_density {a T : ℝ} (ha : 0<a) :
   have heq : (q*sqrt 2)*t=π/2 := by
     dsimp only [q,z₀]
     field_simp [ht₀.ne',(sqrt_pos.mpr (by norm_num : (0:ℝ)<2)).ne']
-  have hsmall : |t|*(63*(2*δ))≤1/8 := by
+  have hsmall : |t| * (63*(2*δ))≤1/8 := by
     rw [abs_of_pos ht₀]
     have hbound : t≤1+|T| := by linarith only [ht.2,le_abs_self T]
     have hδbound := mul_le_mul_of_nonneg_right hbound hδ.le
@@ -66,7 +66,7 @@ theorem gaussian_positive_mark_density {a T : ℝ} (ha : 0<a) :
 /-- The physical gate density exceeds one by a fixed positive amount,
 uniformly on the interval and for one draw of the infinite chain. -/
 theorem gaussian_strict_spanning_floor {a T : ℝ} (ha : 0<a) :
-    ∃ c>0, ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop, ∀ t : ℝ, |t|∈Icc a T →
+    ∃ c>0, ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop, ∀ t : ℝ, |t| ∈ Icc a T →
       ∀ s : ℕ, HasProjectiveCircuitApproximation (n+2) (1/4) s
         (unitaryEvolution (pathHamiltonian (pathPauliDisorderShell ω n)) t) →
       (1+c)*(n+1:ℕ) < (s:ℝ) := by

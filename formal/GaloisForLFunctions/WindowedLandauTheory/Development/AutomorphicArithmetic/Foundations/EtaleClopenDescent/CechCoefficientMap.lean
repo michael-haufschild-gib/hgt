@@ -8,7 +8,7 @@ noncomputable section
 namespace GlobalTheory.CechDR
 
 variable {k M N ι : Type} [Field k] [AddCommGroup M] [Module k M]
-  [AddCommGroup N] [Module k N] [LinearOrder ι]
+  [AddCommGroup N] [Module k N]
 
 def mapCochain (g : M →ₗ[k] N) : (Finset ι → M) →ₗ[k] (Finset ι → N) :=
   LinearMap.pi fun I => g.comp (LinearMap.proj I)
@@ -16,6 +16,8 @@ def mapCochain (g : M →ₗ[k] N) : (Finset ι → M) →ₗ[k] (Finset ι → 
 @[simp]
 theorem mapCochain_apply (g : M →ₗ[k] N) (c : Finset ι → M) (I : Finset ι) :
     mapCochain g c I = g (c I) := rfl
+
+variable [LinearOrder ι]
 
 theorem mapCochain_delta (g : M →ₗ[k] N) (c : Finset ι → M) :
     mapCochain g (deltaL k ι M c) = deltaL k ι N (mapCochain g c) := by
@@ -33,6 +35,7 @@ theorem isMap_mapCochain (A : Finset ι → Submodule k M) (B : Finset ι → Su
   change g (a I) ∈ if I.Nonempty ∧ (I.card : ℤ) = n + 1 then B I else ⊥
   split_ifs at hm ⊢ with hi
   · exact h I hi.1 hm
-  · simpa only [Submodule.mem_bot.mp hm, map_zero] using (zero_mem (⊥ : Submodule k N))
+  · rw [Submodule.mem_bot] at hm ⊢
+    rw [hm, map_zero]
 
 end GlobalTheory.CechDR

@@ -47,10 +47,34 @@ theorem IsAffCover.sectionRationalForms_pullback (hX : IsAffCover s U A) (hY : I
     change (Y.presheaf.germ Q _ hηY).hom (sectionRes t g ((f.app W).hom a)) = _
     exact (Y.presheaf.germ_res_apply g (genericPoint Y) hηY ((f.app W).hom a)).trans
       (hψ W hηX hη' a).symm
-  rw [← hω, relativeFormsPullback_app, formsOnToSections_res,
-    hY.sectionRationalForms_formsOn, hX.sectionRationalForms_formsOn, pullbackDR_degree,
-    ← ExteriorDifferentials.map_comp, ← ExteriorDifferentials.map_comp, ← ExteriorDifferentials.map_comp]
-  exact congrArg (fun a : SectionRing s W →ₐ[K] Y.functionField =>
-    (ExteriorDifferentials.map a p ω : DR K Y.functionField)) he
+  let a := sectionPullback hf W
+  let v := ExteriorDifferentials.map a p ω
+  let v' := ExteriorDifferentials.map (sectionRes t g) p v
+  have hout : (relativeForms t p).presheaf.map g.op ((relativeFormsPullback hf p).app W x) =
+      formsOnToSections t p Q v' := by
+    exact (congrArg (fun z => (relativeForms t p).presheaf.map g.op
+      ((relativeFormsPullback hf p).app W z)) hω.symm).trans
+      ((congrArg (fun z => (relativeForms t p).presheaf.map g.op z)
+        (relativeFormsPullback_app hf p W ω)).trans (formsOnToSections_res t p g v))
+  have hsrc : (hX.sectionRationalForms hi p x : DR K X.functionField) =
+      (ExteriorDifferentials.map (genericSectionAlg hX.alg hηX) p ω : DR K X.functionField) :=
+    (congrArg (fun z => (hX.sectionRationalForms hi p z : DR K X.functionField)) hω.symm).trans
+      (hX.sectionRationalForms_formsOn hi p ω)
+  have htgt : (hY.sectionRationalForms hj p
+      ((relativeForms t p).presheaf.map g.op ((relativeFormsPullback hf p).app W x)) :
+      DR K Y.functionField) =
+      (ExteriorDifferentials.map (genericSectionAlg hY.alg hηY) p v' : DR K Y.functionField) :=
+    (congrArg (fun z => (hY.sectionRationalForms hj p z : DR K Y.functionField)) hout).trans
+      (hY.sectionRationalForms_formsOn hj p v')
+  have hmap : ExteriorDifferentials.map (genericSectionAlg hY.alg hηY) p v' =
+      ExteriorDifferentials.map ψ p (ExteriorDifferentials.map (genericSectionAlg hX.alg hηX) p ω) := by
+    change ExteriorDifferentials.map (genericSectionAlg hY.alg hηY) p
+        (ExteriorDifferentials.map (sectionRes t g) p (ExteriorDifferentials.map a p ω)) = _
+    rw [← ExteriorDifferentials.map_comp, ← ExteriorDifferentials.map_comp, he,
+      ExteriorDifferentials.map_comp]
+  exact htgt.trans ((congrArg (fun z : ExteriorDifferentials K Y.functionField p =>
+    (z : DR K Y.functionField)) hmap).trans
+    ((pullbackDR_degree ψ p (ExteriorDifferentials.map (genericSectionAlg hX.alg hηX) p ω)).symm.trans
+      (congrArg (pullbackDR ψ) hsrc.symm)))
 
 end GlobalTheory.PD

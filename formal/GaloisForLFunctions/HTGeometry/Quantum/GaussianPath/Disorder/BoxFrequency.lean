@@ -8,13 +8,18 @@ open scoped Topology
 namespace GaloisForLFunctions.HTGeometry
 noncomputable section
 
-/-- An injective choice of coordinates makes the blocks independent.
-A nondegenerate box occurs with a positive lower density on one draw. -/
-theorem gaussian_disjoint_box_frequency {K : Type*} [Fintype K]
+/-- Gaussian product mass of the specified coordinate intervals. -/
+def gaussianBoxMass {K : Type*} [Fintype K] (lo hi : K → ℝ) : ℝ :=
+  (Measure.infinitePi (fun _ : K => gaussianReal 0 1)).real (univ.pi fun i => Icc (lo i) (hi i))
+
+/-- Each family of disjoint coordinate blocks eventually realizes at
+least half the exact Gaussian box mass as a frequency. -/
+theorem gaussian_disjoint_box_half_mass {K : Type*} [Fintype K]
     (g : ℕ × K → ℕ × PathPauliDirections) (hg : Function.Injective g)
     (lo hi : K → ℝ) (hbox : ∀ j, lo j < hi j) :
-    ∃ p : ℝ, 0 < p ∧ ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ m : ℕ in atTop,
-      p*m ≤ ((Finset.range m).filter (fun k => ∀ j, ω (g (k,j)) ∈ Icc (lo j) (hi j))).card := by
+    0 < gaussianBoxMass lo hi/2 ∧ ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ m : ℕ in atTop,
+      gaussianBoxMass lo hi/2*m ≤
+        ((Finset.range m).filter (fun k => ∀ j, ω (g (k,j)) ∈ Icc (lo j) (hi j))).card := by
   classical
   let blockLaw : Measure (K → ℝ) := Measure.infinitePi fun _ => gaussianReal 0 1
   letI : IsProbabilityMeasure blockLaw := by dsimp only [blockLaw]; infer_instance
@@ -43,7 +48,8 @@ theorem gaussian_disjoint_box_frequency {K : Type*} [Fintype K]
   rw [(hid 0).integral_eq,show (∫ x, f x ∂blockLaw) = blockLaw.real B by
     simp [f,integral_indicator hB,Measure.real]] at hs
   have hpos : 0 < blockLaw.real B := ENNReal.toReal_pos hp.ne' (measure_ne_top _ _)
-  refine ⟨blockLaw.real B/2,by positivity,?_⟩
+  change 0 < blockLaw.real B/2 ∧ _
+  refine ⟨by positivity,?_⟩
   filter_upwards [hread.quasiMeasurePreserving.ae hs] with ω hω
   filter_upwards [hω.eventually_const_lt (show blockLaw.real B/2 < blockLaw.real B by linarith),
     eventually_ge_atTop 1] with m hm hmpos
@@ -54,6 +60,16 @@ theorem gaussian_disjoint_box_frequency {K : Type*} [Fintype K]
   rw [hcard] at hm
   exact ((lt_div_iff₀ (show 0 < (m:ℝ) by exact_mod_cast (by omega : 0 < m))).mp hm).le
 
+/-- An injective choice of coordinates makes the blocks independent.
+A nondegenerate box occurs with a positive lower density on one draw. -/
+theorem gaussian_disjoint_box_frequency {K : Type*} [Fintype K]
+    (g : ℕ × K → ℕ × PathPauliDirections) (hg : Function.Injective g)
+    (lo hi : K → ℝ) (hbox : ∀ j, lo j < hi j) :
+    ∃ p : ℝ, 0 < p ∧ ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ m : ℕ in atTop,
+      p*m ≤ ((Finset.range m).filter (fun k => ∀ j, ω (g (k,j)) ∈ Icc (lo j) (hi j))).card := by
+  exact ⟨_,gaussian_disjoint_box_half_mass g hg lo hi hbox⟩
+
+#print axioms gaussian_disjoint_box_half_mass
 #print axioms gaussian_disjoint_box_frequency
 end
 end GaloisForLFunctions.HTGeometry
