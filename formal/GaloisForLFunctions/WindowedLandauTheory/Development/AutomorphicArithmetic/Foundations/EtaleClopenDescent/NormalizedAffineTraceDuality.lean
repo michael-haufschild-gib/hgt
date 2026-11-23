@@ -18,8 +18,8 @@ variable {k F E : Type} [Field k] [CharZero k] [Field F] [Field E]
   [FiniteDimensional F E] [Algebra.IsSeparable F E]
   (A : Subalgebra k F) [IsNoetherianRing A] [IsIntegrallyClosed A] [IsFractionRing A F]
 
-local notation "B" => integralClosure A E
-local notation "C" => ((B).restrictScalars k)
+local notation "B₀" => integralClosure A E
+local notation "C" => ((B₀).restrictScalars k)
 
 variable [Algebra.Smooth k C]
 
@@ -33,26 +33,26 @@ polynomial ring exactly for coefficients of regular top forms. -/
 theorem normalized_affine_trace_dual_iff {d : ℕ}
     (e : MvPolynomial (Fin d) k ≃ₐ[k] A)
     (bE : Module.Basis (Fin d) E Ω[E⁄k]) (z : E) :
-    (∀ b : B, Algebra.trace F E (z * (b : E)) ∈ A) ↔
+    (∀ b : B₀, Algebra.trace F E (z * (b : E)) ∈ A) ↔
       z • (ExteriorAlgebra.ιMulti E d fun j => D k E (algebraMap A E (e (MvPolynomial.X j)))) ∈
         omB k E C d := by
   let w : ExteriorDifferentials k E d :=
     z • exteriorPower.ιMulti E d (fun j => D k E (algebraMap A E (e (MvPolynomial.X j))))
   change _ ↔ (w : DR k E) ∈ _
-  letI : IsNoetherianRing B := integralClosure.isNoetherianRing (K := F) (L := E)
-  letI : IsFractionRing B E := integralClosure.isFractionRing_of_finite_extension F E
-  letI : IsIntegrallyClosed B := integralClosure.isIntegrallyClosedOfFiniteExtension F
+  letI : IsNoetherianRing B₀ := integralClosure.isNoetherianRing (K := F) (L := E)
+  letI : IsFractionRing B₀ E := integralClosure.isFractionRing_of_finite_extension F E
+  letI : IsIntegrallyClosed B₀ := integralClosure.isIntegrallyClosedOfFiniteExtension F
   constructor
   · intro h
-    haveI : IsNoetherianRing C := inferInstanceAs (IsNoetherianRing B)
-    haveI : IsIntegrallyClosed C := inferInstanceAs (IsIntegrallyClosed B)
-    haveI : IsFractionRing C E := inferInstanceAs (IsFractionRing B E)
+    haveI : IsNoetherianRing C := inferInstanceAs (IsNoetherianRing B₀)
+    haveI : IsIntegrallyClosed C := inferInstanceAs (IsIntegrallyClosed B₀)
+    haveI : IsFractionRing C E := inferInstanceAs (IsFractionRing B₀ E)
     refine mem_omB_of_forall_height_one C d w fun Q _ hQ => ?_
-    let P := Q.comap (algebraMap A B)
+    let P := Q.comap (algebraMap A B₀)
     letI : P.IsPrime := Ideal.comap_isPrime _ Q
-    have hP : P.height = 1 := height_comap_eq_one_of_integral (A := A) (B := B) Q hQ
+    have hP : P.height = 1 := height_comap_eq_one_of_integral (A := A) (B := B₀) Q hQ
     let R := primeLocalizationInField F P
-    have hlocal (b : B) : Algebra.trace F E (z * (b : E)) ∈ (algebraMap R F).range :=
+    have hlocal (b : B₀) : Algebra.trace F E (z * (b : E)) ∈ (algebraMap R F).range :=
       ⟨algebraMap A R ⟨_, h b⟩, (IsScalarTower.algebraMap_apply A R F _).symm⟩
     obtain ⟨s, hs, hw⟩ :=
       (trace_pairing_at_chartPrime_iff_regular (F := F) (E := E) A e bE P hP z).mp hlocal Q rfl

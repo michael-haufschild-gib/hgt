@@ -36,7 +36,8 @@ theorem gap_characteristic (E : I → ℝ) (t : ℝ) :
   rw [Fintype.card_prod,Nat.cast_mul,mul_inv_rev,Fintype.sum_prod_type]
   conv_rhs => rw [mul_mul_mul_comm]
   congr 1
-  simp only [sum_mul,mul_sum]
+  rw [sum_mul]
+  simp only [mul_sum]
   apply sum_congr rfl
   intro i _
   apply sum_congr rfl
