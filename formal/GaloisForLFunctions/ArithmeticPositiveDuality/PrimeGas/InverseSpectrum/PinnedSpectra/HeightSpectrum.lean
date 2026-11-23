@@ -75,8 +75,7 @@ theorem realize_first_move (j : ℕ) : ∃ b ∈ physicalSpectra 1, FirstMove b 
   · intro k hk
     rw [completion_fixes a (hk.trans (Nat.lt_succ_self j))]
     change (if k=j then coldEdge 1 k else hotEdge 1 k).val = _
-    rw [if_neg hk.ne]
-    rfl
+    simp only [if_neg hk.ne,hotEdge]
   · rw [completion_fixes a (Nat.lt_succ_self j)]
     change (if j=j then coldEdge 1 j else hotEdge 1 j).val ≠ _
     rw [if_pos rfl]

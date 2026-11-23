@@ -211,10 +211,10 @@ theorem exists_simultaneous_witness_surplus_gt_norm_continued_sub
     have hd : δ ≤ (Λ / 4) ^ ((1 : ℝ) / 3) := (min_le_right _ _).trans (min_le_left _ _)
     have hp3 : δ ^ 3 ≤ Λ / 4 := by
       have h1 := pow_le_pow_left₀ hδ_pos.le hd 3
-      rwa [← Real.rpow_natCast _ 3, ← Real.rpow_mul (by positivity),
+      rwa [← Real.rpow_natCast ((Λ / 4) ^ ((1 : ℝ) / 3)) 3, ← Real.rpow_mul (by positivity),
         show ((1 : ℝ) / 3) * (3 : ℕ) = 1 by norm_num, Real.rpow_one] at h1
     have hp4 : δ ^ 4 < ((Λ * (δ / 2)) ^ (1 / 4 : ℝ)) ^ 4 := by
-      rw [← Real.rpow_natCast _ 4, ← Real.rpow_mul (by positivity),
+      rw [← Real.rpow_natCast ((Λ * (δ / 2)) ^ (1 / 4 : ℝ)) 4, ← Real.rpow_mul (by positivity),
         show (1 / 4 : ℝ) * (4 : ℕ) = 1 by norm_num, Real.rpow_one]
       have hlt3 : δ ^ 3 < Λ / 2 := by linarith
       calc δ ^ 4 = δ ^ 3 * δ := by ring
@@ -355,7 +355,8 @@ theorem dyadicSpectralTriad_hotEdge_eq (s : ℂ) (k : ℕ) :
       congr 1
       have hocc : occupationWeight (2 * k + 1) * 2 = occupationWeight k := by
         simp only [occupationWeight_eq]; push_cast; field_simp; ring
-      exact_mod_cast hocc
+      rw [← Complex.ofReal_ofNat, ← Complex.ofReal_mul]
+      exact congrArg Complex.ofReal hocc
     have h2s_ne : (2 : ℂ) ^ s ≠ 0 := by
       rw [Complex.cpow_def_of_ne_zero two_ne_zero]; exact Complex.exp_ne_zero _
     rw [Complex.cpow_sub _ _ two_ne_zero, Complex.cpow_one, ← hmul]
@@ -413,13 +414,14 @@ theorem exists_finite_witness_iff_hotEdge_beats_tail
     have hn1 : 0 < ‖(2 : ℂ) ^ s - 1‖ := by
       have h := norm_sub_norm_le ((2 : ℂ) ^ s) 1
       rw [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num,
-        Complex.norm_cpow_eq_rpow_re_of_pos two_pos, norm_one] at h
+        Complex.norm_cpow_eq_rpow_re_of_pos two_pos, Complex.ofReal_ofNat, norm_one] at h
       linarith
     have hn2 : 0 < ‖1 - (2 : ℂ) ^ (1 - s)‖ := by
       rw [norm_sub_rev]
       have h := norm_sub_norm_le ((2 : ℂ) ^ (1 - s)) 1
       rw [show (2 : ℂ) = ((2 : ℝ) : ℂ) by norm_num,
-        Complex.norm_cpow_eq_rpow_re_of_pos two_pos, Complex.sub_re, Complex.one_re, norm_one] at h
+        Complex.norm_cpow_eq_rpow_re_of_pos two_pos, Complex.ofReal_ofNat,
+        Complex.sub_re, Complex.one_re, norm_one] at h
       linarith
     exact div_pos hn1 hn2
   have heta_iff : (∃ K : ℕ, triadTailBound K s < ‖finiteTriadReading (hotEdge 1) K s‖) ↔
@@ -431,13 +433,15 @@ theorem exists_finite_witness_iff_hotEdge_beats_tail
     rw [norm_mul, norm_div]
     simp_rw [dyadicSpectralTriad_hotEdge_eq]
     exact mul_lt_mul_iff_right₀ hpre_pos
+  have hint_iff : (∫ u in Ioi (0 : ℝ), dyadicOverlapContrast halfTurnClock 0 s u / (u : ℂ)) ≠ 0 ↔
+      continued s ≠ 0 := by
+    rw [ne_eq, ne_eq]
+    exact (continued_eq_zero_iff_integral_dyadicOverlapContrast_eq_zero halfTurnClock 0 hs0 hs1.ne).not
   refine ⟨?_, ?_⟩
   · rw [exists_finite_capped_witness_iff_integral_ne_zero halfTurnClock 0 hs0 hs1 hΛ,
-      (continued_eq_zero_iff_integral_dyadicOverlapContrast_eq_zero halfTurnClock 0 hs0 hs1.ne).not,
-      hhot_iff_cs]
+      hint_iff, hhot_iff_cs]
   · rw [exists_finite_uncapped_witness_iff_integral_ne_zero halfTurnClock 0 hs0 hs1,
-      (continued_eq_zero_iff_integral_dyadicOverlapContrast_eq_zero halfTurnClock 0 hs0 hs1.ne).not,
-      ← heta_iff, hhot_iff_cs]
+      hint_iff, ← heta_iff, hhot_iff_cs]
 
 /-! ### Part 3: Zero-exception coverage through height `150` and frontier advance above `150` -/
 
@@ -498,7 +502,7 @@ theorem zero_exception_band_eightyFour_and_half_to_oneHundredFifty
       ∀ (t : ExceptionalTime) (j : ℕ),
         ∃ X₀ : ℕ, 1 ≤ X₀ ∧
           CutoffSeparation.zetaFreeTruncationBound t j X₀ (1 - conj s) <
-            ‖CutoffSeparation.renormalizedCutoff t j X₀ (1 - conj s)‖ := by
+            ‖renormalizedCutoff t j X₀ (1 - conj s)‖ := by
   have hs0 : 0 < s.re := by linarith
   have hs1 : s.re < 1 := by linarith
   obtain ⟨v, K, huv, hcap, huncap⟩ :=
@@ -531,7 +535,7 @@ theorem strip_div_nat_zeta_ne_zero_below_scaled_oneHundredFifty {k : ℕ} (hk : 
       ∀ (t : ExceptionalTime) (j : ℕ),
         ∃ X₀ : ℕ, 1 ≤ X₀ ∧
           CutoffSeparation.zetaFreeTruncationBound t j X₀ wRefl <
-            ‖CutoffSeparation.renormalizedCutoff t j X₀ wRefl‖ := by
+            ‖renormalizedCutoff t j X₀ wRefl‖ := by
   dsimp only
   set z := w / (k : ℂ)
   set wRefl := 1 - conj z

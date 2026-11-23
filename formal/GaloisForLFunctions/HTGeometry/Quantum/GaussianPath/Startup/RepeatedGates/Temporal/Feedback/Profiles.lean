@@ -60,7 +60,6 @@ private theorem marked_component (w : List (V×V)) (i : V) (hi : profile w i≠�
       · rw [occupied,if_pos h]
         exact subset_insert ..
       · rw [occupied,if_neg h]
-        exact fun _ hj => hj
     change relabel e w (label w i)∈_
     by_cases hit : i=e.1 ∨ i=e.2
     · have hj : relabel e w (label w i)=label w e.1 := by
@@ -71,7 +70,7 @@ private theorem marked_component (w : List (V×V)) (i : V) (hi : profile w i≠�
       · rw [profile,if_pos hit,mergeProfiles,if_neg h] at hi
         by_cases h₁ : profile w e.1=∅
         · have h₂ : profile w e.2≠∅ := by intro hh; apply hi; rw [h₁,hh,union_empty]
-          exact incl (by simpa only [relabel,if_pos rfl] using lift e.2 h₂)
+          exact incl (by simpa [relabel] using lift e.2 h₂)
         · exact incl (by simpa [relabel] using lift e.1 h₁)
     · rw [profile,if_neg hit] at hi
       exact incl (lift i hi)

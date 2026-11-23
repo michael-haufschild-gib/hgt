@@ -36,20 +36,47 @@ private theorem inv_chartDenominator_mem :
   rw [inv_div]
   exact Algebra.subset_adjoin ⟨j, hj, i, rfl⟩
 
+private theorem inclusion_isScalarTower (A₁ C₁ : Subalgebra k F) (hAC : A₁ ≤ C₁) :
+    letI := (Subalgebra.inclusion hAC).toRingHom.toAlgebra
+    IsScalarTower A₁ C₁ F := by
+  letI := (Subalgebra.inclusion hAC).toRingHom.toAlgebra
+  exact .of_algebraMap_eq fun _ => rfl
+
+private theorem isLocalization_away_of_fractions (A₁ C₁ : Subalgebra k F) (hAC : A₁ ≤ C₁)
+    (u : A₁) (hu : (u : F) ≠ 0) (hinv : (u : F)⁻¹ ∈ C₁)
+    (hfrac : ∀ c : C₁, ∃ a : A₁, ∃ n : ℕ, (c : F) = (a : F) * ((u : F) ^ n)⁻¹) :
+    letI := (Subalgebra.inclusion hAC).toRingHom.toAlgebra
+    IsLocalization.Away u C₁ := by
+  letI := (Subalgebra.inclusion hAC).toRingHom.toAlgebra
+  refine (isLocalization_iff (Submonoid.powers u) C₁).mpr ⟨?_, ?_, ?_⟩
+  · rintro ⟨_, n, rfl⟩
+    refine isUnit_iff_exists_inv.mpr ⟨⟨((u : F)⁻¹) ^ n, C₁.pow_mem hinv n⟩, Subtype.ext ?_⟩
+    change (u : F) ^ n * ((u : F)⁻¹) ^ n = 1
+    rw [← mul_pow, mul_inv_cancel₀ hu, one_pow]
+  · intro c
+    obtain ⟨a, n, hc⟩ := hfrac c
+    refine ⟨⟨a, ⟨u ^ n, ⟨n, rfl⟩⟩⟩, Subtype.ext ?_⟩
+    change (c : F) * (u : F) ^ n = (a : F)
+    rw [hc, mul_assoc, inv_mul_cancel₀ (pow_ne_zero _ hu), mul_one]
+  · intro a b hab
+    exact ⟨1, congrArg (fun r : A₁ => 1 * r)
+      (Subtype.ext (congrArg (fun r : C₁ => (r : F)) hab))⟩
+
 local notation "A" => rA k x (Singleton.singleton i)
 local notation "C" => rA k x I
 local notation "s" => chartDenominator k x I i
 
+private theorem single_le_intersection (hi : i ∈ I) : A ≤ C :=
+  rA_mono (Finset.singleton_subset_iff.mpr hi)
+
 /-- The inclusion from one chart into a chart intersection as an algebra. -/
-abbrev chartIntersectionAlgebra (hi : i ∈ I) : Algebra A C := by
-  have hle : A ≤ C := rA_mono (Finset.singleton_subset_iff.mpr hi)
-  exact (Subalgebra.inclusion hle).toRingHom.toAlgebra
+abbrev chartIntersectionAlgebra (hi : i ∈ I) : Algebra A C :=
+  (Subalgebra.inclusion (single_le_intersection hi)).toRingHom.toAlgebra
 
 theorem chartIntersection_tower (hi : i ∈ I) :
     letI := chartIntersectionAlgebra (k := k) (x := x) hi
-    IsScalarTower A C F := by
-  letI := chartIntersectionAlgebra (k := k) (x := x) hi
-  exact .of_algebraMap_eq fun _ => rfl
+    IsScalarTower A C F :=
+  inclusion_isScalarTower A C (single_le_intersection hi)
 
 private theorem mem_rA_iff_fraction (h : IsPd k x) (hi : i ∈ I) (y : F) :
     y ∈ C ↔ ∃ a : A, ∃ n : ℕ, y = (a : F) * ((s : F) ^ n)⁻¹ := by
@@ -63,8 +90,9 @@ private theorem mem_rA_iff_fraction (h : IsPd k x) (hi : i ∈ I) (y : F) :
   let L := Localization.subalgebra.ofField F M hM
   have hmem (z : F) : z ∈ L ↔
       ∃ (a q : A) (_ : q ∈ M), z = algebraMap A F a * (algebraMap A F q)⁻¹ := Iff.rfl
-  have hs : (s : F)⁻¹ ∈ L := (hmem _).mpr
-    ⟨1, s, ⟨1, pow_one _⟩, by change _ = 1 * _; rw [one_mul] <;> rfl⟩
+  have hs : (s : F)⁻¹ ∈ L := (hmem _).mpr ⟨1, s, ⟨1, pow_one _⟩, by
+    change (s : F)⁻¹ = 1 * (s : F)⁻¹
+    rw [one_mul]⟩
   have hratio (j : Fin (d + 1)) : x j / x i ∈ L :=
     L.algebraMap_mem ⟨_, Algebra.subset_adjoin ⟨i, Finset.mem_singleton_self i, j, rfl⟩⟩
   have hle : C ≤ L.restrictScalars k := by
@@ -96,21 +124,9 @@ private theorem mem_rA_iff_fraction (h : IsPd k x) (hi : i ∈ I) (y : F) :
 coordinate chart. -/
 theorem chartIntersection_isLocalization (h : IsPd k x) (hi : i ∈ I) :
     letI := chartIntersectionAlgebra (k := k) (x := x) hi
-    IsLocalization.Away s C := by
-  letI := chartIntersectionAlgebra (k := k) (x := x) hi
-  refine (isLocalization_iff (Submonoid.powers s) C).mpr ⟨?_, ?_, ?_⟩
-  · rintro ⟨_, n, rfl⟩
-    refine isUnit_iff_exists_inv.mpr ⟨⟨((s : F)⁻¹) ^ n, (C).pow_mem inv_chartDenominator_mem n⟩, ?_⟩
-    apply Subtype.ext
-    change (s : F) ^ n * ((s : F)⁻¹) ^ n = 1
-    rw [← mul_pow, mul_inv_cancel₀ (chartDenominator_ne_zero h), one_pow]
-  · intro c
-    obtain ⟨a, n, hc⟩ := (mem_rA_iff_fraction h hi c).mp c.property
-    refine ⟨⟨a, ⟨s ^ n, ⟨n, rfl⟩⟩⟩, Subtype.ext ?_⟩
-    change (c : F) * (s : F) ^ n = (a : F)
-    rw [hc, mul_assoc, inv_mul_cancel₀ (pow_ne_zero _ (chartDenominator_ne_zero h)), mul_one]
-  · intro a b hab
-    exact ⟨1, congrArg (fun r : A => 1 * r)
-      (Subtype.ext (congrArg (fun r : C => (r : F)) hab))⟩
+    IsLocalization.Away s C :=
+  isLocalization_away_of_fractions A C (single_le_intersection hi) s
+    (chartDenominator_ne_zero h) inv_chartDenominator_mem
+    (fun c => (mem_rA_iff_fraction h hi c).mp c.property)
 
 end GlobalTheory.PD

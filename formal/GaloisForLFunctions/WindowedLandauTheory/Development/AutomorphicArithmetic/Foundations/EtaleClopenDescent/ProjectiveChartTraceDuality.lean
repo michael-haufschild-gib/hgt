@@ -33,11 +33,14 @@ theorem IsFinCover.affine_trace_dual_iff (h : IsFinCover k E x) (i : Fin (d + 1)
   letI : IsFractionRing A F := h.pd.isFractionRing_rA i
   letI := h.fin
   letI := h.sep
-  letI : Algebra.Smooth k (rB k E x {i}) := h.smooth i
+  letI : Algebra.Smooth k (Subalgebra.restrictScalars k (integralClosure A E)) := h.smooth i
   obtain ⟨b, _⟩ := h.exists_coordinateDifferentialBasis
   have he (j : Fin d) :
       algebraMap A E (e (MvPolynomial.X j)) = algebraMap F E (chartCoordinates x i j) :=
     congrArg (algebraMap F E) (h.pd.chartPolynomialEquiv_X i j)
+  change (∀ b : integralClosure A E, Algebra.trace F E (z * (b : E)) ∈ A) ↔
+    z • (ExteriorAlgebra.ιMulti E d fun j => D k E (algebraMap F E (chartCoordinates x i j))) ∈
+      omB k E (Subalgebra.restrictScalars k (integralClosure A E)) d
   simpa only [he, mem_algebraMap_range_subalgebra] using
     normalized_affine_trace_dual_iff (F := F) (E := E) A e b z
 
@@ -55,6 +58,9 @@ theorem IsFinCover.intersection_trace_dual_iff (h : IsFinCover k E x)
   let s := chartDenominator k x I i
   let ω : ExteriorDifferentials k E d := exteriorPower.ιMulti E d
     (fun j => D k E (algebraMap F E (chartCoordinates x i j)))
+  have hs : algebraMap A E s = algebraMap F E (s : F) := rfl
+  have hω : (ω : DR k E) =
+      ExteriorAlgebra.ιMulti E d (fun j => D k E (algebraMap F E (chartCoordinates x i j))) := rfl
   letI : Module.Finite A B := (h.finiteProjective_chart i).1
   letI : Algebra A C := chartIntersectionAlgebra (k := k) (x := x) hi
   letI : IsScalarTower A C F := chartIntersection_tower (k := k) (x := x) hi
@@ -68,18 +74,20 @@ theorem IsFinCover.intersection_trace_dual_iff (h : IsFinCover k E x)
     (E := E) (Submonoid.powers s) z
   simp only [mem_algebraMap_range_subalgebra] at htr
   change _ ↔ ((z • ω : ExteriorDifferentials k E d) : DR k E) ∈ _
-  rw [mem_omB_chartIntersection_iff h.pd hi]
+  rw [mem_omB_chartIntersection_iff (E := E) h.pd hi (z • ω)]
   refine htr.trans ?_
   constructor
   · rintro ⟨a, ha⟩
     obtain ⟨n, hn⟩ := a.property
     have ht : algebraMap A E (a : A) = algebraMap F E (s : F) ^ n := by
-      rw [← hn, map_pow] <;> rfl
+      calc
+        _ = algebraMap A E (s ^ n) := congrArg (algebraMap A E) hn.symm
+        _ = _ := by rw [map_pow, hs]
     refine ⟨n, ?_⟩
-    simpa only [ht, mul_smul, Submodule.coe_smul_of_tower] using
+    simpa only [ht, mul_smul, Submodule.coe_smul_of_tower, hω, s] using
       (h.affine_trace_dual_iff i _).mp ha
   · rintro ⟨n, hn⟩
     refine ⟨⟨s ^ n, ⟨n, rfl⟩⟩, (h.affine_trace_dual_iff i _).mpr ?_⟩
-    simpa only [map_pow, mul_smul, Submodule.coe_smul_of_tower] using hn
+    simpa only [map_pow, hs, mul_smul, Submodule.coe_smul_of_tower, hω, s] using hn
 
 end GlobalTheory.PD

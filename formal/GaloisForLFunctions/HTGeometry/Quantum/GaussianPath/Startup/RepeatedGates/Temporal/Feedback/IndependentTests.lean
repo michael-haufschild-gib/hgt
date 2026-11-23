@@ -6,7 +6,7 @@ import Mathlib.Tactic
 /-! # Selecting simultaneous signal tests from a circuit's missing pairs -/
 open Finset
 namespace GaloisForLFunctions.HTGeometry.RepeatedGates.Temporal.Feedback
-variable {J V : Type*} [DecidableEq J] [DecidableEq V]
+variable {J V : Type*} [DecidableEq V]
 
 /-- Two missing signals conflict when each source enters the other cone. -/
 def conflicting (w : List (V×V)) (x y : J→V) (i j : J) : Prop :=
@@ -16,16 +16,19 @@ private theorem maximum_family (A : Finset J) (R : J→J→Prop) :
     ∃ S⊆A, (∀ i∈S, ∀ j∈S, i≠j → ¬R i j) ∧
       ∀ T⊆A, (∀ i∈T, ∀ j∈T, i≠j → ¬R i j) → T.card≤S.card := by
   classical
-  let F := A.powerset.filter fun T => ∀ i∈T, ∀ j∈T, i≠j → ¬R i j
-  have hn : F.Nonempty := ⟨∅,mem_filter.mpr ⟨mem_powerset.mpr (empty_subset _),by simp⟩⟩
+  let good (T : Finset J) := ∀ i∈T, ∀ j∈T, i≠j → ¬R i j
+  let F := A.powerset.filter good
+  have mem (T : Finset J) : T∈F ↔ T⊆A ∧ good T := by
+    simp only [F,mem_filter,mem_powerset]
+  have hn : F.Nonempty := ⟨∅,(mem _).mpr ⟨empty_subset _,by simp [good]⟩⟩
   obtain ⟨S,hS,he⟩ := exists_mem_eq_sup' hn card
-  have hh := mem_filter.mp hS
-  refine ⟨S,mem_powerset.mp hh.1,hh.2,fun T hT h => ?_⟩
-  exact (le_sup' card (mem_filter.mpr ⟨mem_powerset.mpr hT,h⟩ : T∈F)).trans_eq he
+  have hh := (mem S).mp hS
+  refine ⟨S,hh.1,hh.2,fun T hT h => ?_⟩
+  exact (le_sup' card ((mem T).mpr ⟨hT,h⟩)).trans_eq he
 
 /-- In a triangle-free class an independent set of maximum size m covers
 all vertices by its closed neighborhoods, each of size at most m+1. -/
-private theorem independent_square (A : Finset J) (R : J→J→Prop) (hs : Symmetric R)
+private theorem independent_square (A : Finset J) (R : J→J→Prop) (hs : ∀ {i j}, R i j → R j i)
     (ht : ∀ i∈A, ∀ j∈A, ∀ k∈A, R i j → R i k → j≠k → ¬R j k) :
     ∃ S⊆A, (∀ i∈S, ∀ j∈S, i≠j → ¬R i j) ∧ A.card≤S.card*(S.card+1) := by
   classical
@@ -43,18 +46,20 @@ private theorem independent_square (A : Finset J) (R : J→J→Prop) (hs : Symme
       hn (mem_biUnion.mpr ⟨j,hj,mem_insert_of_mem (mem_filter.mpr ⟨h,hh⟩)⟩)
     have hh := hmax (insert i S) (insert_subset h hS) (by
       intro j hj k hk hne
-      rcases mem_insert.mp hj with rfl|hj <;> rcases mem_insert.mp hk with rfl|hk
-      · exact (hne rfl).elim
-      · exact fun h => hb k hk (hs h)
-      · exact hb j hj
-      · exact hi j hj k hk hne)
+      by_cases hji : j=i
+      · subst j
+        exact fun h => hb k ((mem_insert.mp hk).resolve_left hne.symm) (hs h)
+      have hj' := (mem_insert.mp hj).resolve_left hji
+      by_cases hki : k=i
+      · subst k; exact hb j hj'
+      exact hi j hj' k ((mem_insert.mp hk).resolve_left hki) hne)
     rw [card_insert_of_notMem hin] at hh
     omega
   refine ⟨S,hS,hi,(card_le_card cover).trans (card_biUnion_le.trans ?_)⟩
   calc
-    (∑ i ∈ S, (insert i (B i)).card) ≤ ∑ _i ∈ S, S.card+1 :=
-      sum_le_sum fun i hi => (card_insert_le ..).trans (Nat.succ_le_succ (hsize i hi))
-    _ = _ := by rw [sum_const,nsmul_eq_mul]
+    (∑ i ∈ S, (insert i (B i)).card) ≤ ∑ _i ∈ S, (S.card+1) :=
+      sum_le_sum fun i hi => (card_insert_le i (B i)).trans (Nat.succ_le_succ (hsize i hi))
+    _ = _ := by simp
 
 /-- Among any finite family of L missing signals one can choose m tests
 with no mutual cross-connections, where L ≤ (2r+1)m(m+1) and r is the
@@ -77,9 +82,15 @@ theorem independent_missing_signals [Fintype V] (w : List (V×V)) (x y : J→V) 
         (fun l => hm _ (mem_filter.mp (hmem l)).1)
         (fun l => (mem_filter.mp (hmem l)).2.trans (mem_filter.mp (hmem 0)).2.symm)
       intro l m hne
-      fin_cases l <;> fin_cases m <;> first | exact (hne rfl).elim | exact hij.1 | exact hij.2 |
-        exact hik.1 | exact hik.2 | exact hjk.1 | exact hjk.2
-    obtain ⟨T,hT,ht',hcard⟩ := independent_square (F p) R (fun _ _ h => And.symm h) ht
+      fin_cases l <;> fin_cases m <;> first
+        | exact (hne rfl).elim
+        | exact hij.1
+        | exact hij.2
+        | exact hik.1
+        | exact hik.2
+        | exact hjk.1
+        | exact hjk.2
+    obtain ⟨T,hT,ht',hcard⟩ := independent_square (F p) R (fun {_ _} h => And.symm h) ht
     have hh := hmax T (hT.trans (filter_subset ..)) ht'
     exact hcard.trans (Nat.mul_le_mul hh (Nat.succ_le_succ hh))
   have cover : A ⊆ (A.image P).biUnion F :=
@@ -91,7 +102,7 @@ theorem independent_missing_signals [Fintype V] (w : List (V×V)) (x y : J→V) 
   refine ⟨S,hS,hi,(card_le_card cover).trans (card_biUnion_le.trans ?_)⟩
   calc
     (∑ p ∈ A.image P, (F p).card) ≤ ∑ _p ∈ A.image P, S.card*(S.card+1) := sum_le_sum fun p _ => hsize p
-    _ = (A.image P).card*(S.card*(S.card+1)) := by rw [sum_const,nsmul_eq_mul]
+    _ = (A.image P).card*(S.card*(S.card+1)) := by simp
     _ ≤ _ := Nat.mul_le_mul_right _ ((card_le_card hsub).trans (number_of_profiles w))
 
 #print axioms independent_missing_signals

@@ -25,12 +25,16 @@ theorem mixed_gap_eigenvector {m : ℕ} {b : PrefixData m} (hb : StrictPrefix b)
   obtain ⟨C,hC,hbound⟩ := gap_inverse_bound (hb j)
   have hz : Summable (fun n => ‖z n‖^2) :=
     ((gas_coords_summable w).mul_left (C^2)).of_nonneg_of_le (fun _ => sq_nonneg _) (fun n => by
-      rw [show ‖z n‖ = |f n|*‖w (number n)‖ by rw [z,norm_mul,Complex.norm_real,Real.norm_eq_abs],mul_pow]
+      change ‖(f n:ℂ)*w (number n)‖^2 ≤ C^2*‖w (number n)‖^2
+      rw [norm_mul,mul_pow,Complex.norm_real,Real.norm_eq_abs]
       exact mul_le_mul_of_nonneg_right (pow_le_pow_left₀ (abs_nonneg _) (hbound n) _) (sq_nonneg _))
   let y := gasOfCoords z hz
   have hi (n : ℕ) : inner ℂ (w (number n)) (y (number n)) = ((occupationWeight n*prefixProbability b n*f n:ℝ):ℂ) := by
     change inner ℂ (w (number n)) ((f n:ℂ) • w (number n)) = _
-    rw [inner_smul_right,inner_self_eq_norm_sq_to_K,heat_squared_mass b n,Complex.ofReal_mul,mul_comm]
+    rw [inner_smul_right,inner_self_eq_norm_sq_to_K]
+    change (f n:ℂ)*(‖w (number n)‖:ℂ)^2 = _
+    rw [← Complex.ofReal_pow,show ‖w (number n)‖^2 = _ from heat_squared_mass b n,← Complex.ofReal_mul]
+    exact congrArg Complex.ofReal (mul_comm _ _)
   have hsum := (probability_resolvent_overlap hb j).tsum_eq
   have hover : inner ℂ w y = 1 := by
     rw [lp.inner_eq_tsum,← Equiv.pnatEquivNat.symm.tsum_eq]
@@ -48,8 +52,8 @@ theorem mixed_gap_eigenvector {m : ℕ} {b : PrefixData m} (hb : StrictPrefix b)
   change (d:ℂ)*((d:ℂ)*((f n:ℂ)*w (number n)))-w (number n) = (x:ℂ)*((f n:ℂ)*w (number n))
   have he : d^2*f n-1 = x*f n := by
     change occupationWeight n*(occupationWeight n-x)⁻¹-1 = x*(occupationWeight n-x)⁻¹
-    field_simp [native_ne_in_gap (hb j) n]
-    ring
+    have hn : occupationWeight n-x ≠ 0 := native_ne_in_gap (hb j) n
+    linear_combination mul_inv_cancel₀ hn
   have he' : (d:ℂ)^2*(f n:ℂ)-1 = (x:ℂ)*(f n:ℂ) := by exact_mod_cast he
   calc (d:ℂ)*((d:ℂ)*((f n:ℂ)*w (number n)))-w (number n) = ((d:ℂ)^2*(f n:ℂ)-1)*w (number n) := by ring
        _ = _ := by rw [he',mul_assoc]

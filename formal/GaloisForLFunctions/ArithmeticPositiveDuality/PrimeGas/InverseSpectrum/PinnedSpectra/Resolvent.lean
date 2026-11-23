@@ -27,8 +27,8 @@ private theorem cauchy_residue_sum {m : ℕ} (a : Fin (m+1) → ℝ) (ha : Funct
 
 private theorem residue_reflect {m : ℕ} (a : Fin (m+1) → ℝ) (b : Fin m → ℝ) (i : Fin (m+1)) :
     residueMass (fun j => -a j) (fun j => -b j) i = residueMass a b i := by
-  have hn (u v : ℝ) : -u- -v = -(u-v) := by ring
-  simp only [residueMass,hn,prod_neg_distrib,card_univ,card_erase_of_mem (mem_univ i),Fintype.card_fin,Nat.add_sub_cancel]
+  have hn (u v : ℝ) : -u- -v = (-1)*(u-v) := by ring
+  simp only [residueMass,hn,prod_mul_distrib,prod_const,card_univ,card_erase_of_mem (mem_univ i),Fintype.card_fin,Nat.add_sub_cancel]
   exact mul_div_mul_left _ _ (pow_ne_zero m (by norm_num : (-1:ℝ) ≠ 0))
 
 def prefixProduct {m : ℕ} (b : PrefixData m) (x : ℝ) := ∏ j, (x+(b j).val)/(x+occupationWeight j.val)
@@ -42,6 +42,7 @@ theorem mixture_stieltjes {m : ℕ} (b : PrefixData m) {x : ℝ} (hx : 0 < x) :
       prefixProduct b x * ∑' k, tailLaw k/(x+occupationWeight (m+k)) := by
   let f (n : ℕ) := (x+occupationWeight n)⁻¹
   have hf (n : ℕ) : |f n| ≤ x⁻¹ := by
+    change |(x+occupationWeight n)⁻¹| ≤ x⁻¹
     rw [abs_of_pos (inv_pos.mpr (add_pos hx (occupationWeight_pos n)))]
     exact inv_anti₀ hx (le_add_of_nonneg_right (occupationWeight_pos n).le)
   have he (k : ℕ) : (∑ i, nodeResidue b k i*f (nodeIndex m k i)) = prefixProduct b x/(x+occupationWeight (m+k)) := by
@@ -56,8 +57,8 @@ theorem mixture_stieltjes {m : ℕ} (b : PrefixData m) {x : ℝ} (hx : 0 < x) :
   have h := mixture_reading b f x⁻¹ hf
   change (∑' n, prefixProbability b n*(x+occupationWeight n)⁻¹) = _ at h
   simp only [div_eq_mul_inv] at he ⊢
-  rw [h,funext he,← tsum_mul_left]
-  exact tsum_congr fun k => by ring
+  rw [h,← tsum_mul_left]
+  exact tsum_congr fun k => by rw [he k]; ring
 
 #print axioms mixture_stieltjes
 

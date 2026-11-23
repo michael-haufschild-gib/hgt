@@ -41,7 +41,8 @@ theorem all_order_prime_rate {σ : ℝ} (hs : 0 < σ) (p : Nat.Primes) :
   have he := ((all_order_log_slope hs).comp ht).mul_const (Real.log a)
   apply he.congr'
   filter_upwards [eventually_gt_atTop (0:ℕ)] with k hk
-  change Real.log (allOrderResponse σ (a^k) ((a^k)^2))/Real.log (a^k)*Real.log a = _
+  change Real.log (allOrderResponse σ (a^k) ((a^k)^2))/Real.log (a^k)*Real.log a =
+    Real.log (allOrderResponse σ (a^k) ((a^k)^2))/(k:ℝ)
   rw [Real.log_pow]
   field_simp [(Real.log_pos hp).ne',(Nat.cast_pos.mpr hk : (0:ℝ)<k).ne']
 

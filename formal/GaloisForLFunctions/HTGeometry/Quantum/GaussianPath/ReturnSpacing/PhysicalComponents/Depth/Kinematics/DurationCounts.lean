@@ -31,7 +31,10 @@ theorem depth_mark_cover {n : ℕ} (u : PathShell n) (σ T : ℝ) {ρ δ b : ℝ
   refine (Finset.card_le_card ?_).trans (Finset.card_union_le _ _)
   intro a ha
   obtain ⟨ha',v,hav,hv,hseg⟩ := mem_filter.mp ha
-  obtain ⟨hen,hno⟩ := mem_sdiff.mp ha'
+  have hen : a∈entryDates E r T := (mem_sdiff.mp ha').1
+  have hno : a∉entryDates E r σ := (mem_sdiff.mp ha').2
+  change a∈univ.biUnion (fun p : (Fin (n+2)→Bool)×(Fin (n+2)→Bool) =>
+    markedDates E p.1 p.2 r (forwardUnitArc r) T) at hen
   obtain ⟨p,_,hp⟩ := mem_biUnion.mp hen
   by_cases hf : p∈fastPairs u b
   · exact mem_union_right _ (mem_sdiff.mpr ⟨mem_biUnion.mpr ⟨p,hf,hp⟩,hno⟩)

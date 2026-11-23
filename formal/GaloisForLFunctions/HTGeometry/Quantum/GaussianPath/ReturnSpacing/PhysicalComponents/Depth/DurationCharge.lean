@@ -42,7 +42,7 @@ theorem duration_charge (E : Set ℝ) (a T h : ℝ) (hh : 0≤h) (F : Finset ℝ
     have ht := (hF _ (hm i).1).1
     by_cases hxT : x≤T
     · exact Or.inl ⟨(hm i).2 ⟨hi.1,hi.2.le⟩,ht.1.trans hi.1,hxT⟩
-    · exact Or.inr ⟨(lt_of_not_ge hxT).le,hi.2.le.trans (add_le_add_right ht.2 h)⟩
+    · exact Or.inr ⟨(lt_of_not_ge hxT).le,hi.2.le.trans (add_le_add_left ht.2 h)⟩
   have hA : volume A≠⊤ := measure_ne_top_of_subset inter_subset_right measure_Icc_lt_top.ne
   have hB : volume B≠⊤ := measure_Icc_lt_top.ne
   have hu : volume (A∪B)≠⊤ := ((measure_union_le _ _).trans_lt (ENNReal.add_lt_top.mpr

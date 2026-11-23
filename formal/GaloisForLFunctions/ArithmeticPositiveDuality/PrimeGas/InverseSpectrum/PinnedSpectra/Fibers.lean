@@ -64,12 +64,12 @@ theorem physical_intermediate_on_fiber {N : ℕ} {a b c : SpectralBand 1} (hb : 
     (hc : c ∈ prefixFiber N a) {F : SpectralBand 1 → ℝ} (hF : Continuous F) {y : ℝ} (hby : F b < y) (hyc : y < F c) :
     ∃ d ∈ physicalSpectra 1 ∩ prefixFiber N a, F d = y := by
   have hb' := ((hF.tendsto b).comp (completion_tendsto b)).eventually_lt_const hby
-  have hc' := ((hF.tendsto c).comp (completion_tendsto c)).eventually_gt_const hyc
+  have hc' := (tendsto_order.mp ((hF.tendsto c).comp (completion_tendsto c))).1 y hyc
   obtain ⟨n,hn,hb',hc'⟩ := ((eventually_ge_atTop N).and (hb'.and hc')).exists
   let G (d : SpectralBand 1) := F (physicalCompletion n (pinPrefix N a d))
   have hg : Continuous G := hF.comp ((completion_continuous n).comp (pin_continuous N a))
-  have hl : G b ≤ y := by simpa only [G,pin_eq hb] using hb'.le
-  have hu : y ≤ G c := by simpa only [G,pin_eq hc] using hc'.le
+  have hl : G b ≤ y := by simpa only [G,pin_eq hb,Function.comp_apply] using hb'.le
+  have hu : y ≤ G c := by simpa only [G,pin_eq hc,Function.comp_apply] using hc'.le
   letI (k : ℕ) : PreconnectedSpace (Icc (occupationWeight (k+1)) (occupationWeight k)) :=
     isPreconnected_iff_preconnectedSpace.mp isPreconnected_Icc
   obtain ⟨d,hd⟩ := intermediate_value_univ b c hg ⟨hl,hu⟩

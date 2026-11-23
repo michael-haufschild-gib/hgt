@@ -57,14 +57,14 @@ theorem fixed_prime_trace_apparatus (p : Nat.Primes) :
     have he : j+1 = (p:ℕ) := congrArg PNat.val hj
     exact_mod_cast he
   have he := (operatorHeight_eq P hd hc).trans ((lastHeight_of_first_move hfirst).trans (congrArg Real.sqrt hnum))
-  exact ⟨P,hd,hc,he,fun _ => reciprocal_amplitude_iff p.property.one_lt he⟩
+  exact ⟨P,hd,hc,he,fun s => reciprocal_amplitude_iff (s := s) (n := ⟨(p:ℕ),p.property.pos⟩) p.property.one_lt he⟩
 
 /-- Each individual experiment with a nonvacuum first change has the same calibration law. -/
 theorem fixed_omission_reciprocity (P : Projection) (hd : MissingDimension P 1) (hc : Conserving (projected P))
     {j : ℕ} (hj : FirstMove (physicalSpectrum P hd hc) j) (hn : 0 < j) (s : ℂ) :
     operatorHeight P*‖heat s (number j)‖ = 1 ↔ ∃ V : Gas →ₗᵢ[ℂ] PairGas, ∀ f x, V f x = split s f x := by
   have he := (operatorHeight_eq P hd hc).trans (lastHeight_of_first_move hj)
-  apply reciprocal_amplitude_iff (show 1 < (j+1:ℕ) by omega)
+  apply reciprocal_amplitude_iff (s := s) (n := number j) (show 1 < (j+1:ℕ) by omega)
   simpa only [number,Nat.cast_add,Nat.cast_one] using he
 
 /-- Ordinary even traces of a fixed omitted direction locate its first occupied shell. -/

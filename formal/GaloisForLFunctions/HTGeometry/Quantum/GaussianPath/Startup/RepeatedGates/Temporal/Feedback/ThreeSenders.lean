@@ -86,9 +86,9 @@ theorem three_missing_pairs_exclude_mutual_cross (w : List (V×V)) (x y : Fin 3�
     cross_connection_in_forest w (hm i) ((hp j).trans (hp i).symm) (h i j hne)
   have miss (i : Fin 3) : x i∉inputs u (y i) := fun hh => hm i (reduced_inputs_subset w _ hh)
   exact forest_excludes_three_patterns u (redundant_mergingWord w) (x 0) (x 1) (x 2)
-    ⟨⟨y 2,cross 0 2 (by decide),cross 1 2 (by decide),miss 2⟩,
-      ⟨y 0,cross 1 0 (by decide),cross 2 0 (by decide),miss 0⟩,
-      ⟨y 1,cross 2 1 (by decide),cross 0 1 (by decide),miss 1⟩⟩
+    ⟨⟨y 2,cross 0 2 (by omega),cross 1 2 (by omega),miss 2⟩,
+      ⟨y 0,cross 1 0 (by omega),cross 2 0 (by omega),miss 0⟩,
+      ⟨y 1,cross 2 1 (by omega),cross 0 1 (by omega),miss 1⟩⟩
 
 #print axioms three_missing_pairs_exclude_mutual_cross
 end GaloisForLFunctions.HTGeometry.RepeatedGates.Temporal.Feedback

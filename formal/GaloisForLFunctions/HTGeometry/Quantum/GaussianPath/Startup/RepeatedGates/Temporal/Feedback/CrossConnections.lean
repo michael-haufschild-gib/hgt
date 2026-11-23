@@ -74,7 +74,7 @@ private theorem carried_inputs {w : List (V×V)} {i : V} {k : ℕ} (hk : k∈pro
       by_cases hn : Nonmerging e w
       · rw [if_pos hn,mem_insert] at hk
         rcases hk with rfl|hk
-        · rw [eventInputs,if_pos rfl]; exact fun _ hx => hx
+        · rw [eventInputs,if_pos rfl]
         · exact h hk
       · rw [if_neg hn] at hk
         exact h hk
@@ -91,7 +91,7 @@ private theorem through_event {w : List (V×V)} {i j : V} (hh : i∈inputs w j)
     · rw [inputs,if_pos hit] at hh
       rw [profile,if_pos hit,mergeProfiles]
       by_cases hn : Nonmerging e w
-      · exact ⟨w.length,by simp only [if_pos hn,mem_insert_self],by simpa only [eventInputs,if_pos rfl] using hh⟩
+      · exact ⟨w.length,by simp only [if_pos hn,mem_insert_self],by simpa [eventInputs] using hh⟩
       · rw [mergingWord,if_neg hn,inputs,if_pos hit,mem_union,not_or] at hm
         rw [if_neg hn]
         rcases mem_union.mp hh with hx|hx

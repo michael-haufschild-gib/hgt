@@ -40,6 +40,9 @@ private theorem mix_square {R : Type*} [NormedRing R] [NormedAlgebra ℂ R] (A B
     rw [add_mul,mul_add,mul_add,ha,hb,hab,two_smul]; abel
   rw [mix,smul_mul_smul_comm,he,factor_sq,smul_smul,show (1/2:ℂ)*2=1 by norm_num,one_smul]
 
+/-- The normalized sum of two anticommuting involutions squares to the identity. -/
+alias mix_mul_self := mix_square
+
 theorem mix_quarter {N : ℕ} (A B : Matrix (Fin N→Bool) (Fin N→Bool) ℂ) (ha : A*A=1) (hb : B*B=1) (hab : A*B=-(B*A)) :
     unitaryEvolution (mix A B) (π/2)=(-Complex.I) • mix A B := by
   unfold unitaryEvolution

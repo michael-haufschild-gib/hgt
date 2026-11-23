@@ -23,6 +23,9 @@ private theorem probe_supported (i : Fin (n+2)) (a : Fin 3) :
   intro j hj
   simp only [onsiteWord,if_neg (show j≠i from fun h => hj (mem_singleton.mpr h))]
 
+/-- An onsite Pauli probe is supported on its own wire. -/
+alias onsite_probe_supported := probe_supported
+
 /-- Multiplying the reference rotation by any exterior unitary leaves
 its six signals unchanged. A circuit within 3/8 of this reference
 must transmit between all three pairs in both directions. -/

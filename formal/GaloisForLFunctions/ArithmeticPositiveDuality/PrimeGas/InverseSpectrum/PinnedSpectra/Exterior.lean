@@ -35,7 +35,7 @@ theorem prefixWave_exterior {m : ℕ} (b : PrefixData m) :
       have h := mul_le_mul_of_nonneg_left (hlow (k+1) (Nat.succ_pos k)) (inv_nonneg.mpr hC.le)
       simpa only [inv_mul_cancel_left₀ hC.ne',show m+(k+1)=k+(m+1) by omega] using h)
   have hfull := (summable_nat_add_iff 2).mp ha
-  exact (lt_irrefl (1:ℝ)) ((summable_band_rpow_iff (hotEdge 1) 1).mp (by simpa only [Real.rpow_one] using hfull))
+  exact (lt_irrefl (1:ℝ)) ((summable_band_rpow_iff (hotEdge 1) 1).mp (by simpa only [Real.rpow_one,hotEdge] using hfull))
 
 #print axioms prefixWave_exterior
 

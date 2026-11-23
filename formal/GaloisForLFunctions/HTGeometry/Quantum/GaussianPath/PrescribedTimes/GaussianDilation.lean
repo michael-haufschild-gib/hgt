@@ -49,7 +49,7 @@ theorem gaussian_dilation_density {a : ℝ} (ha : 0<a) :
     withDensity_smul_measure,←withDensity_smul' _ _ ENNReal.ofReal_ne_top]
   apply congrArg ν.withDensity
   funext x
-  exact (ENNReal.ofReal_mul (inv_nonneg.mpr (pow_nonneg ha.le m)) _).symm
+  exact (ENNReal.ofReal_mul (inv_nonneg.mpr (pow_nonneg ha.le m))).symm
 
 /-- Expanding a standard Gaussian by a ≥ 1 lowers its mass on a measurable
 set by at most the Jacobian a^m. This compares the full joint laws. -/

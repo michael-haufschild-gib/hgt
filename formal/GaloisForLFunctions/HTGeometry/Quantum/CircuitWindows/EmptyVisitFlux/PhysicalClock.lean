@@ -53,6 +53,9 @@ private theorem tick_rate (test : ℕ → Prop) (a τ p : ℝ) (hτ : 0<τ)
     (countTicks test (⌊q T⌋₊+1):ℝ)/T
   field_simp
 
+/-- Physical-time rate of ticks satisfying any test of known tick frequency. -/
+alias filtered_tick_rate := tick_rate
+
 /-- Distinct real dates at which this one ordered pair is marked in [0,T]. -/
 def markedDates {I : Type*} (E : I → ℝ) (i j : I) (r : ℝ) (A : Set UnitAddCircle) (T : ℝ) : Finset ℝ := by
   classical

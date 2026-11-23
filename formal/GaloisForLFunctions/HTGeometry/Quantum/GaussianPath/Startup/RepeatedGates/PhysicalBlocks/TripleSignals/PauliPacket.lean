@@ -56,6 +56,9 @@ private theorem probe_odd {e f : Fin (n+1)} (hm : e.succ=f.castSucc) {i : Fin (n
       have hh := ((commute_onsite_coupling_iff ..).mp h.symm).2 rfl
       simp [tripleAxis,hr.ne'] at hh
 
+/-- Each of the three designated probes anticommutes with exactly one calibrated bond. -/
+alias triple_probe_odd := probe_odd
+
 /-- The calibrated propagator gives a maximal signal for every
 ordered pair of distinct sites, uniformly over the size of the register. -/
 theorem triple_pair_signal {e f : Fin (n+1)} (hm : e.succ=f.castSucc) {i j : Fin (n+2)}

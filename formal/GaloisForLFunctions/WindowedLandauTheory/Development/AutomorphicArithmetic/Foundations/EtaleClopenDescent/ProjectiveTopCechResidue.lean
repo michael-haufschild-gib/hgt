@@ -68,7 +68,7 @@ theorem IsFinCover.topResidue_traceDR_cech_boundary [CharZero k] (h : IsFinCover
       (if (Finset.univ.erase j).Nonempty ∧ ((Finset.univ.erase j).card : ℤ) = (d : ℤ) - 1 + 1 then
         omB k E (rB k E x (Finset.univ.erase j)) d else ⊥) at hj
     split_ifs at hj
-    · exact omB_le_degree hj
+    · exact omB_le_degree (B := rB k E x (Finset.univ.erase j)) (p := d) hj
     · rw [(Submodule.mem_bot k).mp hj]
       exact zero_mem _
   rw [topResidue_apply, hvol τ' hτ' _ hbdeg, traceDR_vol0_coefficient τ hτ]

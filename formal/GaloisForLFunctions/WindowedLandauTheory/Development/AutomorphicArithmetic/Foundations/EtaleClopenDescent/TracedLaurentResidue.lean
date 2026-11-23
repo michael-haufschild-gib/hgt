@@ -35,8 +35,9 @@ theorem IsFinCover.trace_logarithmic_coefficient_mem_chart (h : IsFinCover k E x
   have hq : q * algebraMap F E c = τ w := by
     change algebraMap F E a * τ w * algebraMap F E c = τ w
     rw [mul_right_comm, ← map_mul, hac, map_one, one_mul]
-  have hwvol : w = τ w • vol0 k E x :=
-    h.topDegreeForms.2.1 τ hτ w (omB_le_degree hw)
+  have hwd : w ∈ (⋀[E]^d Ω[E⁄k]).restrictScalars k :=
+    omB_le_degree (B := rB k E x I) (p := d) hw
+  have hwvol : w = τ w • vol0 k E x := h.topDegreeForms.2.1 τ hτ w hwd
   obtain ⟨ε, hε⟩ := volume_chart_change (K := E) h.pd i
   have hregular : q • (ExteriorAlgebra.ιMulti E d fun j =>
       D k E (algebraMap F E (chartCoordinates x i j))) ∈ omB k E (rB k E x I) d := by
@@ -49,8 +50,10 @@ theorem IsFinCover.trace_logarithmic_coefficient_mem_chart (h : IsFinCover k E x
   have htr := (h.intersection_trace_dual_iff hi q).mpr hregular 1
   simp only [Subalgebra.coe_one, mul_one] at htr
   have e : Algebra.trace F E q = a * Algebra.trace F E (τ w) := by
-    change Algebra.trace F E (a • τ w) = _
-    rw [map_smul, smul_eq_mul]
+    calc
+      _ = Algebra.trace F E (a • τ w) :=
+        congrArg (Algebra.trace F E) (Algebra.smul_def a (τ w)).symm
+      _ = _ := by rw [map_smul, smul_eq_mul]
   rwa [e] at htr
 
 /-- The residue of the traced top coefficient vanishes on regular forms

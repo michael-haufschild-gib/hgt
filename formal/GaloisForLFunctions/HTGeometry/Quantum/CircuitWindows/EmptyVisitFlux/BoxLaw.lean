@@ -98,6 +98,10 @@ private theorem pinned_test_frequency {I : Type*} [Fintype I] [DecidableEq I] (�
   have hh := (ENNReal.tendsto_toReal (measure_ne_top volume S)).comp h
   exact hh.congr fun N => prefix_real v hm N
 
+/-- Each measurable continuity set is sampled at its Haar volume on the
+clock pinned to the specified endpoint pair. -/
+alias pinned_continuity_set_frequency := pinned_test_frequency
+
 /-- On a prescribed winding clock the strict and the closed forward boxes
 have the same frequency. Thus endpoint ties have zero tick density. -/
 theorem pinned_box_frequencies {I : Type*} [Fintype I] [DecidableEq I] (ω : I → ℝ)

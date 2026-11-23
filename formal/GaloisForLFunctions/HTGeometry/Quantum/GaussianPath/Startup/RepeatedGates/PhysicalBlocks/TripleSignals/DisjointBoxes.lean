@@ -121,6 +121,9 @@ private theorem box_controls {n k : ℕ} {e f : Fin (n+1)} (he : e.val=4*k+1) (h
         if_neg (mt (eqv _ _ hrc).mpr h'),zero_add,sub_self,abs_zero]
       exact (abs_nonneg _).trans hq
 
+/-- A four-row Gaussian box controls every coefficient incident to the packet. -/
+alias goodBox_controls_incident := box_controls
+
 /-- Each calibrated box contributes a different marked wire, including
 when the circuit can use gates between arbitrarily distant sites. -/
 theorem count_good_boxes {n : ℕ} {q q' δ t : ℝ} {ω : PathPauliDisorder}

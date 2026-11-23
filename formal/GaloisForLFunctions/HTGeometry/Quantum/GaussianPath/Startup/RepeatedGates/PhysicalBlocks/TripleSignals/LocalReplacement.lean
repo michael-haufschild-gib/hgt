@@ -87,6 +87,9 @@ private theorem triple_supported {e f : Fin (n+1)} (hm : e.succ=f.castSucc) :
     simp only [tripleSites,mem_insert,mem_singleton,not_or] at hv
     simp [couplingWord,←hm,hv.2.1,hv.2.2]
 
+/-- The calibrated generator acts only on the three packet sites. -/
+alias tripleGenerator_supported := triple_supported
+
 /-- A 1/4-accurate physical circuit must transmit all six directed
 signals if the incident coefficient errors cost at most 1/8. -/
 theorem triple_exchange_of_fit {e f : Fin (n+1)} (hm : e.succ=f.castSucc)

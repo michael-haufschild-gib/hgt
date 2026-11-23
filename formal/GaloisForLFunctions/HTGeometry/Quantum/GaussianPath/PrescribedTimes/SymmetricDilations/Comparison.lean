@@ -46,6 +46,7 @@ theorem gaussian_pair_mass {a b : ℝ} (ha : 0<a) (hb : 0<b)
     apply (sq_le_sq₀ (coordinateGaussianDensityReal_nonneg _) (add_nonneg (hn ha _) (hn hb _))).mp
     nlinarith only [he,h,sq_nonneg (density a x-density b x)]
   have hm : μ ≤ Measure.map (fun x : ι → ℝ => a • x) μ+Measure.map (fun x : ι → ℝ => b • x) μ := by
+    dsimp only [μ]
     rw [gaussian_dilation_density ha,gaussian_dilation_density hb,measure_pi_gaussianReal_eq_withDensity]
     change ν.withDensity _ ≤ ν.withDensity (τ a)+ν.withDensity (τ b)
     have hτ : Measurable (τ a) := ENNReal.measurable_ofReal.comp (measurable_const.mul
@@ -55,8 +56,8 @@ theorem gaussian_pair_mass {a b : ℝ} (ha : 0<a) (hb : 0<b)
     filter_upwards with x
     simpa only [Pi.add_apply,τ,←ENNReal.ofReal_add (hn ha _) (hn hb _)] using ENNReal.ofReal_le_ofReal (hd x)
   have he := hm E
-  rw [Measure.add_apply,Measure.map_apply (measurable_id.const_smul a) hE,
-    Measure.map_apply (measurable_id.const_smul b) hE] at he
+  rw [Measure.add_apply,Measure.map_apply (f:=fun x : ι→ℝ => a • x) (measurable_id.const_smul a) hE,
+    Measure.map_apply (f:=fun x : ι→ℝ => b • x) (measurable_id.const_smul b) hE] at he
   simpa only [measureReal_def,ENNReal.toReal_add (measure_ne_top _ _) (measure_ne_top _ _)] using
     ENNReal.toReal_mono (ENNReal.add_ne_top.mpr ⟨measure_ne_top _ _,measure_ne_top _ _⟩) he
 

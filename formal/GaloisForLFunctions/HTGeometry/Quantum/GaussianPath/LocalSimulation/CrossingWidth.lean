@@ -32,6 +32,43 @@ private theorem width_one_le (N : ℕ) (hh : 64 ≤ N.sqrt) : 1 ≤ localCrossin
   rw [one_mul]
   exact_mod_cast hf
 
+/-- A bounded duration fits both the binary spacetime schedule and its
+half-budget payment inequality. -/
+theorem local_width_budget {N : ℕ} (hs : 64 ≤ N.sqrt) (hN : 1 ≤ (N:ℝ))
+    {t : ℝ} (ht : 0 ≤ t) (hnear : t ≤ localCrossingWidth N) :
+    (N:ℝ)*(1+t) ≤ (2:ℝ)^N ∧
+      ∀ g : ℕ, (g:ℝ) ≤ (N:ℝ)*(1+t)*2^(5*N.sqrt+17) → 2*g ≤ nearHilbertContinuousCircuitBudget N := by
+  let B := localCrossingWidth N
+  let F := (2:ℝ)^(5*N.sqrt+17)
+  have hF : 1 ≤ F := one_le_pow₀ (by norm_num)
+  have hB := width_one_le N hs
+  change 1 ≤ B at hB
+  have hcancel : 512*F*((N:ℝ)+1)^2*B = (2:ℝ)^N := by
+    dsimp [B,localCrossingWidth,F]
+    rw [show 5*N.sqrt+26 = (5*N.sqrt+17)+9 by omega,pow_add (2:ℝ) _ 9]
+    field_simp
+    ring
+  have hT : 1+t ≤ 2*B := by linarith only [hnear,hB]
+  have hb : 128*((N:ℝ)+1)*((N:ℝ)*(1+t)*F) ≤ (2:ℝ)^N := calc
+    _ ≤ 128*((N:ℝ)+1)*((N:ℝ)*(2*B)*F) := by gcongr
+    _ ≤ 512*F*((N:ℝ)+1)^2*B := by
+      have hmul := mul_nonneg (mul_nonneg (show 0 ≤ F by positivity) (show 0 ≤ B by positivity))
+        (show 0 ≤ 256*((N:ℝ)+1)*((N:ℝ)+2) by positivity)
+      nlinarith only [hmul]
+    _ = _ := hcancel
+  have hvol : (N:ℝ)*(1+t) ≤ (2:ℝ)^N := by
+    apply le_trans _ hb
+    calc
+      _ ≤ (N:ℝ)*(1+t)*F := le_mul_of_one_le_right (by positivity) hF
+      _ ≤ _ := le_mul_of_one_le_left (by positivity) (by linarith only [hN])
+  refine ⟨hvol,?_⟩
+  intro j hcost
+  change 2*j ≤ 2^N/(64*(N+1))
+  apply (Nat.le_div_iff_mul_le (by positivity)).mpr
+  have h := (mul_le_mul_of_nonneg_left hcost (show 0 ≤ 128*((N:ℝ)+1) by positivity)).trans hb
+  have h' : 2*(j:ℝ)*(64*((N:ℝ)+1)) ≤ (2:ℝ)^N := by linarith only [h]
+  exact_mod_cast h'
+
 /-- Uniform lower separation in physical time for every robust point and
 every affordable half-budget point of the same fixed trajectory. -/
 theorem gaussian_local_travel_at_error :
@@ -46,38 +83,12 @@ theorem gaussian_local_travel_at_error :
   filter_upwards [gaussian_path_spacetime_upper] with ω hw
   filter_upwards [(tendsto_add_atTop_nat 1).eventually hw,eventually_ge_atTop (64*64)] with k hc hk
   intro N x H P ε hε σ t hhard s hs ht
-  let B := localCrossingWidth N
-  let F := (2:ℝ)^(5*N.sqrt+17)
-  have hF : 1 ≤ F := one_le_pow₀ (by norm_num)
   have hN : 1 ≤ (N:ℝ) := by exact_mod_cast (show 1 ≤ N by dsimp [N]; omega)
-  have hB := width_one_le N (Nat.le_sqrt.mpr (by dsimp [N]; omega))
-  change 1 ≤ B at hB
-  have hcancel : 512*F*((N:ℝ)+1)^2*B = (2:ℝ)^N := by
-    dsimp [B,localCrossingWidth,F]
-    rw [show 5*N.sqrt+26 = (5*N.sqrt+17)+9 by omega,pow_add (2:ℝ) _ 9]
-    field_simp
-    ring
   by_contra! hnear
-  have hT : 1+|σ-t| ≤ 2*B := by change |σ-t| ≤ B at hnear; linarith only [hnear,hB]
-  have hb : 128*((N:ℝ)+1)*((N:ℝ)*(1+|σ-t|)*F) ≤ (2:ℝ)^N := calc
-    _ ≤ 128*((N:ℝ)+1)*((N:ℝ)*(2*B)*F) := by gcongr
-    _ ≤ 512*F*((N:ℝ)+1)^2*B := by
-      have hmul := mul_nonneg (mul_nonneg (show 0 ≤ F by positivity) (show 0 ≤ B by positivity))
-        (show 0 ≤ 256*((N:ℝ)+1)*((N:ℝ)+2) by positivity)
-      nlinarith only [hmul]
-    _ = _ := hcancel
-  have hvol : (N:ℝ)*(1+|σ-t|) ≤ (2:ℝ)^N := by
-    apply le_trans _ hb
-    calc
-      _ ≤ (N:ℝ)*(1+|σ-t|)*F := le_mul_of_one_le_right (by positivity) hF
-      _ ≤ _ := le_mul_of_one_le_left (by positivity) (by linarith only [hN])
+  obtain ⟨hvol,hb⟩ := local_width_budget (N:=N) (Nat.le_sqrt.mpr (by dsimp [N]; omega))
+    hN (abs_nonneg _) hnear
   obtain ⟨j,hj,hcost⟩ := hc (σ-t) N hvol
-  have hpaid : 2*j ≤ P := by
-    change 2*j ≤ 2^N/(64*(N+1))
-    apply (Nat.le_div_iff_mul_le (by positivity)).mpr
-    have h := (mul_le_mul_of_nonneg_left hcost (show 0 ≤ 128*((N:ℝ)+1) by positivity)).trans hb
-    have h' : 2*(j:ℝ)*(64*((N:ℝ)+1)) ≤ (2:ℝ)^N := by linarith only [h]
-    exact_mod_cast h'
+  have hpaid := hb j hcost
   have hsep : ProjectiveCircuitSeparated N (ε+1/100) P (unitaryEvolution H.val σ) := by
     intro z hz C hC
     by_contra! he

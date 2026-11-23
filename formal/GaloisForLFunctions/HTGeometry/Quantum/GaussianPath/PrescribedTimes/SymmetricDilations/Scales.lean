@@ -24,7 +24,7 @@ theorem scale_bounds {h : ℝ} (hh : |h| ≤ 1/2) : scale h ∈ Icc (1/2:ℝ) 2 
 private theorem precision {h : ℝ} (hh : |h| ≤ 1/2) : (scale h)⁻¹^2=1+h := by
   rw [scale,inv_inv,sq_sqrt (by linarith only [(abs_le.mp hh).1])]
 
-private theorem bernoulli {x : ℝ} (hx : 0≤x) (hu : x≤1) (m : ℕ) :
+private theorem bernoulli {x : ℝ} (hu : x≤1) (m : ℕ) :
     1-(m:ℝ)*x ≤ (1-x)^m := by
   induction m with
   | zero => simp
@@ -53,7 +53,7 @@ theorem bounded_precision_price {ι : Type*} [Fintype ι] {h : ℝ}
     rw [mul_inv_rev,mul_pow,precision hh,precision hh']
     ring
   have hu := (sq_abs h) ▸ pow_le_pow_left₀ (abs_nonneg h) hh 2
-  have hB := bernoulli (sq_nonneg h) (by linarith only [hu]) m
+  have hB := bernoulli (x:=h^2) (by linarith only [hu]) m
   have hp : 1/2 ≤ (z^m)⁻¹^2 := by
     rw [←inv_pow,←pow_mul,pow_mul']
     rw [he]
@@ -82,9 +82,9 @@ theorem scale_gap {h k : ℝ} (hh : |h|≤1/2) (hk : |k|≤1/2) :
     have ep : h-k=a⁻¹^2-b⁻¹^2 := by rw [precision hh,precision hk]; ring
     rw [ep]
     field_simp [ha₀.ne',hb₀.ne']
-    <;> ring
+    ring
   have hab := congrArg abs he
-  rw [abs_mul,abs_of_nonneg (sq_nonneg _),abs_mul,abs_of_nonneg (add_nonneg ha₀.le hb₀.le),
+  rw [abs_mul,abs_of_nonneg (sq_nonneg (a*b)),abs_mul,abs_of_nonneg (add_nonneg ha₀.le hb₀.le),
     abs_sub_comm b a] at hab
   have h₁ := mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (by norm_num) hl 2) (abs_nonneg (h-k))
   have h₂ := mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (mul_nonneg ha₀.le hb₀.le) hu 2) (abs_nonneg (h-k))
