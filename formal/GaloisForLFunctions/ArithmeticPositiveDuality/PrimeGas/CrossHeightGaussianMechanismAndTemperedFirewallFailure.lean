@@ -393,7 +393,7 @@ theorem not_summable_posTruncatedCoeff_prime_excess (P₀ : ℕ) {β γ₀ : ℝ
   set δ : ℝ := min 1 (1 / (max 1 (2 * K_tot + |Real.eulerMascheroniConstant| + 4)))
   have hδ_pos : 0 < δ := by dsimp only [δ]; positivity
   have hev2 : ∀ᶠ σ : ℝ in 𝓝[>] 1, σ < 1 + δ :=
-    tendsto_nhdsWithin_iff.mp tendsto_id |>.1.eventually (Iio_mem_nhds (by linarith))
+    tendsto_nhdsWithin_iff.mp tendsto_id |>.1.eventually (Iio_mem_nhds (lt_add_of_pos_right 1 hδ_pos))
   obtain ⟨σ₀, ⟨hgt_lim, hlt_δ⟩, hgt1⟩ := (hev1.and hev2 |>.and self_mem_nhdsWithin).exists
   have hσ1 : 1 < σ₀ := hgt1
   have hσ2 : σ₀ ≤ 2 := by
@@ -2030,7 +2030,7 @@ theorem exists_sublinear_crossHeight_witness_bound_on_remaining_strip
     {F : ℂ → ℂ} {a b : ℕ → ℂ} {R : ℂ} {Q : ℝ} {ω : ℂ}
     (hD : UnitPoleFreeCrossHeightDatum F a b R Q ω)
     {η : ℝ} (hη0 : 0 < η) (hη_half : η < 1 / 2)
-    {B : ℝ} (hB : 0 < B) :
+    (B : ℝ) :
     ∃ E : ℝ, 0 < E ∧
       ∀ s : ℂ, 3001 / 24000 ≤ s.re → s.re < 1 / 2 → 184 < |s.im| →
         ‖F s - crossHeightDirichletWitness a b Q ω s
@@ -2199,8 +2199,9 @@ theorem exists_sublinear_crossHeight_witness_bound_on_remaining_strip
         simp only [pow_two, Complex.mul_re, Complex.sub_re, Complex.sub_im,
           Complex.one_re, Complex.one_im]
         ring
-      have h1s_sq : (1 - s.re) ^ 2 ≤ 1 * 1 :=
-        mul_self_le_mul_self (by linarith) (by linarith)
+      have h1s_sq : (1 - s.re) ^ 2 ≤ 1 := by
+        rw [pow_two]
+        exact (mul_self_le_mul_self (by linarith) (by linarith)).trans_eq (one_mul 1)
       rw [h1, ← sq_abs s.im]
       linarith
     have hexp_tau : Real.exp (-(|s.im| ^ 2)) ≤ (M_B.factorial : ℝ) * |s.im| ^ (-(M_B : ℝ)) := by
@@ -2711,7 +2712,6 @@ then **`Q` is a positive integer dividing `12`** (`Q ∈ {1, 2, 3, 4, 6, 12}`) a
 `D(s)` lies on the critical line `Re s = 1 / 2`**. -/
 theorem unit_bounded_multiplicative_twin_classification
     {M : ℕ} (hM : 1 ≤ M) {c : ArithmeticFunction ℂ}
-    (hc_supp : ∀ d : ℕ, M < d → c d = 0)
     (hc_mul : c.IsMultiplicative)
     {Q : ℝ} (hQ : 0 < Q) {ω : ℂ} (hω : ‖ω‖ = 1)
     (hunit : ∀ n : ℕ, 1 ≤ n → ‖∑ d ∈ n.divisors, c d‖ ≤ 1)
@@ -2790,7 +2790,6 @@ theorem unit_bounded_multiplicative_twin_classification
           dsimp only [s]; push_cast; ring
         rw [hlin, Complex.exp_add, ← Complex.ofReal_exp, Real.exp_neg,
           Real.exp_log hQd_pos, inv_div, GaloisForLFunctions.expChar]
-        congr 2; push_cast; ring
       calc (Q : ℂ) ^ s * (c d * (d : ℂ) ^ (-s))
           = c d * ((Q : ℂ) ^ s * (d : ℂ) ^ (-s)) := by ring
         _ = (c d * (((d : ℝ) / Q : ℝ) : ℂ)) * GaloisForLFunctions.expChar (Real.log (Q / d)) t := by
@@ -2816,7 +2815,6 @@ theorem unit_bounded_multiplicative_twin_classification
             show 2 * Real.log m = Real.log ((m : ℝ) ^ 2) by rw [Real.log_pow]; ring,
             Real.exp_log (pow_pos hm_pos 2)]
         rw [hlin, Complex.exp_add, ← Complex.ofReal_exp, hexp2, GaloisForLFunctions.expChar]
-        congr 2; push_cast; ring
       rw [hexp_m]; ring
     rwa [hlhs_rw, hrhs_rw] at hmul_Q
   have hbohr : ∀ lam : ℝ,
@@ -3023,12 +3021,14 @@ theorem unit_bounded_multiplicative_twin_classification
       Finset.mem_Icc.mpr ⟨hq'_pos, (Nat.div_le_self q _).trans hqM⟩
     have hdiv_q' : q / q' = p ^ e :=
       Nat.div_eq_of_eq_mul_left hq'_pos (mul_comm (p ^ e) q' ▸ hmul_pe.symm)
+    have hqR_pos : (0 : ℝ) < (q : ℝ) := by exact_mod_cast hq_pos
+    have hq_sqrt_pos : 0 < Real.sqrt (q : ℝ) := Real.sqrt_pos.mpr hqR_pos
     have hcq_rec := (hrec q hq_Icc).2 dvd_rfl
     rw [Nat.div_self hq_pos, hc1, star_one, mul_one] at hcq_rec
     have hcq_norm : ‖c q‖ ^ 2 = (q : ℝ) := by
       have hn := congrArg (fun z : ℂ => ‖z‖ ^ 2) hcq_rec
       simp only [norm_mul, hω, one_mul, Complex.norm_real, Complex.norm_natCast,
-        Real.norm_eq_abs, abs_inv, abs_of_pos (Real.sqrt_pos.mpr (by exact_mod_cast hq_pos))] at hn
+        Real.norm_eq_abs, abs_inv, abs_of_pos hq_sqrt_pos] at hn
       rw [hn, mul_pow, inv_pow, Real.sq_sqrt (Nat.cast_nonneg q)]
       have hqR0 : (q : ℝ) ≠ 0 := by exact_mod_cast hq0
       field_simp [hqR0]
@@ -3037,29 +3037,14 @@ theorem unit_bounded_multiplicative_twin_classification
     have hcq'_norm : ‖c q'‖ ^ 2 = ((q' : ℝ) ^ 2 / (q : ℝ)) * ‖c (p ^ e)‖ ^ 2 := by
       have hn := congrArg (fun z : ℂ => ‖z‖ ^ 2) hcq'_rec
       simp only [norm_mul, hω, one_mul, Complex.norm_real, Complex.norm_natCast,
-        norm_star, Real.norm_eq_abs, abs_inv,
-        abs_of_pos (Real.sqrt_pos.mpr (by exact_mod_cast hq_pos))] at hn
+        norm_star, Real.norm_eq_abs, abs_inv, abs_of_pos hq_sqrt_pos] at hn
       rw [hn, mul_pow, mul_pow, inv_pow, Real.sq_sqrt (Nat.cast_nonneg q)]
       ring
     have hmul_c : c q = c (p ^ e) * c q' := by
       rw [← hmul_pe]; exact hc_mul.2 hcop_pe
     have hmul_norm : ‖c q‖ ^ 2 = ‖c (p ^ e)‖ ^ 2 * ‖c q'‖ ^ 2 := by
       rw [hmul_c, norm_mul, mul_pow]
-    -- Wait: also evaluate `c (p ^ e)` via reciprocity at `d = p ^ e` (`q / p ^ e = q'`)!
-    have hpe_Icc : p ^ e ∈ Finset.Icc 1 M :=
-      Finset.mem_Icc.mpr ⟨hpe_pos, (Nat.le_of_dvd hq_pos hdvd_pe).trans hqM⟩
-    have hcpe_rec := (hrec (p ^ e) hpe_Icc).2 hdvd_pe
-    have hcpe_norm : ‖c (p ^ e)‖ ^ 2 = (((p ^ e : ℕ) : ℝ) ^ 2 / (q : ℝ)) * ‖c q'‖ ^ 2 := by
-      have hn := congrArg (fun z : ℂ => ‖z‖ ^ 2) hcpe_rec
-      simp only [norm_mul, hω, one_mul, Complex.norm_real, Complex.norm_natCast,
-        norm_star, Real.norm_eq_abs, abs_inv,
-        abs_of_pos (Real.sqrt_pos.mpr (by exact_mod_cast hq_pos))] at hn
-      rw [hn, mul_pow, mul_pow, inv_pow, Real.sq_sqrt (Nat.cast_nonneg q)]
-      dsimp only [q']
-      ring
-    -- Combine `hcpe_norm` and `hmul_norm`: `‖c (p ^ e)‖ ^ 4 = ((p ^ e)^2 / q) * q * ...`!
     have hqR_eq : (q : ℝ) = ((p ^ e : ℕ) : ℝ) * (q' : ℝ) := by exact_mod_cast hmul_pe.symm
-    have hqR_pos : (0 : ℝ) < (q : ℝ) := by exact_mod_cast hq_pos
     have hq'R_pos : (0 : ℝ) < (q' : ℝ) := by exact_mod_cast hq'_pos
     have hcpe_pos : 0 < ‖c (p ^ e)‖ ^ 2 := by
       by_contra h0; push Not at h0
@@ -3476,7 +3461,7 @@ theorem exists_even_conductor_four_unimodular_twin :
     linear_combination completedRiemannZeta s * heq_fac
   -- Critical-line purity via `unit_bounded_multiplicative_twin_classification`.
   have hpure := (unit_bounded_multiplicative_twin_classification (M := 4) (by omega)
-    hc₄_supp hc₄_mul (Q := 4) (by norm_num) (ω := 1) norm_one
+    hc₄_mul (Q := 4) (by norm_num) (ω := 1) norm_one
     (fun n hn => by rw [← ha₄_conv n hn, ha₄_norm n hn])
     (fun t => by simpa using hrefl_all ((-1 : ℂ) + (t : ℂ) * I))).2
   exact ⟨c₄, a₄, hc₄_supp, hc₄_mul, ha₄_mul, ha₄_2, ha₄_norm, ha₄_conv,

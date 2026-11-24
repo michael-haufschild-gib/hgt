@@ -18,7 +18,10 @@ private theorem pair_balanced {I : Type*} [Fintype I] [DecidableEq I] (i j : I) 
 
 theorem pair_action {I : Type*} [Fintype I] [DecidableEq I] (i j : I) (E : I → ℝ) :
     ∑ l, (pairCharge i j l:ℝ)*E l=E i-E j := by
-  simp [pairCharge,Int.cast_sub,sub_mul,sum_sub_distrib,ite_mul,apply_ite]
+  have term (a l : I) : ((if l=a then 1 else 0 : ℤ):ℝ)*E l=(if l=a then E a else 0) := by
+    by_cases h : l=a <;> simp [h]
+  simp only [pairCharge,Int.cast_sub,sub_mul,sum_sub_distrib,term]
+  simp
 
 /-- Fix a countable list of target angles and the scalar tolerance before
 drawing the chain. At each actual first scalar entry, any balanced charge
@@ -65,7 +68,8 @@ theorem gaussian_first_entry_character (T : Set ℝ) (hT : T.Countable)
   have hrel (l : Label k) : B*(m l:ℝ)=A*(pairCharge i j l:ℝ) := by
     simpa only [pair_action] using hrow l
   have hi : B*(m i:ℝ)=A := by
-    simpa only [pairCharge,if_pos rfl,if_neg hij,sub_zero,Int.cast_one,mul_one] using hrel i
+    have hpair : pairCharge i j i=1 := by simp [pairCharge,hij]
+    simpa only [hpair,Int.cast_one,mul_one] using hrel i
   intro l
   have hh : B*(m l:ℝ)=B*((m i:ℝ)*(pairCharge i j l:ℝ)) := by
     rw [←mul_assoc,hi]; exact hrel l

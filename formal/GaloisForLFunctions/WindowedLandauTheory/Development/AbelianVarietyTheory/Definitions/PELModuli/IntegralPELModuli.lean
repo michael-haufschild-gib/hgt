@@ -86,14 +86,29 @@ structure ObjMap {b : Base D R} {N : ℕ} {S' : Scheme.{0}} {s' : S' ⟶ Sp R} {
   pol : LBIso o'.P (o.P.pull φ₂)
   eta : ∀ y, (o'.eta y).left ≫ φ = f ≫ (o.eta y).left
 
-/-- A smooth quasi-projective representing scheme for the integral moduli problem. -/
-structure Model (b : Base D R) (N : ℕ) where
+/-- A representing family for the integral PEL moduli problem. -/
+structure RepFam (b : Base D R) (N : ℕ) where
   X : Scheme.{0}
   s : X ⟶ Sp R
-  qproj : IsQProjOver s
-  smooth : SmoothOfRelativeDimension (D.a * (D.n - 1)) s
   univ : Obj b N s
   rep : ∀ (S : Scheme.{0}) (s' : S ⟶ Sp R) (o : Obj b N s'), ∃! f : S ⟶ X, f ≫ s = s' ∧ Nonempty (ObjMap o univ f)
+
+/-- A smooth quasi-projective representing scheme for the integral moduli problem. -/
+structure Model (b : Base D R) (N : ℕ) extends RepFam b N where
+  qproj : IsQProjOver s
+  smooth : SmoothOfRelativeDimension (D.a * (D.n - 1)) s
+
+/-- The lattice has rank at least two because its CM field has positive even degree. -/
+theorem Datum.two_le_finrank_La (D : Datum p) : 2 ≤ Module.finrank ℤ D.La := by
+  have hF : 0 < Module.finrank ℚ D.F := Module.finrank_pos
+  have hdeg : 2 ≤ Module.finrank ℚ D.F := by
+    rw [IsTotallyComplex.finrank D.F] at hF ⊢
+    omega
+  calc
+    2 = 1 * 2 := (one_mul 2).symm
+    _ ≤ D.m * D.n * Module.finrank ℚ D.F :=
+      Nat.mul_le_mul (Nat.mul_pos D.m_pos D.n_pos) hdeg
+    _ = Module.finrank ℤ D.La := D.rankLa.symm
 
 end GlobalTheory.UPel.HT
 

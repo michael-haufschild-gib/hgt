@@ -59,7 +59,7 @@ theorem EF_ζ_bO (i j : Fin 2) : EF (ζO * bO i) (bO j) = if i = j then 1 else 0
     simp only [Fin.zero_eta, Fin.mk_one, Fin.isValue, bO_zero', bO_one', ζ_mul_coord, EF_coord] <;> norm_num
 
 theorem EF_ζ (x y : 𝓞 Qi) : EF (ζO * x) (ζO * y) = EF x y := by
-  rw [EF_adj, ← mul_assoc, barO_ζO, neg_mul, ζO_sq, neg_neg, one_mul]
+  rw [EF_adj, ← mul_assoc, barO_ζO, neg_mul, ← pow_two, ζO_sq, neg_neg, one_mul]
 
 theorem trace_mulLeft (a b : ℤ) :
     LinearMap.trace ℤ (𝓞 Qi) (LinearMap.mulLeft ℤ ((a : 𝓞 Qi) + b * ζO)) = 2 * a := by
@@ -82,7 +82,9 @@ theorem A_eq (b : 𝓞 Qi) (A : ℝ ⊗[ℤ] 𝓞 Qi →ₗ[ℝ] ℝ ⊗[ℤ] �
 theorem J_J (x : ℝ ⊗[ℤ] 𝓞 Qi) : J (J x) = -x := by
   induction x using TensorProduct.induction_on with
   | zero => simp
-  | tmul r y => simp [J, ← mul_assoc, ζO_sq, TensorProduct.tmul_neg]
+  | tmul r y =>
+    simp only [J, LinearMap.baseChange_tmul, LinearMap.mulLeft_apply, ← mul_assoc, ← pow_two,
+      ζO_sq, neg_one_mul, TensorProduct.tmul_neg]
   | add x y hx hy => rw [map_add, map_add, hx, hy, neg_add]
 
 theorem J_EF (x y : ℝ ⊗[ℤ] 𝓞 Qi) : EF.baseChange ℝ (J x) (J y) = EF.baseChange ℝ x y := by
@@ -107,12 +109,12 @@ theorem J_pos (x : ℝ ⊗[ℤ] 𝓞 Qi) (hx : x ≠ 0) : 0 < EF.baseChange ℝ 
     rw [← hx', h0, h1, zero_smul, zero_smul, add_zero]
   rw [← hx']
   simp only [map_add, map_smul, LinearMap.add_apply, LinearMap.smul_apply, smul_eq_mul, hG]
-  simp only [Fin.isValue, ite_true, show ((0 : Fin 2) = 1) = False by omega, show ((1 : Fin 2) = 0) = False by omega,
-    ite_false, mul_one, mul_zero, add_zero, zero_add]
+  have h01 : (0 : Fin 2) ≠ 1 := fun h => Nat.zero_ne_one (congrArg Fin.val h)
+  simp only [if_true, if_neg h01, if_neg h01.symm, mul_one, mul_zero, add_zero, zero_add]
   by_cases h0 : bR.repr x 0 = 0
   · have h1 : bR.repr x 1 ≠ 0 := fun h1 => hne ⟨h0, h1⟩
-    nlinarith [mul_self_pos.2 h1, h0]
-  · nlinarith [mul_self_pos.2 h0, mul_self_nonneg (bR.repr x 1)]
+    simpa only [h0, zero_mul, zero_add] using (mul_self_pos.2 h1)
+  · exact add_pos_of_pos_of_nonneg (mul_self_pos.2 h0) (mul_self_nonneg _)
 
 theorem filt : Finset.univ.filter (fun τ : Qi →+* ℂ => τ ((ζO : 𝓞 Qi) : Qi) = (starRingEnd ℂ) Complex.I) =
     {(starRingEnd ℂ).comp τ₀} := by
@@ -150,9 +152,9 @@ theorem EF_bij : Function.Bijective EF := by
     fin_cases i
     · change EF ((a : 𝓞 Qi) + b * ζO) (bO 0) = f (bO 0)
       rw [bO_zero', EF_coord]
-      simp [b]
+      simp [b, bO_zero]
     · change EF ((a : 𝓞 Qi) + b * ζO) (bO 1) = f (bO 1)
       rw [bO_one', EF_coord]
-      simp [a]
+      simp [a, bO_one]
 
 end GlobalTheory.UPel.HT.GaussOne

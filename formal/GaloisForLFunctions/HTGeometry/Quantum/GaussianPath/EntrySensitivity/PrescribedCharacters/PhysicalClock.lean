@@ -41,7 +41,7 @@ theorem gaussian_first_crossing_scalar_clock :
       ∃ σ > (0:ℝ), orbitCircuitDistance H P σ=9/80 ∧
         (∀ t ∈ Ico 0 σ, orbitCircuitDistance H P t < 9/80) ∧
         let v := firstVisit H σ 0 (1/10)
-        ∀ b : Label k, ∀ a : ℝ,
+        ∀ b : Label k, FreeAtStep (projectiveFrequency E b) v ∧ ∀ a : ℝ,
           Tendsto (integerClockPrefixLaw (fun j : ℕ => finiteClockPhasePoint
             (projectiveFrequency E b) (a+(j:ℝ)*v))) atTop
             (𝓝 (finiteTorusHaarProbabilityMeasure {l : Label k // l≠b})) ∧
@@ -61,8 +61,10 @@ theorem gaussian_first_crossing_scalar_clock :
     have h1 := (firstVisit_isLeast H σ 1 (by norm_num : (0:ℝ)<1/10)).1.1
     exact hstrict.not_ge (h0.trans h1)
   refine ⟨σ,hσ,he,hbefore,?_⟩
-  intro v b a
+  intro v b
   have hf := hfree k σ hσ hfar b
+  refine ⟨hf,?_⟩
+  intro a
   refine ⟨affine_phaseLaw _ _ _ hf,?_⟩
   intro ψ r
   simpa only [Label,Fintype.card_fun,Fintype.card_fin,Fintype.card_bool] using

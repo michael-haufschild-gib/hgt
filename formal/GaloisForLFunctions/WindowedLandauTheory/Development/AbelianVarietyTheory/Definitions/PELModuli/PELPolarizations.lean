@@ -1,6 +1,8 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.PELModuli.PELLineBundles
 import Mathlib.AlgebraicGeometry.Morphisms.Affine
+import Mathlib.AlgebraicGeometry.Over
 import Mathlib.CategoryTheory.Monoidal.Cartesian.Grp
+import Mathlib.CategoryTheory.Monoidal.Cartesian.Over
 import Mathlib.RingTheory.MvPolynomial.Basic
 
 /-! Relative ampleness in affine charts and the commutator pairing

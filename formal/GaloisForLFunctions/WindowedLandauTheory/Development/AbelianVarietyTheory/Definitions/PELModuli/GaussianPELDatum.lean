@@ -1,6 +1,6 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.PELModuli.IntegralPELDatum
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.PELModuli.GaussianPELForm
-import Mathlib.LinearAlgebra.Matrix.Unique
+import Mathlib.Data.Matrix.Basic
 
 /-! The Gaussian lattice realizes a split PEL datum of signature one. -/
 
@@ -16,8 +16,23 @@ open GaussOne
 local instance : Fact (Nat.Prime 5) := ⟨Nat.prime_five⟩
 
 private def gaussianSplit :
-    (𝓞 Qi ⊗[ℤ] ℤ_[5]) ≃ₐ[𝓞 Qi] Matrix (Fin 1) (Fin 1) (𝓞 Qi ⊗[ℤ] ℤ_[5]) :=
-  Matrix.uniqueAlgEquiv.symm
+    (𝓞 Qi ⊗[ℤ] ℤ_[5]) ≃ₐ[𝓞 Qi] Matrix (Fin 1) (Fin 1) (𝓞 Qi ⊗[ℤ] ℤ_[5]) where
+  toFun x := Matrix.of fun _ _ => x
+  invFun A := A 0 0
+  left_inv _ := rfl
+  right_inv A := by
+    ext i j
+    change A 0 0 = A i j
+    rw [Subsingleton.elim i 0, Subsingleton.elim j 0]
+  map_add' _ _ := by ext i j; rfl
+  map_mul' _ _ := by
+    ext i j
+    rw [Matrix.mul_apply, Fin.sum_univ_one]
+    rfl
+  commutes' c := by
+    ext i j
+    rw [Matrix.algebraMap_matrix_apply, if_pos (Subsingleton.elim i j)]
+    rfl
 
 /-- The global datum with Gaussian multiplication and its standard polarization. -/
 def gaussOneGlobalDatum : Gen.GDatum where
@@ -28,7 +43,7 @@ def gaussOneGlobalDatum : Gen.GDatum where
   tr := 0
   nm := 1
   tr_eq := by rw [barO_ζO]; simp
-  nm_eq := by rw [barO_ζO, mul_neg, ζO_sq]; simp
+  nm_eq := by rw [barO_ζO, mul_neg, ← pow_two, ζO_sq]; simp
   disc_neg := by norm_num
   O := 𝓞 Qi
   freeO := inferInstance
@@ -82,7 +97,10 @@ def gaussOneDatum : Datum 5 where
   disc_p := by norm_num [gaussOneGlobalDatum]
   split := ⟨2, by norm_num [gaussOneGlobalDatum]⟩
   splitP := ⟨gaussianSplit⟩
-  perfP := ⟨1, Nat.coprime_one_left 5, fun f => by simpa using EF_bij.2 f⟩
+  perfP := ⟨1, Nat.coprime_one_left 5, fun f => by
+    obtain ⟨x, hx⟩ := EF_bij.2 (show 𝓞 Qi →ₗ[ℤ] ℤ from f)
+    have h : gaussOneGlobalDatum.EF x = f := hx
+    exact ⟨x, h.trans (one_smul ℕ f).symm⟩⟩
 
 theorem exists_datum_a_one :
     ∃ (_ : Fact (Nat.Prime 5)) (D : Datum 5), D.a = 1 ∧ D.n = 1 ∧ D.m = 1 :=
