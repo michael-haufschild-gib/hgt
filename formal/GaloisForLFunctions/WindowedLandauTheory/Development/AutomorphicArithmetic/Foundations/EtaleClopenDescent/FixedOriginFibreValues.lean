@@ -28,12 +28,20 @@ theorem val_of_val_mul {b z : L} {a c : k}
   have hunit : IsUnit u := isUnit_loc_of_eval_ne_zero B e u (hbe.symm ▸ ha)
   let w : loc B e := (↑hunit.unit⁻¹ : loc B e) * v
   have hmul : u * w = v := by
-    rw [w, ← mul_assoc, ← hunit.unit_spec, ← Units.val_mul, mul_inv_cancel, Units.val_one, one_mul]
+    calc
+      u * w = (↑hunit.unit : loc B e) * w :=
+        congrArg (fun r => r * w) hunit.unit_spec.symm
+      _ = v := by
+        change (↑hunit.unit : loc B e) * ((↑hunit.unit⁻¹ : loc B e) * v) = v
+        rw [← mul_assoc, ← Units.val_mul, mul_inv_cancel, Units.val_one, one_mul]
   have hb0 : b ≠ 0 := (hunit.map (loc B e).val.toMonoidHom).ne_zero
   have hw : (w : L) = z := mul_left_cancel₀ hb0 (congrArg Subtype.val hmul)
   have hval : locEval B e w = c := by
-    apply mul_left_cancel₀ ha
-    simpa only [map_mul, hbe, hze] using congrArg (locEval B e) hmul
+    have heu : locEval B e u = a := hbe
+    have hev : locEval B e v = a * c := hze
+    have hprod := congrArg (locEval B e) hmul
+    rw [map_mul, heu, hev] at hprod
+    exact mul_left_cancel₀ ha hprod
   exact hw ▸ (val_iff_loc B e _ _).mpr ⟨w.property, hval⟩
 
 end Fraction
@@ -57,10 +65,8 @@ theorem exists_originFibrePoint_of_isFix (j₂ : E →ₐ[k] L)
   have hg (a : B) : (g a : L) = (j₁) (a : E) := rBPullback_coe x {0} a
   let e₀ : B →ₐ[k] k := f.1.comp g
   have he (l : Fin d) : e₀ ⟨_, tco_mem k E x l⟩ = 0 := by
-    have hh : g ⟨_, tco_mem k E x l⟩ = ⟨_, tco_mem k L x l⟩ := by
-      apply Subtype.ext
-      rw [hg]
-      exact (IsScalarTower.algebraMap_apply F E L _).symm
+    have hh : g ⟨_, tco_mem k E x l⟩ = ⟨_, tco_mem k L x l⟩ :=
+      rBPullback_originCoordinate x l
     change f.1 (g _) = 0
     rw [hh, f.2 l]
   refine ⟨⟨e₀, he⟩, ?_⟩
@@ -68,7 +74,7 @@ theorem exists_originFibrePoint_of_isFix (j₂ : E →ₐ[k] L)
       Val C f.1 ((j₁) (a : E)) (e₀ a) ∧ Val C f.1 (j₂ (a : E)) (e₀ a) := by
     have hmem : (j₁) (a : E) ∈ C := hg a ▸ (g a).property
     refine ⟨hg a ▸ val_chartElement C f.1 (g a), ?_⟩
-    have harg : (⟨(j₁) (a : E), hmem⟩ : C) = g a := Subtype.ext (hg a).symm
+    have harg : (⟨algebraMap E L (a : E), hmem⟩ : C) = g a := Subtype.ext (hg a).symm
     have hf := hfix _ a.property hmem
     rw [harg] at hf
     exact hf

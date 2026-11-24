@@ -46,11 +46,13 @@ theorem rightChart_subset_origin_of_fixed_localValues
     exact f.2 l
   have hv : Val C f.1 s 0 := by
     have hv := hfix (x₀ : E) x₀.property y₀.property
-    exact hy ▸ hv
+    change Val C f.1 s (f.1 y₀) at hv
+    rwa [hy] at hv
   have hzero := (hval s 0).mpr hv
   have hprod := val_mul B e hzero (val_chartElement B e ⟨s⁻¹, ha⟩)
   rw [mul_inv_cancel₀ hs, zero_mul] at hprod
-  exact one_ne_zero (val_value_unique B e
-    (show Val B e (1 : L) 1 from (map_one e) ▸ val_chartElement B e 1) hprod)
+  have hone := val_chartElement B e (1 : B)
+  rw [map_one, Subalgebra.coe_one] at hone
+  exact one_ne_zero (val_value_unique B e hone hprod)
 
 end GlobalTheory.WH

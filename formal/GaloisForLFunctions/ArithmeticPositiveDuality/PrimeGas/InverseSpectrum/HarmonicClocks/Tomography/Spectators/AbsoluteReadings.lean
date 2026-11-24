@@ -28,7 +28,7 @@ theorem spectator_read_energy (χ : ℕ+ → Circle) {β γ : TraceTemperature} 
   rw [spectatorExcess_eq χ β hpq,spectatorExcess_eq χ γ hpq]
   rw [mul_div_mul_left _ _ (Nat.cast_ne_zero.mpr g.ne_zero)]
   rw [thermalWeight,thermalWeight,← Real.exp_sub,Real.log_exp]
-  apply (div_eq_iff (sub_pos.mpr hβγ).ne').mpr
+  apply (div_eq_iff (sub_pos.mpr (show β.val < γ.val from hβγ)).ne').mpr
   ring
 
 /-- Once the energy is calibrated, an absolute event counts the excited states. -/

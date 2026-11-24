@@ -27,24 +27,24 @@ theorem gaussian_energy_cover :
   let r := sqrt (log (B*((n+2 : ℕ):ℝ)))
   have h (l : PathLabel n) : |u l| ≤ 2*r := by
     have hs := hn {l} (singleton_nonempty _)
-    simp only [sum_singleton,card_singleton,Nat.cast_one,one_pow,mul_one,div_one] at hs
+    simp only [sum_singleton,Finset.card_singleton,Nat.cast_one,one_pow,mul_one,div_one] at hs
+    change |u l|^2 ≤ 4*log (B*((n+2 : ℕ):ℝ)) at hs
     have hlog : 0 ≤ log (B*((n+2 : ℕ):ℝ)) := by nlinarith only [hs,sq_nonneg |u l|]
     apply (sq_le_sq₀ (abs_nonneg _) (mul_nonneg zero_le_two (sqrt_nonneg _))).mp
     rw [mul_pow,sq_sqrt hlog]
     exact hs.trans_eq (by ring)
   have hsite (i : Fin (n+2)) : ‖onsiteAt u i‖ ≤ (3:ℝ)*(2*r) := by
     apply (norm_sum_le _ _).trans
-    apply (sum_le_sum (g:=fun _ => 2*r) (fun q _ => ?_)).trans_eq
-    · simp only [norm_smul,norm_finitePauliMatrix,Complex.norm_real,Real.norm_eq_abs,mul_one]
-      exact h _
-    · simp only [sum_const,card_univ,Fintype.card_fin,nsmul_eq_mul,Nat.cast_ofNat]
+    calc _ ≤ ∑ _ : Fin 3, 2*r := Finset.sum_le_sum fun q _ => by
+               simpa only [norm_smul,norm_finitePauliMatrix,Complex.norm_real,Real.norm_eq_abs,mul_one]
+                 using h (Sum.inl (i,q))
+         _ = _ := by norm_num [nsmul_eq_mul]
   have hedge (i : Fin (n+1)) : ‖edgePart u i‖ ≤ (9:ℝ)*(2*r) := by
     apply (norm_sum_le _ _).trans
-    apply (sum_le_sum (g:=fun _ => 2*r) (fun q _ => ?_)).trans_eq
-    · simp only [norm_smul,norm_finitePauliMatrix,Complex.norm_real,Real.norm_eq_abs,mul_one]
-      exact h _
-    · simp only [sum_const,card_univ,Fintype.card_prod,Fintype.card_fin,nsmul_eq_mul,Nat.cast_mul,Nat.cast_ofNat]
-      ring
+    calc _ ≤ ∑ _ : Fin 3 × Fin 3, 2*r := Finset.sum_le_sum fun q _ => by
+               simpa only [norm_smul,norm_finitePauliMatrix,Complex.norm_real,Real.norm_eq_abs,mul_one]
+                 using h (Sum.inr (i,q))
+         _ = _ := by norm_num [nsmul_eq_mul]
   intro y hy
   obtain ⟨i,hi⟩ := path_energy_mesh u (by dsimp only [r]; positivity) (by dsimp only [r]; positivity) hsite hedge y hy
   exact ⟨i,hi.trans_eq (by dsimp only [r]; ring)⟩
@@ -101,7 +101,7 @@ theorem physical_arc_bounds {N : ℕ} (H : EnergyOperator (Fin N→Bool)) {q : �
       rw [hx]; linarith only [show -(t*E a) ≤ y from hy.1])
     obtain ⟨i,hi⟩ := hc _ ⟨hl,hu⟩
     refine ⟨i,?_⟩
-    have hr : θ i-y= -(t*(E i-(-y/t))) := by dsimp only [θ]; field_simp
+    have hr : θ i-y= -(t*(E i-(-y/t))) := by dsimp only [θ]; field_simp; ring
     rw [hr,abs_neg,abs_mul,abs_of_pos ht]
     exact mul_le_mul_of_nonneg_left hi ht.le
   have hh := arc_of_interval_cover θ a b (fun i => neg_le_neg (mul_le_mul_of_nonneg_left (he₁ i) ht.le))

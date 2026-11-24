@@ -25,7 +25,7 @@ private theorem exit_from_cover (ω : PathPauliDisorder) (n : ℕ) {q ε : ℝ} 
   have hp : 0<W+2*q := add_pos_of_pos_of_nonneg hW (mul_nonneg zero_le_two hq)
   have ht : θ/W<2*π/(W+2*q) := by
     apply (div_lt_div_iff₀ hW hp).mpr
-    calc θ*(W+2*q) = θ*(1+2*(q/W))*W := by field_simp [hW.ne']
+    calc θ*(W+2*q) = θ*(1+2*(q/W))*W := by field_simp [show W ≠ 0 from hW.ne']
          _ < _ := mul_lt_mul_of_pos_right hgap hW
   apply first_failure (div_nonneg (mul_nonneg (by norm_num) (arcsin_pos.mpr (half_pos hε.1)).le) hW.le) ht
   intro t htime
@@ -74,9 +74,9 @@ theorem gaussian_full_ascent :
     have hlim : Tendsto (fun n => θ*(1+2*(q n/W n))) atTop (𝓝 θ) := by
       simpa only [mul_zero,add_zero,mul_one] using ((hratio.const_mul 2).const_add 1).const_mul θ
     have he : ∀ᶠ n in atTop, emptyExit ω n ε=θ/W n := by
-      filter_upwards [hcover,hlim.eventually_lt_const hθ,hd.eventually_gt_const hw] with n hn hs hW
+      filter_upwards [hcover,hlim.eventually_lt_const hθ,hd.eventually_const_lt hw] with n hn hs hW
       exact exit_from_cover ω n (mul_nonneg (by norm_num) (sqrt_nonneg _)) hε hn
-        ((div_pos_iff_of_pos_right (by dsimp only [N]; positivity)).mp hW) hs
+        ((div_pos_iff_of_pos_right (show 0 < N n by dsimp only [N]; positivity)).mp hW) hs
     refine ⟨he,((tendsto_const_nhds (x:=θ)).div hd hw.ne').congr' ?_⟩
     filter_upwards [he] with n hn
     change θ/(W n/N n)=N n*emptyExit ω n ε

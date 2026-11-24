@@ -101,6 +101,6 @@ theorem exists_originFibre_of_originWeights_zero {U V : Fin (d + 1) → Y.Opens}
   have hlei : (lft S).inf U ≤ ({l.succ} : Finset (Fin (d + 1))).inf U :=
     Finset.inf_mono (Finset.singleton_subset_iff.mpr hi')
   have hyi : y.hom default ∈ ({l.succ} : Finset (Fin (d + 1))).inf U := hlei hUV.1
-  exact hU.eval_ratio_ne_zero h 0 l.succ y hy₀ hyi (hf l)
+  exact IsAffCover.eval_ratio_ne_zero x hU h 0 l.succ y hy₀ hyi (hf l)
 
 end GlobalTheory.WH

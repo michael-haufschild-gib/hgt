@@ -12,7 +12,7 @@ open scoped GlobalTheory.CechDR GlobalTheory.SchemeCohomology
 
 namespace GlobalTheory.WH
 
-variable {k L : Type*} [Field k] [Field L] [Algebra k L]
+variable {k L : Type} [Field k] [Field L] [Algebra k L]
   (B : Subalgebra k L) (p : ℕ)
 
 /-- The regular forms are a module over the chart's regular functions. -/
@@ -25,6 +25,20 @@ def chartFormLattice : Submodule B (DR k L) where
 theorem chartFormLattice_restrictScalars : (chartFormLattice B p).restrictScalars k = omB k L B p :=
   Submodule.ext fun _ => Iff.rfl
 
+private theorem exists_chartForm_denominator_of_localization {C : Subalgebra k L}
+    [Algebra B C] [IsScalarTower B C L] [IsScalarTower k B C]
+    (S : Submonoid B) [IsLocalization S C] (w : DR k L)
+    (hw : w ∈ omB k L C p) :
+    ∃ u : S, (u.val : L) • w ∈ omB k L B p := by
+  have hwdeg : w ∈ ExteriorDifferentials k L p := omB_le_degree (B := C) (p := p) hw
+  let ω : ExteriorDifferentials k L p := ⟨w, hwdeg⟩
+  have hω : ω ∈ LinearMap.range (algebraFormPullback k C L p) :=
+    (mem_omB_iff_pullback_range C ω).mp hw
+  obtain ⟨u, hu⟩ := (mem_formRange_localization_iff (A := B) (C := C) S ω).mp hω
+  refine ⟨u, ?_⟩
+  change (((u : B) • ω : ExteriorDifferentials k L p) : DR k L) ∈ omB k L B p
+  exact (mem_omB_iff_pullback_range B ((u : B) • ω)).mpr hu
+
 /-- Clear the regularity denominator of a form on the point-local
 chart without changing its exterior degree. -/
 theorem exists_chartForm_denominator (e : B →ₐ[k] k) (w : DR k L)
@@ -36,9 +50,6 @@ theorem exists_chartForm_denominator (e : B →ₐ[k] k) (w : DR k L)
   letI : IsScalarTower B C L := localChart_tower B e
   letI : IsScalarTower k B C := localChart_baseTower B e
   letI : IsLocalization S C := localChart_isLocalization B e
-  let ω : ExteriorDifferentials k L p := ⟨w, omB_le_degree hw⟩
-  have hω := (mem_omB_iff_pullback_range C ω).mp hw
-  obtain ⟨u, hu⟩ := (mem_formRange_localization_iff S ω).mp hω
-  exact ⟨u, (mem_omB_iff_pullback_range B ((u : B) • ω)).mpr hu⟩
+  exact exists_chartForm_denominator_of_localization B p (C := C) S w hw
 
 end GlobalTheory.WH

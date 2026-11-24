@@ -52,6 +52,28 @@ theorem scalar_chord_error {N : ℕ} (H : EnergyOperator (Fin N→Bool)) {q t : 
   rw [abs_of_nonpos (sub_nonpos.mpr hu)]
   linarith only [h]
 
+/-- After a full turn the missing squared diameter is at most the
+square of t times the energy covering radius. -/
+theorem saturated_scalar_deficit {N : ℕ} (H : EnergyOperator (Fin N→Bool)) {q t : ℝ}
+    (hq : 0 ≤ q) (ht : 0 ≤ t) (hfull : 2*π ≤ t*circuitHamiltonianSpectralWidth H)
+    (hc : ∀ y ∈ Icc (lower H) (upper H), ∃ i, |H.2.isHermitian.eigenvalues i-y| ≤ q) :
+    sqrt (4-(orbitCircuitDistance H 0 t)^2) ≤ t*q := by
+  let A := orbitSpectralEnclosingArcLength H t
+  obtain ⟨hl,hu⟩ := physical_arc_bounds H hc ht
+  rw [min_eq_right ((sub_le_self _ (mul_nonneg (mul_nonneg zero_le_two ht) hq)).trans hfull)] at hl
+  have hA : 0 ≤ A := spectralEnclosingArcLength_nonneg _
+  have hπ : A ≤ 2*π := hu.trans (min_le_right ..)
+  have hcos : 0 ≤ cos (A/4) := cos_nonneg_of_mem_Icc ⟨by linarith only [hA,pi_pos],by linarith only [hπ]⟩
+  rw [orbitCircuitDistance_zeroGate_eq_enclosingArc]
+  change sqrt (4-(2*sin (A/4))^2) ≤ _
+  rw [show 4-(2*sin (A/4))^2=(2*cos (A/4))^2 by nlinarith only [sin_sq_add_cos_sq (A/4)],
+    sqrt_sq (mul_nonneg zero_le_two hcos)]
+  have h := Real.abs_cos_sub_cos_le (A/4) (π/2)
+  rw [cos_pi_div_two,sub_zero,abs_of_nonneg hcos,abs_of_nonpos (by linarith only [hπ] : A/4-π/2 ≤ 0)] at h
+  change 2*π-2*t*q ≤ A at hl
+  linarith only [h,hl]
+
+#print axioms saturated_scalar_deficit
 #print axioms scalar_chord_error
 end
 end GaloisForLFunctions.HTGeometry.FirstAscent.EnergyMesh

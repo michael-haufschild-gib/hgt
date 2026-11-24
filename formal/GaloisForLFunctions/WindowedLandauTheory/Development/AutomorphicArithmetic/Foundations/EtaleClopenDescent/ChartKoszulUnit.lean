@@ -7,7 +7,7 @@ unit weight makes every regular coefficient a boundary value. -/
 noncomputable section
 
 open GlobalTheory.CechDR GlobalTheory.PD
-open scoped GlobalTheory.CechDR
+open scoped GlobalTheory.CechDR GlobalTheory.SchemeCohomology
 
 namespace GlobalTheory.WH
 
@@ -18,13 +18,17 @@ local notation "w" => fun i => Algebra.lsmul k k (DR k L) (r i : L)
 
 theorem chartKoszul_exact_of_unit {j : ι} (hu : IsUnit (r j)) (m : ℤ) :
     (acx (fun _ => omB k L B p) w).Z m ≤ (acx (fun _ => omB k L B p) w).B m := by
-  apply acx_lattice_exact (k := k) (chartFormLattice B p) r m
+  let P := chartFormLattice B p
+  letI : Module B P := Submodule.module P
+  apply acx_lattice_exact (k := k) P r m
   intro a ha hz
   have htop : Ideal.span (Set.range r) = ⊤ :=
     (Ideal.span (Set.range r)).eq_top_of_isUnit_mem (Ideal.subset_span (Set.mem_range_self j)) hu
   obtain ⟨b, hb, hdb⟩ := exists_koszul_primitive_smul r ha hz
     (g := (1 : B)) (htop.symm ▸ Submodule.mem_top)
-  exact ⟨b, hb, hdb.trans (one_smul B a)⟩
+  refine ⟨b, hb, hdb.trans ?_⟩
+  funext I
+  exact one_smul B (a I)
 
 theorem le_selectedBoundaryValues_of_unit {d : ℕ} (sel : Fin d ↪o ι) {j : Fin d}
     (hu : IsUnit (r (sel j))) :

@@ -41,12 +41,12 @@ theorem IsFinCover.weaklyRegular_localOriginCoordinates (h : IsFinCover k E x)
   let S := (RingHom.ker e.1.toRingHom).primeCompl
   let P := MvPolynomial (Fin d) k
   let f := h.pd.chartPolynomialEquiv 0
-  letI : Algebra B' C := localChartAlgebra B e.1
+  let i : A →+* B := algebraMap A B'
+  let y (j : Fin d) : A := f (MvPolynomial.X j)
+  letI : Algebra B C := localChartAlgebra B e.1
   letI : IsLocalization S C := localChart_isLocalization B e.1
-  letI : Algebra A C := ((algebraMap B' C).comp (algebraMap A B')).toAlgebra
-  letI : IsScalarTower A B' C := .of_algebraMap_eq fun _ => rfl
   letI : Module.Projective A B' := (h.finiteProjective_chart 0).2
-  letI : Module.Flat B' C := IsLocalization.flat C S
+  letI : Module.Flat B C := IsLocalization.flat C S
   let l := List.finRange d
   let I : Ideal P := Ideal.span ((MvPolynomial.X : Fin d → P) '' (∅ : Set (Fin d)))
   have hreg : IsWeaklyRegular (P ⧸ I) (l.map (MvPolynomial.X : Fin d → P)) :=
@@ -54,23 +54,23 @@ theorem IsFinCover.weaklyRegular_localOriginCoordinates (h : IsFinCover k E x)
   have hI : I = ⊥ := by simp [I]
   let q : (P ⧸ I) ≃ₐ[P] P := (Ideal.quotientEquivAlgOfEq P hI).trans (AlgEquiv.quotientBot P P)
   have hP := (q.toLinearEquiv.isWeaklyRegular_congr _).mp hreg
-  have hA : IsWeaklyRegular A (l.map (fun j => f (MvPolynomial.X j))) := by
+  have hA : IsWeaklyRegular A (l.map y) := by
     refine (f.toAddEquiv.isWeaklyRegular_congr ?_).mp hP
     exact List.forall₂_map_left_iff.mpr (List.forall₂_map_right_iff.mpr
       (List.forall₂_same.mpr fun i _ y => map_mul f (MvPolynomial.X i) y))
-  have hB : IsWeaklyRegular B' ((l.map fun j => f (MvPolynomial.X j)).map (algebraMap A B')) :=
+  have hB' : IsWeaklyRegular B' ((l.map y).map (algebraMap A B')) :=
     weaklyRegular_map_of_flat hA
-  have hC : IsWeaklyRegular C
-      (((l.map fun j => f (MvPolynomial.X j)).map (algebraMap A B')).map (algebraMap B' C)) :=
+  have hB : IsWeaklyRegular B ((l.map y).map i) := hB'
+  have hC : IsWeaklyRegular C (((l.map y).map i).map (algebraMap B C)) :=
     weaklyRegular_map_of_flat hB
-  convert hC using 1
-  rw [List.map_map, List.map_map]
-  apply congrArg (fun g : Fin d → C => l.map g)
-  funext j
-  apply Subtype.ext
-  change algebraMap F E (x j.succ / x 0) = algebraMap F E (f (MvPolynomial.X j) : F)
-  rw [h.pd.chartPolynomialEquiv_X]
-  simp [chartCoordinates]
+  have he : (algebraMap B C ∘ i ∘ y) = localOriginCoordinate e := by
+    funext j
+    apply Subtype.ext
+    change algebraMap F E (f (MvPolynomial.X j) : F) = algebraMap F E (x j.succ / x 0)
+    rw [h.pd.chartPolynomialEquiv_X]
+    simp [chartCoordinates]
+  change IsWeaklyRegular C (l.map (localOriginCoordinate e))
+  simpa only [List.map_map, he] using hC
 
 /-- At a point of the reduced origin fibre, the origin equations
 generate the kernel of local evaluation. -/

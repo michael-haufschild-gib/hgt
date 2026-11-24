@@ -23,7 +23,7 @@ theorem translate_distance {N k s : ℕ} (H : selfAdjoint (Register N)) (v t : �
   constructor
   · obtain ⟨z,hz,C,hC,he⟩ := affordable_add_time H hv (best H 0 t)
     exact (hasProjectiveCircuitApproximation_iff_infDist _ _ _).mp
-      ⟨z,hz,C,(Nat.add_zero k ▸ hC).trans hks,he⟩
+      ⟨z,hz,C,(show C.gateCount ≤ k by simpa only [Nat.add_zero] using hC).trans hks,he⟩
   · have h := affordable_add_time H (hv.neg_time H) (best H s (v+t))
     rw [neg_add_cancel_left] at h
     exact (hasProjectiveCircuitApproximation_iff_infDist _ _ _).mp h
@@ -43,7 +43,7 @@ theorem scaled_advantage {n : ℕ} (u : PathShell n) (s : ℕ) (x : ℝ) {b : �
     let N : ℝ := (n+2 : ℕ)
     let H := shellOperator u
     orbitCircuitDistance H 0 (x/N) ≤ orbitCircuitDistance H s (x/N)+
-      2*|x|*sqrt ((42*b)*((s:ℝ)/N)) := by
+      2*|x| *sqrt ((42*b)*((s:ℝ)/N)) := by
   intro N H
   have hN : 0<N := by dsimp only [N]; positivity
   obtain ⟨L,hL,he⟩ := circuit_advantage u s (x/N)
@@ -56,9 +56,9 @@ theorem scaled_advantage {n : ℕ} (u : PathShell n) (s : ℕ) (x : ℝ) {b : �
     rw [sq_sqrt (mul_nonneg (by positivity) (div_nonneg (Nat.cast_nonneg _) hN.le)),div_pow]
     apply (div_le_iff₀ (sq_pos_of_pos hN)).mpr
     exact hsq.trans_eq (by field_simp)
-  change orbitCircuitDistance H 0 (x/N) ≤ orbitCircuitDistance H s (x/N)+2*|x/N|*M at he
+  change orbitCircuitDistance H 0 (x/N) ≤ orbitCircuitDistance H s (x/N)+2*|x/N| *M at he
   apply he.trans
-  apply add_le_add_left
+  apply add_le_add_right
   rw [abs_div,abs_of_pos hN,show 2*(|x|/N)*M=(2*|x|)*(M/N) by ring]
   exact mul_le_mul_of_nonneg_left hh (by positivity)
 

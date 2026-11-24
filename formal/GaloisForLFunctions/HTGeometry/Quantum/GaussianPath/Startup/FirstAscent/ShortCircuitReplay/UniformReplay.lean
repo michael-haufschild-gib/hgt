@@ -36,7 +36,7 @@ private theorem finite_replay {n k s : ℕ} (u : PathShell n) (v : ℝ) {x w q b
     dsimp only [t]; ring
   obtain ⟨hf,hr⟩ := translate_distance H v t hks
   have hs := scaled_advantage u (k+s) x hb hu
-  change d 0 t ≤ d (k+s) t+2*|x|*r at hs
+  change d 0 t ≤ d (k+s) t+2*|x| *r at hs
   rw [abs_of_nonneg hx] at hs
   have hxr := mul_nonneg hx (sqrt_nonneg ((42*b)*(((k+s : ℕ):ℝ)/N)))
   change 0 ≤ x*r at hxr

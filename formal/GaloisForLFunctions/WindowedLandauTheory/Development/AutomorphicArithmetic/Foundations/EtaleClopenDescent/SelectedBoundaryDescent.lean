@@ -6,7 +6,7 @@ its point-local chart lattices. -/
 
 noncomputable section
 
-open GlobalTheory.CechDR
+open GlobalTheory.CechDR GlobalTheory.PD
 open scoped GlobalTheory.CechDR
 
 namespace GlobalTheory.WH
@@ -31,12 +31,23 @@ theorem selectedBoundaryValues_mem_of_local {v : DR k L} (hv : v ∈ omB k L B p
     intro I
     by_cases he : I = N
     · subst I
-      exact show a N ∈ _ from by rw [a, if_pos rfl, if_pos hcard]; exact hv
-    · rw [a, if_neg he]
+      rw [show a N = v from if_pos rfl, if_pos hcard]
+      exact hv
+    · rw [show a I = 0 from if_neg he]
       exact zero_mem _
   have hl (f : B →ₐ[k] k) :
       a ∈ (acx (fun _ => omB k L (loc B f) p) fun j => (w) (e j)).B (d : ℤ) := by
     obtain ⟨b, hb, hbe⟩ := h f
+    let A (_ : Finset (Fin d)) := omB k L (loc B f) p
+    let W (j : Fin d) := (w) (e j)
+    have hCx : (acx A W).IsCx := by
+      refine acx_isCx A W ?_ ?_
+      · intro i j
+        exact (Commute.all (r (e i) : L) (r (e j) : L)).map (Algebra.lsmul k k (DR k L))
+      · intro _ i _ u hu
+        change (r (e i) : L) • u ∈ omB k L (loc B f) p
+        exact smul_mem_omB (B := loc B f) (p := p) ((le_loc B f) (r (e i)).property) hu
+    have hbt : b ∈ (acx A W).C (d : ℤ) := (Cx.boundaries_le_cycles hCx d hb).1
     have haeq : b = a := by
       funext I
       by_cases hI : I = N
@@ -45,14 +56,11 @@ theorem selectedBoundaryValues_mem_of_local {v : DR k L} (hv : v ∈ omB k L B p
       · have hn : (I.card : ℤ) ≠ d := by
           intro he
           apply hI
-          exact Finset.eq_univ_of_card (by exact_mod_cast he)
-        have ht := acx_mem_terms_iff.mp (Cx.boundaries_le_cycles
-          (acx_isCx _ _ (fun i j => (Commute.all (r (e i) : L) (r (e j) : L)).map
-            (Algebra.lsmul k k (DR k L)))
-            (fun _ i _ _ hx => GlobalTheory.PD.smul_mem_omB ((le_loc B f) (r (e i)).property) hx))
-          d hb).1 I
+          have hcardI : I.card = d := by exact_mod_cast he
+          exact Finset.eq_univ_of_card I (hcardI.trans (Fintype.card_fin d).symm)
+        have ht := acx_mem_terms_iff.mp hbt I
         rw [if_neg hn] at ht
-        rw [(Submodule.mem_bot k).mp ht, a, if_neg hI]
+        rw [(Submodule.mem_bot k).mp ht, show a I = 0 from if_neg hI]
     exact haeq ▸ hb
   have hba : a ∈ C.B (d : ℤ) :=
     chartKoszul_mem_boundaries_of_local B p (r ∘ e) a ha hl

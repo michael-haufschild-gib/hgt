@@ -5,7 +5,9 @@ open Real
 namespace GaloisForLFunctions.HTGeometry.ReturnSpacing.PhysicalComponents.Depth
 noncomputable section
 
-private theorem chord_gap {x y : ℝ} (hy : 0≤y) (hyx : y≤x) (hx : x≤1/2) :
+/-- Below the semicircle, decreasing the arc width by h saves at least
+h in projective operator error. -/
+theorem chord_gap {x y : ℝ} (hy : 0≤y) (hyx : y≤x) (hx : x≤1/2) :
     x-y ≤ zeroGateArcTolerance x-zeroGateArcTolerance y := by
   let a := π*x/2
   let b := π*y/2

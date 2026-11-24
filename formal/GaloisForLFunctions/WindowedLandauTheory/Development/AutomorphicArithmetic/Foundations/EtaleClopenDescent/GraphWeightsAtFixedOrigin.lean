@@ -24,7 +24,7 @@ private theorem val_graphScalarMap_chartTensor (a : B ⊗[k] B) :
       (e (Algebra.TensorProduct.lmul' k a)) := by
   induction a using TensorProduct.induction_on with
   | zero =>
-    simpa only [map_zero] using val_chartElement C f (0 : C)
+    simpa only [map_zero, Subalgebra.coe_zero] using val_chartElement C f (0 : C)
   | add a b ha hb => simpa only [map_add] using val_add C f ha hb
   | tmul a b =>
     have ha := (h _ _ (val_chartElement B e a)).1

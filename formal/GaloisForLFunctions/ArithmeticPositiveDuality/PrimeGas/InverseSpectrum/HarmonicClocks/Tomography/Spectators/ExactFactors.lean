@@ -38,7 +38,7 @@ theorem windowProduct_bijective (P : Finset ℕ) {a : ι → ℕ+} {b : κ → �
   constructor
   · intro u v he
     have hh := h.1 (a₁ := (u.1.val,u.2.val)) (a₂ := (v.1.val,v.2.val))
-      (PNat.coe_injective (congrArg Subtype.val he))
+      (PNat.coe_injective (congrArg (fun n : Nat.factoredNumbers P => n.val) he))
     exact Prod.ext (Subtype.ext (congrArg Prod.fst hh)) (Subtype.ext (congrArg Prod.snd hh))
   · intro n
     obtain ⟨⟨i,j⟩,he⟩ := h.2 ⟨n.val,Nat.pos_of_ne_zero (Nat.mem_factoredNumbers.mp n.property).1⟩
@@ -50,8 +50,10 @@ theorem windowProduct_bijective (P : Finset ℕ) {a : ι → ℕ+} {b : κ → �
 private theorem window_summable (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime) {s : ℂ} (hs : 0 < s.re)
     (a : ι → ℕ+) (ha : Function.Injective a) : Summable (fun i : WindowState P a => ‖heat s (a i.val)‖) := by
   let j (i : WindowState P a) : Nat.factoredNumbers P := ⟨(a i.val).val,i.property⟩
-  have hj : Function.Injective j := fun _ _ he => Subtype.ext (ha (PNat.coe_injective (congrArg Subtype.val he)))
-  simpa only [heat_eq_cpow] using (_root_.RHTower.hasSum_factoredNumbers_cpow P hP hs).1.comp_injective hj
+  have hj : Function.Injective j := fun _ _ he =>
+    Subtype.ext (ha (PNat.coe_injective (congrArg (fun n : Nat.factoredNumbers P => n.val) he)))
+  simpa only [heat_eq_cpow,Function.comp_def,j] using
+    (_root_.RHTower.hasSum_factoredNumbers_cpow P hP hs).1.comp_injective hj
 
 /-- Both subsystem traces converge absolutely on the full positive half-plane in each window. -/
 theorem exactWindow_absolute (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime) {a : ι → ℕ+} {b : κ → ℕ+}
@@ -68,11 +70,10 @@ theorem exactWindow_product (P : Finset ℕ) (hP : ∀ p ∈ P, p.Prime) {a : ι
   have hsum : HasSum (fun u : WindowState P a × WindowState P b => heat s (a u.1.val) * heat s (b u.2.val))
       (_root_.RHTower.thetaEulerStageZeta P s) := by
     have hbase := (_root_.RHTower.hasSum_factoredNumbers_cpow P hP hs).2
-    have he := (e.hasSum_iff).mpr hbase
+    have he := (e.hasSum_iff (f := fun n : Nat.factoredNumbers P => (n.val:ℂ)^(-s))).mpr hbase
     apply he.congr_fun
     intro u
-    rw [← heat_mul,heat_eq_cpow]
-    rfl
+    exact (heat_mul s _ _).symm.trans (heat_eq_cpow s _)
   rw [← hsum.tsum_eq,hsum.summable.tsum_prod]
   simp only [windowTrace,tsum_mul_left,tsum_mul_right]
 
@@ -95,9 +96,8 @@ theorem finiteSubsystem_zero_free [Fintype ι] {a : ι → ℕ+} {b : κ → ℕ
     apply Nat.mem_factoredNumbers_of_primeFactors_subset (a i).ne_zero
     exact fun _ hp => Finset.mem_biUnion.mpr ⟨i,Finset.mem_univ i,hp⟩
   let e : WindowState P a ≃ ι := Equiv.subtypeUnivEquiv hmem
-  have he : windowTrace P a s = ∑ i, heat s (a i) := by
-    rw [← tsum_fintype]
-    exact e.tsum_eq (fun i => heat s (a i))
+  have he : windowTrace P a s = ∑ i, heat s (a i) :=
+    (e.tsum_eq (fun i => heat s (a i))).trans (tsum_fintype _)
   exact he ▸ (exactWindow_zero_free P hP h hs).1
 
 #print axioms windowProduct_bijective

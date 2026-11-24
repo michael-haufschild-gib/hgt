@@ -35,7 +35,7 @@ theorem syndetic_packet_approach {n d : ℕ} (e : (Fin n→Bool) ≃ Fin (d+1))
   change ‖c • _-c • B‖<η
   rw [←smul_sub,norm_smul,hc,one_mul]
   change (RHTower.projectivePhysicalPhaseFlow E t) ∈ O at hx
-  exact Metric.mem_ball.mp hx
+  simpa only [dist_eq_norm] using Metric.mem_ball.mp hx
 
 #print axioms syndetic_packet_approach
 end

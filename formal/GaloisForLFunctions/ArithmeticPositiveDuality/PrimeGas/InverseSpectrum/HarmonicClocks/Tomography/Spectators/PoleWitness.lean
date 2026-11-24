@@ -16,7 +16,8 @@ def spectatorRoot (q : Nat.Primes) (g : ℕ+) : ℂ :=
 
 theorem spectatorRoot_re (q : Nat.Primes) (g : ℕ+) :
     (spectatorRoot q g).re = Real.log (g.val:ℝ) / energy (primePNat q) := by
-  simp [spectatorRoot,Complex.div_ofReal_re]
+  simp only [spectatorRoot,Complex.div_ofReal_re,Complex.add_re,Complex.ofReal_re,
+    Complex.mul_I_re,Complex.ofReal_im,neg_zero,add_zero]
 
 theorem spectatorRoot_zero (q : Nat.Primes) (g : ℕ+) :
     spectatorFactor q g.val (spectatorRoot q g) = 0 := by
@@ -25,6 +26,7 @@ theorem spectatorRoot_zero (q : Nat.Primes) (g : ℕ+) :
   rw [spectatorFactor,heat,spectatorRoot,neg_mul,div_mul_cancel₀ _ hL,Complex.exp_neg,Complex.exp_add,
     ← Complex.ofReal_exp,Real.exp_log (Nat.cast_pos.mpr g.pos),Complex.exp_pi_mul_I,Complex.ofReal_natCast]
   field_simp
+  exact add_neg_cancel 1
 
 /-- At a finite-factor zero in the strip, the base partition contributes a nonnegative
 order, so the simple spectator zero always produces a pole. -/
@@ -71,9 +73,42 @@ theorem five_two_positive_off_line (D : ℕ+) :
   exact ⟨div_pos hb.1 (spectatorWeight_pos β q 2),
     (div_lt_iff₀ (spectatorWeight_pos β q 2)).mpr (by rw [one_mul]; exact hb.2.trans_le hw)⟩
 
+/-- The measured pole has a zeta contribution exactly when its order exceeds the
+known spectator multiplicity. A coincident simple spectator zero removes one order. -/
+theorem correctedSpectatorPole_iff (p : Nat.Primes) (D : ℕ+) (q : Nat.Primes) (g : ℕ) (z : OpenStrip) :
+    meromorphicOrderAt (continuedSpectatorReturn p D q g) z.val <
+      -(if spectatorFactor q g z.val = 0 then 1 else 0) ↔ riemannZeta z.val = 0 := by
+  rw [← continuedClockReturn_pole_iff p D z,continuedClockReturn_order p D z.property.1,
+    continuedSpectatorReturn_order p D q g z.property.1]
+  lift meromorphicOrderAt riemannZeta z.val to ℤ using meromorphicOrderAt_riemannZeta_ne_top z.val with k
+  by_cases h : spectatorFactor q g z.val = 0
+  · rw [if_pos h]
+    change ((-k-1 : ℤ) : WithTop ℤ) < ((-1 : ℤ) : WithTop ℤ) ↔
+      ((-k : ℤ) : WithTop ℤ) < ((0 : ℤ) : WithTop ℤ)
+    simp only [WithTop.coe_lt_coe]
+    omega
+  · simp only [if_neg h,sub_zero,neg_zero]
+
+/-- Correcting the divisor restores the relative Born criterion for RH at every
+degeneracy. At distinct primes the real measurements determine these germs. -/
+theorem rh_iff_correctedSpectator_born (p : Nat.Primes) (D : ℕ+) (q : Nat.Primes) (g : ℕ) :
+    RiemannHypothesis ↔ ∀ z : OpenStrip,
+      meromorphicOrderAt (continuedSpectatorReturn p D q g) z.val <
+        -(if spectatorFactor q g z.val = 0 then 1 else 0) →
+      ‖meromorphicTrailingCoeffAt (continuedSpectatorReturn p D q g) z.val /
+        meromorphicTrailingCoeffAt (continuedSpectatorReturn p (D+D) q g) z.val - 1‖^2 =
+          ((primeRayLabel p D.val).val:ℝ)⁻¹ := by
+  rw [rh_iff_pole_coefficient_born p D]
+  apply forall_congr'
+  intro z
+  rw [continuedClockReturn_pole_iff,correctedSpectatorPole_iff,returnCoefficient_excess p D z.property.1,
+    spectatorCoefficient_excess p D q g z.property.1]
+
 #print axioms spectatorRoot_re
 #print axioms spectatorRoot_zero
 #print axioms spectator_zero_forces_pole
 #print axioms five_two_positive_off_line
+#print axioms correctedSpectatorPole_iff
+#print axioms rh_iff_correctedSpectator_born
 
 end GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.InverseSpectrum.ShellMixing

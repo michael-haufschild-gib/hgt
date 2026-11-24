@@ -182,6 +182,14 @@ import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PassageMoments.Deriva
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.FirstAscent.ThermodynamicEdges.FirstExit
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.FirstAscent.ThermodynamicEdges.GateResidence
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.FirstAscent.ThermodynamicEdges.GateCost
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.FirstAscent.EnergyMesh.AllErrors
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.FirstAscent.ShortCircuitReplay.VanishingVisit
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.FirstAscent.ShortCircuitReplay.PairedSpan
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrecisionReturns.Winding.DisconnectedDiversity
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrecisionReturns.Winding.Subperiods.PrecisionDate
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrecisionReturns.Winding.Primitive
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrecisionReturns.SpectatorReturns.CrossingDelay
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrecisionReturns.SpectatorReturns.Weighted.PhysicalFloor
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPauliEarlyLateCircuitLaw
 
 /-! # Circuit complexity along static local Hamiltonian trajectories -/

@@ -27,24 +27,28 @@ theorem perturbed_packet_phase {N : ℕ} {S T : Finset (Fin N)} (hd : Disjoint S
     (C : Reg N) (hC : IsSiteSupported T C) (hu : C ∈ unitary _) (t : ℝ) :
     ∃ z : ℂ, ‖z‖=1 ∧ ∀ w, ‖z-(unitaryEvolution K.val t) w w‖ ≤
       ‖unitaryEvolution H.val t-C‖+|t| *‖H.val-(J.val+K.val)‖ := by
-  let V := unitaryEvolution J.val (-t)
-  let U := unitaryEvolution J.val t
-  let X := unitaryEvolution K.val t
+  let V : Reg N := unitaryEvolution J.val (-t)
+  let U : Reg N := unitaryEvolution J.val t
+  let X : Reg N := unitaryEvolution K.val t
   have hinv : V*U=1 := by
     simpa only [V,U,zero_sub,unitaryEvolution,zero_smul,NormedSpace.exp_zero] using
       unitaryEvolution_sub_mul J 0 t
   have huv : V ∈ unitary _ := unitaryEvolution_mem_unitary J.property _
   have hfac : unitaryEvolution (J.val+K.val) t=U*X :=
     unitaryEvolution_add_of_isSiteSupported_disjoint hd.symm hJ hK t
-  obtain ⟨z,hz,h⟩ := spectator_phase hd ((isSiteSupported_unitaryEvolution hJ (-t)).matrix_mul hC)
-    (isSiteSupported_unitaryEvolution hK t) (mul_mem huv hu)
-  refine ⟨z,hz,fun w => (h w).trans ?_⟩
+  have hVC : IsSiteSupported T (V*C) := (isSiteSupported_unitaryEvolution hJ (-t)).matrix_mul hC
+  have hX : IsSiteSupported S X := isSiteSupported_unitaryEvolution hK t
+  have hunit : V*C ∈ unitary (Reg N) := (unitary (Reg N)).mul_mem huv hu
+  obtain ⟨z,hz,h⟩ := spectator_phase (Y:=V*C) (X:=X) hd hVC hX hunit
   have he : V*C-X=V*(C-U*X) := by rw [mul_sub,←mul_assoc,hinv,one_mul]
-  rw [he,CStarRing.norm_mem_unitary_mul _ huv,←hfac,norm_sub_rev C]
+  have hdif : ‖V*C-X‖=‖unitaryEvolution (J.val+K.val) t-C‖ := by
+    rw [he,CStarRing.norm_mem_unitary_mul _ huv,←hfac,norm_sub_rev C]
   have herr := norm_unitaryEvolution_sub_le H.val (J.val+K.val) H.2 (J.2.add K.2) t
-  rw [norm_sub_rev] at herr
-  exact (norm_sub_le_norm_sub_add_norm_sub _ (unitaryEvolution H.val t) _).trans
-    ((add_le_add_right herr _).trans_eq (add_comm ..))
+  refine ⟨z,hz,fun w => (h w).trans ?_⟩
+  rw [hdif]
+  apply (norm_sub_le_norm_sub_add_norm_sub _ (unitaryEvolution H.val t) C).trans
+  rw [norm_sub_rev (unitaryEvolution (J.val+K.val) t) (unitaryEvolution H.val t),add_comm]
+  exact add_le_add le_rfl herr
 
 #print axioms perturbed_packet_phase
 end

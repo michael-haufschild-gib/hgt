@@ -58,7 +58,7 @@ theorem gaussian_bounded_gate_replay :
     have ht' : x/N n=t := by dsimp only [x]; field_simp
     rw [ht'] at hh
     apply hh.trans
-    apply add_le_add_left
+    apply add_le_add_right
     calc x*f n ≤ x*(η/X) := mul_le_mul_of_nonneg_left hf'.le hx
          _ ≤ X*(η/X) := mul_le_mul_of_nonneg_right h hsmall.le
          _ = η := by field_simp

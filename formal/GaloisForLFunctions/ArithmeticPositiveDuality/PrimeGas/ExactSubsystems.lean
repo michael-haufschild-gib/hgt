@@ -1,0 +1,10 @@
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.ExactSubsystems.BoundaryLaw
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.ExactSubsystems.BoundaryLoss
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.ExactSubsystems.DigitClock
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.ExactSubsystems.FiniteCertificate
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.ExactSubsystems.Reflection
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.ExactSubsystems.StridedDigits.Compatibility
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.ExactSubsystems.ThermalZeros
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.ExactSubsystems.VisibilityThreshold.Overlap
+
+/-! # Exact finite subsystems of the arithmetic prime gas -/
