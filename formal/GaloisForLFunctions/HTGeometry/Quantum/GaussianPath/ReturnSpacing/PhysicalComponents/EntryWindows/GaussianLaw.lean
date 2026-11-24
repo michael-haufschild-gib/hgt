@@ -62,7 +62,7 @@ theorem gaussian_scalar_entry_windows (γ α : ℝ) (hγ : 0 ≤ γ) (hγα : γ
   have hx : 0 < x := (physicalArc_spec he.1 he.2).1.1
   let u := h/x
   have hu : 0 < u := div_pos hh hx
-  have hD : 1 ≤ (D:ℝ) := by exact_mod_cast (show 1 ≤ (2:ℕ)^N by positivity)
+  have hD : 1 ≤ (D:ℝ) := by exact_mod_cast (show 1 ≤ (2:ℕ)^N from Nat.two_pow_pos N)
   by_cases hs : h < x
   · obtain ⟨δ,hδ,hd,hy⟩ := inner_arc he rfl hh hs
     have hu' : u ≤ 1 := (div_le_one hx).mpr hs.le

@@ -188,6 +188,8 @@ theorem lefschetz_fixedPoint_finite_etale_correspondence
   rw [Finset.sum_comm]
   simp_rw [fun m => lefschetz_component (h₁ := h₁) (h₂ := h₂) V hVcl hvd hvc hp
     (i₁ m) (i₂ m) (W m) (e₁ m) (e₂ m) S hS M hM p]
-  exact sum_points_clopen W hwd hwc S _
+  exact sum_points_clopen W hwd hwc S (fun y =>
+    (1 + (Polynomial.X : Polynomial k) • (M y).map Polynomial.C).det.coeff p /
+      (1 - M y).det)
 
 end GlobalTheory.T

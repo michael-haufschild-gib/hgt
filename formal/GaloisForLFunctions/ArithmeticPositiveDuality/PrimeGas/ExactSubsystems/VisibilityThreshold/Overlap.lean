@@ -119,6 +119,11 @@ theorem uniformOverlap_iff {β t : ℝ} (hβ : 0 < β) (ht : t ≠ 0) :
     exact div_pos (norm_pos_iff.mpr (riemannZeta_ne_zero_of_one_lt_re (by simpa using h1)))
       (norm_pos_iff.mpr (riemannZeta_ne_zero_of_one_lt_re (by simpa using h1)))
 
+/-- A uniform finite-factor overlap witnesses square summability of the full heat wave. -/
+theorem uniformOverlap_iff_full_wave {β t : ℝ} (hβ : 0 < β) (ht : t ≠ 0) :
+    uniformOverlap β t ↔ Summable (fun n : ℕ+ => ‖heat (thermalPoint β t) n‖^2) := by
+  rw [uniformOverlap_iff hβ ht,summable_heat_sq_iff,thermalPoint_re]
+
 /-- Every finite measurement stays positive even at the threshold where their infimum vanishes. -/
 theorem finite_overlap_pos {β t v : ℝ} (hβ : 0 < β) (hv : v ∈ finiteFactorOverlaps β t) : 0 < v := by
   rw [finiteFactorOverlaps_eq] at hv
@@ -155,6 +160,7 @@ theorem overlap_boundary_iff_isometric {β t : ℝ} (hβ : 0 < β) (ht : t ≠ 0
 #print axioms finiteFactorOverlaps_eq
 #print axioms finite_overlap_infimum
 #print axioms uniformOverlap_iff
+#print axioms uniformOverlap_iff_full_wave
 #print axioms finite_overlap_pos
 #print axioms overlap_boundary_iff_isometric
 

@@ -1,4 +1,5 @@
-import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.IntervalMinima.RecordHeights
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
+import Mathlib.Tactic
 
 /-! # Finite multiplicative mesh for doubly exponential waiting times -/
 
@@ -44,7 +45,7 @@ theorem round_wait {N : ℕ} (hN : 1 ≤ N) (C b : ℕ) {x : ℝ}
     change y ≤ 2*(d:ℝ)*M at h
     rw [mul_assoc,hprod] at h
     have h' : (i:ℝ) < 4*(2:ℝ)^((C+b)*N) := by linarith only [hi',h,hh]
-    have ht : 2+((C+b)*N) ≤ (C+b+2)*N := by rw [Nat.add_mul]; omega
+    have ht : 2+((C+b)*N) ≤ (C+b+2)*N := by rw [Nat.add_mul (C+b) 2 N]; omega
     have hp := pow_le_pow_right₀ (by norm_num : (1:ℝ) ≤ 2) ht
     rw [pow_add,show (2:ℝ)^2=4 by norm_num] at hp
     exact_mod_cast h'.trans_le hp

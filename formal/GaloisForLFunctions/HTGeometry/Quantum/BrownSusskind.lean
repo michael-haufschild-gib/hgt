@@ -19,6 +19,7 @@ import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.CircularArcRange
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.EmptyArcPacking
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.ExactContacts.UniformOccupation
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.ExactContacts.VisitDuration
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.ExactContacts.CoarseVisits.FreeBasisFloor
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.ExactSynthesis.MaximumOccupation
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.GaussianMaximumScale
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.GaussianMaximumQuantiles
@@ -190,6 +191,8 @@ import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrecisionReturns.Wind
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrecisionReturns.Winding.Primitive
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrecisionReturns.SpectatorReturns.CrossingDelay
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrecisionReturns.SpectatorReturns.Weighted.PhysicalFloor
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.ReturnSpacing.PhysicalComponents.EntryWindows.GaussianLaw
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPauliEarlyLateCircuitLaw
 
 /-! # Circuit complexity along static local Hamiltonian trajectories -/
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.IntervalMinima.PrescribedFirst

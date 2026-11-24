@@ -21,6 +21,7 @@ def sourcePartForms (t : Y ⟶ Spec (CommRingCat.of K)) (f : Y ⟶ X) (V : Y.Ope
   (Scheme.Modules.pushforward f).map (relativeFormsPullback (f := V.ι) rfl p) ≫
     (Scheme.Modules.pushforwardComp V.ι f).hom.app (relativeForms (V.ι ≫ t) p)
 
+omit [Fintype J] in
 private theorem sum_app {F G : X.Modules} (S : Finset J) (a : J → (F ⟶ G))
     (U : X.Opens) (x : Γ(F, U)) : (∑ j ∈ S, a j).app U x = ∑ j ∈ S, (a j).app U x := by
   classical
@@ -36,7 +37,8 @@ private theorem sourcePartForms_app_smul (hf : f ≫ s = t) (V : Y.Opens)
     (sourcePartForms t f V p).app U
         (formsOnToSections t p (f ⁻¹ᵁ U) (b • ExteriorDifferentials.map (sectionPullback hf U) p ω)) =
       formsOnToSections (V.ι ≫ t) p ((V.ι ≫ f) ⁻¹ᵁ U)
-        (sectionPullback (f := V.ι) rfl (f ⁻¹ᵁ U) b •
+        ((show SectionRing (V.ι ≫ t) ((V.ι ≫ f) ⁻¹ᵁ U) from
+          sectionPullback (f := V.ι) rfl (f ⁻¹ᵁ U) b) •
           ExteriorDifferentials.map (sectionPullback hg U) p ω) := by
   change (relativeFormsPullback (f := V.ι) (s := t) rfl p).app (f ⁻¹ᵁ U)
       (formsOnToSections t p (f ⁻¹ᵁ U) (b • ExteriorDifferentials.map (sectionPullback hf U) p ω)) = _
@@ -46,6 +48,7 @@ private theorem sourcePartForms_app_smul (hf : f ≫ s = t) (V : Y.Opens)
     ext a
     exact (ConcreteCategory.congr_hom (Scheme.Hom.comp_app V.ι f U) a).symm
   rw [hs]
+  rfl
 
 /-- Trace of forms on the direct image is the sum of the traces after
 restriction to the parts. -/
@@ -60,14 +63,16 @@ theorem relativeFormsTrace_eq_sum_clopen (hf : f ≫ s = t) (W : J → Y.Opens)
   apply moduleHom_ext_affine
   intro U hU x
   obtain ⟨ω, rfl⟩ := (affineFormsSections t p (hU.preimage f)).surjective x
-  refine affineEtaleForms_induction hf hU p
-    (P := fun ω => (relativeFormsTrace hf p).app U (formsOnToSections t p (f ⁻¹ᵁ U) ω) =
-      (∑ j, a j).app U (formsOnToSections t p (f ⁻¹ᵁ U) ω)) ?_ ?_ ?_ ω
-  · simp only [map_zero]
-  · intro u v hu hv
-    simp only [map_add, hu, hv]
+  let F := formsOnToSections t p (f ⁻¹ᵁ U)
+  let L := ((relativeFormsTrace hf p).app U).hom.comp F.toAddMonoidHom
+  let R := ((∑ j, a j).app U).hom.comp F.toAddMonoidHom
+  refine affineEtaleForms_induction hf hU p (P := fun ω => L ω = R ω)
+    (L.map_zero.trans R.map_zero.symm)
+    (fun u v hu hv => by rw [L.map_add, R.map_add, hu, hv]) ?_ ω
   · intro b ξ
-    rw [relativeFormsTrace_app, affineFormTrace_smul_pullback, sum_app]
+    let η := b • ExteriorDifferentials.map (sectionPullback hf U) p ξ
+    change (relativeFormsTrace hf p).app U (F η) = (∑ j, a j).app U (F η)
+    rw [relativeFormsTrace_app hf p hU, affineFormTrace_smul_pullback, sum_app]
     have ht (j : J) :
         (a j).app U
           (formsOnToSections t p (f ⁻¹ᵁ U) (b • ExteriorDifferentials.map (sectionPullback hf U) p ξ)) =
@@ -75,10 +80,11 @@ theorem relativeFormsTrace_eq_sum_clopen (hf : f ≫ s = t) (W : J → Y.Opens)
             (affineSectionTrace (f := (W j).ι ≫ f) s ((W j).ι ≫ t) hU
               (((W j).ι.app (f ⁻¹ᵁ U)).hom b) • ξ) := by
       change (relativeFormsTrace (hg j) p).app U ((sourcePartForms t f (W j) p).app U _) = _
-      rw [sourcePartForms_app_smul hf _ (hg j), relativeFormsTrace_app,
+      rw [sourcePartForms_app_smul hf _ (hg j), relativeFormsTrace_app (hg j) p hU,
         affineFormTrace_smul_pullback]
       rfl
-    simp only [ht, affineSectionTrace_eq_sum_clopen (f := f) W hdis hcov hU b,
+    simp only [affineSectionTrace_eq_sum_clopen (f := f) W hdis hcov hU b,
       Finset.sum_smul, map_sum]
+    exact Finset.sum_congr rfl fun j _ => (ht j).symm
 
 end GlobalTheory.SchemeCohomology

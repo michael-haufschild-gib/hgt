@@ -40,7 +40,7 @@ theorem exists_le_preimage_component {X Y : Scheme} {I : Type*}
   obtain ⟨i, hi⟩ := Opens.mem_iSup.mp hm
   refine ⟨i, fun y hy => ?_⟩
   have hspec : f (W.ι ξ) ⤳ f y :=
-    (genericPoint_specializes (⟨y, hy⟩ : W.toScheme)).map (W.ι ≫ f).continuous
+    (genericPoint_specializes (α := W.toScheme) ⟨y, hy⟩).map (W.ι ≫ f).continuous
   exact closure_minimal (Set.singleton_subset_iff.mpr hi) (hcl i)
     (specializes_iff_mem_closure.mp hspec)
 
@@ -83,6 +83,8 @@ variable {k : Type} [Field k] {X : Scheme.{0}} {I : Type} [Fintype I] [Decidable
   (p q : ℕ) [FiniteDimensional k (HodgeCohomology s p q)]
   [∀ i, FiniteDimensional k (HodgeCohomology ((V i).ι ≫ s) p q)]
   [∀ i, IsClosedImmersion (V i).ι]
+
+include hcl hdis hcov
 
 private theorem clopenTraceBlock (i j : I)
     (T : HodgeCohomology ((V j).ι ≫ s) p q →ₗ[k] HodgeCohomology ((V i).ι ≫ s) p q) :

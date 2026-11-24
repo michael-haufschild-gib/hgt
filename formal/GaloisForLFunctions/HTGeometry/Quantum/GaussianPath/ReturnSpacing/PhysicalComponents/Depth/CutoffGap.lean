@@ -27,7 +27,7 @@ theorem chord_gap {x y : ℝ} (hy : 0≤y) (hyx : y≤x) (hx : x≤1/2) :
     apply le_trans _ hs
     dsimp only [a,b]
     apply le_of_eq
-    field_simp [pi_ne_zero] <;> ring
+    field_simp [pi_ne_zero]
   have hm := mul_le_mul hs' hc (by norm_num : (0:ℝ)≤1/2) (by linarith only [hs',hyx])
   change x-y≤2*sin a-2*sin b
   rw [←mul_sub,sin_sub_sin]
@@ -40,7 +40,9 @@ theorem depth_cutoff_gap {x z w : ℝ} (hx : 0<x) (hsmall : x≤1/2)
     x*exp (-w)*(w-z)/(d:ℝ) ≤ depthCutoff x d z-depthCutoff x d w := by
   let k : ℝ := d
   have hk : 0<k := Nat.cast_pos.mpr hd
-  have hk₁ : 1≤k := by exact_mod_cast hd
+  have hk₁ : 1≤k := by
+    change 1≤(d:ℝ)
+    exact_mod_cast (show 1≤d by omega)
   have hpos : 0≤w := hz.trans hw.le
   have he : exp (-w)≤exp (-w/k) := by
     apply exp_le_exp.mpr
@@ -62,7 +64,9 @@ theorem depth_cutoff_gap {x z w : ℝ} (hx : 0<x) (hsmall : x≤1/2)
     linarith only [h₂,h₃]) hx.le
   dsimp only [A,B]
   change x*exp (-w)*(w-z)/k≤_
-  linarith only [h₄]
+  calc _ = x*(exp (-w)*((w-z)/k)) := by ring
+       _ ≤ x*(exp (-z/k)-exp (-w/k)) := h₄
+       _ = _ := mul_sub ..
 
 #print axioms depth_cutoff_gap
 end

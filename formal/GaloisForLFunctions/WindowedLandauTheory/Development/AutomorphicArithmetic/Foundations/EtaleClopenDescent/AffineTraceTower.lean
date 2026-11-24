@@ -83,41 +83,57 @@ theorem affineFormTrace_trans (hf : f ≫ s = t) (hg : g ≫ t = u) (hgf : (g �
       (sectionPullback hg (f ⁻¹ᵁ U)).comp (sectionPullback hf U) :=
     AlgHom.ext fun a => ConcreteCategory.congr_hom (Scheme.Hom.comp_app g f U) a
   let η := ExteriorDifferentials.map (sectionPullback hf U) p ξ
-  have hmap : ExteriorDifferentials.map (sectionPullback hgf U) p ξ =
-      ExteriorDifferentials.map (sectionPullback hg (f ⁻¹ᵁ U)) p η := by
+  let ζ : FormsOn u ((g ≫ f) ⁻¹ᵁ U) p :=
+    ExteriorDifferentials.map (sectionPullback hg (f ⁻¹ᵁ U)) p η
+  have hmap : ExteriorDifferentials.map (sectionPullback hgf U) p ξ = ζ := by
     exact (congrArg (fun a => ExteriorDifferentials.map a p ξ) he).trans
       (ExteriorDifferentials.map_comp _ _ p ξ)
+  let b' : SectionRing u (g ⁻¹ᵁ (f ⁻¹ᵁ U)) := b
+  let τ := affineSectionTrace (f := g) t u (hU.preimage f) b'
+  have hR : R (b • ζ) = affineSectionTrace (f := f) s t hU τ • ξ :=
+    (congrArg (fun z => affineFormTrace hf hU p z)
+      (affineFormTrace_smul_pullback hg (hU.preimage f) p b' η)).trans
+      (affineFormTrace_smul_pullback hf hU p τ ξ)
   calc
     _ = affineSectionTrace (f := g ≫ f) s u hU b • ξ :=
       affineFormTrace_smul_pullback hgf hU p b ξ
-    _ = affineSectionTrace (f := f) s t hU
-          (affineSectionTrace (f := g) t u (hU.preimage f) b) • ξ :=
+    _ = affineSectionTrace (f := f) s t hU τ • ξ :=
       congrArg (· • ξ) (affineSectionTrace_trans hU b)
-    _ = affineFormTrace hf hU p (affineFormTrace hg (hU.preimage f) p
-          (b • ExteriorDifferentials.map (sectionPullback hg (f ⁻¹ᵁ U)) p η)) := by
-      rw [affineFormTrace_smul_pullback hg, affineFormTrace_smul_pullback hf]
+    _ = R (b • ζ) := hR.symm
     _ = _ := congrArg (fun z => R (b • z)) hmap.symm
+
+private theorem finiteEtaleAlgebraTrace_one_of_bijective {A B : Type*}
+    [CommRing A] [CommRing B] [Algebra A B] [Module.Finite A B] [Algebra.Etale A B]
+    (h : Function.Bijective (algebraMap A B)) : finiteEtaleAlgebraTrace A B 1 = 1 := by
+  letI : Module.FinitePresentation A B := .of_finite_of_finitePresentation A B
+  letI : Module.Projective A B := Module.Flat.projective_of_finitePresentation
+  let e : A ≃ₐ[A] B := AlgEquiv.ofBijective (Algebra.ofId A B) h
+  have hmul : LinearMap.mul A B (1 : B) = e.symm.toLinearMap.smulRight (1 : B) := by
+    apply LinearMap.ext
+    intro b
+    change (1 : B) * b = (e.symm b) • (1 : B)
+    rw [one_mul, Algebra.smul_def, mul_one]
+    exact (e.apply_symm_apply b).symm
+  change projectiveTrace A B (LinearMap.mul A B (1 : B)) = 1
+  rw [hmul, projectiveTrace_rankOne]
+  exact e.symm.map_one
 
 /-- The affine algebra of an identity morphism has trace one. -/
 theorem affineSectionTrace_id_one (s : X ⟶ Spec (CommRingCat.of k))
     {U : X.Opens} (hU : IsAffineOpen U) :
     affineSectionTrace (f := 𝟙 X) s s hU 1 = 1 := by
-  let A := SectionRing s U
   let i : X ⟶ X := 𝟙 X
-  letI : Algebra A A := (i.app U).hom.toAlgebra
-  letI : Module.Finite A A := i.finite_app U hU
-  letI : Algebra.Etale A A := affineSectionAlgebra_etale (s := s) (t := s) (f := 𝟙 X) hU
-  letI : Module.FinitePresentation A A := .of_finite_of_finitePresentation A A
-  letI : Module.Projective A A := Module.Flat.projective_of_finitePresentation
-  have hm (a : A) : algebraMap A A a = a := by
+  let A := SectionRing s U
+  let B := SectionRing s (i ⁻¹ᵁ U)
+  letI : Algebra A B := (i.app U).hom.toAlgebra
+  letI : Module.Finite A B := i.finite_app U hU
+  letI : Algebra.Etale A B := affineSectionAlgebra_etale (s := s) (t := s) (f := i) hU
+  have hm (a : A) : (i.app U).hom a = a := by
     change ((𝟙 X : X ⟶ X).app U).hom a = a
     rw [Scheme.Hom.id_app] <;> rfl
-  have hmul : LinearMap.mul A A (1 : A) = (LinearMap.id : Module.Dual A A).smulRight (1 : A) := by
-    apply LinearMap.ext
-    intro a
-    change (1 : A) * a = a • (1 : A)
-    rw [one_mul, Algebra.smul_def, hm, mul_one]
-  change projectiveTrace A A (LinearMap.mul A A (1 : A)) = 1
-  rw [hmul, projectiveTrace_rankOne, LinearMap.id_apply]
+  have hb : Function.Bijective (algebraMap A B) := by
+    change Function.Bijective (i.app U).hom
+    exact ⟨fun a b h => (hm a).symm.trans (h.trans (hm b)), fun b => ⟨b, hm b⟩⟩
+  exact finiteEtaleAlgebraTrace_one_of_bijective hb
 
 end GlobalTheory.SchemeCohomology

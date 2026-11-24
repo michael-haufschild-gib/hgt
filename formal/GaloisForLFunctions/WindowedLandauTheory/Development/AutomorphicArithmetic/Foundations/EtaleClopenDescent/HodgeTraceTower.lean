@@ -30,7 +30,8 @@ private theorem cohomologyMap_id_top {X : Scheme.{0}} {A : X.Modules}
     CohomologyOn.map (𝟙 A) ⊤ q x = x := by
   let P := SheafOfModules.toSheaf X.ringCatSheaf
   change (x : Ext _ _ q).comp (Ext.mk₀ (P.map (𝟙 A))) (add_zero q) = x
-  rw [Functor.map_id, Ext.comp_mk₀_id]
+  exact (congrArg (fun m => (x : Ext _ _ q).comp (Ext.mk₀ m) (add_zero q))
+    (P.map_id A)).trans ((x : Ext _ _ q).comp_mk₀_id)
 
 variable {k : Type} [CommRing k] {X Y Z : Scheme.{0}}
   {s : X ⟶ Spec (CommRingCat.of k)} {t : Y ⟶ Spec (CommRingCat.of k)}
@@ -90,10 +91,13 @@ theorem hodgeTrace_trans (hf : f ≫ s = t) (hg : g ≫ t = u)
   have hcomp : formsPushforwardEquiv hg p q z' = E (CohomologyOn.map α.hom ⊤ q z) := by
     have h := abelianCohomologyPullback_comp f.base g.base
       (F := A.obj B) (G := Ay.obj G) (L := Az.obj F) (𝟙 _) (𝟙 _) (⊤ : X.Opens) q z
-    rw [Functor.map_id, Category.id_comp] at h
+    have hid : 𝟙 (A.obj B) ≫ T.map (𝟙 (Ay.obj G)) = 𝟙 (A.obj B) :=
+      (congrArg (fun m => 𝟙 (A.obj B) ≫ m) (T.map_id (Ay.obj G))).trans (Category.id_comp _)
+    have h'comp := congrArg
+      (fun m => abelianCohomologyPullback (g.base ≫ f.base) m (⊤ : X.Opens) q z) hid
     have h' := CohomologyOn.pullback_apply (g ≫ f) α.hom ⊤ q z
     rw [hα] at h'
-    exact h.trans h'.symm
+    exact h.trans (h'comp.trans h'.symm)
   let μ := relativeFormsTrace hg p
   let μ' := (Scheme.Modules.pushforward f).map μ
   have hμ : T.map (Ay.map μ) = A.map μ' := by
@@ -115,7 +119,9 @@ theorem hodgeTrace_trans (hf : f ≫ s = t) (hg : g ≫ t = u)
         (E.symm (E (CohomologyOn.map α.hom ⊤ q z))) = _
       rw [E.symm_apply_apply]
     _ = CohomologyOn.map (relativeFormsTrace hf p) ⊤ q (CohomologyOn.map μ' ⊤ q z) := by
-      rw [CohomologyOn.map_comp_top, CohomologyOn.map_comp_top, relativeFormsTrace_trans hf hg hgf p]
+      rw [CohomologyOn.map_comp_top, CohomologyOn.map_comp_top]
+      exact congrArg (fun m : B ⟶ relativeForms s p => CohomologyOn.map m ⊤ q z)
+        (relativeFormsTrace_trans hf hg hgf p)
     _ = hodgeTrace hf p q (CohomologyOn.map μ ⊤ q z') := by
       rw [← hz]
       let E₀ := formsPushforwardEquiv hf p q
@@ -124,10 +130,10 @@ theorem hodgeTrace_trans (hf : f ≫ s = t) (hg : g ≫ t = u)
           (E₀.symm (E₀ (CohomologyOn.map μ' ⊤ q z)))
       rw [E₀.symm_apply_apply]
     _ = _ := by
-      rw [← hcomp]
       let E₁ := formsPushforwardEquiv hg p q
-      change hodgeTrace hf p q (CohomologyOn.map μ ⊤ q z') =
-        hodgeTrace hf p q (CohomologyOn.map μ ⊤ q (E₁.symm (E₁ z')))
-      rw [E₁.symm_apply_apply]
+      have htrace : hodgeTrace hg p q (E₁ z') = CohomologyOn.map μ ⊤ q z' := by
+        change CohomologyOn.map μ ⊤ q (E₁.symm (E₁ z')) = CohomologyOn.map μ ⊤ q z'
+        rw [E₁.symm_apply_apply]
+      exact congrArg (hodgeTrace hf p q) (htrace.symm.trans (congrArg (hodgeTrace hg p q) hcomp))
 
 end GlobalTheory.SchemeCohomology

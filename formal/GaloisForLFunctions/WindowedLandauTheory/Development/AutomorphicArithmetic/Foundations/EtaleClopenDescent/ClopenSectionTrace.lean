@@ -15,6 +15,7 @@ variable {K : Type} [CommRing K] {X Y : Scheme.{0}} {J : Type} [Fintype J]
   {s : X ⟶ Spec (CommRingCat.of K)} {t : Y ⟶ Spec (CommRingCat.of K)}
   {f : Y ⟶ X} [IsFinite f] [Etale f]
 
+omit [Fintype J] in
 private theorem section_partition_bijective (V : Y.Opens) (D : J → Y.Opens)
     (hD : ∀ j, D j ≤ V) (hcov : V ≤ iSup D) (hdis : ∀ i j, i ≠ j → D i ⊓ D j = ⊥) :
     Function.Bijective fun (x : Γ(Y, V)) j => Y.presheaf.map (homOfLE (hD j)).op x := by
@@ -74,8 +75,7 @@ theorem affineSectionTrace_eq_sum_clopen (W : J → Y.Opens)
     rw [Scheme.Hom.image_preimage_eq_opensRange_inf, Scheme.Opens.opensRange_ι]
   have hle (j : J) : D j ≤ V := (hD j).le.trans inf_le_right
   have hDc : V ≤ iSup D := by
-    simp only [hD]
-    rw [← iSup_inf_eq, hcov, top_inf_eq]
+    rw [funext hD, ← iSup_inf_eq, hcov, top_inf_eq]
   have hDd (i j : J) (h : i ≠ j) : D i ⊓ D j = ⊥ := by
     rw [hD, hD, eq_bot_iff, ← hdis i j h]
     exact inf_le_inf inf_le_left inf_le_left

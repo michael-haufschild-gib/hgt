@@ -28,7 +28,8 @@ theorem hodgeClopenEquiv_trace (p q : ℕ) (i : J)
   letI (j : J) : IsClosedImmersion (V j).ι :=
     IsClosedImmersion.of_isPreimmersion _ (by simpa using hclosed j)
   let E := hodgeClopenEquiv s V p q hclosed hdis hcov
-  let z := E.symm (Pi.single i x)
+  let w : ∀ j, HodgeCohomology ((V j).ι ≫ s) p q := Pi.single i x
+  let z := E.symm w
   let pull (j : J) := hodgePullback (s := s) (f := (V j).ι) rfl p q
   let trace (j : J) := hodgeTrace (s := s) (f := (V j).ι) rfl p q
   let hid : (𝟙 X) ≫ s = s := Category.id_comp s
@@ -53,14 +54,19 @@ theorem hodgeClopenEquiv_trace (p q : ℕ) (i : J)
         (Finset.sum_congr rfl (fun j _ => by
           rw [hodgeTrace_congr (Category.comp_id (V j).ι) _ rfl]
           exact congrArg (trace j) (hpull j)))
-  have he (j : J) : pull j z = (Pi.single i x) j :=
-    congrFun (E.apply_symm_apply (Pi.single i x)) j
+  have hE : E z = w := E.apply_symm_apply _
+  have he (j : J) : pull j z = w j := by
+    calc
+      _ = E z j := (hodgeClopenEquiv_apply s V p q hclosed hdis hcov z j).symm
+      _ = _ := congrFun hE j
   have hs : (∑ j, trace j (pull j z)) = trace i x := by
     rw [Finset.sum_eq_single i]
-    · rw [he i, Pi.single_eq_same]
+    · rw [he i, show w i = x from
+        Pi.single_eq_same (M := fun j => HodgeCohomology ((V j).ι ≫ s) p q) i x]
     · intro j _ hj
-      rw [he j, Pi.single_eq_of_ne hj, map_zero]
+      rw [he j, show w j = 0 from
+        Pi.single_eq_of_ne (M := fun j => HodgeCohomology ((V j).ι ≫ s) p q) hj x, map_zero]
     · simp
-  exact (congrArg E (hz.trans hs).symm).trans (E.apply_symm_apply _)
+  exact (congrArg E (hz.trans hs).symm).trans hE
 
 end GlobalTheory.SchemeCohomology

@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.IntervalMinima.LogarithmicGrid
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.IntervalMinima.RecordHeights
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.Detuning.HighPrecision.ScalarWindows
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrecisionReturns.FirstVisit
 
@@ -9,13 +10,19 @@ namespace GaloisForLFunctions.HTGeometry.AccuracyScales.IntervalMinima
 open MaximumIntervals PrecisionReturns
 noncomputable section
 
+/-- Tolerances approached by record minima on the relative-time mesh. -/
+def waitExceptional (ω : PathPauliDisorder) (a : ℕ → ℝ) (C b : ℕ) : Set ℝ :=
+  intervalExceptional ω (fun k _ => a k) (fun k => logMesh (k+3) b)
+    (fun k => (C+b+2)*(k+3))
+
 /-- From any sequence of origins fixed before the tolerance, including
 the first robust crossings, tightening and loosening by the same
 exponential precision give logarithmic first waits within D⁻ᵇ.
 All gate budgets and their actual chronological first visits are included. -/
 theorem gaussian_first_wait_tolerance (b : ℕ) :
-    ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ a : ℕ → ℝ, ∃ E : Set ℝ, dimH E=0 ∧
-      ∀ e > (0:ℝ), e ∉ E → ∃ c : ℕ, ∀ᶠ k : ℕ in atTop,
+    ∃ C : ℕ, ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ a : ℕ → ℝ,
+      let E := waitExceptional ω a C b
+      dimH E=0 ∧ ∀ e > (0:ℝ), e ∉ E → ∃ c : ℕ, ∀ᶠ k : ℕ in atTop,
         let N := k+3
         let H := chainGenerator ω k
         let h := min (e/2) (1/(2:ℝ)^(c*N))
@@ -23,14 +30,16 @@ theorem gaussian_first_wait_tolerance (b : ℕ) :
           let y := firstVisit H (a k) s (e-h)-a k
           x ≤ y ∧ 1+y ≤ (1+x)*exp (1/(2:ℝ)^(b*N)) := by
   obtain ⟨C,hC⟩ := SpectralJets.HighPrecision.gaussian_fine_scalar_windows
+  refine ⟨C,?_⟩
   filter_upwards [hC] with ω hω a
+  intro E
   let M := C+b+2
   let B (k : ℕ) := M*(k+3)
   have hM : 0 < M := by dsimp only [M]; omega
   have hB : StrictMono B := fun i j hij => Nat.mul_lt_mul_of_pos_left (Nat.add_lt_add_right hij 3) hM
   have hn (k : ℕ) : k+3 ≤ B k := Nat.le_mul_of_pos_left _ hM
-  obtain ⟨E,hE,hh⟩ := interval_clearance ω (fun k _ => a k) (fun k => logMesh (k+3) b) B hB hn
-  refine ⟨E,hE,?_⟩
+  obtain ⟨hE,hh⟩ := interval_clearance ω (fun k _ => a k) (fun k => logMesh (k+3) b) B hB hn
+  refine ⟨hE,?_⟩
   intro e he hr
   obtain ⟨q,hq⟩ := hh e he hr
   obtain ⟨K,hK⟩ := exists_nat_gt (1/e)
@@ -72,8 +81,8 @@ theorem gaussian_first_wait_tolerance (b : ℕ) :
     rw [hT]; exact ⟨hv,by change v-a k ≤ T at hxi; linarith only [hxi]⟩
   obtain ⟨z,hz,F,hF,herr⟩ := hfit
   obtain ⟨v',hv',z',hz',F',hF',herr'⟩ := hclear i hi s v hvI
-    ⟨z,hz,F,hF,herr.trans (add_le_add_left hle _)⟩
-  have hwv : w ≤ v' := hlater ⟨hv'.1,z',hz',F',hF',herr'.trans (sub_le_sub_left hle _)⟩
+    ⟨z,hz,F,hF,herr.trans (add_le_add le_rfl hle)⟩
+  have hwv : w ≤ v' := hlater ⟨hv'.1,z',hz',F',hF',herr'.trans (by linarith only [hle])⟩
   have htime : v' ≤ a k+T := hv'.2.trans_eq (congrArg (a k+·) hT)
   change 1+(w-a k) ≤ _
   apply le_trans _ hbound
