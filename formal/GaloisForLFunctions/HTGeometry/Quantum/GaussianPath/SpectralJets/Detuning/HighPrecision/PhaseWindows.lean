@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.Detuning.HighPrecision.Cutoff
-import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.Bounds.ClockGrowth
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.Bounds.ModeMargin.Growth
 
 /-! # A physical phase-filling deadline at inverse-exponential resolution -/
 open Filter MeasureTheory Set Real

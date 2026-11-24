@@ -45,7 +45,9 @@ private theorem real_indicator_tail {X : Type*} [MeasurableSpace X] (μ : Measur
   change A < Q.indicator J x
   exact (indicator_of_mem h J).symm ▸ hx
 
-private theorem ae_cut_travel :
+/-- Two fixed balanced cuts on each sufficiently long prefix delay both
+physical clocks whenever all eighteen cut coefficients are small. -/
+theorem gaussian_two_cut_travel :
     ∀ᶠ k : ℕ in atTop,
       let N := k+3
       let P := nearHilbertContinuousCircuitBudget N
@@ -125,7 +127,7 @@ theorem gaussian_two_weak_bonds_joint_survival :
         (2*gaussianDensityFloor)^18 * (gaussianReal 0 1).real bulk^(cutSet a b)ᶜ.card ≤
           v^18 * μ.real {x | x ∈ retainedSector (cutSet a b) bulk ∧
           v*(1/1800) < min (crossingOrigin (k+1) P (9/80) x) (crossingWait (k+1) P s x)} := by
-  filter_upwards [ae_cut_travel] with k htravel
+  filter_upwards [gaussian_two_cut_travel] with k htravel
   intro N P μ
   obtain ⟨a,b,hab,hgood⟩ := htravel
   refine ⟨a,b,hab,?_⟩

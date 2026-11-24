@@ -138,7 +138,7 @@ theorem gaussian_scalar_probability_deadline {b : ℝ} (hb : 0<b) (hb' : b<1) :
     ((2^((n+2)/2)+2^((n+2)-(n+2)/2):ℕ):ℝ)
   change log b/2 < c/D-E/D*log 256 at hn
   have hprice : log b/2*D < c-E*log 256 := (lt_div_iff₀ hD).mp (by
-    rw [sub_div,mul_div_right_comm]
+    rw [sub_div,mul_div_right_comm E (log 256) D]
     exact hn)
   change c-9*log (1+|t|)-E*log 256 ≤ log (prescribedScalarProbability n t) at hmid
   change log (prescribedScalarProbability n t) ≤ D*log b at hupper

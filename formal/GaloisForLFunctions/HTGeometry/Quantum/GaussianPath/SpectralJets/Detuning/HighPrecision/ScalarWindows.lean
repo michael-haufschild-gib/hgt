@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.Detuning.HighPrecision.PhaseWindows
-import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.TimedReflection
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.Reflections.VariablePrecision
 
 /-! # Uniform physical recurrence to a scalar at inverse-exponential error -/
 open Filter MeasureTheory Set

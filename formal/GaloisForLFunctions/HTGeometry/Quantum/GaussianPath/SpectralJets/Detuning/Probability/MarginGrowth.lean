@@ -26,8 +26,11 @@ theorem high_confidence_margin (count : ℕ → ℕ)
   let h₂ := LogPolynomialInDimension.const 2
   have hcoords : PolynomialInDimension (fun k => Fintype.card (Coordinates (k+3))) := by
     simpa only [Coordinates,Fintype.card_fin] using polynomial_labels
-  have hbox : LogPolynomialInDimension confidenceBox :=
-    h₂.mul ((hD.add (LogPolynomialInDimension.natCast hcoords)).add h₁)
+  have hbox : LogPolynomialInDimension confidenceBox := by
+    change LogPolynomialInDimension (fun k => 2*(((2^(k+3):ℕ):ℝ)+
+      (Fintype.card (Coordinates (k+3)):ℝ)+1))
+    simpa only [Nat.cast_ofNat,Nat.cast_one] using
+      h₂.mul ((hD.add (LogPolynomialInDimension.natCast hcoords)).add h₁)
   let hC := h₁.add ((responseCap_box_log_polynomial _ hbox).mul hD).abs
   let hB := h₁.add (h₂.mul (LogPolynomialInDimension.natCast polynomial_detector_degree))
   have hstrip : LogPolynomialInDimension (fun k => (modeStripPrice (D k) (L k) (count k):ℝ)) := by
@@ -42,7 +45,10 @@ theorem high_confidence_margin (count : ℕ → ℕ)
       ((2:ℝ)^(D k)*(1+(modeStripPrice (D k) (L k) (count k):ℝ)))^(L k) := by
     simp only [confidenceMargin,D,L,div_eq_mul_inv,mul_inv_rev,←inv_pow,inv_inv,one_mul]
     ac_rfl
-  simpa only [he,D,L,Nat.cast_one,Nat.cast_ofNat] using hh
+  change LogPolynomialInDimension (fun k => (confidenceMargin k (count k) (confidenceBox k)
+    ((1/2:ℝ)^(D k)))⁻¹)
+  simp_rw [he]
+  simpa only [D,L,Nat.cast_one,Nat.cast_ofNat] using hh
 
 /-- The same finite family of modes admits a deterministic doubly
 exponential inverse margin and a stated Gaussian exceptional mass. -/
@@ -61,8 +67,8 @@ theorem gaussian_exponential_confidence_margin (S : (k : ℕ) → Finset (Fin (2
   let m := confidenceMargin k (S k).card T η
   have hη : 0<η := pow_pos (by norm_num) _
   have hη' : η≤1 := pow_le_one₀ (by norm_num) (by norm_num)
-  have hm : 0<m := by dsimp only [m,confidenceMargin]; positivity
-  have ht : ((2:ℝ)^(D^c))⁻¹≤m := by
+  have hm : 0 < m := by dsimp only [m,confidenceMargin]; positivity
+  have ht : ((2:ℝ)^(D^c))⁻¹ ≤ m := by
     simpa only [inv_inv] using inv_anti₀ (inv_pos.mpr hm) (hc k)
   have hsub : smallBalancedMode N (S k) ((2:ℝ)^(D^c))⁻¹ ⊆ smallBalancedMode N (S k) m := by
     rintro x ⟨v,hv,h₁,h₂,hl⟩
@@ -71,7 +77,7 @@ theorem gaussian_exponential_confidence_margin (S : (k : ℕ) → Finset (Fin (2
   have hh := gaussian_confidence_margin k (S k) hT hη hη'
   have hb := gaussian_dimension_box (Coordinates N) D
   apply (measure_mono hsub).trans (hh.trans _)
-  apply (add_le_add_right (add_le_add_right hb _) _).trans_eq
+  apply (add_le_add (add_le_add hb (le_refl (ENNReal.ofReal η))) (le_refl (ENNReal.ofReal η))).trans_eq
   rw [←ENNReal.ofReal_add hη.le hη.le,←ENNReal.ofReal_add (add_nonneg hη.le hη.le) hη.le]
   congr 1
   ring

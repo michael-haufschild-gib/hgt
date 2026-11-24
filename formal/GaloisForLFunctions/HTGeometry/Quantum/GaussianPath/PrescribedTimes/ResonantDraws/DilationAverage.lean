@@ -22,7 +22,7 @@ theorem dilation_probability_error {ι : Type*} [Fintype ι] (E : Set (ι → �
   change μ.real Eᶜ ≤ _*μ.real Sᶜ at h₂
   rw [measureReal_compl hE,measureReal_compl hS,probReal_univ] at h₂
   have hmass : μ.real S ≤ 1 := (measureReal_mono (subset_univ S)).trans_eq probReal_univ
-  have hpos := sub_nonneg.mpr (one_le_pow₀ ha (Fintype.card ι))
+  have hpos : 0≤a^Fintype.card ι-1 := sub_nonneg.mpr (one_le_pow₀ ha)
   have hu := mul_le_mul_of_nonneg_left hmass hpos
   have hl := mul_nonneg hpos (show 0≤μ.real S from measureReal_nonneg)
   change μ.real E ≤ _*μ.real S at h₁

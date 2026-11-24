@@ -31,11 +31,15 @@ private theorem IsFinCover.exists_chartPairIdentityFamily (h : IsFinCover k E x)
   have hj : j ∈ I := by simp [I]
   have hi : i ∈ I := by simp [I]
   have hden : (chartDenominator k x I j : F) = x i / x j := by
-    change (∏ l ∈ I, x l / x j) = _
-    simp [I, Finset.prod_insert, hij, div_self (h.pd.ne j)]
-  have hlocal (a : Fin n) : (v a : DR k E) ∈ omB k E (rB k E x I) p :=
-    (mem_omB_chartIntersection_iff (E := E) h.pd hi (v a)).mpr
-      ⟨0, by simpa only [pow_zero, one_smul] using hv a⟩
+    have hni : i ∉ ({j} : Finset (Fin (d + 1))) := by
+      simpa only [Finset.mem_singleton] using hij
+    change (∏ l ∈ insert i ({j} : Finset (Fin (d + 1))), x l / x j) = _
+    rw [Finset.prod_insert hni, Finset.prod_singleton, div_self (h.pd.ne j), mul_one]
+  have hlocal (a : Fin n) : (v a : DR k E) ∈ omB k E (rB k E x I) p := by
+    have hs := hv a
+    change (v a : DR k E) ∈ omB k E (rB k E x {i}) p at hs
+    exact (mem_omB_chartIntersection_iff (E := E) h.pd hi (v a)).mpr
+      ⟨0, by simpa only [pow_zero, one_smul] using hs⟩
   choose N hN using fun a => (mem_omB_chartIntersection_iff (E := E) h.pd hj (v a)).mp (hlocal a)
   let s (a : Fin n) := (x j / x i) ^ N a
   let t (a : Fin n) := (x i / x j) ^ N a
@@ -57,6 +61,9 @@ private theorem IsFinCover.exists_chartPairIdentityFamily (h : IsFinCover k E x)
     rw [← hsum b]
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [map_smul, LinearMap.smul_apply, smul_eq_mul, smul_smul, mul_right_comm (s a), hst, one_mul]
+
+local instance {r : ℕ} : IsScalarTower k F (ExteriorDifferentials k E r) :=
+  IsScalarTower.to₁₂₄ k F E (ExteriorDifferentials k E r)
 
 /-- The diagonal identity admits a tensor representative regular in
 the left and right chart separately. -/

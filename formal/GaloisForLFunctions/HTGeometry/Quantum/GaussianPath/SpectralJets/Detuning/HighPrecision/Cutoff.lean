@@ -1,4 +1,5 @@
-import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.HorizonGrowth
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.PrefixPhaseHorizon
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.FourierPackets.Cardinality
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.Bounds.Growth
 
 /-! # Fourier packet size at growing angular precision -/
@@ -36,7 +37,8 @@ theorem growing_packet_size (ρ : ℕ → ℝ) (hp : ∀ k, 0 < ρ k)
     (((LogPolynomialInDimension.const 16).mul hρ).pow hd)).pow (PolynomialInDimension.const 2)).add
     (LogPolynomialInDimension.const 1)
   have hM : LogPolynomialInDimension (fun k => (M k:ℝ)) :=
-    hb.mono (fun _ => Nat.cast_nonneg _) (fun k => cutoff_bound _ (hp k))
+    hb.mono (fun _ => Nat.cast_nonneg _) (fun k => by
+      simpa only [Nat.cast_ofNat,Nat.cast_one] using cutoff_bound (d k) (hp k))
   have hh := (hM.add (LogPolynomialInDimension.const 1)).pow ((PolynomialInDimension.const 2).mul hd)
   have hF : LogPolynomialInDimension (fun k => ((F k).card:ℝ)) :=
     hh.mono (fun _ => Nat.cast_nonneg _) (fun k => by exact_mod_cast nonconstant_phase_packet_card_le (M k) (d k))

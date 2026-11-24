@@ -2,6 +2,7 @@ import GaloisForLFunctions.HTGeometry.ParametricSpectralBranch
 
 /-! # Identifying spectral branches on restricted parameter families -/
 open Filter Topology
+open scoped ContDiff
 namespace GaloisForLFunctions.HTGeometry.SpectralJets.SpinExtension
 noncomputable section
 variable {P : Type*} [NormedAddCommGroup P] [NormedSpace ℂ P] [CompleteSpace P]
@@ -21,6 +22,7 @@ theorem analytic_simple_root_graph {F : P × ℂ → ℂ} {x : P} {z : ℂ}
     hD.implicitFunction_apply_self hω hI,?_⟩
   simpa only [hz] using hD.eventually_apply_eq_iff_implicitFunction hω hI
 
+omit [NormedSpace ℂ P] [CompleteSpace P] in
 /-- Restricting the graph along a convergent family identifies any continuous
 candidate root satisfying the same equation. -/
 theorem root_graph_restrict {T : Type*} {l : Filter T} {F : P × ℂ → ℂ} {f : P→ℂ}

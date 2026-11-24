@@ -8,7 +8,6 @@ namespace GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.InverseSpectrum
 
 open ContinuousLinearMap InnerProductSpace
 
-
 /-- Coherently add a calibrated amplitude at a known occupation. -/
 def addNative (v : MissingWave) (k : ℕ) (c : ℂ) : MissingWave :=
   ⟨v.val+c • modeWave (number k),fun h => v.property (by

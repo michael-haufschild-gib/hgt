@@ -42,13 +42,13 @@ private theorem ratios_eval (z : ℂ) (M : ℝ) (hM : M ≠ 0) :
   dsimp only
   have hd : 2*(probeIncrement z 1/M+probeIncrement z (-1)/M) = 4/M := by
     simp [probeIncrement]
-    <;> ring
+    ring
   rw [hd]
   constructor <;> apply (div_eq_iff (div_ne_zero (by norm_num : (4:ℝ)≠0) hM)).mpr
   · simp [probeIncrement]
-    <;> ring
+    ring
   · simp [probeIncrement]
-    <;> ring
+    ring
 
 theorem poleScan_coordinate (v : MissingWave) (k : ℕ) (hk : poleReading v ≠ occupationWeight k) :
     (poleScan v k).coordinate (occupationWeight k) = v.val (number k) := by
@@ -82,7 +82,7 @@ theorem poleScan_mass (v : MissingWave) (k : ℕ) (hk : poleReading v ≠ occupa
   have hM := pow_ne_zero 2 (norm_ne_zero_iff.mpr (missingWave_ne_zero v))
   have hi : probeIncrement (v.val (number k)) 1+probeIncrement (v.val (number k)) (-1) = 2 := by
     simp [probeIncrement]
-    <;> ring
+    ring
   simp only [PoleScan.mass,poleScan,readingRatio_eq v k _ hk]
   rw [← add_div,hi]
   field_simp

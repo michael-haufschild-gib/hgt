@@ -30,7 +30,9 @@ theorem response_germ (w : List E) {f g : E → ℂ} {x : E} (h : f =ᶠ[𝓝 x]
     filter_upwards [ih.eventuallyEq_nhds] with y hy
     have ht : Tendsto (fun t : ℂ => y+t • v) (𝓝 0) (𝓝 y) := by
       simpa using (line_deriv y v).continuousAt.tendsto
-    exact (ht.eventually hy).deriv_eq
+    have he : (fun t : ℂ => response w f (y+t • v)) =ᶠ[𝓝 0]
+        (fun t => response w g (y+t • v)) := ht.eventually hy
+    exact he.deriv_eq
 
 theorem response_analytic (w : List E) {f : E → ℂ} {x : E} (hf : AnalyticAt ℂ f x) :
     AnalyticAt ℂ (response w f) x := by
@@ -63,7 +65,7 @@ theorem response_coordinate {ι : Type*} [Fintype ι] [DecidableEq ι]
     response (w.map (fun i => Pi.single i (1:ℂ))) f x = mixed w f x := by
   have h (i : ι) (z : ι → ℂ) (t : ℂ) : z+t • Pi.single i (1:ℂ)=coordLine z i t := by
     funext j
-    by_cases hj : j=i <;> simp [coordLine,Pi.single_apply,hj]
+    by_cases hj : j=i <;> simp [coordLine,hj]
   induction w generalizing x with
   | nil => rfl
   | cons i w ih => simp only [List.map_cons,response,mixed,h,ih]

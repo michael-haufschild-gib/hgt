@@ -28,7 +28,7 @@ theorem gaussian_dimension_box (ι : Type*) [Fintype ι] (D : ℕ) :
   have hh := (measureReal_mono hsub).trans ((measureReal_iUnion_fintype_le A).trans
     (Finset.sum_le_sum (s:=Finset.univ) (fun i _ => hp i)))
   simp only [Finset.sum_const,Finset.card_univ,nsmul_eq_mul] at hh
-  have hm : 0≤m := Nat.cast_nonneg _
+  have hm : 0 ≤ m := Nat.cast_nonneg _
   have hD : (0:ℝ)≤D := Nat.cast_nonneg _
   have h₁ : 2*m ≤ exp (2*m) := (le_add_of_nonneg_right zero_le_one).trans (add_one_le_exp _)
   have h₂ : 2*m-T^2/2 ≤ -(D:ℝ) := by
@@ -37,7 +37,7 @@ theorem gaussian_dimension_box (ι : Type*) [Fintype ι] (D : ℕ) :
   have he : exp (-(D:ℝ)) ≤ (1/2:ℝ)^D := by
     rw [exp_neg,←mul_one (D:ℝ),exp_nat_mul,one_div,inv_pow]
     exact inv_le_inv₀ (by positivity) (by positivity) |>.mpr
-      (pow_le_pow_left₀ (by norm_num) (by simpa using add_one_le_exp (1:ℝ)) D)
+      (pow_le_pow_left₀ (by norm_num) (by linarith only [add_one_le_exp (1:ℝ)]) D)
   apply (ENNReal.toReal_le_toReal (measure_ne_top _ _) ENNReal.ofReal_ne_top).mp
   rw [ENNReal.toReal_ofReal (by positivity)]
   apply hh.trans

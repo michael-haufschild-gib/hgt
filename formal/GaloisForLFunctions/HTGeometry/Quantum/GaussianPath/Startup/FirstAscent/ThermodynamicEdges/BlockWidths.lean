@@ -8,6 +8,8 @@ namespace GaloisForLFunctions.HTGeometry.FirstAscent.ThermodynamicEdges
 open SpectralGapMass.Bulk.PeriodicCuts
 noncomputable section
 
+abbrev Register (N : ℕ) := Matrix (FiniteQubitConfiguration (Fin N)) (FiniteQubitConfiguration (Fin N)) ℂ
+
 /-- Full Hamiltonian for the given onsite fields and bonds. -/
 def shellOperator {n : ℕ} (u : PathShell n) : selfAdjoint (Register (n+2)) :=
   ⟨pathHamiltonian u,isSelfAdjoint_pathHamiltonian u⟩
@@ -15,13 +17,13 @@ def shellOperator {n : ℕ} (u : PathShell n) : selfAdjoint (Register (n+2)) :=
 private theorem supported_sum {N : ℕ} {ι : Type*} (s : Finset ι) (S : ι→Finset (Fin N))
     (H : ι→selfAdjoint (Register N)) (hs : ∀ j, IsSiteSupported (S j) (H j).val) :
     IsSiteSupported (s.biUnion S) (∑ j ∈ s, H j).val := by
-  change IsSiteSupported _ (∑ j ∈ s, (H j).val)
+  rw [AddSubmonoidClass.coe_finsetSum]
   apply sum_induction _ (IsSiteSupported (s.biUnion S)) (fun _ _ => IsSiteSupported.add)
     (IsSiteSupported.zero _)
   exact fun j hj => IsSiteSupported.mono (fun i hi => mem_biUnion.mpr ⟨j,hj,hi⟩) (hs j)
 
-private theorem width_zero (N : ℕ) : circuitHamiltonianSpectralWidth (0 : selfAdjoint (Register N))=0 := by
-  have h := width_disjoint_sum (N:=N) (S:=∅) (T:=∅) disjoint_empty_left
+theorem width_zero (N : ℕ) : circuitHamiltonianSpectralWidth (0 : selfAdjoint (Register N))=0 := by
+  have h := width_disjoint_sum (N:=N) (S:=∅) (T:=∅) (disjoint_empty_left _)
     (0 : selfAdjoint (Register N)) 0 (IsSiteSupported.zero _) (IsSiteSupported.zero _)
   rw [add_zero] at h
   linarith only [h]
@@ -56,7 +58,8 @@ theorem cut_width_error {n : ℕ} (L : ℕ) (u : PathShell n) :
     | none => simp [piece,h]
     | some b => simp [piece,h]
   have hmat : H.val-(∑ b,K b).val=pathHamiltonian w := by
-    change pathHamiltonianLM n u-(∑ b,pathHamiltonianLM n (piece L u b))=pathHamiltonianLM n _
+    rw [AddSubmonoidClass.coe_finsetSum]
+    change pathHamiltonianLM n u-(∑ b,pathHamiltonianLM n (piece L u b))=pathHamiltonianLM n (u-∑ b, piece L u b)
     rw [map_sub,map_sum]
   have hm : ‖H.val-(∑ b,K b).val‖ ≤ ∑ l ∈ labels L none, |u l| := by
     rw [hmat,pathHamiltonian_eq_sum,labels,sum_filter]

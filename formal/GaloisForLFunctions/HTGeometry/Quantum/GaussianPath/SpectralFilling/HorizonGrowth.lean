@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.PrefixPhaseHorizon
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralFilling.FourierPackets.Cardinality
 
 /-! # Size of the all-labelings phase-filling horizon -/
 open Real
@@ -18,12 +19,6 @@ private theorem cutoff_fixed_radius_le (d : ℕ) : phaseCubeFourierCutoff d (1/8
   rw [← pow_mul,← pow_add,← pow_mul]
   congr 1
   omega
-
-/-- Each phase coordinate contributes a pair of Fourier indices between zero and the cutoff. -/
-theorem nonconstant_phase_packet_card_le (M d : ℕ) : (nonconstantPacketIndexSet M d).card ≤ (M+1)^(2*d) := by
-  apply (Finset.card_le_card (Finset.sdiff_subset : nonconstantPacketIndexSet M d ⊆ _)).trans_eq
-  simp only [Fintype.card_piFinset,Finset.card_product,Finset.card_range,Finset.prod_const,Finset.card_univ,Fintype.card_fin]
-  rw [← sq,← pow_mul]
 
 private theorem lifted_mass_le {D d M : ℕ} (e : Fin D ≃ Fin (d+1)) (p : Fin d → ℕ × ℕ)
     (hp : p ∈ nonconstantPacketIndexSet M d) : ∑ i, |(liftedPhaseMode e p i:ℝ)| ≤ 2*(d:ℝ)*M := by

@@ -8,7 +8,7 @@ namespace GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.InverseSpectrum
 
 private theorem opposite_increments (z : ℂ) : probeIncrement z 1+probeIncrement z (-1) = 2 := by
   simp [probeIncrement]
-  <;> ring
+  ring
 
 /-- All references in one mode are silent exactly at that mode's native level. -/
 theorem all_references_silent_iff (v : MissingWave) (k : ℕ) :

@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.DisjointPacketSpectrum
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.FirstAscent.EnergyMesh.DisjointLevels
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.CircuitCellAverage
 
 /-! # Energy widths under perturbations and disjoint sums -/
@@ -39,25 +39,6 @@ theorem width_add_le {N : ℕ} (H K : selfAdjoint (Reg N)) :
   rw [ha,hb] at hl
   linarith only [hh,hl]
 
-private theorem sum_level {N : ℕ} {S T : Finset (Fin N)} (hd : Disjoint S T)
-    {X Y : Reg N} (hX : IsSiteSupported S X) (hY : IsSiteSupported T Y)
-    (hx : X.IsHermitian) (hy : Y.IsHermitian) (i j : Fin N→Bool) :
-    ∃ k, (hx.add hy).eigenvalues k=hx.eigenvalues i+hy.eigenvalues j := by
-  classical
-  obtain ⟨B,rfl⟩ := exists_liftLocalMatrix_of_isSiteSupported hX
-  obtain ⟨C,rfl⟩ := exists_liftLocalMatrix_of_isSiteSupported hY
-  have hb := isHermitian_of_isHermitian_liftLocalMatrix S hx
-  have hc := isHermitian_of_isHermitian_liftLocalMatrix T hy
-  have hi : hx.eigenvalues i ∈ range hb.eigenvalues :=
-    range_eigenvalues_liftLocalMatrix S hb ▸ mem_range_self i
-  have hj : hy.eigenvalues j ∈ range hc.eigenvalues :=
-    range_eigenvalues_liftLocalMatrix T hc ▸ mem_range_self j
-  obtain ⟨a,ha⟩ := hi
-  obtain ⟨b,hb'⟩ := hj
-  change _ ∈ range (hx.add hy).eigenvalues
-  rw [range_eigenvalues_add_liftLocalMatrix_disjoint hd hb hc (hx.add hy)]
-  exact ⟨(a,b),congrArg₂ (·+·) ha hb'⟩
-
 /-- The extreme energy gaps of disjoint registers can be realized
 simultaneously. -/
 theorem width_disjoint_sum_lower {N : ℕ} {S T : Finset (Fin N)} (hd : Disjoint S T)
@@ -71,8 +52,8 @@ theorem width_disjoint_sum_lower {N : ℕ} {S T : Finset (Fin N)} (hd : Disjoint
   obtain ⟨b,_,hb⟩ := Finset.exists_mem_eq_inf' Finset.univ_nonempty E
   obtain ⟨c,_,hc⟩ := Finset.exists_mem_eq_sup' Finset.univ_nonempty F
   obtain ⟨d,_,hd'⟩ := Finset.exists_mem_eq_inf' Finset.univ_nonempty F
-  obtain ⟨u,hu⟩ := sum_level hd hH hK H.2.isHermitian K.2.isHermitian a c
-  obtain ⟨v,hv⟩ := sum_level hd hH hK H.2.isHermitian K.2.isHermitian b d
+  obtain ⟨u,hu⟩ := disjoint_sum_level hd hH hK H.2.isHermitian K.2.isHermitian a c
+  obtain ⟨v,hv⟩ := disjoint_sum_level hd hH hK H.2.isHermitian K.2.isHermitian b d
   change G u=E a+F c at hu
   change G v=E b+F d at hv
   change (Finset.univ.sup' _ E-Finset.univ.inf' _ E)+(Finset.univ.sup' _ F-Finset.univ.inf' _ F) ≤

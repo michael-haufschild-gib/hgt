@@ -54,7 +54,7 @@ theorem dilation_interval_limit {A : Set ℝ} (hA : MeasurableSet A) (p : ℝ)
   change b*(M (b*t)/(b*t))-M t/t=_
   rw [dilation_interval_volume A 1 b ht,one_mul,hsum]
   field_simp
-  <;> ring
+  ring
 
 #print axioms dilation_interval_limit
 end

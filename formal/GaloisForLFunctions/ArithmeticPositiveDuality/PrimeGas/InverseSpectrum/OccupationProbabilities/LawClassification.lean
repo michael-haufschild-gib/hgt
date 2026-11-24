@@ -26,7 +26,7 @@ private theorem sqrt_mass_sq (μ : ExteriorLaw) (n : ℕ+) : ‖(Real.sqrt (μ.v
 
 /-- The canonical representative has real, nonnegative occupation amplitudes. -/
 def lawVector (μ : ExteriorLaw) : Gas := gasOfCoords (fun k => (Real.sqrt (μ.val (number k)):ℂ))
-  (μ.property.2.1.summable.congr (fun k => (sqrt_mass_sq μ _).symm))
+  (μ.property.2.1.summable.congr (fun k => (sqrt_mass_sq μ (number k)).symm))
 
 theorem lawVector_apply (μ : ExteriorLaw) (n : ℕ+) : lawVector μ n = (Real.sqrt (μ.val n):ℂ) := by
   obtain ⟨k,rfl⟩ := number_surjective n
@@ -69,5 +69,6 @@ def exteriorLawEquivPhysicalSpectrum : ExteriorLaw ≃ ↥(physicalSpectra 1) :=
 #print axioms lawVector_norm_sq
 #print axioms lawOmission_probability
 #print axioms spectrumFromLaw_bijective
+#print axioms exteriorLawEquivPhysicalSpectrum
 
 end GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.InverseSpectrum.ShellMixing

@@ -13,7 +13,8 @@ private theorem tail_ratio_limit (v : MissingWave) (N : ℕ) :
     Tendsto (fun m : ℕ => ∑' k, (occupationWeight (k+N)/occupationWeight N)^m*heatedMass v (k+N))
       atTop (𝓝 (heatedMass v N)) := by
   let g (k : ℕ) := if k = 0 then heatedMass v N else 0
-  have hg : ∑' k, g k = heatedMass v N := by rw [tsum_eq_single 0 (fun k hk => if_neg hk)]; simp only [g,if_pos rfl]
+  have hg : ∑' k, g k = heatedMass v N :=
+    (tsum_eq_single 0 (fun k hk => show g k = 0 from if_neg hk)).trans (show g 0 = heatedMass v N from if_pos rfl)
   rw [← hg]
   apply tendsto_tsum_of_dominated_convergence ((summable_nat_add_iff N).mpr (heatedMass_sum v).summable)
   · intro k
@@ -30,8 +31,9 @@ private theorem tail_ratio_limit (v : MissingWave) (N : ℕ) :
     have hr : 0 ≤ occupationWeight (k+N)/occupationWeight N := (div_pos (occupationWeight_pos _) (occupationWeight_pos _)).le
     have hu : occupationWeight (k+N)/occupationWeight N ≤ 1 :=
       (div_le_one (occupationWeight_pos N)).mpr (occupationWeight_antitone (Nat.le_add_left _ _))
-    rw [Real.norm_of_nonneg (mul_nonneg (pow_nonneg hr _) (sq_nonneg _))]
-    exact mul_le_of_le_one_left (sq_nonneg _) (pow_le_one₀ hr hu)
+    have hm : 0 ≤ heatedMass v (k+N) := sq_nonneg _
+    rw [Real.norm_of_nonneg (mul_nonneg (pow_nonneg hr m) hm)]
+    exact mul_le_of_le_one_left hm (pow_le_one₀ hr hu)
 
 /-- Subtract the already resolved labels and divide by the current heat level to isolate one Born mass. -/
 theorem heatedMass_from_moments (v : MissingWave) (N : ℕ) :
