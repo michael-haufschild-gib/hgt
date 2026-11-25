@@ -162,7 +162,7 @@ lemma differentiableOn_cglPrimitiveFunctionalFactor_re_lt_one
 /-- Polynomial vertical growth of `cglLemma62PrimitiveFunctionalFactor P` off the real axis across
 any strip `α ≤ Re z ≤ 1 / 2`. -/
 lemma exists_strip_poly_growth_cglPrimitiveFunctionalFactor
-    (P : _root_.RHTower.CGLLemma62PrimitiveCharacter) (α : ℝ) (hα : α ≤ 1 / 2) :
+    (P : _root_.RHTower.CGLLemma62PrimitiveCharacter) (α : ℝ) (_hα : α ≤ 1 / 2) :
     ∃ (T₀ : ℝ) (N : ℕ) (C : ℝ), 0 ≤ C ∧
       ∀ z : ℂ, α ≤ z.re → z.re ≤ 1 / 2 → T₀ ≤ |z.im| →
         ‖_root_.RHTower.cglLemma62PrimitiveFunctionalFactor P z‖ ≤ C * (1 + |z.im|) ^ N := by
@@ -402,8 +402,8 @@ private lemma dirichletReflectedTerm_left_two_integrable_and_summable
     have hker : ‖smoothAFEGaussianKernel w‖ ≤ (Real.exp 4 / 2) * Real.exp (-(v ^ (2 : ℕ))) := by
       rw [smoothAFEGaussianKernel, norm_div, Complex.norm_exp]
       have hw_re_sq : (w ^ 2).re = 4 - v ^ (2 : ℕ) := by
-        simp [w, pow_two]
-        ring
+        dsimp only [w]
+        norm_num [pow_two, Complex.mul_re, Complex.mul_im]
       have hwnorm : (2 : ℝ) ≤ ‖w‖ := by
         have h := Complex.abs_re_le_norm w
         have hre : |w.re| = 2 := by simp [w]
@@ -1287,9 +1287,7 @@ theorem dirichletDualGaussianCoeff_eq_neg_factor_mul_add_criticalLine
     rw [conj_linePt]
     unfold linePt
     dsimp only [z]
-    apply Complex.ext
-    · simp; ring
-    · simp; ring
+    apply Complex.ext <;> simp
   rw [hkx]
   calc (k : ℂ) ^ (-(1 - s)) *
           (_root_.RHTower.cglLemma62PrimitiveFunctionalFactor P (linePt (s.im + v)) *
@@ -1415,7 +1413,8 @@ theorem twisted_vaughan_dual_band_eq_offLine_add_criticalLine
       exact (hpref_int.1.mul (continuous_const.mul hk_c).aestronglyMeasurable)
     · rw [norm_mul (pref v), norm_mul (P.character⁻¹ k * ((vaughanDualBilinear U V k : ℝ) : ℂ)),
         ← Complex.ofReal_natCast k, Complex.norm_cpow_eq_rpow_re_of_pos hk_pos,
-        show (-conj (linePt (s.im + v))).re = -(1 / 2 : ℝ) by rw [conj_linePt]; unfold linePt; simp]
+        show (-conj (linePt (s.im + v))).re = -(1 / 2 : ℝ) by
+          rw [conj_linePt]; unfold linePt; simp; norm_num]
       dsimp only [B_k]
       exact (by ring : ‖pref v‖ * (‖P.character⁻¹ k * ((vaughanDualBilinear U V k : ℝ) : ℂ)‖ *
         (k : ℝ) ^ (-(1 / 2 : ℝ))) = B_k * ‖pref v‖).le
@@ -1504,14 +1503,16 @@ theorem typeIIShort_smooth_mul_rough_eq_zero
           omega
         exact hnot_s (Nat.mem_divisors.mpr ⟨hcop.dvd_of_dvd_mul_right hdsr, by omega⟩)
       · rw [_root_.RHTower.Sieve.truncAF_apply, if_neg hdW]
-  have hmoeb_int : (∑ d ∈ s.divisors, ArithmeticFunction.moebius d) = 0 := by
-    have hzm : ((ArithmeticFunction.zeta : ArithmeticFunction ℤ) * ArithmeticFunction.moebius) s =
-        (1 : ArithmeticFunction ℤ) s := by rw [ArithmeticFunction.zeta_mul_moebius]
-    rw [ArithmeticFunction.coe_zeta_mul_apply, ArithmeticFunction.one_apply,
-      if_neg (by omega : s ≠ 1)] at hzm
-    exact hzm
   have hmoeb_zero : (∑ d ∈ s.divisors, ((ArithmeticFunction.moebius d : ℤ) : ℝ)) = 0 := by
-    exact_mod_cast hmoeb_int
+    have hzm : ((ArithmeticFunction.zeta : ArithmeticFunction ℝ) *
+        (ArithmeticFunction.moebius : ArithmeticFunction ℝ)) s =
+        (1 : ArithmeticFunction ℝ) s := by
+      rw [mul_comm]
+      exact congrArg (fun f : ArithmeticFunction ℝ => f s)
+        ArithmeticFunction.coe_moebius_mul_coe_zeta
+    rw [ArithmeticFunction.coe_zeta_mul_apply, ArithmeticFunction.one_apply,
+      if_neg (by omega : ¬ s = 1)] at hzm
+    exact hzm
   rw [hsum_eq, hmoeb_zero, sub_zero]
 
 /-- **Exact smooth-times-rough annihilation law for `vaughanDualBilinear U V`:**
@@ -1954,15 +1955,21 @@ theorem LSeries_rough_divisors_sub_two_eq_sq
           dsimp only [f₂]
           rw [if_pos ⟨by omega, hr1⟩, if_pos ⟨by omega, hr2⟩, mul_one]
         rw [← Finset.sum_sdiff hE_sub, hsum_E, add_zero, Finset.sum_congr rfl hpt_sdiff]
-        have hcount_split :
-            (∑ _p ∈ k₀.divisorsAntidiagonal \ E, (1 : ℂ)) + (∑ _p ∈ E, (1 : ℂ)) =
-              ∑ _p ∈ k₀.divisorsAntidiagonal, (1 : ℂ) := Finset.sum_sdiff hE_sub
-        have hcount_E : (∑ _p ∈ E, (1 : ℂ)) = 2 := by
-          dsimp only [E]; rw [Finset.sum_pair hpair_ne]; norm_num
-        have hcount_all : (∑ _p ∈ k₀.divisorsAntidiagonal, (1 : ℂ)) = (k₀.divisors.card : ℂ) := by
-          simp [_root_.RHTower.Sieve.card_divisorsAntidiagonal]
+        have hcard_sdiff :
+            (∑ _p ∈ k₀.divisorsAntidiagonal \ E, (1 : ℂ)) = (k₀.divisors.card : ℂ) - 2 := by
+          have h1 :
+              (∑ _p ∈ k₀.divisorsAntidiagonal \ E, (1 : ℂ)) + (∑ _p ∈ E, (1 : ℂ)) =
+                ∑ _p ∈ k₀.divisorsAntidiagonal, (1 : ℂ) := Finset.sum_sdiff hE_sub
+          have h2 : (∑ _p ∈ E, (1 : ℂ)) = 2 := by
+            dsimp only [E]; rw [Finset.sum_pair hpair_ne]; norm_num
+          have h3 : (∑ _p ∈ k₀.divisorsAntidiagonal, (1 : ℂ)) = (k₀.divisors.card : ℂ) := by
+            rw [Finset.sum_const, _root_.RHTower.Sieve.card_divisorsAntidiagonal, nsmul_eq_mul,
+              mul_one]
+          rw [h2, h3] at h1
+          linear_combination h1
+        rw [hcard_sdiff]
         push_cast
-        linear_combination -hcount_split + hcount_E + hcount_all
+        ring
       · rw [if_neg (fun h => hrough h.2)]
         symm
         refine Finset.sum_eq_zero fun p hp => ?_
@@ -2084,7 +2091,16 @@ theorem endpointExponent_roughened_le_max_three_corners
   have hw1 : 0 ≤ (6 / 5) * δ * (1 - 2 * x) := mul_nonneg (by linarith) (by linarith)
   have hw2 : 0 ≤ (12 / 5) * δ * x := mul_nonneg (by linarith) hx0
   rw [endpointExponent_roughened_three_corner_identity]
-  nlinarith
+  calc (1 - (6 / 5) * δ) * endpointExponent lx ly ℓ σ₀ 0 0 (roughenedRowCount 0 0 u₀) +
+          ((6 / 5) * δ * (1 - 2 * x)) *
+            endpointExponent lx ly ℓ σ₀ (5 / 6) 0 (roughenedRowCount (5 / 6) 0 u₀) +
+          ((12 / 5) * δ * x) *
+            endpointExponent lx ly ℓ σ₀ (5 / 6) (5 / 12) (roughenedRowCount (5 / 6) (1 / 2) u₀)
+      ≤ (1 - (6 / 5) * δ) * B + ((6 / 5) * δ * (1 - 2 * x)) * B + ((12 / 5) * δ * x) * B :=
+        add_le_add
+          (add_le_add (mul_le_mul_of_nonneg_left hc0 hw0) (mul_le_mul_of_nonneg_left hc1 hw1))
+          (mul_le_mul_of_nonneg_left hc2 hw2)
+    _ = B := by ring
 
 /-- Parametric optimal slot scale `ℓ(u₀) = (35 u₀ - 4) / (36 + 63 u₀)` of the `u₀`-roughened LP. -/
 def roughenedOptSlot (u₀ : ℝ) : ℝ := (35 * u₀ - 4) / (36 + 63 * u₀)
@@ -2114,80 +2130,103 @@ theorem roughened_LP_breaks_farkas_barrier_of_gt_threshold
     (∀ {δ q : ℝ}, 5 / 6 ≤ δ → δ ≤ 1 → q ≤ δ / 2 →
       0 ≤ ℓ ∧ endpointExponent lx ly ℓ (lowBoundaryGen lx ly ℓ) δ q (1 - δ) ≤ 0) := by
   dsimp only
-  set den : ℝ := 36 + 63 * u₀
-  have hden_pos : 0 < den := by dsimp only [den]; linarith
-  have hden_ne : den ≠ 0 := hden_pos.ne'
-  set ℓ : ℝ := roughenedOptSlot u₀
-  set lx : ℝ := roughenedOptLx u₀
-  set ly : ℝ := roughenedOptLy u₀
-  have hℓ_pos : 0 < ℓ := by
-    dsimp only [ℓ, roughenedOptSlot]; exact div_pos (by linarith) hden_pos
-  have hℓ_le : ℓ ≤ 1 / 5 := by
-    dsimp only [ℓ, roughenedOptSlot]
-    rw [div_le_iff₀ hden_pos]; dsimp only [den]; linarith
-  have hlx_le_ly : lx ≤ ly := by
-    dsimp only [lx, ly, roughenedOptLx, roughenedOptLy]; linarith
-  have hsum1 : lx + ly + ℓ - 1 = 0 := by
-    dsimp only [lx, ly, roughenedOptLx, roughenedOptLy]; ring
-  have hlb_eq : lowBoundaryGen lx ly ℓ = 11 / 12 - ℓ / 4 := by
-    unfold lowBoundaryGen
-    rw [max_eq_right (by linarith : 0 ≤ ly - lx), hsum1, max_self]
-    dsimp only [lx, ly, roughenedOptLx, roughenedOptLy]
-    ring
-  have hlb_lt : lowBoundaryGen lx ly ℓ < 40535 / 46328 := by
-    rw [hlb_eq]
-    dsimp only [ℓ, roughenedOptSlot]
-    have hgt : 5797 / 34746 < (35 * u₀ - 4) / den := by
-      rw [lt_div_iff₀ hden_pos]; dsimp only [den]; linarith
+  have hden_pos : 0 < 36 + 63 * u₀ := by linarith
+  have hrel : (36 + 63 * u₀) * roughenedOptSlot u₀ = 35 * u₀ - 4 := by
+    unfold roughenedOptSlot
+    exact mul_div_cancel₀ (35 * u₀ - 4) hden_pos.ne'
+  have hℓ_pos : 0 < roughenedOptSlot u₀ := by
+    unfold roughenedOptSlot
+    exact div_pos (by linarith) hden_pos
+  have hℓ_le : roughenedOptSlot u₀ ≤ 1 / 5 := by
+    unfold roughenedOptSlot
+    rw [div_le_iff₀ hden_pos]
     linarith
-  have hc0 : endpointExponent lx ly ℓ (11 / 12 - ℓ / 4) 0 0 (roughenedRowCount 0 0 u₀) = 0 := by
-    unfold endpointExponent roughenedRowCount
-    dsimp only [lx, ly, roughenedOptLx, roughenedOptLy]
+  have hlx_le_ly : roughenedOptLx u₀ ≤ roughenedOptLy u₀ := by
+    unfold roughenedOptLx roughenedOptLy
+    linarith
+  have hlb_eq : lowBoundaryGen (roughenedOptLx u₀) (roughenedOptLy u₀) (roughenedOptSlot u₀) =
+      11 / 12 - roughenedOptSlot u₀ / 4 := by
+    rw [lowBoundaryGen_eq_of_le _ hlx_le_ly]
+    unfold lowBoundary roughenedOptLx roughenedOptLy
+    rw [show (13 * roughenedOptSlot u₀ - 1) / 4 + (5 - 17 * roughenedOptSlot u₀) / 4 +
+        roughenedOptSlot u₀ - 1 = 0 by ring, max_self]
     ring
-  have hc2 : endpointExponent lx ly ℓ (11 / 12 - ℓ / 4) (5 / 6) (5 / 12)
+  have hlb_lt :
+      lowBoundaryGen (roughenedOptLx u₀) (roughenedOptLy u₀) (roughenedOptSlot u₀) <
+        40535 / 46328 := by
+    rw [hlb_eq]
+    have hgt : 5797 / 34746 < roughenedOptSlot u₀ := by
+      unfold roughenedOptSlot
+      rw [lt_div_iff₀ hden_pos]
+      linarith
+    linarith
+  have hc0 : endpointExponent (roughenedOptLx u₀) (roughenedOptLy u₀) (roughenedOptSlot u₀)
+      (11 / 12 - roughenedOptSlot u₀ / 4) 0 0 (roughenedRowCount 0 0 u₀) = 0 := by
+    unfold endpointExponent roughenedRowCount roughenedOptLx roughenedOptLy
+    ring
+  have hc2 : endpointExponent (roughenedOptLx u₀) (roughenedOptLy u₀) (roughenedOptSlot u₀)
+      (11 / 12 - roughenedOptSlot u₀ / 4) (5 / 6) (5 / 12)
       (roughenedRowCount (5 / 6) (1 / 2) u₀) = 0 := by
-    unfold endpointExponent roughenedRowCount
-    dsimp only [lx, ly, ℓ, roughenedOptLx, roughenedOptLy, roughenedOptSlot, den] at hden_ne ⊢
-    field_simp [hden_ne]
-    ring
-  have hc1 : endpointExponent lx ly ℓ (11 / 12 - ℓ / 4) (5 / 6) 0
+    unfold endpointExponent roughenedRowCount roughenedOptLx roughenedOptLy
+    linear_combination (5 / 108 : ℝ) * hrel
+  have hc1 : endpointExponent (roughenedOptLx u₀) (roughenedOptLy u₀) (roughenedOptSlot u₀)
+      (11 / 12 - roughenedOptSlot u₀ / 4) (5 / 6) 0
       (roughenedRowCount (5 / 6) 0 u₀) ≤ 0 := by
-    have hid : den * endpointExponent lx ly ℓ (11 / 12 - ℓ / 4) (5 / 6) 0
-        (roughenedRowCount (5 / 6) 0 u₀) = (140 - 415 * u₀) / 12 := by
-      unfold endpointExponent roughenedRowCount
-      dsimp only [lx, ly, ℓ, roughenedOptLx, roughenedOptLy, roughenedOptSlot, den] at hden_ne ⊢
-      field_simp [hden_ne]
-      ring
-    nlinarith
-  refine ⟨hlb_lt, fun hδ0 hδ hx0 hx => ?_, fun hδ0 hδ1 hq => ⟨hℓ_pos.le, ?_⟩⟩
+    have hid : (36 + 63 * u₀) *
+        endpointExponent (roughenedOptLx u₀) (roughenedOptLy u₀) (roughenedOptSlot u₀)
+          (11 / 12 - roughenedOptSlot u₀ / 4) (5 / 6) 0
+          (roughenedRowCount (5 / 6) 0 u₀) = (140 - 415 * u₀) / 12 := by
+      unfold endpointExponent roughenedRowCount roughenedOptLx roughenedOptLy
+      linear_combination (5 / 6 + 15 * u₀ / 4) * hrel
+    have hprod_np : (36 + 63 * u₀) *
+        endpointExponent (roughenedOptLx u₀) (roughenedOptLy u₀) (roughenedOptSlot u₀)
+          (11 / 12 - roughenedOptSlot u₀ / 4) (5 / 6) 0
+          (roughenedRowCount (5 / 6) 0 u₀) ≤ 0 := by
+      rw [hid]; linarith
+    exact nonpos_of_mul_nonpos_right hprod_np hden_pos
+  refine ⟨hlb_lt, fun hδ0 hδ hx0 hx => ?_, fun {δ q} hδ0 _hδ1 hq => ⟨hℓ_pos.le, ?_⟩⟩
   · rw [hlb_eq]
     exact endpointExponent_roughened_le_max_three_corners hδ0 hδ hx0 hx hc0.le hc1 hc2.le
   · rw [hlb_eq]
-    have hmono_q : endpointExponent lx ly ℓ (11 / 12 - ℓ / 4) δ q (1 - δ) ≤
-        endpointExponent lx ly ℓ (11 / 12 - ℓ / 4) δ (δ / 2) (1 - δ) := by
+    have hdiff_q :
+        endpointExponent (roughenedOptLx u₀) (roughenedOptLy u₀) (roughenedOptSlot u₀)
+          (11 / 12 - roughenedOptSlot u₀ / 4) δ q (1 - δ) -
+        endpointExponent (roughenedOptLx u₀) (roughenedOptLy u₀) (roughenedOptSlot u₀)
+          (11 / 12 - roughenedOptSlot u₀ / 4) δ (δ / 2) (1 - δ) =
+        -(δ / 2 - q) * roughenedOptSlot u₀ := by
       unfold endpointExponent
-      nlinarith [mul_nonneg (sub_nonneg.mpr hq) hℓ_pos.le]
-    have hid_hi : den * endpointExponent lx ly ℓ (11 / 12 - ℓ / 4) δ (δ / 2) (1 - δ) =
-        -(42 * δ) * (1 - 2 * u₀) := by
-      unfold endpointExponent
-      dsimp only [lx, ly, ℓ, roughenedOptLx, roughenedOptLy, roughenedOptSlot, den] at hden_ne ⊢
-      field_simp [hden_ne]
       ring
-    have hprod_np : den * endpointExponent lx ly ℓ (11 / 12 - ℓ / 4) δ (δ / 2) (1 - δ) ≤ 0 := by
+    have hmono_q :
+        endpointExponent (roughenedOptLx u₀) (roughenedOptLy u₀) (roughenedOptSlot u₀)
+          (11 / 12 - roughenedOptSlot u₀ / 4) δ q (1 - δ) ≤
+        endpointExponent (roughenedOptLx u₀) (roughenedOptLy u₀) (roughenedOptSlot u₀)
+          (11 / 12 - roughenedOptSlot u₀ / 4) δ (δ / 2) (1 - δ) := by
+      have hnn : 0 ≤ (δ / 2 - q) * roughenedOptSlot u₀ :=
+        mul_nonneg (by linarith) hℓ_pos.le
+      linarith
+    have hid_hi :
+        endpointExponent (roughenedOptLx u₀) (roughenedOptLy u₀) (roughenedOptSlot u₀)
+          (11 / 12 - roughenedOptSlot u₀ / 4) δ (δ / 2) (1 - δ) =
+        ((3 / 4) * δ) * (5 * roughenedOptSlot u₀ - 1) := by
+      unfold endpointExponent roughenedOptLx roughenedOptLy
+      ring
+    have hhi_np :
+        endpointExponent (roughenedOptLx u₀) (roughenedOptLy u₀) (roughenedOptSlot u₀)
+          (11 / 12 - roughenedOptSlot u₀ / 4) δ (δ / 2) (1 - δ) ≤ 0 := by
       rw [hid_hi]
-      exact mul_nonpos_of_nonpos_of_nonneg (by linarith) (by linarith)
-    nlinarith
+      exact mul_nonpos_of_nonneg_of_nonpos (by linarith) (by linarith)
+    exact hmono_q.trans hhi_np
 
 /-- **Explicit strictly-negative `u₀ = 3 / 7` certificate at `σ₀ = 131 / 150 < 40535 / 46328`
 (reflected `ζ`-wall `19 / 150 > 3001 / 24000`):**
 at `(lx, ly, ℓ) = (19 / 60, 51 / 100, 13 / 75)`, `lowBoundary = lowBoundaryGen = 131 / 150`,
-`probeThetaGen 6 = 443 / 500 < 8999 / 10000`, `tupleExponent_reflectedAllowance ≤ 0`, and
+`probeThetaGen 6 = 112 / 125 < 8999 / 10000`, `tupleExponent_reflectedAllowance ≤ 0`, and
 `endpointExponent ≤ -(1 / 900)` across all `[0, 5 / 6] × [0, 1 / 2]` and `≤ -(49 / 600)` across
 all `[5 / 6, 1]` (plus `rowExponent` negativity across `d ≤ 257 / 300 + ζ`). -/
 theorem roughened_three_sevenths_certificate :
     lowBoundary (19 / 60) (51 / 100) (13 / 75) = 131 / 150 ∧
     lowBoundaryGen (19 / 60) (51 / 100) (13 / 75) = 131 / 150 ∧
-    probeThetaGen 6 (19 / 60) (51 / 100) (13 / 75) = 443 / 500 ∧
+    probeThetaGen 6 (19 / 60) (51 / 100) (13 / 75) = 112 / 125 ∧
     (131 / 150 : ℝ) < 40535 / 46328 ∧
     (131 / 150 : ℝ) < 8733458561 / 10000000000 ∧
     (3001 / 24000 : ℝ) < 1 - 131 / 150 ∧
@@ -2204,15 +2243,9 @@ theorem roughened_three_sevenths_certificate :
     rw [show (19 : ℝ) / 60 + 51 / 100 + 13 / 75 - 1 = 0 by ring, max_self]
     norm_num
   have hlb_gen : lowBoundaryGen (19 / 60) (51 / 100) (13 / 75) = 131 / 150 := by
-    unfold lowBoundaryGen
-    rw [max_eq_right (by norm_num : (0 : ℝ) ≤ 51 / 100 - 19 / 60),
-      show (19 : ℝ) / 60 + 51 / 100 + 13 / 75 - 1 = 0 by ring, max_self]
-    norm_num
-  have htheta : probeThetaGen 6 (19 / 60) (51 / 100) (13 / 75) = 443 / 500 := by
-    unfold probeThetaGen
-    rw [max_eq_right (by norm_num : (0 : ℝ) ≤ 51 / 100 - 19 / 60),
-      show (19 : ℝ) / 60 + 51 / 100 + 13 / 75 - 1 = 0 by ring, max_self]
-    norm_num
+    rw [lowBoundaryGen_eq_of_le (13 / 75) (by norm_num), hlb]
+  have htheta : probeThetaGen 6 (19 / 60) (51 / 100) (13 / 75) = 112 / 125 := by
+    norm_num [probeThetaGen]
   refine ⟨hlb, hlb_gen, htheta, by norm_num, by norm_num, by norm_num,
     fun hd => tupleExponent_reflectedAllowance_nonpos hd (by norm_num),
     fun {δ x d ζ} hδ0 hδ hx0 hx hζ hd => ?_,
@@ -2227,13 +2260,14 @@ theorem roughened_three_sevenths_certificate :
   have hsl_lo : 73 / 300 ≤ roughenedRowCount δ x (3 / 7) + δ / 2 - 17 / 50 := by
     have hge : 1 - δ ≤ roughenedRowCount δ x (3 / 7) := by
       unfold roughenedRowCount
-      have h1 : (4 / 9) * δ * x ≤ (2 / 9) * δ := by nlinarith
+      have h1 : (4 / 9) * δ * x ≤ (4 / 9) * δ * (1 / 2) :=
+        mul_le_mul_of_nonneg_left hx (by linarith)
       linarith
     linarith
   have hsl_hi : roughenedRowCount δ x (3 / 7) + δ / 2 - 17 / 50 ≤ 2 := by
     have hle : roughenedRowCount δ x (3 / 7) ≤ 1 := by
       unfold roughenedRowCount
-      have h1 : 0 ≤ (4 / 9) * δ * x := by positivity
+      have h1 : 0 ≤ (4 / 9) * δ * x := mul_nonneg (by linarith) hx0
       have h2 : 0 ≤ δ * (2 - 8 * x / 9) * (3 / 7) :=
         mul_nonneg (mul_nonneg hδ0 (by linarith)) (by norm_num)
       linarith
@@ -2250,8 +2284,8 @@ theorem roughened_three_sevenths_certificate :
   · have hnp : (d - 257 / 300) * (roughenedRowCount δ x (3 / 7) + δ / 2 - 17 / 50) ≤ 0 :=
       mul_nonpos_of_nonpos_of_nonneg (by linarith) (by linarith)
     linarith
-  · have hbd : (d - 257 / 300) * (roughenedRowCount δ x (3 / 7) + δ / 2 - 17 / 50) ≤ 2 * ζ := by
-      nlinarith
+  · have hbd : (d - 257 / 300) * (roughenedRowCount δ x (3 / 7) + δ / 2 - 17 / 50) ≤ ζ * 2 :=
+      mul_le_mul (by linarith) hsl_hi (by linarith) (by linarith)
     linarith
 
 /-- **Full sub-square-root roughening (`u₀ = 1 / 2`) collapses `roughenedRowCount` to `1 - δ`

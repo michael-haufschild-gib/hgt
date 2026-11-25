@@ -62,10 +62,12 @@ theorem cube_gen_of_projective (hA : IsAbelianScheme A) (hproj : IsProjOver A.ho
     let j := hV.fromSpec
     let b := j ≫ A.hom
     let B := (Over.pullback b).obj A
+    letI : GrpObj B := inferInstanceAs (GrpObj ((Over.pullback b).obj A))
     let f := (B ⊗ B).hom
     obtain ⟨q, H, hq₁, hq₂⟩ := exists_cube_chart A j
     haveI : IsOpenImmersion j := hV.isOpenImmersion_fromSpec
     have hB : IsAbelianScheme B := hA.pullback b
+    letI : IsCommMonObj B := hB.comm
     have hBproj : IsProjOver B.hom := by
       obtain ⟨α, hα⟩ := Spec.map_surjective b
       apply isProjOver_baseChange α.hom (π := pullback.fst A.hom b) (f := A.hom)
@@ -77,12 +79,7 @@ theorem cube_gen_of_projective (hA : IsAbelianScheme A) (hproj : IsProjOver A.ho
     have hproj' : IsProjOver f := isProjOver_product hprod hBproj hBproj
     let N := M.pull q
     have hN : N.IsLB := hM.pull q
-    have hf := hB.tensor hB
-    haveI := hf.smooth
-    haveI := hf.proper
-    haveI := hf.geomConnected
-    haveI : GeometricallyIntegral f :=
-      geometricallyIntegral_of_quasiCompact_of_smooth_of_geometricallyConnected f
+    haveI := (hB.tensor hB).smooth
     obtain ⟨P⟩ := nonempty_perfectSections_of_projective f hN hproj'
     obtain ⟨Q⟩ := nonempty_perfectSections_of_projective f (dual_isLB hN) hproj'
     have hone : (1 : B ⟶ B).left ≫ pullback.fst A.hom b = (B.hom ≫ b) ≫ η[A].left :=
@@ -100,7 +97,7 @@ theorem cube_gen_of_projective (hA : IsAbelianScheme A) (hproj : IsProjOver A.ho
       rw [Category.assoc, hq₁, ← Category.assoc, ← Over.comp_left, lift_fst]
       exact hone
     refine ⟨T, inferInstance, j, inferInstance, x, _, q, f, hx, H,
-      isClosed_triviality_locus hN P Q, ?_⟩
+      (isClopen_fieldFibreTriviality hB hN P Q h₁ h₂).1, ?_⟩
     rintro y ⟨K, _, α, Y, π, g, hker, H₀, ht₀⟩
     obtain ⟨r, hr, u, hu⟩ := trivial_on_basicOpen_of_trivial_fibre hB hN P h₁ h₂ α H₀ ht₀
     exact ⟨r, by rw [← hker]; exact hr, u, hu⟩)

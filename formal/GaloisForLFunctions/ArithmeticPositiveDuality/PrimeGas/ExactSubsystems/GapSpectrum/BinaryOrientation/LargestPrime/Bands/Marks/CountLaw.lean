@@ -22,18 +22,18 @@ theorem count_characteristic (c d : ℝ) (h : Ioi (0:ℝ)) (s t : ℝ) :
   rw [charFun_finiteAtomicObserverSpectrum _ _ (fun x => (weight_pos _ _ x).le),jointMoment]
   apply Finset.sum_congr rfl
   intro x _
-  simp only [zero_mul,Complex.exp_zero,mul_one,← Complex.exp_nat_mul,Complex.ofReal_natCast]
+  simp only [zero_mul,Complex.exp_zero,mul_one,← Complex.exp_nat_mul,Complex.ofReal_mul,Complex.ofReal_natCast]
   congr 2
   ring
 
 theorem constant_exponent (c d a : ℝ) (w : ℂ) :
     exponent c d a (fun _ => w) = (w-1)*(VacuumCalibration.mass c d a:ℂ) := by
   rw [exponent,VacuumCalibration.mass,← intervalIntegral.integral_ofReal,← intervalIntegral.integral_const_mul]
-  exact intervalIntegral.integral_congr fun v _ => by rw [Complex.ofReal_div]; ring
+  exact intervalIntegral.integral_congr fun v _ => by simp only [tilt,Complex.ofReal_div]; ring
 
 theorem mass_nonneg {c d : ℝ} (hc : 0 < c) (hcd : c ≤ d) (a : ℝ) :
     0 ≤ VacuumCalibration.mass c d a :=
-  intervalIntegral.integral_nonneg hcd fun v hv => div_nonneg (Real.exp_pos _).le (hc.trans_le hv.1).le
+  intervalIntegral.integral_nonneg hcd fun _ hv => div_nonneg (Real.exp_pos _).le (hc.trans_le hv.1).le
 
 /-- Poisson counting law embedded by the usual natural-number count observable. -/
 def poissonCount (r : ℝ≥0) : ProbabilityMeasure ℝ := ⟨Po(ℝ, r), inferInstance⟩

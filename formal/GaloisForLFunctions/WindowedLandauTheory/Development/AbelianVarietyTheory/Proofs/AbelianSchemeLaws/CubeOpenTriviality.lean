@@ -45,6 +45,9 @@ private theorem lifts_trivialization
   let q := Spec.map (CommRingCat.ofHom α)
   let i := Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span {ε})))
   let B := (Over.pullback q).obj A
+  letI : GrpObj B := inferInstanceAs (GrpObj ((Over.pullback q).obj A))
+  have hB : IsAbelianScheme B := hA.pullback q
+  letI : IsCommMonObj B := hB.comm
   let b := pφ₂ q A
   let g := (B ⊗ B).hom
   have H : IsPullback b g f q := pφ₂_isPullback q A
@@ -57,20 +60,24 @@ private theorem lifts_trivialization
     rw [← Category.assoc, pullback.lift_fst, Category.assoc, H.isoPullback_hom_fst]
   obtain ⟨v, hv⟩ := pull_trivial hj ht
   obtain ⟨t, ht⟩ := exists_gen_nested_pull hL b F hv
+  have hid : (Over.pullback q).map (𝟙 A) = 𝟙 B := (Over.pullback q).map_id A
+  have hone : (Over.pullback q).map (1 : A ⟶ A) = (1 : B ⟶ B) := (Over.pullback q).map_one
   have haxis₁ : Trivial ((L.pull b).pull (lift (𝟙 B) (1 : B ⟶ B)).left) := by
     have h : (lift (𝟙 B) (1 : B ⟶ B)).left ≫ b =
         pφ q A ≫ (lift (𝟙 A) (1 : A ⟶ A)).left := by
-      simpa only [Functor.map_id, Functor.map_one] using lift_pφ₂ q A (𝟙 A) (1 : A ⟶ A)
+      have e := congrArg₂ (fun u v : B ⟶ B => (lift u v).left ≫ b) hid hone
+      exact e.symm.trans (lift_pφ₂ q A (𝟙 A) (1 : A ⟶ A))
     obtain ⟨w, hw⟩ := pull_trivial h.symm h₁
     exact exists_gen_nested_pull hL b _ hw
   have haxis₂ : Trivial ((L.pull b).pull (lift (1 : B ⟶ B) (𝟙 B)).left) := by
     have h : (lift (1 : B ⟶ B) (𝟙 B)).left ≫ b =
         pφ q A ≫ (lift (1 : A ⟶ A) (𝟙 A)).left := by
-      simpa only [Functor.map_id, Functor.map_one] using lift_pφ₂ q A (1 : A ⟶ A) (𝟙 A)
+      have e := congrArg₂ (fun u v : B ⟶ B => (lift u v).left ≫ b) hone hid
+      exact e.symm.trans (lift_pφ₂ q A (1 : A ⟶ A) (𝟙 A))
     obtain ⟨w, hw⟩ := pull_trivial h.symm h₂
     exact exists_gen_nested_pull hL b _ hw
   have htB : Trivial (L.pull b) :=
-    SmallExtension.exists_gen_of_small_extension (hA.pullback q) (hL.pull b) hann hε
+    SmallExtension.exists_gen_of_small_extension hB (hL.pull b) hann hε
       (IsPullback.of_hasPullback g i) t ht haxis₁ haxis₂
   exact pull_trivial H.isoPullback_inv_fst htB
 

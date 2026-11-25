@@ -1,4 +1,8 @@
-import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.BoundaryField.FirstReturnDates
+import Mathlib.Analysis.Real.Pi.Bounds
+import Mathlib.Data.Int.Interval
+import Mathlib.Tactic.FieldSimp
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.Positivity
 
 /-! # Translating a short forecast window into finitely many spectral gap tests -/
 
@@ -33,9 +37,9 @@ theorem winding_forecast {T L x : ℝ} (hT : 0<T) (hL : 0≤L) (hx : x∈Icc (0:
   intro v g n hv ht hg he
   have h₁ : (2*π)*((n:ℝ)+x)=g*v := ((eq_div_iff hv.ne').mp he).symm
   have h₂ : |(n:ℝ)+x|≤(T+1)*L := calc
-    _ ≤ |2*π|*|(n:ℝ)+x| := le_mul_of_one_le_left (abs_nonneg _) (by
+    _ ≤ |2*π| * |(n:ℝ)+x| := le_mul_of_one_le_left (abs_nonneg _) (by
       rw [abs_of_pos two_pi_pos]; linarith only [pi_gt_three])
-    _ = |g|*v := by rw [←abs_mul,h₁,abs_mul,abs_of_pos hv]
+    _ = |g| * v := by rw [←abs_mul,h₁,abs_mul,abs_of_pos hv]
     _ ≤ L*(T+1) := mul_le_mul hg (by linarith only [(abs_le.mp ht).2]) hv.le hL
     _ = _ := mul_comm _ _
   have hM := Nat.le_ceil ((T+1)*L+1)
@@ -47,7 +51,7 @@ theorem winding_forecast {T L x : ℝ} (hT : 0<T) (hL : 0≤L) (hx : x∈Icc (0:
   have hl : -(M:ℤ)≤n := by exact_mod_cast (abs_le.mp hn).1
   have hu : n≤(M:ℤ) := by exact_mod_cast (abs_le.mp hn).2
   refine ⟨Finset.mem_Icc.mpr ⟨hl,hu⟩,?_⟩
-  have hfrac : (2*π)*((n:ℝ)+x)/T-g=g/T*(v-T) := by rw [h₁]; field_simp [hT.ne'] <;> ring
+  have hfrac : (2*π)*((n:ℝ)+x)/T-g=g/T*(v-T) := by rw [h₁]; field_simp [hT.ne']
   rw [hfrac,abs_mul,abs_div,abs_of_pos hT]
   exact mul_le_mul_of_nonneg_right (div_le_div_of_nonneg_right hg hT.le) (abs_nonneg _)
 

@@ -14,7 +14,7 @@ whole gap determinant, with just one small factor. -/
 theorem gap_determinant_bound (H : Matrix I I ℂ) (h : H.IsHermitian) (b L : ℝ)
     (hL : ∀ i, |h.eigenvalues i|≤L) (i j : I) :
     ‖(Matrix.scalar (I × I) (b:ℂ)-gapOperator H).det‖ ≤
-      |b-(h.eigenvalues i-h.eigenvalues j)|*(1+|b|+2*max L 0)^(Fintype.card I^2) := by
+      |b-(h.eigenvalues i-h.eigenvalues j)| * (1+|b|+2*max L 0)^(Fintype.card I^2) := by
   classical
   let M := 1+|b|+2*max L 0
   have hM : 1≤M := by dsimp only [M]; linarith only [abs_nonneg b,le_max_right L 0]
@@ -62,7 +62,7 @@ theorem gap_small_window (A Z : Matrix I I ℂ) (hH : ∀ y : ℝ, (A+(y:ℂ) �
     rw [mul_right_comm,div_mul_cancel₀ _ hM.ne']
     exact mul_le_mul_of_nonneg_left (pow_le_pow_of_le_one hr.1.le hr.2 hdeg) hp.le
   exact (measureReal_mono hsub).trans ((gaussian_polynomial_sublevel P r hr.1.le).trans
-    (by gcongr))
+    (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left (Nat.cast_le.mpr hdeg) (by norm_num)) hr.1.le))
 
 #print axioms gap_small_window
 end

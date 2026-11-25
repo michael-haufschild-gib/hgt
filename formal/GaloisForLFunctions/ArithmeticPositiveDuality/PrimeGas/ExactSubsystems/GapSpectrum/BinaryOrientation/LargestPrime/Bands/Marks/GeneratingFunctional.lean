@@ -57,9 +57,10 @@ theorem reading_eq (c d a : ℝ) (h : Ioi (0:ℝ)) (f : ℝ → ℂ) :
          rw [finiteSquarefreeBornWeight_eq,Complex.ofReal_div,heat_product,div_mul_eq_mul_div,
            ← Finset.prod_mul_distrib]
        _ = _ := by
-         rw [subset_sum,hZ,euler,← Finset.prod_coe_sort S (fun p =>
+         rw [subset_sum,hZ]
+         apply congrArg (fun n : ℂ => n/euler c d h (tilt a))
+         rw [euler,← Finset.prod_coe_sort S (fun p =>
            1+f (location h p)*tilt a (location h p)/(p.val:ℂ))]
-         congr 1
          apply Finset.prod_congr rfl
          intro p _
          unfold g s
@@ -87,6 +88,7 @@ theorem reading_limit {c d : ℝ} (hc : 0 < c) (hcd : c < d) (a : ℝ) (f : ℝ 
     apply intervalIntegral.integral_congr
     intro v _
     ring
+  simp only [Pi.mul_apply] at H
   rw [he] at H
   exact H.congr (fun h => (reading_eq c d a h f).symm)
 

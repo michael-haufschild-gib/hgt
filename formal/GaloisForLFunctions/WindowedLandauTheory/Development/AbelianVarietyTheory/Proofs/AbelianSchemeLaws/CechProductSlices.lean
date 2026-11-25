@@ -78,7 +78,7 @@ theorem exists_coboundary_of_pointed_product (H : IsPullback p q f g)
     exact (ConcreteCategory.bijective_of_isIso (q.app U)).2
   obtain ⟨χ, hχ⟩ := glue_splittings_of_slice hq hb hc ρ₂ hρ₂
     (exists_splitting_on_strip H hg hy ha ha' B₀ hB₀ hc hφ ρ₁ hρ₁)
-  refine ⟨fun i => resG Z inf_le_right (χ i), fun i j => ?_⟩
+  refine ⟨fun i => resG Z (le_inf le_top le_rfl : V i ≤ ⊤ ⊓ V i) (χ i), fun i j => ?_⟩
   have h := hχ i j (V i ⊓ V j) le_top inf_le_left inf_le_right
   simpa only [resG_self, resG_resG] using h
 

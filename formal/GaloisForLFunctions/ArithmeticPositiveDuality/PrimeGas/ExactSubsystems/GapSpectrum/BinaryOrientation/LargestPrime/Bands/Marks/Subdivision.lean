@@ -73,7 +73,7 @@ private theorem right_packet {c b d : ℝ} (hcb : c ≤ b) (h : Ioi (0:ℝ)) :
 /-- Both count coordinates are read from a single occupation configuration on the union. -/
 def pairedCount {c b d : ℝ} (hbd : b ≤ d) (h : Ioi (0:ℝ)) (s : ℝ) : ProbabilityMeasure (ℝ × ℝ) :=
   observed (added c d h) s fun x =>
-    let y := splitBits (left_subset hbd h) x
+    let y := splitBits (left_subset (c := c) hbd h) x
     (((squarefreeOccupationFinset y.1).card:ℝ),((squarefreeOccupationFinset y.2).card:ℝ))
 
 theorem pairedCount_eq {c b d : ℝ} (hcb : c ≤ b) (hbd : b ≤ d) (h : Ioi (0:ℝ)) (s : ℝ) :

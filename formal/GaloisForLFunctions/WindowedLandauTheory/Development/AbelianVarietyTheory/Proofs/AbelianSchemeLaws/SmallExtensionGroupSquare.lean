@@ -68,15 +68,19 @@ theorem exists_gen_of_small_extension
   obtain ⟨u, α, hu, h⟩ := exists_local_lifts H (hann ε hε) t ht W c hle haff
   by_cases hzero : ε = 0
   · refine exists_gen_of_refinement hL W hc c hle u hu fun i j => ?_
-    simpa only [hzero, map_zero, zero_mul, add_zero, mul_one] using h i j
+    have e := h i j
+    simp only [hzero, map_zero, zero_mul, add_zero] at e
+    exact e.trans (mul_one _)
   let K := IsLocalRing.ResidueField R
   let φ := Spec.map (CommRingCat.ofHom (IsLocalRing.residue R))
   let q := Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span {ε})))
   let A₀ := (Over.pullback φ).obj A
+  letI : GrpObj A₀ := inferInstanceAs (GrpObj ((Over.pullback φ).obj A))
   let f₀ := (A₀ ⊗ A₀).hom
   let π₀ := pφ₂ φ A
   have H₀ : IsPullback π₀ f₀ p φ := pφ₂_isPullback φ A
   have hA₀ : IsAbelianScheme A₀ := hA.pullback φ
+  letI : IsCommMonObj A₀ := hA₀.comm
   haveI := hA₀.proper
   haveI : CompactSpace A₀.left := QuasiCompact.compactSpace_of_compactSpace A₀.hom
   haveI : A₀.left.IsSeparated := ⟨by rw [← terminal.comp_from A₀.hom]; infer_instance⟩
@@ -123,10 +127,14 @@ theorem exists_gen_of_small_extension
   have ha' : s ≫ (snd A₀ A₀).left = A₀.hom ≫ y := by
     have e := congrArg Over.Hom.left (lift_snd (𝟙 A₀) (1 : A₀ ⟶ A₀))
     exact e
+  have hid : (Over.pullback φ).map (𝟙 A) = 𝟙 A₀ := (Over.pullback φ).map_id A
+  have hone : (Over.pullback φ).map (1 : A ⟶ A) = (1 : A₀ ⟶ A₀) := (Over.pullback φ).map_one
   have ha₀ : s ≫ π₀ = pφ φ A ≫ (lift (𝟙 A) (1 : A ⟶ A)).left := by
-    simpa only [Functor.map_id, Functor.map_one] using lift_pφ₂ φ A (𝟙 A) (1 : A ⟶ A)
+    have e := congrArg₂ (fun u v : A₀ ⟶ A₀ => (lift u v).left ≫ π₀) hid hone
+    exact e.symm.trans (lift_pφ₂ φ A (𝟙 A) (1 : A ⟶ A))
   have hb₀ : t₀ ≫ π₀ = pφ φ A ≫ (lift (1 : A ⟶ A) (𝟙 A)).left := by
-    simpa only [Functor.map_id, Functor.map_one] using lift_pφ₂ φ A (1 : A ⟶ A) (𝟙 A)
+    have e := congrArg₂ (fun u v : A₀ ⟶ A₀ => (lift u v).left ≫ π₀) hone hid
+    exact e.symm.trans (lift_pφ₂ φ A (1 : A ⟶ A) (𝟙 A))
   have haxis₁ := hslice (lift (𝟙 A) 1) (fst A A) (lift_fst _ _) v₁ hv₁ s ha₀
   have haxis₂ := hslice (lift 1 (𝟙 A)) (snd A A) (lift_snd _ _) v₂ hv₂ t₀ hb₀
   obtain ⟨β, hβ⟩ := GlobalTheory.CechOne.exists_coboundary_of_pointed_product hprod hf₀ hy ha ha' hb
