@@ -23,11 +23,14 @@ local notation "D" => GrSum.grading (twistSections_commute f M ⊤ s)
 local notation "G" => fun I => gradedTwistSections f M (V I) s
 local notation "E" => fun I => GrSum.grading (twistSections_commute f M (V I) s)
 
+include hM hH in
 private theorem isLocalized_coverInter (I : Finset ι) :
     IsLocalizedModule.Away (xProd R I) (gradedTwistSections_res f M s (le_top : V I ≤ ⊤)) := by
+  let T (W : X.Opens) : Prop := IsLocalizedModule.Away (xProd R I)
+    (gradedTwistSections_res f M s (le_top : W ≤ ⊤))
   have e : V I = nonzeroLocus (sectionProduct s I) := by
     simp only [coverInter, top_inf_eq, Finset.inf_eq_iInf, nonzeroLocus_sectionProduct hH]
-  simpa only [e] using isLocalizedModule_gradedTwistSections f hM hH s I
+  exact (congrArg T e.symm).mp (isLocalizedModule_gradedTwistSections f hM hH s I)
 
 private def chartLoc (I : Finset ι) : LocalizedModule.Away (xProd R I) B ≃ₗ[MvPolynomial ι R] G I :=
   letI := isLocalized_coverInter f hM hH s I
@@ -68,7 +71,7 @@ private theorem chartLoc_restrict {I J : Finset ι} (h : I ⊆ J)
   obtain ⟨k, b, rfl⟩ := ModuleFraction.exists_frac z
   suffices he : e.symm (ρ (chartLoc f hM hH s I (ModuleFraction.frac (xProd R I) k b))) =
       ModuleFraction.restrict (xProd_dvd R h) (ModuleFraction.frac (xProd R I) k b) by
-    exact (e.apply_symm_apply _).symm.trans (congrArg e he) |>.symm
+    exact (congrArg e he).symm.trans (e.apply_symm_apply _)
   let a := xProd R I
   have hu := (ModuleFraction.isUnit_smul_of_dvd (M := B) (xProd_dvd R h)).pow k
   rw [← map_pow] at hu
@@ -110,5 +113,48 @@ private theorem chartPiece_natural {I J : Finset ι} (h : I ⊆ J) (z : homLoc D
   apply GrSum.of_injective (twistSections_commute f M (V J) s) 0
   rw [chartPiece_apply, ← gradedTwistSections_res_of s (coverInter_anti h), chartPiece_apply]
   exact chartLoc_restrict f hM hH s h z.1
+
+variable [DecidableEq ι] [LinearOrder ι]
+
+private def untwistPiece (I : Finset ι) :
+    letI := sectionDatumModule f (toMod M) U I
+    TwistSections f M H (V I) 0 ≃ₗ[R] (sectionDatum (toMod M) U).obj I := by
+  letI := sectionDatumModule f (toMod M) U I
+  letI := sectionAlgebra f (V I)
+  let e := (zeroTwistEquiv (V := V I) hM hH).symm
+  exact { e.toAddEquiv with
+    map_smul' r z := e.map_smul (algebraMap R Γ(X, V I) r) z }
+
+private theorem untwistPiece_natural {I J : Finset ι} (h : I ⊆ J)
+    (z : TwistSections f M H (V I) 0) :
+    (sectionDatum (toMod M) U).res h (untwistPiece f hM hH s I z) =
+      untwistPiece f hM hH s J (twistSections_res f M (coverInter_anti h : V J ≤ V I) 0 z) := by
+  let eI := zeroTwistEquiv (V := V I) hM hH
+  let eJ := zeroTwistEquiv (V := V J) hM hH
+  let i := homOfLE (coverInter_anti h : V J ≤ V I)
+  apply eJ.injective
+  change eJ ((toMod M).presheaf.map i.op (eI.symm z)) =
+    eJ (eJ.symm ((toMod (twist M H 0)).presheaf.map i.op z))
+  rw [eJ.apply_symm_apply, zeroTwistEquiv_restrict, eI.apply_symm_apply]
+
+include hM hH in
+/-- Degree-zero localized fractions recover the line-bundle section complex, including
+its restriction maps. -/
+theorem nonempty_gradedCech_iso :
+    Nonempty (gradedCech D 0 ≅ cech f (toMod M) U) := by
+  letI (I : Finset ι) := sectionDatumModule f (toMod M) U I
+  let e (I : Finset ι) := (chartPiece f hM hH s I).trans (untwistPiece f hM hH s I)
+  let φ : (homLocDatum D 0).Hom (sectionDatum (toMod M) U) :=
+    { app := fun I => (e I).toLinearMap.toAddMonoidHom
+      comm := fun h z => by
+        change (sectionDatum (toMod M) U).res h (untwistPiece f hM hH s _
+          (chartPiece f hM hH s _ z)) =
+          untwistPiece f hM hH s _ (chartPiece f hM hH s _ (homLocRes D h 0 z))
+        rw [chartPiece_natural f hM hH s h, untwistPiece_natural f hM hH s h] }
+  have hφ I r z : φ.app I (r • z) = r • φ.app I z := (e I).map_smul r z
+  let g := FinsetCechDatum.linearCochainMap
+    (fun h => homLocDatum_res_smul D h 0) (res_base_smul f (toMod M) U) φ hφ
+  haveI : IsIso g := FinsetCechDatum.isIso_linearCochainMap _ _ _ _ fun I _ => (e I).bijective
+  exact ⟨asIso g⟩
 
 end GlobalTheory.LineBundleSections

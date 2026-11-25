@@ -4,6 +4,7 @@ import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 /-! # Fourier decay after a phase offset depending on the same disorder -/
 
 open Filter MeasureTheory Topology
+open scoped ENNReal
 namespace GaloisForLFunctions.HTGeometry.PrescribedTimes.PhaseLaws
 noncomputable section
 variable {X : Type*} [MeasurableSpace X]
@@ -20,7 +21,8 @@ private theorem positive_weight_decay (μ : Measure X) [IsFiniteMeasure μ] (A :
   let d (x : X) := ENNReal.ofReal (w x)
   let ν := μ.withDensity d
   have hfinite : ∫⁻ x, d x ∂μ ≠ ⊤ := by
-    apply ne_top_of_le_ne_top (b:=∫⁻ _x : X, (2:ℝ≥0∞) ∂μ) (by simp)
+    apply ne_top_of_le_ne_top (b:=∫⁻ _x : X, (2:ℝ≥0∞) ∂μ)
+      (by rw [lintegral_const]; exact ENNReal.mul_ne_top (by norm_num) (measure_ne_top μ Set.univ))
     exact lintegral_mono fun x => (ENNReal.ofReal_le_ofReal (hb x).2).trans_eq (by norm_num)
   letI : IsFiniteMeasure ν := isFiniteMeasure_withDensity hfinite
   have hν := ((withDensity_absolutelyContinuous μ d).map hA).trans hac
@@ -32,7 +34,7 @@ private theorem positive_weight_decay (μ : Measure X) [IsFiniteMeasure μ] (A :
   rw [integral_withDensity_eq_integral_toReal_smul hw.ennreal_ofReal
     (.of_forall fun _ => ENNReal.ofReal_lt_top)]
   exact integral_congr_ae (.of_forall fun x => by
-    simp only [d,ENNReal.toReal_ofReal (hb x).1,Complex.real_smul])
+    simp only [ENNReal.toReal_ofReal (hb x).1,Complex.real_smul])
 
 /-- An arbitrary unit phase learned from the draw does not prevent the
 oscillation of a real action with absolutely continuous law from averaging
@@ -66,8 +68,10 @@ theorem phase_weight_decay (μ : Measure X) [IsFiniteMeasure μ] (A : X→ℝ) (
     (integrable_const (2:ℝ)).mono' ((Complex.continuous_ofReal.measurable.comp hw).mul hm).aestronglyMeasurable
       (.of_forall fun x => by rw [norm_mul,norm_oscillation,mul_one,Complex.norm_real,Real.norm_eq_abs,abs_of_nonneg (hb x).1]; exact (hb x).2)
   simp only [Complex.ofReal_one,one_mul]
-  rw [←integral_const_mul,←integral_const_mul,←integral_add (wint R hR br) ((wint I hI bi).const_mul _),
-    ←integral_sub ((wint R hR br).add ((wint I hI bi).const_mul _)) (hk.const_mul _)]
+  have hsum : Integrable (fun x => (R x:ℂ)*K x+Complex.I*((I x:ℂ)*K x)) μ :=
+    (wint R hR br).add ((wint I hI bi).const_mul Complex.I)
+  rw [←integral_const_mul,←integral_const_mul,←integral_add (wint R hR br) ((wint I hI bi).const_mul Complex.I)]
+  rw [←integral_sub hsum (hk.const_mul (1+Complex.I))]
   apply integral_congr_ae
   filter_upwards with x
   change (R x:ℂ)*K x+Complex.I*((I x:ℂ)*K x)-(1+Complex.I)*K x=g x*K x

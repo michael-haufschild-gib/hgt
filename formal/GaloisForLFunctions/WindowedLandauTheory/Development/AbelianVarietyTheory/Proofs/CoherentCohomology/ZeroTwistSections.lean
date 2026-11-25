@@ -20,8 +20,11 @@ private def zeroTwistRefine (M H : LB X) (V : X.Opens) :
       exact coord_rel s p.1 q.1 _ _ _)
   map_add' s t := sec_ext fun _ => map_add _ _ _
   map_smul' r s := sec_ext fun p => by
-    change resG X (inf_le_inf_left V inf_le_left) (resG X inf_le_left r * coord s p.1) =
-      resG X inf_le_left r * resG X (inf_le_inf_left V inf_le_left) (coord s p.1)
+    let T := V ⊓ (M.U p.1 ⊓ H.U p.2)
+    let h₁ : T ≤ V ⊓ M.U p.1 := inf_le_inf_left V inf_le_left
+    let h₂ : T ≤ V := inf_le_left
+    change resG X h₁ (resG X (inf_le_left : V ⊓ M.U p.1 ≤ V) r * coord s p.1) =
+      resG X h₂ r * resG X h₁ (coord s p.1)
     rw [map_mul, resG_resG]
 
 private theorem zeroTwistRefine_bijective (hM : M.IsLB) (hH : H.IsLB) :
@@ -33,8 +36,9 @@ private theorem zeroTwistRefine_bijective (hM : M.IsLB) (hH : H.IsLB) :
       (fun _ => inf_le_left) (cover (V ⊓ M.U p)).ge fun i => ?_
     let h : V ⊓ M.U p ⊓ H.U i ≤ V ⊓ (M.U p ⊓ H.U i) :=
       le_inf (inf_le_left.trans inf_le_left) (le_inf (inf_le_left.trans inf_le_right) inf_le_right)
-    have eq := congrArg (fun s => resG X h (twistCoord s (p, i))) e
-    change resG X h (resG X _ (coord a p)) = resG X h (resG X _ (coord b p)) at eq
+    have eq := congrArg (fun s : Γ(toMod (twist M H 0), V) => resG X h (twistCoord s (p, i))) e
+    let h' : V ⊓ (M.U p ⊓ H.U i) ≤ V ⊓ M.U p := inf_le_inf_left V inf_le_left
+    change resG X h (resG X h' (coord a p)) = resG X h (resG X h' (coord b p)) at eq
     simpa only [resG_resG] using eq
   · intro a
     let W (p : M.ι) (i : H.ι) := V ⊓ M.U p ⊓ H.U i
@@ -85,7 +89,10 @@ theorem zeroTwistEquiv_restrict (hM : M.IsLB) (hH : H.IsLB) (h : W ≤ V)
     zeroTwistEquiv hM hH ((toMod M).presheaf.map (homOfLE h).op a) =
       (toMod (twist M H 0)).presheaf.map (homOfLE h).op (zeroTwistEquiv hM hH a) := by
   refine sec_ext fun p => ?_
-  change resG X _ (resG X _ (coord a p.1)) = resG X _ (resG X _ (coord a p.1))
+  change resG X (inf_le_inf_left W inf_le_left)
+      (resG X (inf_le_inf_right (M.U p.1) h) (coord a p.1)) =
+    resG X (inf_le_inf_right (M.U p.1 ⊓ H.U p.2) h)
+      (resG X (inf_le_inf_left V inf_le_left) (coord a p.1))
   rw [resG_resG, resG_resG]
 
 end GlobalTheory.LineBundleSections

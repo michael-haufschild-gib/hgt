@@ -14,6 +14,7 @@ variable {ι R M N : Type} [CommRing R] [AddCommGroup M] [AddCommGroup N]
   [Decomposition D] [Decomposition E] [PolyGradedSMul ι E]
   {u : MvPolynomial ι R} {d : ℤ} (hu : u ∈ polyGrading ι R d)
 
+include hu in
 private theorem isUnit_of_homogeneous_smul
     (hinj : ∀ j, ∀ y ∈ E j, u • y = 0 → y = 0)
     (hsurj : ∀ j, ∀ y ∈ E (j + d), ∃ z ∈ E j, u • z = y) :
@@ -34,18 +35,19 @@ private theorem isUnit_of_homogeneous_smul
     induction y using Decomposition.inductionOn E with
     | zero => exact ⟨0, map_zero _⟩
     | @homogeneous j y =>
-      obtain ⟨x, _, h⟩ := hsurj (j - d) y (by rwa [sub_add_cancel])
+      obtain ⟨x, _, h⟩ := hsurj (j - d) y (by simpa only [sub_add_cancel] using y.2)
       exact ⟨x, h⟩
     | add a b ha hb =>
       obtain ⟨x, rfl⟩ := ha
       obtain ⟨y, rfl⟩ := hb
       exact ⟨x + y, map_add _ _ _⟩
 
+include hu in
 theorem isLocalizedModuleAway_of_graded
     {f : M →ₗ[MvPolynomial ι R] N} (hf : IsGradedMap D E f)
     (hinj : ∀ j, ∀ y ∈ E j, u • y = 0 → y = 0)
     (hsurj : ∀ j, ∀ y ∈ E (j + d), ∃ z ∈ E j, u • z = y)
-    (hlift : ∀ j, ∀ y ∈ E j, ∃ (k : ℕ) x, u ^ k • y = f x)
+    (hlift : ∀ j, ∀ y ∈ E j, ∃ (k : ℕ) (x : M), u ^ k • y = f x)
     (hkill : ∀ j, ∀ x ∈ D j, f x = 0 → ∃ k : ℕ, u ^ k • x = 0) :
     IsLocalizedModule.Away u f := by
   classical

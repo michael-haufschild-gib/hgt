@@ -64,7 +64,8 @@ theorem box_iff_face (k : ℕ) {i j : Level k} (hij : j < i) (r : ℝ) (n : ℕ)
     exact ⟨div_lt_div_of_pos_right (neg_lt_neg hE) two_pi_pos,hpin,
       fun l hlj hli => (he ⟨l,hli,hlj⟩).symm ▸ h ⟨l,hli,hlj⟩ (mem_univ _)⟩
 
-private theorem outside_card {I : Type*} [Fintype I] [DecidableEq I] (i j : I) (hij : i≠j) :
+/-- Fixing two distinct levels leaves exactly D−2 spectator phases. -/
+theorem outside_card {I : Type*} [Fintype I] [DecidableEq I] (i j : I) (hij : i≠j) :
     Fintype.card (Outside i j)=Fintype.card I-2 := by
   let J := {l : I // l≠i}
   let b : J := ⟨j,hij.symm⟩

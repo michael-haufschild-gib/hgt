@@ -1,4 +1,5 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.FlatHomogeneousLocalization
+import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.FiniteGradedCechCohomology
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.GradedChartDescent
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.GradedMatrixBaseChange
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.HomogeneousCechBaseChange
@@ -30,7 +31,7 @@ private theorem nonempty_gradedCechIso_of_saturating {ι R G M : Type} [Decidabl
   exact ⟨asIso g⟩
 
 /-- Smooth coefficient charts with finite projective dehomogenizations give a flat,
-bounded Čech model over a Noetherian coefficient ring. -/
+bounded Čech model with finite cohomology over a Noetherian coefficient ring. -/
 theorem exists_noetherian_gradedCech_model {ι R G : Type} [Fintype ι] [DecidableEq ι] [LinearOrder ι]
     [CommRing R] [AddCommGroup G] [Module R G] [Module (MvPolynomial ι R) G]
     [IsScalarTower R (MvPolynomial ι R) G]
@@ -47,6 +48,7 @@ theorem exists_noetherian_gradedCech_model {ι R G : Type} [Fintype ι] [Decidab
       (∀ l j, Φ₀ l j ∈ polyGrading ι R₀ (e j - d l)) ∧
       let C := gradedCech (ι := ι) (grQuot (grFree ι R₀ d) (LinearMap.range Φ₀.mulVecLin)) n
       (∀ q, Module.Flat R₀ (C.X q)) ∧ (∀ q, Fintype.card ι ≤ q → Limits.IsZero (C.X q)) ∧
+        (∀ q, Module.Finite R₀ (C.homology q)) ∧
         Nonempty (((ModuleCat.extendScalars R₀.val.toRingHom).mapHomologicalComplex (ComplexShape.up ℕ)).obj C
           ≅ gradedCech (ι := ι) D n) := by
   obtain ⟨R₀, hnoeth, a, b, d, e, Φ₀, ψ, hΦ₀, hψ, h⟩ := exists_descended_graded_presentation D hChart
@@ -60,8 +62,10 @@ theorem exists_noetherian_gradedCech_model {ι R G : Type} [Fintype ι] [Decidab
   obtain ⟨f, hf, hX, hdeg⟩ := exists_graded_matrix_baseChange (R := R) d Φ₀
   obtain ⟨iso₀⟩ := nonempty_gradedCech_baseChangeIso D₀ D₁ f hf hX hdeg n
   obtain ⟨iso₁⟩ := nonempty_gradedCechIso_of_saturating hψ (fun i => (h i).2) n
+  letI := hnoeth
   refine ⟨R₀, hnoeth, a, b, d, e, Φ₀, hΦ₀,
-    flat_gradedCech_of_flat_specializations D₀ (fun i => (h i).1) n, ?_, ⟨iso₀ ≪≫ iso₁⟩⟩
+    flat_gradedCech_of_flat_specializations D₀ (fun i => (h i).1) n, ?_,
+    finite_gradedCech_homology D₀ n, ⟨iso₀ ≪≫ iso₁⟩⟩
   exact (homLocDatum (ι := ι) D₀ n).linearComplex_X_isZero (fun h => homLocDatum_res_smul D₀ h n)
 
 end GlobalTheory.SmoothDescent

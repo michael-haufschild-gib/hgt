@@ -52,10 +52,13 @@ variable {L} (hL : L.IsLB)
 
 include hL hcov hU
 
-/-- The perfect Čech model gives a finite free presentation in degrees zero through two. -/
-theorem nonempty_perfectSections [IsNoetherianRing R] [Flat f] (hf : IsProjOver f) :
+/-- A perfect Čech model valid after every scalar extension gives the section matrices. -/
+theorem nonempty_perfectSections_of_cech
+    {K : CochainComplex (ModuleCat R) ℕ} (φ : K ⟶ cech f (toMod L) U)
+    (hK : ∀ n, Module.Finite R (K.X n) ∧ Module.Projective R (K.X n))
+    (hφ : ∀ (S : Type) [CommRing S] [Algebra R S],
+      QuasiIso (((ModuleCat.extendScalars (algebraMap R S)).mapHomologicalComplex (ComplexShape.up ℕ)).map φ)) :
     Nonempty (PerfectSections f L) := by
-  obtain ⟨K, φ, _, hK, _, hφ⟩ := exists_perfect_cech f hL U hcov hU hf
   haveI (n : ℕ) : Module.Finite R (K.X n) := (hK n).1
   haveI (n : ℕ) : Module.Projective R (K.X n) := (hK n).2
   obtain ⟨a, b, c, d₀, d₁, u, hcomp, hm⟩ := GlobalTheory.exists_matrices_of_projective_complex
@@ -151,6 +154,12 @@ theorem nonempty_perfectSections [IsNoetherianRing R] [Flat f] (hf : IsProjOver 
   · intro hz
     letI : G.IsQuasicoherent := isQuasicoherent_toMod (hL.pull π)
     exact (hm S).2 (q.2 (cech_exact_of_H1_zero g G V hV hAffine hz))
+
+/-- The perfect Čech model gives a finite free presentation in degrees zero through two. -/
+theorem nonempty_perfectSections [IsNoetherianRing R] [Flat f] (hf : IsProjOver f) :
+    Nonempty (PerfectSections f L) := by
+  obtain ⟨K, φ, _, hK, _, hφ⟩ := exists_perfect_cech f hL U hcov hU hf
+  exact nonempty_perfectSections_of_cech f hL U hcov hU φ hK hφ
 
 omit hcov hU in
 /-- A closed embedding supplies the affine cover by pulling back the coordinate charts. -/

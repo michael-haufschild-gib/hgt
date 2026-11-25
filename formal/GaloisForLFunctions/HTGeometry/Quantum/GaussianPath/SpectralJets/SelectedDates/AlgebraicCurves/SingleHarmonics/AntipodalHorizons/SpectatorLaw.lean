@@ -3,6 +3,7 @@ import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.Selected
 /-! # One spectator-phase test at a fixed offset from a late antipode -/
 
 open Set Filter MeasureTheory Topology Real
+open scoped ENNReal
 namespace GaloisForLFunctions.HTGeometry.SpectralJets.SelectedDates.AlgebraicCurves.SingleHarmonics.AntipodalHorizons
 open PrescribedTimes.PhaseLaws
 noncomputable section

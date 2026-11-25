@@ -16,6 +16,7 @@ variable {R : Type} [CommRing R] {X : Scheme.{0}} [CompactSpace X] [X.IsSeparate
   (f : X ⟶ Spec (CommRingCat.of R)) [Smooth f] {M H : LB X} (hM : M.IsLB) (hH : H.IsLB)
   {ι : Type} (s : ι → H.Sec)
 
+omit [CompactSpace X] [X.IsSeparated] in
 private theorem chartAlgebra_smooth {V : X.Opens} (hV : IsAffineOpen V) :
     letI := sectionAlgebra f V
     Algebra.Smooth R Γ(X, V) := by
@@ -25,6 +26,7 @@ private theorem chartAlgebra_smooth {V : X.Opens} (hV : IsAffineOpen V) :
   have hb : b.hom.Smooth := f.smooth_appLE (isAffineOpen_top _) hV (by simp)
   exact ha.comp hb
 
+include hM hH in
 theorem exists_smooth_dehomogenized_twist_chart (i : ι)
     (hV : IsAffineOpen (nonzeroLocus (s i))) (r : ι → Γ(X, nonzeroLocus (s i)))
     (hr : ∀ j k, resG X (inf_le_right : nonzeroLocus (s i) ⊓ H.U k ≤ H.U k) ((s j).f k) =
@@ -34,9 +36,9 @@ theorem exists_smooth_dehomogenized_twist_chart (i : ι)
     ∃ (B : Type) (_ : CommRing B) (_ : Algebra R B) (π : MvPolynomial ι R →ₐ[R] B)
       (P : Type) (_ : AddCommGroup P) (_ : Module B P),
       Algebra.Smooth R B ∧ Module.Finite B P ∧ Module.Projective B P ∧
-        Function.Surjective π ∧ π (X i) = 1 ∧
+        Function.Surjective π ∧ π (MvPolynomial.X i) = 1 ∧
         (letI := Module.compHom P π.toRingHom
-         Nonempty (QuotSMulTop (X i - 1 : MvPolynomial ι R) (gradedTwistSections f M ⊤ s)
+         Nonempty (QuotSMulTop (MvPolynomial.X i - 1 : MvPolynomial ι R) (gradedTwistSections f M ⊤ s)
            ≃ₗ[MvPolynomial ι R] P)) := by
   let V := nonzeroLocus (s i)
   letI := sectionAlgebra f V
@@ -44,23 +46,28 @@ theorem exists_smooth_dehomogenized_twist_chart (i : ι)
   let π : MvPolynomial ι R →ₐ[R] Γ(X, V) := MvPolynomial.aeval r
   letI := Module.compHom P π.toRingHom
   let ρ := gradedTwistSections_res f M s (le_top : V ≤ ⊤)
-  have hloc : IsLocalizedModule.Away (X i : MvPolynomial ι R) ρ := by
-    have h := isLocalizedModule_gradedTwistSections f hM hH s ({i} : Finset ι)
-    simpa only [xProd, Finset.prod_singleton, nonzeroLocus_sectionProduct hH, Finset.iInf_singleton] using h
+  have hloc : IsLocalizedModule.Away (MvPolynomial.X i : MvPolynomial ι R) ρ := by
+    let T (W : X.Opens) : Prop := IsLocalizedModule.Away (MvPolynomial.X i : MvPolynomial ι R)
+      (gradedTwistSections_res f M s (le_top : W ≤ ⊤))
+    have he : nonzeroLocus (sectionProduct s ({i} : Finset ι)) = V := by
+      simpa only [Finset.iInf_singleton] using nonzeroLocus_sectionProduct hH s ({i} : Finset ι)
+    have h : T (nonzeroLocus (sectionProduct s ({i} : Finset ι))) := by
+      simpa only [T, xProd, Finset.prod_singleton] using isLocalizedModule_gradedTwistSections f hM hH s {i}
+    exact (congrArg T he).mp h
   letI := hloc
-  have hker : ∀ y, ρ y = 0 → ∃ k : ℕ, (X i : MvPolynomial ι R) ^ k • y = 0 := by
+  have hker : ∀ y, ρ y = 0 → ∃ k : ℕ, (MvPolynomial.X i : MvPolynomial ι R) ^ k • y = 0 := by
     intro y hy
-    obtain ⟨k, hk⟩ := IsLocalizedModule.Away.exists_of_eq (X i : MvPolynomial ι R)
+    obtain ⟨k, hk⟩ := IsLocalizedModule.Away.exists_of_eq (MvPolynomial.X i : MvPolynomial ι R)
       (hy.trans (map_zero ρ).symm)
     exact ⟨k, by simpa only [smul_zero] using hk⟩
-  have hsat : ∀ z, ∃ k : ℕ, (X i : MvPolynomial ι R) ^ k • z ∈ LinearMap.range ρ := by
+  have hsat : ∀ z, ∃ k : ℕ, (MvPolynomial.X i : MvPolynomial ι R) ^ k • z ∈ LinearMap.range ρ := by
     intro z
-    obtain ⟨k, y, hy⟩ := IsLocalizedModule.Away.surj ρ (X i : MvPolynomial ι R) z
+    obtain ⟨k, y, hy⟩ := IsLocalizedModule.Away.surj ρ (MvPolynomial.X i : MvPolynomial ι R) z
     exact ⟨k, y, hy.symm⟩
-  let e := LinearEquiv.ofBijective (QuotSMulTop.map (X i - 1 : MvPolynomial ι R) ρ)
+  let e := LinearEquiv.ofBijective (QuotSMulTop.map (MvPolynomial.X i - 1 : MvPolynomial ι R) ρ)
     (bijective_specialization_of_saturating (gradedTwistSections_res_isGraded f M s le_top) i hker hsat)
   obtain ⟨e'⟩ := nonempty_dehomogenizedTwistChartEquiv s i le_rfl r hr f M hH
-  have hπ1 : π (X i) = 1 := (MvPolynomial.aeval_X _ _).trans (sectionRatio_self s i le_rfl r hr hH)
+  have hπ1 : π (MvPolynomial.X i) = 1 := (MvPolynomial.aeval_X _ _).trans (sectionRatio_self s i le_rfl r hr hH)
   have hP : Module.Finite Γ(X, V) P ∧ Module.Projective Γ(X, V) P :=
     finite_projective_sections (twist_isLB hM hH 0) hV
   exact ⟨Γ(X, V), inferInstance, inferInstance, π, P, inferInstance, inferInstance,

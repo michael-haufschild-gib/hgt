@@ -1,6 +1,8 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.TwistAffineExtension
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.TwistRestrictionVanishing
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.LineBundleQuasicoherent
+import Mathlib.AlgebraicGeometry.Morphisms.Separated
+import Mathlib.Topology.Sheaves.SheafCondition.UniqueGluing
 
 /-! Local lifts of a twisted section glue globally after a uniform additional power. -/
 
@@ -23,8 +25,15 @@ private theorem restrictSec_comp (L : LB X) {U V W : X.Opens} (h : V ≤ U) (k :
     restrictSec L k (restrictSec L h a) = restrictSec L (k.trans h) a := by
   apply sec_ext
   intro p
-  change resG X _ (resG X _ (coord a p)) = resG X _ (coord a p)
+  change resG X (inf_le_inf_right _ k) (resG X (inf_le_inf_right _ h) (coord a p)) =
+    resG X (inf_le_inf_right _ (k.trans h)) (coord a p)
   exact resG_resG _ _ _
+
+private theorem restrictSec_mulTwistPower {d : ℤ} (s : (transitionPower H d).Sec) (k : ℕ) (t : ℤ)
+    {V W : X.Opens} (h : W ≤ V) (a : Γ(toMod (twist M H t), V)) :
+    restrictSec (twist M H (t + k * d)) h (mulTwistPower M s k t V a) =
+      mulTwistPower M s k t W (restrictSec (twist M H t) h a) :=
+  (mulTwistPower_restrict s k t h a).symm
 
 private def twistDegreeCongr {t u : ℤ} (h : t = u) (V : X.Opens) :
     Γ(toMod (twist M H t), V) ≃ₗ[Γ(X, V)] Γ(toMod (twist M H u), V) := by
@@ -51,7 +60,9 @@ private theorem mulTwistPower_comp {d : ℤ} (s : (transitionPower H d).Sec) (t 
       mulTwistPower M s (n + k) t V a := by
   apply sec_ext
   intro p
-  change twistCoord (twistDegreeCongr e V _) p = twistCoord (mulTwistPower M s (n + k) t V a) p
+  change twistCoord (twistDegreeCongr e V
+    (mulTwistPower M s k (t + n * d) V (mulTwistPower M s n t V a))) p =
+      twistCoord (mulTwistPower M s (n + k) t V a) p
   simp only [twistCoord_twistDegreeCongr, twistCoord_mulTwistPower, pow_add]
   ring
 
@@ -71,7 +82,8 @@ theorem exists_global_lift_mulTwistPower [CompactSpace X] [X.IsSeparated] {t d :
     ∃ (k : ℕ) (b : Γ(toMod (twist M H (t + k * d)), ⊤)),
       (toMod (twist M H (t + k * d))).presheaf.map (homOfLE le_top).op b =
         mulTwistPower M s k t (nonzeroLocus s) a := by
-  obtain ⟨ι, _, W, p, hW, hp, hcov⟩ := exists_finite_affine_refinement (twist_isLB hM hH t)
+  obtain ⟨ι, hι, W, p, hW, hp, hcov⟩ := exists_finite_affine_refinement (twist_isLB hM hH t)
+  letI := hι
   let V := nonzeroLocus s
   let A := twist M H t
   let aV (i : ι) : Γ(toMod A, V ⊓ W i) := restrictSec A inf_le_left a
@@ -93,9 +105,9 @@ theorem exists_global_lift_mulTwistPower [CompactSpace X] [X.IsSeparated] {t d :
     let hj : V ⊓ O i j ≤ V ⊓ W j := inf_le_inf_left _ inf_le_right
     have ei := congrArg (restrictSec L hi) (hb i)
     have ej := congrArg (restrictSec L hj) (hb j)
-    rw [restrictSec_comp, ← mulTwistPower_restrict, show aV i = restrictSec A inf_le_left a from rfl,
+    rw [restrictSec_comp, restrictSec_mulTwistPower, show aV i = restrictSec A inf_le_left a from rfl,
       restrictSec_comp] at ei
-    rw [restrictSec_comp, ← mulTwistPower_restrict, show aV j = restrictSec A inf_le_left a from rfl,
+    rw [restrictSec_comp, restrictSec_mulTwistPower, show aV j = restrictSec A inf_le_left a from rfl,
       restrictSec_comp] at ej
     change restrictSec L inf_le_right (diff i j) = 0
     rw [show diff i j = restrictSec L inf_le_left (b i) - restrictSec L inf_le_right (b j) from rfl,
@@ -112,28 +124,34 @@ theorem exists_global_lift_mulTwistPower [CompactSpace X] [X.IsSeparated] {t d :
   have hc (i j : ι) : restrictSec L' (inf_le_left : O i j ≤ W i) (c i) =
       restrictSec L' (inf_le_right : O i j ≤ W j) (c j) := by
     have hz : mulTwistPower M s K _ (O i j) (diff i j) = 0 := by
-      apply (chartEquiv (twist_isLB hM hH _) (p i) (inf_le_left.trans (hp i))).injective
-      rw [chartEquiv_mulTwistPower hM hH, map_zero]
-      change u i j ^ K * _ = 0
-      rw [← smul_eq_mul, ← map_smul, hK, map_zero]
+      let hO : O i j ≤ M.U (p i).1 ⊓ H.U (p i).2 := inf_le_left.trans (hp i)
+      let e := chartEquiv (twist_isLB hM hH (t + N * d)) (p i) hO
+      apply (chartEquiv (twist_isLB hM hH (t + N * d + K * d)) (p i) hO).injective
+      rw [chartEquiv_mulTwistPower hM hH s K (t + N * d) (p i) hO, map_zero]
+      have hh := congrArg e (hK i j)
+      rw [map_smul, map_zero] at hh
+      exact hh
     dsimp only [c]
-    rw [twistDegreeCongr_restrict, twistDegreeCongr_restrict, ← mulTwistPower_restrict,
-      ← mulTwistPower_restrict]
+    rw [twistDegreeCongr_restrict, twistDegreeCongr_restrict, restrictSec_mulTwistPower,
+      restrictSec_mulTwistPower]
     apply congrArg (twistDegreeCongr hdeg (O i j))
     apply sub_eq_zero.1
     rw [← map_sub]
     exact hz
-  let F := (SheafOfModules.toSheaf X.ringCatSheaf).obj (toMod L')
-  obtain ⟨z, hz⟩ := (F.existsUnique_gluing' W ⊤ (fun _ => homOfLE le_top) hcov.ge c hc).exists
+  let F : TopCat.Sheaf AddCommGrpCat X.carrier := (SheafOfModules.toSheaf X.ringCatSheaf).obj (toMod L')
+  obtain ⟨z, hz⟩ := (TopCat.Sheaf.existsUnique_gluing' F W ⊤
+    (fun _ => homOfLE le_top) hcov.ge c hc).exists
   refine ⟨N + K, z, ?_⟩
   have hcovV : V ≤ ⨆ i, V ⊓ W i := by rw [← inf_iSup_eq, hcov, inf_top_eq]
-  refine F.eq_of_locally_eq' (fun i => V ⊓ W i) V (fun _ => homOfLE inf_le_left) hcovV _ _ fun i => ?_
+  refine TopCat.Sheaf.eq_of_locally_eq' F (fun i => V ⊓ W i) V
+    (fun _ => homOfLE inf_le_left) hcovV _ _ fun i => ?_
   change restrictSec L' inf_le_left (restrictSec L' le_top z) =
     restrictSec L' inf_le_left (mulTwistPower M s (N + K) t V a)
-  have e := congrArg (restrictSec L' (inf_le_right : V ⊓ W i ≤ W i)) (hz i)
+  have hzi : restrictSec L' (le_top : W i ≤ ⊤) z = c i := hz i
+  have e := congrArg (restrictSec L' (inf_le_right : V ⊓ W i ≤ W i)) hzi
   rw [restrictSec_comp] at e
-  rw [restrictSec_comp, e, ← mulTwistPower_restrict]
+  rw [restrictSec_comp, e, restrictSec_mulTwistPower]
   dsimp only [c]
-  rw [twistDegreeCongr_restrict, ← mulTwistPower_restrict, hb, mulTwistPower_comp]
+  rw [twistDegreeCongr_restrict, restrictSec_mulTwistPower, hb, mulTwistPower_comp]
 
 end GlobalTheory.LineBundleSections

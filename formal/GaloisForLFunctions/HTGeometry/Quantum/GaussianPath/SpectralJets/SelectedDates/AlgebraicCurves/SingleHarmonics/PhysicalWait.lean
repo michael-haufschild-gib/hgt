@@ -28,7 +28,7 @@ private theorem enclosing_reindex {I J : Type*} [Fintype I] [Fintype J] (e : I �
       hb (e j) (fun he => hj (e.apply_eq_iff_eq_symm_apply.mp he))
 
 /-- The first physical visit can be read in any ordering of the energies. -/
-private theorem physical_first_iff {N : ℕ} {J : Type*} [Fintype J]
+theorem first_visit_iff_spectral_least {N : ℕ} {J : Type*} [Fintype J]
     (H : selfAdjoint (Register N)) (e : (Fin N → Bool) ≃ J) (E : J → ℝ)
     (he : ∀ j, H.2.isHermitian.eigenvalues j = E (e j))
     (a t : ℝ) {ε : ℝ} (hε : ε ∈ Ioo (0:ℝ) (sqrt 2)) :
@@ -69,7 +69,7 @@ theorem gaussian_first_empty_wait_floor :
   have hE : E j<E i := lt_of_le_of_ne (monotone_sortedTuple _ hij.le) (hsorted.ne hij.ne)
   let r : Ioo (0:ℝ) (1/2) := ⟨physicalArc ε,(physicalArc_spec hε.1 hε.2).1⟩
   obtain ⟨ht,hfloor,_⟩ := antipodal_first_iff E i j hE r n
-  have hv := ((physical_first_iff H e E he a _ hε).mp (Eq.refl (PrecisionReturns.firstVisit H a 0 ε))).1
+  have hv := ((first_visit_iff_spectral_least H e E he a _ hε).mp (Eq.refl (PrecisionReturns.firstVisit H a 0 ε))).1
   exact ht ▸ mul_le_mul_of_nonneg_right (sub_le_sub_right (hfloor hv) a) (sub_nonneg.mpr hE.le)
 
 /-- Starting at the nth antipode of a specified ordered energy pair,
@@ -117,7 +117,7 @@ theorem gaussian_first_empty_visit_at_pair_minimum (k : ℕ) {i j : Level k} (hi
   apply propext
   have ha := (antipodal_first_iff E i j hE rr n).2.2
   have hb := box_iff_face k hij r n (X ω) hx
-  refine Iff.trans ?_ (physical_first_iff H e E he _ _ hε).symm
+  refine Iff.trans ?_ (first_visit_iff_spectral_least H e E he _ _ hε).symm
   exact ⟨fun h => ha.mpr ⟨(entry_iff_closed_face _ rr.2.1.le rr.2.2).mpr ⟨j,i,hb.mpr h⟩,hb.mpr h⟩,
     fun h => hb.mp (ha.mp h).2⟩
 

@@ -6,8 +6,8 @@ import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory
 
 noncomputable section
 
-open AlgebraicGeometry CategoryTheory MvPolynomial
-open ReciprocityTheory.ChartRestriction.G.Semi GlobalTheory.SchemeCohomology
+open AlgebraicGeometry CategoryTheory DirectSum MvPolynomial
+open ReciprocityTheory.ChartRestriction.G.Semi
 
 namespace GlobalTheory.LineBundleSections
 
@@ -19,31 +19,60 @@ private abbrev chartOpen (p : M.ι × H.ι) := V ⊓ (M.U p.1 ⊓ H.U p.2)
 private def chartVariable (p : M.ι × H.ι) (j : ι) : Γ(X, chartOpen M V p) :=
   resG X (inf_le_right.trans inf_le_right) ((s j).f p.2)
 
+private def coordAddHom (p : M.ι × H.ι) (n : ℤ) :
+    TwistSections f M H V n →+ Γ(X, chartOpen M V p) where
+  toFun x := twistCoord x p
+  map_zero' := rfl
+  map_add' _ _ := rfl
+
 private def evalTwistCoord (p : M.ι × H.ι) :
-    letI := sectionAlgebra f (chartOpen M V p)
-    letI := Module.compHom Γ(X, chartOpen M V p) (MvPolynomial.aeval (chartVariable M V s p)).toRingHom
-    gradedTwistSections f M V s →ₗ[MvPolynomial ι R] Γ(X, chartOpen M V p) := by
-  let W := chartOpen M V p
-  letI := sectionAlgebra f V
-  letI := sectionAlgebra f W
-  let π : MvPolynomial ι R →ₐ[R] Γ(X, W) := MvPolynomial.aeval (chartVariable M V s p)
-  letI := Module.compHom Γ(X, W) π.toRingHom
-  haveI : IsScalarTower R (MvPolynomial ι R) Γ(X, W) := IsScalarTower.of_algebraMap_smul fun a x => by
-    change algebraMap R Γ(X, W) a * x = π (algebraMap R (MvPolynomial ι R) a) * x
-    rw [π.commutes]
-  let φ (n : ℤ) : TwistSections f M H V n →ₗ[R] Γ(X, W) where
-    toFun x := twistCoord x p
-    map_add' _ _ := rfl
-    map_smul' a x := by
-      have e : resG X (inf_le_left : W ≤ V) (algebraMap R Γ(X, V) a) =
-          algebraMap R Γ(X, W) a := (sectionRes f (homOfLE inf_le_left : W ⟶ V)).commutes a
-      change resG X (inf_le_left : W ≤ V) (algebraMap R Γ(X, V) a) * twistCoord x p =
-        algebraMap R Γ(X, W) a * twistCoord x p
-      rw [e]
-  refine GrSum.lift (twistSections_commute f M V s) φ fun i n x => ?_
-  change twistCoord (mulTwistSection M n (s i) V x) p = π (X i) * twistCoord x p
-  rw [show π (X i) = chartVariable M V s p i from MvPolynomial.aeval_X _ _]
-  rfl
+    gradedTwistSections f M V s →+ Γ(X, chartOpen M V p) :=
+  DirectSum.toAddMonoid (coordAddHom f M V p)
+
+private theorem evalTwistCoord_of (p : M.ι × H.ι) (n : ℤ) (x : TwistSections f M H V n) :
+    evalTwistCoord f M V s p (GrSum.of (twistSections_commute f M V s) n x) =
+      twistCoord x p :=
+  DirectSum.toAddMonoid_of (coordAddHom f M V p) n x
+
+private theorem evalTwistCoord_X_smul (p : M.ι × H.ι) (i : ι) (z : gradedTwistSections f M V s) :
+    evalTwistCoord f M V s p ((MvPolynomial.X i : MvPolynomial ι R) • z) =
+      chartVariable M V s p i * evalTwistCoord f M V s p z := by
+  let h := twistSections_commute f M V s
+  let e := evalTwistCoord f M V s p
+  let a := (LinearMap.lsmul (MvPolynomial ι R) (GrSum h) (MvPolynomial.X i)).toAddMonoidHom
+  let b : Γ(X, chartOpen M V p) →+ Γ(X, chartOpen M V p) :=
+    { toFun := fun y => chartVariable M V s p i * y
+      map_zero' := mul_zero _
+      map_add' := mul_add _ }
+  have he : e.comp a = b.comp e := by
+    apply DirectSum.addHom_ext
+    intro n x
+    change evalTwistCoord f M V s p ((MvPolynomial.X i : MvPolynomial ι R) • GrSum.of h n x) =
+      chartVariable M V s p i * evalTwistCoord f M V s p (GrSum.of h n x)
+    rw [GrSum.X_smul_of, evalTwistCoord_of, evalTwistCoord_of]
+    exact twistCoord_mulTwistSection (s i) x p
+  exact DFunLike.congr_fun he z
+
+private theorem evalTwistCoord_xProd_smul (p : M.ι × H.ι) (I : Finset ι)
+    (z : gradedTwistSections f M V s) :
+    evalTwistCoord f M V s p (xProd R I • z) =
+      (∏ i ∈ I, chartVariable M V s p i) * evalTwistCoord f M V s p z := by
+  classical
+  induction I using Finset.induction_on generalizing z with
+  | empty => simp only [xProd, Finset.prod_empty, one_smul, one_mul]
+  | @insert i I hi ih =>
+    rw [show xProd R (insert i I) = MvPolynomial.X i * xProd R I from Finset.prod_insert hi,
+      mul_smul, evalTwistCoord_X_smul, ih, Finset.prod_insert hi, mul_assoc]
+
+private theorem evalTwistCoord_xProd_pow (p : M.ι × H.ι) (I : Finset ι) (k : ℕ)
+    (z : gradedTwistSections f M V s) :
+    evalTwistCoord f M V s p (xProd R I ^ k • z) =
+      (∏ i ∈ I, chartVariable M V s p i) ^ k * evalTwistCoord f M V s p z := by
+  induction k generalizing z with
+  | zero => simp only [pow_zero, one_smul, one_mul]
+  | succ k ih =>
+    rw [show xProd R I ^ (k + 1) = xProd R I * xProd R I ^ k from pow_succ' _ _,
+      mul_smul, evalTwistCoord_xProd_smul, ih, pow_succ', mul_assoc]
 
 theorem gradedTwistSections_xProd_pow (I : Finset ι) (k : ℕ) (t : ℤ)
     (x : TwistSections f M H V t) :
@@ -56,21 +85,15 @@ theorem gradedTwistSections_xProd_pow (I : Finset ι) (k : ℕ) (t : ℤ)
   rw [← hy]
   apply congrArg (GrSum.of h (t + k * I.card))
   refine sec_ext fun p => ?_
-  let W := chartOpen M V p
-  letI := sectionAlgebra f W
-  let π : MvPolynomial ι R →ₐ[R] Γ(X, W) := MvPolynomial.aeval (chartVariable M V s p)
-  letI := Module.compHom Γ(X, W) π.toRingHom
   have e := congrArg (evalTwistCoord f M V s p) hy
-  rw [map_smul] at e
-  simp only [evalTwistCoord, GrSum.lift_of] at e
-  change twistCoord y p = π (xProd R I ^ k) * twistCoord x p at e
-  have hp : π (xProd R I) =
-      resG X (inf_le_right.trans inf_le_right : W ≤ H.U p.2) (powerCoord (sectionProduct s I) p.2) := by
-    change π (∏ i ∈ I, X i) =
-      resG X (inf_le_right.trans inf_le_right : W ≤ H.U p.2) (∏ i ∈ I, (s i).f p.2)
-    rw [map_prod, map_prod]
-    exact Finset.prod_congr rfl fun i _ => MvPolynomial.aeval_X _ _
-  rw [map_pow, hp] at e
+  have hp : (∏ i ∈ I, chartVariable M V s p i) =
+      resG X (inf_le_right.trans inf_le_right : chartOpen M V p ≤ H.U p.2)
+        (powerCoord (sectionProduct s I) p.2) := by
+    change (∏ i ∈ I, chartVariable M V s p i) =
+      resG X (inf_le_right.trans inf_le_right : chartOpen M V p ≤ H.U p.2) (∏ i ∈ I, (s i).f p.2)
+    rw [map_prod]
+    rfl
+  rw [evalTwistCoord_of, evalTwistCoord_xProd_pow, evalTwistCoord_of, hp] at e
   exact e
 
 end GlobalTheory.LineBundleSections

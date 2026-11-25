@@ -14,6 +14,7 @@ variable {R : Type} [CommRing R] {X : Scheme.{0}} [CompactSpace X] [X.IsSeparate
   (f : X ⟶ Spec (CommRingCat.of R)) {M H : LB X} (hM : M.IsLB) (hH : H.IsLB)
   {ι : Type} (s : ι → H.Sec)
 
+include hM hH in
 theorem isLocalizedModule_gradedTwistSections (I : Finset ι) :
     IsLocalizedModule.Away (xProd R I) (gradedTwistSections_res f M s
       (le_top : nonzeroLocus (sectionProduct s I) ≤ ⊤)) := by
@@ -24,10 +25,10 @@ theorem isLocalizedModule_gradedTwistSections (I : Finset ι) :
   let ρ := gradedTwistSections_res f M s (le_top : V ≤ ⊤)
   have hgrade : IsGradedMap (GrSum.grading h₀) (GrSum.grading h₁) ρ :=
     gradedTwistSections_res_isGraded f M s le_top
-  have hdeg : xProd R I ∈ polyGrading ι R ((1 : ℤ) * I.card) := by
+  have hdeg : xProd R I ∈ polyGrading ι R (((1 : ℕ) : ℤ) * I.card) := by
     simpa only [pow_one] using xProd_pow_mem R I 1
   have act (t : ℤ) (x : TwistSections f M H V t) :
-      xProd R I • GrSum.of h₁ t x = GrSum.of h₁ (t + (1 : ℤ) * I.card)
+      xProd R I • GrSum.of h₁ t x = GrSum.of h₁ (t + ((1 : ℕ) : ℤ) * I.card)
         (mulTwistPower M σ 1 t V x) := by
     simpa only [pow_one] using gradedTwistSections_xProd_pow f M V s I 1 t x
   refine isLocalizedModuleAway_of_graded hdeg hgrade ?_ ?_ ?_ ?_
@@ -35,12 +36,13 @@ theorem isLocalizedModule_gradedTwistSections (I : Finset ι) :
     obtain ⟨x, rfl⟩ := (GrSum.mem_grading h₁).1 hy
     rw [act] at hzero
     have h₁zero := (GrSum.of_injective h₁ _) (hzero.trans (map_zero _).symm)
-    have hx := (mulTwistPower_bijective (M := M) σ (le_rfl : V ≤ nonzeroLocus σ) 1).1
+    have hx := (mulTwistPower_bijective (M := M) (t := t) σ (le_rfl : V ≤ nonzeroLocus σ) 1).1
       (h₁zero.trans (map_zero _).symm)
-    rw [hx, map_zero]
+    exact (congrArg (GrSum.of h₁ t) hx).trans ((GrSum.of h₁ t).map_zero)
   · intro t y hy
     obtain ⟨x, rfl⟩ := (GrSum.mem_grading h₁).1 hy
-    obtain ⟨a, ha⟩ := (mulTwistPower_bijective (M := M) σ (le_rfl : V ≤ nonzeroLocus σ) 1).2 x
+    obtain ⟨a, ha⟩ :=
+      (mulTwistPower_bijective (M := M) (t := t) σ (le_rfl : V ≤ nonzeroLocus σ) 1).2 x
     exact ⟨GrSum.of h₁ t a, GrSum.of_mem_grading h₁ t a,
       (act t a).trans (congrArg (GrSum.of h₁ _) ha)⟩
   · intro t y hy
@@ -55,6 +57,8 @@ theorem isLocalizedModule_gradedTwistSections (I : Finset ι) :
     rw [gradedTwistSections_res_of] at hz
     have hx := (GrSum.of_injective h₁ t) (hz.trans (map_zero _).symm)
     obtain ⟨k, hk⟩ := exists_pow_mulTwistPower_eq_zero hM hH σ x hx
-    exact ⟨k, by rw [gradedTwistSections_xProd_pow, hk, map_zero]⟩
+    refine ⟨k, ?_⟩
+    rw [gradedTwistSections_xProd_pow]
+    exact (congrArg (GrSum.of h₀ (t + k * I.card)) hk).trans ((GrSum.of h₀ _).map_zero)
 
 end GlobalTheory.LineBundleSections

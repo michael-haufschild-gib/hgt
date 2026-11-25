@@ -15,9 +15,9 @@ def date {I : Type*} (E : I→ℝ) (i j : I) (n : ℕ) (q : ℝ) :=
 /-- When the selected gap is the full width, a scalar visit forces a
 short enclosing arc at the preceding time-mesh observation. -/
 theorem prior_spread (k : ℕ) (i j : Level k) [Nonempty (Outside i j)] (x : Coupling k)
-    (n : ℕ) {q s δ r : ℝ} (hr : 0≤r) (hq : q≤s) (hδ : s-q≤δ) :
+    (n : ℕ) {q s δ r : ℝ} (hr : 0 ≤ r) (hq : q ≤ s) (hδ : s-q ≤ δ) :
     let E := sortedEnsembleSpectrum (chainPauliFin_isHermitian (k+3)) x
-    E j < E i → (∀ l, E j≤E l ∧ E l≤E i) →
+    E j < E i → (∀ l, E j ≤ E l ∧ E l ≤ E i) →
     flow (fun l => -E l/(2*π)) (date E i j n s) ∈ enclosingUnitArc r →
       spectators k i j n q x ∈ enclosingUnitArc (r+δ) := by
   intro E he hall hfit
@@ -43,18 +43,18 @@ theorem prior_spread (k : ℕ) (i j : Level k) [Nonempty (Outside i j)] (x : Cou
 /-- An interval of M mesh steps requires only M+1 tests, including both
 endpoints. The grid spacing is in units of the actual full spectral period. -/
 theorem grid_covers (k : ℕ) (i j : Level k) [Nonempty (Outside i j)] (x : Coupling k)
-    (n M : ℕ) {δ r : ℝ} (hd : 0<δ) (hr : 0≤r) :
+    (n M : ℕ) {δ r : ℝ} (hd : 0 < δ) (hr : 0 ≤ r) :
     let E := sortedEnsembleSpectrum (chainPauliFin_isHermitian (k+3)) x
-    E j<E i → (∀ l, E j≤E l ∧ E l≤E i) →
+    E j < E i → (∀ l, E j ≤ E l ∧ E l ≤ E i) →
     (∃ s ∈ Icc (0:ℝ) ((M:ℝ)*δ), flow (fun l => -E l/(2*π)) (date E i j n s) ∈ enclosingUnitArc r) →
     ∃ h : Fin (M+1), spectators k i j n ((h.val:ℝ)*δ) x∈enclosingUnitArc (r+δ) := by
   intro E he hall ⟨s,hs,hvisit⟩
   have hpos := div_nonneg hs.1 hd.le
   let m := ⌊s/δ⌋₊
-  have hlo : (m:ℝ)*δ≤s := (le_div_iff₀ hd).mp (Nat.floor_le hpos)
+  have hlo : (m:ℝ)*δ ≤ s := (le_div_iff₀ hd).mp (Nat.floor_le hpos)
   have hhi := (div_lt_iff₀ hd).mp (Nat.lt_floor_add_one (s/δ))
-  have hM : (m:ℝ)≤M := (Nat.floor_le hpos).trans ((div_le_iff₀ hd).mpr hs.2)
-  have hm : m≤M := by exact_mod_cast hM
+  have hM : (m:ℝ) ≤ M := (Nat.floor_le hpos).trans ((div_le_iff₀ hd).mpr hs.2)
+  have hm : m ≤ M := by exact_mod_cast hM
   exact ⟨⟨m,Nat.lt_succ_of_le hm⟩,prior_spread k i j x n hr hlo
     (by dsimp only [m]; linarith only [hhi]) he hall hvisit⟩
 

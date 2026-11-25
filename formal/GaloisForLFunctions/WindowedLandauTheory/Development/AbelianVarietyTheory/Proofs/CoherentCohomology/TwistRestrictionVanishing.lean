@@ -43,20 +43,35 @@ theorem exists_pow_mulTwistPower_eq_zero [CompactSpace X]
     (a : Γ(toMod (twist M H t), ⊤))
     (ha : (toMod (twist M H t)).presheaf.map (homOfLE (le_top : nonzeroLocus s ≤ ⊤)).op a = 0) :
     ∃ k, mulTwistPower M s k t ⊤ a = 0 := by
-  obtain ⟨ι, _, W, p, hW, hp, hcov⟩ := exists_finite_affine_refinement (twist_isLB hM hH t)
+  obtain ⟨ι, hι, W, p, hW, hp, hcov⟩ := exists_finite_affine_refinement (twist_isLB hM hH t)
+  letI := hι
   let V := nonzeroLocus s
   let h (i : ι) : W i ≤ ⊤ ⊓ (M.U (p i).1 ⊓ H.U (p i).2) := le_inf le_top (hp i)
   let u (i : ι) : Γ(X, W i) := resG X ((hp i).trans inf_le_right) (powerCoord s (p i).2)
   let x (i : ι) : Γ(X, W i) := resG X (h i) (twistCoord a (p i))
   have kill (i : ι) : ∃ n : ℕ, u i ^ n * x i = 0 := by
     refine exists_pow_mul_eq_zero_of_res_basicOpen_eq_zero_of_isAffineOpen X (hW i) (x i) (u i) ?_
-    have hV : X.basicOpen (u i) ≤ V := (basicOpen_coord_restrict s _ _).le.trans inf_le_left
-    have e := congrArg (fun z => resG X (le_inf hV ((X.basicOpen_le (u i)).trans (hp i)))
-      (twistCoord z (p i))) ha
-    simpa only [x, twistCoord, coord_map, coord_zero, resG_resG, map_zero] using e
+    have hb := basicOpen_coord_restrict s (p i).2 ((hp i).trans inf_le_right)
+    have hV : X.basicOpen (u i) ≤ V := hb.le.trans inf_le_left
+    let L := twist M H t
+    let T := X.basicOpen (u i)
+    let hT : T ≤ W i := X.basicOpen_le (u i)
+    let hw : T ≤ V ⊓ L.U (p i) := le_inf hV (hT.trans (hp i))
+    let ψ (z : Γ(toMod L, V)) : Γ(X, T) := resG X hw (coord z (p i))
+    have hψ : ψ ((toMod L).presheaf.map (homOfLE (le_top : V ≤ ⊤)).op a) =
+        resG X hT (x i) := by
+      change resG X hw (coord ((toMod L).presheaf.map (homOfLE (le_top : V ≤ ⊤)).op a) (p i)) =
+        resG X hT (resG X (h i) (coord a (p i)))
+      rw [coord_map, resG_resG, resG_resG]
+      rfl
+    have hzero : ψ 0 = 0 := by
+      change resG X hw (coord (0 : Γ(toMod L, V)) (p i)) = 0
+      rw [coord_zero, map_zero]
+    exact hψ.symm.trans ((congrArg ψ ha).trans hzero)
   choose n hn using kill
   let k := Finset.univ.sup n
-  refine ⟨k, globalSection_eq_zero_of_refinement W p hp hcov _ fun i => ?_⟩
+  refine ⟨k, globalSection_eq_zero_of_refinement (L := twist M H (t + k * d))
+    W p hp hcov _ fun i => ?_⟩
   change resG X (h i) (twistCoord (mulTwistPower M s k t ⊤ a) (p i)) = 0
   rw [twistCoord_mulTwistPower, map_mul, map_pow, resG_resG]
   change u i ^ k * x i = 0

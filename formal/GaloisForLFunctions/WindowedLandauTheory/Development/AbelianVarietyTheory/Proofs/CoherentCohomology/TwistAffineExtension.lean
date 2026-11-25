@@ -33,7 +33,8 @@ theorem exists_affine_lift_mulTwistPower (hM : M.IsLB) (hH : H.IsLB)
   refine ⟨n, fun k hk => ?_⟩
   let hL := twist_isLB hM hH (t + k * d)
   refine ⟨(chartEquiv hL p hp).symm (u ^ (k - n) * c), (chartEquiv hL p (hV.trans hp)).injective ?_⟩
-  rw [chartEquiv_map, LinearEquiv.apply_symm_apply, chartEquiv_mulTwistPower hM hH]
+  rw [chartEquiv_map hL p hp hV, LinearEquiv.apply_symm_apply,
+    chartEquiv_mulTwistPower hM hH s k t p (hV.trans hp)]
   change resG X hV (u ^ (k - n) * c) =
     resG X ((hV.trans hp).trans inf_le_right) (powerCoord s p.2) ^ k * z
   rw [map_mul, map_pow, hc, ← mul_assoc, ← pow_add, Nat.sub_add_cancel hk]

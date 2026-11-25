@@ -31,7 +31,8 @@ theorem mesh_encloses {I J : Type*} [Fintype I] [Nonempty I] [Fintype J] (u : I 
     exact ⟨add_nonneg (hx i).1 (mul_nonneg_of_nonpos_of_nonpos (sub_nonpos.mpr hq) hh.2),
       add_le_add (hx i).2 (hstep.trans hδ)⟩
   have heq (i : I) : (y i:UnitAddCircle)=z i-(p a-p b) := by
-    rw [hz,y,AddCircle.coe_add,he]
+    dsimp only [y]
+    rw [hz,AddCircle.coe_add,he]
     abel
   obtain ⟨a',_,hle⟩ := Finset.exists_min_image Finset.univ y Finset.univ_nonempty
   refine mem_iUnion.mpr ⟨a',fun i _ => ⟨y i-y a',⟨sub_nonneg.mpr (hle i (Finset.mem_univ _)),?_⟩,?_⟩⟩
