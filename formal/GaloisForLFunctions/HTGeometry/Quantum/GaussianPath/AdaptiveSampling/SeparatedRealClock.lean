@@ -17,7 +17,7 @@ private theorem round_error (s : ℕ→ℝ) (u : ℝ) {M : ℝ} (hM : 0<M) (N : 
   have hj (j : ℕ) :
       ‖Complex.exp (((s j*u:ℝ):ℂ)*Complex.I)-Complex.exp ((((⌊M*s j⌋:ℝ)*(u/M):ℝ):ℂ)*Complex.I)‖≤|u|/M := by
     apply (norm_exp_ofReal_mul_I_sub_le _ _).trans
-    rw [show s j*u-(⌊M*s j⌋:ℝ)*(u/M)=(M*s j-(⌊M*s j⌋:ℝ))*u/M by field_simp; ring,
+    rw [show s j*u-(⌊M*s j⌋:ℝ)*(u/M)=(M*s j-(⌊M*s j⌋:ℝ))*u/M by field_simp,
       abs_div,abs_mul,abs_of_pos hM,abs_of_nonneg (sub_nonneg.mpr (Int.floor_le _))]
     apply div_le_div_of_nonneg_right _ hM.le
     exact mul_le_of_le_one_left (abs_nonneg u) (by linarith only [Int.lt_floor_add_one (M*s j)])
@@ -33,7 +33,7 @@ private theorem round_error (s : ℕ→ℝ) (u : ℝ) {M : ℝ} (hM : 0<M) (N : 
 /-- A schedule with unit-separated successive real dates has character
 cancellation at almost every frequency. Finer integer clocks approximate
 the exact schedule uniformly in prefix length. -/
-theorem ae_separated_clock_exp (s : ℕ→ℝ) (hs : ∀ j, s j+1≤s (j+1)) :
+theorem ae_separated_clock_exp (s : ℕ→ℝ) (hs : ∀ j, s j+1 ≤ s (j+1)) :
     ∀ᵐ u : ℝ, Tendsto (clockCharacterMean s u) atTop (𝓝 0) := by
   let M (m : ℕ) := (m:ℝ)+1
   let b (m j : ℕ) := ⌊M m*s j⌋
@@ -55,7 +55,9 @@ theorem ae_separated_clock_exp (s : ℕ→ℝ) (hs : ∀ j, s j+1≤s (j+1)) :
       refine ⟨measurable_const_mul _,?_⟩
       rw [Real.map_volume_mul_left (inv_ne_zero (hm m).ne')]
       exact Measure.smul_absolutelyContinuous
-    simpa only [clockCharacterMean,div_eq_inv_mul] using hq.ae (ae_integerClock_exp (b m) (hb m))
+    filter_upwards [hq.ae (ae_integerClock_exp (b m) (hb m))] with u hu
+    rw [div_eq_inv_mul]
+    exact hu
   filter_upwards [ae_all_iff.mpr htest] with u hu
   apply Metric.tendsto_nhds.mpr
   intro ε hε

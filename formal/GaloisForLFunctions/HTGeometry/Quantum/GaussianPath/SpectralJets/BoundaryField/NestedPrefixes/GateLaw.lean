@@ -26,7 +26,7 @@ private theorem numbered_action {d : ℕ} (E : Fin (d+1) → ℝ) (m : Fin d →
 on a smaller-prefix schedule equals the continuous-time frequency on the
 larger register, even though the two Hamiltonians share their couplings. -/
 theorem gaussian_selected_gate_law (k : ℕ) (s : PathPauliDisorder → ℕ → ℝ)
-    (hs : ∀ j, Measurable (fun η => s η j)) (hsep : ∀ η j, s η j+1≤s η (j+1)) :
+    (hs : ∀ j, Measurable (fun η => s η j)) (hsep : ∀ η j, s η j+1 ≤ s η (j+1)) :
     ∀ᵐ ω ∂pathPauliDisorderLaw,
       let N := k+3
       let H : selfAdjoint (Register N) := ⟨pathHamiltonian (pathPauliDisorderShell ω (k+1)),

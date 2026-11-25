@@ -33,7 +33,7 @@ theorem gaussian_single_return_record {j k : ℕ} (hj : j<k) (P s : ℕ)
       | zero => simp only [Nat.cast_zero,add_zero,le_refl]
       | succ n ih =>
         rw [Nat.cast_add_one,←add_assoc]
-        exact (add_le_add_right ih 1).trans (returnClock_separated _ _ _ (x ω) n)
+        exact (add_le_add ih (le_refl 1)).trans (returnClock_separated _ _ _ (x ω) n)
     exact tendsto_atTop_mono hl (tendsto_atTop_add_const_left _ _ tendsto_natCast_atTop_atTop)
   have h := scalar_reading k (fun n ω => t ω n) hm (.of_forall fun ω => hdiv (eraseTerminal k ω)) he
   simpa only [hsame] using h

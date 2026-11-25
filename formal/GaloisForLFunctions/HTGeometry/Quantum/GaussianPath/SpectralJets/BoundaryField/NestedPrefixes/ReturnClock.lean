@@ -31,7 +31,9 @@ theorem measurable_first_visit (n s : ℕ) (a : (PrefixIndex n → ℝ) → ℝ)
         exact (hv.2 ⟨ht.1,(hasProjectiveCircuitApproximation_iff_infDist _ s _).mpr hfit⟩).trans ht.2
     rw [he]
     simpa only [add_zero] using measurable_shifted_sublevel _ (continuous_distance n s) a ha 0 b ε
-  simpa only [sub_add_cancel] using hwait.add ha
+  have h := hwait.add ha
+  change Measurable (fun x => (v x-a x)+a x) at h
+  simpa only [sub_add_cancel] using h
 
 /-- Index zero is the first s-gate dip after the P-gate crossing at 9/80.
 Each subsequent observation is the earliest affordable date at least one

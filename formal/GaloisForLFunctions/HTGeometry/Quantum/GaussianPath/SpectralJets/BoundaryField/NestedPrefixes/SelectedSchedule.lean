@@ -42,7 +42,7 @@ theorem haar_of_clock_cancellation {I : Type*} [Fintype I] (f : I → ℝ) (t : 
 /-- Almost every full draw passes every balanced spectral character test
 on a prescribed schedule that can read all but its last longitudinal field. -/
 theorem gaussian_selected_actions (k : ℕ) (s : PathPauliDisorder → ℕ → ℝ)
-    (hs : ∀ j, Measurable (fun η => s η j)) (hsep : ∀ η j, s η j+1≤s η (j+1)) :
+    (hs : ∀ j, Measurable (fun η => s η j)) (hsep : ∀ η j, s η j+1 ≤ s η (j+1)) :
     ∀ᵐ ω ∂pathPauliDisorderLaw,
       let E := (isSelfAdjoint_pathHamiltonian (pathPauliDisorderShell ω (k+1))).isHermitian.eigenvalues
       ∀ m : Config k → ℤ, m≠0 → (∑ i, m i)=0 →
@@ -61,7 +61,7 @@ theorem gaussian_selected_actions (k : ℕ) (s : PathPauliDisorder → ℕ → �
 samples the full projective phase law of the original larger register.
 The dates can be real and depend on entire smaller-prefix trajectories. -/
 theorem gaussian_selected_schedule (k : ℕ) (s : PathPauliDisorder → ℕ → ℝ)
-    (hs : ∀ j, Measurable (fun η => s η j)) (hsep : ∀ η j, s η j+1≤s η (j+1)) :
+    (hs : ∀ j, Measurable (fun η => s η j)) (hsep : ∀ η j, s η j+1 ≤ s η (j+1)) :
     ∀ᵐ ω ∂pathPauliDisorderLaw,
       let E := (isSelfAdjoint_pathHamiltonian (pathPauliDisorderShell ω (k+1))).isHermitian.eigenvalues
       ∀ r : Config k, let f := projectiveFrequency (fun i => -E i) r

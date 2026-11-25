@@ -94,8 +94,11 @@ theorem LiftDefect.restrict (h : LiftDefect (p := p) (ε := ε) W c hle u α)
         resG X hj (u j) * (1 + algebraMap R Γ(X, V) ε * resG X (le_inf hi hj) (α i j)) := by
   have e := congrArg (resG X (le_inf hi hj)) (h i j)
   simp only [map_mul, map_add, map_one, resG_resG] at e
-  have hc := (sectionRes p (homOfLE (le_inf hi hj))).commutes ε
-  change resG X (le_inf hi hj) _ = _ at hc
+  letI := sectionAlgebra p (W i ⊓ W j)
+  letI := sectionAlgebra p V
+  have hc : resG X (le_inf hi hj) (algebraMap R Γ(X, W i ⊓ W j) ε) =
+      algebraMap R Γ(X, V) ε :=
+    (sectionRes p (homOfLE (le_inf hi hj))).commutes ε
   rwa [hc] at e
 
 private theorem mul_add_sub_eq_zero_of_defects {A : Type} [CommRing A]
@@ -186,10 +189,12 @@ theorem LiftDefect.exists_gen_of_coboundary [IsLocalRing R] [Flat p] [X.IsSepara
   have hz := (mul_scalar_eq_zero_iff H ((haff i).inf (haff j)) hne hann _).2 hzero
   let e := algebraMap R Γ(X, V) ε
   have he : e * e = 0 := by rw [← map_mul, hε, map_zero]
-  have hleft := (sectionRes p (homOfLE (inf_le_left : V ≤ W i))).commutes ε
-  have hright := (sectionRes p (homOfLE (inf_le_right : V ≤ W j))).commutes ε
-  change resG X inf_le_left _ = e at hleft
-  change resG X inf_le_right _ = e at hright
+  letI := sectionAlgebra p (W i)
+  letI := sectionAlgebra p (W j)
+  have hleft : resG X (inf_le_left : V ≤ W i) (algebraMap R Γ(X, W i) ε) = e :=
+    (sectionRes p (homOfLE (inf_le_left : V ≤ W i))).commutes ε
+  have hright : resG X (inf_le_right : V ≤ W j) (algebraMap R Γ(X, W j) ε) = e :=
+    (sectionRes p (homOfLE (inf_le_right : V ≤ W j))).commutes ε
   simp only [u', map_mul, map_sub, map_one, hleft, hright]
   exact corrected_defect he (h i j) hz
 

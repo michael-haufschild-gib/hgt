@@ -44,15 +44,17 @@ theorem LiftDefect.exists_units_on_slice
   let V := a ⁻¹ᵁ W i ⊓ a ⁻¹ᵁ W j
   let O := W i ⊓ W j
   letI := sectionAlgebra (a ≫ p) V
+  letI := sectionAlgebra p O
   have hi : V ≤ a ⁻¹ᵁ W i := inf_le_left
   have hj : V ≤ a ⁻¹ᵁ W j := inf_le_right
   let b : SectionRing p O →ₐ[R] SectionRing (a ≫ p) V :=
     (sectionRes (a ≫ p) (homOfLE (show V ≤ a ⁻¹ᵁ O from fun _ hx => hx))).comp
       (sectionPullback (f := a) rfl O)
-  have hb := b.commutes ε
-  change a.appLE O V _ (algebraMap R (SectionRing p O) ε) = _ at hb
+  have hb : (a.appLE O V (fun _ hx => hx)).hom (algebraMap R Γ(X, W i ⊓ W j) ε) =
+      algebraMap R Γ(T, V) ε := b.commutes ε
   have e := congrArg (a.appLE O V (fun _ hx => hx)).hom (h i j)
-  simp only [map_mul, map_add, map_one, appLE_resG, hb] at e
+  simp only [map_mul, map_add, map_one, appLE_resG] at e
+  rw [hb] at e
   have htij := pulledGenerator_compat ht (hi.trans (a.preimage_mono (hle i)))
     (hj.trans (a.preimage_mono (hle j)))
   have hprod (k : I) (hk : V ≤ a ⁻¹ᵁ W k) :
@@ -102,9 +104,15 @@ theorem LiftDefect.coboundary_on_slice
   have hcompat (i j : I) :
       resG T' inf_le_left (π.app (V i) (r i)) = resG T' inf_le_right (π.app (V j) (r j)) := by
     let O := V i ⊓ V j
+    letI := sectionAlgebra (a ≫ p) (a ⁻¹ᵁ W i ⊓ a ⁻¹ᵁ W j)
+    have eπ : (π.appLE O (π ⁻¹ᵁ V i ⊓ π ⁻¹ᵁ V j) (fun _ hx => hx)).hom
+        (algebraMap R Γ(T, a ⁻¹ᵁ W i ⊓ a ⁻¹ᵁ W j) ε) = 0 := by
+      have h := appLE_base_algebraMap H.w
+        (show π ⁻¹ᵁ V i ⊓ π ⁻¹ᵁ V j ≤ π ⁻¹ᵁ O from fun _ hx => hx) ε
+      exact h.trans (by rw [e0, map_zero])
     have e := congrArg (π.appLE O (π ⁻¹ᵁ V i ⊓ π ⁻¹ᵁ V j) (fun _ hx => hx)).hom (hrel i j)
-    simp only [map_mul, map_add, map_one, appLE_resG, appLE_base_algebraMap H.w, e0, map_zero,
-      zero_mul, add_zero, mul_one] at e
+    simp only [map_mul, map_add, map_one, appLE_resG] at e
+    rw [eπ, zero_mul, add_zero, mul_one] at e
     simp only [Scheme.Hom.app_eq_appLE, resG_appLE]
     exact e
   obtain ⟨b, hb⟩ := exists_fun_of_cover (fun i => π ⁻¹ᵁ V i) (fun _ => le_top) hcov.ge

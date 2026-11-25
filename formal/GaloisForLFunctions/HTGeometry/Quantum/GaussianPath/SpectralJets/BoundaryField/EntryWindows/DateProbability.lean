@@ -26,7 +26,8 @@ theorem pencil_entry_window {N : ℕ} (A Z : Register N)
   intro D H
   let x := physicalArc ε
   have hx := (physicalArc_spec he.1 he.2).1
-  obtain ⟨F,hF⟩ := winding_forecast hT (show 0≤2*L by positivity)
+  let F := windingBox T (2*L)
+  have hF := winding_forecast hT (show 0≤2*L by positivity)
     (show x∈Icc (0:ℝ) 1 from ⟨hx.1.le,hx.2.le.trans (by norm_num)⟩)
   let b (n : ℤ) := (2*π)*((n:ℝ)+x)/T
   have hn (n : ℤ) : b n≠0 := by

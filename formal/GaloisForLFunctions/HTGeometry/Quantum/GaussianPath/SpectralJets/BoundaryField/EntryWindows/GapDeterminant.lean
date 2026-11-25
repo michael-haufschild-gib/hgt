@@ -34,14 +34,16 @@ theorem gap_determinant (H : Matrix I I ℂ) (h : H.IsHermitian) (b : ℝ) :
   have hH : H=U*E*Uᴴ := h.spectral_theorem
   have hgap : gapOperator H=V*gapOperator E*Vᴴ := by
     dsimp only [V,gapOperator]
-    rw [Matrix.conjTranspose_kronecker,Matrix.mul_sub,Matrix.sub_mul,←Matrix.mul_kronecker_mul,
-      ←Matrix.mul_kronecker_mul,←Matrix.mul_kronecker_mul,←Matrix.mul_kronecker_mul,
-      Matrix.mul_one,hU,←hH]
+    rw [Matrix.conjTranspose_kronecker,Matrix.mul_sub,Matrix.sub_mul]
+    congr 1 <;> rw [←Matrix.mul_kronecker_mul,←Matrix.mul_kronecker_mul,Matrix.mul_one,hU,←hH]
   have hdiag : Matrix.scalar (I × I) (b:ℂ)-gapOperator E =
       Matrix.diagonal (fun p : I × I => (b:ℂ)-((h.eigenvalues p.1:ℂ)-(h.eigenvalues p.2:ℂ))) := by
-    rw [gapOperator,show (1:Matrix I I ℂ)=Matrix.diagonal (fun _ => (1:ℂ)) from Matrix.diagonal_one.symm]
-    simp only [E,Matrix.diagonal_kronecker_diagonal,mul_one,one_mul,←Matrix.diagonal_sub]
-    rfl
+    ext ⟨i,j⟩ ⟨u,v⟩
+    by_cases hi : i=u <;> by_cases hj : j=v
+    · subst u; subst v; simp [gapOperator,E,Matrix.scalar_apply]
+    · subst u; simp [gapOperator,E,Matrix.scalar_apply,hj]
+    · subst v; simp [gapOperator,E,Matrix.scalar_apply,hi]
+    · simp [gapOperator,E,Matrix.scalar_apply,hi,hj]
   have hshift : Matrix.scalar (I × I) (b:ℂ)-gapOperator H =
       V*(Matrix.scalar (I × I) (b:ℂ)-gapOperator E)*Vᴴ := by
     rw [hgap,Matrix.mul_sub,Matrix.sub_mul]

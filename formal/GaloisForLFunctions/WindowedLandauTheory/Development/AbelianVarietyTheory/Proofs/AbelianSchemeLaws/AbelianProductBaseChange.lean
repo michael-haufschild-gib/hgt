@@ -22,8 +22,14 @@ theorem pφ₂_isPullback :
   have h := IsPullback.of_hasPullback (A ⊗ A).hom φ
   change IsPullback (μ.left ≫ pullback.fst (A ⊗ A).hom φ) _ _ _
   rw [← Over.w μ]
-  exact h.of_iso (asIso μ.left).symm (Iso.refl _) (Iso.refl _) (Iso.refl _)
-    (by simp) (by simp) (by simp) (by simp)
+  let e := asIso μ.left
+  refine h.of_iso e.symm (Iso.refl _) (Iso.refl _) (Iso.refl _) ?_ ?_ (by simp) (by simp)
+  · change pullback.fst (A ⊗ A).hom φ ≫ 𝟙 _ =
+      e.inv ≫ e.hom ≫ pullback.fst (A ⊗ A).hom φ
+    rw [e.inv_hom_id_assoc, Category.comp_id]
+  · change pullback.snd (A ⊗ A).hom φ ≫ 𝟙 _ =
+      e.inv ≫ e.hom ≫ pullback.snd (A ⊗ A).hom φ
+    rw [e.inv_hom_id_assoc, Category.comp_id]
 
 /-- Pairing two endomorphisms commutes with the cartesian comparison. -/
 theorem lift_pφ₂ (a b : A ⟶ A) :

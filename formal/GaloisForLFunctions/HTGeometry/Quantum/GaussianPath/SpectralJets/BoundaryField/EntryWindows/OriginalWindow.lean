@@ -15,7 +15,7 @@ def replacedGenerator (ω : PathPauliDisorder) (k : ℕ) (y : ℝ) : selfAdjoint
   let p := pathPauliDisorderShell (Function.update ω (terminalCoordinate k) y) (k+1)
   ⟨pathHamiltonian p,isSelfAdjoint_pathHamiltonian _⟩
 
-private theorem replaced_affine (ω : PathPauliDisorder) (k : ℕ) (y : ℝ) :
+theorem replaced_affine (ω : PathPauliDisorder) (k : ℕ) (y : ℝ) :
     (replacedGenerator ω k y).val=boundaryHamiltonian ω k (-ω (terminalCoordinate k))+
       (y:ℂ) • SpinExtension.lastPauli (k+2) 2 := by
   have h := boundary_update ω k y 0

@@ -21,6 +21,12 @@ def fibreDefect (q : Z ⟶ X) (α : ∀ i j, Γ(X, W i ⊓ W j)) (i j : I) :
     Γ(Z, q ⁻¹ᵁ W i ⊓ q ⁻¹ᵁ W j) :=
   q.appLE (W i ⊓ W j) _ (fun _ hx => hx) (α i j)
 
+private theorem resG_app {Y Y' : Scheme.{0}} (q : Y' ⟶ Y)
+    {U : Y.Opens} {V : Y'.Opens} (h : V ≤ q ⁻¹ᵁ U) (x : Γ(Y, U)) :
+    resG Y' h (q.app U x) = q.appLE U V h x :=
+  (congrArg (resG Y' h) (ConcreteCategory.congr_hom (q.app_eq_appLE (U := U)) x)).trans
+    (resG_appLE le_rfl h x)
+
 theorem LiftDefect.isCocycle_fibre [Flat p] [X.IsSeparated]
     (h : LiftDefect (p := p) (ε := ε) W c hle u α) (hL : L.IsLB)
     (haff : ∀ i, IsAffineOpen (W i)) (hu : ∀ i, IsUnit (u i))
@@ -34,8 +40,20 @@ theorem LiftDefect.isCocycle_fibre [Flat p] [X.IsSeparated]
   have hN : N ≤ q ⁻¹ᵁ V := le_inf (le_inf hi hj) hk
   have e := congrArg (resG Z hN)
     (h.cocycle_on_closed_fibre hL haff hu hne hm hann H i j k)
-  simp only [fibreDefect, map_add, Scheme.Hom.app_eq_appLE, resG_appLE, appLE_resG] at e ⊢
-  exact e
+  rw [map_add] at e
+  have hr (a b : I) (ha : N ≤ q ⁻¹ᵁ W a) (hb : N ≤ q ⁻¹ᵁ W b) :
+      resG Z (le_inf ha hb) (fibreDefect q α a b) =
+        q.appLE (W a ⊓ W b) N (fun z hz => ⟨ha hz, hb hz⟩) (α a b) :=
+    resG_appLE (fun _ hx => hx) (le_inf ha hb) (α a b)
+  rw [hr i j hi hj, hr j k hj hk, hr i k hi hk]
+  have hres (U : X.Opens) (hU : V ≤ U) (z : Γ(X, U)) :
+      resG Z hN (q.app V (resG X hU z)) =
+        q.appLE U N (hN.trans (q.preimage_mono hU)) z :=
+    (resG_app q hN (resG X hU z)).trans (appLE_resG hN hU z)
+  have e₁ := hres (W i ⊓ W j) inf_le_left (α i j)
+  have e₂ := hres (W j ⊓ W k) (le_inf (inf_le_left.trans inf_le_right) inf_le_right) (α j k)
+  have e₃ := hres (W i ⊓ W k) (le_inf (inf_le_left.trans inf_le_left) inf_le_right) (α i k)
+  exact (congrArg₂ (· + ·) e₁ e₂).symm.trans (e.trans e₃)
 
 private theorem appLE_congr {A B : Scheme.{0}} {f g : A ⟶ B}
     (e : f = g) (U : B.Opens) {V : A.Opens} (hf : V ≤ f ⁻¹ᵁ U) (hg : V ≤ g ⁻¹ᵁ U) :
@@ -45,7 +63,7 @@ private theorem appLE_congr {A B : Scheme.{0}} {f g : A ⟶ B}
 
 /-- On the closed fibre of a flat slice admitting a generator, the obstruction pulls back
 to an additive coboundary. -/
-theorem LiftDefect.coboundary_on_fibre_slice
+theorem LiftDefect.coboundary_on_fibre_slice [X.IsSeparated]
     (h : LiftDefect (p := p) (ε := ε) W c hle u α) (hu : ∀ i, IsUnit (u i))
     (hne : ε ≠ 0) (hm : ε ∈ IsLocalRing.maximalIdeal R)
     (hann : ∀ a ∈ IsLocalRing.maximalIdeal R, a * ε = 0)
@@ -71,16 +89,27 @@ theorem LiftDefect.coboundary_on_fibre_slice
   have hN : N ≤ q₀ ⁻¹ᵁ M :=
     le_inf ((b.preimage_mono inf_le_left).trans (he i).le)
       ((b.preimage_mono inf_le_right).trans (he j).le)
-  have hz := (mul_scalar_eq_zero_iff H₀ (((haff i).preimage a).inf ((haff j).preimage a))
-    hne hann _).1 (hβ i j)
+  have hM : IsAffineOpen M := by
+    dsimp only [M]
+    rw [← a.preimage_inf]
+    exact ((haff i).inf (haff j)).preimage a
+  have hz := (mul_scalar_eq_zero_iff H₀ hM hne hann _).1 (hβ i j)
   have e := congrArg (resG T₀ hN) hz
-  simp only [Scheme.Hom.app_eq_appLE, map_sub, map_zero, resG_appLE, appLE_resG,
-    sub_eq_zero] at e
+  simp only [map_sub, map_zero, resG_app, appLE_resG, sub_eq_zero] at e
   rw [Scheme.Hom.app_eq_appLE]
   simp only [fibreDefect, resG_appLE]
   refine Eq.trans ?_ e
-  rw [← CommRingCat.comp_apply, ← CommRingCat.comp_apply, Scheme.Hom.appLE_comp_appLE,
-    Scheme.Hom.appLE_comp_appLE]
-  exact ConcreteCategory.congr_hom (appLE_congr hb (W i ⊓ W j) _ _) _
+  let O := W i ⊓ W j
+  have hVO : V ≤ q ⁻¹ᵁ O := fun _ h => h
+  have hMO : M ≤ a ⁻¹ᵁ O := fun _ h => h
+  have h₁ : N ≤ (b ≫ q) ⁻¹ᵁ O := b.preimage_mono hVO
+  have h₂ : N ≤ (q₀ ≫ a) ⁻¹ᵁ O := hN.trans (q₀.preimage_mono hMO)
+  calc
+    _ = (b ≫ q).appLE O N h₁ (α i j) :=
+      ConcreteCategory.congr_hom (Scheme.Hom.appLE_comp_appLE b q O V N hVO le_rfl) _
+    _ = (q₀ ≫ a).appLE O N h₂ (α i j) :=
+      ConcreteCategory.congr_hom (appLE_congr hb O h₁ h₂) _
+    _ = _ :=
+      (ConcreteCategory.congr_hom (Scheme.Hom.appLE_comp_appLE q₀ a O M N hMO hN) _).symm
 
 end GlobalTheory.AbLaw.SmallExtension
