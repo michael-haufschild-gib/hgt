@@ -63,7 +63,7 @@ private def productCoordinates : Coordinates Z d where
       C.basicOpen_ratio, D.basicOpen_ratio, Scheme.Hom.preimage_inf]
     apply SetLike.ext
     intro z
-    change ((_ ∧ (_ ∧ _)) ∧ (_ ∧ (_ ∧ _))) ↔ _
+    simp only [productOpen, Opens.mem_inf]
     tauto
   ratio_mul i j k := by
     let V := productOpen p q e C D i ⊓ productOpen p q e C D j
@@ -71,9 +71,11 @@ private def productCoordinates : Coordinates Z d where
     have hj : V ≤ p ⁻¹ᵁ C.U (e j).1 := inf_le_right.trans inf_le_left
     have hi' : V ≤ q ⁻¹ᵁ D.U (e i).2 := inf_le_left.trans inf_le_right
     have hj' : V ≤ q ⁻¹ᵁ D.U (e j).2 := inf_le_right.trans inf_le_right
-    have hC := congrArg (p.appLE _ V (le_inf hi hj)).hom
+    have eC : V ≤ p ⁻¹ᵁ (C.U (e i).1 ⊓ C.U (e j).1) := fun z hz => ⟨hi hz, hj hz⟩
+    have eD : V ≤ q ⁻¹ᵁ (D.U (e i).2 ⊓ D.U (e j).2) := fun z hz => ⟨hi' hz, hj' hz⟩
+    have hC := congrArg (p.appLE _ V eC).hom
       (C.ratio_mul (e i).1 (e j).1 (e k).1)
-    have hD := congrArg (q.appLE _ V (le_inf hi' hj')).hom
+    have hD := congrArg (q.appLE _ V eD).hom
       (D.ratio_mul (e i).2 (e j).2 (e k).2)
     simp only [map_mul, appLE_resG] at hC hD
     simp only [productRatio, map_mul, resG_appLE]
@@ -104,14 +106,16 @@ private theorem product_eval_surjective (H : IsPullback p q f g)
     simp only [F, MvPolynomial.eval₂Hom_X', productRatio, Equiv.apply_symm_apply, C.ratio_self,
       map_one, one_mul, q', sectionPullbackLE_apply, a, b]
   have H' := isPushout_productSections H (C.U a) (D.U b) (haff a) (haff' b)
+  have hclose : Subring.closure (Set.range p'.toRingHom ∪ Set.range q'.toRingHom) =
+      (⊤ : Subring (SectionRing (p ≫ f) V)) :=
+    CommRingCat.closure_range_union_range_eq_top_of_isPushout H'
   change Function.Surjective F
-  rw [← RingHom.range_eq_top, ← top_le_iff,
-    ← CommRingCat.closure_range_union_range_eq_top_of_isPushout H', Subring.closure_le]
+  rw [← RingHom.range_eq_top, ← top_le_iff, ← hclose, Subring.closure_le]
   rintro _ (⟨x, rfl⟩ | ⟨x, rfl⟩)
   · exact map_mem_range_of_polynomial_generators p'.toRingHom _ (C.ratio a) F (hC a)
-      (fun c => ⟨MvPolynomial.C c, by rw [MvPolynomial.eval₂Hom_C, p'.commutes]⟩) hp x
+      (fun c => ⟨MvPolynomial.C c, by rw [MvPolynomial.eval₂Hom_C]; exact (p'.commutes c).symm⟩) hp x
   · exact map_mem_range_of_polynomial_generators q'.toRingHom _ (D.ratio b) F (hD b)
-      (fun c => ⟨MvPolynomial.C c, by rw [MvPolynomial.eval₂Hom_C, q'.commutes]⟩) hq x
+      (fun c => ⟨MvPolynomial.C c, by rw [MvPolynomial.eval₂Hom_C]; exact (q'.commutes c).symm⟩) hq x
 
 end Coordinates
 
@@ -176,9 +180,10 @@ theorem isProjOver_baseChange (α : R →+* S)
     let F := MvPolynomial.eval₂Hom (algebraMap S B) (D.ratio i)
     let j := (π.appLE U V le_rfl).hom
     have hP := isPushout_sectionAlgebra H (hU i) rfl
+    have hclose : Subring.closure (Set.range (algebraMap S B) ∪ Set.range j) = (⊤ : Subring B) :=
+      CommRingCat.closure_range_union_range_eq_top_of_isPushout hP
     change Function.Surjective F
-    rw [← RingHom.range_eq_top, ← top_le_iff,
-      ← CommRingCat.closure_range_union_range_eq_top_of_isPushout hP, Subring.closure_le]
+    rw [← RingHom.range_eq_top, ← top_le_iff, ← hclose, Subring.closure_le]
     rintro _ (⟨x, rfl⟩ | ⟨x, rfl⟩)
     · exact ⟨MvPolynomial.C x, MvPolynomial.eval₂Hom_C _ _ _⟩
     · refine map_mem_range_of_polynomial_generators j (algebraMap R A) (C.ratio i) F ?_ ?_ ?_ x

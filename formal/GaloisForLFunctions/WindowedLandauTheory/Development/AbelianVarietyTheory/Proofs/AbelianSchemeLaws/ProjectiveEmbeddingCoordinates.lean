@@ -10,6 +10,8 @@ open GlobalTheory.LineBundleSections GlobalTheory.SchemeCohomology UpperTheory.C
 
 namespace GlobalTheory.ProjectiveSections.Coordinates
 
+attribute [local instance] MvPolynomial.gradedAlgebra
+
 variable {R : Type} [CommRing R] [Nontrivial R] {X : Scheme.{0}} {n : ℕ}
   (a : X ⟶ PSpace R n)
 
@@ -19,13 +21,17 @@ def ofMorphism : Coordinates X n where
   cover := a.iSup_preimage_eq_top (PSpace.iSup_coordinateOpen R n)
   ratio i j := pspacePullRatio a _ i le_rfl j
   ratio_self i := by
-    unfold pspacePullRatio pspaceChartRatio
-    rw [homogeneousRatio_self, map_one]
+    have he : pspaceChartRatio R i i = 1 :=
+      homogeneousRatio_self (MvPolynomial.isHomogeneous_X R i)
+    change (a.appLE _ _ le_rfl).hom (pspaceChartRatio R i i) = 1
+    rw [he]
+    exact map_one _
   basicOpen_ratio i j := basicOpen_pspacePullRatio a _ i le_rfl j
   ratio_mul i j k := by
     simp only [pspacePullRatio, resG_appLE]
     exact pspacePullRatio_mul a _ i j k inf_le_left inf_le_right
 
+omit [Nontrivial R] in
 theorem ofMorphism_isAffineOpen [IsClosedImmersion a] (i : Fin (n + 1)) :
     IsAffineOpen ((ofMorphism a).U i) :=
   (pspaceChart_isAffine i).preimage a
@@ -50,9 +56,11 @@ theorem ofMorphism_eval_surjective [IsClosedImmersion a]
       rw [MvPolynomial.rename_C, MvPolynomial.eval₂Hom_C]
       change algebraMap R (SectionRing f V) c = ρ (e (algebraMap R _ c))
       rw [e.commutes, ρ.commutes]
+      rfl
     · intro j
-      simp only [RingHom.comp_apply, MvPolynomial.rename_X, F, MvPolynomial.eval₂Hom_X',
-        AlgHom.toRingHom_eq_coe, e, pspaceChartAlgEquiv_X]
+      change F (MvPolynomial.rename Subtype.val (MvPolynomial.X j)) = ρ (e (MvPolynomial.X j))
+      rw [MvPolynomial.rename_X, MvPolynomial.eval₂Hom_X',
+        show e (MvPolynomial.X j) = pspaceChartRatio R i j.1 from pspaceChartAlgEquiv_X R i j]
       exact ConcreteCategory.congr_hom (a.appLE_eq_app (U := U)) _
   intro x
   obtain ⟨y, hy⟩ := a.app_surjective U (pspaceChart_isAffine i) x

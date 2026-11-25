@@ -29,7 +29,7 @@ theorem interpolate_divisor [Fintype I] [Nonempty I] {u v r c b : ℝ} {p q : I 
     (hdiv : ∀ i, (d:ℤ)∣(q i-p i)-(q i₀-p i₀)) :
     flow w (u+(v-u)/d) ∈ enclosingUnitArc r := by
   have hd₀ : (0:ℝ)<d := Nat.cast_pos.mpr hd
-  have hd₁ : (1:ℝ)≤d := by exact_mod_cast hd
+  have hd₁ : (1:ℝ)≤d := by exact_mod_cast (show 1≤d by omega)
   have hr : 0≤r := (hp i₀).1.trans (hp i₀).2
   let f := (1:ℝ)/d
   have hf₀ : 0≤f := (one_div_pos.mpr hd₀).le

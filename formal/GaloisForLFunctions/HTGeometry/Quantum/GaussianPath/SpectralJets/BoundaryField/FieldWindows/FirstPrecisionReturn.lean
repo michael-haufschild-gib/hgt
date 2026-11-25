@@ -8,7 +8,8 @@ namespace GaloisForLFunctions.HTGeometry.SpectralJets.BoundaryField.FieldWindows
 open PrecisionReturns
 noncomputable section
 
-private theorem diverges_of_precision_exponent {v : ℝ → ℝ} {d : ℝ} (hd : 0 < d)
+/-- A positive logarithmic precision exponent forces the absolute date to diverge. -/
+theorem diverges_of_precision_exponent {v : ℝ → ℝ} {d : ℝ} (hd : 0 < d)
     (hpos : ∀ ε > 0, 0 < v ε)
     (h : Tendsto (fun ε => log (v ε)/log (1/ε)) (𝓝[>] (0:ℝ)) (𝓝 d)) :
     Tendsto v (𝓝[>] (0:ℝ)) atTop := by

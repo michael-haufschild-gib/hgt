@@ -8,7 +8,8 @@ namespace GaloisForLFunctions.HTGeometry.SpectralJets.BoundaryField.FieldWindows
 noncomputable section
 local instance : IsProbabilityMeasure (volume : Measure UnitAddCircle) := ⟨UnitAddCircle.measure_univ⟩
 
-private theorem arc_perm {I : Type} [Fintype I] [DecidableEq I] (f : I→ℝ) (e : Equiv.Perm I)
+/-- Permuting energy labels changes only the reference label of a relative enclosing arc. -/
+theorem arc_perm {I : Type} [Fintype I] [DecidableEq I] (f : I→ℝ) (e : Equiv.Perm I)
     (r : I) (t x : ℝ) :
     finiteClockPhasePoint (projectiveFrequency (f ∘ e) r) t ∈ relativeEnclosingUnitArc r x ↔
     finiteClockPhasePoint (projectiveFrequency f (e r)) t ∈ relativeEnclosingUnitArc (e r) x := by

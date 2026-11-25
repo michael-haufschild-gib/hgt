@@ -21,10 +21,12 @@ private theorem midpoint_chords {ε : ℝ} (he : ε∈Ioc (0:ℝ) (1/10)) :
   have hy : ε/2≤1 := by linarith only [he.2]
   have h₁ : π*(1/2-physicalArc ε)/2=π/4-arcsin (ε/2) := by
     unfold physicalArc
-    field_simp [pi_ne_zero] <;> ring
+    field_simp [pi_ne_zero]
+    ring
   have h₂ : π*(1/2+physicalArc ε)/2=π/4+arcsin (ε/2) := by
     unfold physicalArc
-    field_simp [pi_ne_zero] <;> ring
+    field_simp [pi_ne_zero]
+    ring
   simp only [zeroGateArcTolerance,h₁,h₂,sin_sub,sin_add,sin_pi_div_four,cos_pi_div_four,
     sin_arcsin hx hy,cos_arcsin,c]
   constructor <;> ring

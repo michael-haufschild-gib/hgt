@@ -82,7 +82,7 @@ theorem exists_gen_of_refinement (hL : L.IsLB) {I : Type} (W : I → X.Opens)
   have hcomp (a b : L.ι) : resG X inf_le_left (z a) =
       (L.g a b).val * resG X inf_le_right (z b) := by
     refine fun_ext_of_cover (fun i => (L.U a ⊓ L.U b) ⊓ W i)
-      (fun _ => inf_le_left) (hcover _) fun i => ?_
+      (fun _ => inf_le_left) (hcover (L.U a ⊓ L.U b)).ge fun i => ?_
     change resG X inf_le_left (resG X inf_le_left (z a)) =
       resG X inf_le_left ((L.g a b).val * resG X inf_le_right (z b))
     simp only [map_mul, resG_resG]
@@ -97,7 +97,7 @@ theorem exists_gen_of_refinement (hL : L.IsLB) {I : Type} (W : I → X.Opens)
   refine ⟨i, ?_⟩
   rw [Equiv.apply_symm_apply]
   change x ∈ X.basicOpen (resG X (hle i) (z (c i)))
-  rwa [hcoord (c i) i (hle i) le_rfl, diag_on hL, one_mul, resG_self,
+  rwa [hcoord (c i) i (hle i) le_rfl, diag_on hL (hle i), one_mul, resG_self,
     X.basicOpen_of_isUnit (hu i)]
 
 end GlobalTheory.LineBundleSections

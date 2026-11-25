@@ -1,4 +1,5 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.PELModuli.PELGroupPullbacks
+import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.PELModuli.PELLineBundleTrivialization
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.LineBundleSectionPullback
 
 /-! The fibre square and its group axes commute with base change. -/
@@ -36,20 +37,12 @@ end ReciprocityTheory.ChartRestriction.G.Pdiv.PullbackComparison
 namespace GlobalTheory.LineBundleSections
 
 /-- A generator for pullback along a composite gives one for the iterated pullback. -/
-theorem exists_gen_nested_pull {X Y Z : Scheme.{0}} {L : LB X} (f : Y ⟶ X) (g : Z ⟶ Y)
+theorem exists_gen_nested_pull {X Y Z : Scheme.{0}} {L : LB X} (hL : L.IsLB)
+    (f : Y ⟶ X) (g : Z ⟶ Y)
     {t : (L.pull (g ≫ f)).Gen} (ht : t.IsGen) : ∃ s : ((L.pull f).pull g).Gen, s.IsGen := by
   let P := (ChartPull.pull (L.pull f) g).comp (ChartPull.pull L f)
   let Q := ChartPull.pull L (g ≫ f)
-  let M := (L.pull f).pull g
-  let j (i : M.ι) : (L.pull (g ≫ f)).ι := fun _ => P.idx i
-  have hle (i : M.ι) : M.U i ≤ (L.pull (g ≫ f)).U (j i) :=
-    (P.le i).trans (pull_chart L (g ≫ f) (P.idx i)).ge
-  let C : ChartPull M (L.pull (g ≫ f)) (𝟙 Z) :=
-    { idx := j
-      le := hle
-      g := fun i k => by
-        rw [pullLE_id]
-        exact (P.g i k).trans (Q.restrict_g (hle i) (hle k)).symm }
-  exact C.exists_gen ht
+  obtain ⟨i, hi⟩ := ChartPull.iso_of_common Q P hL
+  exact ht.exists_gen_of_iso hi (hL.pull (g ≫ f)) ((hL.pull f).pull g)
 
 end GlobalTheory.LineBundleSections

@@ -22,9 +22,11 @@ variable {I : Ideal R} {π : Y ⟶ X} {f : Y ⟶ Spec (CommRingCat.of (R ⧸ I))
   (H : IsPullback π f p (Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk I))))
   {W : X.Opens} (hW : IsAffineOpen W)
 
-include H hW in
+include H hW
+
 theorem app_surjective_of_quotient : Function.Surjective (π.app W) := by
-  have hq := IsClosedImmersion.spec_of_surjective _ (Ideal.Quotient.mk_surjective (I := I))
+  have hq := IsClosedImmersion.spec_of_surjective (CommRingCat.ofHom (Ideal.Quotient.mk I))
+    (Ideal.Quotient.mk_surjective (I := I))
   haveI : IsClosedImmersion π := MorphismProperty.of_isPullback H.flip hq
   exact π.app_surjective W hW
 
@@ -49,7 +51,9 @@ theorem ker_app_of_quotient :
     apply Ideal.Quotient.eq_zero_iff_mem.1
     have e := ConcreteCategory.congr_hom (hp.inr_desc _ _ hl) x
     change (hp.desc _ _ hl) (π.appLE W (π ⁻¹ᵁ W) le_rfl x) = Ideal.Quotient.mk J x at e
-    rw [Scheme.Hom.appLE_eq_app, show π.app W x = 0 from hx, map_zero] at e
+    have e₀ : π.appLE W (π ⁻¹ᵁ W) le_rfl x = 0 :=
+      (ConcreteCategory.congr_hom (π.appLE_eq_app (U := W)) x).trans hx
+    rw [e₀, map_zero] at e
     exact e.symm
   · rw [Ideal.map_le_iff_le_comap]
     intro r hr
@@ -64,6 +68,8 @@ section Principal
 variable {ε : R} {π : Y ⟶ X} {f : Y ⟶ Spec (CommRingCat.of (R ⧸ Ideal.span {ε}))}
   (H : IsPullback π f p (Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk (Ideal.span {ε})))))
   {W : X.Opens} (hW : IsAffineOpen W)
+
+include H hW
 
 theorem exists_eq_mul_of_app_eq_zero {x : Γ(X, W)} (hx : π.app W x = 0) :
     letI := sectionAlgebra p W
@@ -124,6 +130,8 @@ private theorem mul_eq_zero_of_mem_map {A : Type} [CommRing A] [Algebra R A]
 variable {π : Y ⟶ X} {f : Y ⟶ Spec (CommRingCat.of (IsLocalRing.ResidueField R))}
   (H : IsPullback π f p (Spec.map (CommRingCat.ofHom (IsLocalRing.residue R))))
   {W : X.Opens} (hW : IsAffineOpen W)
+
+include H hW
 
 /-- Multiplication by a nonzero small-extension parameter on a flat affine chart has kernel
 equal to reduction to the closed fibre. -/

@@ -19,8 +19,8 @@ theorem numberedPacket_action {d : ℕ} (E : Fin (d+1) → ℝ) (m : Fin d → �
     (∑ i, (numberedPacket m i:ℝ)*E i)=finiteTorusCharacterDetuning m (RHTower.zeroProjectiveFrequency E) := by
   rw [Fin.sum_univ_succ]
   simp only [numberedPacket,Fin.cases_zero,Fin.cases_succ,Int.cast_sum,Int.cast_neg,neg_mul,Finset.sum_neg_distrib,
-    finiteTorusCharacterDetuning,RHTower.zeroProjectiveFrequency,mul_sub,Finset.sum_sub_distrib,←Finset.sum_mul,
-    sub_eq_add_neg]
+    finiteTorusCharacterDetuning,RHTower.zeroProjectiveFrequency,mul_sub,Finset.sum_sub_distrib,←Finset.sum_mul]
+  rw [sub_eq_add_neg]
 
 /-- Reindexing the jointly independent spectra in the physical eigenbases
 gives independent numbered phase differences for every prefix simultaneously. -/

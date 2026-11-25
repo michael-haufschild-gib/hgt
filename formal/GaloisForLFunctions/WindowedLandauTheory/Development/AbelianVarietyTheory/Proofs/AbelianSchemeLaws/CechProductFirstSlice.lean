@@ -37,6 +37,7 @@ variable {K : Type} [Field K] {X Y Z : Scheme.{0}}
   {p : Z ⟶ X} {q : Z ⟶ Y} (H : IsPullback p q f g)
   {I : Type} {V : I → Z.Opens} {φ : ∀ i j, Γ(Z, V i ⊓ V j)}
 
+include H in
 /-- Restriction to a point of the second factor detects the horizontal obstruction
 when the second factor has only scalar functions. -/
 theorem exists_splitting_on_strip [CompactSpace X] [X.IsSeparated] [Y.IsSeparated]

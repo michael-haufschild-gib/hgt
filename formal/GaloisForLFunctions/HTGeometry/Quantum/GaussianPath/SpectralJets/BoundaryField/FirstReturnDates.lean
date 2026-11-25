@@ -10,7 +10,8 @@ open EmptyVisitFlux PrecisionReturns
 private abbrev Basis (k : ℕ) := Fin (k+3)→Bool
 private abbrev Reg (k : ℕ) := Matrix (Basis k) (Basis k) ℂ
 
-private theorem gap_packet {I : Type*} [Fintype I] [DecidableEq I] (E : I→ℝ) {i j : I} (hij : i≠j) :
+/-- An ordered difference of two distinct levels is a nonzero balanced integer action. -/
+theorem gap_packet {I : Type*} [Fintype I] [DecidableEq I] (E : I→ℝ) {i j : I} (hij : i≠j) :
     ∃ m : I→ℤ, m≠0 ∧ (∑ l, m l)=0 ∧ (∑ l, (m l:ℝ)*E l)=E i-E j := by
   let δ (a l : I) : ℤ := if a=l then 1 else 0
   let m (l : I) := δ i l-δ j l
@@ -41,6 +42,21 @@ private theorem face_gap {I : Type*} (E : I→ℝ) {r v : ℝ} (hv : 0<v) {i j :
   dsimp only [b]
   field_simp
 
+/-- The gap of the closing pair at a first scalar entry fixes the
+absolute date up to its integer winding number. -/
+theorem first_entry_gap {I : ℕ} (H : selfAdjoint (Matrix (Fin I→Bool) (Fin I→Bool) ℂ))
+    {A ε : ℝ} (hA : 0<A) (hε : 0<ε) (hs : ε<sqrt 2) (hfar : ε<orbitCircuitDistance H 0 A) :
+    let v := firstVisit H A 0 ε
+    let E := H.property.isHermitian.eigenvalues
+    0<v ∧ ∃ (i j : Fin I→Bool) (n : ℤ), i≠j ∧ E i-E j=(2*π)*((n:ℝ)+SharpOccupation.physicalArc ε)/v := by
+  intro v E
+  have hr := (SharpOccupation.physicalArc_spec hε hs).1
+  obtain ⟨hv,he⟩ := FirstGate.first_empty_entry_of_outside H hε hs hfar
+  obtain ⟨i,j,hf⟩ := (entry_iff_closed_face _ hr.1.le hr.2).mp he
+  have hij : i≠j := by rintro rfl; exact (lt_irrefl _ hf.1)
+  obtain ⟨n,hn⟩ := face_gap E (hA.trans hv) hf
+  exact ⟨hA.trans hv,i,j,n,hij,hn⟩
+
 /-- The absolute first entry is witnessed by one winding number and the
 balanced gap of its two endpoint levels. -/
 theorem first_entry_action {I : ℕ} (H : selfAdjoint (Matrix (Fin I→Bool) (Fin I→Bool) ℂ))
@@ -48,15 +64,10 @@ theorem first_entry_action {I : ℕ} (H : selfAdjoint (Matrix (Fin I→Bool) (Fi
     let v := firstVisit H A 0 ε
     0<v ∧ ∃ (m : (Fin I→Bool)→ℤ) (n : ℤ), m≠0 ∧ (∑ i, m i)=0 ∧
       (∑ i, (m i:ℝ)*H.property.isHermitian.eigenvalues i)=(2*π)*((n:ℝ)+SharpOccupation.physicalArc ε)/v := by
-  intro v
   let E := H.property.isHermitian.eigenvalues
-  have hr := (SharpOccupation.physicalArc_spec hε hs).1
-  obtain ⟨hv,he⟩ := FirstGate.first_empty_entry_of_outside H hε hs hfar
-  obtain ⟨i,j,hf⟩ := (entry_iff_closed_face _ hr.1.le hr.2).mp he
-  have hij : i≠j := by rintro rfl; exact (lt_irrefl _ hf.1)
-  obtain ⟨n,hn⟩ := face_gap E (hA.trans hv) hf
+  obtain ⟨hv,i,j,n,hij,hn⟩ := first_entry_gap H hA hε hs hfar
   obtain ⟨m,hm,hbal,hgap⟩ := gap_packet E hij
-  exact ⟨hA.trans hv,m,n,hm,hbal,hgap.trans hn⟩
+  exact ⟨hv,m,n,hm,hbal,hgap.trans hn⟩
 
 /-- After any positive observation date outside the empty-circuit tube,
 the first empty visit avoids every prescribed countable set of dates for
