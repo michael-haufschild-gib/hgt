@@ -14,7 +14,7 @@ at the real and imaginary matrix coordinates. -/
 def testEval {N : ℕ} := appendEval (entryEval (N:=N) (RingHom.id ℝ))
 
 private theorem affordable_tests (N s : ℕ) :
-    FinitelyCertified (testEval (N:=N)) {z | HasProjectiveCircuitApproximation N |z.2| s z.1} := by
+    FinitelyCertified (testEval (N:=N)) {z | Metric.infDist z.1 (phaseCircuitMatrixImageAtMost N s) ≤ |z.2|} := by
   let ρ := entryEval (N:=N) (RingHom.id ℝ)
   have hc (p : EntryPolynomial N ℝ) : Continuous (fun M => ρ M p) := by
     apply p.continuous_eval.comp
@@ -25,14 +25,11 @@ private theorem affordable_tests (N s : ℕ) :
     cases b
     · exact Complex.continuous_re.comp h
     · exact Complex.continuous_im.comp h
-  have hm : MatrixRep (appendEval ρ) (fun z : Square (Bits N)×ℝ => z.1) := by
+  have hm : MatrixRep ρ (fun M : Square (Bits N) => M) := by
     intro i j
-    refine ⟨⟨C (MvPolynomial.X (i,j,false)),fun z => ?_⟩,
-      ⟨C (MvPolynomial.X (i,j,true)),fun z => ?_⟩⟩ <;>
-      simp only [appendEval,eval₂RingHom_apply,eval₂_C,ρ,entryEval,
-        MvPolynomial.eval₂Hom_X',Bool.false_eq_true,if_false,if_true]
-  apply affordable_finite (continuous_appendEval ρ hc) hm s (fun z => |z.2|) _ (fun _ => abs_nonneg _)
-  exact ⟨X^2,fun z => by simp only [appendEval,eval₂RingHom_apply,eval₂_pow,eval₂_X,sq_abs]⟩
+    exact ⟨⟨MvPolynomial.X (i,j,false),fun _ => MvPolynomial.eval₂Hom_X' ..⟩,
+      ⟨MvPolynomial.X (i,j,true),fun _ => MvPolynomial.eval₂Hom_X' ..⟩⟩
+  exact distance_epigraph_certified ρ hc _ hm s
 
 /-- One finite list, chosen before the spectrum, eigenvectors and tolerance,
 detects every entry from outside. The chosen test vanishes at entry and is
@@ -50,8 +47,9 @@ theorem common_first_entry_tests (N s : ℕ) :
   obtain ⟨hav,hv,hprev⟩ := firstVisit_left_contact H s a he hout
   let z (t : ℝ) := (relativeOrbit e H t,ε)
   have hcost (t : ℝ) :
-      HasProjectiveCircuitApproximation N |(z t).2| s (z t).1 ↔ orbitCircuitDistance H s t≤ε := by
-    rw [hasProjectiveCircuitApproximation_iff_infDist,abs_of_pos he,infDist_relativeOrbit]
+      Metric.infDist (z t).1 (phaseCircuitMatrixImageAtMost N s) ≤ |(z t).2| ↔ orbitCircuitDistance H s t≤ε := by
+    change Metric.infDist (relativeOrbit e H t) _ ≤ |ε| ↔ _
+    rw [abs_of_pos he,infDist_relativeOrbit]
   obtain ⟨p,hp,hz,hlocal⟩ := hF (z v) ((hcost v).mpr hv.le)
   refine ⟨p,hp,hz,?_⟩
   have hc : Continuous z := (continuous_relativeOrbit e H).prodMk continuous_const

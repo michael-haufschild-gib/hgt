@@ -33,7 +33,11 @@ theorem gaussian_conditional_window (F : (I→ℝ)×(J→ℝ)→ℝ) (hF : Measu
     apply regular_of_bound ν F x t C
     intro r hr
     have h := hc r hr
-    rwa [Measure.real,Measure.map_apply hf (measurableSet_lt (measurable_id.sub_const t).abs measurable_const)] at h
+    have he : MeasurableSet {u : ℝ | |u-t|<r} :=
+      measurableSet_lt (measurable_id.sub_const t).abs measurable_const
+    change (ν.map f {u : ℝ | |u-t|<r}).toReal ≤ C*r at h
+    rw [Measure.map_apply hf he] at h
+    exact h
   obtain ⟨u,hu,hregular⟩ : ∃ u∈Ioo T (T+1), ∀ᵐ x ∂μ, Regular ν F x u := by
     by_contra hh
     have hz : volume (Ioo T (T+1))=0 := measure_eq_zero_iff_ae_notMem.mpr
@@ -54,6 +58,7 @@ theorem gaussian_conditional_window (F : (I→ℝ)×(J→ℝ)→ℝ) (hF : Measu
     have hsub : (fun y : J→ℝ => a • y) ⁻¹' B ⊆ {y | |F (x,y)-u|<a*r} := by
       intro y hy
       change |F (a • x,a • y)-T|<r at hy
+      change |F (x,y)-u|<a*r
       rw [←hscale a ha₀ x y,←haT,←mul_sub,abs_mul,abs_of_pos ha₀]
       exact mul_lt_mul_of_pos_left hy ha₀
     apply (gaussian_dilation_comparison ha B hB).trans
@@ -63,6 +68,7 @@ theorem gaussian_conditional_window (F : (I→ℝ)×(J→ℝ)→ℝ) (hF : Measu
   have hE : MeasurableSet E := (hm.preimage (measurable_id.prodMk measurable_const)).compl
   have hz : μ ((fun x : I→ℝ => a • x) ⁻¹' E)=0 := ae_iff.mp hreg
   have hbound := gaussian_dilation_comparison ha E hE
+  change μ.real E ≤ a^Fintype.card I * (μ ((fun x : I→ℝ => a • x) ⁻¹' E)).toReal at hbound
   have hzero : μ.real E=0 := le_antisymm (by simpa only [Measure.real,hz,ENNReal.toReal_zero,mul_zero] using hbound)
     measureReal_nonneg
   have hfinal : ∀ᵐ x ∂μ, Regular ν F x T := ae_iff.mpr

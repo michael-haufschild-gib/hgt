@@ -3,6 +3,7 @@ import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.MatrixChartWitnesses
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.FormalSmoothQuotientWitnesses
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.FlatSpecializedCokernel
+import Mathlib.Algebra.MvPolynomial.Monad
 import Mathlib.RingTheory.Smooth.Flat
 
 /-! Finite witnesses descend a homogeneous presentation and preserve flatness on each chart. -/
@@ -55,7 +56,7 @@ theorem exists_noetherian_matrix_model {ι R : Type} [Fintype ι] [CommRing R] {
     (Fin a × Fin b) ⊕ (Σ i, Fin (r i)) ⊕ (Σ i, ι × Fin (r i)) ⊕
     (Σ i, Fin (r i) × Fin (r i) × Fin (r i)) ⊕ (Σ i, Fin (r i)) ⊕
     (Σ i, Fin (r i) × Fin b × Fin a) ⊕ (Σ i, Fin (r i) × Fin a × Fin a) ⊕
-    (Σ i, Fin b × Fin a) ⊕ (Σ i, Fin (r i) × Fin a × Fin b)
+    (ι × Fin b × Fin a) ⊕ (Σ i, Fin (r i) × Fin a × Fin b)
   let pols : Data → MvPolynomial ι R
     | .inl (l, j) => Φ l j
     | .inr (.inl ⟨i, k⟩) => g i k
@@ -120,8 +121,10 @@ theorem exists_noetherian_matrix_model {ι R : Type} [Fintype ι] [CommRing R] {
       exact hwit i j
     haveI : Algebra.FormallySmooth R₀ (MvPolynomial ι R₀ ⧸ Ideal.span (Set.range (g₀ i))) :=
       formallySmooth_quotient_of_aeval_shift_mem_sq (g₀ i) (wa₀ i) (wb₀ i) hwit₀
-    haveI : Algebra.FinitePresentation R₀ (MvPolynomial ι R₀ ⧸ Ideal.span (Set.range (g₀ i))) :=
-      Algebra.FinitePresentation.of_finiteType.1 inferInstance
+    haveI : Algebra.FinitePresentation R₀ (MvPolynomial ι R₀ ⧸ Ideal.span (Set.range (g₀ i))) := by
+      apply (Algebra.FinitePresentation.of_finiteType (R := R₀)
+        (A := MvPolynomial ι R₀ ⧸ Ideal.span (Set.range (g₀ i)))).1
+      infer_instance
     haveI : Algebra.Smooth R₀ (MvPolynomial ι R₀ ⧸ Ideal.span (Set.range (g₀ i))) :=
       ⟨inferInstance, inferInstance⟩
     refine flat_specialized_cokernel (g₀ i)

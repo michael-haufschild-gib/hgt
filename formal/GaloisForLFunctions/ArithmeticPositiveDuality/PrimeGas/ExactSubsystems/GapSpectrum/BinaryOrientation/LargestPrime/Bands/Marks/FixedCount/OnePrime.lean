@@ -30,14 +30,14 @@ def densityAt (a v : ℝ) := Real.exp (-a*v)/v
 private theorem density_cont {c d : ℝ} (hc : 0 < c) (a : ℝ) :
     ContinuousOn (densityAt a) (Icc c d) :=
   (Real.continuous_exp.comp (continuous_const.mul continuous_id)).continuousOn.div continuousOn_id
-    (fun v hv => (hc.trans_le hv.1).ne')
+    (fun _ hv => (hc.trans_le hv.1).ne')
 
 theorem mass_pos {c d : ℝ} (hc : 0 < c) (hcd : c < d) (a : ℝ) : 0 < VacuumCalibration.mass c d a := by
   have H := intervalIntegral.integral_lt_integral_of_continuousOn_of_le_of_exists_lt
     (f := fun _ => 0) hcd continuousOn_const (density_cont hc a)
     (fun _ hv => (div_pos (Real.exp_pos _) (hc.trans hv.1)).le)
     ⟨c,⟨le_rfl,hcd.le⟩,div_pos (Real.exp_pos _) hc⟩
-  simpa only [intervalIntegral.integral_zero] using H
+  simpa only [intervalIntegral.integral_zero,densityAt,VacuumCalibration.mass] using H
 
 private def raw (c d a : ℝ) :=
   (volume.restrict (Ioc c d)).withDensity (fun v => ENNReal.ofReal (densityAt a v))

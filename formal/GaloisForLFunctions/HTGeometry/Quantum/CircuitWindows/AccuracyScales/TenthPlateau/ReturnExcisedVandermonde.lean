@@ -1732,7 +1732,8 @@ private theorem scalarReturnExcised_of_single_onsite {k : ℕ} (u : PathShell (k
     rw [hz0, sub_zero] at hdist
     have hsingle : |u (.inl (0, 0)) - (0 : PathShell (k + 1)) (.inl (0, 0))| ≤
         ∑ s : Fin (k + 3), |u (.inl (s, 0)) - (0 : PathShell (k + 1)) (.inl (s, 0))| :=
-      Finset.single_le_sum (fun _ _ => abs_nonneg _) (Finset.mem_univ 0)
+      Finset.single_le_sum (f := fun s : Fin (k + 3) => |u (.inl (s, 0)) - (0 : PathShell (k + 1)) (.inl (s, 0))|)
+        (fun _ _ => abs_nonneg _) (Finset.mem_univ (0 : Fin (k + 3)))
     have hval : |u (.inl (0, 0)) - (0 : PathShell (k + 1)) (.inl (0, 0))| = |u (.inl (0, 0))| := by
       simp
     exact (honsite.trans_eq hval.symm).trans (hsingle.trans hdist)
@@ -1961,6 +1962,7 @@ theorem gaussian_two_cut_vandermonde_returnExcised_tail :
           (∃ t₀ ∈ Ioc (0 : ℝ) T, ∀ z : ℂ, ‖z‖ = 1 →
             Real.sqrt 2 ≤ ‖unitaryEvolution H.val t₀ - z • (1 : Register N)‖) ∧
           (∀ s : ℕ, P / 2 ≤ s → s ≤ P → T < tenthPlateauOnset H s)} := by
+  letI : IsProbabilityMeasure pathPauliDisorderLaw := by unfold pathPauliDisorderLaw; infer_instance
   let γ := gaussianReal 0 1
   have hp_box : 0 < γ.real (Icc (3 : ℝ) 4) :=
     ENNReal.toReal_pos (gaussianReal_Icc_pos (by norm_num : (3 : ℝ) < 4)).ne' (measure_ne_top _ _)
@@ -2062,6 +2064,10 @@ theorem gaussian_two_cut_vandermonde_returnExcised_tail :
       have hearly (t : ℝ) (ht : t ∈ Icc 0 T) : orbitCircuitDistance H s t < 1 / 10 := by
         have habs : |t| ≤ T := by rw [abs_of_nonneg ht.1]; exact ht.2
         obtain ⟨z, hz, C, hC, herr⟩ := weak_increment u hab hL hM hR hT_pos hweak t habs
+        have hPN : nearHilbertContinuousCircuitBudget (k + 1 + 2) = P := rfl
+        have hcost' : 2 * (Subregister.packetCost (leftBlock a).card +
+            Subregister.packetCost (middleBlock a b).card +
+            Subregister.packetCost (rightBlock b).card) ≤ P := hPN ▸ hcost
         have hC_le : C.gateCount ≤ s := hC.trans (by omega)
         have hd := (hasProjectiveCircuitApproximation_iff_infDist _ s (1 / 100 : ℝ)).mp
           ⟨z, hz, C, hC_le, herr⟩
@@ -2084,7 +2090,6 @@ theorem gaussian_two_cut_vandermonde_returnExcised_tail :
   have hc_eq : c = T ^ 18 * ((2 * gaussianDensityFloor * δ) ^ 18 * γ.real (Icc (3 : ℝ) 4)) := by
     dsimp only [c, δ]
     field_simp [hT_pos.ne']
-    ring
   rw [hc_eq]
   exact mul_le_mul_of_nonneg_left (hBox_mass.trans hmeas_le) (pow_nonneg hT_pos.le 18)
 

@@ -64,7 +64,7 @@ theorem gaussian_conditional_maximal (F : (I→ℝ)×(J→ℝ)→ℝ) (hf : Meas
   let L := M/(2*exp 1*T)
   let S := excessKernel (law J) F L
   let p := (law I).real {x | (x,T)∈excessKernel (law J) F (M/T)}
-  have hd : 1≤d := by dsimp only [d]; linarith only [Nat.cast_nonneg (Fintype.card I),Nat.cast_nonneg (Fintype.card J)]
+  have hd : 1≤d := by dsimp only [d]; linarith only [(Nat.cast_nonneg (Fintype.card I) : (0:ℝ) ≤ Fintype.card I),(Nat.cast_nonneg (Fintype.card J) : (0:ℝ) ≤ Fintype.card J)]
   have hd₀ : 0<d := zero_lt_one.trans_le hd
   have hw : 0<w := div_pos hT hd₀
   have hL : 0<L := div_pos hM (mul_pos (mul_pos zero_lt_two (exp_pos _)) hT)
@@ -86,8 +86,8 @@ theorem gaussian_conditional_maximal (F : (I→ℝ)×(J→ℝ)→ℝ) (hf : Meas
     have hdim (n : ℕ) (hn : (n:ℝ)≤d) : a^n≤exp 1 := by
       apply jacobian_le ha
       exact (mul_le_mul hn har (sub_nonneg.mpr ha) hd₀.le).trans_eq (by field_simp [hd₀.ne'])
-    have hi := hdim (Fintype.card I) (by dsimp only [d]; linarith only [Nat.cast_nonneg (Fintype.card J)])
-    have hj := hdim (Fintype.card J) (by dsimp only [d]; linarith only [Nat.cast_nonneg (Fintype.card I)])
+    have hi := hdim (Fintype.card I) (by dsimp only [d]; linarith only [(Nat.cast_nonneg (Fintype.card J) : (0:ℝ) ≤ Fintype.card J)])
+    have hj := hdim (Fintype.card J) (by dsimp only [d]; linarith only [(Nat.cast_nonneg (Fintype.card I) : (0:ℝ) ≤ Fintype.card I)])
     have hprice : a^Fintype.card J*(L*a)≤M/T := calc
       _ ≤ exp 1*(L*2) := mul_le_mul hj (mul_le_mul_of_nonneg_left ha₂ hL.le)
         (mul_nonneg hL.le (zero_le_one.trans ha)) (exp_pos _).le

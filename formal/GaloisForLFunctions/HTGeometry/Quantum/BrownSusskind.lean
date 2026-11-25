@@ -157,8 +157,10 @@ import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.LocalSimulation.Physi
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.LocalSimulation.CrossingProfile.ExponentialSlack
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.LocalSimulation.Precision.ExponentialCompiler
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.MaximumIntervals.CenterDensity
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.SelectedDates.AlgebraicCurves.SingleHarmonics.CandidateFace
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.ForecastWindows.Frozen
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.ForecastWindows.Quantitative
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.ForecastWindows.Conditioning.FrozenResolution
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.ForecastWindows.Survival
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.ReturnSpacing.PhysicalComponents.Depth.ForwardWindow
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.ReturnSpacing.PhysicalComponents.CircuitWindows.HitExponent
@@ -229,6 +231,8 @@ import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.Tent
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.TenthPlateau.NearHilbertOnset
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.TenthPlateau.CriticalClearance
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.TenthPlateau.SingleTargetWitness
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.TenthPlateau.EnvelopeTransversality
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.TenthPlateau.ReturnExcisedVandermonde
 
 /-! # Circuit complexity along static local Hamiltonian trajectories -/
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.IntervalMinima.PrescribedFirst

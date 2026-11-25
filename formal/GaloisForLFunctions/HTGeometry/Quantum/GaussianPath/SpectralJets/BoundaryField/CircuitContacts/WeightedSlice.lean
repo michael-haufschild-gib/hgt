@@ -25,7 +25,7 @@ theorem weighted_exp_sum_real_slice {I : Type*} [Fintype I] (f a : I → ℂ →
   have hzero : ∑ i, (c i:MeroGerm)*ofMero (fun z => Complex.exp (f i z)) (hf i).cexp.meromorphicAt=0 := by
     have hp (i : I) : (c i:MeroGerm)*ofMero (fun z => Complex.exp (f i z)) (hf i).cexp.meromorphicAt =
         ofMero (g i) (hg i).meromorphicAt := by
-      change ofMero (a i) _*_ = _
+      change ofMero (a i) (ha i).meromorphicAt*_ = _
       rw [ofMero_mul]
       rfl
     simp_rw [hp]

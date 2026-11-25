@@ -36,7 +36,9 @@ theorem continuous_sort (k : ℕ) : Continuous (sortedTuple (D := k)) := by
     · intro hv
       obtain ⟨σ,hσ,hs'⟩ := mem_iUnion.mp hv
       have he : v ∘ σ = sortedTuple v := Tuple.comp_sort_eq_comp_iff_monotone.mpr ((hm _ _).mp hσ)
-      exact he ▸ hs'
+      change sortedTuple v ∈ s
+      rw [← he]
+      exact hs'
   rw [he]
   exact isClosed_iUnion_of_finite fun σ => (hC σ).inter
     (hs.preimage (continuous_pi fun i => continuous_apply (σ i)))
@@ -107,18 +109,18 @@ theorem distinct_born (S : Finset Nat.Primes) (a : ℝ) (h : Ioi (0:ℝ)) (k : �
     rw [prod_embedding_eq_prod_range k ↥S q R π,
       show sortedTuple (v ∘ π) = sortedTuple v from Tuple.comp_perm_comp_sort_eq_comp_sort]
     rfl
-  have hn : Fintype.card (Equiv.Perm (Fin k)) = k.factorial := by simp
+  have hn : Fintype.card (Equiv.Perm (Fin k)) = k.factorial := by rw [Fintype.card_perm,Fintype.card_fin]
   rw [embeddings]
   change (∑ e, G e) = _
   rw [← E.symm.sum_comp G,Fintype.sum_prod_type]
   simp only [hz,Finset.sum_const,Finset.card_univ,hn,nsmul_eq_mul,← Finset.mul_sum]
-  rw [slice,atomic_integral,mul_assoc,Finset.mul_sum]
+  rw [slice,atomic_integral,mul_assoc]
   apply congrArg ((k.factorial:ℝ)*·)
+  rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro R _
-  change (∏ p ∈ R.val,q p)*F _ = _*(_*F _)
-  rw [← mul_assoc,configuration_product]
-  rfl
+  exact (congrArg (fun t : ℝ => t*F (spectrum h R))
+    (configuration_product S (1+a*h.val) R.val).symm).trans (mul_assoc _ _ _)
 
 #print axioms continuous_sort
 #print axioms slice_mass

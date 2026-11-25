@@ -26,7 +26,8 @@ theorem measurableSet_excessKernel (ν : Measure Y) [IsProbabilityMeasure ν]
     ext p
     constructor
     · rintro ⟨h,hh,hbad⟩
-      obtain ⟨q,hl,hu⟩ := exists_rat_btwn ((lt_div_iff₀ hL).mpr (by simpa only [mul_comm h L] using hbad))
+      have hr : h < ν.real {y | |F (p.1,y)-p.2|<h}/L := (lt_div_iff₀ hL).mpr (by rwa [mul_comm])
+      obtain ⟨q,hl,hu⟩ := exists_rat_btwn hr
       have hq : (0:ℚ)<q := by exact_mod_cast hh.trans hl
       have hlt := (lt_div_iff₀ hL).mp hu
       refine mem_iUnion.mpr ⟨q,hq,?_⟩

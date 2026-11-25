@@ -32,7 +32,7 @@ theorem gradedProj_of_mem_ne {R M : Type*} [CommRing R] [AddCommGroup M] [Module
     gradedProj D j m = 0 :=
   DirectSum.decompose_of_mem_ne D hm h
 
-private theorem gradedIsInternal {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
+theorem gradedIsInternal {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M]
     (D : ℤ → Submodule R M)
     (h₁ : ∀ (T : Finset ℤ) (v : ℤ → M), (∀ j ∈ T, v j ∈ D j) → ∑ j ∈ T, v j = 0 →
       ∀ j ∈ T, v j = 0) (h₂ : ∀ m, m ∈ ⨆ j, D j) : IsInternal D :=
