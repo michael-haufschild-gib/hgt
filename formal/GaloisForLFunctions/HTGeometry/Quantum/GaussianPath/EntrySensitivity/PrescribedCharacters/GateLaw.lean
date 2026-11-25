@@ -36,7 +36,9 @@ private theorem numbered_free {I : Type*} [Fintype I] [DecidableEq I] {d : ℕ}
   funext j
   simpa only [n,Equiv.symm_apply_apply,Pi.zero_apply,neg_eq_zero] using congrFun hn (r j)
 
-private theorem fraction {I : Type*} [Fintype I] (w : I → ℝ) (a v : ℝ) (hf : FreeAtStep w v)
+/-- A nonresonant step samples every closed phase target with null boundary
+at its Haar frequency, from any observation origin. -/
+theorem free_step_fraction {I : Type*} [Fintype I] (w : I → ℝ) (a v : ℝ) (hf : FreeAtStep w v)
     (A : Set (I → UnitAddCircle)) (hc : IsClosed A) (hb : volume (frontier A)=0) :
     Tendsto (fun j => (timeLaw a v j).real (finiteClockPhasePoint w ⁻¹' A)) atTop (𝓝 (volume.real A)) := by
   have hn : (finiteTorusHaarProbabilityMeasure I : Measure _) (frontier A)=0 := by
@@ -86,7 +88,7 @@ theorem gaussian_first_scalar_clock_gate_law :
     ext t
     exact (physical_circuit_approximation_iff_spectral_capture e H s ε t).symm
   rw [←he]
-  exact fraction w a v hf A (isClosed_projectiveContinuousCircuitCaptureTarget e V s ε) hn
+  exact free_step_fraction w a v hf A (isClosed_projectiveContinuousCircuitCaptureTarget e V s ε) hn
 
 #print axioms gaussian_first_scalar_clock_gate_law
 end

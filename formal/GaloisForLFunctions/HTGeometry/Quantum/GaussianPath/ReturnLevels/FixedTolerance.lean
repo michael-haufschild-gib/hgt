@@ -38,8 +38,10 @@ private theorem measurable_time_projection {X : Type*} [TopologicalSpace X]
 private abbrev chainH (ω : PathPauliDisorder) (n : ℕ) : selfAdjoint (Register (n+2)) :=
   ⟨pathHamiltonian (pathPauliDisorderShell ω n),isSelfAdjoint_pathHamiltonian _⟩
 
-private theorem continuous_chain_distance (n s : ℕ) :
-    Continuous (fun p : PathPauliDisorder × ℝ => orbitCircuitDistance (chainH p.1 n) s p.2) := by
+/-- The circuit distance is jointly continuous in the infinite chain and physical time. -/
+theorem continuous_chain_distance (n s : ℕ) :
+    Continuous (fun p : PathPauliDisorder × ℝ => orbitCircuitDistance
+      ⟨pathHamiltonian (pathPauliDisorderShell p.1 n),isSelfAdjoint_pathHamiltonian _⟩ s p.2) := by
   have hH : Continuous (fun ω : PathPauliDisorder => pathHamiltonian (pathPauliDisorderShell ω n)) := by
     simp_rw [pathHamiltonian_eq_sum]
     apply continuous_finsetSum

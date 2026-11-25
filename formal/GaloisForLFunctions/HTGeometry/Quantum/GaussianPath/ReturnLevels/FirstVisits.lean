@@ -8,9 +8,10 @@ namespace GaloisForLFunctions.HTGeometry.ReturnLevels
 noncomputable section
 open PrecisionReturns
 
-private theorem earlier_visit {N : ℕ} (H : selfAdjoint (Register N)) (A : ℝ) (s j : ℕ)
+/-- Strict clearance at the selected first entry advances the larger tube's first visit. -/
+theorem earlier_visit_at_contact {N : ℕ} (H : selfAdjoint (Register N)) (A : ℝ) (s j : ℕ)
     {ε : ℝ} (hε : 0 < ε) (hfar : ε < orbitCircuitDistance H s A)
-    (hnear : ∀ v, orbitCircuitDistance H s v ≤ ε → orbitCircuitDistance H j v < ε) :
+    (hnear : orbitCircuitDistance H j (firstVisit H A s ε) < ε) :
     firstVisit H A j ε < firstVisit H A s ε := by
   let v := firstVisit H A s ε
   have hs := firstVisit_isLeast H A s hε
@@ -19,11 +20,19 @@ private theorem earlier_visit {N : ℕ} (H : selfAdjoint (Register N)) (A : ℝ)
     hfar.not_ge ((congrArg (orbitCircuitDistance H s) he).le.trans hd)
   have hh : ∀ᶠ t : ℝ in 𝓝[<] v, orbitCircuitDistance H j t < ε :=
     ((orbitCircuitDistance_lipschitz H j).continuous.continuousAt.eventually_lt continuousAt_const
-      (hnear v hd)).filter_mono nhdsWithin_le_nhds
+      hnear).filter_mono nhdsWithin_le_nhds
   have ha : ∀ᶠ t : ℝ in 𝓝[<] v, A < t := (lt_mem_nhds hav).filter_mono nhdsWithin_le_nhds
   obtain ⟨t,ht,hat,htv⟩ := (hh.and (ha.and self_mem_nhdsWithin)).exists
   exact ((firstVisit_isLeast H A j hε).2 ⟨hat.le,
     (hasProjectiveCircuitApproximation_iff_infDist _ _ _).mpr ht.le⟩).trans_lt htv
+
+/-- Strict interior inclusion at every affordable time advances every first visit from outside. -/
+theorem earlier_visit {N : ℕ} (H : selfAdjoint (Register N)) (A : ℝ) (s j : ℕ)
+    {ε : ℝ} (hε : 0 < ε) (hfar : ε < orbitCircuitDistance H s A)
+    (hnear : ∀ v, orbitCircuitDistance H s v ≤ ε → orbitCircuitDistance H j v < ε) :
+    firstVisit H A j ε < firstVisit H A s ε :=
+  earlier_visit_at_contact H A s j hε hfar (hnear _ ((hasProjectiveCircuitApproximation_iff_infDist ..).mp
+    (firstVisit_isLeast H A s hε).1.2))
 
 /-- At every positive tolerance outside the shared levels, one extra
 local sweep strictly advances every attained first return from outside

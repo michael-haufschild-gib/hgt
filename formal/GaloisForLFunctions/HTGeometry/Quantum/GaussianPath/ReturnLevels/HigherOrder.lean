@@ -44,6 +44,24 @@ private theorem higher_step {n : ℕ} (u : PathShell n) (j : ℕ) :
     rw [one_smul,TwoQubitCircuit.one_eval]
     exact hdist.trans (by linarith only [one_le_pow₀ (le_of_not_ge ht) (n := j+2)])
 
+/-- Appending the order-`j` word transfers any fit to another date with
+error of order `j+2` in their separation. The constant is uniform in time
+and in the starting gate budget. -/
+theorem higher_increment {n : ℕ} (x : PathShell n) (j : ℕ) :
+    let H : selfAdjoint (Register (n+2)) := ⟨pathHamiltonian x,isSelfAdjoint_pathHamiltonian x⟩
+    let J := 3^j*Fintype.card (PathLabel n)
+    ∃ B : ℝ≥0, ∀ (s : ℕ) (t u : ℝ), orbitCircuitDistance H (s+J) t ≤
+      orbitCircuitDistance H s u + (B:ℝ)*|t-u|^(j+2) := by
+  intro H J
+  obtain ⟨B,hB⟩ := higher_step x j
+  refine ⟨B,?_⟩
+  intro s t u
+  have hu := (hasProjectiveCircuitApproximation_iff_infDist (unitaryEvolution H.val u) s
+    (orbitCircuitDistance H s u)).mpr le_rfl
+  have h := affordable_add_time H hu (hB (t-u))
+  rw [show u+(t-u)=t by ring] at h
+  exact (hasProjectiveCircuitApproximation_iff_infDist _ _ _).mp h
+
 /-- The dimension bound holds for every contact order. Its gate
 overhead is the physical length of the corresponding product formula. -/
 theorem higher_shared_levels_dimension {n : ℕ} (x : PathShell n) (j : ℕ) :
@@ -52,17 +70,9 @@ theorem higher_shared_levels_dimension {n : ℕ} (x : PathShell n) (j : ℕ) :
     dimH (⋃ s : ℕ, orbitCircuitDistance H s '' {t | orbitCircuitDistance H s t=orbitCircuitDistance H (s+J) t}) ≤
       1/((j+2:ℕ):ℝ≥0∞) := by
   intro H J
-  obtain ⟨B,hB⟩ := higher_step x j
+  obtain ⟨B,hB⟩ := higher_increment x j
   rw [dimH_iUnion]
-  apply iSup_le
-  intro s
-  apply shared_levels_dimension _ _ B (j+2) (by omega)
-  intro t u
-  have hu := (hasProjectiveCircuitApproximation_iff_infDist (unitaryEvolution H.val u) s
-    (orbitCircuitDistance H s u)).mpr le_rfl
-  have h := affordable_add_time H hu (hB (t-u))
-  rw [show u+(t-u)=t by ring] at h
-  exact (hasProjectiveCircuitApproximation_iff_infDist _ _ _).mp h
+  exact iSup_le fun s => shared_levels_dimension _ _ B (j+2) (by omega) (hB s)
 
 #print axioms higher_shared_levels_dimension
 end

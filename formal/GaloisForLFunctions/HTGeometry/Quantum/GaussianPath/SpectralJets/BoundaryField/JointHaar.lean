@@ -6,22 +6,23 @@ open Filter Topology MeasureTheory Set
 namespace GaloisForLFunctions.HTGeometry.SpectralJets.BoundaryField
 noncomputable section
 
-private def liftPacket {I : Type*} [Fintype I] [DecidableEq I] (r : I) (m : {i : I // i≠r}→ℤ) (i : I) : ℤ :=
+/-- Extend an anchored character to a balanced integer packet on all energy levels. -/
+def liftPacket {I : Type*} [Fintype I] [DecidableEq I] (r : I) (m : {i : I // i≠r}→ℤ) (i : I) : ℤ :=
   if h : i=r then -(∑ j, m j) else m ⟨i,h⟩
 
 private theorem lift_at_anchor {I : Type*} [Fintype I] [DecidableEq I] (r : I)
     (m : {i : I // i≠r}→ℤ) : liftPacket r m r = -(∑ j, m j) := by simp [liftPacket]
 
-private theorem lift_off_anchor {I : Type*} [Fintype I] [DecidableEq I] (r : I)
+theorem lift_off_anchor {I : Type*} [Fintype I] [DecidableEq I] (r : I)
     (m : {i : I // i≠r}→ℤ) (j : {i : I // i≠r}) : liftPacket r m j.val = m j := by
   simp only [liftPacket,dif_neg j.property]
 
-private theorem lift_sum {I : Type*} [Fintype I] [DecidableEq I] (r : I) (m : {i : I // i≠r}→ℤ) :
+theorem lift_sum {I : Type*} [Fintype I] [DecidableEq I] (r : I) (m : {i : I // i≠r}→ℤ) :
     ∑ i, liftPacket r m i=0 := by
   rw [Fintype.sum_eq_add_sum_subtype_ne _ r]
   simp only [lift_at_anchor,lift_off_anchor,neg_add_cancel]
 
-private theorem lift_energy {I : Type*} [Fintype I] [DecidableEq I] (r : I) (m : {i : I // i≠r}→ℤ) (E : I→ℝ) :
+theorem lift_energy {I : Type*} [Fintype I] [DecidableEq I] (r : I) (m : {i : I // i≠r}→ℤ) (E : I→ℝ) :
     (∑ i, (liftPacket r m i:ℝ)*E i)=finiteTorusCharacterDetuning m (projectiveFrequency E r) := by
   rw [Fintype.sum_eq_add_sum_subtype_ne _ r]
   simp only [lift_at_anchor,lift_off_anchor,finiteTorusCharacterDetuning,projectiveFrequency,

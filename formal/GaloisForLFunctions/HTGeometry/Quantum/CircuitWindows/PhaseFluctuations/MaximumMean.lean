@@ -11,7 +11,8 @@ noncomputable section
 private abbrev Config (n : ℕ) := Fin n → Bool
 local instance : IsProbabilityMeasure (volume : Measure UnitAddCircle) := ⟨UnitAddCircle.measure_univ⟩
 
-private theorem phase_mul {n d : ℕ} (e : Config n ≃ Fin (d+1))
+/-- In a fixed eigenbasis, multiplication adds the relative spectral phases. -/
+theorem phase_mul {n d : ℕ} (e : Config n ≃ Fin (d+1))
     (V : unitaryGroup (Config n) ℂ) (x y : Fin d → UnitAddCircle) :
     projectiveSpectralMatrix e V x * projectiveSpectralMatrix e V y =
       projectiveSpectralMatrix e V (x+y) := by

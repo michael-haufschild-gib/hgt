@@ -37,7 +37,7 @@ theorem existsUnique_glueUnits (V : ι → X.Opens) (hV : ∀ i, V i ≤ U)
       rw [map_mul, hs i, ht i]
       exact (a i).val_inv
     exact (hz (s * t) hm).trans (hz 1 (fun _ => map_one _)).symm
-  refine ⟨⟨s, t, hst, by rw [mul_comm, hst]⟩, fun i => Units.ext (hs i), ?_⟩
+  refine ⟨⟨s, t, hst, (mul_comm t s).trans hst⟩, fun i => Units.ext (hs i), ?_⟩
   intro z hz
   apply Units.ext
   exact hs_unique z.val (fun i => congrArg Units.val (hz i))

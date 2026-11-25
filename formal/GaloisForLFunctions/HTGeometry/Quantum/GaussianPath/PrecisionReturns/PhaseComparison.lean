@@ -49,20 +49,26 @@ private theorem anchor_norm {n : ℕ} (H : selfAdjoint (Register n)) (a : Fin n 
   rw [abs_of_nonneg (chord_nonneg _)]
   simp only [chord,Complex.ofReal_mul,Complex.ofReal_sub]
 
+/-- At an empty-circuit visit, every energy gap to any chosen anchor
+has phase within ε turns of an integer. -/
+theorem anchored_gaps_of_empty {n : ℕ} (H : selfAdjoint (Register n)) (a : Fin n → Bool)
+    {t ε : ℝ} (hε : 0 < ε) (hr : HasProjectiveCircuitApproximation n ε 0 (unitaryEvolution H.val t)) :
+    ∀ j, latticeClose (t*(H.2.isHermitian.eigenvalues j-H.2.isHermitian.eigenvalues a)/(2*π)) ε := by
+  obtain ⟨z,_,C,hC,herr⟩ := hr
+  rw [zeroGateCircuit_eval C hC] at herr
+  have h := (norm_unitaryEvolution_sub_anchorPhase_le_two_mul_of_scalar H.2.isHermitian a t z).trans
+    (mul_le_mul_of_nonneg_left herr zero_le_two)
+  rw [anchor_norm] at h
+  exact fun j => turns_close hε ((le_abs_self _).trans ((norm_le_pi_norm _ j).trans h))
+
 /-- The uniform physical return at error ε forces a quadratic deficit
 for every probability distribution on the energy levels. -/
 theorem deficit_of_empty_return {n D : ℕ} (H : selfAdjoint (Register n)) (e : (Fin n → Bool) ≃ Fin D)
     (a : Fin D) (p : Fin D → ℝ) (h1 : ∑ j, p j = 1) (hp : ∀ j, 0 ≤ p j)
     {t ε : ℝ} (hε : 0 < ε) (hr : HasProjectiveCircuitApproximation n ε 0 (unitaryEvolution H.val t)) :
     spectralReturnDeficit (H.2.isHermitian.eigenvalues ∘ e.symm) p t ≤ 8*π^2*ε^2 := by
-  obtain ⟨z,_,C,hC,herr⟩ := hr
-  rw [zeroGateCircuit_eval C hC] at herr
-  have h := (norm_unitaryEvolution_sub_anchorPhase_le_two_mul_of_scalar H.2.isHermitian (e.symm a) t z).trans
-    (mul_le_mul_of_nonneg_left herr zero_le_two)
-  rw [anchor_norm] at h
   apply spectralReturnDeficit_le_of_latticeClose _ p h1 hp a hε.le
-  intro j
-  exact turns_close hε ((le_abs_self _).trans ((norm_le_pi_norm _ (e.symm j)).trans h))
+  exact fun j => anchored_gaps_of_empty H (e.symm a) hε hr (e.symm j)
 
 /-- With all spectral weights at least c, a deficit below δ produces a
 literal empty-circuit return at operator error π√δ/c. -/

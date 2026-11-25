@@ -36,7 +36,12 @@ theorem line_energy_germ {n D : ℕ} {P : Fin n → Matrix (Fin D) (Fin D) ℂ}
       ∑ a, (C (x a:ℂ)+X*C (d a:ℂ))*C (P a u v)
     have hm (z : ℂ) : M.map (Polynomial.evalRingHom z)=∑ a, line z a • P a := by
       ext u v
-      simp [M,line,Matrix.map_apply,Matrix.sum_apply,Matrix.smul_apply,smul_eq_mul]
+      change (Polynomial.evalRingHom z) (∑ a, (C (x a:ℂ)+X*C (d a:ℂ))*C (P a u v))=_
+      rw [map_sum,Matrix.sum_apply]
+      apply Finset.sum_congr rfl
+      intro a _
+      simp only [map_mul,map_add,Polynomial.coe_evalRingHom,Polynomial.eval_C,
+        Polynomial.eval_X,Matrix.smul_apply,smul_eq_mul,line]
     apply algebraic_pencil_root M hf.meromorphicAt
     have ht : Tendsto line (𝓝[≠] (0:ℂ)) (𝓝 (realEmbed x)) :=
       l0 ▸ hline.continuousAt.tendsto.mono_left nhdsWithin_le_nhds

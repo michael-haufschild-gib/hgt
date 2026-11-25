@@ -17,30 +17,22 @@ private theorem mean_powers {z : ℂ} (hz : ‖z‖ = 1) (hne : z ≠ 1) :
   rw [show (2/‖z-1‖)/(n:ℝ) = (n:ℝ)⁻¹*(2/‖z-1‖) by ring]
   exact mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_right hb (norm_nonneg _)) (by positivity)
 
-/-- At every nonresonant step the empirical phase laws converge to Haar,
-including after an arbitrary translation of the time origin. -/
-theorem affine_phaseLaw {I : Type*} [Fintype I] (ω : I → ℝ) (τ a : ℝ) (hf : FreeAtStep ω τ) :
-    Tendsto (integerClockPrefixLaw (fun n => finiteClockPhasePoint ω (a+(n:ℝ)*τ))) atTop
-      (𝓝 (finiteTorusHaarProbabilityMeasure I)) := by
-  classical
-  apply probabilityMeasure_tendsto_of_mFourier_integral_tendsto
-  intro m
-  rw [finiteTorusHaarProbabilityMeasure_mFourier_integral]
+/-- The empirical Fourier coefficient vanishes whenever this character
+has nonintegral winding. Other characters may be resonant. -/
+theorem off_resonance_character {I : Type*} [Fintype I] (ω : I → ℝ) (τ a : ℝ) (m : I → ℤ)
+    (hn : ∀ k : ℤ, τ*finiteTorusCharacterDetuning m ω≠(k:ℝ)*(2*Real.pi)) :
+    Tendsto (fun N => ∫ x, UnitAddTorus.mFourier m x
+      ∂(integerClockPrefixLaw (fun n => finiteClockPhasePoint ω (a+(n:ℝ)*τ)) N : Measure _))
+      atTop (𝓝 0) := by
   simp_rw [integral_integerClockPrefixLaw _ _ _ (UnitAddTorus.mFourier m).continuous.measurable,
     mFourier_finiteClockPhasePoint]
-  by_cases hm : m = 0
-  · subst m
-    have hd : finiteTorusCharacterDetuning (0 : I → ℤ) ω = 0 := by simp [finiteTorusCharacterDetuning]
-    simp [hd,Nat.cast_add_one_ne_zero]
-  rw [if_neg hm]
   let d := finiteTorusCharacterDetuning m ω
   let z := Complex.exp (((τ*d:ℝ):ℂ)*Complex.I)
   let u := Complex.exp (((a*d:ℝ):ℂ)*Complex.I)
   have hz : z ≠ 1 := by
     intro h
     obtain ⟨k,hk⟩ := Complex.exp_eq_one_iff.mp h
-    apply hm
-    apply hf m k
+    apply hn k
     apply Complex.ofReal_injective
     apply mul_right_cancel₀ Complex.I_ne_zero
     push_cast
@@ -58,6 +50,24 @@ theorem affine_phaseLaw {I : Type*} [Fintype I] (ω : I → ℝ) (τ a : ℝ) (h
     (tendsto_add_atTop_nat 1)).const_mul u
   rw [mul_zero] at hav
   simpa only [Function.comp_apply, Nat.cast_add, Nat.cast_one] using hav
+
+/-- At every nonresonant step the empirical phase laws converge to Haar,
+including after an arbitrary translation of the time origin. -/
+theorem affine_phaseLaw {I : Type*} [Fintype I] (ω : I → ℝ) (τ a : ℝ) (hf : FreeAtStep ω τ) :
+    Tendsto (integerClockPrefixLaw (fun n => finiteClockPhasePoint ω (a+(n:ℝ)*τ))) atTop
+      (𝓝 (finiteTorusHaarProbabilityMeasure I)) := by
+  classical
+  apply probabilityMeasure_tendsto_of_mFourier_integral_tendsto
+  intro m
+  rw [finiteTorusHaarProbabilityMeasure_mFourier_integral]
+  by_cases hm : m=0
+  · subst m
+    simp_rw [integral_integerClockPrefixLaw _ _ _ (UnitAddTorus.mFourier _).continuous.measurable,
+      mFourier_finiteClockPhasePoint]
+    have hd : finiteTorusCharacterDetuning (0 : I → ℤ) ω = 0 := by simp [finiteTorusCharacterDetuning]
+    simp [hd,Nat.cast_add_one_ne_zero]
+  rw [if_neg hm]
+  exact off_resonance_character ω τ a m (fun k he => hm (hf m k he))
 
 /-- Every nonzero period preserves the Haar law after deleting at most one
 frequency. Both the step and the origin can be chosen after seeing ω. -/

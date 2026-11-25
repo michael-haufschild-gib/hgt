@@ -23,12 +23,11 @@ theorem ComplexRep.on_base {ρ : X → A →+* ℝ} {f : X → ℂ} (hf : Comple
     ComplexRep (witnessEval ρ) (fun z : X × (ι → ℝ) => f z.1) :=
   ⟨hf.1.on_base,hf.2.on_base⟩
 
-/-- Split all complex residuals into real and imaginary parts, then project
-the single sum-of-squares equation in all real coordinates. -/
-theorem certified_complex_system [TopologicalSpace X] [Fintype ι] [Fintype κ]
-    (ρ : X → A →+* ℝ) (hc : ∀ a, Continuous fun x => ρ x a)
-    (F : κ → X × (ι → ℝ) → ℂ) (hF : ∀ k, ComplexRep (witnessEval ρ) (F k)) :
-    LocallyCertified ρ {x | ∃ w : ι → ℝ, ∀ k, F k (x,w) = 0} := by
+/-- Complex residuals represented by polynomials give two real equations each. -/
+theorem exists_real_residual_system (ρ : X → A →+* ℝ) (F : κ → X × (ι → ℝ) → ℂ)
+    (hF : ∀ k, ComplexRep (witnessEval ρ) (F k)) :
+    ∃ p : κ × Bool → MvPolynomial ι A, {x | ∃ w : ι → ℝ, ∀ k, F k (x,w)=0} =
+      {x | ∃ w : ι → ℝ, ∀ k, MvPolynomial.eval₂Hom (ρ x) w (p k)=0} := by
   let R (k : κ × Bool) (z : X × (ι → ℝ)) := if k.2 then (F k.1 z).im else (F k.1 z).re
   have hr (k : κ × Bool) : Represents (witnessEval ρ) (R k) := by
     rcases k with ⟨k,b⟩
@@ -47,6 +46,15 @@ theorem certified_complex_system [TopologicalSpace X] [Fintype ι] [Fintype κ]
       refine ⟨w,fun k => Complex.ext ?_ ?_⟩
       · exact (hp (k,false) (x,w)).symm.trans (hw (k,false))
       · exact (hp (k,true) (x,w)).symm.trans (hw (k,true))
+  exact ⟨p,he⟩
+
+/-- Split all complex residuals into real and imaginary parts, then project
+the single sum-of-squares equation in all real coordinates. -/
+theorem certified_complex_system [TopologicalSpace X] [Fintype ι] [Fintype κ]
+    (ρ : X → A →+* ℝ) (hc : ∀ a, Continuous fun x => ρ x a)
+    (F : κ → X × (ι → ℝ) → ℂ) (hF : ∀ k, ComplexRep (witnessEval ρ) (F k)) :
+    LocallyCertified ρ {x | ∃ w : ι → ℝ, ∀ k, F k (x,w) = 0} := by
+  obtain ⟨p,he⟩ := exists_real_residual_system ρ F hF
   rw [he]
   exact certified_exists_system ρ hc p
 

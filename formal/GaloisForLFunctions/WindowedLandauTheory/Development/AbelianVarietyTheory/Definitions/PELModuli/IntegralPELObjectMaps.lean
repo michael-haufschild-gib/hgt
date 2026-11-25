@@ -16,6 +16,10 @@ open Semi
 
 variable {X Y Z : Scheme.{0}} {L M N : LB X}
 
+theorem LBIso.symm (h : LBIso L M) : LBIso M L := by
+  obtain ⟨t, ht⟩ := h
+  exact ht.symm
+
 theorem LBIso.trans (hL : L.IsLB) (hM : M.IsLB) (hN : N.IsLB)
     (h : LBIso L M) (h' : LBIso M N) : LBIso L N := by
   obtain ⟨a, ha⟩ := h
@@ -67,6 +71,17 @@ def ObjMap.comp {S T U : Scheme.{0}} {s : S ⟶ Sp R} {t : T ⟶ Sp R} {u : U �
     have hN := (a''.isLB.pull h'.φ₂).pull h.φ₂
     have hg := LBIso.trans a.isLB hM hN h.pol (h'.pol.pull h.φ₂)
     exact LBIso.trans a.isLB hN (a''.isLB.pull _) hg (LBIso.pull_comp a''.isLB h.φ₂ h'.φ₂)
-  eta y := by rw [← Category.assoc, h.eta, Category.assoc, h'.eta, Category.assoc]
+  eta y := by
+    let x : S ⟶ a.A.left := (a.eta y).left
+    let x' : T ⟶ a'.A.left := (a'.eta y).left
+    let x'' : U ⟶ a''.A.left := (a''.eta y).left
+    have h₁ : x ≫ h.φ = f ≫ x' := h.eta y
+    have h₂ : x' ≫ h'.φ = g ≫ x'' := h'.eta y
+    calc
+      _ = (x ≫ h.φ) ≫ h'.φ := (Category.assoc _ _ _).symm
+      _ = (f ≫ x') ≫ h'.φ := congrArg (· ≫ h'.φ) h₁
+      _ = f ≫ (x' ≫ h'.φ) := Category.assoc _ _ _
+      _ = f ≫ (g ≫ x'') := congrArg (f ≫ ·) h₂
+      _ = _ := (Category.assoc _ _ _).symm
 
 end GlobalTheory.UPel.HT

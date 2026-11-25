@@ -21,7 +21,8 @@ private theorem dimension_one : Algebra.trdeg ℂ curveField=1 := by
   rw [Polynomial.trdeg_of_isDomain,trdeg_eq_zero (R:=Polynomial ℂ) (A:=RatFunc ℂ),add_zero] at hr
   letI : Algebra (RatFunc ℂ) curveField :=
     inferInstanceAs (Algebra (RatFunc ℂ) (algebraicClosure (RatFunc ℂ) MeroGerm))
-  letI : IsScalarTower ℂ (RatFunc ℂ) curveField := IsScalarTower.of_algebraMap_eq fun _ => rfl
+  letI : IsScalarTower ℂ (RatFunc ℂ) curveField := IsScalarTower.of_algebraMap_eq fun x =>
+    Subtype.ext (IsScalarTower.algebraMap_apply ℂ (RatFunc ℂ) MeroGerm x)
   letI : Algebra.IsAlgebraic (RatFunc ℂ) curveField :=
     inferInstanceAs (Algebra.IsAlgebraic (RatFunc ℂ) (algebraicClosure (RatFunc ℂ) MeroGerm))
   have hh := trdeg_add_eq ℂ (RatFunc ℂ) (A:=curveField)
@@ -37,11 +38,16 @@ private def tangent : Derivation ℂ MeroGerm MeroGerm where
   toFun := meroDeriv
   map_add' := meroDeriv_add
   map_smul' c a := by
-    rw [Algebra.smul_def,Algebra.smul_def,meroDeriv_mul,tangent_const,mul_zero,add_zero]
-  map_one_eq_zero' := by simpa only [map_one] using tangent_const (1:ℂ)
-  leibniz' a b := by simpa only [smul_eq_mul] using meroDeriv_mul a b
+    rw [Algebra.smul_def,Algebra.smul_def,meroDeriv_mul,tangent_const,mul_zero,add_zero,RingHom.id_apply]
+  map_one_eq_zero' := by
+    change meroDeriv 1=0
+    simpa only [map_one] using tangent_const (1:ℂ)
+  leibniz' a b := by
+    change meroDeriv (a*b)=a*meroDeriv b+b*meroDeriv a
+    exact meroDeriv_mul a b
 
 private theorem tangent_closed (y : MeroGerm) (hy : y ∈ curveField) : tangent y ∈ curveField := by
+  letI : CharZero MeroGerm := charZero_of_injective_algebraMap (algebraMap ℂ MeroGerm).injective
   apply deriv_mem_algebraicClosure (E:=RatFunc ℂ) _ hy
   intro x hx
   obtain ⟨p,rfl⟩ := IntermediateField.mem_bot.mp hx
@@ -59,7 +65,7 @@ private theorem coordinate_changes : lineDeriv coordinate≠0 := by
   change meroDeriv (algebraMap (RatFunc ℂ) MeroGerm RatFunc.X)=0 at hc
   rw [algebraMap_X_meroGerm,zGerm,meroDeriv_ofMero,ofMero_eq_zero_iff] at hc
   obtain ⟨z,hz⟩ := hc.exists
-  simpa using hz
+  simp at hz
 
 private theorem exp_germ_derivative {f : ℂ → ℂ} (hf : AnalyticAt ℂ f 0) :
     meroDeriv (ofMero (fun z => Complex.exp (f z)) hf.cexp.meromorphicAt)=

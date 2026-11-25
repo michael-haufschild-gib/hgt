@@ -18,7 +18,8 @@ def InReturnExcursion {n : ℕ} (H : selfAdjoint (Reg n)) (P s : ℕ) (u W G : �
     d σ = 9/80 ∧ IsLeast {t | b ≤ t ∧ 9/80 ≤ d t} σ ∧
     u+W < v ∧ v ≤ σ+G ∧ IsLeast (Ici σ ∩ cheap) v ∧ Disjoint (Ioo b v) cheap
 
-private theorem first_level {f : ℝ → ℝ} (hf : Continuous f) {b u c : ℝ}
+/-- A first upper crossing from strictly below attains the level. -/
+theorem first_level {f : ℝ → ℝ} (hf : Continuous f) {b u c : ℝ}
     (hbu : b ≤ u) (hb : f b < c) (hu : c ≤ f u) :
     ∃ σ ∈ Ioc b u, f σ = c ∧ IsLeast {t | b ≤ t ∧ c ≤ f t} σ := by
   let K := Icc b u ∩ f ⁻¹' Ici c

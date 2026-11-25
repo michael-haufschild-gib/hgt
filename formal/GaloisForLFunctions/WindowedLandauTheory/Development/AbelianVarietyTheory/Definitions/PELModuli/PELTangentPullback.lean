@@ -39,6 +39,7 @@ theorem isTanScal_iff_of_pushEquiv (h : IsGrpPullback A' A f φ)
   have ha : e (v ≫ a'.act b) = e v ≫ a.act b := by
     apply Over.OverMorphism.ext
     simp only [he, Over.comp_left, Category.assoc, hact]
+    exact (Category.assoc _ _ _).symm
   change ((epsZeroAt x ≫ v).left = (1 : Over.mk x ⟶ A').left ∧ _) ↔
     ((epsZeroAt (x ≫ f) ≫ e v).left = (1 : Over.mk (x ≫ f) ⟶ A).left ∧ _)
   refine and_congr ⟨?_, ?_⟩ ?_
@@ -72,14 +73,22 @@ theorem lieMult_pull (h : IsGrpPullback A' A f φ) {O k : Type} [Ring O] [Field 
     (a : OActN O A) (a' : OActN O A')
     (hact : ∀ b, (a'.act b).left ≫ φ = φ ≫ (a.act b).left) (x : Sp k ⟶ S')
     (τ : O →+* k) (d : ℕ) : LieMult a' x τ d ↔ LieMult a (x ≫ f) τ d := by
-  obtain ⟨e, he⟩ := exists_pushEquiv h (epsPtR x) (epsPtR (x ≫ f)).hom (Category.assoc _ _ _).symm
-  have hp v : (∀ b, IsTanScal a' x b (τ b) v) ↔
-      (∀ b, IsTanScal a (x ≫ f) b (τ b) (e v)) :=
+  obtain ⟨e, he⟩ : ∃ e : (epsPtR x ⟶ A') ≃* (epsPtR (x ≫ f) ⟶ A),
+      ∀ v, (e v).left = v.left ≫ φ :=
+    exists_pushEquiv h (epsPtR x) (epsPtR (x ≫ f)).hom (Category.assoc _ _ _).symm
+  let P (v : epsPtR x ⟶ A') := ∀ b, IsTanScal a' x b (τ b) v
+  let Q (v : epsPtR (x ≫ f) ⟶ A) := ∀ b, IsTanScal a (x ≫ f) b (τ b) v
+  let σ (c : k) (v : epsPtR x ⟶ A') := (Over.map x).map (epsScale c) ≫ v
+  let σ' (c : k) (v : epsPtR (x ≫ f) ⟶ A) := (Over.map (x ≫ f)).map (epsScale c) ≫ v
+  have hp (v : epsPtR x ⟶ A') : P v ↔ Q (e v) :=
     forall_congr' fun b => isTanScal_iff_of_pushEquiv h a a' hact x e he b (τ b) v
-  have hs := pushEquiv_epsScale x e he
-  exact ⟨transport_basis e hp hs d,
-    transport_basis e.symm
-      (fun v => (hp (e.symm v)).symm.trans (by rw [e.apply_symm_apply]))
-      (fun c v => e.injective (by rw [e.apply_symm_apply, hs, e.apply_symm_apply])) d⟩
+  have hs (c : k) (v : epsPtR x ⟶ A') : e (σ c v) = σ' c (e v) :=
+    pushEquiv_epsScale x e he c v
+  have hp' (v : epsPtR (x ≫ f) ⟶ A) : Q v ↔ P (e.symm v) := by
+    simpa only [e.apply_symm_apply] using (hp (e.symm v)).symm
+  have hs' (c : k) (v : epsPtR (x ≫ f) ⟶ A) : e.symm (σ' c v) = σ c (e.symm v) := by
+    apply e.injective
+    rw [e.apply_symm_apply, hs, e.apply_symm_apply]
+  exact ⟨transport_basis e hp hs d, transport_basis e.symm hp' hs' d⟩
 
 end GlobalTheory.LiePull

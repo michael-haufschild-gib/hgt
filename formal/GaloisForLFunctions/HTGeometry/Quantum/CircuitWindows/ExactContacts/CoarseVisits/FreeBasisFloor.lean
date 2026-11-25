@@ -19,15 +19,15 @@ private theorem spectrum_conj {N : ℕ} (W : Basis N) (M : Reg N) :
   simp only [Matrix.mem_spectrum_iff_isRoot_charpoly]
   rw [Matrix.charpoly_mul_comm (W.val*M),←mul_assoc,W.property.1,one_mul]
 
-private theorem exact_spectral_bound (ω : PathPauliDisorder) (k : ℕ) (t : ℝ)
-    (hi : AlgebraicIndependent ℚ (contactPhases ω k t)) (W : Basis (k+3))
-    (C : TwoQubitCircuit (k+3)) (z : ℂ) (hz : ‖z‖=1)
-    (he : W.val*unitaryEvolution (chainGenerator ω k).val t*star W.val=z • C.eval.val) :
-    2^(k+3)-1 ≤ C.gateCount*16 := by
-  classical
-  let H := chainGenerator ω k
+/-- Each algebraically independent eigenphase ratio consumes part of
+the sixteen generators available per gate, in every physical basis. -/
+theorem exact_ratio_bound {N : ℕ} {I : Type} [Fintype I] (H : selfAdjoint (Reg N)) (t : ℝ)
+    (r : Fin N → Bool) (f : I → (Fin N → Bool))
+    (hi : AlgebraicIndependent ℚ (fun l => anchorPhase H.2.isHermitian.eigenvalues (f l) t /
+      anchorPhase H.2.isHermitian.eigenvalues r t)) (W : Basis N) (C : TwoQubitCircuit N)
+    (z : ℂ) (hz : ‖z‖=1) (he : W.val*unitaryEvolution H.val t*star W.val=z • C.eval.val) :
+    Fintype.card I ≤ C.gateCount*16 := by
   let E := H.2.isHermitian.eigenvalues
-  let r : Fin (k+3) → Bool := fun _ => false
   let p i := anchorPhase E i t
   let g i := z⁻¹*p i
   have hn : z≠0 := fun h => zero_ne_one (by simpa only [h,norm_zero] using hz)
@@ -39,22 +39,34 @@ private theorem exact_spectral_bound (ω : PathPauliDisorder) (k : ℕ) (t : ℝ
     change z*(z⁻¹*p i) ∈ spectrum ℂ (z • C.eval.val)
     rw [←mul_assoc,mul_inv_cancel₀ hn,one_mul]
     exact hp i
-  have hrel (i : {i // i≠r}) : g i.val/g r=contactPhases ω k t i := by
-    dsimp only [g]
-    rw [mul_div_mul_left _ _ (inv_ne_zero hn)]
+  apply spectral_ratio_gate_bound C (g r) (hg r) (fun l => g (f l)) (fun l => hg (f l))
+  simpa only [g,mul_div_mul_left _ _ (inv_ne_zero hn)] using hi
+
+private theorem exact_spectral_bound (ω : PathPauliDisorder) (k : ℕ) (t : ℝ)
+    (hi : AlgebraicIndependent ℚ (contactPhases ω k t)) (W : Basis (k+3))
+    (C : TwoQubitCircuit (k+3)) (z : ℂ) (hz : ‖z‖=1)
+    (he : W.val*unitaryEvolution (chainGenerator ω k).val t*star W.val=z • C.eval.val) :
+    2^(k+3)-1 ≤ C.gateCount*16 := by
+  classical
+  let H := chainGenerator ω k
+  let E := H.2.isHermitian.eigenvalues
+  let r : Fin (k+3) → Bool := fun _ => false
+  let p i := anchorPhase E i t
+  have hrel (i : {i // i≠r}) : p i.val/p r=contactPhases ω k t i := by
     simp only [p,anchorPhase,contactPhases,energyPhase,projectiveFrequency,←Complex.exp_sub]
     congr 1
     dsimp only [E,H,r]
     push_cast
     ring
-  have hb := spectral_ratio_gate_bound C (g r) (hg r) (fun i : {i // i≠r} => g i.val)
-    (fun i => hg i.val) (by simpa only [hrel] using hi)
+  have hi' : AlgebraicIndependent ℚ (fun i : {i // i≠r} => p i.val/p r) := by
+    simpa only [hrel] using hi
+  have hb := exact_ratio_bound H t r (fun i : {i // i≠r} => i.val) hi' W C z hz he
   rw [Fintype.card_subtype_compl (fun i => i=r),Fintype.card_subtype_eq] at hb
   simpa only [Fintype.card_fun,Fintype.card_fin,Fintype.card_bool] using hb
 
 /-- Absence of an exact fit in every basis gives one positive error
 excluding every basis, by attainment of the least distance. -/
-private theorem positive_basis_floor {N s : ℕ} (M : Reg N)
+theorem positive_basis_floor {N s : ℕ} (M : Reg N)
     (h : ∀ W : Basis N, ¬ HasProjectiveCircuitApproximation N 0 s (W.val*M*star W.val)) :
     ∃ δ > (0:ℝ), ∀ W : Basis N, ¬ HasProjectiveCircuitApproximation N δ s (W.val*M*star W.val) := by
   letI : CompactSpace (Basis N) := isCompact_iff_compactSpace.mp isCompact_matrixUnitaryGroup

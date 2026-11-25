@@ -30,6 +30,25 @@ private theorem regular_contact {I : Type*} [Fintype I] {E : I→ℝ} {r t : ℝ
     exact simple_contact E hi hneg ht j k i hkj.symm hji.symm hki.symm hreverse (sub_left_inj.mp ht')
   exact ⟨x,⟨lt_of_le_of_ne hx.1 hlo.symm,lt_of_le_of_ne hx.2 hhi⟩,he⟩
 
+/-- At a prescribed tolerance, every first scalar visit from a positive
+outside origin lies on a face with just two endpoint levels. -/
+theorem gaussian_first_empty_inward_face (ε : ℝ) (hε : 0 < ε) (hs : ε < sqrt 2) :
+    ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ k : ℕ,
+      let N := k+3
+      let H : selfAdjoint (Register N) := ⟨pathHamiltonian (pathPauliDisorderShell ω (k+1)),
+        isSelfAdjoint_pathHamiltonian _⟩
+      let w (j : State N) := -H.2.isHermitian.eigenvalues j/(2*π)
+      ∀ a > (0:ℝ), ε < orbitCircuitDistance H 0 a →
+        ∃ i j : State N, inwardFace w (SharpOccupation.physicalArc ε) (firstVisit H a 0 ε) i j := by
+  filter_upwards [gaussian_fixed_contacts (SharpOccupation.physicalArc ε),
+    gaussian_path_all_prefixes_maximally_projective] with ω hties hind k
+  intro N H w a ha hout
+  obtain ⟨hav,hentry⟩ := first_empty_entry_of_outside H hε hs hout
+  have hx := (SharpOccupation.physicalArc_spec hε hs).1
+  obtain ⟨i,j,hface⟩ := (entry_iff_closed_face w hx.1.le hx.2).mp hentry
+  exact ⟨i,j,regular_contact (maximallyProjectiveEnergy_neg (hind k)).injective
+    (hties k).1 (hties k).2 (ha.trans hav) hface⟩
+
 /-- At every positive outside origin, the first scalar return is locally
 a reciprocal of one spectral gap in the full space of labeled phase
 velocities. The same pair works for every nearby perturbation. -/
@@ -44,15 +63,12 @@ theorem gaussian_first_empty_gap_chart (ε : ℝ) (hε : 0 < ε) (hs : ε < sqrt
         let v := firstVisit H a 0 ε
         ∃ i j : State N, w j < w i ∧ ∀ᶠ w' : State N→ℝ in 𝓝 w,
           IsLeast {t : ℝ | a ≤ t ∧ flow w' t∈enclosingUnitArc r} (v*(w i-w j)/(w' i-w' j)) := by
-  filter_upwards [gaussian_fixed_contacts (SharpOccupation.physicalArc ε),
-    gaussian_path_all_prefixes_maximally_projective] with ω hties hind
+  filter_upwards [gaussian_first_empty_inward_face ε hε hs] with ω hω
   intro k N H w r a ha hout v
-  obtain ⟨hav,hentry⟩ := first_empty_entry_of_outside H hε hs hout
+  have hav := (first_empty_entry_of_outside H hε hs hout).1
   have hx := (SharpOccupation.physicalArc_spec hε hs).1
-  obtain ⟨i,j,hface⟩ := (entry_iff_closed_face w hx.1.le hx.2).mp hentry
-  have hreg := regular_contact (maximallyProjectiveEnergy_neg (hind k)).injective (hties k).1 (hties k).2
-    (ha.trans hav) hface
-  refine ⟨i,j,hface.1,first_face_stable hx.1.le hx.2 hav hreg ?_⟩
+  obtain ⟨i,j,hreg⟩ := hω k a ha hout
+  refine ⟨i,j,hreg.1,first_face_stable hx.1.le hx.2 hav hreg ?_⟩
   intro t ht hf
   exact ht.2.not_ge ((firstVisit_isLeast H a 0 hε).2 ⟨ht.1,(physical_visit H hε hs t).mp hf⟩)
 

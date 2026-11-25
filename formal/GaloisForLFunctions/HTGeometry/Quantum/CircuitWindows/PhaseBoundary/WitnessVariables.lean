@@ -6,7 +6,8 @@ open Filter Set Topology
 namespace GaloisForLFunctions.HTGeometry.PhaseBoundary
 noncomputable section
 
-private def move_head (A : Type*) [CommRing A] (n : ℕ) :
+/-- Move the first witness coordinate into the polynomial coefficient ring. -/
+def move_head (A : Type*) [CommRing A] (n : ℕ) :
     MvPolynomial (Fin (n+1)) A →+* MvPolynomial (Fin n) (Polynomial A) :=
   MvPolynomial.eval₂Hom (MvPolynomial.C.comp Polynomial.C)
     (Fin.cases (MvPolynomial.C Polynomial.X) MvPolynomial.X)
@@ -23,7 +24,8 @@ private theorem eval_move_head {A : Type*} [CommRing A] {n : ℕ}
       refine Fin.cases ?_ (fun j => ?_) i <;> simp [move_head]
   exact DFunLike.congr_fun he p
 
-private theorem exists_move_head {A X : Type*} [CommRing A] (ρ : X → A →+* ℝ) {n : ℕ}
+/-- Projecting the first witness leaves exactly the original existential equation. -/
+theorem exists_move_head {A X : Type*} [CommRing A] (ρ : X → A →+* ℝ) {n : ℕ}
     (p : MvPolynomial (Fin (n+1)) A) :
     Prod.fst '' {z : X × ℝ | ∃ w : Fin n → ℝ,
       MvPolynomial.eval₂Hom (appendEval ρ z) w (move_head A n p) = 0} =
@@ -49,6 +51,16 @@ private theorem exists_move_head {A X : Type*} [CommRing A] (ρ : X → A →+* 
     rw [eval_move_head,he]
     exact hw
 
+/-- With no witness coordinates, specialization agrees with evaluation in the base ring. -/
+theorem eval_empty_witness {A : Type*} [CommRing A] (p : MvPolynomial (Fin 0) A)
+    (φ : A →+* ℝ) (w : Fin 0 → ℝ) :
+    φ (MvPolynomial.eval (fun i : Fin 0 => i.elim0) p)=MvPolynomial.eval₂Hom φ w p := by
+  have he : φ.comp (MvPolynomial.eval (fun i : Fin 0 => i.elim0)) = MvPolynomial.eval₂Hom φ w := by
+    apply MvPolynomial.ringHom_ext
+    · intro r; simp
+    · intro i; exact i.elim0
+  exact DFunLike.congr_fun he p
+
 /-- An existential real algebraic incidence over any finite list of
 witness coordinates is locally certified over the original base ring. -/
 theorem certified_exists_fin (n : ℕ) {A X : Type*} [CommRing A] [TopologicalSpace X]
@@ -57,13 +69,8 @@ theorem certified_exists_fin (n : ℕ) {A X : Type*} [CommRing A] [TopologicalSp
   induction n generalizing X A with
   | zero =>
     let a := MvPolynomial.eval (fun i : Fin 0 => i.elim0) p
-    have hv (x : X) (w : Fin 0 → ℝ) : ρ x a = MvPolynomial.eval₂Hom (ρ x) w p := by
-      have he : (ρ x).comp (MvPolynomial.eval (fun i : Fin 0 => i.elim0)) =
-          MvPolynomial.eval₂Hom (ρ x) w := by
-        apply MvPolynomial.ringHom_ext
-        · intro r; simp
-        · intro i; exact i.elim0
-      exact DFunLike.congr_fun he p
+    have hv (x : X) (w : Fin 0 → ℝ) : ρ x a = MvPolynomial.eval₂Hom (ρ x) w p :=
+      eval_empty_witness p (ρ x) w
     rintro x ⟨w,hw⟩
     exact ⟨a,(hv x w).trans hw,Eventually.of_forall fun z hz => ⟨w,(hv z w).symm.trans hz⟩⟩
   | succ n ih =>

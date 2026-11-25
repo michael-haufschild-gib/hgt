@@ -9,7 +9,7 @@ noncomputable section
 variable {A X : Type*} [CommRing A] [TopologicalSpace X] {ρ : X → A →+* ℝ}
 
 omit [TopologicalSpace X] in
-private theorem residual_rep {N g : ℕ} (D : TwoQubitArchitecture N g) {U : X → Square (Bits N)}
+theorem residual_rep {N g : ℕ} (D : TwoQubitArchitecture N g) {U : X → Square (Bits N)}
     (hU : MatrixRep ρ U) {ε : X → ℝ} (hε : Represents ρ (fun x => ε x ^ 2)) (e : Equation N g) :
     ComplexRep (witnessEval ρ) (fun z : X × (Coord N g → ℝ) => residual D (U z.1) (ε z.1) z.2 e) := by
   let φ := @witnessEval A X (Coord N g) _ ρ

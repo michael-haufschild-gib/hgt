@@ -32,6 +32,37 @@ private theorem real_root_of_crossing (p : ℝ[X]) {l r : ℝ} (hlr : l ≤ r)
   · exact intermediate_value_Icc' hlr p.continuousOn ⟨h.2.le,h.1.le⟩
   · exact intermediate_value_Icc hlr p.continuousOn ⟨h.1.le,h.2.le⟩
 
+/-- If every coefficient vanishes, the old witness remains a root. -/
+theorem project_zero_specialization {ρ : X → A →+* ℝ} {S : Set (X × ℝ)}
+    {x : X} {y : ℝ} (p : A[X]) (hw : ∀ᶠ z in 𝓝 (x,y), appendEval ρ z p=0 → z∈S) :
+    ∀ᶠ z in 𝓝 x, ρ z (coefficientSquares p)=0 → z∈Prod.fst '' S := by
+  obtain ⟨U,hU,V,hV,hbox⟩ := mem_nhds_prod_iff.mp hw
+  filter_upwards [hU] with z hzU h
+  refine ⟨(z,y),hbox ⟨hzU,mem_of_mem_nhds hV⟩ ?_,rfl⟩
+  change p.eval₂ (ρ z) y=0
+  rw [eval₂_eq_eval_map,(coefficientSquares_zero_iff ..).1 h,eval_zero]
+
+/-- A simple real factor changes sign across the witness. Its root
+persists while the denominator and the sign bracket remain nonzero. -/
+theorem project_simple_factor {ρ : X → A →+* ℝ} (hc : ∀ a, Continuous fun x => ρ x a)
+    {S : Set (X × ℝ)} {x : X} {y : ℝ} {p P : A[X]} {g d : A}
+    (hw : ∀ᶠ z in 𝓝 (x,y), appendEval ρ z p=0 → z∈S) (hd : ρ x d≠0)
+    (hP : P.eval₂ (ρ x) y=0) (hder : P.derivative.eval₂ (ρ x) y≠0)
+    (hroot : ∀ (ψ : A →+* ℝ) (z : ℝ), ψ g=0 → ψ d≠0 → P.eval₂ ψ z=0 → p.eval₂ ψ z=0) :
+    ∀ᶠ z in 𝓝 x, ρ z g=0 → z∈Prod.fst '' S := by
+  obtain ⟨U,hU,V,hV,hbox⟩ := mem_nhds_prod_iff.mp hw
+  have hsimp : (P.map (ρ x)).derivative.eval y ≠ 0 := by
+    rwa [Polynomial.derivative_map,eval_map]
+  obtain ⟨l,r,hlr,hsub,hsign⟩ := sign_bracket (P.map (ρ x)) y (by rwa [eval_map]) hsimp hV
+  have cont (t : ℝ) : Continuous fun z => P.eval₂ (ρ z) t :=
+    (continuous_appendEval ρ hc P).comp (continuous_id.prodMk continuous_const)
+  have ht : ∀ᶠ z in 𝓝 x, P.eval₂ (ρ z) l * P.eval₂ (ρ z) r < 0 := by
+    apply ((cont l).mul (cont r)).continuousAt.eventually_lt continuousAt_const
+    simpa only [eval_map,Pi.mul_apply] using hsign
+  filter_upwards [hU,ht,(hc d).continuousAt.eventually_ne hd] with z hzU hsg hdz hg
+  obtain ⟨w,hw,he⟩ := real_root_of_crossing (P.map (ρ z)) hlr (by simpa only [eval_map] using hsg)
+  exact ⟨(z,w),hbox ⟨hzU,hsub hw⟩ (hroot _ w hg hdz (by rwa [eval_map] at he)),rfl⟩
+
 /-- The projected set retains a local certificate, even at a repeated root
 or a point where the specialized polynomial vanishes identically. -/
 theorem LocallyCertified.fst_image {ρ : X → A →+* ℝ}
@@ -39,30 +70,14 @@ theorem LocallyCertified.fst_image {ρ : X → A →+* ℝ}
     (hs : LocallyCertified (appendEval ρ) S) : LocallyCertified ρ (Prod.fst '' S) := by
   rintro _ ⟨⟨x,y⟩,hxy,rfl⟩
   obtain ⟨p,hp,hw⟩ := hs (x,y) hxy
-  obtain ⟨U,hU,V,hV,hbox⟩ := mem_nhds_prod_iff.mp hw
   change p.eval₂ (ρ x) y = 0 at hp
   by_cases hz : p.map (specialize (ρ x)) = 0
   · have h0 : p.map (ρ x) = 0 := by
       change p.map ((valueField (ρ x)).subtype.comp (specialize (ρ x))) = 0
       rw [←Polynomial.map_map,hz,Polynomial.map_zero]
-    refine ⟨coefficientSquares p,(coefficientSquares_zero_iff ..).2 h0,?_⟩
-    filter_upwards [hU] with z hzU h
-    refine ⟨(z,y),hbox ⟨hzU,mem_of_mem_nhds hV⟩ ?_,rfl⟩
-    change p.eval₂ (ρ z) y = 0
-    rw [eval₂_eq_eval_map,(coefficientSquares_zero_iff ..).1 h,eval_zero]
+    exact ⟨coefficientSquares p,(coefficientSquares_zero_iff ..).2 h0,project_zero_specialization p hw⟩
   · obtain ⟨g,d,P,hg,hd,hP,hder,hroot⟩ := simple_factor_certificate (ρ x) p y hp hz
-    have hsimp : (P.map (ρ x)).derivative.eval y ≠ 0 := by
-      rwa [Polynomial.derivative_map,eval_map]
-    obtain ⟨l,r,hlr,hsub,hsign⟩ := sign_bracket (P.map (ρ x)) y (by rwa [eval_map]) hsimp hV
-    have cont (t : ℝ) : Continuous fun z => P.eval₂ (ρ z) t :=
-      (continuous_appendEval ρ hc P).comp (continuous_id.prodMk continuous_const)
-    have ht : ∀ᶠ z in 𝓝 x, P.eval₂ (ρ z) l * P.eval₂ (ρ z) r < 0 := by
-      apply ((cont l).mul (cont r)).continuousAt.eventually_lt continuousAt_const
-      simpa only [eval_map,Pi.mul_apply] using hsign
-    refine ⟨g,hg,?_⟩
-    filter_upwards [hU,ht,(hc d).continuousAt.eventually_ne hd] with z hzU hsg hdz hg'
-    obtain ⟨w,hw,he⟩ := real_root_of_crossing (P.map (ρ z)) hlr (by simpa only [eval_map] using hsg)
-    exact ⟨(z,w),hbox ⟨hzU,hsub hw⟩ (hroot _ w hg' hdz (by rwa [eval_map] at he)),rfl⟩
+    exact ⟨g,hg,project_simple_factor hc hw hd hP hder hroot⟩
 
 end
 end GaloisForLFunctions.HTGeometry.PhaseBoundary
