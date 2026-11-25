@@ -20,7 +20,8 @@ theorem map_mem_polyGrading {ι B R : Type} [CommRing B] [CommRing R] (f : B →
   rw [MvPolynomial.coeff_map, h, map_zero]
 
 private theorem exists_isBaseChange_coker {B R A₀ A M₁ M₂ N₁ N₂ : Type}
-    [CommRing B] [CommRing R] [CommRing A₀] [CommRing A] [Algebra B R]
+    [CommRing B] [CommRing R] [CommRing A₀] [CommRing A]
+    [Algebra B R] [Algebra B A₀] [Algebra R A] [Algebra B A] [IsScalarTower B R A]
     [AddCommGroup M₁] [AddCommGroup M₂] [AddCommGroup N₁] [AddCommGroup N₂]
     [Module B M₁] [Module B M₂] [Module A₀ M₁] [Module A₀ M₂]
     [IsScalarTower B A₀ M₁] [IsScalarTower B A₀ M₂]
