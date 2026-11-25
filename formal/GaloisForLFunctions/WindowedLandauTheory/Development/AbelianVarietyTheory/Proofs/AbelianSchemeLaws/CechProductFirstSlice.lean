@@ -84,13 +84,24 @@ theorem exists_splitting_on_strip [CompactSpace X] [X.IsSeparated] [Y.IsSeparate
     simp only [res_tensorComponent] at a₁ a₂ a₃ a₄
     rw [a₁, a₂, a₃, a₄]
     refine sections_ext_on_cover V (by rw [hc]; exact le_top) _ _ fun i => ?_
-    let M := p ⁻¹ᵁ U₂ m ⊓ q ⁻¹ᵁ (j.1 ⊓ k.1) ⊓ V i
+    let N := p ⁻¹ᵁ U₂ m ⊓ q ⁻¹ᵁ (j.1 ⊓ k.1)
+    let M := N ⊓ V i
     have b₁ := hcd j m i M (inf_le_left.trans (inf_le_inf_left _ m₁)) inf_le_right
     have b₂ := hcd k m i M (inf_le_left.trans (inf_le_inf_left _ m₂)) inf_le_right
     have b₃ := hd m.1 i M (inf_le_left.trans (inf_le_inf_right _ (l₁ m))) inf_le_right
     have b₄ := hd m.2 i M (inf_le_left.trans (inf_le_inf_right _ (l₂ m))) inf_le_right
-    simp only [map_sub, map_zero, resG_resG]
-    linear_combination b₁ - b₂ - b₃ + b₄
+    let F := resG Z (inf_le_left : M ≤ N)
+    let c₁ : Γ(Z, N) := resG Z (inf_le_inf_left (p ⁻¹ᵁ U₂ m) m₁) (c j m)
+    let c₂ : Γ(Z, N) := resG Z (inf_le_inf_left (p ⁻¹ᵁ U₂ m) m₂) (c k m)
+    let d₁ : Γ(Z, N) := resG Z (inf_le_inf_right (q ⁻¹ᵁ (j.1 ⊓ k.1)) (l₁ m)) (d m.1)
+    let d₂ : Γ(Z, N) := resG Z (inf_le_inf_right (q ⁻¹ᵁ (j.1 ⊓ k.1)) (l₂ m)) (d m.2)
+    change F (c₁ - c₂ - (d₁ - d₂)) = F 0
+    have hF : F c₁ - F c₂ - (F d₁ - F d₂) = 0 := by
+      dsimp only [F, c₁, c₂, d₁, d₂]
+      simp only [resG_resG]
+      linear_combination b₁ - b₂ - b₃ + b₄
+    exact (F.map_sub _ _).trans
+      ((congrArg₂ (· - ·) (F.map_sub _ _) (F.map_sub _ _)).trans (hF.trans F.map_zero.symm))
   have hN (N : X.Opens) : N ≤ a ⁻¹ᵁ (p ⁻¹ᵁ N ⊓ q ⁻¹ᵁ B₀.1) := by
     rw [a.preimage_inf, ← Scheme.Hom.comp_preimage, ← Scheme.Hom.comp_preimage, ha, ha']
     exact le_inf le_rfl (le_top.trans (f.preimage_mono hB₀))
@@ -128,7 +139,9 @@ theorem exists_splitting_on_strip [CompactSpace X] [X.IsSeparated] [Y.IsSeparate
     rw [hz₀, show l (chartDifference (f := f) U x) = 0 from LinearMap.congr_fun hl x] at e
     change evalAt hy hB₀ (b B₀) = 0 at e
     rw [hb, AlgHom.commutes] at e
-    rw [hb B, e, map_zero]
+    change r = 0 at e
+    change b B = 0
+    exact (hb B).trans ((congrArg (algebraMap K (SectionRing g B.1)) e).trans (map_zero _))
   obtain ⟨w, hw⟩ := mem_range_rTensor_of_forall_dual (chartDifference (f := f) U) (z B) hl
   refine splittings_glue (fun i => p ⁻¹ᵁ U i ⊓ q ⁻¹ᵁ B.1) (fun i => σ i B) (fun i => hσ i B)
     (fun i => tensorComponent H U B.1 i inf_le_left inf_le_right w) ?_ _ ?_

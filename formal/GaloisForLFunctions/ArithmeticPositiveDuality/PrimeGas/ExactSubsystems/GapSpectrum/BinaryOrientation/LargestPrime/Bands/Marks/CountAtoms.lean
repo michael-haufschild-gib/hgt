@@ -42,7 +42,7 @@ private theorem finite_tent (c d : ℝ) (h : Ioi (0:ℝ)) (s : ℝ) (k : ℕ) :
 private theorem poisson_tent (r : ℝ≥0) (k : ℕ) :
     (∫ x, tent k x ∂(poissonCount r : Measure ℝ)) = Real.exp (-(r:ℝ))*(r:ℝ)^k/k.factorial := by
   change (∫ x, tent k x ∂(poissonMeasure r).map (Nat.cast : ℕ → ℝ)) = _
-  rw [integral_map Measurable.of_discrete (tent k).continuous.aestronglyMeasurable,integral_poissonMeasure,
+  rw [integral_map Measurable.of_discrete.aemeasurable (tent k).continuous.aestronglyMeasurable,integral_poissonMeasure,
     tsum_eq_single k]
   · simp [tent_nat,smul_eq_mul]
   · intro n hn

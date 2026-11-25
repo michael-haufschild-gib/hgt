@@ -12,7 +12,7 @@ noncomputable section
 variable {I : Type*} [Fintype I] [Nonempty I] [DecidableEq I]
 
 private theorem exists_real_witness (p : ℂ[X]) (hp : p≠0) : ∃ y : ℝ, p.eval (y:ℂ)≠0 := by
-  obtain ⟨y,hy⟩ := (SpectralJets.lineCuts p).finite_toSet.countable.exists_notMem
+  obtain ⟨y,_,hy⟩ := (Set.infinite_univ : (univ : Set ℝ).Infinite).exists_notMem_finset (SpectralJets.lineCuts p)
   exact ⟨y,fun hz => hy (SpectralJets.mem_lineCuts hp hz)⟩
 
 /-- For a gap forecast larger than the entire baseline bandwidth by at

@@ -57,13 +57,127 @@ private abbrev Config (N : ℕ) := Fin N → Bool
 private abbrev UGroup (N : ℕ) := Matrix.unitaryGroup (Config N) ℂ
 private abbrev StateSpace (N : ℕ) := EuclideanSpace ℂ (Config N)
 
-private abbrev euclCLM {N : ℕ} (A : Register N) : StateSpace N →L[ℂ] StateSpace N :=
-  Matrix.toEuclideanCLM (n := Config N) (𝕜 := ℂ) A
+/-- Matrix-vector action of `A : Register N` on `EuclideanSpace ℂ (Config N)`. -/
+def matAct {N : ℕ} (A : Register N) (ψ : StateSpace N) : StateSpace N :=
+  WithLp.toLp 2 (A *ᵥ ψ.ofLp)
+
+private theorem matAct_eq_toEuclideanCLM {N : ℕ} (A : Register N) (ψ : StateSpace N) :
+    matAct A ψ = Matrix.toEuclideanCLM (n := Config N) (𝕜 := ℂ) A ψ :=
+  WithLp.ofLp_injective 2 (Matrix.ofLp_toEuclideanCLM A ψ).symm
+
+private theorem matAct_add {N : ℕ} (A B : Register N) (ψ : StateSpace N) :
+    matAct (A + B) ψ = matAct A ψ + matAct B ψ := by
+  ext i; simp [matAct, Matrix.add_mulVec]
+
+private theorem matAct_sub {N : ℕ} (A B : Register N) (ψ : StateSpace N) :
+    matAct (A - B) ψ = matAct A ψ - matAct B ψ := by
+  ext i; simp [matAct, Matrix.sub_mulVec]
+
+private theorem matAct_smul {N : ℕ} (c : ℂ) (A : Register N) (ψ : StateSpace N) :
+    matAct (c • A) ψ = c • matAct A ψ := by
+  ext i; simp [matAct, Matrix.smul_mulVec]
+
+private theorem matAct_map_add {N : ℕ} (A : Register N) (x y : StateSpace N) :
+    matAct A (x + y) = matAct A x + matAct A y := by
+  ext i; simp [matAct, Matrix.mulVec_add]
+
+private theorem matAct_map_sub {N : ℕ} (A : Register N) (x y : StateSpace N) :
+    matAct A (x - y) = matAct A x - matAct A y := by
+  ext i; simp [matAct, Matrix.mulVec_sub]
+
+private theorem matAct_map_smul {N : ℕ} (A : Register N) (c : ℂ) (ψ : StateSpace N) :
+    matAct A (c • ψ) = c • matAct A ψ := by
+  ext i; simp [matAct, Matrix.mulVec_smul]
+
+private theorem matAct_zero_left {N : ℕ} (ψ : StateSpace N) : matAct 0 ψ = 0 := by
+  ext i; simp [matAct]
+
+private theorem matAct_zero_right {N : ℕ} (A : Register N) : matAct A 0 = 0 := by
+  ext i; simp [matAct]
+
+private theorem matAct_mul {N : ℕ} (A B : Register N) (ψ : StateSpace N) :
+    matAct (A * B) ψ = matAct A (matAct B ψ) := by
+  ext i; simp [matAct, Matrix.mulVec_mulVec]
+
+private theorem matAct_one {N : ℕ} (ψ : StateSpace N) : matAct 1 ψ = ψ := by
+  ext i; simp [matAct]
+
+private theorem inner_matAct_star_left {N : ℕ} (A : Register N) (x y : StateSpace N) :
+    inner ℂ (matAct (star A) x) y = inner ℂ x (matAct A y) := by
+  rw [matAct_eq_toEuclideanCLM, matAct_eq_toEuclideanCLM,
+    show Matrix.toEuclideanCLM (n := Config N) (𝕜 := ℂ) (star A) =
+      ContinuousLinearMap.adjoint (Matrix.toEuclideanCLM (n := Config N) (𝕜 := ℂ) A) from
+      map_star Matrix.toEuclideanCLM A,
+    ContinuousLinearMap.adjoint_inner_left]
+
+private theorem norm_matAct_le {N : ℕ} (A : Register N) (ψ : StateSpace N) :
+    ‖matAct A ψ‖ ≤ ‖A‖ * ‖ψ‖ := by
+  rw [matAct_eq_toEuclideanCLM]
+  simpa only [Matrix.l2_opNorm_toEuclideanCLM] using
+    (Matrix.toEuclideanCLM (n := Config N) (𝕜 := ℂ) A).le_opNorm ψ
+
+private theorem opNorm_le_of_matAct_le {N : ℕ} {A : Register N} {C : ℝ} (hC : 0 ≤ C)
+    (h : ∀ x : StateSpace N, ‖matAct A x‖ ≤ C * ‖x‖) : ‖A‖ ≤ C := by
+  rw [← Matrix.l2_opNorm_toEuclideanCLM (n := Config N) (𝕜 := ℂ)]
+  refine (Matrix.toEuclideanCLM (n := Config N) (𝕜 := ℂ) A).opNorm_le_bound hC fun x => ?_
+  rw [← matAct_eq_toEuclideanCLM]
+  exact h x
+
+private theorem continuous_matAct {N : ℕ} (A : Register N) : Continuous (matAct A) := by
+  have h : matAct A = ⇑(Matrix.toEuclideanCLM (n := Config N) (𝕜 := ℂ) A) :=
+    funext (matAct_eq_toEuclideanCLM A)
+  rw [h]
+  exact (Matrix.toEuclideanCLM (n := Config N) (𝕜 := ℂ) A).continuous
+
+private theorem continuous_matAct_pair {N : ℕ} :
+    Continuous (fun p : Register N × StateSpace N => matAct p.1 p.2) := by
+  have h : (fun p : Register N × StateSpace N => matAct p.1 p.2) =
+      fun p => Matrix.toEuclideanCLM (n := Config N) (𝕜 := ℂ) p.1 p.2 :=
+    funext fun p => matAct_eq_toEuclideanCLM p.1 p.2
+  rw [h]
+  exact isBoundedBilinearMap_apply.continuous.comp
+    (((Matrix.toEuclideanCLM (n := Config N) (𝕜 := ℂ)).toContinuousLinearEquiv.continuous.comp
+      continuous_fst).prodMk continuous_snd)
+
+private theorem inner_self_complex {N : ℕ} (x : StateSpace N) :
+    inner ℂ x x = ((‖x‖ ^ 2 : ℝ) : ℂ) := by
+  rw [inner_self_eq_norm_sq_to_K, ← RCLike.ofReal_pow]
+  rfl
+
+private theorem norm_add_sq_complex {N : ℕ} (x y : StateSpace N) :
+    ‖x + y‖ ^ 2 = ‖x‖ ^ 2 + 2 * (inner ℂ x y).re + ‖y‖ ^ 2 :=
+  @norm_add_sq ℂ _ _ _ _ x y
+
+private theorem norm_sub_sq_complex {N : ℕ} (x y : StateSpace N) :
+    ‖x - y‖ ^ 2 = ‖x‖ ^ 2 - 2 * (inner ℂ x y).re + ‖y‖ ^ 2 :=
+  @norm_sub_sq ℂ _ _ _ _ x y
+
+private theorem norm_matAct_unitary {N : ℕ} {U : Register N} (hU : U ∈ unitary (Register N))
+    (ψ : StateSpace N) : ‖matAct U ψ‖ = ‖ψ‖ := by
+  have h1 : inner ℂ (matAct U ψ) (matAct U ψ) = inner ℂ ψ ψ := by
+    rw [← inner_matAct_star_left, ← matAct_mul, (Unitary.mem_iff.mp hU).1, matAct_one]
+  rw [inner_self_complex, inner_self_complex] at h1
+  exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp (Complex.ofReal_injective h1)
+
+private theorem projectiveSpectralMatrix_mem_unitary {N d : ℕ} (e : Config N ≃ Fin (d + 1))
+    (V : UGroup N) (θ : Fin d → UnitAddCircle) :
+    projectiveSpectralMatrix e V θ ∈ unitary (Register N) := by
+  unfold projectiveSpectralMatrix
+  refine mul_mem (mul_mem V.2 ?_) (Unitary.star_mem V.2)
+  rw [Unitary.mem_iff, star_eq_conjTranspose, diagonal_conjTranspose,
+    diagonal_mul_diagonal, diagonal_mul_diagonal]
+  constructor <;> ext a b <;> by_cases hab : a = b
+  · subst hab; simp only [diagonal_apply_eq, one_apply_eq]
+    exact Complex.normSq_eq_conj_mul_self.symm.trans (by simp)
+  · simp [hab]
+  · subst hab; simp only [diagonal_apply_eq, one_apply_eq]; rw [mul_comm]
+    exact Complex.normSq_eq_conj_mul_self.symm.trans (by simp)
+  · simp [hab]
 
 /-- Compact sphere of unit vectors in `EuclideanSpace ℂ (Config N)` attaining the `L²`
 operator norm of `M`. -/
 def maxRightSingularSphere {N : ℕ} (M : Register N) : Set (StateSpace N) :=
-  {ψ : StateSpace N | ‖ψ‖ = 1 ∧ ‖euclCLM M ψ‖ = ‖M‖}
+  {ψ : StateSpace N | ‖ψ‖ = 1 ∧ ‖matAct M ψ‖ = ‖M‖}
 
 /-- Skew-adjoint commutator tangent `-i [K, U]` of `u ↦ e^{-i u K} U e^{i u K}` at `u = 0`. -/
 def skewAdjointCommutator {N : ℕ} (K : selfAdjoint (Register N)) (U : Register N) : Register N :=
@@ -90,35 +204,34 @@ def oscillatorySliceCounterexample {ι : Type*} (i₀ : ι) (e₀ δ : ℝ) (x :
 theorem isCompact_maxRightSingularSphere {N : ℕ} (M : Register N) :
     IsCompact (maxRightSingularSphere M) := by
   have heq : maxRightSingularSphere M =
-      Metric.sphere (0 : StateSpace N) 1 ∩ {ψ | ‖euclCLM M ψ‖ = ‖M‖} := by
+      Metric.sphere (0 : StateSpace N) 1 ∩ {ψ | ‖matAct M ψ‖ = ‖M‖} := by
     ext ψ
-    simp [maxRightSingularSphere, mem_sphere_zero_iff_norm]
+    simp [maxRightSingularSphere]
   rw [heq]
   exact (isCompact_sphere (0 : StateSpace N) 1).inter_right
-    (isClosed_eq ((euclCLM M).continuous.norm) continuous_const)
+    (isClosed_eq ((continuous_matAct M).norm) continuous_const)
 
 theorem nonempty_maxRightSingularSphere {N : ℕ} (M : Register N) :
     (maxRightSingularSphere M).Nonempty := by
   let x₀ : Config N := fun _ => false
   have hS_ne : (Metric.sphere (0 : StateSpace N) 1).Nonempty :=
-    ⟨EuclideanSpace.single x₀ 1, by simp [mem_sphere_zero_iff_norm]⟩
+    ⟨EuclideanSpace.single x₀ 1, by simp⟩
   obtain ⟨ψ, hψ_mem, hψ_max⟩ :=
-    (isCompact_sphere (0 : StateSpace N) 1).exists_isMaxOn hS_ne (euclCLM M).continuous.norm.continuousOn
+    (isCompact_sphere (0 : StateSpace N) 1).exists_isMaxOn hS_ne (continuous_matAct M).norm.continuousOn
   have hψ_norm : ‖ψ‖ = 1 := mem_sphere_zero_iff_norm.mp hψ_mem
   refine ⟨ψ, hψ_norm, le_antisymm ?_ ?_⟩
-  · simpa only [Matrix.l2_opNorm_toEuclideanCLM, hψ_norm, mul_one] using (euclCLM M).le_opNorm ψ
-  · rw [← Matrix.l2_opNorm_toEuclideanCLM]
-    refine (euclCLM M).opNorm_le_bound (norm_nonneg _) fun x => ?_
+  · simpa only [hψ_norm, mul_one] using norm_matAct_le M ψ
+  · refine opNorm_le_of_matAct_le (norm_nonneg _) fun x => ?_
     by_cases hx : x = 0
-    · simp [hx]
+    · simp [hx, matAct_zero_right]
     · have hx_pos : 0 < ‖x‖ := norm_pos_iff.mpr hx
       let u : StateSpace N := ((‖x‖⁻¹ : ℝ) : ℂ) • x
       have hu_norm : ‖u‖ = 1 := by
         rw [norm_smul, Complex.norm_real, Real.norm_eq_abs, abs_inv, abs_norm, inv_mul_cancel₀ hx_pos.ne']
-      have hu_le : ‖euclCLM M u‖ ≤ ‖euclCLM M ψ‖ :=
+      have hu_le : ‖matAct M u‖ ≤ ‖matAct M ψ‖ :=
         hψ_max (mem_sphere_zero_iff_norm.mpr hu_norm)
-      have hscale : euclCLM M u = ((‖x‖⁻¹ : ℝ) : ℂ) • euclCLM M x := map_smul (euclCLM M) _ _
-      rw [hscale, norm_smul, Complex.norm_real, Real.norm_eq_abs, abs_inv, abs_norm] at hu_le
+      rw [matAct_map_smul, norm_smul, Complex.norm_real, Real.norm_eq_abs, abs_inv, abs_norm] at hu_le
+      rw [mul_comm]
       exact (inv_mul_le_iff₀ hx_pos).mp hu_le
 
 /-- Every eigenbasis critical height `torusCriticalHeight e V j` is attained at a saddle pair
@@ -146,20 +259,10 @@ theorem exists_torusCriticalHeight_saddle {N d : ℕ} (e : Config N ≃ Fin (d +
           mem_phaseCircuitMatrixImageAtMost_iff.mpr ⟨1, norm_one, TwoQubitCircuit.one N, Nat.zero_le _, rfl⟩
         refine (Metric.infDist_le_dist_of_mem h1).trans ?_
         rw [dist_eq_norm, one_smul, TwoQubitCircuit.one_eval]
-        have hunit : projectiveSpectralMatrix e V θ ∈ unitary (Register N) := by
-          unfold projectiveSpectralMatrix
-          refine mul_mem (mul_mem V.2 ?_) (Unitary.star_mem V.2)
-          rw [Unitary.mem_iff, star_eq_conjTranspose, diagonal_conjTranspose,
-            diagonal_mul_diagonal, diagonal_mul_diagonal]
-          constructor <;> ext a b <;> by_cases hab : a = b
-          · subst hab; simp only [diagonal_apply_eq, one_apply_eq]
-            exact Complex.normSq_eq_conj_mul_self.symm.trans (by simp)
-          · simp [hab]
-          · subst hab; simp only [diagonal_apply_eq, one_apply_eq]; rw [mul_comm]
-            exact Complex.normSq_eq_conj_mul_self.symm.trans (by simp)
-          · simp [hab]
-        linarith only [norm_sub_le (projectiveSpectralMatrix e V θ) 1,
-          CStarRing.norm_of_mem_unitary hunit, norm_one (α := Register N)])
+        have hunit := projectiveSpectralMatrix_mem_unitary e V θ
+        have hnorm1 := CStarRing.norm_of_mem_unitary (1 : UGroup N).2
+        linarith only [norm_sub_le (projectiveSpectralMatrix e V θ) ((1 : UGroup N) : Register N),
+          CStarRing.norm_of_mem_unitary hunit, hnorm1])
       (mem_range_self θ_star))
     rintro _ ⟨θ, rfl⟩
     exact hmax (mem_univ θ)
@@ -176,35 +279,31 @@ singular vector `ψ ∈ maxRightSingularSphere M₀`. -/
 theorem opNorm_add_smul_ge_of_mem_maxRightSingularSphere {N : ℕ} {M₀ : Register N}
     (hM₀ : 0 < ‖M₀‖) {ψ : StateSpace N} (hψ : ψ ∈ maxRightSingularSphere M₀)
     (Δ : Register N) (u : ℝ) :
-    ‖M₀‖ + u * ((inner ℂ (euclCLM M₀ ψ) (euclCLM Δ ψ)).re / ‖M₀‖) ≤
+    ‖M₀‖ + u * ((inner ℂ (matAct M₀ ψ) (matAct Δ ψ)).re / ‖M₀‖) ≤
       ‖M₀ + (u : ℂ) • Δ‖ := by
   obtain ⟨hψ1, hMψ⟩ := hψ
-  let φ : StateSpace N := ((‖M₀‖⁻¹ : ℝ) : ℂ) • euclCLM M₀ ψ
+  let φ : StateSpace N := ((‖M₀‖⁻¹ : ℝ) : ℂ) • matAct M₀ ψ
   have hφ_norm : ‖φ‖ = 1 := by
     rw [norm_smul, Complex.norm_real, Real.norm_eq_abs, abs_inv, abs_norm, hMψ,
       inv_mul_cancel₀ hM₀.ne']
-  have hcs : (inner ℂ φ (euclCLM (M₀ + (u : ℂ) • Δ) ψ)).re ≤
-      ‖euclCLM (M₀ + (u : ℂ) • Δ) ψ‖ := by
-    have h1 := Complex.re_le_norm (inner ℂ φ (euclCLM (M₀ + (u : ℂ) • Δ) ψ))
-    have h2 := norm_inner_le_norm φ (euclCLM (M₀ + (u : ℂ) • Δ) ψ)
+  have hcs : (inner ℂ φ (matAct (M₀ + (u : ℂ) • Δ) ψ)).re ≤
+      ‖matAct (M₀ + (u : ℂ) • Δ) ψ‖ := by
+    have h1 := Complex.re_le_norm (inner ℂ φ (matAct (M₀ + (u : ℂ) • Δ) ψ))
+    have h2 := @norm_inner_le_norm ℂ _ _ _ _ φ (matAct (M₀ + (u : ℂ) • Δ) ψ)
     rw [hφ_norm, one_mul] at h2
     exact h1.trans h2
-  have hle_op : ‖euclCLM (M₀ + (u : ℂ) • Δ) ψ‖ ≤ ‖M₀ + (u : ℂ) • Δ‖ := by
-    simpa only [Matrix.l2_opNorm_toEuclideanCLM, hψ1, mul_one] using
-      (euclCLM (M₀ + (u : ℂ) • Δ)).le_opNorm ψ
-  have hre : (inner ℂ φ (euclCLM (M₀ + (u : ℂ) • Δ) ψ)).re =
-      ‖M₀‖ + u * ((inner ℂ (euclCLM M₀ ψ) (euclCLM Δ ψ)).re / ‖M₀‖) := by
-    have hexp : euclCLM (M₀ + (u : ℂ) • Δ) ψ = euclCLM M₀ ψ + (u : ℂ) • euclCLM Δ ψ := by
-      rw [map_add, map_smul]; rfl
-    rw [hexp, inner_add_right, inner_smul_right, Complex.add_re]
-    have hself : (inner ℂ φ (euclCLM M₀ ψ)).re = ‖M₀‖ := by
+  have hle_op : ‖matAct (M₀ + (u : ℂ) • Δ) ψ‖ ≤ ‖M₀ + (u : ℂ) • Δ‖ := by
+    simpa only [hψ1, mul_one] using norm_matAct_le (M₀ + (u : ℂ) • Δ) ψ
+  have hre : (inner ℂ φ (matAct (M₀ + (u : ℂ) • Δ) ψ)).re =
+      ‖M₀‖ + u * ((inner ℂ (matAct M₀ ψ) (matAct Δ ψ)).re / ‖M₀‖) := by
+    rw [matAct_add, matAct_smul, inner_add_right, inner_smul_right, Complex.add_re]
+    have hself : (inner ℂ φ (matAct M₀ ψ)).re = ‖M₀‖ := by
       dsimp only [φ]
-      rw [inner_smul_left, Complex.conj_ofReal, inner_self_eq_norm_sq_to_K, hMψ]
-      simp only [Complex.ofReal_cpow (norm_nonneg M₀), ← Complex.ofReal_pow, ← Complex.ofReal_mul,
-        Complex.ofReal_re]
+      rw [inner_smul_left, Complex.conj_ofReal, inner_self_complex, hMψ,
+        ← Complex.ofReal_mul, Complex.ofReal_re]
       field_simp [hM₀.ne']
-    have hcross : ((u : ℂ) * inner ℂ φ (euclCLM Δ ψ)).re =
-        u * ((inner ℂ (euclCLM M₀ ψ) (euclCLM Δ ψ)).re / ‖M₀‖) := by
+    have hcross : ((u : ℂ) * inner ℂ φ (matAct Δ ψ)).re =
+        u * ((inner ℂ (matAct M₀ ψ) (matAct Δ ψ)).re / ‖M₀‖) := by
       dsimp only [φ]
       rw [inner_smul_left, Complex.conj_ofReal, ← mul_assoc, ← Complex.ofReal_mul,
         Complex.re_ofReal_mul]
@@ -216,7 +315,7 @@ theorem opNorm_add_smul_ge_of_mem_maxRightSingularSphere {N : ℕ} {M₀ : Regis
 maximal singular sphere `maxRightSingularSphere M₀`. -/
 theorem tendsto_opNorm_directionalDeriv {N : ℕ} {M₀ : Register N} (hM₀ : 0 < ‖M₀‖)
     (Δ : Register N) :
-    let g : StateSpace N → ℝ := fun ψ => (inner ℂ (euclCLM M₀ ψ) (euclCLM Δ ψ)).re / ‖M₀‖
+    let g : StateSpace N → ℝ := fun ψ => (inner ℂ (matAct M₀ ψ) (matAct Δ ψ)).re / ‖M₀‖
     (∃ ψ_max ∈ maxRightSingularSphere M₀, ∀ ψ ∈ maxRightSingularSphere M₀, g ψ ≤ g ψ_max) ∧
     Tendsto (fun u : ℝ => (‖M₀ + (u : ℂ) • Δ‖ - ‖M₀‖) / u) (𝓝[>] 0)
       (𝓝 (sSup (g '' maxRightSingularSphere M₀))) := by
@@ -224,7 +323,7 @@ theorem tendsto_opNorm_directionalDeriv {N : ℕ} {M₀ : Register N} (hM₀ : 0
   have hg_cont : Continuous g := by
     refine Continuous.div_const ?_ ‖M₀‖
     exact Complex.continuous_re.comp
-      (Continuous.inner ((euclCLM M₀).continuous) ((euclCLM Δ).continuous))
+      (Continuous.inner (continuous_matAct M₀) (continuous_matAct Δ))
   obtain ⟨ψ_max, hψ_mem, hψ_max⟩ := (isCompact_maxRightSingularSphere M₀).exists_isMaxOn
     (nonempty_maxRightSingularSphere M₀) hg_cont.continuousOn
   have hsup_eq : sSup (g '' maxRightSingularSphere M₀) = g ψ_max := by
@@ -236,8 +335,6 @@ theorem tendsto_opNorm_directionalDeriv {N : ℕ} {M₀ : Register N} (hM₀ : 0
   refine ⟨⟨ψ_max, hψ_mem, fun ψ hψ => hψ_max hψ⟩, ?_⟩
   rw [hsup_eq, Metric.tendsto_nhds]
   intro ε hε
-  -- Upper bound by compactness: outside an open neighborhood U of maxRightSingularSphere M₀
-  -- inside the unit sphere, ‖euclCLM M₀ ψ‖ ≤ ‖M₀‖ - η for some η > 0.
   let S₁ := Metric.sphere (0 : StateSpace N) 1
   let U : Set (StateSpace N) := {ψ | g ψ < g ψ_max + ε / 2}
   have hU_open : IsOpen U := isOpen_lt hg_cont continuous_const
@@ -253,28 +350,31 @@ theorem tendsto_opNorm_directionalDeriv {N : ℕ} {M₀ : Register N} (hM₀ : 0
       rw [hK_emp] at hmem
       exact hmem
     · obtain ⟨ψ_b, hψ_b, hmax_b⟩ := hK_compact.exists_isMaxOn
-        (nonempty_iff_ne_empty.mpr hK_emp) (euclCLM M₀).continuous.norm.continuousOn
-      have hlt_M₀ : ‖euclCLM M₀ ψ_b‖ < ‖M₀‖ := by
-        have hle : ‖euclCLM M₀ ψ_b‖ ≤ ‖M₀‖ := by
-          simpa only [Matrix.l2_opNorm_toEuclideanCLM, mem_sphere_zero_iff_norm.mp hψ_b.1, mul_one]
-            using (euclCLM M₀).le_opNorm ψ_b
+        (nonempty_iff_ne_empty.mpr hK_emp) (continuous_matAct M₀).norm.continuousOn
+      have hlt_M₀ : ‖matAct M₀ ψ_b‖ < ‖M₀‖ := by
+        have hle : ‖matAct M₀ ψ_b‖ ≤ ‖M₀‖ := by
+          simpa only [mem_sphere_zero_iff_norm.mp hψ_b.1, mul_one] using norm_matAct_le M₀ ψ_b
         refine lt_of_le_of_ne hle fun heq => hψ_b.2 ?_
         have hmem_max : ψ_b ∈ maxRightSingularSphere M₀ :=
           ⟨mem_sphere_zero_iff_norm.mp hψ_b.1, heq⟩
-        exact (hψ_max hmem_max).trans_lt (by linarith only [hε])
-      let η := ‖M₀‖ - ‖euclCLM M₀ ψ_b‖
+        have hle_g : g ψ_b ≤ g ψ_max := hψ_max hmem_max
+        change g ψ_b < g ψ_max + ε / 2
+        linarith only [hle_g, hε]
+      let η := ‖M₀‖ - ‖matAct M₀ ψ_b‖
       have hη_pos : 0 < η := sub_pos.mpr hlt_M₀
       refine ⟨η / (2 * (‖Δ‖ + 1)), div_pos hη_pos (by positivity), fun u hu ψ hψ => ?_⟩
       by_contra hnotU
       have hmem : ψ ∈ K_bad := ⟨mem_sphere_zero_iff_norm.mpr hψ.1, hnotU⟩
-      have h1 : ‖euclCLM M₀ ψ‖ ≤ ‖M₀‖ - η := by
-        dsimp only [η]; linarith only [hmax_b hmem]
-      have h2 : ‖M₀ + (u : ℂ) • Δ‖ ≤ ‖euclCLM M₀ ψ‖ + u * ‖Δ‖ := by
-        rw [← hψ.2, map_add, map_smul, ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply]
+      have h1 : ‖matAct M₀ ψ‖ ≤ ‖M₀‖ - η := by
+        have hb_le : ‖matAct M₀ ψ‖ ≤ ‖matAct M₀ ψ_b‖ := hmax_b hmem
+        dsimp only [η]
+        linarith only [hb_le]
+      have h2 : ‖M₀ + (u : ℂ) • Δ‖ ≤ ‖matAct M₀ ψ‖ + u * ‖Δ‖ := by
+        rw [← hψ.2, matAct_add, matAct_smul]
         refine (norm_add_le _ _).trans (add_le_add_left ?_ _)
         rw [norm_smul, Complex.norm_real, Real.norm_of_nonneg hu.1.le]
         refine mul_le_mul_of_nonneg_left ?_ hu.1.le
-        simpa only [Matrix.l2_opNorm_toEuclideanCLM, hψ.1, mul_one] using (euclCLM Δ).le_opNorm ψ
+        simpa only [hψ.1, mul_one] using norm_matAct_le Δ ψ
       have h3 : ‖M₀‖ - u * ‖Δ‖ ≤ ‖M₀ + (u : ℂ) • Δ‖ := by
         have htri := norm_sub_le (M₀ + (u : ℂ) • Δ) ((u : ℂ) • Δ)
         rw [add_sub_cancel_right, norm_smul, Complex.norm_real, Real.norm_of_nonneg hu.1.le] at htri
@@ -291,41 +391,31 @@ theorem tendsto_opNorm_directionalDeriv {N : ℕ} {M₀ : Register N} (hM₀ : 0
   have hu_pos : 0 < u := hu.1
   have hu_δ₁ : u ∈ Ioo 0 δ₁ := ⟨hu_pos, hu.2.trans_le (min_le_left _ _)⟩
   have hu_δ₂ : u < δ₂ := hu.2.trans_le (min_le_right _ _)
-  -- Lower bound from ψ_max
   have hlo : g ψ_max ≤ (‖M₀ + (u : ℂ) • Δ‖ - ‖M₀‖) / u := by
     have hsub := opNorm_add_smul_ge_of_mem_maxRightSingularSphere hM₀ hψ_mem Δ u
     exact (le_div_iff₀ hu_pos).mpr (by rw [mul_comm]; linarith only [hsub])
-  -- Upper bound from a maximizer ψ_u of M₀ + u Δ
   obtain ⟨ψ_u, hψ_u⟩ := nonempty_maxRightSingularSphere (M₀ + (u : ℂ) • Δ)
   have hg_u : g ψ_u < g ψ_max + ε / 2 := hbad u hu_δ₁ ψ_u hψ_u
-  have hM_pos : 0 < ‖M₀ + (u : ℂ) • Δ‖ + ‖M₀‖ := by linarith only [hM₀, norm_nonneg (M₀ + (u : ℂ) • Δ)]
   have hsq : ‖M₀ + (u : ℂ) • Δ‖ ^ 2 ≤
       ‖M₀‖ ^ 2 + 2 * u * ‖M₀‖ * g ψ_u + u ^ 2 * ‖Δ‖ ^ 2 := by
-    rw [← hψ_u.2, map_add, map_smul, ContinuousLinearMap.add_apply, ContinuousLinearMap.smul_apply,
-      @norm_add_sq ℂ]
-    have hMψ_le : ‖euclCLM M₀ ψ_u‖ ≤ ‖M₀‖ := by
-      simpa only [Matrix.l2_opNorm_toEuclideanCLM, hψ_u.1, mul_one] using (euclCLM M₀).le_opNorm ψ_u
-    have hΔψ_le : ‖(u : ℂ) • euclCLM Δ ψ_u‖ ≤ u * ‖Δ‖ := by
+    rw [← hψ_u.2, matAct_add, matAct_smul, norm_add_sq_complex]
+    have hMψ_le : ‖matAct M₀ ψ_u‖ ≤ ‖M₀‖ := by
+      simpa only [hψ_u.1, mul_one] using norm_matAct_le M₀ ψ_u
+    have hΔψ_le : ‖(u : ℂ) • matAct Δ ψ_u‖ ≤ u * ‖Δ‖ := by
       rw [norm_smul, Complex.norm_real, Real.norm_of_nonneg hu_pos.le]
       refine mul_le_mul_of_nonneg_left ?_ hu_pos.le
-      simpa only [Matrix.l2_opNorm_toEuclideanCLM, hψ_u.1, mul_one] using (euclCLM Δ).le_opNorm ψ_u
-    have hinner_eq : 2 * (inner ℂ (euclCLM M₀ ψ_u) ((u : ℂ) • euclCLM Δ ψ_u)).re =
+      simpa only [hψ_u.1, mul_one] using norm_matAct_le Δ ψ_u
+    have hinner_eq : 2 * (inner ℂ (matAct M₀ ψ_u) ((u : ℂ) • matAct Δ ψ_u)).re =
         2 * u * ‖M₀‖ * g ψ_u := by
       rw [inner_smul_right, Complex.re_ofReal_mul]
       dsimp only [g]
       field_simp [hM₀.ne']
     rw [hinner_eq]
-    have hsq1 : ‖euclCLM M₀ ψ_u‖ ^ 2 ≤ ‖M₀‖ ^ 2 :=
+    have hsq1 : ‖matAct M₀ ψ_u‖ ^ 2 ≤ ‖M₀‖ ^ 2 :=
       pow_le_pow_left₀ (norm_nonneg _) hMψ_le 2
-    have hsq2 : ‖(u : ℂ) • euclCLM Δ ψ_u‖ ^ 2 ≤ (u * ‖Δ‖) ^ 2 :=
+    have hsq2 : ‖(u : ℂ) • matAct Δ ψ_u‖ ^ 2 ≤ (u * ‖Δ‖) ^ 2 :=
       pow_le_pow_left₀ (norm_nonneg _) hΔψ_le 2
     linarith only [hsq1, hsq2, show (u * ‖Δ‖) ^ 2 = u ^ 2 * ‖Δ‖ ^ 2 by ring]
-  -- Simpler linear upper bound: if ‖M₀ + u Δ‖ ≤ ‖M₀‖, quotient ≤ 0; wait: g ψ_max can be negative!
-  -- Instead divide ‖M₀ + u Δ‖^2 - ‖M₀‖^2 by ‖M₀ + u Δ‖ + ‖M₀‖ and compare with 2 ‖M₀‖!
-  have hnorm_diff : |‖M₀ + (u : ℂ) • Δ‖ - ‖M₀‖| ≤ u * ‖Δ‖ := by
-    simpa only [add_sub_cancel_left, norm_smul, Complex.norm_real, Real.norm_of_nonneg hu_pos.le]
-      using abs_norm_sub_norm_le (M₀ + (u : ℂ) • Δ) M₀
-  -- Better: directly bound ‖(M₀ + u Δ) ψ_u‖ - ‖M₀‖ using ‖x‖ ≤ (‖x‖^2 + ‖M₀‖^2)/(2 ‖M₀‖)!
   have hamgm : ‖M₀ + (u : ℂ) • Δ‖ ≤ (‖M₀ + (u : ℂ) • Δ‖ ^ 2 + ‖M₀‖ ^ 2) / (2 * ‖M₀‖) := by
     rw [le_div_iff₀ (by positivity)]
     nlinarith only [sq_nonneg (‖M₀ + (u : ℂ) • Δ‖ - ‖M₀‖)]
@@ -336,7 +426,7 @@ theorem tendsto_opNorm_directionalDeriv {N : ℕ} {M₀ : Register N} (hM₀ : 0
       have h2 : (‖M₀ + (u : ℂ) • Δ‖ ^ 2 + ‖M₀‖ ^ 2) / (2 * ‖M₀‖) - ‖M₀‖ ≤
           (2 * u * ‖M₀‖ * g ψ_u + u ^ 2 * ‖Δ‖ ^ 2) / (2 * ‖M₀‖) := by
         rw [div_sub' (by positivity)]
-        exact div_le_div_of_nonneg_right (by linarith only [hsq]) (by positivity)
+        exact div_le_div_of_nonneg_right (by nlinarith only [hsq]) (by positivity)
       linarith only [hamgm, h2]
     have hsplit : (2 * u * ‖M₀‖ * g ψ_u + u ^ 2 * ‖Δ‖ ^ 2) / (2 * ‖M₀‖) =
         (g ψ_u + u * ‖Δ‖ ^ 2 / (2 * ‖M₀‖)) * u := by
@@ -357,36 +447,29 @@ unitary `U ∈ U(2^N)` and self-adjoint `K`. -/
 theorem re_inner_unitary_sub_skewAdjointCommutator {N : ℕ} {U : Register N}
     (hU : U ∈ unitary (Register N)) (W : Register N) (K : selfAdjoint (Register N))
     (ψ : StateSpace N) :
-    (inner ℂ (euclCLM (U - W) ψ) (euclCLM (skewAdjointCommutator K U) ψ)).re =
-      -(inner ℂ (euclCLM W ψ) (euclCLM (K.val * U - U * K.val) ψ)).im := by
-  have hadj (M : Register N) (x y : StateSpace N) :
-      inner ℂ (euclCLM (star M) x) y = inner ℂ x (euclCLM M y) := by
-    have hstar : euclCLM (star M) = ContinuousLinearMap.adjoint (euclCLM M) :=
-      map_star Matrix.toEuclideanCLM M
-    rw [hstar, ContinuousLinearMap.adjoint_inner_left]
-  have hself_im (x : StateSpace N) : (inner ℂ x (euclCLM K.val x)).im = 0 := by
-    have hsym : inner ℂ x (euclCLM K.val x) = starRingEnd ℂ (inner ℂ x (euclCLM K.val x)) := by
-      rw [inner_conj_symm, ← hadj K.val x x, K.2.star_eq]
+    (inner ℂ (matAct (U - W) ψ) (matAct (skewAdjointCommutator K U) ψ)).re =
+      -(inner ℂ (matAct W ψ) (matAct (K.val * U - U * K.val) ψ)).im := by
+  have hself_im (x : StateSpace N) : (inner ℂ x (matAct K.val x)).im = 0 := by
+    have hsym : inner ℂ x (matAct K.val x) = starRingEnd ℂ (inner ℂ x (matAct K.val x)) := by
+      rw [inner_conj_symm, ← inner_matAct_star_left K.val x x, K.2.star_eq]
     exact Complex.conj_eq_iff_im.mp hsym.symm
-  have hU_zero : (inner ℂ (euclCLM U ψ) (euclCLM (skewAdjointCommutator K U) ψ)).re = 0 := by
+  have hU_zero : (inner ℂ (matAct U ψ) (matAct (skewAdjointCommutator K U) ψ)).re = 0 := by
     unfold skewAdjointCommutator
-    rw [map_smul, map_sub, ContinuousLinearMap.smul_apply, ContinuousLinearMap.sub_apply,
-      inner_smul_right, inner_sub_right]
-    have h1 : euclCLM (K.val * U) ψ = euclCLM K.val (euclCLM U ψ) := by rw [map_mul]; rfl
-    have h2 : inner ℂ (euclCLM U ψ) (euclCLM (U * K.val) ψ) =
-        inner ℂ ψ (euclCLM K.val ψ) := by
-      rw [map_mul, ContinuousLinearMap.mul_apply, ← hadj U, ← ContinuousLinearMap.mul_apply,
-        ← map_mul, (Unitary.mem_iff.mp hU).1, map_one, ContinuousLinearMap.one_apply]
+    rw [matAct_smul, matAct_sub, inner_smul_right, inner_sub_right]
+    have h1 : matAct (K.val * U) ψ = matAct K.val (matAct U ψ) := matAct_mul _ _ _
+    have h2 : inner ℂ (matAct U ψ) (matAct (U * K.val) ψ) =
+        inner ℂ ψ (matAct K.val ψ) := by
+      rw [matAct_mul, ← inner_matAct_star_left U, ← matAct_mul,
+        (Unitary.mem_iff.mp hU).1, matAct_one]
     rw [h1, h2]
     simp only [Complex.mul_re, Complex.neg_re, Complex.neg_im, Complex.I_re, Complex.I_im,
       neg_zero, zero_mul, zero_sub, neg_neg, one_mul, Complex.sub_im,
-      hself_im (euclCLM U ψ), hself_im ψ, sub_zero]
-  rw [map_sub, ContinuousLinearMap.sub_apply, inner_sub_left, Complex.sub_re, hU_zero, zero_sub]
+      hself_im (matAct U ψ), hself_im ψ, sub_zero]
+  rw [matAct_sub, inner_sub_left, Complex.sub_re, hU_zero, zero_sub]
   unfold skewAdjointCommutator
-  rw [map_smul, ContinuousLinearMap.smul_apply, inner_smul_right]
+  rw [matAct_smul, inner_smul_right]
   simp only [Complex.mul_re, Complex.neg_re, Complex.neg_im, Complex.I_re, Complex.I_im,
     neg_zero, zero_mul, zero_sub, neg_neg, one_mul]
-  ring
 
 private theorem norm_conj_unitaryEvolution_sub_linear_le {N : ℕ}
     (K : selfAdjoint (Register N)) {U : Register N} (hU : ‖U‖ ≤ 1) {u : ℝ} (hu : 0 ≤ u) :
@@ -408,7 +491,7 @@ private theorem norm_conj_unitaryEvolution_sub_linear_le {N : ℕ}
   have hstarL : star L = ((u : ℂ) * Complex.I) • K.val := by
     dsimp only [L]
     rw [star_smul, K.2.star_eq, star_mul, Complex.star_def, Complex.conj_ofReal,
-      star_neg, Complex.star_def, Complex.conj_I, neg_neg, mul_comm]
+      map_neg, Complex.conj_I, neg_neg, mul_comm]
   have hL_norm : ‖L‖ = u * ‖K.val‖ := by
     dsimp only [L]
     rw [norm_smul, norm_mul, norm_neg, Complex.norm_I, mul_one,
@@ -424,16 +507,13 @@ private theorem norm_conj_unitaryEvolution_sub_linear_le {N : ℕ}
       dsimp only [L, skewAdjointCommutator]
       rw [Matrix.smul_mul, Matrix.mul_smul, smul_smul, smul_sub]
       simp only [mul_neg, neg_smul, sub_eq_add_neg, neg_neg]
-    rw [hev, hst]
-    -- Expand manually with noncomm_ring after substituting hmid
-    have hlin : (1 + L) * U * (1 + star L) = U + (L * U + U * star L) + L * U * star L := by
+    have hlin : (1 + L + E) * U * (1 + star L + star E) =
+        E * U * (1 + star L + star E) + (1 + L) * U * star E +
+          (U + (L * U + U * star L) + L * U * star L) := by
       noncomm_ring
-    calc ((1 + L + E) * U * (1 + star L + star E)) - (U + (u : ℂ) • skewAdjointCommutator K U)
-        = E * U * (1 + star L + star E) + (1 + L) * U * star E +
-            ((1 + L) * U * (1 + star L) - (U + (u : ℂ) • skewAdjointCommutator K U)) := by
-            noncomm_ring
-      _ = E * U * star (unitaryEvolution K.val u) + (1 + L) * U * star E + L * U * star L := by
-            rw [← hst, hlin, hmid]; abel
+    conv_lhs => rw [hev, hst, hlin]
+    rw [← hst, hmid]
+    abel
   have hunit_norm : ‖star (unitaryEvolution K.val u)‖ = 1 := by
     rw [norm_star]
     exact CStarRing.norm_of_mem_unitary (unitaryEvolution_mem_unitary K.2 u)
@@ -442,7 +522,7 @@ private theorem norm_conj_unitaryEvolution_sub_linear_le {N : ℕ}
       norm_mul_le _ _
     _ ≤ (‖E‖ * 1) * 1 := mul_le_mul
         ((norm_mul_le _ _).trans (mul_le_mul_of_nonneg_left hU (norm_nonneg _)))
-        hunit_norm.le (norm_nonneg _) zero_le_one
+        hunit_norm.le (norm_nonneg _) (by positivity)
     _ ≤ (u * ‖K.val‖) ^ 2 / 2 := by linarith only [hE]
   have h2 : ‖(1 + L) * U * star E‖ ≤ (1 + u * ‖K.val‖) * ((u * ‖K.val‖) ^ 2 / 2) := calc
     ‖(1 + L) * U * star E‖ ≤ ‖(1 + L) * U‖ * ‖star E‖ := norm_mul_le _ _
@@ -475,7 +555,7 @@ theorem dini_torusPointDistance_sandwich {N d : ℕ} (e : Config N ≃ Fin (d + 
     let r := Metric.infDist U₀ (phaseCircuitMatrixImageAtMost N j)
     let W_opt := {W ∈ phaseCircuitMatrixImageAtMost N j | ‖U₀ - W‖ = r}
     let dirVal : Register N → StateSpace N → ℝ := fun W ψ =>
-      -(inner ℂ (euclCLM W ψ) (euclCLM (K.val * U₀ - U₀ * K.val) ψ)).im / r
+      -(inner ℂ (matAct W ψ) (matAct (K.val * U₀ - U₀ * K.val) ψ)).im / r
     let q : ℝ → ℝ := fun u =>
       (Metric.infDist (projectiveSpectralMatrix e (transverseEigenspaceFlow K V u) θ)
         (phaseCircuitMatrixImageAtMost N j) - r) / u
@@ -486,19 +566,7 @@ theorem dini_torusPointDistance_sandwich {N d : ℕ} (e : Config N ≃ Fin (d + 
       ∃ W_star ∈ W_opt, ∃ ψ_star ∈ maxRightSingularSphere (U₀ - W_star),
         dirVal W_star ψ_star - ε < q u) := by
   intro U₀ r W_opt dirVal q
-  have hU₀_unit : U₀ ∈ unitary (Register N) := by
-    dsimp only [U₀]
-    unfold projectiveSpectralMatrix
-    refine mul_mem (mul_mem V.2 ?_) (Unitary.star_mem V.2)
-    rw [Unitary.mem_iff, star_eq_conjTranspose, diagonal_conjTranspose,
-      diagonal_mul_diagonal, diagonal_mul_diagonal]
-    constructor <;> ext a b <;> by_cases hab : a = b
-    · subst hab; simp only [diagonal_apply_eq, one_apply_eq]
-      exact Complex.normSq_eq_conj_mul_self.symm.trans (by simp)
-    · simp [hab]
-    · subst hab; simp only [diagonal_apply_eq, one_apply_eq]; rw [mul_comm]
-      exact Complex.normSq_eq_conj_mul_self.symm.trans (by simp)
-    · simp [hab]
+  have hU₀_unit : U₀ ∈ unitary (Register N) := projectiveSpectralMatrix_mem_unitary e V θ
   have hU₀_norm : ‖U₀‖ ≤ 1 := (CStarRing.norm_of_mem_unitary hU₀_unit).le
   have hflow_eq (u : ℝ) :
       projectiveSpectralMatrix e (transverseEigenspaceFlow K V u) θ =
@@ -521,11 +589,10 @@ theorem dini_torusPointDistance_sandwich {N d : ℕ} (e : Config N ≃ Fin (d + 
   obtain ⟨W₀, hW₀_mem, hW₀_dist⟩ := exists_compactTarget_minDist hC_compact hC_ne U₀
   have hW_opt_ne : W_opt.Nonempty := ⟨W₀, hW₀_mem, by rw [← dist_eq_norm, hW₀_dist]⟩
   refine ⟨hW_opt_ne, ?_, ?_⟩
-  · -- Upper bound for each W_star ∈ W_opt
-    intro W_star ⟨hW_mem, hW_eq⟩ ε hε
+  · intro W_star ⟨hW_mem, hW_eq⟩ ε hε
     have hM₀_pos : 0 < ‖U₀ - W_star‖ := hW_eq.symm ▸ hr
-    have hdir_eq : (fun ψ => (inner ℂ (euclCLM (U₀ - W_star) ψ)
-        (euclCLM (skewAdjointCommutator K U₀) ψ)).re / ‖U₀ - W_star‖) = dirVal W_star := by
+    have hdir_eq : (fun ψ => (inner ℂ (matAct (U₀ - W_star) ψ)
+        (matAct (skewAdjointCommutator K U₀) ψ)).re / ‖U₀ - W_star‖) = dirVal W_star := by
       funext ψ
       rw [re_inner_unitary_sub_skewAdjointCommutator hU₀_unit W_star K ψ, hW_eq]
     have htend := (tendsto_opNorm_directionalDeriv hM₀_pos (skewAdjointCommutator K U₀)).2
@@ -535,8 +602,8 @@ theorem dini_torusPointDistance_sandwich {N d : ℕ} (e : Config N ≃ Fin (d + 
     have hquad_lim : Tendsto (fun u : ℝ => u * ‖K.val‖ ^ 2 * (2 + u * ‖K.val‖ / 2))
         (𝓝[>] 0) (𝓝 0) := by
       have hc : Continuous (fun u : ℝ => u * ‖K.val‖ ^ 2 * (2 + u * ‖K.val‖ / 2)) := by continuity
-      simpa using hc.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
-    filter_upwards [Ioi_mem_nhdsGT (0 : ℝ), hev1,
+      simpa using (hc.tendsto 0).mono_left nhdsWithin_le_nhds
+    filter_upwards [self_mem_nhdsWithin, hev1,
       hquad_lim.eventually_lt_const (half_pos hε)] with u hu_pos hu1 hu_quad
     have hu_pos' : 0 < u := hu_pos
     have hinf_le : Metric.infDist (projectiveSpectralMatrix e (transverseEigenspaceFlow K V u) θ)
@@ -563,11 +630,9 @@ theorem dini_torusPointDistance_sandwich {N d : ℕ} (e : Config N ≃ Fin (d + 
           u ^ 2 * ‖K.val‖ ^ 2 * (2 + u * ‖K.val‖ / 2) := by ring
       linarith only [hinf_le, htri, hW_eq, hsq_eq]
     linarith only [hq_le, hu1, hu_quad]
-  · -- Lower bound by compactness of W_opt × S₁
-    intro ε hε
+  · intro ε hε
     by_contra hnot_ev
     rw [Filter.not_eventually] at hnot_ev
-    -- Extract a sequence u_n → 0⁺ violating the lower bound
     have hex_seq (n : ℕ) : ∃ u ∈ Ioo (0 : ℝ) (1 / ((n : ℝ) + 1)),
         ¬ (∃ W_star ∈ W_opt, ∃ ψ_star ∈ maxRightSingularSphere (U₀ - W_star),
           dirVal W_star ψ_star - ε < q u) := by
@@ -577,8 +642,7 @@ theorem dini_torusPointDistance_sandwich {N d : ℕ} (e : Config N ≃ Fin (d + 
     choose u hu_mem hviol using hex_seq
     have hu_tend : Tendsto u atTop (𝓝 0) :=
       squeeze_zero (fun n => (hu_mem n).1.le) (fun n => (hu_mem n).2.le)
-        (tendsto_one_div_add_atTop_nhds_zero_nat)
-    -- At each n, pick W_n ∈ C_j realizing infDist at u n, and ψ_n ∈ maxRightSingularSphere (U₀ - W_n)
+        tendsto_one_div_add_atTop_nhds_zero_nat
     choose Wn hWn_mem hWn_dist using fun n =>
       exists_compactTarget_minDist hC_compact hC_ne
         (projectiveSpectralMatrix e (transverseEigenspaceFlow K V (u n)) θ)
@@ -591,7 +655,6 @@ theorem dini_torusPointDistance_sandwich {N d : ℕ} (e : Config N ≃ Fin (d + 
       hP_compact.tendsto_subseq hseq_in
     have hW_tend : Tendsto (Wn ∘ φ) atTop (𝓝 W_lim) := (continuous_fst.tendsto _).comp hφ_tend
     have hψ_tend : Tendsto (ψn ∘ φ) atTop (𝓝 ψ_lim) := (continuous_snd.tendsto _).comp hφ_tend
-    -- Show ‖U₀ - Wn (φ k)‖ → r, so W_lim ∈ W_opt and ψ_lim ∈ maxRightSingularSphere (U₀ - W_lim)
     have hflow_tend : Tendsto (fun k =>
         projectiveSpectralMatrix e (transverseEigenspaceFlow K V (u (φ k))) θ) atTop (𝓝 U₀) := by
       simp_rw [hflow_eq]
@@ -618,47 +681,32 @@ theorem dini_torusPointDistance_sandwich {N d : ℕ} (e : Config N ≃ Fin (d + 
       simp_rw [heq_dist]
       exact (Metric.continuous_infDist_pt _).tendsto U₀ |>.comp hflow_tend
     have hW_lim_eq : ‖U₀ - W_lim‖ = r :=
-      tendsto_nhds_unique ((hflow_tend.sub hW_tend).norm.congr fun _ => rfl) hr_tend |>.symm.trans
-        (tendsto_nhds_unique (by
-          exact (continuous_const.sub continuous_id).norm.tendsto W_lim |>.comp hW_tend) hnorm_Wn_tend).symm
-      |> fun h => by
-        have h1 : Tendsto (fun k =>
-            ‖projectiveSpectralMatrix e (transverseEigenspaceFlow K V (u (φ k))) θ - Wn (φ k)‖)
-            atTop (𝓝 ‖U₀ - W_lim‖) := (hflow_tend.sub hW_tend).norm
-        exact tendsto_nhds_unique h1 hr_tend
+      tendsto_nhds_unique (hflow_tend.sub hW_tend).norm hr_tend
     have hW_lim_opt : W_lim ∈ W_opt := ⟨hW_lim_mem, hW_lim_eq⟩
     have hψ_lim_max : ψ_lim ∈ maxRightSingularSphere (U₀ - W_lim) := by
       refine ⟨mem_sphere_zero_iff_norm.mp hψ_lim_sph, ?_⟩
-      have h1 : Tendsto (fun k => ‖euclCLM (U₀ - Wn (φ k)) (ψn (φ k))‖) atTop
-          (𝓝 ‖euclCLM (U₀ - W_lim) ψ_lim‖) := by
-        have hbilin : Continuous (fun p : Register N × StateSpace N => ‖euclCLM p.1 p.2‖) := by
-          have hc : Continuous (fun p : (StateSpace N →L[ℂ] StateSpace N) × StateSpace N => p.1 p.2) :=
-            isBoundedBilinearMap_apply.continuous
-          exact (hc.comp (((Matrix.toEuclideanCLM (n := Config N) (𝕜 := ℂ)).toContinuousLinearEquiv.continuous.comp
-            continuous_fst).prodMk continuous_snd)).norm
-        exact hbilin.tendsto (U₀ - W_lim, ψ_lim) |>.comp ((tendsto_const_nhds.sub hW_tend).prodMk_nhds hψ_tend)
-      have h2 : Tendsto (fun k => ‖euclCLM (U₀ - Wn (φ k)) (ψn (φ k))‖) atTop (𝓝 ‖U₀ - W_lim‖) := by
+      have h1 : Tendsto (fun k => ‖matAct (U₀ - Wn (φ k)) (ψn (φ k))‖) atTop
+          (𝓝 ‖matAct (U₀ - W_lim) ψ_lim‖) :=
+        continuous_matAct_pair.norm.tendsto (U₀ - W_lim, ψ_lim) |>.comp
+          ((tendsto_const_nhds.sub hW_tend).prodMk_nhds hψ_tend)
+      have h2 : Tendsto (fun k => ‖matAct (U₀ - Wn (φ k)) (ψn (φ k))‖) atTop (𝓝 ‖U₀ - W_lim‖) := by
         simp_rw [(hψn_mem _).2]
         exact hnorm_Wn_tend
       exact tendsto_nhds_unique h1 h2
-    -- Subgradient lower bound at step φ k
     have hlim_quot : Tendsto (fun k =>
-        (inner ℂ (euclCLM (U₀ - Wn (φ k)) (ψn (φ k)))
-          (euclCLM (skewAdjointCommutator K U₀) (ψn (φ k)))).re / ‖U₀ - Wn (φ k)‖ -
+        (inner ℂ (matAct (U₀ - Wn (φ k)) (ψn (φ k)))
+          (matAct (skewAdjointCommutator K U₀) (ψn (φ k)))).re / ‖U₀ - Wn (φ k)‖ -
           u (φ k) * ‖K.val‖ ^ 2 * (2 + u (φ k) * ‖K.val‖ / 2))
         atTop (𝓝 (dirVal W_lim ψ_lim)) := by
       have hnum : Tendsto (fun k =>
-          (inner ℂ (euclCLM (U₀ - Wn (φ k)) (ψn (φ k)))
-            (euclCLM (skewAdjointCommutator K U₀) (ψn (φ k)))).re) atTop
-          (𝓝 (inner ℂ (euclCLM (U₀ - W_lim) ψ_lim)
-            (euclCLM (skewAdjointCommutator K U₀) ψ_lim)).re) := by
-        have happ : Continuous (fun p : Register N × StateSpace N => euclCLM p.1 p.2) :=
-          isBoundedBilinearMap_apply.continuous.comp
-            (((Matrix.toEuclideanCLM (n := Config N) (𝕜 := ℂ)).toContinuousLinearEquiv.continuous.comp
-              continuous_fst).prodMk continuous_snd)
-        exact Complex.continuous_re.tendsto _ |>.comp <|
-          (Continuous.inner (happ.comp ((continuous_const.sub continuous_fst).prodMk continuous_snd))
-            ((euclCLM (skewAdjointCommutator K U₀)).continuous.comp continuous_snd)).tendsto
+          (inner ℂ (matAct (U₀ - Wn (φ k)) (ψn (φ k)))
+            (matAct (skewAdjointCommutator K U₀) (ψn (φ k)))).re) atTop
+          (𝓝 (inner ℂ (matAct (U₀ - W_lim) ψ_lim)
+            (matAct (skewAdjointCommutator K U₀) ψ_lim)).re) :=
+        Complex.continuous_re.tendsto _ |>.comp <|
+          (Continuous.inner
+            (continuous_matAct_pair.comp ((continuous_const.sub continuous_fst).prodMk continuous_snd))
+            ((continuous_matAct (skewAdjointCommutator K U₀)).comp continuous_snd)).tendsto
             (W_lim, ψ_lim) |>.comp (hW_tend.prodMk_nhds hψ_tend)
       have hdiv := hnum.div hnorm_Wn_tend (hW_lim_eq.symm ▸ hr.ne')
       have hrem0 : Tendsto (fun k => u (φ k) * ‖K.val‖ ^ 2 * (2 + u (φ k) * ‖K.val‖ / 2))
@@ -671,8 +719,8 @@ theorem dini_torusPointDistance_sandwich {N d : ℕ} (e : Config N ≃ Fin (d + 
     obtain ⟨k, hk_gt, hk_pos⟩ := ((hlim_quot.eventually (Ioi_mem_nhds (sub_lt_self (dirVal W_lim ψ_lim) hε))).and
       (hnorm_Wn_tend.eventually (Ioi_mem_nhds (hW_lim_eq.symm ▸ hr)))).exists
     have hu_pos : 0 < u (φ k) := (hu_mem (φ k)).1
-    have hstep_ge : (inner ℂ (euclCLM (U₀ - Wn (φ k)) (ψn (φ k)))
-        (euclCLM (skewAdjointCommutator K U₀) (ψn (φ k)))).re / ‖U₀ - Wn (φ k)‖ -
+    have hstep_ge : (inner ℂ (matAct (U₀ - Wn (φ k)) (ψn (φ k)))
+        (matAct (skewAdjointCommutator K U₀) (ψn (φ k)))).re / ‖U₀ - Wn (φ k)‖ -
           u (φ k) * ‖K.val‖ ^ 2 * (2 + u (φ k) * ‖K.val‖ / 2) ≤ q (u (φ k)) := by
       have hr_le_Wk : r ≤ ‖U₀ - Wn (φ k)‖ := by
         rw [← dist_eq_norm]
@@ -717,44 +765,32 @@ theorem liminf_torusCriticalHeight_transverseFlow_ge {N d : ℕ} (e : Config N �
     let W_opt := {W ∈ phaseCircuitMatrixImageAtMost N j | ‖U₀ - W‖ = r}
     ∀ ε > 0, ∀ᶠ u in 𝓝[>] 0,
       ∃ W_star ∈ W_opt, ∃ ψ_star ∈ maxRightSingularSphere (U₀ - W_star),
-        -(inner ℂ (euclCLM W_star ψ_star) (euclCLM (K.val * U₀ - U₀ * K.val) ψ_star)).im / r - ε <
+        -(inner ℂ (matAct W_star ψ_star) (matAct (K.val * U₀ - U₀ * K.val) ψ_star)).im / r - ε <
           (torusCriticalHeight e (transverseEigenspaceFlow K V u) j - r) / u := by
   intro U₀ r W_opt ε hε
   have hr' : 0 < Metric.infDist U₀ (phaseCircuitMatrixImageAtMost N j) := hmax ▸ hr
   have hsand := (dini_torusPointDistance_sandwich e V K j θ_star hr').2.2 ε hε
-  filter_upwards [Ioi_mem_nhdsGT (0 : ℝ), hsand] with u hu_pos ⟨W_star, hW, ψ_star, hψ, hlt⟩
+  filter_upwards [self_mem_nhdsWithin, hsand] with u hu_pos ⟨W_star, hW, ψ_star, hψ, hlt⟩
   have hu_pos' : 0 < u := hu_pos
   have hpt_le : Metric.infDist (projectiveSpectralMatrix e (transverseEigenspaceFlow K V u) θ_star)
       (phaseCircuitMatrixImageAtMost N j) ≤
       torusCriticalHeight e (transverseEigenspaceFlow K V u) j := by
     unfold torusCriticalHeight
     refine le_csSup ?_ (mem_range_self θ_star)
-    obtain ⟨θ_m, _, hθ_m, _⟩ := exists_torusCriticalHeight_saddle e (transverseEigenspaceFlow K V u) j
-    exact ⟨2, by
-      rintro _ ⟨θ, rfl⟩
-      have h1 : (1 : ℂ) • ((TwoQubitCircuit.one N).eval : Register N) ∈
-          phaseCircuitMatrixImageAtMost N j :=
-        mem_phaseCircuitMatrixImageAtMost_iff.mpr ⟨1, norm_one, TwoQubitCircuit.one N, Nat.zero_le _, rfl⟩
-      refine (Metric.infDist_le_dist_of_mem h1).trans ?_
-      rw [dist_eq_norm, one_smul, TwoQubitCircuit.one_eval]
-      have hunit : projectiveSpectralMatrix e (transverseEigenspaceFlow K V u) θ ∈ unitary (Register N) := by
-        unfold projectiveSpectralMatrix
-        refine mul_mem (mul_mem (transverseEigenspaceFlow K V u).2 ?_)
-          (Unitary.star_mem (transverseEigenspaceFlow K V u).2)
-        rw [Unitary.mem_iff, star_eq_conjTranspose, diagonal_conjTranspose,
-          diagonal_mul_diagonal, diagonal_mul_diagonal]
-        constructor <;> ext a b <;> by_cases hab : a = b
-        · subst hab; simp only [diagonal_apply_eq, one_apply_eq]
-          exact Complex.normSq_eq_conj_mul_self.symm.trans (by simp)
-        · simp [hab]
-        · subst hab; simp only [diagonal_apply_eq, one_apply_eq]; rw [mul_comm]
-          exact Complex.normSq_eq_conj_mul_self.symm.trans (by simp)
-        · simp [hab]
-      linarith only [norm_sub_le (projectiveSpectralMatrix e (transverseEigenspaceFlow K V u) θ) 1,
-        CStarRing.norm_of_mem_unitary hunit, norm_one (α := Register N)]⟩
-  have hW' : W_star ∈ W_opt := by simpa only [W_opt, r, hmax] using hW
+    refine ⟨2, ?_⟩
+    rintro _ ⟨θ, rfl⟩
+    have h1 : (1 : ℂ) • ((TwoQubitCircuit.one N).eval : Register N) ∈
+        phaseCircuitMatrixImageAtMost N j :=
+      mem_phaseCircuitMatrixImageAtMost_iff.mpr ⟨1, norm_one, TwoQubitCircuit.one N, Nat.zero_le _, rfl⟩
+    refine (Metric.infDist_le_dist_of_mem h1).trans ?_
+    rw [dist_eq_norm, one_smul, TwoQubitCircuit.one_eval]
+    have hunit := projectiveSpectralMatrix_mem_unitary e (transverseEigenspaceFlow K V u) θ
+    have hnorm1 := CStarRing.norm_of_mem_unitary (1 : UGroup N).2
+    linarith only [norm_sub_le (projectiveSpectralMatrix e (transverseEigenspaceFlow K V u) θ)
+      ((1 : UGroup N) : Register N), CStarRing.norm_of_mem_unitary hunit, hnorm1]
+  have hW' : W_star ∈ W_opt := ⟨hW.1, hW.2.trans hmax.symm⟩
   refine ⟨W_star, hW', ψ_star, hψ, ?_⟩
-  have hlt' : -(inner ℂ (euclCLM W_star ψ_star) (euclCLM (K.val * U₀ - U₀ * K.val) ψ_star)).im / r - ε <
+  have hlt' : -(inner ℂ (matAct W_star ψ_star) (matAct (K.val * U₀ - U₀ * K.val) ψ_star)).im / r - ε <
       (Metric.infDist (projectiveSpectralMatrix e (transverseEigenspaceFlow K V u) θ_star)
         (phaseCircuitMatrixImageAtMost N j) - r) / u := by
     simpa only [r, hmax] using hlt
@@ -771,22 +807,16 @@ theorem exists_unitaryRatio_singularEigenmode {N : ℕ} (U_star W_star : UGroup 
     let r := ‖U_star.val - W_star.val‖
     ∃ ψ ∈ maxRightSingularSphere (U_star.val - W_star.val), ∃ β : ℝ,
       β ^ 2 = r ^ 2 * (1 - r ^ 2 / 4) ∧
-      euclCLM W_star.val ψ = (((1 - r ^ 2 / 2 : ℝ) : ℂ) + Complex.I * (β : ℂ)) • euclCLM U_star.val ψ ∧
-      ‖inner ℂ ψ (euclCLM W_star.val ψ)‖ = ‖inner ℂ ψ (euclCLM U_star.val ψ)‖ ∧
+      matAct W_star.val ψ = (((1 - r ^ 2 / 2 : ℝ) : ℂ) + Complex.I * (β : ℂ)) • matAct U_star.val ψ ∧
+      ‖inner ℂ ψ (matAct W_star.val ψ)‖ = ‖inner ℂ ψ (matAct U_star.val ψ)‖ ∧
       ∀ K : selfAdjoint (Register N),
-        (inner ℂ (euclCLM (U_star.val - W_star.val) ψ)
-          (euclCLM (skewAdjointCommutator K U_star.val) ψ)).re / r =
-          (β / r) * ((inner ℂ (euclCLM U_star.val ψ) (euclCLM K.val (euclCLM U_star.val ψ))).re -
-            (inner ℂ ψ (euclCLM K.val ψ)).re) := by
+        (inner ℂ (matAct (U_star.val - W_star.val) ψ)
+          (matAct (skewAdjointCommutator K U_star.val) ψ)).re / r =
+          (β / r) * ((inner ℂ (matAct U_star.val ψ) (matAct K.val (matAct U_star.val ψ))).re -
+            (inner ℂ ψ (matAct K.val ψ)).re) := by
   intro r
   let Z : Register N := star U_star.val * W_star.val
   have hZ_unit : Z ∈ unitary (Register N) := mul_mem (Unitary.star_mem U_star.2) W_star.2
-  have hadj (M : Register N) (x y : StateSpace N) :
-      inner ℂ (euclCLM (star M) x) y = inner ℂ x (euclCLM M y) := by
-    have hstar : euclCLM (star M) = ContinuousLinearMap.adjoint (euclCLM M) :=
-      map_star Matrix.toEuclideanCLM M
-    rw [hstar, ContinuousLinearMap.adjoint_inner_left]
-  -- Gap operator H_gap = (U_⋆ - W_⋆)* (U_⋆ - W_⋆) = 2 - (Z + Z*)
   let H_gap : Register N := star (U_star.val - W_star.val) * (U_star.val - W_star.val)
   have hH_gap_eq : H_gap = (2 : ℂ) • (1 : Register N) - (Z + star Z) := by
     dsimp only [H_gap, Z]
@@ -798,29 +828,24 @@ theorem exists_unitaryRatio_singularEigenmode {N : ℕ} (U_star W_star : UGroup 
   have hH_gap_norm : ‖H_gap‖ = r ^ 2 := by
     dsimp only [H_gap, r]
     rw [star_eq_conjTranspose, Matrix.l2_opNorm_conjTranspose_mul_self, sq]
-  -- Every ξ ∈ maxRightSingularSphere (U_⋆ - W_⋆) lies in ker (H_gap - r^2 • 1)
   let L_gap : StateSpace N →ₗ[ℂ] StateSpace N :=
-    (euclCLM (H_gap - ((r ^ 2 : ℝ) : ℂ) • (1 : Register N))).toLinearMap
+    { toFun := matAct (H_gap - ((r ^ 2 : ℝ) : ℂ) • (1 : Register N))
+      map_add' := matAct_map_add _
+      map_smul' := matAct_map_smul _ }
   let E : Submodule ℂ (StateSpace N) := LinearMap.ker L_gap
   obtain ⟨ξ₀, hξ₀_mem⟩ := nonempty_maxRightSingularSphere (U_star.val - W_star.val)
   have hξ₀_in_E : ξ₀ ∈ E := by
     rw [LinearMap.mem_ker]
-    -- Compute ‖H_gap ξ₀ - r^2 ξ₀‖^2 = ‖H_gap ξ₀‖^2 - 2 r^2 ⟨ξ₀, H_gap ξ₀⟩ + r^4 ‖ξ₀‖^2 ≤ 0
-    have hquad : inner ℂ ξ₀ (euclCLM H_gap ξ₀) = ((r ^ 2 : ℝ) : ℂ) := by
+    have hquad : inner ℂ ξ₀ (matAct H_gap ξ₀) = ((r ^ 2 : ℝ) : ℂ) := by
       dsimp only [H_gap]
-      rw [map_mul, ContinuousLinearMap.mul_apply, hadj, inner_self_eq_norm_sq_to_K, hξ₀_mem.2]
-      simp [r, Complex.ofReal_cpow (norm_nonneg _), ← Complex.ofReal_pow]
-    have hnorm_Hξ : ‖euclCLM H_gap ξ₀‖ ≤ r ^ 2 := by
-      have h1 := (euclCLM H_gap).le_opNorm ξ₀
-      rwa [Matrix.l2_opNorm_toEuclideanCLM, hH_gap_norm, hξ₀_mem.1, mul_one] at h1
+      rw [matAct_mul, inner_matAct_star_left, inner_self_complex, hξ₀_mem.2]
+    have hnorm_Hξ : ‖matAct H_gap ξ₀‖ ≤ r ^ 2 := by
+      simpa only [hH_gap_norm, hξ₀_mem.1, mul_one] using norm_matAct_le H_gap ξ₀
     have hdiff_sq : ‖L_gap ξ₀‖ ^ 2 ≤ 0 := by
-      change ‖euclCLM H_gap ξ₀ - ((r ^ 2 : ℝ) : ℂ) • ξ₀‖ ^ 2 ≤ 0
-      rw [@norm_sub_sq ℂ, inner_smul_right, hquad, norm_smul, Complex.norm_real,
-        Real.norm_of_nonneg (sq_nonneg r), hξ₀_mem.1, mul_one]
-      have hre : (starRingEnd ℂ ((r ^ 2 : ℝ) : ℂ) * ((r ^ 2 : ℝ) : ℂ)).re = (r ^ 2) ^ 2 := by
-        rw [Complex.conj_ofReal, ← Complex.ofReal_mul, Complex.ofReal_re]; ring
-      -- Wait: @norm_sub_sq ℂ has - 2 * (inner ℂ (euclCLM H_gap ξ₀) (((r^2 : ℝ) : ℂ) • ξ₀)).re
-      have hinner_rev : (inner ℂ (euclCLM H_gap ξ₀) (((r ^ 2 : ℝ) : ℂ) • ξ₀)).re = (r ^ 2) ^ 2 := by
+      change ‖matAct (H_gap - ((r ^ 2 : ℝ) : ℂ) • (1 : Register N)) ξ₀‖ ^ 2 ≤ 0
+      rw [matAct_sub, matAct_smul, matAct_one, norm_sub_sq_complex,
+        norm_smul, Complex.norm_real, Real.norm_of_nonneg (sq_nonneg r), hξ₀_mem.1, mul_one]
+      have hinner_rev : (inner ℂ (matAct H_gap ξ₀) (((r ^ 2 : ℝ) : ℂ) • ξ₀)).re = (r ^ 2) ^ 2 := by
         rw [inner_smul_right, ← inner_conj_symm, hquad, Complex.conj_ofReal,
           ← Complex.ofReal_mul, Complex.ofReal_re]
         ring
@@ -831,7 +856,6 @@ theorem exists_unitaryRatio_singularEigenmode {N : ℕ} (U_star W_star : UGroup 
     intro h0
     have hnorm0 : ‖ξ₀‖ = 0 := by rw [show ξ₀ = 0 from congrArg Subtype.val h0, norm_zero]
     linarith only [hξ₀_mem.1, hnorm0]
-  -- Skew-part B = (-I / 2) • (Z - star Z) commutes with H_gap, hence preserves E and is symmetric
   let Bmat : Register N := (-Complex.I / 2) • (Z - star Z)
   have hB_herm : IsSelfAdjoint Bmat := by
     dsimp only [Bmat]
@@ -860,18 +884,18 @@ theorem exists_unitaryRatio_singularEigenmode {N : ℕ} (U_star W_star : UGroup 
             Matrix.add_apply, Matrix.smul_apply, smul_eq_mul]
           ring
   let B_E : E →ₗ[ℂ] E :=
-    { toFun := fun x => ⟨euclCLM Bmat x.1, by
+    { toFun := fun x => ⟨matAct Bmat x.1, by
         rw [LinearMap.mem_ker]
-        change euclCLM ((H_gap - ((r ^ 2 : ℝ) : ℂ) • 1) * Bmat) x.1 = 0
-        rw [hcomm, map_mul, ContinuousLinearMap.mul_apply]
-        have hx0 : euclCLM (H_gap - ((r ^ 2 : ℝ) : ℂ) • 1) x.1 = 0 := x.2
-        rw [hx0, map_zero]⟩
-      map_add' := fun x y => Subtype.ext (map_add (euclCLM Bmat) x.1 y.1)
-      map_smul' := fun c x => Subtype.ext (map_smul (euclCLM Bmat) c x.1) }
+        change matAct (H_gap - ((r ^ 2 : ℝ) : ℂ) • 1) (matAct Bmat x.1) = 0
+        rw [← matAct_mul, hcomm, matAct_mul]
+        have hx0 : matAct (H_gap - ((r ^ 2 : ℝ) : ℂ) • 1) x.1 = 0 := x.2
+        rw [hx0, matAct_zero_right]⟩
+      map_add' := fun x y => Subtype.ext (matAct_map_add Bmat x.1 y.1)
+      map_smul' := fun c x => Subtype.ext (matAct_map_smul Bmat c x.1) }
   have hB_sym : B_E.IsSymmetric := by
     intro x y
-    change inner ℂ (euclCLM Bmat x.1) y.1 = inner ℂ x.1 (euclCLM Bmat y.1)
-    rw [← hadj Bmat x.1 y.1, hB_herm.star_eq]
+    change inner ℂ (matAct Bmat x.1) y.1 = inner ℂ x.1 (matAct Bmat y.1)
+    rw [← inner_matAct_star_left Bmat x.1 y.1, hB_herm.star_eq]
   let i₀ : Fin (Module.finrank ℂ E) := ⟨0, hE_pos⟩
   let u_eig : E := hB_sym.eigenvectorBasis rfl i₀
   let β : ℝ := hB_sym.eigenvalues rfl i₀
@@ -879,31 +903,27 @@ theorem exists_unitaryRatio_singularEigenmode {N : ℕ} (U_star W_star : UGroup 
   have hψ_norm : ‖ψ‖ = 1 := by
     change ‖u_eig‖ = 1
     exact (hB_sym.eigenvectorBasis rfl).orthonormal.1 i₀
-  have hBψ : euclCLM Bmat ψ = (β : ℂ) • ψ :=
+  have hBψ : matAct Bmat ψ = (β : ℂ) • ψ :=
     congrArg Subtype.val (hB_sym.apply_eigenvectorBasis rfl i₀)
-  have hHψ : euclCLM H_gap ψ = ((r ^ 2 : ℝ) : ℂ) • ψ := by
-    have hz : euclCLM (H_gap - ((r ^ 2 : ℝ) : ℂ) • 1) ψ = 0 := u_eig.2
-    rw [map_sub, map_smul, map_one, ContinuousLinearMap.sub_apply,
-      ContinuousLinearMap.smul_apply, ContinuousLinearMap.one_apply, sub_eq_zero] at hz
-    exact hz
+  have hHψ : matAct H_gap ψ = ((r ^ 2 : ℝ) : ℂ) • ψ := by
+    have hz : matAct (H_gap - ((r ^ 2 : ℝ) : ℂ) • 1) ψ = 0 := u_eig.2
+    rwa [matAct_sub, matAct_smul, matAct_one, sub_eq_zero] at hz
   have hψ_mem : ψ ∈ maxRightSingularSphere (U_star.val - W_star.val) := by
     refine ⟨hψ_norm, ?_⟩
-    have hsq : ‖euclCLM (U_star.val - W_star.val) ψ‖ ^ 2 = r ^ 2 := by
-      have h1 : inner ℂ ψ (euclCLM H_gap ψ) = ((‖euclCLM (U_star.val - W_star.val) ψ‖ ^ 2 : ℝ) : ℂ) := by
+    have hsq : ‖matAct (U_star.val - W_star.val) ψ‖ ^ 2 = r ^ 2 := by
+      have h1 : inner ℂ ψ (matAct H_gap ψ) = ((‖matAct (U_star.val - W_star.val) ψ‖ ^ 2 : ℝ) : ℂ) := by
         dsimp only [H_gap]
-        rw [map_mul, ContinuousLinearMap.mul_apply, hadj, inner_self_eq_norm_sq_to_K]
-        simp [Complex.ofReal_cpow (norm_nonneg _), ← Complex.ofReal_pow]
-      rw [hHψ, inner_smul_right, inner_self_eq_norm_sq_to_K, hψ_norm] at h1
-      simpa using congrArg Complex.re h1.symm
+        rw [matAct_mul, inner_matAct_star_left, inner_self_complex]
+      rw [hHψ, inner_smul_right, inner_self_complex, hψ_norm] at h1
+      simpa using Complex.ofReal_injective (by simpa using h1.symm)
     exact (sq_eq_sq₀ (norm_nonneg _) hr.le).mp hsq
-  have hZψ : euclCLM Z ψ = (((1 - r ^ 2 / 2 : ℝ) : ℂ) + Complex.I * (β : ℂ)) • ψ := by
-    have hsum : euclCLM (Z + star Z) ψ = ((2 - r ^ 2 : ℝ) : ℂ) • ψ := by
+  have hZψ : matAct Z ψ = (((1 - r ^ 2 / 2 : ℝ) : ℂ) + Complex.I * (β : ℂ)) • ψ := by
+    have hsum : matAct (Z + star Z) ψ = ((2 - r ^ 2 : ℝ) : ℂ) • ψ := by
       have h1 : Z + star Z = (2 : ℂ) • (1 : Register N) - H_gap := by
         rw [hH_gap_eq]; abel
-      rw [h1, map_sub, map_smul, map_one, ContinuousLinearMap.sub_apply,
-        ContinuousLinearMap.smul_apply, ContinuousLinearMap.one_apply, hHψ, ← sub_smul]
+      rw [h1, matAct_sub, matAct_smul, matAct_one, hHψ, ← sub_smul]
       congr 1; push_cast; ring
-    have hdiff : euclCLM (Z - star Z) ψ = ((2 : ℂ) * Complex.I * (β : ℂ)) • ψ := by
+    have hdiff : matAct (Z - star Z) ψ = ((2 : ℂ) * Complex.I * (β : ℂ)) • ψ := by
       have h1 : Z - star Z = ((2 : ℂ) * Complex.I) • Bmat := by
         dsimp only [Bmat]
         rw [smul_smul]
@@ -912,30 +932,20 @@ theorem exists_unitaryRatio_singularEigenmode {N : ℕ} (U_star W_star : UGroup 
               = -(Complex.I * Complex.I) := by ring
             _ = 1 := by rw [Complex.I_mul_I, neg_neg]
         rw [hc, one_smul]
-      rw [h1, map_smul, ContinuousLinearMap.smul_apply, hBψ, smul_smul, mul_assoc]
+      rw [h1, matAct_smul, hBψ, smul_smul, mul_assoc]
     have hZ_half : Z = ((1 / 2 : ℂ) • (Z + star Z)) + ((1 / 2 : ℂ) • (Z - star Z)) := by
       ext a b; simp only [Matrix.add_apply, Matrix.sub_apply, Matrix.smul_apply, smul_eq_mul]; ring
     conv_lhs => rw [hZ_half]
-    rw [map_add, map_smul, map_smul, ContinuousLinearMap.add_apply,
-      ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply,
-      hsum, hdiff, smul_smul, smul_smul, ← add_smul]
+    rw [matAct_add, matAct_smul, matAct_smul, hsum, hdiff, smul_smul, smul_smul, ← add_smul]
     congr 1; push_cast; ring
-  have hWψ : euclCLM W_star.val ψ =
-      (((1 - r ^ 2 / 2 : ℝ) : ℂ) + Complex.I * (β : ℂ)) • euclCLM U_star.val ψ := by
+  have hWψ : matAct W_star.val ψ =
+      (((1 - r ^ 2 / 2 : ℝ) : ℂ) + Complex.I * (β : ℂ)) • matAct U_star.val ψ := by
     have hUZ : U_star.val * Z = W_star.val := by
       dsimp only [Z]
       rw [← mul_assoc, (Unitary.mem_iff.mp U_star.2).2, one_mul]
-    rw [← hUZ, map_mul, ContinuousLinearMap.mul_apply, hZψ, map_smul]
-  have hλ_norm_sq : (1 - r ^ 2 / 2) ^ 2 + β ^ 2 = 1 := by
-    have hZ_isom : ‖euclCLM Z ψ‖ = 1 := by
-      have h1 : inner ℂ (euclCLM Z ψ) (euclCLM Z ψ) = 1 := by
-        rw [← hadj Z, ← ContinuousLinearMap.mul_apply, ← map_mul,
-          (Unitary.mem_iff.mp hZ_unit).1, map_one, ContinuousLinearMap.one_apply,
-          inner_self_eq_norm_sq_to_K, hψ_norm]
-        norm_num
-      rw [inner_self_eq_norm_sq_to_K] at h1
-      have hsq : ‖euclCLM Z ψ‖ ^ 2 = 1 := by simpa using congrArg Complex.re h1
-      nlinarith only [hsq, norm_nonneg (euclCLM Z ψ)]
+    rw [← hUZ, matAct_mul, hZψ, matAct_map_smul]
+  have hlam_norm_sq : (1 - r ^ 2 / 2) ^ 2 + β ^ 2 = 1 := by
+    have hZ_isom : ‖matAct Z ψ‖ = 1 := (norm_matAct_unitary hZ_unit ψ).trans hψ_norm
     rw [hZψ, norm_smul, hψ_norm, mul_one] at hZ_isom
     have hc_eq : (((1 - r ^ 2 / 2 : ℝ) : ℂ) + Complex.I * (β : ℂ)) =
         ⟨1 - r ^ 2 / 2, β⟩ := by
@@ -944,35 +954,34 @@ theorem exists_unitaryRatio_singularEigenmode {N : ℕ} (U_star W_star : UGroup 
     have hsq := congrArg (· ^ 2) hZ_isom
     rw [one_pow, Complex.sq_norm, Complex.normSq_mk] at hsq
     linarith only [hsq]
-  have hβ_sq : β ^ 2 = r ^ 2 * (1 - r ^ 2 / 4) := by linarith only [hλ_norm_sq]
-  have hλ_norm : ‖(((1 - r ^ 2 / 2 : ℝ) : ℂ) + Complex.I * (β : ℂ))‖ = 1 := by
+  have hβ_sq : β ^ 2 = r ^ 2 * (1 - r ^ 2 / 4) := by linarith only [hlam_norm_sq]
+  have hlam_norm : ‖(((1 - r ^ 2 / 2 : ℝ) : ℂ) + Complex.I * (β : ℂ))‖ = 1 := by
     have hc_eq : (((1 - r ^ 2 / 2 : ℝ) : ℂ) + Complex.I * (β : ℂ)) = ⟨1 - r ^ 2 / 2, β⟩ := by
       apply Complex.ext <;> simp
     rw [hc_eq, Complex.norm_def, Complex.normSq_mk]
-    rw [show (1 - r ^ 2 / 2) * (1 - r ^ 2 / 2) + β * β = 1 by linarith only [hλ_norm_sq], Real.sqrt_one]
+    rw [show (1 - r ^ 2 / 2) * (1 - r ^ 2 / 2) + β * β = 1 by linarith only [hlam_norm_sq], Real.sqrt_one]
   refine ⟨ψ, hψ_mem, β, hβ_sq, hWψ, ?_, ?_⟩
-  · rw [hWψ, inner_smul_right, norm_mul, hλ_norm, one_mul]
+  · rw [hWψ, inner_smul_right, norm_mul, hlam_norm, one_mul]
   · intro K
-    have hadj_K (x : StateSpace N) : (inner ℂ x (euclCLM K.val x)).im = 0 := by
-      have hsym : inner ℂ x (euclCLM K.val x) = starRingEnd ℂ (inner ℂ x (euclCLM K.val x)) := by
-        rw [inner_conj_symm, ← hadj K.val x x, K.2.star_eq]
+    have hadj_K (x : StateSpace N) : (inner ℂ x (matAct K.val x)).im = 0 := by
+      have hsym : inner ℂ x (matAct K.val x) = starRingEnd ℂ (inner ℂ x (matAct K.val x)) := by
+        rw [inner_conj_symm, ← inner_matAct_star_left K.val x x, K.2.star_eq]
       exact Complex.conj_eq_iff_im.mp hsym.symm
     rw [re_inner_unitary_sub_skewAdjointCommutator U_star.2 W_star.val K ψ, hWψ, inner_smul_left]
-    have hcomm_inner : inner ℂ (euclCLM U_star.val ψ) (euclCLM (K.val * U_star.val - U_star.val * K.val) ψ) =
-        inner ℂ (euclCLM U_star.val ψ) (euclCLM K.val (euclCLM U_star.val ψ)) -
-          inner ℂ ψ (euclCLM K.val ψ) := by
-      rw [map_sub, ContinuousLinearMap.sub_apply, inner_sub_right, map_mul,
-        ContinuousLinearMap.mul_apply, map_mul, ContinuousLinearMap.mul_apply, ← hadj U_star.val,
-        ← ContinuousLinearMap.mul_apply, ← map_mul, (Unitary.mem_iff.mp U_star.2).1,
-        map_one, ContinuousLinearMap.one_apply]
+    have hcomm_inner : inner ℂ (matAct U_star.val ψ) (matAct (K.val * U_star.val - U_star.val * K.val) ψ) =
+        inner ℂ (matAct U_star.val ψ) (matAct K.val (matAct U_star.val ψ)) -
+          inner ℂ ψ (matAct K.val ψ) := by
+      rw [matAct_sub, inner_sub_right, matAct_mul, matAct_mul,
+        ← inner_matAct_star_left U_star.val, ← matAct_mul,
+        (Unitary.mem_iff.mp U_star.2).1, matAct_one]
     rw [hcomm_inner]
-    set d : ℝ := (inner ℂ (euclCLM U_star.val ψ) (euclCLM K.val (euclCLM U_star.val ψ))).re -
-      (inner ℂ ψ (euclCLM K.val ψ)).re
-    have hd_eq : inner ℂ (euclCLM U_star.val ψ) (euclCLM K.val (euclCLM U_star.val ψ)) -
-        inner ℂ ψ (euclCLM K.val ψ) = (d : ℂ) := by
+    set d : ℝ := (inner ℂ (matAct U_star.val ψ) (matAct K.val (matAct U_star.val ψ))).re -
+      (inner ℂ ψ (matAct K.val ψ)).re
+    have hd_eq : inner ℂ (matAct U_star.val ψ) (matAct K.val (matAct U_star.val ψ)) -
+        inner ℂ ψ (matAct K.val ψ) = (d : ℂ) := by
       apply Complex.ext
       · simp [d]
-      · simp [hadj_K (euclCLM U_star.val ψ), hadj_K ψ]
+      · simp [hadj_K (matAct U_star.val ψ), hadj_K ψ]
     rw [hd_eq]
     have him : -((starRingEnd ℂ (((1 - r ^ 2 / 2 : ℝ) : ℂ) + Complex.I * (β : ℂ)) * (d : ℂ)).im) =
         β * d := by
@@ -984,16 +993,15 @@ bounded above by `2 * √(1 - ‖⟨ψ, ξ⟩‖²) * ‖K‖` and attained at n
 theorem sup_selfAdjoint_expectation_diff_eq {N : ℕ} {ξ ψ : StateSpace N}
     (hξ : ‖ξ‖ = 1) (hψ : ‖ψ‖ = 1) :
     (∀ K : selfAdjoint (Register N),
-      |(inner ℂ ξ (euclCLM K.val ξ)).re - (inner ℂ ψ (euclCLM K.val ψ)).re| ≤
+      |(inner ℂ ξ (matAct K.val ξ)).re - (inner ℂ ψ (matAct K.val ψ)).re| ≤
         2 * Real.sqrt (1 - ‖inner ℂ ψ ξ‖ ^ 2) * ‖K.val‖) ∧
     ∃ K_star : selfAdjoint (Register N), ‖K_star.val‖ ≤ 1 ∧
-      (inner ℂ ξ (euclCLM K_star.val ξ)).re - (inner ℂ ψ (euclCLM K_star.val ψ)).re =
+      (inner ℂ ξ (matAct K_star.val ξ)).re - (inner ℂ ψ (matAct K_star.val ψ)).re =
         2 * Real.sqrt (1 - ‖inner ℂ ψ ξ‖ ^ 2) := by
   let c : ℂ := inner ℂ ψ ξ
   have hc_le : ‖c‖ ≤ 1 := by
-    simpa only [hψ, hξ, mul_one] using norm_inner_le_norm ψ ξ
+    simpa only [hψ, hξ, mul_one] using @norm_inner_le_norm ℂ _ _ _ _ ψ ξ
   have h1_sub : 0 ≤ 1 - ‖c‖ ^ 2 := by nlinarith only [hc_le, norm_nonneg c]
-  -- Phase-align ξ' = w • ξ so ⟨ψ, ξ'⟩ = ‖c‖ ∈ ℝ
   let w : ℂ := if c = 0 then 1 else star c / ‖c‖
   have hw_norm : ‖w‖ = 1 := by
     dsimp only [w]
@@ -1006,7 +1014,7 @@ theorem sup_selfAdjoint_expectation_diff_eq {N : ℕ} {ξ ψ : StateSpace N}
     split_ifs with hc0
     · simp [hc0]
     · have hconj : star c * c = ((‖c‖ ^ 2 : ℝ) : ℂ) := by
-        rw [Complex.star_def, Complex.mul_conj, Complex.normSq_eq_norm_sq]
+        rw [Complex.star_def, mul_comm, Complex.mul_conj, Complex.normSq_eq_norm_sq]
         push_cast; rfl
       rw [div_mul_eq_mul_div, hconj]
       have hne : (‖c‖ : ℂ) ≠ 0 := Complex.ofReal_ne_zero.mpr (norm_ne_zero_iff.mpr hc0)
@@ -1020,17 +1028,17 @@ theorem sup_selfAdjoint_expectation_diff_eq {N : ℕ} {ξ ψ : StateSpace N}
   have hpq_orth : inner ℂ p q = 0 := by
     dsimp only [p, q]
     rw [inner_sub_right, inner_add_left, inner_add_left,
-      inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K, hξ'_norm, hψ,
+      inner_self_complex, inner_self_complex, hξ'_norm, hψ,
       ← inner_conj_symm ξ' ψ, hinner_ξ', Complex.conj_ofReal]
-    ring
+    push_cast; ring
   have hp_sq : ‖p‖ ^ 2 = 2 * (1 + ‖c‖) := by
     dsimp only [p]
-    rw [@norm_add_sq ℂ, hξ'_norm, hψ, ← inner_conj_symm ξ' ψ, hinner_ξ',
+    rw [norm_add_sq_complex, hξ'_norm, hψ, ← inner_conj_symm ξ' ψ, hinner_ξ',
       Complex.conj_ofReal, Complex.ofReal_re]
     ring
   have hq_sq : ‖q‖ ^ 2 = 2 * (1 - ‖c‖) := by
     dsimp only [q]
-    rw [@norm_sub_sq ℂ, hξ'_norm, hψ, ← inner_conj_symm ξ' ψ, hinner_ξ',
+    rw [norm_sub_sq_complex, hξ'_norm, hψ, ← inner_conj_symm ξ' ψ, hinner_ξ',
       Complex.conj_ofReal, Complex.ofReal_re]
     ring
   have hpq_prod : ‖p‖ * ‖q‖ = 2 * Real.sqrt (1 - ‖c‖ ^ 2) := by
@@ -1038,43 +1046,35 @@ theorem sup_selfAdjoint_expectation_diff_eq {N : ℕ} {ξ ψ : StateSpace N}
       rw [mul_pow, hp_sq, hq_sq, mul_pow, Real.sq_sqrt h1_sub]
       ring
     exact (sq_eq_sq₀ (by positivity) (by positivity)).mp hsq
-  have hadj (M : Register N) (x y : StateSpace N) :
-      inner ℂ (euclCLM (star M) x) y = inner ℂ x (euclCLM M y) := by
-    have hstar : euclCLM (star M) = ContinuousLinearMap.adjoint (euclCLM M) :=
-      map_star Matrix.toEuclideanCLM M
-    rw [hstar, ContinuousLinearMap.adjoint_inner_left]
-  -- Polarization: Re ⟨ξ, K ξ⟩ - Re ⟨ψ, K ψ⟩ = Re ⟨p, K q⟩
   have hpol (K : selfAdjoint (Register N)) :
-      (inner ℂ ξ (euclCLM K.val ξ)).re - (inner ℂ ψ (euclCLM K.val ψ)).re =
-        (inner ℂ p (euclCLM K.val q)).re := by
-    have hξ_eq : inner ℂ ξ' (euclCLM K.val ξ') = inner ℂ ξ (euclCLM K.val ξ) := by
+      (inner ℂ ξ (matAct K.val ξ)).re - (inner ℂ ψ (matAct K.val ψ)).re =
+        (inner ℂ p (matAct K.val q)).re := by
+    have hξ_eq : inner ℂ ξ' (matAct K.val ξ') = inner ℂ ξ (matAct K.val ξ) := by
       dsimp only [ξ']
-      rw [map_smul, inner_smul_left, inner_smul_right, ← mul_assoc]
+      rw [matAct_map_smul, inner_smul_left, inner_smul_right, ← mul_assoc]
       have hww : starRingEnd ℂ w * w = 1 := by
         rw [← Complex.normSq_eq_conj_mul_self, Complex.normSq_eq_norm_sq, hw_norm, one_pow,
           Complex.ofReal_one]
       rw [hww, one_mul]
     dsimp only [p, q]
-    rw [map_sub, inner_sub_right, inner_add_left, inner_add_left, Complex.sub_re,
+    rw [matAct_map_sub, inner_sub_right, inner_add_left, inner_add_left, Complex.sub_re,
       Complex.add_re, Complex.add_re, hξ_eq]
-    have hsym : (inner ℂ ψ (euclCLM K.val ξ')).re = (inner ℂ ξ' (euclCLM K.val ψ)).re := by
-      have h1 : inner ℂ ψ (euclCLM K.val ξ') = starRingEnd ℂ (inner ℂ ξ' (euclCLM K.val ψ)) := by
-        rw [inner_conj_symm, ← hadj K.val ξ' ψ, K.2.star_eq]
+    have hsym : (inner ℂ ψ (matAct K.val ξ')).re = (inner ℂ ξ' (matAct K.val ψ)).re := by
+      have h1 : inner ℂ ψ (matAct K.val ξ') = starRingEnd ℂ (inner ℂ ξ' (matAct K.val ψ)) := by
+        rw [← inner_matAct_star_left K.val ψ ξ', K.2.star_eq, ← inner_conj_symm]
       rw [h1, Complex.conj_re]
     linarith only [hsym]
   refine ⟨fun K => ?_, ?_⟩
   · rw [hpol K]
-    calc |(inner ℂ p (euclCLM K.val q)).re|
-        ≤ ‖inner ℂ p (euclCLM K.val q)‖ := Complex.abs_re_le_norm _
-      _ ≤ ‖p‖ * ‖euclCLM K.val q‖ := norm_inner_le_norm p _
-      _ ≤ ‖p‖ * (‖K.val‖ * ‖q‖) := mul_le_mul_of_nonneg_left
-          (by simpa only [Matrix.l2_opNorm_toEuclideanCLM] using (euclCLM K.val).le_opNorm q)
-          (norm_nonneg p)
+    calc |(inner ℂ p (matAct K.val q)).re|
+        ≤ ‖inner ℂ p (matAct K.val q)‖ := Complex.abs_re_le_norm _
+      _ ≤ ‖p‖ * ‖matAct K.val q‖ := @norm_inner_le_norm ℂ _ _ _ _ p _
+      _ ≤ ‖p‖ * (‖K.val‖ * ‖q‖) := mul_le_mul_of_nonneg_left (norm_matAct_le K.val q) (norm_nonneg p)
       _ = 2 * Real.sqrt (1 - ‖c‖ ^ 2) * ‖K.val‖ := by rw [← mul_assoc, mul_right_comm, hpq_prod]
   · by_cases hΔ : 1 - ‖c‖ ^ 2 = 0
     · refine ⟨0, by simp, ?_⟩
       rw [hΔ, Real.sqrt_zero, mul_zero]
-      simp
+      simp [matAct_zero_left]
     · have hΔ_pos : 0 < 1 - ‖c‖ ^ 2 := lt_of_le_of_ne h1_sub (Ne.symm hΔ)
       have hpq_pos : 0 < ‖p‖ * ‖q‖ := by rw [hpq_prod]; exact mul_pos zero_lt_two (Real.sqrt_pos.mpr hΔ_pos)
       have hp_pos : 0 < ‖p‖ := (mul_pos_iff_of_pos_right (lt_of_le_of_ne (norm_nonneg q)
@@ -1089,41 +1089,30 @@ theorem sup_selfAdjoint_expectation_diff_eq {N : ℕ} {ξ ψ : StateSpace N}
       have hpq_hat_orth : inner ℂ p_hat q_hat = 0 := by
         dsimp only [p_hat, q_hat]
         rw [inner_smul_left, inner_smul_right, hpq_orth, mul_zero, mul_zero]
-      -- Construct the continuous linear swap T_star x = ⟨q_hat, x⟩ • p_hat + ⟨p_hat, x⟩ • q_hat
-      let T_lin : StateSpace N →ₗ[ℂ] StateSpace N :=
-        { toFun := fun x => inner ℂ q_hat x • p_hat + inner ℂ p_hat x • q_hat
-          map_add' := fun x y => by simp only [inner_add_right, add_smul]; abel
-          map_smul' := fun a x => by
-            simp only [inner_smul_right, RingHom.id_apply, smul_add, mul_smul] }
-      let T_clm : StateSpace N →L[ℂ] StateSpace N := T_lin.toContinuousLinearMap
-      let K_mat : Register N := (Matrix.toEuclideanCLM (n := Config N) (𝕜 := ℂ)).symm T_clm
-      have heucl_K : euclCLM K_mat = T_clm :=
-        (Matrix.toEuclideanCLM (n := Config N) (𝕜 := ℂ)).apply_symm_apply T_clm
+      let K_mat : Register N := fun i j =>
+        p_hat.ofLp i * starRingEnd ℂ (q_hat.ofLp j) + q_hat.ofLp i * starRingEnd ℂ (p_hat.ofLp j)
+      have hK_act (x : StateSpace N) :
+          matAct K_mat x = inner ℂ q_hat x • p_hat + inner ℂ p_hat x • q_hat := by
+        ext i
+        simp only [matAct, WithLp.ofLp_toLp, Matrix.mulVec, dotProduct, K_mat,
+          WithLp.ofLp_add, WithLp.ofLp_smul, Pi.add_apply, Pi.smul_apply, smul_eq_mul,
+          EuclideanSpace.inner_eq_star_dotProduct, Pi.star_apply, Complex.star_def,
+          add_mul, Finset.sum_add_distrib, Finset.sum_mul]
+        congr 1 <;> refine Finset.sum_congr rfl fun j _ => by ring
       have hK_sa : IsSelfAdjoint K_mat := by
         rw [IsSelfAdjoint]
-        apply (Matrix.toEuclideanCLM (n := Config N) (𝕜 := ℂ)).injective
-        rw [map_star, heucl_K]
-        ext x
-        apply ext_inner_left ℂ
-        intro y
-        rw [ContinuousLinearMap.adjoint_inner_right]
-        change inner ℂ y (inner ℂ q_hat x • p_hat + inner ℂ p_hat x • q_hat) =
-          inner ℂ (inner ℂ q_hat y • p_hat + inner ℂ p_hat y • q_hat) x
-        rw [inner_add_right, inner_smul_right, inner_smul_right,
-          inner_add_left, inner_smul_left, inner_smul_left,
-          ← inner_conj_symm p_hat y, ← inner_conj_symm q_hat y,
-          ← inner_conj_symm x q_hat, ← inner_conj_symm x p_hat]
+        ext i j
+        change starRingEnd ℂ (K_mat j i) = K_mat i j
+        dsimp only [K_mat]
+        rw [map_add, map_mul, map_mul, Complex.conj_conj, Complex.conj_conj]
         ring
       have hK_norm : ‖K_mat‖ ≤ 1 := by
-        rw [← Matrix.l2_opNorm_toEuclideanCLM, heucl_K]
-        refine T_clm.opNorm_le_bound zero_le_one fun x => ?_
-        rw [one_mul]
+        refine opNorm_le_of_matAct_le zero_le_one fun x => ?_
+        rw [one_mul, hK_act x]
         refine (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).mp ?_
-        change ‖inner ℂ q_hat x • p_hat + inner ℂ p_hat x • q_hat‖ ^ 2 ≤ ‖x‖ ^ 2
-        rw [@norm_add_sq ℂ, inner_smul_left, inner_smul_right, hpq_hat_orth,
+        rw [norm_add_sq_complex, inner_smul_left, inner_smul_right, hpq_hat_orth,
           mul_zero, mul_zero, Complex.zero_re, mul_zero, add_zero,
           norm_smul, norm_smul, hp_hat_norm, hq_hat_norm, mul_one, mul_one]
-        -- Bessel inequality for orthonormal pair {p_hat, q_hat}
         let r_res : StateSpace N := x - (inner ℂ p_hat x • p_hat + inner ℂ q_hat x • q_hat)
         have hexp_x : x = (inner ℂ p_hat x • p_hat + inner ℂ q_hat x • q_hat) + r_res := by
           dsimp only [r_res]; abel
@@ -1132,32 +1121,31 @@ theorem sup_selfAdjoint_expectation_diff_eq {N : ℕ} {ξ ψ : StateSpace N}
           rw [inner_sub_right, inner_add_left, inner_add_left, inner_add_right, inner_add_right,
             inner_smul_left, inner_smul_left, inner_smul_left,
             inner_smul_right, inner_smul_right, inner_smul_right, inner_smul_right,
-            inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K,
+            inner_self_complex, inner_self_complex,
             hp_hat_norm, hq_hat_norm, hpq_hat_orth, ← inner_conj_symm p_hat q_hat, hpq_hat_orth]
-          simp; ring
+          push_cast; simp; ring
         have hx_sq : ‖x‖ ^ 2 = ‖inner ℂ p_hat x • p_hat + inner ℂ q_hat x • q_hat‖ ^ 2 + ‖r_res‖ ^ 2 := by
           conv_lhs => rw [hexp_x]
-          rw [@norm_add_sq ℂ, horth_r, Complex.zero_re, mul_zero, add_zero]
+          rw [norm_add_sq_complex, horth_r, Complex.zero_re, mul_zero, add_zero]
         have hproj_sq : ‖inner ℂ p_hat x • p_hat + inner ℂ q_hat x • q_hat‖ ^ 2 =
             ‖inner ℂ p_hat x‖ ^ 2 + ‖inner ℂ q_hat x‖ ^ 2 := by
-          rw [@norm_add_sq ℂ, inner_smul_left, inner_smul_right, hpq_hat_orth,
+          rw [norm_add_sq_complex, inner_smul_left, inner_smul_right, hpq_hat_orth,
             mul_zero, mul_zero, Complex.zero_re, mul_zero, add_zero,
             norm_smul, norm_smul, hp_hat_norm, hq_hat_norm, mul_one, mul_one]
         linarith only [hx_sq, hproj_sq, sq_nonneg ‖r_res‖]
       refine ⟨⟨K_mat, hK_sa⟩, hK_norm, ?_⟩
-      rw [hpol ⟨K_mat, hK_sa⟩, heucl_K]
-      change (inner ℂ p (inner ℂ q_hat q • p_hat + inner ℂ p_hat q • q_hat)).re = _
+      rw [hpol ⟨K_mat, hK_sa⟩]
+      change (inner ℂ p (matAct K_mat q)).re = _
+      rw [hK_act q]
       have hqq : inner ℂ q_hat q = (‖q‖ : ℂ) := by
         dsimp only [q_hat]
-        rw [inner_smul_left, Complex.conj_ofReal, inner_self_eq_norm_sq_to_K]
-        simp only [Complex.ofReal_cpow (norm_nonneg q), ← Complex.ofReal_pow, ← Complex.ofReal_mul]
+        rw [inner_smul_left, Complex.conj_ofReal, inner_self_complex, ← Complex.ofReal_mul]
         congr 1; field_simp [hq_pos.ne']
       have hpq0 : inner ℂ p_hat q = 0 := by
         dsimp only [p_hat]; rw [inner_smul_left, hpq_orth, mul_zero]
       have hpp : inner ℂ p p_hat = (‖p‖ : ℂ) := by
         dsimp only [p_hat]
-        rw [inner_smul_right, inner_self_eq_norm_sq_to_K]
-        simp only [Complex.ofReal_cpow (norm_nonneg p), ← Complex.ofReal_pow, ← Complex.ofReal_mul]
+        rw [inner_smul_right, inner_self_complex, ← Complex.ofReal_mul]
         congr 1; field_simp [hp_pos.ne']
       rw [hqq, hpq0, zero_smul, add_zero, inner_smul_right, hpp, ← Complex.ofReal_mul,
         Complex.ofReal_re, mul_comm ‖q‖ ‖p‖, hpq_prod]
@@ -1168,33 +1156,27 @@ theorem tenth_saddle_unitBall_sensitivity_eq {N : ℕ} (U_star W_star : UGroup N
     (hr : ‖U_star.val - W_star.val‖ = 1 / 10) :
     ∃ ψ ∈ maxRightSingularSphere (U_star.val - W_star.val),
       (∀ K : selfAdjoint (Register N), ‖K.val‖ ≤ 1 →
-        |(inner ℂ (euclCLM (U_star.val - W_star.val) ψ)
-          (euclCLM (skewAdjointCommutator K U_star.val) ψ)).re / (1 / 10)| ≤
-          (Real.sqrt 399 / 10) * Real.sqrt (1 - ‖inner ℂ ψ (euclCLM U_star.val ψ)‖ ^ 2)) ∧
+        |(inner ℂ (matAct (U_star.val - W_star.val) ψ)
+          (matAct (skewAdjointCommutator K U_star.val) ψ)).re / (1 / 10)| ≤
+          (Real.sqrt 399 / 10) * Real.sqrt (1 - ‖inner ℂ ψ (matAct U_star.val ψ)‖ ^ 2)) ∧
       ∃ K_star : selfAdjoint (Register N), ‖K_star.val‖ ≤ 1 ∧
-        |(inner ℂ (euclCLM (U_star.val - W_star.val) ψ)
-          (euclCLM (skewAdjointCommutator K_star U_star.val) ψ)).re / (1 / 10)| =
-          (Real.sqrt 399 / 10) * Real.sqrt (1 - ‖inner ℂ ψ (euclCLM U_star.val ψ)‖ ^ 2) := by
+        |(inner ℂ (matAct (U_star.val - W_star.val) ψ)
+          (matAct (skewAdjointCommutator K_star U_star.val) ψ)).re / (1 / 10)| =
+          (Real.sqrt 399 / 10) * Real.sqrt (1 - ‖inner ℂ ψ (matAct U_star.val ψ)‖ ^ 2) := by
   have hr_pos : 0 < ‖U_star.val - W_star.val‖ := by rw [hr]; norm_num
   obtain ⟨ψ, hψ_mem, β, hβ_sq, _, _, hdir⟩ := exists_unitaryRatio_singularEigenmode U_star W_star hr_pos
-  have hUψ_norm : ‖euclCLM U_star.val ψ‖ = 1 := by
-    have hadj : inner ℂ (euclCLM U_star.val ψ) (euclCLM U_star.val ψ) = 1 := by
-      have hst : euclCLM (star U_star.val) = ContinuousLinearMap.adjoint (euclCLM U_star.val) :=
-        map_star Matrix.toEuclideanCLM U_star.val
-      rw [← ContinuousLinearMap.adjoint_inner_left, ← hst, ← ContinuousLinearMap.mul_apply,
-        ← map_mul, (Unitary.mem_iff.mp U_star.2).1, map_one, ContinuousLinearMap.one_apply,
-        inner_self_eq_norm_sq_to_K, hψ_mem.1]
-      norm_num
-    rw [inner_self_eq_norm_sq_to_K] at hadj
-    have hsq : ‖euclCLM U_star.val ψ‖ ^ 2 = 1 := by simpa using congrArg Complex.re hadj
-    nlinarith only [hsq, norm_nonneg (euclCLM U_star.val ψ)]
+  have hUψ_norm : ‖matAct U_star.val ψ‖ = 1 :=
+    (norm_matAct_unitary U_star.2 ψ).trans hψ_mem.1
   obtain ⟨hsup_le, K_star, hK_norm, hK_eq⟩ := sup_selfAdjoint_expectation_diff_eq hUψ_norm hψ_mem.1
   have hβ_abs : |β / (1 / 10)| * 2 = Real.sqrt 399 / 10 := by
     rw [hr] at hβ_sq
-    have hsq : (|β / (1 / 10)| * 2) ^ 2 = (Real.sqrt 399 / 10) ^ 2 := by
-      rw [mul_pow, sq_abs, div_pow, hβ_sq, div_pow, Real.sq_sqrt (by norm_num)]
+    have hlhs : (|β / (1 / 10)| * 2) ^ 2 = 399 / 100 := by
+      rw [mul_pow, sq_abs, div_pow, hβ_sq]
       norm_num
-    exact (sq_eq_sq₀ (by positivity) (by positivity)).mp hsq
+    have hrhs : (Real.sqrt 399 / 10) ^ 2 = 399 / 100 := by
+      rw [div_pow, Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 399)]
+      norm_num
+    exact (sq_eq_sq₀ (by positivity) (by positivity)).mp (hlhs.trans hrhs.symm)
   refine ⟨ψ, hψ_mem, fun K hK => ?_, K_star, hK_norm, ?_⟩
   · have hd := hdir K
     rw [hr] at hd
@@ -1202,25 +1184,25 @@ theorem tenth_saddle_unitBall_sensitivity_eq {N : ℕ} (U_star W_star : UGroup N
     have hb := (hsup_le K).trans (mul_le_mul_of_nonneg_left hK (by positivity))
     rw [mul_one] at hb
     calc |β / (1 / 10)| * |_ - _|
-        ≤ |β / (1 / 10)| * (2 * Real.sqrt (1 - ‖inner ℂ ψ (euclCLM U_star.val ψ)‖ ^ 2)) :=
+        ≤ |β / (1 / 10)| * (2 * Real.sqrt (1 - ‖inner ℂ ψ (matAct U_star.val ψ)‖ ^ 2)) :=
           mul_le_mul_of_nonneg_left hb (abs_nonneg _)
-      _ = (|β / (1 / 10)| * 2) * Real.sqrt (1 - ‖inner ℂ ψ (euclCLM U_star.val ψ)‖ ^ 2) := by ring
-      _ = (Real.sqrt 399 / 10) * Real.sqrt (1 - ‖inner ℂ ψ (euclCLM U_star.val ψ)‖ ^ 2) := by
+      _ = (|β / (1 / 10)| * 2) * Real.sqrt (1 - ‖inner ℂ ψ (matAct U_star.val ψ)‖ ^ 2) := by ring
+      _ = (Real.sqrt 399 / 10) * Real.sqrt (1 - ‖inner ℂ ψ (matAct U_star.val ψ)‖ ^ 2) := by
           rw [hβ_abs]
   · have hd := hdir K_star
     rw [hr] at hd
-    rw [hd, abs_mul, hK_eq, abs_of_nonneg (by positivity), ← mul_assoc, hβ_abs]
+    have hnn : 0 ≤ 2 * Real.sqrt (1 - ‖inner ℂ ψ (matAct U_star.val ψ)‖ ^ 2) := by positivity
+    rw [hd, abs_mul, hK_eq, abs_of_nonneg hnn, ← mul_assoc, hβ_abs]
 
 /-- Antipodal diameter stationarity (`r = 2`) and common-eigenmode stationarity: first-order
 transverse directional variations vanish for all self-adjoint generators `K`. -/
 theorem common_eigenmode_sensitivity_zero {N : ℕ} {U W : Register N}
     (hU : U ∈ unitary (Register N)) {ψ : StateSpace N} {μ : ℂ}
-    (hUψ : euclCLM U ψ = μ • ψ) {ν : ℂ} (hWψ : euclCLM W ψ = ν • ψ)
+    (hUψ : matAct U ψ = μ • ψ) {ν : ℂ} (hWψ : matAct W ψ = ν • ψ)
     (K : selfAdjoint (Register N)) :
-    (inner ℂ (euclCLM (U - W) ψ) (euclCLM (skewAdjointCommutator K U) ψ)).re = 0 := by
+    (inner ℂ (matAct (U - W) ψ) (matAct (skewAdjointCommutator K U) ψ)).re = 0 := by
   rw [re_inner_unitary_sub_skewAdjointCommutator hU W K ψ, hWψ,
-    map_sub, ContinuousLinearMap.sub_apply, map_mul, ContinuousLinearMap.mul_apply,
-    map_mul, ContinuousLinearMap.mul_apply, hUψ, map_smul, sub_self, inner_zero_right,
+    matAct_sub, matAct_mul, matAct_mul, hUψ, matAct_map_smul, sub_self, inner_zero_right,
     Complex.zero_im, neg_zero]
 
 /-- Under simple spectrum of `H`, all `4^N` Pauli commutators `i [σ_p, H]` have zero expectation
@@ -1233,64 +1215,38 @@ theorem pauliCommutator_stationary_iff_eigenmode {N d : ℕ}
     let V : UGroup N := hermitianEigenbasisUnitary H.2.isHermitian
     let U_star := projectiveSpectralMatrix e V θ
     (∀ p : Fin N → Option (Fin 3),
-      (inner ℂ (euclCLM U_star ψ)
-        (euclCLM (pauliTransverseGenerator H (finitePauliSelfAdjoint p)).val (euclCLM U_star ψ))).re =
-      (inner ℂ ψ (euclCLM (pauliTransverseGenerator H (finitePauliSelfAdjoint p)).val ψ)).re) ↔
-      ‖inner ℂ ψ (euclCLM U_star ψ)‖ = 1 := by
+      (inner ℂ (matAct U_star ψ)
+        (matAct (pauliTransverseGenerator H (finitePauliSelfAdjoint p)).val (matAct U_star ψ))).re =
+      (inner ℂ ψ (matAct (pauliTransverseGenerator H (finitePauliSelfAdjoint p)).val ψ)).re) ↔
+      ‖inner ℂ ψ (matAct U_star ψ)‖ = 1 := by
   intro V U_star
-  have hadj (M : Register N) (x y : StateSpace N) :
-      inner ℂ (euclCLM (star M) x) y = inner ℂ x (euclCLM M y) := by
-    have hstar : euclCLM (star M) = ContinuousLinearMap.adjoint (euclCLM M) :=
-      map_star Matrix.toEuclideanCLM M
-    rw [hstar, ContinuousLinearMap.adjoint_inner_left]
-  have hU_unit : U_star ∈ unitary (Register N) := by
-    dsimp only [U_star]
-    unfold projectiveSpectralMatrix
-    refine mul_mem (mul_mem V.2 ?_) (Unitary.star_mem V.2)
-    rw [Unitary.mem_iff, star_eq_conjTranspose, diagonal_conjTranspose,
-      diagonal_mul_diagonal, diagonal_mul_diagonal]
-    constructor <;> ext a b <;> by_cases hab : a = b
-    · subst hab; simp only [diagonal_apply_eq, one_apply_eq]
-      exact Complex.normSq_eq_conj_mul_self.symm.trans (by simp)
-    · simp [hab]
-    · subst hab; simp only [diagonal_apply_eq, one_apply_eq]; rw [mul_comm]
-      exact Complex.normSq_eq_conj_mul_self.symm.trans (by simp)
-    · simp [hab]
-  have hUψ_norm : ‖euclCLM U_star ψ‖ = 1 := by
-    have h1 : inner ℂ (euclCLM U_star ψ) (euclCLM U_star ψ) = 1 := by
-      rw [← hadj U_star, ← ContinuousLinearMap.mul_apply, ← map_mul,
-        (Unitary.mem_iff.mp hU_unit).1, map_one, ContinuousLinearMap.one_apply,
-        inner_self_eq_norm_sq_to_K, hψ]
-      norm_num
-    rw [inner_self_eq_norm_sq_to_K] at h1
-    have hsq : ‖euclCLM U_star ψ‖ ^ 2 = 1 := by simpa using congrArg Complex.re h1
-    nlinarith only [hsq, norm_nonneg (euclCLM U_star ψ)]
+  have hU_unit : U_star ∈ unitary (Register N) := projectiveSpectralMatrix_mem_unitary e V θ
+  have hUψ_norm : ‖matAct U_star ψ‖ = 1 := (norm_matAct_unitary hU_unit ψ).trans hψ
   constructor
   · intro hpauli
-    -- Step 1: extend from Pauli basis to all P ∈ selfAdjoint (Register N)
     let Λ : selfAdjoint (Register N) →ₗ[ℝ] ℝ :=
       { toFun := fun P =>
-          (inner ℂ (euclCLM U_star ψ)
-            (euclCLM (pauliTransverseGenerator H P).val (euclCLM U_star ψ))).re -
-          (inner ℂ ψ (euclCLM (pauliTransverseGenerator H P).val ψ)).re
+          (inner ℂ (matAct U_star ψ)
+            (matAct (pauliTransverseGenerator H P).val (matAct U_star ψ))).re -
+          (inner ℂ ψ (matAct (pauliTransverseGenerator H P).val ψ)).re
         map_add' := fun P Q => by
           have hadd : (pauliTransverseGenerator H (P + Q)).val =
               (pauliTransverseGenerator H P).val + (pauliTransverseGenerator H Q).val := by
             dsimp only [pauliTransverseGenerator]
             simp only [AddSubgroup.coe_add, add_mul, mul_add, smul_sub, smul_add]
             abel
-          rw [hadd, map_add, ContinuousLinearMap.add_apply, ContinuousLinearMap.add_apply,
-            inner_add_right, inner_add_right, Complex.add_re, Complex.add_re]
+          rw [hadd, matAct_add, matAct_add, inner_add_right, inner_add_right,
+            Complex.add_re, Complex.add_re]
           ring
         map_smul' := fun c P => by
           have hsmul : (pauliTransverseGenerator H (c • P)).val =
               (c : ℂ) • (pauliTransverseGenerator H P).val := by
             dsimp only [pauliTransverseGenerator]
-            have hc : (c • P).val = (c : ℂ) • P.val := Complex.real_smul.symm
+            have hc : (c • P).val = (c : ℂ) • P.val := by
+              ext a b; simp [Complex.real_smul]
             rw [hc, Matrix.smul_mul, Matrix.mul_smul, ← smul_sub, smul_comm]
-          rw [hsmul, map_smul, ContinuousLinearMap.smul_apply, ContinuousLinearMap.smul_apply,
-            inner_smul_right, inner_smul_right, Complex.re_ofReal_mul, Complex.re_ofReal_mul,
-            RingHom.id_apply, smul_eq_mul]
+          rw [hsmul, matAct_smul, matAct_smul, inner_smul_right, inner_smul_right,
+            Complex.re_ofReal_mul, Complex.re_ofReal_mul, RingHom.id_apply, smul_eq_mul]
           ring }
     have hΛ_all (P : selfAdjoint (Register N)) : Λ P = 0 := by
       have hker : Submodule.span ℝ (Set.range (finitePauliSelfAdjoint :
@@ -1304,11 +1260,9 @@ theorem pauliCommutator_stationary_iff_eigenmode {N d : ℕ}
         simpa [funext finitePauliSelfAdjointBasis_apply] using hb
       rw [htop] at hker
       exact hker Submodule.mem_top
-    -- Step 2: every K ∈ selfAdjoint (Register N) decomposes in the V-basis as K_diag + i [P, H]
-    -- where K_diag commutes with U_star!
     have hK_all (K : selfAdjoint (Register N)) :
-        (inner ℂ (euclCLM U_star ψ) (euclCLM K.val (euclCLM U_star ψ))).re -
-          (inner ℂ ψ (euclCLM K.val ψ)).re = 0 := by
+        (inner ℂ (matAct U_star ψ) (matAct K.val (matAct U_star ψ))).re -
+          (inner ℂ ψ (matAct K.val ψ)).re = 0 := by
       let E_eig := H.2.isHermitian.eigenvalues
       have hspec : H.val = V.val * diagonal (Complex.ofReal ∘ E_eig) * star V.val :=
         H.2.isHermitian.spectral_theorem
@@ -1316,37 +1270,37 @@ theorem pauliCommutator_stationary_iff_eigenmode {N d : ℕ}
       have hVV2 : V.val * star V.val = 1 := (Unitary.mem_iff.mp V.2).2
       let M_eig : Register N := star V.val * K.val * V.val
       have hM_sa : IsSelfAdjoint M_eig := by
-        rw [IsSelfAdjoint, star_mul, star_mul, star_star, K.2.star_eq, mul_assoc]
+        rw [IsSelfAdjoint]
+        dsimp only [M_eig]
+        rw [star_mul, star_mul, star_star, K.2.star_eq, ← mul_assoc]
       let K_diag : Register N := V.val * diagonal (fun a => M_eig a a) * star V.val
       let P_tilde : Register N := fun a b =>
         if a = b then 0 else (-Complex.I * M_eig a b) / ((E_eig b : ℂ) - (E_eig a : ℂ))
       have hP_tilde_sa : IsSelfAdjoint P_tilde := by
         rw [IsSelfAdjoint]
         ext a b
+        change starRingEnd ℂ (P_tilde b a) = P_tilde a b
         by_cases hab : a = b
         · subst hab; simp [P_tilde]
         · have hba : b ≠ a := Ne.symm hab
-          have hM_conj : star (M_eig b a) = M_eig a b := by
-            have h := congrFun (congrFun hM_sa a) b
-            simpa [Matrix.star_apply] using h
-          simp only [P_tilde, Matrix.star_apply, if_neg hab, if_neg hba]
-          rw [star_div₀, star_mul, star_neg, Complex.star_def, Complex.conj_I, neg_neg,
-            hM_conj, star_sub, Complex.star_def, Complex.conj_ofReal, Complex.conj_ofReal]
-          have hden_ne : (E_eig b : ℂ) - (E_eig a : ℂ) ≠ 0 :=
-            sub_ne_zero.mpr (Complex.ofReal_ne_ofReal.mpr (hinj.ne hba))
+          have hM_conj : starRingEnd ℂ (M_eig b a) = M_eig a b :=
+            congrFun (congrFun hM_sa a) b
+          dsimp only [P_tilde]
+          rw [if_neg hba, if_neg hab, map_div₀, map_mul, map_neg, Complex.conj_I, neg_neg,
+            hM_conj, map_sub, Complex.conj_ofReal, Complex.conj_ofReal]
           have hden_neg : (E_eig a : ℂ) - (E_eig b : ℂ) = -((E_eig b : ℂ) - (E_eig a : ℂ)) := by ring
           rw [hden_neg, div_neg, ← neg_div, neg_mul]
       let P : selfAdjoint (Register N) :=
         ⟨V.val * P_tilde * star V.val, by
-          rw [selfAdjoint.mem_iff, star_mul, star_mul, star_star, hP_tilde_sa.star_eq, mul_assoc]⟩
+          rw [selfAdjoint.mem_iff, star_mul, star_mul, star_star, hP_tilde_sa.star_eq, ← mul_assoc]⟩
       have hcomm_PH : (pauliTransverseGenerator H P).val = K.val - K_diag := by
         dsimp only [pauliTransverseGenerator, P, K_diag]
         have hVH : star V.val * H.val * V.val = diagonal (Complex.ofReal ∘ E_eig) := by
+          conv_lhs => rw [hspec]
           calc star V.val * (V.val * diagonal (Complex.ofReal ∘ E_eig) * star V.val) * V.val
               = (star V.val * V.val) * diagonal (Complex.ofReal ∘ E_eig) * (star V.val * V.val) := by
                 simp only [mul_assoc]
             _ = diagonal (Complex.ofReal ∘ E_eig) := by rw [hVV1, one_mul, mul_one]
-        -- Check equality after conjugating by V* ... V
         have hmid : Complex.I • (P_tilde * diagonal (Complex.ofReal ∘ E_eig) -
             diagonal (Complex.ofReal ∘ E_eig) * P_tilde) =
             M_eig - diagonal (fun a => M_eig a a) := by
@@ -1355,9 +1309,11 @@ theorem pauliCommutator_stationary_iff_eigenmode {N d : ℕ}
             Matrix.diagonal_mul, Function.comp_apply, smul_eq_mul]
           by_cases hab : a = b
           · subst hab; simp [P_tilde]
-          · simp only [P_tilde, if_neg hab, diagonal_apply_ne _ hab, sub_zero]
+          · have hab' : a ≠ b := hab
+            dsimp only [P_tilde]
+            rw [if_neg hab', Matrix.diagonal_apply_ne _ hab', sub_zero]
             have hden : (E_eig b : ℂ) - (E_eig a : ℂ) ≠ 0 :=
-              sub_ne_zero.mpr (Complex.ofReal_ne_ofReal.mpr (hinj.ne (Ne.symm hab)))
+              sub_ne_zero.mpr (Complex.ofReal_injective.ne (hinj.ne (Ne.symm hab')))
             calc Complex.I * (-Complex.I * M_eig a b / (↑(E_eig b) - ↑(E_eig a)) * ↑(E_eig b) -
                     ↑(E_eig a) * (-Complex.I * M_eig a b / (↑(E_eig b) - ↑(E_eig a))))
                 = (Complex.I * -Complex.I) * M_eig a b *
@@ -1386,7 +1342,6 @@ theorem pauliCommutator_stationary_iff_eigenmode {N d : ℕ}
                 calc V.val * (star V.val * K.val * V.val) * star V.val
                     = (V.val * star V.val) * K.val * (V.val * star V.val) := by simp only [mul_assoc]
                   _ = K.val := by rw [hVV2, one_mul, mul_one]
-      -- Show star U_star * K_diag * U_star = K_diag because both are diagonal in V-basis
       have hU_Kdiag : star U_star * K_diag * U_star = K_diag := by
         dsimp only [U_star, K_diag]
         unfold projectiveSpectralMatrix
@@ -1395,7 +1350,7 @@ theorem pauliCommutator_stationary_iff_eigenmode {N d : ℕ}
         set d_phase := fun i => (fourier 1 (RHTower.zeroAnchoredPhase d θ (e i)) : ℂ)
         have hstar_U : star (V.val * diagonal d_phase * star V.val) =
             V.val * star (diagonal d_phase) * star V.val := by
-          rw [star_mul, star_mul, star_star, mul_assoc]
+          rw [star_mul, star_mul, star_star, ← mul_assoc]
         have hdiag_comm : star (diagonal d_phase) * diagonal (fun a => M_eig a a) * diagonal d_phase =
             diagonal (fun a => M_eig a a) := by
           rw [star_eq_conjTranspose, diagonal_conjTranspose, diagonal_mul_diagonal, diagonal_mul_diagonal]
@@ -1417,31 +1372,29 @@ theorem pauliCommutator_stationary_iff_eigenmode {N d : ℕ}
                 rw [hVV1, mul_one, mul_one, hdiag_comm]
       have hK_split : K.val = K_diag + (pauliTransverseGenerator H P).val := by
         rw [hcomm_PH]; abel
-      have hdiag_zero : (inner ℂ (euclCLM U_star ψ) (euclCLM K_diag (euclCLM U_star ψ))).re -
-          (inner ℂ ψ (euclCLM K_diag ψ)).re = 0 := by
-        have h1 : inner ℂ (euclCLM U_star ψ) (euclCLM K_diag (euclCLM U_star ψ)) =
-            inner ℂ ψ (euclCLM K_diag ψ) := by
-          rw [← hadj U_star, ← ContinuousLinearMap.mul_apply, ← map_mul,
-            ← ContinuousLinearMap.mul_apply, ← map_mul, hU_Kdiag]
+      have hdiag_zero : (inner ℂ (matAct U_star ψ) (matAct K_diag (matAct U_star ψ))).re -
+          (inner ℂ ψ (matAct K_diag ψ)).re = 0 := by
+        have h1 : inner ℂ (matAct U_star ψ) (matAct K_diag (matAct U_star ψ)) =
+            inner ℂ ψ (matAct K_diag ψ) := by
+          rw [← inner_matAct_star_left U_star, ← matAct_mul, ← matAct_mul, hU_Kdiag]
         rw [h1, sub_self]
       have hP0 : Λ P = 0 := hΛ_all P
       dsimp only [Λ] at hP0
-      rw [hK_split, map_add, ContinuousLinearMap.add_apply, ContinuousLinearMap.add_apply,
-        inner_add_right, inner_add_right, Complex.add_re, Complex.add_re]
+      rw [hK_split, matAct_add, matAct_add, inner_add_right, inner_add_right,
+        Complex.add_re, Complex.add_re]
       linarith only [hdiag_zero, hP0]
-    -- Step 3: conclude ‖⟨ψ, U_star ψ⟩‖ = 1 via sup_selfAdjoint_expectation_diff_eq
     obtain ⟨_, K_star, _, hK_star_eq⟩ := sup_selfAdjoint_expectation_diff_eq hUψ_norm hψ
     have h0 := hK_all K_star
     rw [h0] at hK_star_eq
-    have hsqrt0 : Real.sqrt (1 - ‖inner ℂ ψ (euclCLM U_star ψ)‖ ^ 2) = 0 := by
+    have hsqrt0 : Real.sqrt (1 - ‖inner ℂ ψ (matAct U_star ψ)‖ ^ 2) = 0 := by
       linarith only [hK_star_eq]
-    have hc_le : ‖inner ℂ ψ (euclCLM U_star ψ)‖ ≤ 1 := by
-      simpa only [hψ, hUψ_norm, mul_one] using norm_inner_le_norm ψ (euclCLM U_star ψ)
-    have h1_nn : 0 ≤ 1 - ‖inner ℂ ψ (euclCLM U_star ψ)‖ ^ 2 := by
-      nlinarith only [hc_le, norm_nonneg (inner ℂ ψ (euclCLM U_star ψ))]
-    have hsub0 : 1 - ‖inner ℂ ψ (euclCLM U_star ψ)‖ ^ 2 = 0 :=
+    have hc_le : ‖inner ℂ ψ (matAct U_star ψ)‖ ≤ 1 := by
+      simpa only [hψ, hUψ_norm, mul_one] using @norm_inner_le_norm ℂ _ _ _ _ ψ (matAct U_star ψ)
+    have h1_nn : 0 ≤ 1 - ‖inner ℂ ψ (matAct U_star ψ)‖ ^ 2 := by
+      nlinarith only [hc_le, norm_nonneg (inner ℂ ψ (matAct U_star ψ))]
+    have hsub0 : 1 - ‖inner ℂ ψ (matAct U_star ψ)‖ ^ 2 = 0 :=
       (Real.sqrt_eq_zero h1_nn).mp hsqrt0
-    have hsq1 : ‖inner ℂ ψ (euclCLM U_star ψ)‖ ^ 2 = 1 ^ 2 := by linarith only [hsub0]
+    have hsq1 : ‖inner ℂ ψ (matAct U_star ψ)‖ ^ 2 = 1 ^ 2 := by linarith only [hsub0]
     exact (sq_eq_sq₀ (norm_nonneg _) zero_le_one).mp hsq1
   · intro h1 p
     obtain ⟨hsup_le, _⟩ := sup_selfAdjoint_expectation_diff_eq hUψ_norm hψ
@@ -1467,7 +1420,11 @@ theorem finrank_chainPauliTransverseSpan_le (n : ℕ) (H : selfAdjoint (Register
     rw [Submodule.span_le]
     rintro _ ⟨l, rfl⟩
     refine ⟨Pi.single l 1, ?_⟩
-    simp [φ, Pi.single_apply]
+    dsimp only [φ, LinearMap.coe_mk, AddHom.coe_mk]
+    rw [Finset.sum_eq_single l]
+    · simp
+    · intro b _ hbl; simp [Pi.single_eq_of_ne hbl]
+    · intro h; exact (h (Finset.mem_univ l)).elim
   have hcard : Fintype.card (PathLabel n) = 12 * (n + 2) - 9 := by
     simp only [PathLabel, Fintype.card_sum, Fintype.card_prod, Fintype.card_fin]
     omega
@@ -1514,8 +1471,7 @@ theorem oscillatorySliceCounterexample_violation {ι : Type*} [Fintype ι] [Deci
         {x : ι → ℝ | oscillatorySliceCounterexample i₀ e₀ δ x ∈ Ioc e₀ (e₀ + δ)} := by
   have h2δ_pos : 0 < 2 * δ := by positivity
   refine ⟨?_, ?_, ?_, ?_⟩
-  · -- 1-Lipschitz globally on ι → ℝ
-    refine LipschitzWith.of_dist_le_mul fun x y => ?_
+  · refine LipschitzWith.of_dist_le_mul fun x y => ?_
     rw [NNReal.coe_one, one_mul, Real.dist_eq]
     unfold oscillatorySliceCounterexample
     have hdiff : e₀ + δ / 2 + 2 * δ * Real.sin (x i₀ / (2 * δ)) -
@@ -1530,29 +1486,27 @@ theorem oscillatorySliceCounterexample_violation {ι : Type*} [Fintype ι] [Deci
         ≤ 2 * δ * (|x i₀ - y i₀| / (2 * δ)) := mul_le_mul_of_nonneg_left hsin h2δ_pos.le
       _ = |x i₀ - y i₀| := mul_div_cancel₀ _ h2δ_pos.ne'
       _ ≤ dist x y := hcoord
-  · -- Exact directional derivative cos(x_{i₀} / (2 δ))
-    intro x
+  · intro x
     have hlin : HasDerivAt (fun t : ℝ => t / (2 * δ)) (1 / (2 * δ)) (x i₀) := by
       simpa using (hasDerivAt_id (x i₀)).div_const (2 * δ)
     have hsin : HasDerivAt (fun t : ℝ => Real.sin (t / (2 * δ)))
         (Real.cos (x i₀ / (2 * δ)) * (1 / (2 * δ))) (x i₀) :=
-      (Real.hasDerivAt_sin (x i₀ / (2 * δ))).comp (x i₀) hlin
+      HasDerivAt.comp (f := Real.sin) (x i₀) (Real.hasDerivAt_sin (x i₀ / (2 * δ))) hlin
     have hmul := (hsin.const_mul (2 * δ)).const_add (e₀ + δ / 2)
     have hderiv_eq : 2 * δ * (Real.cos (x i₀ / (2 * δ)) * (1 / (2 * δ))) =
         Real.cos (x i₀ / (2 * δ)) := by field_simp [h2δ_pos.ne']
     rw [hderiv_eq] at hmul
     refine hmul.congr_of_eventuallyEq (Eventually.of_forall fun t => ?_)
     simp [oscillatorySliceCounterexample]
-  · -- Gradient ≥ √3 / 2 across the [e₀ - δ/2, e₀ + 3δ/2] collar
-    intro x ⟨hlo, hhi⟩
+  · intro x ⟨hlo, hhi⟩
     unfold oscillatorySliceCounterexample at hlo hhi
     have hsin_le : |Real.sin (x i₀ / (2 * δ))| ≤ 1 / 2 := by
       rw [abs_le]
       constructor
-      · have h1 : -δ ≤ 2 * δ * Real.sin (x i₀ / (2 * δ)) := by linarith only [hlo]
-        exact (le_div_iff₀ h2δ_pos).mp (by field_simp [hδ0.ne']; linarith only [h1])
-      · have h1 : 2 * δ * Real.sin (x i₀ / (2 * δ)) ≤ δ := by linarith only [hhi]
-        exact (div_le_iff₀ h2δ_pos).mp (by field_simp [hδ0.ne']; linarith only [h1])
+      · have h1 : (-1 / 2) * (2 * δ) ≤ Real.sin (x i₀ / (2 * δ)) * (2 * δ) := by linarith only [hlo]
+        exact le_of_mul_le_mul_right h1 h2δ_pos
+      · have h1 : Real.sin (x i₀ / (2 * δ)) * (2 * δ) ≤ (1 / 2) * (2 * δ) := by linarith only [hhi]
+        exact le_of_mul_le_mul_right h1 h2δ_pos
     have hsin_sq : Real.sin (x i₀ / (2 * δ)) ^ 2 ≤ 1 / 4 := by
       have hsq := pow_le_pow_left₀ (abs_nonneg _) hsin_le 2
       rw [sq_abs] at hsq
@@ -1564,8 +1518,7 @@ theorem oscillatorySliceCounterexample_violation {ι : Type*} [Fintype ι] [Deci
       rw [div_pow, Real.sq_sqrt (by norm_num)]; norm_num
     rw [← h34] at hcos_sq
     exact (sq_le_sq₀ (by positivity) (abs_nonneg _)).mp hcos_sq
-  · -- Product-Gaussian measure lower bound ≥ exp(-1/2) / (10 π √(2 π))
-    let S₁ : Set ℝ := {t : ℝ | e₀ + δ / 2 + 2 * δ * Real.sin (t / (2 * δ)) ∈ Ioc e₀ (e₀ + δ)}
+  · let S₁ : Set ℝ := {t : ℝ | e₀ + δ / 2 + 2 * δ * Real.sin (t / (2 * δ)) ∈ Ioc e₀ (e₀ + δ)}
     have hpi_eq : {x : ι → ℝ | oscillatorySliceCounterexample i₀ e₀ δ x ∈ Ioc e₀ (e₀ + δ)} =
         Set.univ.pi (fun i => if i = i₀ then S₁ else Set.univ) := by
       ext x
@@ -1576,7 +1529,8 @@ theorem oscillatorySliceCounterexample_violation {ι : Type*} [Fintype ι] [Deci
         · subst hi; exact hx
         · trivial
       · intro hx
-        simpa using hx i₀
+        have hx0 : x i₀ ∈ S₁ := by simpa using hx i₀
+        exact hx0
     have hprob_eq : (Measure.pi fun _ : ι => gaussianReal 0 1).real
         {x : ι → ℝ | oscillatorySliceCounterexample i₀ e₀ δ x ∈ Ioc e₀ (e₀ + δ)} =
         (gaussianReal 0 1).real S₁ := by
@@ -1589,11 +1543,10 @@ theorem oscillatorySliceCounterexample_violation {ι : Type*} [Fintype ι] [Deci
         · intro h; exact (h (Finset.mem_univ i₀)).elim
       rw [hprod, ← Measure.real]
     rw [hprob_eq]
-    -- Pack K = ⌊1 / (4 π δ)⌋ disjoint periods inside [-1, 1]
     have hpi_pos : 0 < Real.pi := Real.pi_pos
     have h4piδ_pos : 0 < 4 * Real.pi * δ := by positivity
     have h4piδ_le : 4 * Real.pi * δ ≤ 1 / 2 := by
-      have h1 : 8 * Real.pi * δ ≤ 1 := (le_div_iff₀ (by positivity)).mp hδ_hi
+      have h1 : δ * (8 * Real.pi) ≤ 1 := (le_div_iff₀ (by positivity)).mp hδ_hi
       linarith only [h1]
     have hquot_ge2 : 2 ≤ 1 / (4 * Real.pi * δ) := by
       rw [le_div_iff₀ h4piδ_pos]; linarith only [h4piδ_le]
@@ -1614,18 +1567,18 @@ theorem oscillatorySliceCounterexample_violation {ι : Type*} [Fintype ι] [Deci
     let U : Set ℝ := ⋃ k ∈ Finset.range K, J k
     have hU_meas : MeasurableSet U :=
       Finset.measurableSet_biUnion _ fun _ _ => measurableSet_Icc
+    have hpiδ : 3 * δ < Real.pi * δ := mul_lt_mul_of_pos_right Real.pi_gt_three hδ0
     have hU_sub_Icc : U ⊆ Icc (-1 : ℝ) 1 := by
       rintro t ht
       obtain ⟨k, hk_mem, ht_lo, ht_hi⟩ := mem_iUnion₂.mp ht
       have hk_lt : k < K := Finset.mem_range.mp hk_mem
       have hk1_le : ((k : ℝ) + 1) ≤ (K : ℝ) := by exact_mod_cast hk_lt
-      have hpi3 : 3 < Real.pi := Real.pi_gt_three
       constructor
       · have hk_nn : 0 ≤ 4 * Real.pi * (k : ℝ) * δ := by positivity
-        nlinarith only [ht_lo, hk_nn, h4piδ_le, hpi3, hδ0]
-      · have hhi_step : 4 * Real.pi * (k : ℝ) * δ + 2 / 5 * δ ≤ (K : ℝ) * (4 * Real.pi * δ) := by
-          nlinarith only [hk1_le, hpi3, hδ0]
-        linarith only [ht_hi, hhi_step, hK_le]
+        linarith only [ht_lo, hk_nn, h4piδ_le, hpiδ, hδ0]
+      · have hmulK : ((k : ℝ) + 1) * (4 * Real.pi * δ) ≤ (K : ℝ) * (4 * Real.pi * δ) :=
+          mul_le_mul_of_nonneg_right hk1_le h4piδ_pos.le
+        linarith only [ht_hi, hmulK, hpiδ, hδ0, hK_le]
     have hU_sub_S₁ : U ⊆ S₁ := by
       rintro t ht
       obtain ⟨k, _, ht_lo, ht_hi⟩ := mem_iUnion₂.mp ht
@@ -1637,8 +1590,7 @@ theorem oscillatorySliceCounterexample_violation {ι : Type*} [Fintype ι] [Deci
       have hu_abs : |u| ≤ 1 / 5 := by
         have hdiff : u = (t - 4 * Real.pi * (k : ℝ) * δ) / (2 * δ) := by
           dsimp only [u]; field_simp [h2δ_pos.ne']; ring
-        rw [hdiff, abs_div, abs_of_pos h2δ_pos, div_le_iff₀ h2δ_pos]
-        rw [abs_le]
+        rw [hdiff, abs_div, abs_of_pos h2δ_pos, div_le_iff₀ h2δ_pos, abs_le]
         exact ⟨by linarith only [ht_lo], by linarith only [ht_hi]⟩
       have hsin_abs : |Real.sin (t / (2 * δ))| ≤ 1 / 5 := by
         rw [hsin_eq]
@@ -1651,14 +1603,17 @@ theorem oscillatorySliceCounterexample_violation {ι : Type*} [Fintype ι] [Deci
       constructor <;> nlinarith only [hs_lo, hs_hi, hδ0]
     have hdisj : Pairwise fun k₁ k₂ : ℕ => Disjoint (J k₁) (J k₂) := by
       intro k₁ k₂ hne
-      have hpi3 : 3 < Real.pi := Real.pi_gt_three
       rcases lt_or_gt_of_ne hne with hlt | hgt
       · refine disjoint_left.mpr fun t ht₁ ht₂ => ?_
         have hk_step : ((k₁ : ℝ) + 1) ≤ (k₂ : ℝ) := by exact_mod_cast hlt
-        nlinarith only [ht₁.2, ht₂.1, hk_step, hpi3, hδ0]
+        have hmulk : ((k₁ : ℝ) + 1) * (4 * Real.pi * δ) ≤ (k₂ : ℝ) * (4 * Real.pi * δ) :=
+          mul_le_mul_of_nonneg_right hk_step h4piδ_pos.le
+        linarith only [ht₁.2, ht₂.1, hmulk, hpiδ, hδ0]
       · refine disjoint_left.mpr fun t ht₁ ht₂ => ?_
         have hk_step : ((k₂ : ℝ) + 1) ≤ (k₁ : ℝ) := by exact_mod_cast hgt
-        nlinarith only [ht₂.2, ht₁.1, hk_step, hpi3, hδ0]
+        have hmulk : ((k₂ : ℝ) + 1) * (4 * Real.pi * δ) ≤ (k₁ : ℝ) * (4 * Real.pi * δ) :=
+          mul_le_mul_of_nonneg_right hk_step h4piδ_pos.le
+        linarith only [ht₂.2, ht₁.1, hmulk, hpiδ, hδ0]
     have hU_vol : volume U = ENNReal.ofReal ((K : ℝ) * (4 / 5 * δ)) := by
       rw [measure_biUnion_finset (fun k₁ _ k₂ _ hne => hdisj hne) (fun _ _ => measurableSet_Icc)]
       have hlen (k : ℕ) : volume (J k) = ENNReal.ofReal (4 / 5 * δ) := by
@@ -1667,7 +1622,6 @@ theorem oscillatorySliceCounterexample_violation {ι : Type*} [Fintype ι] [Deci
         congr 1; ring
       simp only [hlen, Finset.sum_const, Finset.card_range, nsmul_eq_mul,
         ENNReal.ofReal_mul (Nat.cast_nonneg K), ENNReal.ofReal_natCast]
-    -- Gaussian density on [-1, 1] is ≥ (√(2π))⁻¹ * exp(-1/2)
     let c_pdf : ℝ := (Real.sqrt (2 * Real.pi))⁻¹ * Real.exp (-1 / 2)
     have hc_pdf_pos : 0 < c_pdf := by positivity
     have hgauss_U : ENNReal.ofReal (c_pdf * ((K : ℝ) * (4 / 5 * δ))) ≤ (gaussianReal 0 1) U := by
@@ -1684,7 +1638,7 @@ theorem oscillatorySliceCounterexample_violation {ι : Type*} [Fintype ι] [Deci
         linarith only [hsq]
       have hmono : ∫⁻ _t in U, ENNReal.ofReal c_pdf ≤ ∫⁻ t in U, gaussianPDF 0 1 t := by
         refine setLIntegral_mono_ae (by fun_prop) ?_
-        filter_upwards [ae_restrict_mem hU_meas] with t ht using hlow t ht
+        filter_upwards [ae_restrict_mem (μ := volume) hU_meas] with t ht using hlow t ht
       rw [setLIntegral_const, hU_vol, ← ENNReal.ofReal_mul hc_pdf_pos.le] at hmono
       exact hmono
     have hU_le_S₁ : (gaussianReal 0 1).real U ≤ (gaussianReal 0 1).real S₁ :=
@@ -1731,7 +1685,9 @@ theorem dini_mul_sub_le_sub {g : ℝ → ℝ} {a b c : ℝ} (hab : a ≤ b)
   have hS_closed : IsClosed S := isClosed_Icc.inter
     (isClosed_le (continuous_const.mul (continuous_id.sub continuous_const))
       (hg_clip_cont.sub continuous_const))
-  have ha_mem : a ∈ S := ⟨⟨le_rfl, hab⟩, by rw [hg_clip_eq ⟨le_rfl, hab⟩, sub_self, sub_self, mul_zero]⟩
+  have ha_mem : a ∈ S := ⟨⟨le_rfl, hab⟩, by
+    change (c - ε) * (a - a) ≤ g_clip a - g a
+    rw [hg_clip_eq ⟨le_rfl, hab⟩, sub_self, sub_self, mul_zero]⟩
   have hS_bdd : BddAbove S := ⟨b, fun t ht => ht.1.2⟩
   let s := sSup S
   have hs_mem : s ∈ S := hS_closed.csSup_mem ⟨a, ha_mem⟩ hS_bdd
@@ -1742,21 +1698,22 @@ theorem dini_mul_sub_le_sub {g : ℝ → ℝ} {a b c : ℝ} (hab : a ≤ b)
     have hsh_Icc : s + h ∈ Icc a b := ⟨by linarith only [hs_mem.1.1, hh_pos], by linarith only [hh_le]⟩
     have hsh_mem : s + h ∈ S := by
       refine ⟨hsh_Icc, ?_⟩
+      change (c - ε) * (s + h - a) ≤ g_clip (s + h) - g a
       rw [hg_clip_eq hsh_Icc]
-      have hs_ineq := hs_mem.2
+      have hs_ineq : (c - ε) * (s - a) ≤ g_clip s - g a := hs_mem.2
       rw [hg_clip_eq hs_mem.1] at hs_ineq
       nlinarith only [hs_ineq, hh_step]
     have hle_sup : s + h ≤ s := le_csSup hS_bdd hsh_mem
     linarith only [hh_pos, hle_sup]
   have hb_mem : b ∈ S := hs_eq_b ▸ hs_mem
-  have hb_ineq := hb_mem.2
+  have hb_ineq : (c - ε) * (b - a) ≤ g_clip b - g a := hb_mem.2
   rwa [hg_clip_eq ⟨hab, le_rfl⟩] at hb_ineq
 
 private theorem gaussianReal_le_density_mul_volume (S : Set ℝ) (hS : MeasurableSet S) :
     (gaussianReal 0 1) S ≤ ENNReal.ofReal ((Real.sqrt (2 * Real.pi))⁻¹) * volume S := by
   rw [gaussianReal_apply 0 (by norm_num) S, ← setLIntegral_const]
   refine setLIntegral_mono_ae (by fun_prop) ?_
-  filter_upwards [ae_restrict_mem hS] with t _
+  filter_upwards [ae_restrict_mem (μ := volume) hS] with t _
   rw [gaussianPDF]
   apply ENNReal.ofReal_le_ofReal
   rw [gaussianPDFReal_def]
@@ -1786,20 +1743,20 @@ theorem gaussian_degreeFree_dini_anticoncentration {ι : Type*} [Fintype ι] [De
   let γ_pi := Measure.pi fun _ : ι => gaussianReal 0 1
   let E : Set (ι → ℝ) := {x | x ∈ Ω ∧ F x ∈ Ioc e₀ (e₀ + δ)}
   have hE_meas : MeasurableSet E := hΩ.inter (hF measurableSet_Ioc)
-  -- One-dimensional fiber bound for every y : ι → ℝ
   have h1d (y : ι → ℝ) :
       (gaussianReal 0 1) {t : ℝ | Function.update y i₀ t ∈ E} ≤
         ENNReal.ofReal ((M : ℝ) * δ / (Real.sqrt (2 * Real.pi) * c)) := by
     obtain ⟨I_piece, sgn, hcov, hpiece⟩ := hfib y
     let g : ℝ → ℝ := fun t => F (Function.update y i₀ t)
-    -- Bound each convex piece m ∈ Fin M inside a closed interval of length δ / c
     have hpiece_box (m : Fin M) : ∃ a_m : ℝ,
         I_piece m ∩ {t | g t ∈ Ioc e₀ (e₀ + δ)} ⊆ Icc a_m (a_m + δ / c) := by
       let A_m := I_piece m ∩ {t | g t ∈ Ioc e₀ (e₀ + δ)}
       by_cases hA_emp : A_m = ∅
-      · exact ⟨0, by rw [hA_emp]; exact empty_subset _⟩
+      · refine ⟨0, ?_⟩
+        change A_m ⊆ _
+        rw [hA_emp]
+        exact empty_subset _
       · obtain ⟨t₀, ht₀⟩ := nonempty_iff_ne_empty.mpr hA_emp
-        -- Show every two points t₁ ≤ t₂ in A_m satisfy t₂ - t₁ ≤ δ / c
         obtain ⟨hconv, hcont, hdini_m⟩ := hpiece m
         have hdiam : ∀ t₁ ∈ A_m, ∀ t₂ ∈ A_m, t₁ ≤ t₂ → t₂ - t₁ ≤ δ / c := by
           intro t₁ ht₁ t₂ ht₂ h12
@@ -1828,7 +1785,6 @@ theorem gaussian_degreeFree_dini_anticoncentration {ι : Type*} [Fintype ι] [De
           · linarith only [hge, div_nonneg hδ hc.le]⟩
         let a_m := sInf A_m
         refine ⟨a_m, fun t ht => ⟨csInf_le hA_bddBelow ht, ?_⟩⟩
-        -- For every ε > 0, some u ∈ A_m has u < a_m + ε; actually t - δ / c is a lower bound on A_m!
         have hlb : t - δ / c ≤ a_m := le_csInf ⟨t₀, ht₀⟩ fun u hu => by
           rcases le_total u t with hut | htu
           · linarith only [hdiam u hu t ht hut]
@@ -1852,39 +1808,52 @@ theorem gaussian_degreeFree_dini_anticoncentration {ι : Type*} [Fintype ι] [De
       _ = ENNReal.ofReal ((M : ℝ) * δ / (Real.sqrt (2 * Real.pi) * c)) := by
           simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
             ← ENNReal.ofReal_natCast, ← ENNReal.ofReal_mul (Nat.cast_nonneg M), mul_div_assoc]
-  -- Disintegrate Measure.pi along i₀ vs {i // i ≠ i₀}
-  let e_split := (MeasurableEquiv.piEquivPiSubtypeProd (fun _ : ι => ℝ) (· = i₀)).trans
-    ((MeasurableEquiv.funUnique {i : ι // i = i₀} ℝ).prodCongr (MeasurableEquiv.refl _))
+  -- Disintegrate Measure.pi along {i // i = i₀} × {i // i ≠ i₀}
+  let e_split := MeasurableEquiv.piEquivPiSubtypeProd (fun _ : ι => ℝ) (· = i₀)
+  let μ_one := Measure.pi fun _ : {i : ι // i = i₀} => gaussianReal 0 1
   let μ_rest := Measure.pi fun _ : {i : ι // i ≠ i₀} => gaussianReal 0 1
-  have hmp : MeasurePreserving e_split γ_pi ((gaussianReal 0 1).prod μ_rest) :=
-    (measurePreserving_piEquivPiSubtypeProd (fun _ : ι => gaussianReal 0 1) (· = i₀)).trans
-      ((measurePreserving_funUnique (gaussianReal 0 1) {i : ι // i = i₀}).prod
-        (MeasurePreserving.id μ_rest))
-  have hE_eq : γ_pi E = ((gaussianReal 0 1).prod μ_rest) (e_split.symm ⁻¹' E) := by
+  have hmp : MeasurePreserving e_split γ_pi (μ_one.prod μ_rest) :=
+    measurePreserving_piEquivPiSubtypeProd (fun _ : ι => gaussianReal 0 1) (· = i₀)
+  have hE_eq : γ_pi E = (μ_one.prod μ_rest) (e_split.symm ⁻¹' E) := by
     rw [← hmp.measure_preimage (e_split.symm.measurable hE_meas).nullMeasurableSet]
     congr 1; ext x; simp
-  have hprod_eval : ((gaussianReal 0 1).prod μ_rest) (e_split.symm ⁻¹' E) =
-      ∫⁻ z, (gaussianReal 0 1) {t : ℝ | e_split.symm (t, z) ∈ E} ∂μ_rest :=
+  have hprod_eval : (μ_one.prod μ_rest) (e_split.symm ⁻¹' E) =
+      ∫⁻ z, μ_one {w : {i : ι // i = i₀} → ℝ | e_split.symm (w, z) ∈ E} ∂μ_rest :=
     Measure.prod_apply_symm (e_split.symm.measurable hE_meas)
   have hsec_le : ∀ z : {i : ι // i ≠ i₀} → ℝ,
-      (gaussianReal 0 1) {t : ℝ | e_split.symm (t, z) ∈ E} ≤
+      μ_one {w : {i : ι // i = i₀} → ℝ | e_split.symm (w, z) ∈ E} ≤
         ENNReal.ofReal ((M : ℝ) * δ / (Real.sqrt (2 * Real.pi) * c)) := by
     intro z
     let y : ι → ℝ := e_split.symm (0, z)
-    have hupd_eq (t : ℝ) : e_split.symm (t, z) = Function.update y i₀ t := by
+    have hupd_eq (w : {i : ι // i = i₀} → ℝ) :
+        e_split.symm (w, z) = Function.update y i₀ (w ⟨i₀, rfl⟩) := by
       funext i
       by_cases hi : i = i₀
       · subst hi
         simp [e_split, y, MeasurableEquiv.piEquivPiSubtypeProd]
       · simp [e_split, y, hi, MeasurableEquiv.piEquivPiSubtypeProd]
-    simp_rw [hupd_eq]
+    have hset_eq : {w : {i : ι // i = i₀} → ℝ | e_split.symm (w, z) ∈ E} =
+        Set.univ.pi (fun _ : {i : ι // i = i₀} => {t : ℝ | Function.update y i₀ t ∈ E}) := by
+      ext w
+      simp only [mem_setOf_eq, mem_univ_pi, hupd_eq]
+      constructor
+      · intro hw ⟨j, hj⟩
+        subst hj
+        exact hw
+      · intro hw
+        exact hw ⟨i₀, rfl⟩
+    rw [hset_eq]
+    dsimp only [μ_one]
+    rw [Measure.pi_pi, Finset.prod_eq_single ⟨i₀, rfl⟩
+      (fun j _ hj => (hj (Subtype.ext j.2)).elim)
+      (fun h => (h (Finset.mem_univ _)).elim)]
     exact h1d y
   have htot : γ_pi E ≤ ENNReal.ofReal ((M : ℝ) * δ / (Real.sqrt (2 * Real.pi) * c)) := by
     rw [hE_eq, hprod_eval]
     refine (lintegral_mono hsec_le).trans ?_
     rw [lintegral_const, measure_univ, mul_one]
   rw [Measure.real]
-  exact (ENNReal.toReal_le_of_le_ofReal (by positivity) htot)
+  exact ENNReal.toReal_le_of_le_ofReal (by positivity) htot
 
 /-- Direct transfer of `M`-piece right Dini transversality across active budgets
 `j < (4 N + 1) * (2 N + 2) * (2 ^ N) ^ 2` to fixed-`e = 1 / 10` zero-drop locking
@@ -1972,4 +1941,3 @@ theorem fixed_tenth_locking_of_dini_anticoncentration {ι : Type*} [Fintype ι] 
 
 end
 end GaloisForLFunctions.HTGeometry.AccuracyScales.TenthPlateau
-

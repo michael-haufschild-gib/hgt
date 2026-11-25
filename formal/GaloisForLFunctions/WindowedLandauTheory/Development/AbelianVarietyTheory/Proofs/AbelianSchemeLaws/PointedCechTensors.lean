@@ -18,8 +18,11 @@ theorem appLE_comp_apply {A B C : Scheme.{0}} {u : A ⟶ B} {v : B ⟶ C} {w : A
 
 theorem id_appLE_self {X : Scheme.{0}} (U : X.Opens) (a : Γ(X, U)) :
     (𝟙 X : X ⟶ X).appLE U U (by exact le_rfl) a = a := by
-  rw [Scheme.Hom.appLE_eq_app, Scheme.Hom.id_app]
-  rfl
+  have e : (𝟙 X : X ⟶ X).appLE U U (by exact le_rfl) =
+      X.presheaf.map (homOfLE (le_rfl : U ≤ U)).op := by
+    rw [Scheme.Hom.appLE, Scheme.Hom.id_app]
+    exact Category.id_comp _
+  exact (ConcreteCategory.congr_hom e a).trans (resG_self le_rfl a)
 
 variable {K : Type} [Field K] {X Y Z : Scheme.{0}}
   {f : X ⟶ Spec (CommRingCat.of K)} {g : Y ⟶ Spec (CommRingCat.of K)}
@@ -54,19 +57,27 @@ theorem appLE_along_point {M : X.Opens} (b : SectionRing g V) :
 variable (H : IsPullback p q f g) {ι : Type} (U : ι → X.Opens)
   {a : X ⟶ Z} (ha : a ≫ p = 𝟙 X) (ha' : a ≫ q = f ≫ y)
 
+include ha ha' in
 theorem tensorComponent_on_slice (i : ι) {W : Z.Opens} (hU : W ≤ p ⁻¹ᵁ U i)
     (hW : W ≤ q ⁻¹ᵁ V) (hi : U i ≤ a ⁻¹ᵁ W)
     (x : chartSections (f := f) U ⊗[K] SectionRing g V) :
     a.appLE W (U i) hi (tensorComponent H U V i hU hW x) =
       TensorProduct.rid K (chartSections (f := f) U) ((evalAt hy hV).toLinearMap.lTensor _ x) i := by
   induction x using TensorProduct.induction_on with
-  | zero => simp only [map_zero, Pi.zero_apply]
+  | zero =>
+    simp only [map_zero, Pi.zero_apply]
+    exact (a.appLE W (U i) hi).hom.map_zero
   | tmul x y' =>
-    simp only [LinearMap.lTensor_tmul, tensorComponent_tmul, map_mul, TensorProduct.rid_tmul,
+    simp only [LinearMap.lTensor_tmul, tensorComponent_tmul, TensorProduct.rid_tmul,
       Pi.smul_apply, Algebra.smul_def, AlgHom.toLinearMap_apply]
-    rw [appLE_comp_apply ha hU hi (by exact le_rfl), id_appLE_self,
-      appLE_comp_apply ha' hW hi (le_top.trans (f.preimage_mono hV)), appLE_along_point hy hV]
-    exact mul_comm _ _
-  | add x y hx hy' => simp only [map_add, Pi.add_apply, hx, hy']
+    have h₁ := (appLE_comp_apply ha hU hi
+      (show U i ≤ (𝟙 X : X ⟶ X) ⁻¹ᵁ U i from le_rfl) (x i)).trans (id_appLE_self _ _)
+    have h₂ := (appLE_comp_apply ha' hW hi (le_top.trans (f.preimage_mono hV)) y').trans
+      (appLE_along_point (f := f) (M := U i) hy hV y')
+    exact ((a.appLE W (U i) hi).hom.map_mul _ _).trans
+      ((congrArg₂ (· * ·) h₁ h₂).trans (mul_comm _ _))
+  | add x y hx hy' =>
+    simp only [map_add, Pi.add_apply]
+    exact ((a.appLE W (U i) hi).hom.map_add _ _).trans (congrArg₂ (· + ·) hx hy')
 
 end GlobalTheory.CechOne

@@ -22,6 +22,54 @@ private theorem numbered_action {d : ℕ} (E : Fin (d+1) → ℝ) (m : Fin d →
   funext i
   simpa only [numberedPacket,Fin.cases_succ,neg_eq_zero,Pi.zero_apply] using congrFun h i.succ
 
+/-- Cancellation of the balanced spectral characters on a clock gives
+the continuous-time circuit distribution at every budget and tolerance. -/
+theorem gate_law_of_balanced_clock {N : ℕ} (H : selfAdjoint (Register N)) (t : ℕ → ℝ)
+    (hspec : MaximallyProjectiveEnergy H.2.isHermitian.eigenvalues)
+    (hcancel : ∀ m : (Fin N → Bool) → ℤ, m≠0 → (∑ i, m i)=0 →
+      Tendsto (clockCharacterMean t (∑ i, (m i:ℝ)*H.2.isHermitian.eigenvalues i)) atTop (𝓝 0))
+    (b : ℕ) (ε : ℝ) : ∃ p : ℝ,
+      (∀ u : ℝ → ℝ, Tendsto (fun T => visitFraction H b ε (u T) (u T+T)) atTop (𝓝 p)) ∧
+      Tendsto (fun M => (integerClockPrefixLaw t M : Measure ℝ).real (visitSet H b ε)) atTop (𝓝 p) := by
+  classical
+  let d := 2^N-1
+  let e : (Fin N → Bool) ≃ Fin (d+1) := (Fintype.equivFin _).trans (finCongr (by
+    simp only [Fintype.card_fun,Fintype.card_bool,Fintype.card_fin,d]
+    have hp := Nat.two_pow_pos N
+    omega))
+  let E := H.2.isHermitian.eigenvalues ∘ e.symm
+  let f := RHTower.zeroProjectiveFrequency E
+  let V := hermitianEigenbasisUnitary H.2.isHermitian
+  let A := projectiveContinuousCircuitCaptureTarget e V b ε
+  have hw : Tendsto (integerClockPrefixLaw (fun j => finiteClockPhasePoint f (t j))) atTop
+      (𝓝 (finiteTorusHaarProbabilityMeasure _)) := by
+    apply haar_of_clock_cancellation
+    intro m hm
+    obtain ⟨c,hc,hbal,hdet⟩ := numbered_action E m hm
+    let q := c ∘ e
+    have hn : q≠0 := by
+      intro hz
+      apply hc
+      funext i
+      simpa only [q,Function.comp_apply,Equiv.apply_symm_apply,Pi.zero_apply] using congrFun hz (e.symm i)
+    have hb := (Equiv.sum_comp e c).trans hbal
+    have he : (∑ i, (q i:ℝ)*H.2.isHermitian.eigenvalues i)=finiteTorusCharacterDetuning m f := by
+      refine Eq.trans ?_ hdet
+      simpa only [q,E,Function.comp_apply,Equiv.symm_apply_apply] using Equiv.sum_comp e (fun i => (c i:ℝ)*E i)
+    rw [←he]
+    exact hcancel q hn hb
+  have hmax : MaximallyProjectiveEnergy E := hspec.comp_equiv e.symm
+  have hA := (isClosed_projectiveContinuousCircuitCaptureTarget e V b ε).measurableSet
+  have hbd := PhaseBoundary.spectral_target_null e V E hmax b ε
+  have ha : finiteClockPhasePoint f ⁻¹' A=visitSet H b ε :=
+    Set.ext fun u => (physical_circuit_approximation_iff_spectral_capture e H b ε u).symm
+  refine ⟨volume.real A,fun u => ?_,?_⟩
+  · have ht := PhaseBoundary.uniform_phase_fraction f
+      (RHTower.maximallyProjectiveEnergy_zeroProjectiveFrequency_independent E hmax) A hA hbd u
+    simpa only [ha,visitFraction,add_sub_cancel_left] using ht
+  · rw [←ha]
+    exact ShiftedWaits.sampled_fraction f t hw A hA hbd
+
 /-- For every physical gate budget and every fixed tolerance, the frequency
 on a smaller-prefix schedule equals the continuous-time frequency on the
 larger register, even though the two Hamiltonians share their couplings. -/
@@ -39,44 +87,7 @@ theorem gaussian_selected_gate_law (k : ℕ) (s : PathPauliDisorder → ℕ → 
   filter_upwards [gaussian_selected_actions k s hs hsep,gaussian_path_all_prefixes_maximally_projective]
     with ω hω hspec
   intro N H b ε
-  let d := 2^N-1
-  let e : (Fin N → Bool) ≃ Fin (d+1) := (Fintype.equivFin _).trans (finCongr (by
-    simp only [Fintype.card_fun,Fintype.card_bool,Fintype.card_fin,d]
-    have hp := Nat.two_pow_pos N
-    omega))
-  let E := H.2.isHermitian.eigenvalues ∘ e.symm
-  let f := RHTower.zeroProjectiveFrequency E
-  let V := hermitianEigenbasisUnitary H.2.isHermitian
-  let A := projectiveContinuousCircuitCaptureTarget e V b ε
-  let t := s (eraseTerminal k ω)
-  have hw : Tendsto (integerClockPrefixLaw (fun j => finiteClockPhasePoint f (t j))) atTop
-      (𝓝 (finiteTorusHaarProbabilityMeasure _)) := by
-    apply haar_of_clock_cancellation
-    intro m hm
-    obtain ⟨c,hc,hbal,hdet⟩ := numbered_action E m hm
-    let q := c ∘ e
-    have hn : q≠0 := by
-      intro hz
-      apply hc
-      funext i
-      simpa only [q,Function.comp_apply,Equiv.apply_symm_apply,Pi.zero_apply] using congrFun hz (e.symm i)
-    have hb := (Equiv.sum_comp e c).trans hbal
-    have he : (∑ i, (q i:ℝ)*H.2.isHermitian.eigenvalues i)=finiteTorusCharacterDetuning m f := by
-      refine Eq.trans ?_ hdet
-      simpa only [q,E,Function.comp_apply,Equiv.symm_apply_apply] using Equiv.sum_comp e (fun i => (c i:ℝ)*E i)
-    rw [←he]
-    exact hω q hn hb
-  have hmax : MaximallyProjectiveEnergy E := (hspec k).comp_equiv e.symm
-  have hA := (isClosed_projectiveContinuousCircuitCaptureTarget e V b ε).measurableSet
-  have hbd := PhaseBoundary.spectral_target_null e V E hmax b ε
-  have ha : finiteClockPhasePoint f ⁻¹' A=visitSet H b ε :=
-    Set.ext fun u => (physical_circuit_approximation_iff_spectral_capture e H b ε u).symm
-  refine ⟨volume.real A,fun u => ?_,?_⟩
-  · have ht := PhaseBoundary.uniform_phase_fraction f
-      (RHTower.maximallyProjectiveEnergy_zeroProjectiveFrequency_independent E hmax) A hA hbd u
-    simpa only [ha,visitFraction,add_sub_cancel_left] using ht
-  · rw [←ha]
-    exact ShiftedWaits.sampled_fraction f t hw A hA hbd
+  exact gate_law_of_balanced_clock H _ (hspec k) hω b ε
 
 #print axioms gaussian_selected_gate_law
 end

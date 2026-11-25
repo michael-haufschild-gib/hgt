@@ -107,6 +107,34 @@ theorem gaussian_first_entry_window :
   obtain ⟨K,hK⟩ := pencil_forecast A Z hH (hω k _) hT he
   exact ⟨K,fun r hr => by simpa only [heq,H,D,Fintype.card_fun,Fintype.card_bool,Fintype.card_fin] using hK r hr⟩
 
+/-- At physical error one tenth the same estimate holds for the distinguished
+return itself, after recomputing the first 9/80 crossing for each field. -/
+theorem gaussian_first_crossing_forecast :
+    ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ k : ℕ, ∀ T> (0:ℝ),
+      let P := nearHilbertContinuousCircuitBudget (k+3)
+      let D := 2^(k+3)
+      ∃ K : ℝ, ∀ r∈Ioc (0:ℝ) 1,
+        (gaussianReal 0 1).real {y : ℝ | let H := replacedGenerator ω k y
+          ∃ σ> (0:ℝ), orbitCircuitDistance H P σ=9/80 ∧
+            (∀ t∈Ico 0 σ, orbitCircuitDistance H P t<9/80) ∧
+            |firstVisit H σ 0 (1/10)-T|<r^(D^2)}≤K*r := by
+  have he : (1/10:ℝ)∈Ioo (0:ℝ) (sqrt 2) := ⟨by norm_num,
+    by nlinarith only [sq_sqrt (by norm_num : (0:ℝ)≤2),sqrt_nonneg 2]⟩
+  filter_upwards [gaussian_first_entry_window] with ω hω k T hT
+  intro P D
+  obtain ⟨K,hK⟩ := hω k T hT (1/10) he
+  refine ⟨K,fun r hr => (measureReal_mono ?_).trans (hK r hr)⟩
+  rintro y ⟨σ,hσ,hcross,_,hnear⟩
+  let H := replacedGenerator ω k y
+  refine ⟨σ,hσ,?_,hnear⟩
+  by_contra! h
+  obtain ⟨z,hz,C,hC,herr⟩ := (hasProjectiveCircuitApproximation_iff_infDist _ 0 (1/10:ℝ)).mpr h
+  have hP : orbitCircuitDistance H P σ≤1/10 := (hasProjectiveCircuitApproximation_iff_infDist ..).mp
+    ⟨z,hz,C,hC.trans (Nat.zero_le P),herr⟩
+  rw [show orbitCircuitDistance H P σ=9/80 from hcross] at hP
+  norm_num at hP
+
+#print axioms gaussian_first_crossing_forecast
 #print axioms gaussian_first_entry_window
 end
 end GaloisForLFunctions.HTGeometry.SpectralJets.BoundaryField.EntryWindows

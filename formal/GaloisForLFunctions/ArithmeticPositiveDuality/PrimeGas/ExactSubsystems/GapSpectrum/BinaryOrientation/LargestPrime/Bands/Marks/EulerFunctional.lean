@@ -31,12 +31,14 @@ theorem euler_limit {c d : ℝ} (hc : 0 < c) (hcd : c < d) (f : ℝ → ℂ) (hf
     apply tendsto_const_nhds.div_atTop
     exact tendsto_atTop_mono' criticalApproach
       (Eventually.of_forall fun _ => le_add_of_nonneg_right zero_le_one) hN
+  have hnorm (h : Ioi (0:ℝ)) (p : Nat.Primes) : ‖u h p‖ = ‖f (location h p)‖/(p.val:ℝ) := by simp [u]
   have hu (h : Ioi (0:ℝ)) (p : Nat.Primes) (hp : p ∈ added c d h) : ‖u h p‖ ≤ δ h := by
     have hv := (mem_added c d h p).mp hp
     have hlo : primeCut c h < p.val :=
       lt_of_not_ge (fun hle => (Finset.mem_sdiff.mp hp).2 (Sieve.mem_primeSubtypeLE.mpr hle))
-    rw [show ‖u h p‖ = ‖f (location h p)‖/(p.val:ℝ) by simp [u]]
-    exact div_le_div₀ (norm_nonneg _) (hB _ ⟨hv.1.le,hv.2⟩) (by positivity : (0:ℝ) < (primeCut c h:ℝ)+1)
+    rw [hnorm]
+    have hbound := hB _ ⟨hv.1.le,hv.2⟩
+    exact div_le_div₀ ((norm_nonneg _).trans hbound) hbound (by positivity : (0:ℝ) < (primeCut c h:ℝ)+1)
       (by exact_mod_cast Nat.succ_le_of_lt hlo)
   let A (h : Ioi (0:ℝ)) := ∑ p ∈ added c d h, ‖u h p‖
   have hA := (Complex.continuous_re.tendsto _).comp
@@ -45,7 +47,7 @@ theorem euler_limit {c d : ℝ} (hc : 0 < c) (hcd : c < d) (f : ℝ → ℂ) (hf
     apply hA.congr
     intro h
     change (∑ p ∈ added c d h, (‖f (location h p)‖:ℂ)/(p.val:ℂ)).re = _
-    simp only [A,u,norm_div,Complex.norm_natCast,← Complex.ofReal_natCast,← Complex.ofReal_div,
+    simp only [A,hnorm,← Complex.ofReal_natCast,← Complex.ofReal_div,
       ← Complex.ofReal_sum,Complex.ofReal_re]
   let S (h : Ioi (0:ℝ)) := ∑ p ∈ added c d h, u h p
   let L (h : Ioi (0:ℝ)) := ∑ p ∈ added c d h, Complex.log (1+u h p)
@@ -58,9 +60,10 @@ theorem euler_limit {c d : ℝ} (hc : 0 < c) (hcd : c < d) (f : ℝ → ℂ) (hf
     refine (norm_sum_le _ _).trans (Finset.sum_le_sum fun p hp => ?_)
     exact (log_error ((hu h p hp).trans hh)).trans
       (by rw [pow_two]; exact mul_le_mul_of_nonneg_right (hu h p hp) (norm_nonneg _))
-  have hL := (tendsto_zero_iff_norm_tendsto_zero.mpr hE).add (intensity_limit hc hcd f hf)
+  have hS : Tendsto S criticalApproach (𝓝 (∫ v in c..d, f v/(v:ℂ))) := intensity_limit hc hcd f hf
+  have hL := (tendsto_zero_iff_norm_tendsto_zero.mpr hE).add hS
   have hL' : Tendsto L criticalApproach (𝓝 (∫ v in c..d, f v/(v:ℂ))) := by
-    simpa only [S,zero_add,sub_add_cancel] using hL
+    simpa only [zero_add,sub_add_cancel] using hL
   apply ((Complex.continuous_exp.tendsto _).comp hL').congr'
   filter_upwards [hδ.eventually_le_const (by norm_num : (0:ℝ) < 1/2)] with h hh
   change Complex.exp (∑ p ∈ added c d h, _) = _

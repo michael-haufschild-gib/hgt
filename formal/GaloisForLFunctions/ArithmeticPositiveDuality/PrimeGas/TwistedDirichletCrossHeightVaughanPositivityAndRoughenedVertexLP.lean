@@ -78,7 +78,7 @@ annihilation, multi-power `χ^j` trigonometric positivity, and the `u₀`-roughe
 noncomputable section
 
 open Complex Filter Set MeasureTheory intervalIntegral
-open scoped BigOperators ComplexConjugate Topology ArithmeticFunction LSeries.notation
+open scoped BigOperators ComplexConjugate Topology ArithmeticFunction
 
 namespace GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas
 
@@ -103,7 +103,7 @@ lemma gammaℝ_two_sub_div_add_one {z : ℂ} (hz : z ≠ 0) :
   have h1z : (1 : ℂ) - (z + 1) = w := by dsimp only [w]; ring
   have hG_step : Complex.Gammaℝ (w + 2) = (w / (2 * (Real.pi : ℂ))) * Complex.Gammaℝ w := by
     rw [Complex.Gammaℝ_def (w + 2), Complex.Gammaℝ_def w,
-      show (w + 2) / 2 = w / 2 + 1 by ring, Complex.Gamma_add_one hw2,
+      show (w + 2) / 2 = w / 2 + 1 by ring, Complex.Gamma_add_one (w / 2) hw2,
       show -(w + 2) / 2 = -w / 2 + (-1 : ℂ) by ring,
       Complex.cpow_add _ _ hpi_ne, Complex.cpow_neg_one]
     field_simp [hpi_ne]
@@ -195,9 +195,12 @@ lemma exists_strip_poly_growth_cglPrimitiveFunctionalFactor
     · rw [heven.gammaFactor_def (1 - z), heven.gammaFactor_def z]
       change ‖zetaChi z‖ ≤ _
       have hb := hchi z hz_lo (hz_hi.trans (by norm_num)) hz_im_T₀
+      have h1_le_fac : (1 : ℝ) ≤ 1 + M_re / (2 * Real.pi) := by
+        dsimp only [M_re]
+        linarith [div_nonneg (by positivity : (0 : ℝ) ≤ |α| + 1) Real.two_pi_pos.le]
       have hcoef : C_z ≤ (1 + M_re / (2 * Real.pi)) * C_z :=
-        le_mul_of_one_le_left hCz_pos (by dsimp only [M_re]; positivity)
-      exact hb.trans (mul_le_mul hcoef hpow_step (by positivity) (by dsimp only [M_re]; positivity))
+        le_mul_of_one_le_left hCz_pos h1_le_fac
+      exact hb.trans (mul_le_mul hcoef hpow_step (by positivity) (by linarith))
     · rw [hodd.gammaFactor_def (1 - z), hodd.gammaFactor_def z,
         show (1 : ℂ) - z + 1 = 2 - z by ring, gammaℝ_two_sub_div_add_one hz_ne0, norm_mul, norm_div,
         norm_neg, show ‖(2 : ℂ) * (Real.pi : ℂ)‖ = 2 * Real.pi by
@@ -207,8 +210,8 @@ lemma exists_strip_poly_growth_cglPrimitiveFunctionalFactor
         have hre_abs : |z.re| ≤ M_re := by
           dsimp only [M_re]
           rw [abs_le]
-          exact ⟨by linarith [neg_abs_le α], by linarith [le_abs_self α]⟩
-        have hM1 : 1 ≤ M_re := by dsimp only [M_re]; positivity
+          exact ⟨by linarith [neg_abs_le α], by linarith [abs_nonneg α]⟩
+        have hM1 : 1 ≤ M_re := by dsimp only [M_re]; linarith [abs_nonneg α]
         nlinarith [abs_nonneg z.im]
       have hz1_chi : ‖zetaChi (z + 1)‖ ≤ C_z * (1 + |z.im|) ^ N := by
         have hb := hchi (z + 1) (by simp; linarith) (by simp; linarith) (by simpa using hz_im_T₀)
@@ -253,7 +256,9 @@ lemma exists_leftLine_poly_growth_cglPrimitiveFunctionalFactor
   refine ⟨C_all, N, by dsimp only [C_all]; positivity, fun v => ?_⟩
   rcases le_or_gt (|v|) V₀ with hv_le | hv_gt
   · have hmem : v ∈ Set.Icc (-V₀) V₀ := abs_le.mp hv_le
-    have hb := (hM₀ v hmem).trans ((le_max_left M₀ 0).trans (le_max_left _ _))
+    have hb : ‖_root_.RHTower.cglLemma62PrimitiveFunctionalFactor P
+        (s + ((-2 : ℂ) + (v : ℂ) * I))‖ ≤ C_all :=
+      (hM₀ v hmem).trans ((le_max_left M₀ 0).trans (le_max_left (max M₀ 0) (C₁ * (1 + |s.im|) ^ N)))
     have h1pow : (1 : ℝ) ≤ (1 + |v|) ^ N := one_le_pow₀ (by linarith [abs_nonneg v])
     calc ‖_root_.RHTower.cglLemma62PrimitiveFunctionalFactor P (s + ((-2 : ℂ) + (v : ℂ) * I))‖
         ≤ C_all * 1 := by linarith
@@ -325,7 +330,9 @@ theorem cglPrimitiveLFunction_eq_factor_mul_tsum_of_re_neg
     DirichletCharacter.LSeriesSummable_of_one_lt_re P.character⁻¹ h1z_re
   rw [LSeries, ← hsum.sum_add_tsum_nat_add 1, Finset.sum_range_one, LSeries.term_zero, zero_add]
   refine tsum_congr fun m => ?_
-  rw [LSeries.term_of_ne_zero (Nat.succ_ne_zero m), div_eq_mul_inv, ← Complex.cpow_neg]
+  rw [LSeries.term_of_ne_zero (Nat.succ_ne_zero m), div_eq_mul_inv, ← Complex.cpow_neg,
+    Nat.succ_eq_add_one,
+    show ((m + 1 : ℕ) : ZMod P.modulus.value) = (m : ZMod P.modulus.value) + 1 by push_cast; rfl]
 
 /-- Reflected Mellin integrand for the `m`-th dual mode of a primitive nonprincipal Dirichlet
 `L`-function. -/
@@ -395,9 +402,7 @@ private lemma dirichletReflectedTerm_left_two_integrable_and_summable
     have hker : ‖smoothAFEGaussianKernel w‖ ≤ (Real.exp 4 / 2) * Real.exp (-(v ^ (2 : ℕ))) := by
       rw [smoothAFEGaussianKernel, norm_div, Complex.norm_exp]
       have hw_re_sq : (w ^ 2).re = 4 - v ^ (2 : ℕ) := by
-        dsimp only [w]
-        simp only [pow_two, Complex.mul_re, Complex.mul_im, Complex.add_re, Complex.add_im,
-          Complex.ofReal_re, Complex.ofReal_im, Complex.I_re, Complex.I_im]
+        simp [w, pow_two]
         ring
       have hwnorm : (2 : ℝ) ≤ ‖w‖ := by
         have h := Complex.abs_re_le_norm w
@@ -1045,7 +1050,7 @@ theorem dirichletDualGaussianCoeff_zero_eq_neg_factor_add_criticalLine
     funext w
     unfold dirichletReflectedTerm smoothAFEGaussianKernel
     dsimp only [g]
-    simp only [Nat.cast_zero, zero_add, Complex.one_cpow, mul_one, sub_zero, div_eq_mul_inv]
+    simp only [zero_add, Nat.cast_one, Complex.one_cpow, mul_one, sub_zero, div_eq_mul_inv]
     ring
   have hrect : ∀ T : ℝ, 0 < T →
       ((∫ u : ℝ in (-2 : ℝ)..a, dirichletReflectedTerm P s y 0 ((u : ℂ) - (T : ℂ) * I)) -
@@ -1131,7 +1136,7 @@ theorem dirichletDualGaussianCoeff_zero_eq_neg_factor_add_criticalLine
       exact (div_le_self (Real.exp_nonneg _) hwnorm1).trans
         (by rw [← Real.exp_add]; exact Real.exp_le_exp.mpr (by linarith))
     unfold dirichletReflectedTerm
-    simp only [Nat.cast_zero, zero_add, Complex.one_cpow, mul_one]
+    simp only [zero_add, Nat.cast_one, Complex.one_cpow, mul_one]
     rw [norm_mul, norm_mul]
     calc ‖_root_.RHTower.cglLemma62PrimitiveFunctionalFactor P (s + w)‖ *
             ‖(y : ℂ) ^ w‖ * ‖smoothAFEGaussianKernel w‖
@@ -1146,7 +1151,9 @@ theorem dirichletDualGaussianCoeff_zero_eq_neg_factor_add_criticalLine
     unfold linePt; dsimp only [a]; apply Complex.ext <;> simp
   have hnorm_crit : ∀ u : ℝ,
       ‖_root_.RHTower.cglLemma62PrimitiveFunctionalFactor P (linePt u)‖ = 1 := fun u => by
-    have heq : linePt u = (_root_.RHTower.cglLemma62CriticalPoint u).value := rfl
+    have heq : linePt u = (_root_.RHTower.cglLemma62CriticalPoint u).value := by
+      unfold linePt _root_.RHTower.cglLemma62CriticalPoint
+      apply Complex.ext <;> simp
     rw [heq]
     exact _root_.RHTower.cglLemma62_primitiveFunctionalFactor_critical_norm_one P
       (_root_.RHTower.cglLemma62CriticalPoint u)
@@ -1159,7 +1166,7 @@ theorem dirichletDualGaussianCoeff_zero_eq_neg_factor_add_criticalLine
       rw [hsw_lp v]; exact hnorm_crit (s.im + v)
     have hker_v := norm_smoothAFEGaussianKernel_vertical_le ha_pos v
     unfold dirichletReflectedTerm
-    simp only [Nat.cast_zero, zero_add, Complex.one_cpow, mul_one]
+    simp only [zero_add, Nat.cast_one, Complex.one_cpow, mul_one]
     rw [norm_mul, norm_mul, hfac_v, one_mul, Complex.norm_cpow_eq_rpow_re_of_pos hy,
       show (((a : ℂ) + (v : ℂ) * I).re) = a by simp]
     exact (mul_le_mul_of_nonneg_left hker_v (by positivity)).trans_eq (by ring)
@@ -1217,7 +1224,7 @@ theorem dirichletDualGaussianCoeff_zero_eq_neg_factor_add_criticalLine
             smoothAFEGaussianKernel (((1 / 2 - s.re : ℝ) : ℂ) + (v : ℂ) * I) := by
     refine integral_congr_ae (Filter.Eventually.of_forall fun v => ?_)
     dsimp only [dirichletReflectedTerm]
-    simp only [Nat.cast_zero, zero_add, Complex.one_cpow, mul_one]
+    simp only [zero_add, Nat.cast_one, Complex.one_cpow, mul_one]
     have hlp := hsw_lp v
     dsimp only [a] at hlp ⊢
     rw [hlp]
@@ -1280,7 +1287,9 @@ theorem dirichletDualGaussianCoeff_eq_neg_factor_mul_add_criticalLine
     rw [conj_linePt]
     unfold linePt
     dsimp only [z]
-    apply Complex.ext <;> simp <;> ring
+    apply Complex.ext
+    · simp; ring
+    · simp; ring
   rw [hkx]
   calc (k : ℂ) ^ (-(1 - s)) *
           (_root_.RHTower.cglLemma62PrimitiveFunctionalFactor P (linePt (s.im + v)) *
@@ -1304,27 +1313,24 @@ to `χ k * vaughanDualBilinear U V k`. -/
 theorem twisted_vaughanTypeII_divisor_sum_eq
     {q : ℕ} (χ : DirichletCharacter ℂ q) (U V k : ℕ) :
     (∑ d ∈ k.divisors,
-      χ d * ((((((ArithmeticFunction.moebius : ArithmeticFunction ℝ) -
-        _root_.RHTower.Sieve.truncAF (ArithmeticFunction.moebius : ArithmeticFunction ℝ) U) *
-        _root_.RHTower.Sieve.typeIIShort V) d : ℝ) : ℂ) * χ (k / d)) =
+        χ d * ((((((ArithmeticFunction.moebius : ArithmeticFunction ℝ) -
+          _root_.RHTower.Sieve.truncAF (ArithmeticFunction.moebius : ArithmeticFunction ℝ) U) *
+          _root_.RHTower.Sieve.typeIIShort V) d : ℝ)) : ℂ) * χ (k / d)) =
       χ k * ((vaughanDualBilinear U V k : ℝ) : ℂ) := by
+  set F : ArithmeticFunction ℝ :=
+    ((ArithmeticFunction.moebius : ArithmeticFunction ℝ) -
+      _root_.RHTower.Sieve.truncAF (ArithmeticFunction.moebius : ArithmeticFunction ℝ) U) *
+      _root_.RHTower.Sieve.typeIIShort V
   have hpt : ∀ d ∈ k.divisors,
-      χ d * ((((((ArithmeticFunction.moebius : ArithmeticFunction ℝ) -
-        _root_.RHTower.Sieve.truncAF (ArithmeticFunction.moebius : ArithmeticFunction ℝ) U) *
-        _root_.RHTower.Sieve.typeIIShort V) d : ℝ) : ℂ) * χ (k / d) =
-      χ k * ((((((ArithmeticFunction.moebius : ArithmeticFunction ℝ) -
-        _root_.RHTower.Sieve.truncAF (ArithmeticFunction.moebius : ArithmeticFunction ℝ) U) *
-        _root_.RHTower.Sieve.typeIIShort V) d : ℝ) : ℂ) := by
+      χ d * ((F d : ℝ) : ℂ) * χ (k / d) = χ k * ((F d : ℝ) : ℂ) := by
     intro d hd
     have hdk : d * (k / d) = k := Nat.mul_div_cancel' (Nat.dvd_of_mem_divisors hd)
     have hmul_χ : χ d * χ (k / d) = χ k := by
       rw [← map_mul, ← Nat.cast_mul, hdk]
-    linear_combination
-      ((((((ArithmeticFunction.moebius : ArithmeticFunction ℝ) -
-        _root_.RHTower.Sieve.truncAF (ArithmeticFunction.moebius : ArithmeticFunction ℝ) U) *
-        _root_.RHTower.Sieve.typeIIShort V) d : ℝ) : ℂ) * hmul_χ
+    linear_combination ((F d : ℝ) : ℂ) * hmul_χ
   rw [Finset.sum_congr rfl hpt, ← Finset.mul_sum, ← Complex.ofReal_sum]
   congr 2
+  dsimp only [F]
   rw [← zeta_mul_vaughanTypeIICoeff_eq_vaughanDualBilinear U V,
     ArithmeticFunction.coe_zeta_mul_apply]
 
@@ -1363,7 +1369,9 @@ theorem twisted_vaughan_dual_band_eq_offLine_add_criticalLine
       _root_.RHTower.cglLemma62PrimitiveFunctionalFactor P (linePt (s.im + v))
   have hnorm_crit : ∀ u : ℝ,
       ‖_root_.RHTower.cglLemma62PrimitiveFunctionalFactor P (linePt u)‖ = 1 := fun u => by
-    have heq : linePt u = (_root_.RHTower.cglLemma62CriticalPoint u).value := rfl
+    have heq : linePt u = (_root_.RHTower.cglLemma62CriticalPoint u).value := by
+      unfold linePt _root_.RHTower.cglLemma62CriticalPoint
+      apply Complex.ext <;> simp
     rw [heq]
     exact _root_.RHTower.cglLemma62_primitiveFunctionalFactor_critical_norm_one P
       (_root_.RHTower.cglLemma62CriticalPoint u)
@@ -1405,8 +1413,8 @@ theorem twisted_vaughan_dual_band_eq_offLine_add_criticalLine
     · have hk_c : Continuous (fun v : ℝ => (k : ℂ) ^ (-conj (linePt (s.im + v)))) :=
         Continuous.const_cpow (by unfold linePt; fun_prop) (Or.inl (by exact_mod_cast (by omega : k ≠ 0)))
       exact (hpref_int.1.mul (continuous_const.mul hk_c).aestronglyMeasurable)
-    · rw [norm_mul, norm_mul, ← Complex.ofReal_natCast k,
-        Complex.norm_cpow_eq_rpow_re_of_pos hk_pos,
+    · rw [norm_mul (pref v), norm_mul (P.character⁻¹ k * ((vaughanDualBilinear U V k : ℝ) : ℂ)),
+        ← Complex.ofReal_natCast k, Complex.norm_cpow_eq_rpow_re_of_pos hk_pos,
         show (-conj (linePt (s.im + v))).re = -(1 / 2 : ℝ) by rw [conj_linePt]; unfold linePt; simp]
       dsimp only [B_k]
       exact (by ring : ‖pref v‖ * (‖P.character⁻¹ k * ((vaughanDualBilinear U V k : ℝ) : ℂ)‖ *
@@ -1496,10 +1504,14 @@ theorem typeIIShort_smooth_mul_rough_eq_zero
           omega
         exact hnot_s (Nat.mem_divisors.mpr ⟨hcop.dvd_of_dvd_mul_right hdsr, by omega⟩)
       · rw [_root_.RHTower.Sieve.truncAF_apply, if_neg hdW]
+  have hmoeb_int : (∑ d ∈ s.divisors, ArithmeticFunction.moebius d) = 0 := by
+    have hzm : ((ArithmeticFunction.zeta : ArithmeticFunction ℤ) * ArithmeticFunction.moebius) s =
+        (1 : ArithmeticFunction ℤ) s := by rw [ArithmeticFunction.zeta_mul_moebius]
+    rw [ArithmeticFunction.coe_zeta_mul_apply, ArithmeticFunction.one_apply,
+      if_neg (by omega : s ≠ 1)] at hzm
+    exact hzm
   have hmoeb_zero : (∑ d ∈ s.divisors, ((ArithmeticFunction.moebius d : ℤ) : ℝ)) = 0 := by
-    have hC := sum_divisors_moebius_eq_zero_of_two_le hs2
-    have hre := congrArg Complex.re hC
-    simpa only [Complex.re_sum, Complex.intCast_re, Complex.zero_re] using hre
+    exact_mod_cast hmoeb_int
   rw [hsum_eq, hmoeb_zero, sub_zero]
 
 /-- **Exact smooth-times-rough annihilation law for `vaughanDualBilinear U V`:**
@@ -1515,17 +1527,17 @@ theorem vaughanDualBilinear_smooth_mul_rough_eq_zero
   have hprod : p.1 * p.2 = s * r := (Nat.mem_divisorsAntidiagonal.mp hp).1
   have hp1_pos : 0 < p.1 := by
     by_contra h0; have hz : p.1 = 0 := by omega
-    rw [hz, zero_mul] at hprod; omega
+    rw [hz, zero_mul] at hprod; nlinarith
   set s₁ : ℕ := Nat.gcd p.1 s
   have hs₁_pos : 0 < s₁ := Nat.gcd_pos_of_pos_left s hp1_pos
   obtain ⟨r₁, hr₁_eq⟩ : s₁ ∣ p.1 := Nat.gcd_dvd_left p.1 s
   obtain ⟨s₂, hs₂_eq⟩ : s₁ ∣ s := Nat.gcd_dvd_right p.1 s
   have hr₁_pos : 1 ≤ r₁ := by
     by_contra h0; have hz : r₁ = 0 := by omega
-    rw [hz, mul_zero] at hr₁_eq; omega
+    rw [hz, mul_zero] at hr₁_eq; nlinarith
   have hs₂_pos : 1 ≤ s₂ := by
     by_contra h0; have hz : s₂ = 0 := by omega
-    rw [hz, mul_zero] at hs₂_eq; omega
+    rw [hz, mul_zero] at hs₂_eq; nlinarith
   have hcancel1 : r₁ * p.2 = s₂ * r := by
     apply Nat.eq_of_mul_eq_mul_left hs₁_pos
     calc s₁ * (r₁ * p.2) = (s₁ * r₁) * p.2 := (mul_assoc s₁ r₁ p.2).symm
@@ -1571,7 +1583,7 @@ theorem vaughanDualBilinear_smooth_mul_rough_eq_zero
       _ = s₂ * r := hcancel1
   have hr₂_pos : 1 ≤ r₂ := by
     by_contra h0; have hz : r₂ = 0 := by omega
-    rw [hz, mul_zero] at hr₁r₂_eq; omega
+    rw [hz, mul_zero] at hr₁r₂_eq; nlinarith
   have hr₂_rough : IsRoughAbove (max U V) r₂ :=
     hrough.of_dvd ⟨r₁, by rw [mul_comm]; exact hr₁r₂_eq.symm⟩
   have hs₁_or_s₂ : 2 ≤ s₁ ∨ 2 ≤ s₂ := by
@@ -1670,7 +1682,8 @@ theorem trigPoly_twistedBalancedBilinearDirichletPoly_re_nonneg
         congr 1; push_cast; ring
       have hchi_j_exp : (χ⁻¹ (k : ZMod q)) ^ j =
           Complex.exp ((((j : ℝ) * Complex.arg (χ⁻¹ (k : ZMod q)) : ℝ) : ℂ) * I) := by
-        rw [hχ_exp, ← Complex.exp_nat_mul]
+        conv_lhs => rw [hχ_exp]
+        rw [← Complex.exp_nat_mul]
         congr 1; push_cast; ring
       rw [hpow_j, hchi_j_exp, hk_cpow]
       have hcomb_exp :
@@ -1688,13 +1701,14 @@ theorem trigPoly_twistedBalancedBilinearDirichletPoly_re_nonneg
         calc Complex.exp ((((j : ℝ) * Complex.arg (χ⁻¹ (k : ZMod q)) : ℝ) : ℂ) * I) *
                 ((vaughanDualBilinear U V k : ℝ) : ℂ) *
                 ((((k : ℝ) ^ (-σ₁) : ℝ) : ℂ) *
-                  Complex.exp (((-(j : ℝ) * T * Real.log (k : ℝ) : ℝ) : ℂ) * I))
+                   Complex.exp (((-(j : ℝ) * T * Real.log (k : ℝ) : ℝ) : ℂ) * I))
             = (((vaughanDualBilinear U V k : ℝ) : ℂ) * (((k : ℝ) ^ (-σ₁) : ℝ) : ℂ)) *
                 (Complex.exp ((((j : ℝ) * Complex.arg (χ⁻¹ (k : ZMod q)) : ℝ) : ℂ) * I) *
                   Complex.exp (((-(j : ℝ) * T * Real.log (k : ℝ) : ℝ) : ℂ) * I)) := by ring
           _ = (((vaughanDualBilinear U V k * (k : ℝ) ^ (-σ₁) : ℝ) : ℂ)) *
                 Complex.exp ((((j : ℝ) * θ_k : ℝ) : ℂ) * I) := by
               rw [hexp_add, Complex.ofReal_mul]
+              push_cast; ring
       rw [hcomb_exp, Complex.exp_mul_I, ← Complex.ofReal_cos, ← Complex.ofReal_sin]
       simp only [Complex.mul_re, Complex.add_re, Complex.ofReal_re, Complex.ofReal_im,
         Complex.I_re, Complex.I_im, mul_zero]
@@ -1737,24 +1751,28 @@ theorem deLaValleePoussin_both_signs_twistedBalancedBilinear_nonneg
             ((σ₁ : ℂ) + ((2 * T : ℝ) : ℂ) * I)).re := by
   set c_plus : ℕ → ℝ := fun j => if j = 0 then 3 else if j = 1 then 4 else 1
   set c_minus : ℕ → ℝ := fun j => if j = 0 then 3 else if j = 1 then -4 else 1
+  have hcp0 : c_plus 0 = 3 := rfl
+  have hcp1 : c_plus 1 = 4 := rfl
+  have hcp2 : c_plus 2 = 1 := rfl
+  have hcm0 : c_minus 0 = 3 := rfl
+  have hcm1 : c_minus 1 = -4 := rfl
+  have hcm2 : c_minus 2 = 1 := rfl
   have hpos_plus : ∀ θ : ℝ, 0 ≤ ∑ j ∈ Finset.range 3, c_plus j * Real.cos ((j : ℝ) * θ) := by
     intro θ
-    rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one]
-    dsimp only [c_plus]
+    rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one, hcp0, hcp1, hcp2]
     simp only [Nat.cast_zero, zero_mul, Real.cos_zero, mul_one, Nat.cast_one, one_mul,
       Nat.cast_ofNat, Real.cos_two_mul]
     nlinarith [sq_nonneg (1 + Real.cos θ)]
   have hpos_minus : ∀ θ : ℝ, 0 ≤ ∑ j ∈ Finset.range 3, c_minus j * Real.cos ((j : ℝ) * θ) := by
     intro θ
-    rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one]
-    dsimp only [c_minus]
+    rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one, hcm0, hcm1, hcm2]
     simp only [Nat.cast_zero, zero_mul, Real.cos_zero, mul_one, Nat.cast_one, one_mul,
       Nat.cast_ofNat, Real.cos_two_mul]
     nlinarith [sq_nonneg (1 - Real.cos θ)]
   have h1 := trigPoly_twistedBalancedBilinearDirichletPoly_re_nonneg χ hU hV K_hi hmod hpos_plus σ₁ T
   have h2 := trigPoly_twistedBalancedBilinearDirichletPoly_re_nonneg χ hU hV K_hi hmod hpos_minus σ₁ T
-  rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one] at h1 h2
-  dsimp only [c_plus, c_minus] at h1 h2
+  rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one, hcp0, hcp1, hcp2] at h1
+  rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one, hcm0, hcm1, hcm2] at h2
   simp only [Nat.cast_zero, zero_mul, Complex.ofReal_zero, add_zero, Nat.cast_one, one_mul,
     Nat.cast_ofNat] at h1 h2
   exact ⟨by linarith, by linarith⟩
@@ -1779,7 +1797,6 @@ theorem cyclic_orthogonality_twistedBalancedBilinear_eq_ker_rough_divisors
           (fun k => Nat.Coprime k q ∧ χ k = 1),
         ((k.divisors.card : ℝ) - 2) * (k : ℝ) ^ (-σ₁) := by
   have hn_ne0 : (n : ℂ) ≠ 0 := by exact_mod_cast (by omega : n ≠ 0)
-  have hinv_ord : (χ⁻¹) ^ n = 1 := by rw [inv_pow, hord, inv_one]
   refine ⟨?_, ?_⟩
   · unfold twistedBalancedBilinearDirichletPoly
     rw [Finset.sum_comm, Finset.mul_sum, Finset.sum_filter, Complex.ofReal_sum]
@@ -1817,9 +1834,12 @@ theorem cyclic_orthogonality_twistedBalancedBilinear_eq_ker_rough_divisors
       · rw [if_neg (fun h => hχ1 h.2), Complex.ofReal_zero]
         have hinv_ne1 : χ⁻¹ (k : ZMod q) ≠ 1 := fun h1 => hχ1 (by
           rw [MulChar.inv_apply_eq_inv', inv_eq_one] at h1; exact h1)
+        have hχn1 : (χ (k : ZMod q)) ^ n = 1 := by
+          have h := congrArg (fun ψ : DirichletCharacter ℂ q => ψ (u_k : ZMod q)) hord
+          rw [MulChar.pow_apply_coe, MulChar.one_apply_coe, hu_eq] at h
+          exact h
         have hzn1 : (χ⁻¹ (k : ZMod q)) ^ n = 1 := by
-          have h := congrArg (fun ψ : DirichletCharacter ℂ q => ψ (u_k : ZMod q)) hinv_ord
-          simpa [hu_eq, MulChar.pow_apply_coe, MulChar.one_apply_coe] using h
+          rw [MulChar.inv_apply_eq_inv', inv_pow, hχn1, inv_one]
         have hgeom : (∑ j ∈ Finset.range n, (χ⁻¹ (k : ZMod q)) ^ j) = 0 := by
           have hm := geom_sum_mul (χ⁻¹ (k : ZMod q)) n
           rw [hzn1, sub_self] at hm
@@ -1885,8 +1905,7 @@ theorem LSeries_rough_divisors_sub_two_eq_sq
       simp [hr1]
     · have hge2 : 2 ≤ m + 2 := by omega
       have hge1 : 1 ≤ m + 2 := by omega
-      have hne1 : m + 2 ≠ 1 := by omega
-      simp [hge2, hge1, hne1]
+      simp [hge2, hge1]
   have hf₂_sum : LSeriesSummable f₂ w := hf₂_eq ▸ hf₁_sum.sub hdelta_sum
   have hl_f₂ : LSeries f₂ w = roughZetaSeries W w - 1 := by
     rw [hf₂_eq, LSeries_sub hf₁_sum hdelta_sum,
@@ -1895,9 +1914,10 @@ theorem LSeries_rough_divisors_sub_two_eq_sq
     congr 2
   have hconv_eq :
       (fun k : ℕ => if 2 ≤ k ∧ IsRoughAbove W k then (((k.divisors.card : ℝ) - 2 : ℝ) : ℂ) else 0) =
-        f₂ ⍟ f₂ := by
+        LSeries.convolution f₂ f₂ := by
     ext k
     rw [LSeries.convolution_def]
+    dsimp only
     rcases k with _ | _ | m
     · simp [f₂]
     · simp [f₂]
@@ -2169,6 +2189,7 @@ theorem roughened_three_sevenths_certificate :
     lowBoundaryGen (19 / 60) (51 / 100) (13 / 75) = 131 / 150 ∧
     probeThetaGen 6 (19 / 60) (51 / 100) (13 / 75) = 443 / 500 ∧
     (131 / 150 : ℝ) < 40535 / 46328 ∧
+    (131 / 150 : ℝ) < 8733458561 / 10000000000 ∧
     (3001 / 24000 : ℝ) < 1 - 131 / 150 ∧
     (∀ {d : ℝ}, 0 ≤ d → tupleExponent d (reflectedAllowance (19 / 60 + 51 / 100) (13 / 75) d) ≤ 0) ∧
     (∀ {δ x d ζ : ℝ}, 0 ≤ δ → δ ≤ 5 / 6 → 0 ≤ x → x ≤ 1 / 2 → 0 ≤ ζ → d ≤ 257 / 300 + ζ →
@@ -2192,7 +2213,7 @@ theorem roughened_three_sevenths_certificate :
     rw [max_eq_right (by norm_num : (0 : ℝ) ≤ 51 / 100 - 19 / 60),
       show (19 : ℝ) / 60 + 51 / 100 + 13 / 75 - 1 = 0 by ring, max_self]
     norm_num
-  refine ⟨hlb, hlb_gen, htheta, by norm_num, by norm_num,
+  refine ⟨hlb, hlb_gen, htheta, by norm_num, by norm_num, by norm_num,
     fun hd => tupleExponent_reflectedAllowance_nonpos hd (by norm_num),
     fun {δ x d ζ} hδ0 hδ hx0 hx hζ hd => ?_,
     fun hδ0 _hδ1 hq => by unfold endpointExponent; linarith⟩
@@ -2357,7 +2378,7 @@ theorem euler_deletion_multiplier_violates_half_ball_of_harmonic_sum
     refine Finset.prod_congr rfl fun n hn => ?_
     have hn_pos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast hpos n hn
     rw [hanti n hn, ← Complex.ofReal_natCast n, ← Complex.ofReal_neg,
-      Complex.ofReal_cpow hn_pos.le]
+      ← Complex.ofReal_cpow hn_pos.le]
     push_cast; ring
   have hge : 1 + ∑ n ∈ S, (n : ℝ) ^ (-σ) ≤ ∏ n ∈ S, (1 + (n : ℝ) ^ (-σ)) :=
     prod_one_add_ge_one_add_sum_aux S (fun n => (n : ℝ) ^ (-σ))

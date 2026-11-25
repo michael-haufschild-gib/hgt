@@ -45,7 +45,7 @@ theorem gaussian_gapPencil_nonzero :
   filter_upwards [gaussian_boundary_frequency_avoidance] with ω hω
   intro k a b hb
   obtain ⟨B,hB,ha⟩ := hω k {b} (countable_singleton _)
-  obtain ⟨y,hy⟩ := hB.exists_notMem
+  obtain ⟨y,hy⟩ := (measure_eq_zero_iff_ae_notMem.mp (hB.measure_zero volume)).exists
   let E := (boundaryHermitian ω k y).eigenvalues
   have hsep (i j : Fin (k+3)→Bool) : E i-E j≠b := by
     by_cases hij : i=j

@@ -46,7 +46,7 @@ theorem pencil_entry_window {N : ℕ} (A Z : Register N)
   have hc : 0<c := lt_min zero_lt_one (div_pos hu hQ)
   have hscale : Q*c≤u := by
     have h := mul_le_mul_of_nonneg_left (min_le_right 1 (u/Q)) hQ.le
-    simpa only [mul_div_cancel₀' _ hQ.ne'] using h
+    simpa only [mul_div_cancel₀ _ hQ.ne'] using h
   have hcard : Fintype.card (Fin N → Bool)^2=D := by simp only [Fintype.card_fun,Fintype.card_fin,Fintype.card_bool,D]
   refine ⟨c,hc,(F.card:ℝ)*(2*D),fun r hr => ?_⟩
   let B (n : F) := {y : ℝ | (∀ i, |(hH y).eigenvalues i|≤L) ∧

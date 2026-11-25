@@ -62,7 +62,7 @@ theorem original_snapshot_probability (k : ℕ) (r : Config k)
     simp only [Function.update_idem,originalPhase,he,fieldEnergy,eraseTerminal,i,mem_preimage]
   haveI : IsProbabilityMeasure P := by dsimp [P,pathPauliDisorderLaw]; infer_instance
   have h := tendsto_lintegral_of_dominated_convergence (μ:=P) (fun _ => 1) hF
-    (fun n => .of_forall fun ω => measure_le_one) (by simp) hlim
+    (fun n => .of_forall fun ω => (show μ _ ≤ 1 from prob_le_one)) (by simp) hlim
   simp only [lintegral_const,measure_univ,mul_one] at h
   apply h.congr
   intro n

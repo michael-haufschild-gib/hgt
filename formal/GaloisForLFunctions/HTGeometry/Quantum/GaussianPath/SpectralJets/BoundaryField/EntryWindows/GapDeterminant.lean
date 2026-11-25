@@ -12,6 +12,7 @@ variable {I : Type*} [Fintype I] [DecidableEq I]
 def gapOperator (H : Matrix I I ℂ) : Matrix (I × I) (I × I) ℂ :=
   H ⊗ₖ (1:Matrix I I ℂ) - (1:Matrix I I ℂ) ⊗ₖ H
 
+omit [Fintype I] in
 theorem gapOperator_affine (A Z : Matrix I I ℂ) (y : ℂ) :
     gapOperator (A+y • Z)=gapOperator A+y • gapOperator Z := by
   ext ⟨i,j⟩ ⟨u,v⟩
