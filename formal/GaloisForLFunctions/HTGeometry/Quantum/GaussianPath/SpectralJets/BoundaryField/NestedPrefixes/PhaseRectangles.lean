@@ -8,7 +8,7 @@ namespace GaloisForLFunctions.HTGeometry.SpectralJets.BoundaryField.NestedPrefix
 open GaloisForLFunctions.BiarithmeticGeometry.SigmaProductVolume
 noncomputable section
 local instance : IsProbabilityMeasure (volume : Measure UnitAddCircle) := ⟨UnitAddCircle.measure_univ⟩
-variable {L : Type} [Fintype L] {I : L → Type} [∀ j, Fintype (I j)]
+variable {L : Type} {I : L → Type}
 
 /-- Simultaneous membership in one target per register. -/
 def rectangle (A : ∀ j, Set (I j → UnitAddCircle)) : Set (Sigma I → UnitAddCircle) :=
@@ -16,16 +16,21 @@ def rectangle (A : ∀ j, Set (I j → UnitAddCircle)) : Set (Sigma I → UnitAd
 
 theorem rectangle_closed (A : ∀ j, Set (I j → UnitAddCircle)) (hA : ∀ j, IsClosed (A j)) :
     IsClosed (rectangle A) := by
-  have he : rectangle A=⋂ j, (fun z i => z ⟨j,i⟩) ⁻¹' A j := Set.ext fun _ => mem_iInter.symm
+  have he : rectangle A=⋂ j, (fun z i => z ⟨j,i⟩) ⁻¹' A j := by
+    ext z
+    simp only [rectangle,mem_setOf_eq,mem_iInter,mem_preimage]
   rw [he]
-  exact isClosed_iInter fun j => (hA j).preimage (continuous_pi fun i => continuous_apply ⟨j,i⟩)
+  exact isClosed_iInter fun j => (hA j).preimage
+    (continuous_pi fun i => continuous_apply (Sigma.mk (β:=I) j i))
+
+variable [Fintype L] [∀ j, Fintype (I j)]
 
 theorem rectangle_mass (A : ∀ j, Set (I j → UnitAddCircle)) :
     volume.real (rectangle A) = ∏ j, volume.real (A j) := by
   let X := fun (j : L) (_ : I j) => UnitAddCircle
   have he : rectangle A=(MeasurableEquiv.piCurry X) ⁻¹' univ.pi A :=
     Set.ext fun _ => ⟨fun h j _ => h j,fun h j => h j (mem_univ _)⟩
-  rw [Measure.real,he,volume_preimage_curry,volume_pi_pi,ENNReal.toReal_prod]
+  rw [Measure.real,he,volume_preimage_curry X (univ.pi A),volume_pi_pi,ENNReal.toReal_prod]
   rfl
 
 /-- At a boundary point at least one block is on its target boundary.
@@ -48,7 +53,7 @@ theorem rectangle_null_frontier (A : ∀ j, Set (I j → UnitAddCircle))
   by_contra hn
   let V := ⋂ j, P j ⁻¹' interior (A j)
   have ho : IsOpen V := isOpen_iInter_of_finite fun j =>
-    isOpen_interior.preimage (continuous_pi fun i => continuous_apply ⟨j,i⟩)
+    isOpen_interior.preimage (continuous_pi fun i => continuous_apply (Sigma.mk (β:=I) j i))
   have hsub : V⊆rectangle A := fun z h j => interior_subset (mem_iInter.mp h j)
   apply hz.2 (interior_maximal hsub ho ?_)
   apply mem_iInter.mpr

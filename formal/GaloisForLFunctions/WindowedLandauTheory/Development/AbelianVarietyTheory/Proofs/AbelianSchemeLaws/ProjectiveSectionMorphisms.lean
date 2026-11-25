@@ -1,9 +1,10 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.AbelianSchemeLaws.ProjectiveSectionRatios
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.LineBundleSectionPullback
+import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.RelativeFormsPullback
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.ProjectiveChartMorphisms
 import Mathlib.AlgebraicGeometry.Morphisms.ClosedImmersion
 
-/-! A generating system of sections defines a morphism to projective space. -/
+/-! Projective coordinate ratios glue on overlaps to define a morphism to projective space. -/
 
 noncomputable section
 
@@ -13,15 +14,48 @@ open GlobalTheory.LineBundleSections GlobalTheory.SchemeCohomology UpperTheory.C
 
 namespace GlobalTheory.ProjectiveSections
 
-variable {R : Type} [CommRing R] [Nontrivial R] {X : Scheme.{0}} {L : LB X}
-  {n : ℕ} (s : Fin (n + 1) → L.Sec) (f : X ⟶ Spec (CommRingCat.of R))
-  (r : ∀ i j : Fin (n + 1), Γ(X, nonzeroLocus (s i)))
-  (hr : ∀ i j k,
-    resG X (inf_le_right : nonzeroLocus (s i) ⊓ L.U k ≤ L.U k) ((s j).f k) =
-      resG X inf_le_left (r i j) * resG X inf_le_right ((s i).f k))
-  (hL : L.IsLB)
+variable {R : Type} [CommRing R] [Nontrivial R] {X : Scheme.{0}} {n : ℕ}
 
-private abbrev U (i : Fin (n + 1)) := nonzeroLocus (s i)
+omit [Nontrivial R] in
+/-- The empty scheme is projective over an affine base. -/
+theorem isProjOver_of_isEmpty (f : X ⟶ Spec (CommRingCat.of R)) [IsEmpty X] :
+    IsProjOver f := by
+  let a := isInitialOfIsEmpty (X := X)
+  let i := a.to (PSpace R 0)
+  have hclosed : IsClosed (Set.range i) := by
+    rw [Set.range_eq_empty]
+    exact isClosed_empty
+  exact ⟨0, i, IsClosedImmersion.of_isPreimmersion i hclosed, a.hom_ext _ _⟩
+
+/-- A cover with the coordinate ratios and transition identities of projective space. -/
+structure Coordinates (X : Scheme.{0}) (n : ℕ) where
+  U : Fin (n + 1) → X.Opens
+  cover : ⨆ i, U i = ⊤
+  ratio : ∀ i, Fin (n + 1) → Γ(X, U i)
+  ratio_self : ∀ i, ratio i i = 1
+  basicOpen_ratio : ∀ i j, X.basicOpen (ratio i j) = U i ⊓ U j
+  ratio_mul : ∀ i j k,
+    resG X (inf_le_left : U i ⊓ U j ≤ U i) (ratio i j) *
+      resG X inf_le_right (ratio j k) = resG X inf_le_left (ratio i k)
+
+/-- Generating sections of a line bundle give projective coordinate ratios. -/
+def Coordinates.ofSections {L : LB X} (hL : L.IsLB) (s : Fin (n + 1) → L.Sec)
+    (r : ∀ i, Fin (n + 1) → Γ(X, nonzeroLocus (s i)))
+    (hr : ∀ i j k,
+      resG X (inf_le_right : nonzeroLocus (s i) ⊓ L.U k ≤ L.U k) ((s j).f k) =
+        resG X inf_le_left (r i j) * resG X inf_le_right ((s i).f k))
+    (hc : ⨆ i, nonzeroLocus (s i) = ⊤) : Coordinates X n where
+  U i := nonzeroLocus (s i)
+  cover := hc
+  ratio := r
+  ratio_self := sectionRatio_self s r hr hL
+  basicOpen_ratio := basicOpen_sectionRatio s r hr hL
+  ratio_mul i j k := sectionRatio_mul s r hr hL i j k inf_le_left inf_le_right
+
+namespace Coordinates
+
+variable (C : Coordinates X n) (f : X ⟶ Spec (CommRingCat.of R))
+
 private abbrev V (i : Fin (n + 1)) := PSpace.coordinateOpen R n i
 
 private theorem appLE_congr {X Y : Scheme.{0}} {a b : X ⟶ Y} (e : a = b)
@@ -30,69 +64,71 @@ private theorem appLE_congr {X Y : Scheme.{0}} {a b : X ⟶ Y} (e : a = b)
   subst b
   rfl
 
-private def chartMap (i : Fin (n + 1)) : (U s i).toScheme ⟶ PSpace R n :=
-  pspaceOfCoordinates f (U s i) i (r i)
+private def chartMap (i : Fin (n + 1)) : (C.U i).toScheme ⟶ PSpace R n :=
+  pspaceOfCoordinates f (C.U i) i (C.ratio i)
 
-include hr hL in
 private theorem chartMap_preimage (i j : Fin (n + 1)) :
-    chartMap s f r i ⁻¹ᵁ V (R := R) j = (U s i).ι ⁻¹ᵁ U s j := by
-  let a := chartMap s f r i
-  let hi : ⊤ ≤ a ⁻¹ᵁ V (R := R) i := pspaceOfCoordinates_preimage f _ i (r i)
+    chartMap C f i ⁻¹ᵁ V (R := R) j = (C.U i).ι ⁻¹ᵁ C.U j := by
+  let a := chartMap C f i
+  let hi : ⊤ ≤ a ⁻¹ᵁ V (R := R) i := pspaceOfCoordinates_preimage f _ i (C.ratio i)
   have h := basicOpen_pspacePullRatio a ⊤ i hi j
-  change (U s i).toScheme.basicOpen ((a.appLE _ ⊤ hi).hom (pspaceChartRatio R i j)) =
+  change (C.U i).toScheme.basicOpen ((a.appLE _ ⊤ hi).hom (pspaceChartRatio R i j)) =
     ⊤ ⊓ a ⁻¹ᵁ V (R := R) j at h
-  rw [top_inf_eq, pspaceOfCoordinates_ratio f _ i _ (sectionRatio_self s r hr hL i)] at h
+  have hr := pspaceOfCoordinates_ratio f (C.U i) i (C.ratio i) (C.ratio_self i) j
+  change (a.appLE _ ⊤ hi).hom (pspaceChartRatio R i j) = _ at hr
+  rw [top_inf_eq, hr] at h
   refine h.symm.trans ?_
-  rw [Scheme.basicOpen_appLE, top_inf_eq, basicOpen_sectionRatio s r hr hL,
+  rw [Scheme.basicOpen_appLE, top_inf_eq, C.basicOpen_ratio,
     Scheme.Hom.preimage_inf, Scheme.Opens.ι_preimage_self, top_inf_eq]
 
-include hr hL in
 private theorem chartMap_agree {Z : Scheme.{0}} (i j : Fin (n + 1))
-    (a : Z ⟶ (U s i).toScheme) (b : Z ⟶ (U s j).toScheme)
-    (hab : a ≫ (U s i).ι = b ≫ (U s j).ι) :
-    a ≫ chartMap s f r i = b ≫ chartMap s f r j := by
-  let p := a ≫ chartMap s f r i
-  let q := b ≫ chartMap s f r j
-  let u := b ≫ (U s j).ι
-  have ha : ⊤ ≤ (a ≫ (U s i).ι) ⁻¹ᵁ U s i :=
-    a.preimage_mono (U s i).ι_preimage_self.ge
-  have hi : ⊤ ≤ u ⁻¹ᵁ U s i := hab ▸ ha
-  have hj : ⊤ ≤ u ⁻¹ᵁ U s j := b.preimage_mono (U s j).ι_preimage_self.ge
+    (a : Z ⟶ (C.U i).toScheme) (b : Z ⟶ (C.U j).toScheme)
+    (hab : a ≫ (C.U i).ι = b ≫ (C.U j).ι) :
+    a ≫ chartMap C f i = b ≫ chartMap C f j := by
+  let p := a ≫ chartMap C f i
+  let q := b ≫ chartMap C f j
+  let u := b ≫ (C.U j).ι
+  have ha : ⊤ ≤ (a ≫ (C.U i).ι) ⁻¹ᵁ C.U i :=
+    a.preimage_mono (C.U i).ι_preimage_self.ge
+  have hi : ⊤ ≤ u ⁻¹ᵁ C.U i := by
+    change ⊤ ≤ (b ≫ (C.U j).ι) ⁻¹ᵁ C.U i
+    rwa [← hab]
+  have hj : ⊤ ≤ u ⁻¹ᵁ C.U j := b.preimage_mono (C.U j).ι_preimage_self.ge
   have hp : ⊤ ≤ p ⁻¹ᵁ V (R := R) i := by
     dsimp only [p]
-    rw [Scheme.Hom.comp_preimage, chartMap_preimage s f r hr hL]
+    rw [Scheme.Hom.comp_preimage, chartMap_preimage C f]
     exact ha
   have hqi : ⊤ ≤ q ⁻¹ᵁ V (R := R) i := by
     dsimp only [q]
-    rw [Scheme.Hom.comp_preimage, chartMap_preimage s f r hr hL]
+    rw [Scheme.Hom.comp_preimage, chartMap_preimage C f]
     exact hi
   have hqj : ⊤ ≤ q ⁻¹ᵁ V (R := R) j := by
     dsimp only [q]
-    rw [Scheme.Hom.comp_preimage, chartMap_preimage s f r hr hL]
+    rw [Scheme.Hom.comp_preimage, chartMap_preimage C f]
     exact hj
   have hbase : p ≫ PSpace.str R n = q ≫ PSpace.str R n := by
     simpa only [p, q, chartMap, Category.assoc, pspaceOfCoordinates_base] using
       congrArg (fun p => p ≫ f) hab
   have ha' (k : Fin (n + 1)) :
-      pspacePullRatio p ⊤ i hp k = (u.appLE _ ⊤ hi).hom (r i k) := by
-    refine (pspacePullRatio_comp_ofCoordinates f _ i _ (sectionRatio_self s r hr hL i)
+      pspacePullRatio p ⊤ i hp k = (u.appLE _ ⊤ hi).hom (C.ratio i k) := by
+    refine (pspacePullRatio_comp_ofCoordinates f _ i _ (C.ratio_self i)
       a ⊤ hp ha k).trans ?_
-    exact ConcreteCategory.congr_hom (appLE_congr hab (U s i) ⊤ ha hi) _
+    exact ConcreteCategory.congr_hom (appLE_congr hab (C.U i) ⊤ ha hi) _
   have hb' (k : Fin (n + 1)) :
-      pspacePullRatio q ⊤ j hqj k = (u.appLE _ ⊤ hj).hom (r j k) :=
-    pspacePullRatio_comp_ofCoordinates f _ j _ (sectionRatio_self s r hr hL j) b ⊤ hqj hj k
-  have hmul (i' j' k : Fin (n + 1)) (hi' : ⊤ ≤ u ⁻¹ᵁ U s i') (hj' : ⊤ ≤ u ⁻¹ᵁ U s j') :
-      (u.appLE _ ⊤ hi').hom (r i' j') * (u.appLE _ ⊤ hj').hom (r j' k) =
-        (u.appLE _ ⊤ hi').hom (r i' k) := by
-    let W := U s i' ⊓ U s j'
+      pspacePullRatio q ⊤ j hqj k = (u.appLE _ ⊤ hj).hom (C.ratio j k) :=
+    pspacePullRatio_comp_ofCoordinates f _ j _ (C.ratio_self j) b ⊤ hqj hj k
+  have hmul (i' j' k : Fin (n + 1)) (hi' : ⊤ ≤ u ⁻¹ᵁ C.U i') (hj' : ⊤ ≤ u ⁻¹ᵁ C.U j') :
+      (u.appLE _ ⊤ hi').hom (C.ratio i' j') * (u.appLE _ ⊤ hj').hom (C.ratio j' k) =
+        (u.appLE _ ⊤ hi').hom (C.ratio i' k) := by
+    let W := C.U i' ⊓ C.U j'
     have hW : ⊤ ≤ u ⁻¹ᵁ W := le_inf hi' hj'
     have e := congrArg (u.appLE W ⊤ hW).hom
-      (sectionRatio_mul s r hr hL i' j' k (W := W) inf_le_left inf_le_right)
+      (C.ratio_mul i' j' k)
     simpa only [map_mul, appLE_resG] using e
   have hu : IsUnit (pspacePullRatio q ⊤ j hqj i) := by
     rw [hb']
     refine IsUnit.of_mul_eq_one _ ((hmul j i j hj hi).trans ?_)
-    rw [sectionRatio_self s r hr hL, map_one]
+    rw [C.ratio_self, map_one]
   apply Scheme.hom_ext_of_forall p q
   intro z
   refine ⟨⊤, trivial, pspace_restrict_eq_of_ratios hbase ⊤ i hp hqi fun k => ?_⟩
@@ -100,92 +136,85 @@ private theorem chartMap_agree {Z : Scheme.{0}} (i j : Fin (n + 1))
   rw [pspacePullRatio_mul q ⊤ j i k hqj hqi, hb' i, ha' k, hb' k]
   exact hmul j i k hj hi
 
-variable (hc : iSup (U s) = ⊤)
-
-/-- The ratios of the sections glue to a morphism into projective space. -/
+/-- The ratios on the cover glue to a morphism into projective space. -/
 def sectionMorphism : X ⟶ PSpace R n :=
-  (X.openCoverOfIsOpenCover (U s) (IsOpenCover.mk hc)).glueMorphisms
-    (chartMap s f r) fun i j => chartMap_agree s f r hr hL i j _ _ pullback.condition
+  (X.openCoverOfIsOpenCover C.U (IsOpenCover.mk C.cover)).glueMorphisms
+    (chartMap C f) fun i j => chartMap_agree C f i j _ _ pullback.condition
 
 theorem ι_sectionMorphism (i : Fin (n + 1)) :
-    (U s i).ι ≫ sectionMorphism s f r hr hL hc = chartMap s f r i :=
-  (X.openCoverOfIsOpenCover (U s) (IsOpenCover.mk hc)).ι_glueMorphisms _ _ i
+    (C.U i).ι ≫ sectionMorphism C f = chartMap C f i :=
+  (X.openCoverOfIsOpenCover C.U (IsOpenCover.mk C.cover)).ι_glueMorphisms _ _ i
 
-theorem sectionMorphism_base : sectionMorphism s f r hr hL hc ≫ PSpace.str R n = f := by
+theorem sectionMorphism_base : sectionMorphism C f ≫ PSpace.str R n = f := by
   apply Scheme.hom_ext_of_forall
   intro x
-  obtain ⟨i, hi⟩ := Opens.mem_iSup.mp (hc.ge (Set.mem_univ x))
-  refine ⟨U s i, hi, ?_⟩
+  obtain ⟨i, hi⟩ := Opens.mem_iSup.mp (C.cover.ge (Set.mem_univ x))
+  refine ⟨C.U i, hi, ?_⟩
   rw [← Category.assoc, ι_sectionMorphism, chartMap, pspaceOfCoordinates_base]
 
 theorem sectionMorphism_preimage (j : Fin (n + 1)) :
-    sectionMorphism s f r hr hL hc ⁻¹ᵁ V (R := R) j = U s j := by
+    sectionMorphism C f ⁻¹ᵁ V (R := R) j = C.U j := by
   apply SetLike.ext
   intro x
-  obtain ⟨i, hi⟩ := Opens.mem_iSup.mp (hc.ge (Set.mem_univ x))
-  let z : (U s i).toScheme := ⟨x, hi⟩
-  have h := congrArg (fun a : (U s i).toScheme ⟶ PSpace R n => a z)
-    (ι_sectionMorphism s f r hr hL hc i)
-  change ((sectionMorphism s f r hr hL hc) x ∈ V (R := R) j ↔ _)
-  change (sectionMorphism s f r hr hL hc) x = chartMap s f r i z at h
+  obtain ⟨i, hi⟩ := Opens.mem_iSup.mp (C.cover.ge (Set.mem_univ x))
+  let z : (C.U i).toScheme := ⟨x, hi⟩
+  have h := congrArg (fun a : (C.U i).toScheme ⟶ PSpace R n => a z)
+    (ι_sectionMorphism C f i)
+  change ((sectionMorphism C f) x ∈ V (R := R) j ↔ _)
+  change (sectionMorphism C f) x = chartMap C f i z at h
   rw [h]
-  change z ∈ chartMap s f r i ⁻¹ᵁ V (R := R) j ↔ _
-  rw [chartMap_preimage s f r hr hL]
+  change z ∈ chartMap C f i ⁻¹ᵁ V (R := R) j ↔ _
+  rw [chartMap_preimage C f]
   rfl
 
 theorem sectionMorphism_ratio (i j : Fin (n + 1)) :
-    pspacePullRatio (sectionMorphism s f r hr hL hc) (U s i) i
-      (sectionMorphism_preimage s f r hr hL hc i).ge j = r i j := by
-  let a := sectionMorphism s f r hr hL hc
-  let W := U s i
+    pspacePullRatio (sectionMorphism C f) (C.U i) i
+      (sectionMorphism_preimage C f i).ge j = C.ratio i j := by
+  let a := sectionMorphism C f
+  let W := C.U i
   let Z := V (R := R) i
   let η := W.ι.appLE W ⊤ W.ι_preimage_self.ge
   haveI : IsIso η := inferInstanceAs (IsIso (W.ι.appLE W ⊤ W.ι_preimage_self.ge))
   apply (ConcreteCategory.bijective_of_isIso η).1
   let ev (u : Γ(PSpace R n, Z) ⟶ Γ(W.toScheme, ⊤)) := u.hom (pspaceChartRatio R i j)
   have h := congrArg ev (Scheme.Hom.appLE_comp_appLE W.ι a Z W ⊤
-    (sectionMorphism_preimage s f r hr hL hc i).ge W.ι_preimage_self.ge)
-  have hh := appLE_congr (ι_sectionMorphism s f r hr hL hc i) Z ⊤
+    (sectionMorphism_preimage C f i).ge W.ι_preimage_self.ge)
+  have hh := appLE_congr (ι_sectionMorphism C f i) Z ⊤
     (W.ι_preimage_self.ge.trans
-      (W.ι.preimage_mono (sectionMorphism_preimage s f r hr hL hc i).ge))
-    (pspaceOfCoordinates_preimage f W i (r i))
+      (W.ι.preimage_mono (sectionMorphism_preimage C f i).ge))
+    (pspaceOfCoordinates_preimage f W i (C.ratio i))
   exact h.trans ((congrArg ev hh).trans
-    (pspaceOfCoordinates_ratio f W i (r i) (sectionRatio_self s r hr hL i) j))
+    (pspaceOfCoordinates_ratio f W i (C.ratio i) (C.ratio_self i) j))
 
 /-- When the ratios generate the affine coordinate rings, the section morphism is a closed
 immersion. -/
-theorem sectionMorphism_isClosedImmersion (haff : ∀ i, IsAffineOpen (U s i))
+theorem sectionMorphism_isClosedImmersion (haff : ∀ i, IsAffineOpen (C.U i))
     (hsurj : ∀ i,
-      letI := sectionAlgebra f (U s i)
-      Function.Surjective (MvPolynomial.eval₂Hom (algebraMap R Γ(X, U s i)) (r i))) :
-    IsClosedImmersion (sectionMorphism s f r hr hL hc) := by
-  let a := sectionMorphism s f r hr hL hc
-  have hpre (i : Fin (n + 1)) : a ⁻¹ᵁ V (R := R) i = U s i :=
-    sectionMorphism_preimage s f r hr hL hc i
+      letI := sectionAlgebra f (C.U i)
+      Function.Surjective (MvPolynomial.eval₂Hom (algebraMap R Γ(X, C.U i)) (C.ratio i))) :
+    IsClosedImmersion (sectionMorphism C f) := by
+  let a := sectionMorphism C f
+  have hpre (i : Fin (n + 1)) : a ⁻¹ᵁ V (R := R) i = C.U i :=
+    sectionMorphism_preimage C f i
   have hsurj' (i : Fin (n + 1)) :
-      Function.Surjective (a.appLE (V (R := R) i) (U s i) (hpre i).ge).hom := by
-    letI := sectionAlgebra f (U s i)
-    letI := sectionAlgebra (PSpace.str R n) (V (R := R) i)
-    let ρ := (a.appLE (V (R := R) i) (U s i) (hpre i).ge).hom
-    have hconst (c : R) : ρ (algebraMap R Γ(PSpace R n, V (R := R) i) c) =
-        algebraMap R Γ(X, U s i) c :=
-      congrArg (fun u : CommRingCat.of R ⟶ Γ(X, U s i) => u.hom c)
-        ((Category.assoc _ _ _).trans
-          ((congrArg (_ ≫ ·) (Scheme.Hom.appLE_comp_appLE a (PSpace.str R n)
-            ⊤ (V (R := R) i) (U s i) le_top (hpre i).ge)).trans
-            (appLE_congr (sectionMorphism_base s f r hr hL hc) ⊤ (U s i) le_top le_top
-              |> congrArg ((Scheme.ΓSpecIso (CommRingCat.of R)).inv ≫ ·))))
+      Function.Surjective (a.appLE (V (R := R) i) (C.U i) (hpre i).ge).hom := by
+    let W := C.U i
+    let Z := V (R := R) i
+    let ρ : SectionRing (PSpace.str R n) Z →ₐ[R] SectionRing f W :=
+      (sectionRes f (homOfLE (hpre i).ge)).comp (sectionPullback (sectionMorphism_base C f) Z)
+    change Function.Surjective ρ
     intro b
     obtain ⟨p, rfl⟩ := hsurj i b
-    change MvPolynomial.eval₂Hom _ (r i) p ∈ ρ.range
+    change MvPolynomial.eval₂Hom (algebraMap R (SectionRing f W)) (C.ratio i) p ∈
+      ρ.toRingHom.range
     induction p using MvPolynomial.induction_on with
-    | C c => exact ⟨_, (hconst c).trans (MvPolynomial.eval₂Hom_C _ _ c).symm⟩
+    | C c => exact ⟨_, (ρ.commutes c).trans (MvPolynomial.eval₂Hom_C _ _ c).symm⟩
     | add p q hp hq =>
       rw [map_add]
       exact add_mem hp hq
     | mul_X p j hp =>
       rw [map_mul, MvPolynomial.eval₂Hom_X']
-      exact mul_mem hp ⟨_, sectionMorphism_ratio s f r hr hL hc i j⟩
+      exact mul_mem hp ⟨_, sectionMorphism_ratio C f i j⟩
   refine (IsZariskiLocalAtTarget.iff_of_iSup_eq_top (P := @IsClosedImmersion)
     (PSpace.coordinateOpen R n) (PSpace.iSup_coordinateOpen R n)).2 fun i => ?_
   let Z := V (R := R) i
@@ -200,6 +229,19 @@ theorem sectionMorphism_isClosedImmersion (haff : ∀ i, IsAffineOpen (U s i))
     intro y
     obtain ⟨x, hx⟩ := hsurj' i (e y)
     exact ⟨x, (ConcreteCategory.bijective_of_isIso e).1 hx⟩
-  exact (ConcreteCategory.bijective_of_isIso _).2.comp hrng
+  let e := X.presheaf.map (eqToHom (image_morphismRestrict_preimage a Z ⊤)).op
+  change Function.Surjective ((a.app (Z.ι ''ᵁ ⊤)) ≫ e)
+  exact (ConcreteCategory.bijective_of_isIso e).2.comp hrng
+
+/-- Affine charts generated by these ratios present a projective scheme over the base. -/
+theorem isProjOver (haff : ∀ i, IsAffineOpen (C.U i))
+    (hsurj : ∀ i,
+      letI := sectionAlgebra f (C.U i)
+      Function.Surjective (MvPolynomial.eval₂Hom (algebraMap R Γ(X, C.U i)) (C.ratio i))) :
+    IsProjOver f :=
+  ⟨n, C.sectionMorphism f, C.sectionMorphism_isClosedImmersion f haff hsurj,
+    C.sectionMorphism_base f⟩
+
+end Coordinates
 
 end GlobalTheory.ProjectiveSections

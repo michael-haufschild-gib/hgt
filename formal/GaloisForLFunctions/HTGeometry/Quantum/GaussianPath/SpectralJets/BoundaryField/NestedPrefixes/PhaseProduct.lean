@@ -36,7 +36,7 @@ theorem gaussian_nested_phase_product :
         apply Finset.sum_congr rfl
         intro i _
         simp only [q,Int.cast_neg,neg_mul,mul_neg,E,Function.comp_apply]
-      _ = ∑ i, (c j i:ℝ)*(-E j i) := Equiv.sum_comp (b j) _
+      _ = ∑ i, (c j i:ℝ)*(-E j i) := Equiv.sum_comp (b j) (fun i => (c j i:ℝ)*(-E j i))
       _ = _ := lift_energy (r j) _ (fun i => -E j i)
   have hzero : (∑ j, action j.val (q j) ω)=0 := by
     simpa only [hA,finiteTorusCharacterDetuning,Fintype.sum_sigma,f] using hm

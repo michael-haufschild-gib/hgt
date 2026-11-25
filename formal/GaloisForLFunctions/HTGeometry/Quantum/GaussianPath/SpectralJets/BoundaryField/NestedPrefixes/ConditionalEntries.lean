@@ -1,5 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.BoundaryField.NestedPrefixes.ConditionalLaw
-import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.BoundaryField.NullDates
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.BoundaryField.FirstReturnDates
 
 /-! # Conditional law of actual scalar entry dates on an unmodified chain -/
 
@@ -20,7 +20,9 @@ private theorem reciprocal_section (S : Set (PathPauliDisorder × ℝ)) (η : Pa
   have hi : volume ((fun t : ℝ => c/t) '' V)=0 := by
     apply addHaar_image_eq_zero_of_differentiableOn_of_addHaar_eq_zero volume _ hz
     intro t ht
-    exact (differentiableAt_const.div differentiableAt_id ht.2).differentiableWithinAt
+    have ht₀ : t≠0 := ht.2
+    apply DifferentiableAt.differentiableWithinAt
+    fun_prop (disch := exact ht₀)
   apply measure_mono_null _ hi
   intro u hu
   exact ⟨c/u,⟨hu.2,div_ne_zero hc hu.1⟩,by field_simp⟩
@@ -41,7 +43,7 @@ theorem gaussian_conditional_entries (k : ℕ) {ε : ℝ} (he : ε∈Ioo (0:ℝ)
   have hn (n : ℤ) : c n≠0 := by
     apply mul_ne_zero (mul_ne_zero (by norm_num) pi_ne_zero)
     by_cases hp : 0≤n
-    · exact (add_pos_of_nonneg_of_pos (Int.cast_nonneg.mpr hp) hx.1).ne'
+    · exact (add_pos_of_nonneg_of_pos (by exact_mod_cast hp : (0:ℝ)≤n) hx.1).ne'
     · have hu : (n:ℝ)≤-1 := by exact_mod_cast (show n≤-1 by omega)
       linarith only [hu,hx.2]
   let B (n : ℤ) := {p : PathPauliDisorder × ℝ | p.2≠0 ∧ (p.1,c n/p.2)∈S}

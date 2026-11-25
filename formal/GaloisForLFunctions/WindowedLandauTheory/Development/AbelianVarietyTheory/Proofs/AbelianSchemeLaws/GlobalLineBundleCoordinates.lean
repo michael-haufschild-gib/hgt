@@ -46,12 +46,14 @@ def globalCoordinates : Γ(toMod L, ⊤) ≃ L.Sec where
     change resG X inf_le_right (resG X (le_inf le_top le_rfl) (coord s i)) = coord s i
     rw [resG_resG, resG_self]
   right_inv s := by
-    cases s with
-    | mk vals compat =>
-      congr 1
-      funext i
-      change resG X (le_inf le_top le_rfl) (resG X inf_le_right (vals i)) = vals i
+    have h : (toCoordinates (ofCoordinates s)).f = s.f := funext fun i => by
+      change resG X (le_inf le_top le_rfl) (resG X inf_le_right (s.f i)) = s.f i
       rw [resG_resG, resG_self]
+    generalize toCoordinates (ofCoordinates s) = t at h ⊢
+    cases s
+    cases t
+    cases h
+    rfl
 
 theorem globalCoordinates_apply (s : Γ(toMod L, ⊤)) (i : L.ι) :
     (globalCoordinates s).f i = resG X (le_inf le_top le_rfl) (coord s i) := rfl
@@ -61,7 +63,9 @@ theorem exists_gen_of_unit_coordinates (s : Γ(toMod L, ⊤))
     ∃ t : L.Gen, t.IsGen := by
   refine ⟨⟨fun i => (h i).unit⟩, fun i j => ?_⟩
   apply Units.ext
-  simpa only [res, Units.coe_map, IsUnit.unit_spec, Units.val_mul] using (globalCoordinates s).compat i j
+  change resG X inf_le_left (h i).unit.val =
+    (L.g i j : Γ(X, L.U i ⊓ L.U j)) * resG X inf_le_right (h j).unit.val
+  simpa only [IsUnit.unit_spec] using (globalCoordinates s).compat i j
 
 /-- Being a generator can be checked in one chosen bundle coordinate on each member of a cover. -/
 theorem exists_gen_of_nonvanishing_coordinates (s : Γ(toMod L, ⊤)) {I : Type}
@@ -114,7 +118,9 @@ theorem section_proportional_to_gen (hL : L.IsLB) (s : L.Sec) (t : L.Gen) (ht : 
     dsimp only [q]
     rw [map_mul, map_mul, hs, hi, mul_mul_mul_comm, Units.mul_inv, one_mul])
   refine ⟨a, fun i => ?_⟩
-  rw [ha i, q, Units.inv_mul_cancel_right]
+  rw [ha i]
+  change s.f i = (s.f i * ((t.s i)⁻¹).val) * (t.s i).val
+  rw [mul_assoc, Units.inv_mul, mul_one]
 
 theorem globalSection_ext_on_coordinates (s t : L.Sec) {I : Type}
     (W : I → X.Opens) (c : I → L.ι) (hle : ∀ i, W i ≤ L.U (c i)) (hc : ⨆ i, W i = ⊤)

@@ -5,7 +5,7 @@ import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory
 
 noncomputable section
 
-open AlgebraicGeometry CategoryTheory Opposite TopologicalSpace MonoidalCategory
+open AlgebraicGeometry CategoryTheory CategoryTheory.Limits Opposite TopologicalSpace MonoidalCategory
 open CartesianMonoidalCategory MonObj
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out
 open GlobalTheory.LineBundleSections GlobalTheory.SchemeCohomology UpperTheory.Cb
@@ -27,26 +27,13 @@ private theorem isProjOver_of_section_system {L : LB X} (hL : L.IsLB)
   cases subsingleton_or_nontrivial R
   · haveI : IsEmpty (Spec (CommRingCat.of R)) := inferInstanceAs (IsEmpty (PrimeSpectrum R))
     haveI : IsEmpty X := Function.isEmpty f
-    have a : IsInitial X := (Scheme.isInitial_iff_isEmpty.mpr inferInstance).some
-    let i := a.to (PSpace R 0)
-    haveI : IsClosedImmersion i := by
-      refine (IsZariskiLocalAtTarget.iff_of_iSup_eq_top (P := @IsClosedImmersion)
-        (PSpace.coordinateOpen R 0) (PSpace.iSup_coordinateOpen R 0)).2 fun j => ?_
-      haveI : IsAffine (PSpace.coordinateOpen R 0 j).toScheme := pspaceChart_isAffine j
-      haveI : IsEmpty (i ⁻¹ᵁ PSpace.coordinateOpen R 0 j).toScheme := inferInstanceAs
-        (IsEmpty ((i ⁻¹ᵁ PSpace.coordinateOpen R 0 j) : Set X))
-      refine IsClosedImmersion.of_surjective_of_isAffine _ ?_
-      intro u
-      exact ⟨0, Subsingleton.elim _ _⟩
-    exact ⟨0, i, inferInstance, a.hom_ext _ _⟩
+    exact isProjOver_of_isEmpty f
   · choose r hr using fun i => (h i).2
-    exact ⟨n, sectionMorphism s f r (fun i => (hr i).1) hL hc,
-      sectionMorphism_isClosedImmersion s f r (fun i => (hr i).1) hL hc
-        (fun i => (h i).1) (fun i => (hr i).2),
-      sectionMorphism_base s f r (fun i => (hr i).1) hL hc⟩
+    exact (Coordinates.ofSections hL s r (fun i => (hr i).1) hc).isProjOver f
+      (fun i => (h i).1) (fun i => (hr i).2)
 
 private theorem sectionAlgebra_comp_iso (q : X ⟶ Y) (e : Y ⟶ Spec (CommRingCat.of R))
-    [IsIso e] (W : X.Opens) {ι : Type} (r : ι → Γ(X, W))
+    [IsIso e] (W : X.Opens) {σ : Type} (r : σ → Γ(X, W))
     (hr : Function.Surjective (MvPolynomial.eval₂Hom (q.appLE ⊤ W le_top).hom r)) :
     letI := sectionAlgebra (q ≫ e) W
     Function.Surjective (MvPolynomial.eval₂Hom (algebraMap R Γ(X, W)) r) := by
@@ -54,8 +41,7 @@ private theorem sectionAlgebra_comp_iso (q : X ⟶ Y) (e : Y ⟶ Spec (CommRingC
   let b : CommRingCat.of R ⟶ Γ(Y, ⊤) := (Scheme.ΓSpecIso _).inv ≫ e.appLE ⊤ ⊤ le_top
   haveI : IsIso b := by
     have he : e.appLE ⊤ ⊤ (by simp) = e.appTop := by
-      simpa only [Scheme.Hom.appTop, Scheme.Hom.app_eq_appLE, Scheme.Hom.preimage_top]
-        using (rfl : e.appTop = e.appTop)
+      simp only [Scheme.Hom.appTop, Scheme.Hom.app_eq_appLE, Scheme.Hom.preimage_top]
     haveI : IsIso e.appTop := inferInstanceAs (IsIso (e.app ⊤))
     dsimp only [b]
     rw [he]
@@ -87,5 +73,24 @@ theorem isProjOver_of_relAmple_on_affine {S : Scheme.{0}} {A : Over S} [GrpObj A
   exact isProjOver_of_section_system hb _ s hc fun i => by
     obtain ⟨haff, r, hratio, hsurj⟩ := hs i
     exact ⟨haff, r, hratio, sectionAlgebra_comp_iso _ hW.isoSpec.hom _ r hsurj⟩
+
+/-- Over an affine base the relatively ample bundle gives a projective embedding. -/
+theorem isProjOver_of_relAmple {A : Over (Spec (CommRingCat.of R))} [GrpObj A]
+    {L : LB A.left} (hL : L.IsLB) (h : RelAmple A L) : IsProjOver A.hom := by
+  obtain ⟨m, _, n, s, hc, hs⟩ := h ⊤ (isAffineOpen_top _)
+  let W : (Spec (CommRingCat.of R)).Opens := ⊤
+  let q := A.hom ∣_ W
+  haveI : IsIso W.ι := inferInstanceAs (IsIso (Spec (CommRingCat.of R)).topIso.hom)
+  have hproj : IsProjOver (q ≫ W.ι) :=
+    isProjOver_of_section_system (hL.linComb _ _) _ s hc fun i => by
+      obtain ⟨haff, r, hratio, hsurj⟩ := hs i
+      exact ⟨haff, r, hratio, sectionAlgebra_comp_iso _ W.ι _ r hsurj⟩
+  change IsProjOver (A.hom ∣_ W ≫ W.ι) at hproj
+  rw [morphismRestrict_ι] at hproj
+  let i := (A.hom ⁻¹ᵁ W).ι
+  haveI : IsIso i := inferInstanceAs (IsIso A.left.topIso.hom)
+  obtain ⟨N, a, _, hbase⟩ := hproj
+  exact ⟨N, inv i ≫ a, inferInstance, by
+    rw [Category.assoc, hbase, IsIso.inv_hom_id_assoc]⟩
 
 end GlobalTheory.ProjectiveSections

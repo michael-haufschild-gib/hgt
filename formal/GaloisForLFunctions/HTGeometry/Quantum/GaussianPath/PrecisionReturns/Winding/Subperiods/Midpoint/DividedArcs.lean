@@ -49,7 +49,7 @@ theorem divisible_of_short_division (h : Anchored w t r b z)
   have hi' : (d:ℝ)*F i ≤ (d:ℝ)*u := mul_le_mul_of_nonneg_left (hh i).2 hd'.le
   have hn (j : I) : 0≤(d:ℝ)*F j := mul_nonneg hd'.le (hh j).1
   have hsmall : (-1:ℝ)<k ∧ (k:ℝ)<1 := by
-    change -1<((z i-(d:ℤ)*(y i-y b):ℤ):ℝ) ∧ _
+    change -1<((z i-(d:ℤ)*(y i-y b):ℤ):ℝ) ∧ ((z i-(d:ℤ)*(y i-y b):ℤ):ℝ)<1
     rw [eqn]
     exact ⟨by linarith only [hn i,hb',(show E i≤r from (h i).2),hu],
       by linarith only [hi',hn b,(show 0≤E i from (h i).1),hr,hu]⟩

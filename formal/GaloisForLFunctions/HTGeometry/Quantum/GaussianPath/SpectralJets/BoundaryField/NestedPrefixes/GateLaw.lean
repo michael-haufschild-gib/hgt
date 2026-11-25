@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.BoundaryField.NestedPrefixes.SelectedSchedule
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.BoundaryField.NestedPrefixes.NumberedCharacters
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.AdaptiveSampling.ShiftedWaits.GateDistribution
 
 /-! # Larger-prefix gate occupation along a schedule fixed by other couplings -/
@@ -14,18 +15,11 @@ on the eigenvalues, with the minus sign from exp(−itH) on non-anchor rows. -/
 private theorem numbered_action {d : ℕ} (E : Fin (d+1) → ℝ) (m : Fin d → ℤ) (hm : m≠0) :
     ∃ c : Fin (d+1) → ℤ, c≠0 ∧ (∑ i, c i)=0 ∧
       (∑ i, (c i:ℝ)*E i)=finiteTorusCharacterDetuning m (RHTower.zeroProjectiveFrequency E) := by
-  let c : Fin (d+1) → ℤ := Fin.cases (∑ i, m i) (fun i => -m i)
-  refine ⟨c,?_,?_,?_⟩
-  · intro h
-    apply hm
-    funext i
-    simpa only [c,Fin.cases_succ,neg_eq_zero,Pi.zero_apply] using congrFun h i.succ
-  · rw [Fin.sum_univ_succ]
-    simp only [c,Fin.cases_zero,Fin.cases_succ,Finset.sum_neg_distrib,add_neg_cancel]
-  · rw [Fin.sum_univ_succ]
-    simp only [c,Fin.cases_zero,Fin.cases_succ,Int.cast_sum,Int.cast_neg,neg_mul,Finset.sum_neg_distrib,
-      finiteTorusCharacterDetuning,RHTower.zeroProjectiveFrequency,mul_sub,Finset.sum_sub_distrib,←Finset.sum_mul,
-      sub_eq_add_neg]
+  refine ⟨numberedPacket m,?_,numberedPacket_sum m,numberedPacket_action E m⟩
+  intro h
+  apply hm
+  funext i
+  simpa only [numberedPacket,Fin.cases_succ,neg_eq_zero,Pi.zero_apply] using congrFun h i.succ
 
 /-- For every physical gate budget and every fixed tolerance, the frequency
 on a smaller-prefix schedule equals the continuous-time frequency on the

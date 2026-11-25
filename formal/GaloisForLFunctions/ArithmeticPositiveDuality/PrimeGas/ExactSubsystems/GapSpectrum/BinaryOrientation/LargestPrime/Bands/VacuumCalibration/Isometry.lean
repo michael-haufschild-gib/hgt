@@ -61,9 +61,25 @@ theorem split_isometric_iff_interior_vacuum {c d : ℝ} (hc : 0 < c) (hcd : c < 
     · have H := above hc hcd (show 1 < 2*s.re by linarith only [hg])
       exact False.elim (hr.2.ne (tendsto_nhds_unique ht H))
 
+/-- Doubling the log-energy cutoff gives a fair empty/occupied bit exactly at isometric splitting. -/
+theorem split_isometric_iff_half_vacuum {c : ℝ} (hc : 0 < c) (s : ℂ) :
+    (∃ T : Gas →ₗᵢ[ℂ] PairGas, ∀ f x, T f x = split s f x) ↔
+      Tendsto (fun h => vacuum c (2*c) h (2*s.re)) criticalApproach (𝓝 (1/2)) := by
+  have hd : c < 2*c := by simpa only [two_mul] using lt_add_of_pos_right c hc
+  constructor
+  · intro h
+    have hs := (split_isometric_iff s).mp h
+    have he : c/(2*c) = 1/2 := by field_simp [hc.ne']
+    rw [show 2*s.re = 1 by rw [hs]; ring,← he]
+    exact at_one hc hd
+  · intro h
+    exact (split_isometric_iff_interior_vacuum hc hd s).mpr
+      ⟨1/2,⟨half_pos zero_lt_one,half_lt_self zero_lt_one⟩,h⟩
+
 #print axioms below
 #print axioms above
 #print axioms at_one
 #print axioms split_isometric_iff_interior_vacuum
+#print axioms split_isometric_iff_half_vacuum
 
 end GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.ExactSubsystems.BinaryOrientation.LargestPrime.Bands.VacuumCalibration

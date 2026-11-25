@@ -42,7 +42,7 @@ theorem value_comp {α : R →+* S} (H : IsPullback π g f (Spec.map (CommRingCa
     exact appLE_base_algebraMap H.w le_rfl x
   simp only [value, valueBase, map_sum, map_mul, e, Function.comp_apply]
 
-private def chartLe (i : P.I) :
+private theorem chartLe (i : P.I) :
     π ⁻¹ᵁ P.W i ≤ (L.pull π).U (fun _ => P.chart i) :=
   (π.preimage_mono (P.le_chart i)).trans (pull_chart L π (P.chart i)).ge
 
@@ -83,15 +83,17 @@ theorem values_of_trivial (hL : L.IsLB) {α : R →+* S}
   have hgen (i : P.I) : P.value π g v.1 i =
       resG Y (P.chartLe i) (t.s (fun _ => P.chart i)).val := by
     rw [← hE v i, hv]
-    rfl
   refine ⟨v.1, v.2, fun i => hgen i ▸ (Units.isUnit _).map (resG Y (P.chartLe i)), ?_⟩
   intro hsurj w hw
   obtain ⟨a, ha⟩ := section_proportional_to_gen (hL.pull π) (E ⟨w, hw⟩) t ht
   letI := sectionAlgebra g ⊤
   have hs : Function.Surjective (algebraMap S Γ(Y, ⊤)) := by
+    have e : g.appLE ⊤ ⊤ le_top = g.appTop := by
+      simp only [Scheme.Hom.appTop, Scheme.Hom.app_eq_appLE, Scheme.Hom.preimage_top]
     change Function.Surjective (((Scheme.ΓSpecIso (CommRingCat.of S)).inv ≫ g.appLE ⊤ ⊤ le_top).hom)
-    rw [← Scheme.Hom.app_eq_appLE g]
-    exact hsurj.comp (ConcreteCategory.bijective_of_isIso _).2
+    rw [e]
+    exact hsurj.comp (ConcreteCategory.bijective_of_isIso
+      (Scheme.ΓSpecIso (CommRingCat.of S)).inv).2
   obtain ⟨c, rfl⟩ := hs a
   have hcv : (P.d₀.map α).mulVec (c • v.1) = 0 := by rw [Matrix.mulVec_smul, v.2, smul_zero]
   refine ⟨c, congrArg Subtype.val (E.injective (a₁ := ⟨w, hw⟩) (a₂ := ⟨c • v.1, hcv⟩) ?_)⟩

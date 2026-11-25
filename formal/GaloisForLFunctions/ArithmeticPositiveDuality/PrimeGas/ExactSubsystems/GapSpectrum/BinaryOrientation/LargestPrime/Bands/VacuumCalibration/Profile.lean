@@ -61,7 +61,8 @@ theorem response_atBot {c d : ℝ} (hc : 0 < c) (hcd : c < d) :
 theorem response_atTop {c d : ℝ} (hc : 0 < c) (hcd : c < d) :
     Tendsto (response c d) atTop (𝓝 1) := by
   have H := Real.continuous_exp.continuousAt.tendsto.comp (mass_atTop hc hcd).neg
-  simpa only [neg_zero,Real.exp_zero,Function.comp_def,response] using H
+  change Tendsto (fun a => Real.exp (-mass c d a)) atTop (𝓝 1)
+  simpa only [neg_zero,Real.exp_zero,Function.comp_def] using H
 
 #print axioms response_zero
 #print axioms mass_atTop

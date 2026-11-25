@@ -64,7 +64,7 @@ theorem triviality_locus_near_fibre {L : LB X} (hL : L.IsLB) [UniversallyClosed 
       (by rw [zero_smul, ← e]; exact hu)
     exact not_isUnit_zero h
   obtain ⟨δ, v₀, hδ, hker⟩ := exists_kernel_vector α₀ P.d₀ v hv₀ (hline hΓ)
-  let z : Spec (CommRingCat.of K) := ⟨⊥, Ideal.bot_prime⟩
+  let z : Spec (CommRingCat.of K) := ⟨⊥, Ideal.isPrime_bot⟩
   let W : X.Opens := ⨆ i, X.basicOpen (P.valueBase v₀ i)
   have hclosed : IsClosed (f '' (W : Set X)ᶜ) := f.isClosedMap _ W.isOpen.isClosed_compl
   have hz : Spec.map (CommRingCat.ofHom α₀) z ∈ (f '' (W : Set X)ᶜ)ᶜ := by

@@ -19,6 +19,7 @@ theorem band_transform_limit {c d : ℝ} (hc : 0 < c) (hcd : c < d) (z : ℂ) :
   rw [increment_mgf hc hcd]
   apply H.congr'
   filter_upwards [hlow.eventually_ne (transform_ne_zero c z)] with h hn
+  change momentProbe d h 0 z/momentProbe c h 0 z = packetMoment (added c d h) h z
   rw [finite_factor hcd.le,mul_div_cancel_left₀ _ hn]
 
 theorem band_weak_limit {c d : ℝ} (hc : 0 < c) (hcd : c < d) :
@@ -27,7 +28,7 @@ theorem band_weak_limit {c d : ℝ} (hc : 0 < c) (hcd : c < d) :
   intro u hu
   apply ProbabilityMeasure.tendsto_of_tendsto_charFun
   intro t
-  rw [← complexMGF_id_mul_I]
+  rw [charFun_increment,← increment_mgf hc hcd]
   exact ((band_transform_limit hc hcd ((t:ℂ)*Complex.I)).congr
     (fun h => (packet_charFun (added c d h) h t).symm)).comp hu
 

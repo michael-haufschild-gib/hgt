@@ -11,16 +11,17 @@ noncomputable section
 
 /-- Starting at any measurable date on a finite prefix, waiting until
 the first affordable endpoint is a measurable operation. -/
-theorem measurable_first_tenth (n s : ℕ) (a : (PrefixIndex n → ℝ) → ℝ) (ha : Measurable a) :
-    Measurable (fun x => firstVisit (prefixGenerator n x) (a x) s (1/10)) := by
-  let v x := firstVisit (prefixGenerator n x) (a x) s (1/10)
+theorem measurable_first_visit (n s : ℕ) (a : (PrefixIndex n → ℝ) → ℝ) (ha : Measurable a)
+    {ε : ℝ} (hε : 0<ε) :
+    Measurable (fun x => firstVisit (prefixGenerator n x) (a x) s ε) := by
+  let v x := firstVisit (prefixGenerator n x) (a x) s ε
   have hwait : Measurable (fun x => v x-a x) := by
     apply measurable_of_Iic
     intro b
     have he : (fun x => v x-a x) ⁻¹' Iic b =
-        {x | ∃ t∈Icc (a x) (a x+b), pathGateDistance n s x t≤1/10} := by
+        {x | ∃ t∈Icc (a x) (a x+b), pathGateDistance n s x t≤ε} := by
       ext x
-      have hv := firstVisit_isLeast (prefixGenerator n x) (a x) s (by norm_num : (0:ℝ)<1/10)
+      have hv := firstVisit_isLeast (prefixGenerator n x) (a x) s hε
       change v x-a x≤b ↔ _
       rw [sub_le_iff_le_add']
       constructor
@@ -29,7 +30,7 @@ theorem measurable_first_tenth (n s : ℕ) (a : (PrefixIndex n → ℝ) → ℝ)
       · rintro ⟨t,ht,hfit⟩
         exact (hv.2 ⟨ht.1,(hasProjectiveCircuitApproximation_iff_infDist _ s _).mpr hfit⟩).trans ht.2
     rw [he]
-    simpa only [add_zero] using measurable_shifted_window n s a ha 0 b
+    simpa only [add_zero] using measurable_shifted_sublevel _ (continuous_distance n s) a ha 0 b ε
   simpa only [sub_add_cancel] using hwait.add ha
 
 /-- Index zero is the first s-gate dip after the P-gate crossing at 9/80.
@@ -41,8 +42,8 @@ def returnClock (n P s : ℕ) (x : PrefixIndex n → ℝ) : ℕ → ℝ
 
 theorem measurable_returnClock (n P s : ℕ) (m : ℕ) : Measurable (fun x => returnClock n P s x m) := by
   induction m with
-  | zero => exact measurable_first_tenth _ _ _ (measurable_crossingOrigin _ _ _)
-  | succ m ih => exact measurable_first_tenth _ _ _ (ih.add_const 1)
+  | zero => exact measurable_first_visit _ _ _ (measurable_crossingOrigin _ _ _) (by norm_num)
+  | succ m ih => exact measurable_first_visit _ _ _ (ih.add_const 1) (by norm_num)
 
 theorem returnClock_separated (n P s : ℕ) (x : PrefixIndex n → ℝ) (m : ℕ) :
     returnClock n P s x m+1≤returnClock n P s x (m+1) :=

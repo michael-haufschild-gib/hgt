@@ -169,7 +169,9 @@ theorem measurable_crossingOrigin (n j : ℕ) (η : ℝ) : Measurable (crossingO
   have he : crossingTimes n j η x = ∅ := not_nonempty_iff_eq_empty.mp h
   rw [crossingOrigin,he,Real.sInf_empty]
 
-private theorem measurable_shifted_sublevel {X : Type*} [TopologicalSpace X] [MeasurableSpace X]
+/-- A sublevel visit in a compact time window remains measurable when the
+origin depends measurably on the Hamiltonian. -/
+theorem measurable_shifted_sublevel {X : Type*} [TopologicalSpace X] [MeasurableSpace X]
     [BorelSpace X] [SecondCountableTopology X]
     (f : X × ℝ → ℝ) (hf : Continuous f) (o : X → ℝ) (ho : Measurable o) (d b ε : ℝ) :
     MeasurableSet {x | ∃ t ∈ Icc (o x+d) (o x+d+b), f (x,t) ≤ ε} := by

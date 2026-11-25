@@ -72,13 +72,15 @@ private theorem real_cast (c d r : ℝ) : bandExponent c d (r:ℂ) = (realExpone
 private theorem mass_split {c d : ℝ} (hc : 0 < c) (hcd : c < d) (a : ℝ) :
     rate c d+realExponent c d (1-a) = mass c d a := by
   have hD : IntervalIntegrable density volume c d := intervalIntegrable_exp_neg_div hc hcd.le
+  have hf : Continuous (fun v : ℝ => Real.exp ((1-a)*v)-1) := by fun_prop
   have hW : IntervalIntegrable (fun v => density v*(Real.exp ((1-a)*v)-1)) volume c d :=
-    hD.continuousOn_mul (by fun_prop)
+    hD.mul_continuousOn hf.continuousOn
   rw [rate_integral hc hcd.le,← intervalIntegral.integral_of_le hcd.le,realExponent,
     ← intervalIntegral.integral_add hD hW,mass]
   apply intervalIntegral.integral_congr
   intro v _
-  rw [density,show -a*v = -v+(1-a)*v by ring,Real.exp_add]
+  change Real.exp (-v)/v+(Real.exp (-v)/v)*(Real.exp ((1-a)*v)-1) = Real.exp (-a*v)/v
+  rw [show -a*v = -v+(1-a)*v by ring,Real.exp_add]
   ring
 
 /-- At drift a, a finite raw vacuum reading tends to exp(-∫ exp(-av)dv/v). -/
@@ -99,6 +101,7 @@ theorem drift_limit {c d : ℝ} (hc : 0 < c) (hcd : c < d) (a : ℝ) :
   rw [hv] at H
   apply H.congr
   intro h
+  change ((packetLaw (added c d h) h : Measure ℝ) {0}).toReal / (packetMoment (added c d h) h ((1-a:ℝ):ℂ)).re = _
   rw [vacuum_tilt,packet_zero_mass,ENNReal.toReal_ofReal (inv_pos.mpr (finiteSquarefreePartition_pos _ _)).le,
     vacuum_eq]
 

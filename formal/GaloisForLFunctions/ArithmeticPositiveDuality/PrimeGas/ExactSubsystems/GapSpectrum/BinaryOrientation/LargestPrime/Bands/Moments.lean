@@ -56,12 +56,16 @@ theorem increment_mean {c d : ℝ} (hc : 0 < c) (hcd : c < d) :
   have hlow : Integrable (fun p : ℝ × ℝ => p.1) (μ.prod ν) := (cutoff_integrable hc).comp_fst ν
   have hband : Integrable (fun p : ℝ × ℝ => p.2) (μ.prod ν) := by
     have H := hsum.sub hlow
-    simpa only [Pi.sub_apply,add_sub_cancel_left] using H
+    change Integrable (fun p : ℝ × ℝ => p.1+p.2-p.1) (μ.prod ν) at H
+    simpa only [add_sub_cancel_left] using H
   have H := cutoffLaw_mean (hc.trans hcd)
-  rw [hE,integral_map (by fun_prop) measurable_id.aestronglyMeasurable] at H
+  rw [hE,integral_map (f := fun x : ℝ => x) (by fun_prop) (by fun_prop)] at H
   change (∫ p : ℝ × ℝ, p.1+p.2 ∂μ.prod ν) = _ at H
-  rw [integral_add hlow hband,integral_fun_fst (fun x : ℝ => x),integral_fun_snd (fun x : ℝ => x),
-    probReal_univ,one_smul,one_smul] at H
+  have hfirst : (∫ p : ℝ × ℝ, p.1 ∂μ.prod ν) = ∫ x, x ∂μ := by
+    simpa only [probReal_univ,one_smul] using integral_fun_fst (μ := μ) (ν := ν) (fun x : ℝ => x)
+  have hsecond : (∫ p : ℝ × ℝ, p.2 ∂μ.prod ν) = ∫ x, x ∂ν := by
+    simpa only [probReal_univ,one_smul] using integral_fun_snd (μ := μ) (ν := ν) (fun x : ℝ => x)
+  rw [integral_add hlow hband,hfirst,hsecond] at H
   change (∫ x : ℝ, x ∂(cutoffLaw c : Measure ℝ))+(∫ x : ℝ, x ∂ν) = _ at H
   rw [cutoffLaw_mean hc] at H
   change (∫ x : ℝ, x ∂ν) = _
