@@ -39,7 +39,8 @@ theorem pullback_map_mulN {S' : Scheme.{0}} (p : S' ⟶ S) (G : Over S) [GrpObj 
     _ = ((Over.pullback p).map (𝟙 G)) ^ n := map_pow (Over.pullback p).homMonoidHom _ _
     _ = _ := congrArg (· ^ n) ((Over.pullback p).map_id G)
 
-private theorem isPullback_baseChange {S T : Scheme.{0}} (t : T ⟶ S) {X Y : Over S} (f : X ⟶ Y) :
+/-- The map on base changes in the over category is cartesian over the original map. -/
+theorem isPullback_baseChange {S T : Scheme.{0}} (t : T ⟶ S) {X Y : Over S} (f : X ⟶ Y) :
     IsPullback (pullback.fst X.hom t) ((Over.pullback t).map f).left f.left
       (pullback.fst Y.hom t) := by
   refine IsPullback.of_bot (v₂₁ := pullback.snd Y.hom t) (v₂₂ := Y.hom) (h₃₁ := t) ?_ ?_
@@ -52,7 +53,8 @@ private theorem isPullback_baseChange {S T : Scheme.{0}} (t : T ⟶ S) {X Y : Ov
     exact IsPullback.of_hasPullback X.hom t
   · exact (pullback.lift_fst _ _ _).symm
 
-private theorem surjective_of_geomFibres {S : Scheme.{0}} {X Y : Over S} (f : X ⟶ Y)
+/-- Surjectivity on all geometric fibres implies surjectivity of the original map. -/
+theorem surjective_of_geomFibres {S : Scheme.{0}} {X Y : Over S} (f : X ⟶ Y)
     (h : ∀ (K : Type) [Field K] [IsAlgClosed K] (t : Spec (CommRingCat.of K) ⟶ S),
       Surjective ((Over.pullback t).map f).left) : Surjective f.left := by
   refine ⟨fun y => ?_⟩

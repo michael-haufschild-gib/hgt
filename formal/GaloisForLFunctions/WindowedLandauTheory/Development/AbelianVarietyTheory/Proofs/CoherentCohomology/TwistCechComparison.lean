@@ -96,40 +96,65 @@ private theorem chartLoc_restrict {I J : Finset ι} (h : I ⊆ J)
       hunit (hc.trans (ModuleFraction.restrict_comp_mkLinearMap (xProd_dvd R h)).symm)
   exact (congrArg e (LinearMap.congr_fun he z)).symm.trans (e.apply_symm_apply _)
 
-/-- Homogeneous fractions of degree zero correspond to untwisted sections on each intersection. -/
-private def chartPiece (I : Finset ι) : homLoc globalGrading I 0 ≃ₗ[R] TwistSections f M H (intersectionOpen I) 0 := by
+/-- Homogeneous fractions of degree `t` correspond to sections of the `t`-th twist. -/
+private def chartPiece (I : Finset ι) (t : ℤ) :
+    homLoc globalGrading I t ≃ₗ[R] TwistSections f M H (intersectionOpen I) t := by
   let e := chartLoc f hM hH s I
-  let φ : homLoc globalGrading I 0 →ₗ[R] intersectionGrading I 0 :=
+  let φ : homLoc globalGrading I t →ₗ[R] intersectionGrading I t :=
     ((e.toLinearMap.restrictScalars R).domRestrict _).codRestrict _
       fun a => chartLoc_isGraded f hM hH s I a.2
   refine (LinearEquiv.ofBijective φ ⟨fun a b hab => Subtype.ext (e.injective (congrArg Subtype.val hab)),
-    ?_⟩).trans (GrSum.pieceEquiv (twistSections_commute f M (intersectionOpen I) s) 0).symm
+    ?_⟩).trans (GrSum.pieceEquiv (twistSections_commute f M (intersectionOpen I) s) t).symm
   intro a
   let z := e.symm a.1
-  refine ⟨⟨gradedProj (homLoc globalGrading I) 0 z, gradedProj_mem _ _ _⟩, Subtype.ext ?_⟩
-  change e (gradedProj (homLoc globalGrading I) 0 z) = a.1
-  have hp := (chartLoc_isGraded f hM hH s I).proj_apply 0 z
-  change gradedProj (intersectionGrading I) 0 (e z) = e (gradedProj (homLoc globalGrading I) 0 z) at hp
-  exact hp.symm.trans ((congrArg (gradedProj (intersectionGrading I) 0) (e.apply_symm_apply a.1)).trans
+  refine ⟨⟨gradedProj (homLoc globalGrading I) t z, gradedProj_mem _ _ _⟩, Subtype.ext ?_⟩
+  change e (gradedProj (homLoc globalGrading I) t z) = a.1
+  have hp := (chartLoc_isGraded f hM hH s I).proj_apply t z
+  change gradedProj (intersectionGrading I) t (e z) = e (gradedProj (homLoc globalGrading I) t z) at hp
+  exact hp.symm.trans ((congrArg (gradedProj (intersectionGrading I) t) (e.apply_symm_apply a.1)).trans
     (gradedProj_of_mem _ a.2))
 
-private theorem chartPiece_apply (I : Finset ι) (z : homLoc globalGrading I 0) :
-    GrSum.of (twistSections_commute f M (intersectionOpen I) s) 0 (chartPiece f hM hH s I z) =
+private theorem chartPiece_apply (I : Finset ι) (t : ℤ) (z : homLoc globalGrading I t) :
+    GrSum.of (twistSections_commute f M (intersectionOpen I) s) t (chartPiece f hM hH s I t z) =
       chartLoc f hM hH s I z.1 := by
-  let e := GrSum.pieceEquiv (twistSections_commute f M (intersectionOpen I) s) 0
-  let y : intersectionGrading I 0 :=
+  let e := GrSum.pieceEquiv (twistSections_commute f M (intersectionOpen I) s) t
+  let y : intersectionGrading I t :=
     ⟨chartLoc f hM hH s I z.1, chartLoc_isGraded f hM hH s I z.2⟩
   change (e (e.symm y)).1 = y.1
   exact congrArg Subtype.val (e.apply_symm_apply y)
 
-private theorem chartPiece_natural {I J : Finset ι} (h : I ⊆ J) (z : homLoc globalGrading I 0) :
-    chartPiece f hM hH s J (homLocRes globalGrading h 0 z) =
-      twistSections_res f M (coverInter_anti h : intersectionOpen J ≤ intersectionOpen I) 0 (chartPiece f hM hH s I z) := by
-  apply GrSum.of_injective (twistSections_commute f M (intersectionOpen J) s) 0
+private theorem chartPiece_natural {I J : Finset ι} (h : I ⊆ J) (t : ℤ) (z : homLoc globalGrading I t) :
+    chartPiece f hM hH s J t (homLocRes globalGrading h t z) =
+      twistSections_res f M (coverInter_anti h : intersectionOpen J ≤ intersectionOpen I) t
+        (chartPiece f hM hH s I t z) := by
+  apply GrSum.of_injective (twistSections_commute f M (intersectionOpen J) s) t
   rw [chartPiece_apply, ← gradedTwistSections_res_of f M s (coverInter_anti h), chartPiece_apply]
   exact chartLoc_restrict f hM hH s h z.1
 
 variable [DecidableEq ι] [LinearOrder ι]
+
+include hM hH in
+/-- The degree-`t` localizations are separated on the cover by the nonvanishing opens. -/
+theorem gradedTwistSections_exactBot (t : ℤ) (hcov : ⊤ ≤ ⨆ i, nonzeroLocus (s i)) :
+    (homLocDatum (ι := ι) globalGrading t).ExactBot := by
+  let F := sectionDatum (toMod (twist M H t)) coordinateOpens
+  let e (I : Finset ι) := chartPiece f hM hH s I t
+  let φ : (homLocDatum (ι := ι) globalGrading t).Hom F :=
+    { app := fun I => (e I).toAddMonoidHom
+      comm := fun h z => (chartPiece_natural f hM hH s h t z).symm }
+  have hF : F.ExactBot := sheafCech_exactBot _ hcov
+  intro c hc hd
+  have hb : F.IsBot (φ.onCochain c) := by
+    intro I hI
+    change φ.app I (c I) = 0
+    rw [hc I hI, map_zero]
+  have hδ : F.d (φ.onCochain c) = 0 := by
+    rw [φ.d_onCochain, hd]
+    funext I
+    exact map_zero (φ.app I)
+  have hzero := hF _ hb hδ
+  funext I
+  exact (e I).injective ((congrFun hzero I).trans ((e I).map_zero).symm)
 
 private def untwistPiece (I : Finset ι) :
     letI := sectionDatumModule f (toMod M) coordinateOpens I
@@ -159,14 +184,14 @@ its restriction maps. -/
 theorem nonempty_gradedCech_iso :
     Nonempty (gradedCech (ι := ι) globalGrading 0 ≅ cech f (toMod M) coordinateOpens) := by
   letI (I : Finset ι) := sectionDatumModule f (toMod M) coordinateOpens I
-  let e (I : Finset ι) := (chartPiece f hM hH s I).trans (untwistPiece f hM hH s I)
+  let e (I : Finset ι) := (chartPiece f hM hH s I 0).trans (untwistPiece f hM hH s I)
   let φ : (homLocDatum (ι := ι) globalGrading 0).Hom (sectionDatum (toMod M) coordinateOpens) :=
     { app := fun I => (e I).toLinearMap.toAddMonoidHom
       comm := fun h z => by
         change (sectionDatum (toMod M) coordinateOpens).res h (untwistPiece f hM hH s _
-          (chartPiece f hM hH s _ z)) =
-          untwistPiece f hM hH s _ (chartPiece f hM hH s _ (homLocRes globalGrading h 0 z))
-        rw [chartPiece_natural f hM hH s h, untwistPiece_natural f hM hH s h] }
+          (chartPiece f hM hH s _ 0 z)) =
+          untwistPiece f hM hH s _ (chartPiece f hM hH s _ 0 (homLocRes globalGrading h 0 z))
+        rw [chartPiece_natural f hM hH s h 0, untwistPiece_natural f hM hH s h] }
   have hφ I r z : φ.app I (r • z) = r • φ.app I z := (e I).map_smul r z
   let g : gradedCech (ι := ι) globalGrading 0 ⟶ cech f (toMod M) coordinateOpens :=
     FinsetCechDatum.linearCochainMap (fun h => homLocDatum_res_smul globalGrading h 0)

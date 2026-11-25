@@ -13,12 +13,13 @@ weak coordinates are restricted in size, and all others are free. -/
 def axisBox (S : Finset ι) (j : ι) (δ : ℝ) : Set (ι→ℝ) :=
   Set.univ.pi fun i => if i∈S then Icc (-δ) δ else if i=j then Icc 1 2 else Set.univ
 
+omit [Fintype ι] in
 theorem axisBox_bounds (S : Finset ι) {j : ι} (hj : j∉S) {δ : ℝ} {x : ι→ℝ}
-    (hx : x∈axisBox S j δ) : x j∈Icc 1 2 ∧ ∀ i∈S, |x i|≤δ := by
+    (hx : x∈axisBox S j δ) : x j∈Set.Icc 1 2 ∧ ∀ i∈S, |x i|≤δ := by
   constructor
-  · simpa only [hj,if_false,if_true] using hx j (Set.mem_univ j)
+  · simpa only [hj,if_false,if_true,eq_self] using hx j (Set.mem_univ j)
   · intro i hi
-    exact abs_le.mpr (by simpa only [hi,if_true,mem_Icc] using hx i (Set.mem_univ i))
+    exact abs_le.mpr (by simpa only [hi,if_true,Set.mem_Icc] using hx i (Set.mem_univ i))
 
 /-- The ninth-power price of weakening one bond is independent of the
 number of unrestricted Gaussian coefficients. -/

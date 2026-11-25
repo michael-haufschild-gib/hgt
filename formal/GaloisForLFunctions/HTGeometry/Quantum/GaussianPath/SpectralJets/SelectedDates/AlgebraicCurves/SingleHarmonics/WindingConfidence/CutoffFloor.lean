@@ -9,6 +9,57 @@ namespace GaloisForLFunctions.HTGeometry.SpectralJets.SelectedDates.AlgebraicCur
 open PrescribedTimes AntipodalHorizons CircuitWindings
 noncomputable section
 
+private def antipodeHit (n m P : ℕ) := {x : PrefixIndex n→ℝ |
+  pathGateDistance n P x (extremalAntipode n m x)≤9/80}
+
+private theorem measurable_antipodeHit (k m P : ℕ) : MeasurableSet (antipodeHit (k+1) m P) := by
+  let t := extremalAntipode (k+1) m
+  have ht : Measurable t := by
+    unfold t extremalAntipode
+    exact (measurable_const (a:=((m:ℝ)+1/2)*(2*π))).div (continuous_prefix_width k).measurable
+  let f := fun p : (PrefixIndex (k+1)→ℝ) × ℝ => pathGateDistance (k+1) P p.1 p.2
+  let v := fun x : PrefixIndex (k+1)→ℝ => (x,t x)
+  have hv : Measurable v := (measurable_id' (α:=PrefixIndex (k+1)→ℝ)).prodMk ht
+  have hf : Measurable f := (continuous_distance (k+1) P).measurable
+  change MeasurableSet {x | (f ∘ v) x ≤ (9/80:ℝ)}
+  exact measurableSet_le (hf.comp hv) (measurable_const (a:=(9/80:ℝ)))
+
+private theorem endpoint_in_window (k m P : ℕ) {L ε : ℝ} (hL : 0≤L) (hε : 9/80≤ε)
+    (ω : PathPauliDisorder) :
+    let u := pathPauliDisorderShell ω (k+1)
+    let x := fun i => u (pathCoeffEquiv (k+1) i)
+    x∈antipodeHit (k+1) m P → ω∈gateWindow k m P 0 L ε := by
+  intro u x hx
+  let E := sortedEnsembleSpectrum (chainPauliFin_isHermitian (k+3)) x
+  have he : date E (topLevel k) 0 m 0=extremalAntipode (k+1) m x := by
+    rw [extremalAntipode,intrinsic_sorted_width k x]
+    simp only [date,add_zero,mul_div_assoc,E]
+  refine ⟨0,⟨le_rfl,by simpa only [zero_add] using hL⟩,?_⟩
+  apply (hasProjectiveCircuitApproximation_iff_infDist _ P ε).mpr
+  change Metric.infDist (unitaryEvolution (pathHamiltonian u) (date E (topLevel k) 0 m 0)) _ ≤ ε
+  rw [he,←numberedGenerator_shell u]
+  exact (show pathGateDistance (k+1) P x (extremalAntipode (k+1) m x)≤9/80 from hx).trans hε
+
+private theorem endpoint_mass_le (k m P : ℕ) {L ε : ℝ} (hL : 0≤L) (hε : 9/80≤ε) :
+    (Measure.pi fun _ : PrefixIndex (k+1) => gaussianReal 0 1).real (antipodeHit (k+1) m P) ≤
+      pathPauliDisorderLaw.real (gateWindow k m P 0 L ε) := by
+  letI : IsProbabilityMeasure pathPauliDisorderLaw := by unfold pathPauliDisorderLaw; infer_instance
+  have he := (gaussian_pauli_prefix_coordinates_law (k+1)).measureReal_preimage
+    (measurable_antipodeHit k m P).nullMeasurableSet
+  exact he.symm.le.trans (measureReal_mono
+    (fun {ω} hω => endpoint_in_window k m P hL hε ω hω) (measure_ne_top _ _))
+
+private theorem rescale_floor (m : ℕ) {r c p q : ℝ} (hr : 1≤r) (hp : 0≤p) (hpq : p≤q)
+    (hc : c≤(1+π*((m:ℝ)+1/2)/r)^18*p) : c/5^18≤((m:ℝ)+1)^18*q := by
+  have hw : 1+π*((m:ℝ)+1/2)/r≤5*((m:ℝ)+1) := by
+    have hl := div_le_self (show 0≤π*((m:ℝ)+1/2) by positivity) hr
+    have hm := mul_le_mul_of_nonneg_right pi_lt_four.le (show 0≤(m:ℝ)+1/2 by positivity)
+    linarith only [hl,hm,Nat.cast_nonneg (α:=ℝ) m]
+  have hr₀ : 0≤r := zero_le_one.trans hr
+  have hh := hc.trans (mul_le_mul (pow_le_pow_left₀ (by positivity) hw 18) hpq hp (by positivity))
+  rw [mul_pow,mul_assoc,mul_comm (5^18:ℝ)] at hh
+  exact (div_le_iff₀ (by positivity)).mpr hh
+
 /-- The probability of a near-Hilbert visit over a window starting at
 the mth extremal antipode is at least c/(m+1)^18, even if only its
 left endpoint is examined. The constant is uniform in register size. -/
@@ -17,7 +68,6 @@ theorem gaussian_gate_window_floor :
       let P := nearHilbertContinuousCircuitBudget (k+3)
       c≤((m:ℝ)+1)^18*pathPauliDisorderLaw.real (gateWindow k m P 0 L ε) := by
   obtain ⟨c,hc,h⟩ := gaussian_preplateau_antipode_mass
-  letI : IsProbabilityMeasure pathPauliDisorderLaw := by unfold pathPauliDisorderLaw; infer_instance
   refine ⟨c/5^18,div_pos hc (by positivity),?_⟩
   filter_upwards [h] with k hk
   intro m L hL ε hε P
@@ -25,46 +75,19 @@ theorem gaussian_gate_window_floor :
   let r := sqrt (Fintype.card (PrefixIndex n):ℝ)
   let μ := Measure.pi fun _ : PrefixIndex n => gaussianReal 0 1
   letI : IsProbabilityMeasure μ := by dsimp only [μ]; infer_instance
-  let A := {x : PrefixIndex n→ℝ | pathGateDistance n P x (extremalAntipode n m x)≤9/80}
-  let X := fun (ω : PathPauliDisorder) i => pathPauliDisorderShell ω n (pathCoeffEquiv n i)
-  have hX : MeasurePreserving X pathPauliDisorderLaw μ := gaussian_pauli_prefix_coordinates_law n
-  have hd : Measurable (extremalAntipode n m) := measurable_const.div (continuous_prefix_width k).measurable
-  have hA : MeasurableSet A := measurableSet_le
-    ((continuous_distance n P).measurable.comp (measurable_id'.prodMk hd)) measurable_const
-  have hmass : c≤(1+π*((m:ℝ)+1/2)/r)^18*μ.real A := by
-    apply (hk m).trans
-    apply mul_le_mul_of_nonneg_left _ (by dsimp only [r]; positivity)
-    refine measureReal_mono ?_ (measure_ne_top _ _)
-    intro x hx
-    have ht : 0≤extremalAntipode n m x := div_nonneg (by positivity) (circuitHamiltonianSpectralWidth_nonneg _)
-    exact (hx _ ⟨ht,le_rfl⟩).le
-  have hit : X ⁻¹' A ⊆ gateWindow k m P 0 L ε := by
-    intro ω hω
-    let E := sortedEnsembleSpectrum (chainPauliFin_isHermitian (k+3)) (X ω)
-    have he : date E (topLevel k) 0 m 0=extremalAntipode n m (X ω) := by
-      rw [extremalAntipode,intrinsic_sorted_width k (X ω)]
-      dsimp only [date,E]; ring
-    refine ⟨0,⟨le_rfl,by simpa only [zero_add] using hL⟩,?_⟩
-    apply (hasProjectiveCircuitApproximation_iff_infDist ..).mpr
-    change Metric.infDist (unitaryEvolution (pathHamiltonian _) (date E (topLevel k) 0 m 0)) _ ≤ ε
-    rw [he,←numberedGenerator_shell (pathPauliDisorderShell ω n)]
-    exact (show pathGateDistance n P (X ω) (extremalAntipode n m (X ω))≤9/80 from hω).trans hε
-  have hprob : μ.real A≤pathPauliDisorderLaw.real (gateWindow k m P 0 L ε) := by
-    rw [←hX.measureReal_preimage hA.nullMeasurableSet]
-    exact measureReal_mono hit
   have hdim : 1≤Fintype.card (PrefixIndex n) := by
     rw [Fintype.card_congr (pathCoeffEquiv n)]
     simp only [PathLabel,Fintype.card_sum,Fintype.card_prod,Fintype.card_fin]
     omega
   have hr : 1≤r := one_le_sqrt.mpr (by exact_mod_cast hdim)
-  have hw : 1+π*((m:ℝ)+1/2)/r≤5*((m:ℝ)+1) := by
-    have hl := div_le_self (show 0≤π*((m:ℝ)+1/2) by positivity) hr
-    have hm := mul_le_mul_of_nonneg_right pi_lt_four.le (show 0≤(m:ℝ)+1/2 by positivity)
-    linarith only [hl,hm,Nat.cast_nonneg (α:=ℝ) m]
-  apply (div_le_iff₀ (by positivity : (0:ℝ)<5^18)).mpr
-  have hh := hmass.trans (mul_le_mul (pow_le_pow_left₀ (by dsimp only [r]; positivity) hw _) hprob
-    measureReal_nonneg (by positivity))
-  convert hh using 1 <;> ring
+  apply rescale_floor m hr (measureReal_nonneg (μ:=μ) (s:=antipodeHit n m P)) (endpoint_mass_le k m P hL hε)
+  apply (hk m).trans
+  apply mul_le_mul_of_nonneg_left _ (by positivity)
+  refine measureReal_mono ?_ (measure_ne_top μ _)
+  intro x hx
+  have ht : 0≤extremalAntipode n m x :=
+    div_nonneg (by positivity) (circuitHamiltonianSpectralWidth_nonneg _)
+  exact (hx _ ⟨ht,le_rfl⟩).le
 
 /-- The first winding at which near-Hilbert exclusion over the whole
 (8/7)^D-period window attains exponential confidence is finite. Its

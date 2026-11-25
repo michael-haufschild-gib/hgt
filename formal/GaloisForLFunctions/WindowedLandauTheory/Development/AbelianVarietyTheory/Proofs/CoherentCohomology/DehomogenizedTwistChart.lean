@@ -28,14 +28,20 @@ theorem sectionRatio_self (hH : H.IsLB) : r i = 1 := by
   rw [← hr i k, map_one, one_mul]
 
 include h hr in
-theorem nonempty_dehomogenizedTwistChartEquiv
+/-- Dividing by powers of a nonvanishing section identifies specialization
+at that coordinate with the degree-zero chart sections. -/
+theorem exists_dehomogenizedTwistChartEquiv
     (f : X ⟶ Spec (CommRingCat.of R)) (M : LB X) (hH : H.IsLB) :
     letI := sectionAlgebra f V
     letI : Module Γ(X, V) (TwistSections f M H V 0) :=
       inferInstanceAs (Module Γ(X, V) Γ(toMod (twist M H 0), V))
     letI := Module.compHom (TwistSections f M H V 0) (MvPolynomial.aeval (R := R) r).toRingHom
-    Nonempty (QuotSMulTop (MvPolynomial.X i - 1 : MvPolynomial ι R) (gradedTwistSections f M V s)
-      ≃ₗ[MvPolynomial ι R] TwistSections f M H V 0) := by
+    let J : Submodule (MvPolynomial ι R) (gradedTwistSections f M V s) :=
+      (MvPolynomial.X i - 1 : MvPolynomial ι R) • ⊤
+    ∃ e : QuotSMulTop (MvPolynomial.X i - 1 : MvPolynomial ι R) (gradedTwistSections f M V s)
+      ≃ₗ[MvPolynomial ι R] TwistSections f M H V 0,
+      ∀ (t : ℤ) (x : TwistSections f M H V t),
+        e (J.mkQ (GrSum.of (twistSections_commute f M V s) t x)) = divTwistSection M (s i) h t x := by
   let S := MvPolynomial ι R
   let G := gradedTwistSections f M V s
   let P := TwistSections f M H V 0
@@ -68,7 +74,10 @@ theorem nonempty_dehomogenizedTwistChartEquiv
     obtain ⟨z, _, rfl⟩ := (Submodule.mem_smul_pointwise_iff_exists _ _ _).1 hy
     exact LinearMap.mem_ker.2 (hkill z)
   let η := K.liftQ F hK
-  refine ⟨LinearEquiv.ofBijective η ⟨?_, ?_⟩⟩
+  have hη (t : ℤ) (x : TwistSections f M H V t) :
+      η (K.mkQ (GrSum.of (twistSections_commute f M V s) t x)) = divTwistSection M (s i) h t x :=
+    GrSum.lift_of _ δ hδ t x
+  refine ⟨LinearEquiv.ofBijective η ⟨?_, ?_⟩, hη⟩
   · rw [injective_iff_map_eq_zero]
     intro q hq
     obtain ⟨y, rfl⟩ := K.mkQ_surjective q
@@ -85,7 +94,19 @@ theorem nonempty_dehomogenizedTwistChartEquiv
     exact (Submodule.Quotient.mk_eq_zero K).2
       (Submodule.smul_mem_pointwise_smul _ _ _ Submodule.mem_top)
   · intro x
-    refine ⟨K.mkQ (GrSum.of (twistSections_commute f M V s) 0 x), ?_⟩
-    exact (GrSum.lift_of _ δ hδ 0 x).trans (divTwistSection_zero (s i) h x)
+    exact ⟨K.mkQ (GrSum.of (twistSections_commute f M V s) 0 x),
+      (hη 0 x).trans (divTwistSection_zero (s i) h x)⟩
+
+include h hr in
+theorem nonempty_dehomogenizedTwistChartEquiv
+    (f : X ⟶ Spec (CommRingCat.of R)) (M : LB X) (hH : H.IsLB) :
+    letI := sectionAlgebra f V
+    letI : Module Γ(X, V) (TwistSections f M H V 0) :=
+      inferInstanceAs (Module Γ(X, V) Γ(toMod (twist M H 0), V))
+    letI := Module.compHom (TwistSections f M H V 0) (MvPolynomial.aeval (R := R) r).toRingHom
+    Nonempty (QuotSMulTop (MvPolynomial.X i - 1 : MvPolynomial ι R) (gradedTwistSections f M V s)
+      ≃ₗ[MvPolynomial ι R] TwistSections f M H V 0) := by
+  obtain ⟨e, -⟩ := exists_dehomogenizedTwistChartEquiv s i h r hr f M hH
+  exact ⟨e⟩
 
 end GlobalTheory.LineBundleSections

@@ -36,10 +36,11 @@ theorem gaussian_full_turn_price {ε : ℝ} (hε : 0<ε) :
   have hr : (rightBlock a).card=N-h := by rw [rightBlock,Fin.card_Ioi]; change n+2-1-(h-1)=_; dsimp [h,N]; omega
   have hd : 2^(leftBlock a).card+2^(rightBlock a).card=blockDimension n := by rw [hl,hr]; rfl
   let T := π*((m:ℝ)+1)*(M:ℝ)
-  have hM : 1≤M := Nat.one_le_pow _ _ (Nat.succ_pos Q)
+  have hM : 1≤M := pow_pos (Nat.succ_pos Q) _
   have hM' : 1≤(M:ℝ) := by exact_mod_cast hM
   have ht₁ : 1≤T := one_le_mul_of_one_le_of_one_le
-    (one_le_mul_of_one_le_of_one_le (by linarith only [pi_gt_three]) (by positivity)) hM'
+    (one_le_mul_of_one_le_of_one_le (by linarith only [pi_gt_three])
+      (le_add_of_nonneg_left (Nat.cast_nonneg m))) hM'
   have ht : 0<T := zero_lt_one.trans_le ht₁
   let δ := η/(18*T)
   have hδ : 0<δ := div_pos hη (by positivity)
@@ -56,15 +57,20 @@ theorem gaussian_full_turn_price {ε : ℝ} (hε : 0<ε) :
     rw [he]
     linarith only [hcut,min_le_left ε 1]
   have hmono : fullTurnMass n w (4*π/(Q+1:ℝ)+9*T*δ)≤fullTurnMass n w ε :=
-    measureReal_mono fun _ hx => ⟨hx.1,hx.2.trans herr⟩
+    measureReal_mono (fun {_} hx => ⟨hx.1,hx.2.trans herr⟩) (measure_ne_top _ _)
   have hf : 2*gaussianDensityFloor*δ*((m:ℝ)+1)*(M:ℝ)=gaussianDensityFloor*η/(9*π) := by
     dsimp only [δ,T]; field_simp [pi_ne_zero,show (M:ℝ)≠0 from (zero_lt_one.trans_le hM').ne']; ring
   refine ⟨w,⟨Nat.le_mul_of_pos_right _ hq,Nat.mul_le_mul_left _ hqM⟩,?_⟩
-  change bulkMass*(gaussianDensityFloor*η/(9*π))^9 ≤ _
-  rw [←hf]
-  have hh' := mul_le_mul_of_nonneg_left (hmass.trans
-    (mul_le_mul_of_nonneg_left hmono (Nat.cast_nonneg M))) (show 0≤((m:ℝ)+1)^9*(M:ℝ)^9 by positivity)
-  convert hh' using 1 <;> ring
+  change bulkMass*(gaussianDensityFloor*η/(9*π))^9 ≤ ((m:ℝ)+1)^9*(M:ℝ)^10*fullTurnMass n w ε
+  let v := 2*gaussianDensityFloor*δ
+  let b := (m:ℝ)+1
+  change v*b*(M:ℝ)=_ at hf
+  calc
+    _ = (b^9*(M:ℝ)^9)*(bulkMass*v^9) := by rw [←hf]; ring
+    _ ≤ (b^9*(M:ℝ)^9)*((M:ℝ)*fullTurnMass n w ε) := by
+      apply mul_le_mul_of_nonneg_left _ (show 0≤b^9*(M:ℝ)^9 by dsimp only [b]; positivity)
+      exact hmass.trans (mul_le_mul_of_nonneg_left hmono (Nat.cast_nonneg M))
+    _ = b^9*(M:ℝ)^10*fullTurnMass n w ε := by ring
 
 #print axioms gaussian_full_turn_price
 end

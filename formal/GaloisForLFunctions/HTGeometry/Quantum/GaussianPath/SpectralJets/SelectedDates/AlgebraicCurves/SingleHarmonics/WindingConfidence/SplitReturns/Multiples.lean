@@ -14,6 +14,20 @@ noncomputable section
 def fullTurn (n m : ℕ) (x : PrefixIndex n→ℝ) : ℝ :=
   (m:ℝ)*(2*π)/circuitHamiltonianSpectralWidth (prefixGenerator n x)
 
+/-- At a common phase return of the two blocks, the uncut evolution
+adds at most elapsed time times the norm of the omitted interaction. -/
+theorem perturbed_cut_return {n : ℕ} (u : PathShell n) (a : Fin (n+1)) (t : ℝ) (Q : ℕ) :
+    ∃ q : ℕ, 1≤q ∧ q≤(Q+1)^(2^(leftBlock a).card+2^(rightBlock a).card) ∧
+      ‖unitaryEvolution (pathHamiltonian u) (t*q)-1‖ ≤
+        4*π/(Q+1:ℝ) + |t*(q:ℝ)| * ‖edgePart u a‖ := by
+  obtain ⟨q,hq,hM,hfit⟩ := cut_integer_return u a t Q
+  have hd := norm_unitaryEvolution_sub_le _ _ (isSelfAdjoint_pathHamiltonian u)
+    (isSelfAdjoint_pathHamiltonianCut u a) (t*q)
+  rw [pathHamiltonian_sub_cut] at hd
+  refine ⟨q,hq,hM,?_⟩
+  exact (norm_sub_le_norm_sub_add_norm_sub (unitaryEvolution (pathHamiltonian u) (t*q))
+    (unitaryEvolution (pathHamiltonianCut u a) (t*q)) 1).trans ((add_le_add hd hfit).trans_eq (add_comm ..))
+
 private theorem weak_edge_norm {n : ℕ} (u : PathShell n) (a : Fin (n+1)) {δ : ℝ}
     (hw : ∀ i∈bondSites a, |u (pathCoeffEquiv n i)|≤δ) : ‖edgePart u a‖≤9*δ := by
   apply (norm_sum_le _ _).trans
@@ -44,7 +58,7 @@ theorem gaussian_multiple_full_turn (n m Q : ℕ) (a : Fin (n+1)) {δ : ℝ}
   have hj : j∉S := by
     intro h
     obtain ⟨ab,_,he⟩ := Finset.mem_image.mp h
-    exact Sum.noConfusion ((pathCoeffEquiv n).symm.injective he)
+    cases (pathCoeffEquiv n).symm.injective he
   have hmass : bulkMass*(2*gaussianDensityFloor*δ)^9≤μ.real (axisBox S j δ) := by
     simpa only [S,bondSites_card] using axisBox_mass S hj hδ hδ'
   apply hmass.trans
@@ -63,7 +77,7 @@ theorem gaussian_multiple_full_turn (n m Q : ℕ) (a : Fin (n+1)) {δ : ℝ}
     simp only [u,Equiv.symm_apply_apply]
   have hH : numberedGenerator n x=pathHamiltonian u := by simpa only [hu] using numberedGenerator_shell u
   let t := fullTurn n (m+1) x
-  obtain ⟨q,hq,hqM,hfit⟩ := cut_integer_return u a t Q
+  obtain ⟨q,hq,hqM,hfit⟩ := perturbed_cut_return u a t Q
   have htime : t≤π*((m:ℝ)+1) := by
     change ((m+1:ℕ):ℝ)*(2*π)/g≤_
     rw [Nat.cast_succ,div_le_iff₀ hgpos]
@@ -73,13 +87,8 @@ theorem gaussian_multiple_full_turn (n m Q : ℕ) (a : Fin (n+1)) {δ : ℝ}
   have hbound : |t*(q:ℝ)|≤T := by
     rw [abs_of_nonneg (mul_nonneg ht (Nat.cast_nonneg q))]
     exact mul_le_mul htime (by exact_mod_cast hqM) (Nat.cast_nonneg _) (by positivity)
-  have hd := norm_unitaryEvolution_sub_le _ _ (isSelfAdjoint_pathHamiltonian u)
-    (isSelfAdjoint_pathHamiltonianCut u a) (t*q)
-  rw [pathHamiltonian_sub_cut] at hd
-  have hpert := hd.trans (mul_le_mul hbound (weak_edge_norm u a (fun i hi => by rw [hu]; exact hweak i hi))
-    (norm_nonneg _) (show 0≤T by dsimp only [T]; positivity))
-  have hfull := (norm_sub_le_norm_sub_add_norm_sub (unitaryEvolution (pathHamiltonian u) (t*q))
-    (unitaryEvolution (pathHamiltonianCut u a) (t*q)) 1).trans (add_le_add hpert hfit)
+  have hpert := mul_le_mul hbound (weak_edge_norm u a (fun i hi => by rw [hu]; exact hweak i hi))
+    (norm_nonneg _) (show 0≤T by dsimp only [T]; positivity)
   have hv : fullTurn n ((m+1)*q) x=t*q := by
     dsimp only [t,fullTurn]; rw [Nat.cast_mul]; ring
   refine ⟨hg,q,hq,hqM,?_⟩
@@ -87,7 +96,11 @@ theorem gaussian_multiple_full_turn (n m Q : ℕ) (a : Fin (n+1)) {δ : ℝ}
   apply (hasProjectiveCircuitApproximation_iff_infDist ..).mp
   refine ⟨1,norm_one,TwoQubitCircuit.one _,le_rfl,?_⟩
   rw [TwoQubitCircuit.one_eval,one_smul]
-  linarith only [hfull]
+  calc
+    ‖unitaryEvolution (pathHamiltonian u) (t*q)-1‖
+        ≤ 4*π/(Q+1:ℝ) + |t*(q:ℝ)| * ‖edgePart u a‖ := hfit
+    _ ≤ 4*π/(Q+1:ℝ) + T*(9*δ) := add_le_add le_rfl hpert
+    _ = 4*π/(Q+1:ℝ)+9*T*δ := by ring
 
 #print axioms gaussian_multiple_full_turn
 end

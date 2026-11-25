@@ -73,7 +73,9 @@ theorem gen_quadratic_pullback (hL : L.IsLB) (hcube : ∃ s : (cubeBundle A L).G
     intro U _ k
     have hprod := prod_cube (x ^ (n + 1)) x x⁻¹ k
     change (∏ I, k (r ≫ cubeMorphism A I) ^ cubeExponent I) = _ at hprod
-    rw [Fintype.prod_sum_type, hprod]
+    rw [Fintype.prod_sum_type]
+    simp only [Sum.elim_inl, Sum.elim_inr]
+    rw [hprod]
     have e₁ : x ^ (n + 1) * x * x⁻¹ = x ^ (n + 1) := mul_inv_cancel_right _ _
     have e₂ : x ^ (n + 1) * x = x ^ (n + 2) := (pow_succ x (n + 1)).symm
     have e₃ : x ^ (n + 1) * x⁻¹ = x ^ n := by rw [pow_succ, mul_inv_cancel_right]
@@ -98,8 +100,10 @@ private theorem gen_symmetry_of_local (hA : IsAbelianScheme A) (hL : L.IsLB)
     apply exists_gen_of_local_triviality hL f ![1, -1] A.hom η[A].left (Over.w (η[A]))
     · intro Z b U _ k
       simp only [Fin.prod_univ_succ, Fin.prod_univ_zero, f, Matrix.cons_val_zero,
-        Matrix.cons_val_succ, Category.assoc, Category.comp_id, he,
-        zpow_one, zpow_neg_one, _root_.mul_one, mul_inv_cancel]
+        Matrix.cons_val_succ, Category.assoc, Category.comp_id,
+        zpow_one, zpow_neg_one, _root_.mul_one]
+      exact (congrArg (fun q : Z ⟶ A.left => k q * (k (b ≫ η[A].left))⁻¹)
+        (congrArg (b ≫ ·) he)).trans (mul_inv_cancel _)
     · intro s
       obtain ⟨U, hs, t, ht⟩ := h s
       refine ⟨U, hs, ?_⟩
@@ -116,6 +120,7 @@ private theorem gen_symmetry_of_local (hA : IsAbelianScheme A) (hL : L.IsLB)
     Matrix.cons_val_succ, neg_neg, zpow_one, zpow_neg_one, _root_.mul_one]
   exact _root_.mul_comm _ _
 
+omit [IsCommMonObj A] in
 /-- Multiplication by `n` pulls a rigidified symmetric relatively ample line bundle back
 to its `n²`-th power. -/
 theorem gen_mul_pullback_of_relAmple (hA : IsAbelianScheme A) (hL : L.IsLB)
@@ -132,8 +137,9 @@ theorem gen_mul_pullback_of_relAmple (hA : IsAbelianScheme A) (hL : L.IsLB)
     (gen_symmetry_of_local hA hL hsym) n
   apply (hre.pull (toUnit A).left).of_formEq hL
   intro U _ k
-  simp only [Finset.univ_unique, Finset.prod_singleton, Fin.prod_univ_succ, Fin.prod_univ_zero,
-    Matrix.cons_val_zero, zpow_one, _root_.mul_one]
+  simp only [Finset.univ_unique, Finset.prod_singleton, zpow_one]
+  change k ((toUnit A).left ≫ η[A].left) = k (1 : A ⟶ A).left ^ (1 : ℤ)
+  rw [zpow_one]
   rfl
 
 end GlobalTheory.AbLaw.Cube

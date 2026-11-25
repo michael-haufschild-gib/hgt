@@ -9,6 +9,50 @@ open scoped Pointwise
 
 namespace GlobalTheory
 
+/-- If a graded submodule surjects after setting a coordinate equal to one, it
+contains a multiple by a power of that coordinate of every element. -/
+theorem powers_mem_of_surjective_specialization {ι R M : Type*} [CommRing R]
+    [AddCommGroup M] [Module R M] [Module (MvPolynomial ι R) M]
+    [IsScalarTower R (MvPolynomial ι R) M]
+    (D : ℤ → Submodule R M) [PolyGradedSMul ι D] [Decomposition D]
+    {N : Submodule (MvPolynomial ι R) M} (hN : N.IsHomogeneous D) (i : ι)
+    (hfull : let J : Submodule (MvPolynomial ι R) M := (X i - 1 : MvPolynomial ι R) • ⊤
+      N.map J.mkQ = ⊤) :
+    ∀ y : M, ∃ k : ℕ, (X i : MvPolynomial ι R) ^ k • y ∈ N := by
+  let S := MvPolynomial ι R
+  let J : Submodule S M := (X i - 1 : S) • ⊤
+  change N.map J.mkQ = ⊤ at hfull
+  letI := grQuotDecomposition hN
+  have hmultiple (y : M) : ∃ w : M, N.mkQ y = (X i - 1 : S) • N.mkQ w := by
+    have hy : J.mkQ y ∈ N.map J.mkQ := by
+      rw [hfull]
+      exact Submodule.mem_top
+    obtain ⟨v, hv, hvy⟩ := Submodule.mem_map.1 hy
+    have hyv : y - v ∈ J := (Submodule.Quotient.eq J).1 hvy.symm
+    obtain ⟨w, _, hw⟩ := (Submodule.mem_smul_pointwise_iff_exists _ _ _).1 hyv
+    have h : y = v + (X i - 1 : S) • w := by rw [hw]; abel
+    have hv₀ : N.mkQ v = 0 := (Submodule.Quotient.mk_eq_zero N).2 hv
+    refine ⟨w, ?_⟩
+    conv_lhs => rw [h, map_add, map_smul, hv₀, zero_add]
+  intro y
+  induction y using Decomposition.inductionOn D with
+  | zero => exact ⟨0, by rw [smul_zero]; exact N.zero_mem⟩
+  | @homogeneous n y =>
+    obtain ⟨w, hw⟩ := hmultiple y
+    have hy : N.mkQ y ∈ grQuot D N n := mem_grQuot.2 ⟨y, y.2, rfl⟩
+    obtain ⟨k, hk⟩ := exists_X_pow_smul_eq_zero_of_eq_X_sub_one_smul (grQuot D N) i hy hw
+    exact ⟨k, (Submodule.Quotient.mk_eq_zero N).1 ((map_smul N.mkQ _ _).trans hk)⟩
+  | add y z hy hz =>
+    obtain ⟨a, ha⟩ := hy
+    obtain ⟨b, hb⟩ := hz
+    refine ⟨a + b, ?_⟩
+    rw [smul_add]
+    apply N.add_mem
+    · rw [add_comm a b, pow_add, mul_smul]
+      exact N.smul_mem _ ha
+    · rw [pow_add, mul_smul]
+      exact N.smul_mem _ hb
+
 theorem exists_homogeneous_family_saturating {ι R M : Type*} [Finite ι] [CommRing R]
     [AddCommGroup M] [Module R M] [Module (MvPolynomial ι R) M]
     [IsScalarTower R (MvPolynomial ι R) M]
@@ -42,7 +86,6 @@ theorem exists_homogeneous_family_saturating {ι R M : Type*} [Finite ι] [CommR
     change y ∈ Set.range g at hy
     obtain ⟨j, rfl⟩ := hy
     exact ⟨_, hg₀ (e j).1 (e j).2⟩
-  letI := grQuotDecomposition hN
   intro i
   have hspan : (T i : Set (M ⧸ J i)) ⊆ (J i).mkQ '' Set.range g := by
     intro q hq
@@ -50,34 +93,11 @@ theorem exists_homogeneous_family_saturating {ι R M : Type*} [Finite ι] [CommR
     have he : e j = ⟨i, ⟨q, hq⟩⟩ := e.apply_symm_apply _
     have hg : g j = g₀ i q := by dsimp only [g]; rw [he]
     exact ⟨g j, ⟨j, rfl⟩, by rw [hg, hq₀]⟩
-  have hmultiple (y : M) : ∃ w : M, N.mkQ y = (X i - 1 : S) • N.mkQ w := by
-    have hy : (J i).mkQ y ∈ N.map (J i).mkQ := by
-      rw [Submodule.map_span]
-      exact Submodule.span_mono hspan (by rw [hT i]; exact Submodule.mem_top)
-    obtain ⟨v, hv, hvy⟩ := Submodule.mem_map.1 hy
-    have hyv : y - v ∈ J i := (Submodule.Quotient.eq (J i)).1 hvy.symm
-    obtain ⟨w, _, hw⟩ := (Submodule.mem_smul_pointwise_iff_exists _ _ _).1 hyv
-    have h : y = v + (X i - 1 : S) • w := by rw [hw]; abel
-    have hv₀ : N.mkQ v = 0 := (Submodule.Quotient.mk_eq_zero N).2 hv
-    refine ⟨w, ?_⟩
-    conv_lhs => rw [h, map_add, map_smul, hv₀, zero_add]
-  intro y
-  induction y using Decomposition.inductionOn D with
-  | zero => exact ⟨0, by rw [smul_zero]; exact N.zero_mem⟩
-  | @homogeneous n y =>
-    obtain ⟨w, hw⟩ := hmultiple y
-    have hy : N.mkQ y ∈ grQuot D N n := mem_grQuot.2 ⟨y, y.2, rfl⟩
-    obtain ⟨k, hk⟩ := exists_X_pow_smul_eq_zero_of_eq_X_sub_one_smul (grQuot D N) i hy hw
-    exact ⟨k, (Submodule.Quotient.mk_eq_zero N).1 ((map_smul N.mkQ _ _).trans hk)⟩
-  | add y z hy hz =>
-    obtain ⟨a, ha⟩ := hy
-    obtain ⟨b, hb⟩ := hz
-    refine ⟨a + b, ?_⟩
-    rw [smul_add]
-    apply N.add_mem
-    · rw [add_comm a b, pow_add, mul_smul]
-      exact N.smul_mem _ ha
-    · rw [pow_add, mul_smul]
-      exact N.smul_mem _ hb
+  apply powers_mem_of_surjective_specialization D hN i
+  change N.map (J i).mkQ = ⊤
+  rw [Submodule.map_span]
+  apply top_unique
+  rw [← hT i]
+  exact Submodule.span_mono hspan
 
 end GlobalTheory
