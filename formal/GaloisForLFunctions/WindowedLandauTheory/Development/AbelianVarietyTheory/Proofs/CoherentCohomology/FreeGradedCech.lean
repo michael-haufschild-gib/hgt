@@ -46,7 +46,8 @@ private def freePieceIncl (j : Fin a) (s : Finset ι) :
 
 private def freeDatumProj (j : Fin a) : (homLocDatum (ι := ι) D n).Hom (homLocDatum (ι := ι) E (n - d j)) where
   app s := (freePieceProj d n j s).toAddMonoidHom
-  comm h z := Subtype.ext (ModuleFraction.map_restrict (xProd_dvd R h) (LinearMap.proj j) z.1).symm
+  comm h z := Subtype.ext (ModuleFraction.map_restrict (xProd_dvd R h)
+    (LinearMap.proj j : (Fin a → P) →ₗ[P] P) z.1).symm
 
 private def freeDatumIncl (j : Fin a) : (homLocDatum (ι := ι) E (n - d j)).Hom (homLocDatum (ι := ι) D n) where
   app s := (freePieceIncl d n j s).toAddMonoidHom
@@ -84,13 +85,19 @@ private theorem sum_freePiece (s : Finset ι) (z : homLoc D s n) :
   congr 1
   funext i
   simp only [Finset.sum_apply]
-  exact (Finset.sum_eq_single i (fun j _ h => Pi.single_eq_of_ne (Ne.symm h) _) (by simp)).trans
-    (Pi.single_eq_same i (b.1 i))
+  let g (j : Fin a) : P := b.1 j
+  let u (j : Fin a) : Fin a → P := Pi.single j (g j)
+  have hzero (j : Fin a) (hj : j ≠ i) : u j i = 0 :=
+    Pi.single_eq_of_ne (M := fun _ : Fin a => P) hj.symm (g j)
+  have hu : u i i = g i := Pi.single_eq_same (M := fun _ : Fin a => P) i (g i)
+  change (∑ j : Fin a, u j i) = g i
+  exact (Finset.sum_eq_single i (fun j _ hj => hzero j hj)
+    (fun hn => (hn (Finset.mem_univ i)).elim)).trans hu
 
 theorem sum_freeCechProj_comp_freeCechIncl :
     ∑ j : Fin a, freeCechProj (ι := ι) (R := R) d n j ≫ freeCechIncl d n j = 𝟙 (gradedCech (ι := ι) D n) := by
   apply HomologicalComplex.Hom.ext
-  intro q
+  funext q
   let g (j : Fin a) :=
     freeCechProj (ι := ι) (R := R) d n j ≫ freeCechIncl d n j
   have hg : (∑ j, g j).f q = ∑ j, (g j).f q :=

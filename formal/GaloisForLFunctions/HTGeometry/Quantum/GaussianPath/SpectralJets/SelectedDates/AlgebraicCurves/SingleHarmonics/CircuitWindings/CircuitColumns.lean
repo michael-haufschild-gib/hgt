@@ -51,8 +51,9 @@ theorem circuit_column_chord {H W : Matrix I I ℂ} {E : I→ℝ} {v : I→I→�
     rw [inner_toLp_eq_finiteComplexInner,he.orth]
     simp
   have hw : ‖w‖=1 := by
-    rw [show w=Matrix.toEuclideanCLM W u from (Matrix.toEuclideanCLM_toLp ..).symm]
-    exact (norm_apply_of_mem_unitary (Unitary.map_mem Matrix.toEuclideanCLM hW) u).trans hu
+    let Φ := Matrix.toEuclideanCLM (n:=I) (𝕜:=ℂ)
+    rw [show w=(Φ W) u from (Matrix.toEuclideanCLM_toLp W (v j)).symm]
+    exact (norm_apply_of_mem_unitary (Unitary.map_mem Φ hW) u).trans hu
   have hd := (A-W).l2_opNorm_mulVec u
   change ‖WithLp.toLp 2 ((A-W) *ᵥ v j)‖≤‖A-W‖*‖u‖ at hd
   rw [Matrix.sub_mulVec,heig,WithLp.toLp_sub,WithLp.toLp_smul,hu,mul_one] at hd

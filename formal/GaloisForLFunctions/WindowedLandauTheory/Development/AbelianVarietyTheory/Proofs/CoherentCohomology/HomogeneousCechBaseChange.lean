@@ -67,14 +67,26 @@ theorem nonempty_gradedCech_baseChangeIso {ι B R M N : Type} [Fintype ι] [Deci
         exact congrArg _ (map_xProd_pow_smul f hX (t \ s) k v).symm }
   have hφ (s : Finset ι) (r : B) (x : (homLocDatum (ι := ι) D n).obj s) :
       φ.app s (r • x) = (algebraMap B R r) • φ.app s x := by
-    change ψ s (r • x) = (algebraMap B R r) • ψ s x
-    rw [map_smul, algebraMap_smul]
-  let g := FinsetCechDatum.linearBaseChange (algebraMap B R) φ hφ
-    (fun h => homLocDatum_res_smul D h n) (fun h => homLocDatum_res_smul E h n)
-  haveI : IsIso g := FinsetCechDatum.isIso_linearBaseChange _ _ _ _ _ (fun s _ =>
-    IsBaseChange.of_equiv (hψ s).equiv (fun x => by
-      change (hψ s).equiv (1 ⊗ₜ[B] x) = ψ s x
-      rw [IsBaseChange.equiv_tmul, one_smul]))
-  exact ⟨asIso g⟩
+    let y : homLoc D s n := x
+    exact ((ψ s).map_smul r y).trans (algebraMap_smul R r (ψ s y)).symm
+  let F := (ModuleCat.extendScalars (algebraMap B R)).mapHomologicalComplex (ComplexShape.up ℕ)
+  let g : F.obj (gradedCech (ι := ι) D n) ⟶ gradedCech (ι := ι) E n :=
+    FinsetCechDatum.linearBaseChange (algebraMap B R) φ hφ
+      (fun h => homLocDatum_res_smul D h n) (fun h => homLocDatum_res_smul E h n)
+  have hg : IsIso g := FinsetCechDatum.isIso_linearBaseChange _ _ _ _ _ (fun s _ => by
+    let α : B →+* R := algebraMap B R
+    let T (A : Algebra B R) : Prop :=
+      letI := A
+      ∃ e : R ⊗[B] homLoc D s n ≃ₗ[R] homLoc E s n, ∀ x, e (1 ⊗ₜ[B] x) = ψ s x
+    have h : T inferInstance := ⟨(hψ s).equiv, fun x =>
+      ((hψ s).equiv_tmul 1 x).trans (one_smul R (ψ s x))⟩
+    obtain ⟨e, he⟩ := (congrArg T (toAlgebra_algebraMap (R := B) (S := R))).mpr h
+    letI : Algebra B R := α.toAlgebra
+    letI : Module B ((homLocDatum (ι := ι) E n).obj s) := Module.compHom _ α
+    letI : IsScalarTower B R ((homLocDatum (ι := ι) E n).obj s) :=
+      .of_algebraMap_smul fun _ _ => rfl
+    let e' : R ⊗[B] (homLocDatum (ι := ι) D n).obj s ≃ₗ[R] (homLocDatum (ι := ι) E n).obj s := e
+    exact IsBaseChange.of_equiv e' he)
+  exact ⟨@asIso _ _ _ _ g hg⟩
 
 end GlobalTheory

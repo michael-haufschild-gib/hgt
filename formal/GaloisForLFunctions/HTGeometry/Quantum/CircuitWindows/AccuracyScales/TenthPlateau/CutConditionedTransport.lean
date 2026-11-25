@@ -260,17 +260,37 @@ theorem allBondStrongEvent_subset_twoCutConnectedEvent (n : ℕ) (η : ℝ) :
   obtain ⟨i, hi, hle⟩ := hx a
   exact ⟨i, Finset.mem_union_left _ hi, hle⟩
 
-private theorem finitePauliMatrix_trace_star_mul_eq_zero {N : ℕ}
+private theorem finitePauliMatrix_trace_star_mul_eq_zero_of_ne {N : ℕ}
     (P Q : Fin N → Option (Fin 3)) (hne : P ≠ Q) :
     Matrix.trace (star (finitePauliMatrix P) * finitePauliMatrix Q) = 0 := by
   have htr : Matrix.trace (star (finitePauliMatrix P) * finitePauliMatrix Q) =
-      ∑ p : Config N × Config N, star (finitePauliMatrix P p.1 p.2) * finitePauliMatrix Q p.1 p.2 := by
-    rw [Matrix.trace, Fintype.sum_prod_type]
-    refine Finset.sum_congr rfl fun x _ => ?_
-    -- Wait: trace (A* * B) = ∑ y, ∑ x, conj(A x y) * B x y = ∑ x, ∑ y, ...
-    rfl
-  -- Write sum_comm cleanly:
-  sorry
+      ∑ p : Config N × Config N,
+        star (finitePauliMatrix P p.1 p.2) * finitePauliMatrix Q p.1 p.2 := by
+    rw [Matrix.trace, Fintype.sum_prod_type, Finset.sum_comm]
+    refine Finset.sum_congr rfl fun y _ => ?_
+    simp [Matrix.diag_apply, Matrix.mul_apply, Matrix.star_eq_conjTranspose,
+      Matrix.conjTranspose_apply]
+  let e_pair : (Fin N → Bool × Bool) ≃ Config N × Config N :=
+    { toFun := fun xy => (fun q => (xy q).1, fun q => (xy q).2)
+      invFun := fun p q => (p.1 q, p.2 q)
+      left_inv := fun _ => rfl
+      right_inv := fun ⟨_, _⟩ => rfl }
+  have hsum_eq : (∑ p : Config N × Config N,
+      star (finitePauliMatrix P p.1 p.2) * finitePauliMatrix Q p.1 p.2) =
+      finitePauliHilbertSchmidt P Q := by
+    rw [← Equiv.sum_comp e_pair]
+    unfold finitePauliHilbertSchmidt
+    refine Finset.sum_congr rfl fun xy _ => ?_
+    change star (∏ q, boolPauliOptionEntry (P q) ((e_pair xy).1 q, (e_pair xy).2 q)) *
+        (∏ q, boolPauliOptionEntry (Q q) ((e_pair xy).1 q, (e_pair xy).2 q)) = _
+    have hpair (q : Fin N) : ((e_pair xy).1 q, (e_pair xy).2 q) = xy q := rfl
+    simp_rw [hpair]
+    rw [Complex.star_def, map_prod]
+    simp_rw [← Complex.star_def]
+    rw [← Finset.prod_mul_distrib]
+  rw [htr, hsum_eq, finitePauliHilbertSchmidt_eq, if_neg hne]
+
+/-- Every Pauli coupling coordinate on bond `e` lower-bounds the operator norm `‖edgePart u e‖`. -/
 theorem coord_abs_le_opNorm_edgePart {n : ℕ} (u : PathShell n) (e : Fin (n + 1))
     (pq : Fin 3 × Fin 3) :
     |u (.inr (e, pq))| ≤ ‖edgePart u e‖ := by
@@ -286,7 +306,6 @@ theorem coord_abs_le_opNorm_edgePart {n : ℕ} (u : PathShell n) (e : Fin (n + 1
       have h1 : star W * W = 1 := (Unitary.mem_iff.mp hW_unit).1
       rw [h1, Matrix.trace_one, Fintype.card_fun, Fintype.card_fin, Fintype.card_bool,
         smul_eq_mul, mul_comm]
-      push_cast; rfl
     · intro rs _ hrs
       rw [Matrix.mul_smul, Matrix.trace_smul]
       have hne : couplingWord e pq ≠ couplingWord e rs := fun heq => by
@@ -317,7 +336,8 @@ private theorem card_orderedPairs_fin (m : ℕ) :
     · intro p hp
       exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, (Finset.mem_filter.mp hp).2⟩
     · rintro ⟨a₁, b₁⟩ _ ⟨a₂, b₂⟩ _ h
-      cases Prod.mk.inj h; rfl
+      obtain ⟨hb, ha⟩ := Prod.mk.inj h
+      exact Prod.ext ha hb
     · rintro ⟨a, b⟩ h
       exact ⟨(b, a), Finset.mem_filter.mpr ⟨Finset.mem_univ _, (Finset.mem_filter.mp h).2⟩, rfl⟩
   have hD : D.card = m := by
@@ -334,11 +354,11 @@ private theorem card_orderedPairs_fin (m : ℕ) :
     · exact (Finset.mem_filter.mp hpL).2.ne' heq
   have huniv : U ∪ L ∪ D = Finset.univ := by
     ext ⟨a, b⟩
-    simp only [Finset.mem_union, Finset.mem_filter, Finset.mem_univ, true_and, U, L, D]
+    simp only [Finset.mem_union, Finset.mem_filter, Finset.mem_univ, true_and, iff_true, U, L, D]
     rcases lt_trichotomy a b with h | h | h
-    · exact ⟨Or.inl (Or.inl h), fun _ => trivial⟩
-    · exact ⟨Or.inr h, fun _ => trivial⟩
-    · exact ⟨Or.inl (Or.inr h), fun _ => trivial⟩
+    · exact Or.inl (Or.inl h)
+    · exact Or.inr h
+    · exact Or.inl (Or.inr h)
   have htot : (U ∪ L ∪ D).card = m * m := by
     rw [huniv, Finset.card_univ, Fintype.card_prod, Fintype.card_fin]
   rw [Finset.card_union_of_disjoint hdisUD, Finset.card_union_of_disjoint hdisUL,
@@ -347,7 +367,7 @@ private theorem card_orderedPairs_fin (m : ℕ) :
     cases m with
     | zero => omega
     | succ k => simp only [Nat.add_sub_cancel]; nlinarith only [htot]
-  omega
+  rw [← hsub, Nat.mul_div_cancel_left _ two_pos]
 
 /-- Sharp Gaussian failure bound for `twoCutConnectedEvent n η`:
 `ℙ(Ω_conn(n, η)ᶜ) ≤ ((n + 1) * n / 2) * γ([-η, η])^18 ≤ ((n + 1) * n / 2) * η^18`. -/
@@ -359,20 +379,24 @@ theorem twoCutConnectedEvent_compl_prob_le (n : ℕ) {η : ℝ} (hη : 0 ≤ η)
       (twoCutConnectedEvent n η)ᶜ ≤
       (((n + 1) * n / 2 : ℕ) : ℝ) * η ^ 18 := by
   let F := Finset.univ.filter fun p : Fin (n + 1) × Fin (n + 1) => p.1 < p.2
-  have hcomp : (twoCutConnectedEvent n η)ᶜ =
+  have hsub : (twoCutConnectedEvent n η)ᶜ ⊆
       {x : PrefixIndex n → ℝ | ∃ p ∈ F, ∀ i ∈ WeakBonds.cutSet p.1 p.2, |x i| < η} := by
-    ext x
-    simp only [mem_compl_iff, twoCutConnectedEvent, mem_setOf_eq, not_forall, not_exists, not_le, F,
-      Finset.mem_filter, Finset.mem_univ, true_and, Prod.exists]
-    refine exists_congr fun a => exists_congr fun b => ?_
-    tauto
-  rw [hcomp]
+    intro x hx
+    rw [mem_compl_iff] at hx
+    unfold twoCutConnectedEvent at hx
+    rw [mem_setOf_eq] at hx
+    push Not at hx
+    obtain ⟨a, b, hab, hi⟩ := hx
+    exact ⟨(a, b), Finset.mem_filter.mpr ⟨Finset.mem_univ _, hab⟩, hi⟩
+  have hmono := measureReal_mono (μ := Measure.pi fun _ : PrefixIndex n => gaussianReal 0 1)
+    hsub (measure_ne_top _ _)
   have hk : ∀ p ∈ F, (WeakBonds.cutSet p.1 p.2).card = 18 :=
     fun p hp => cutSet_card (Finset.mem_filter.mp hp).2
   have hbound := pi_smallCube_union_prob_le F (fun p => WeakBonds.cutSet p.1 p.2) 18 hk hη
   have hF_card : F.card = (n + 1) * n / 2 := by
     simpa only [Nat.add_sub_cancel] using card_orderedPairs_fin (n + 1)
-  rwa [hF_card] at hbound
+  rw [hF_card] at hbound
+  exact ⟨hmono.trans hbound.1, hmono.trans hbound.2⟩
 
 /-- Sharp Gaussian failure bound for `allBondStrongEvent n η`:
 `ℙ(Ω_bond(n, η)ᶜ) ≤ (n + 1) * γ([-η, η])^9 ≤ (n + 1) * η^9`. -/
@@ -383,15 +407,22 @@ theorem allBondStrongEvent_compl_prob_le (n : ℕ) {η : ℝ} (hη : 0 ≤ η) :
     (Measure.pi fun _ : PrefixIndex n => gaussianReal 0 1).real
       (allBondStrongEvent n η)ᶜ ≤
       ((n + 1 : ℕ) : ℝ) * η ^ 9 := by
-  have hcomp : (allBondStrongEvent n η)ᶜ =
+  have hsub : (allBondStrongEvent n η)ᶜ ⊆
       {x : PrefixIndex n → ℝ | ∃ e ∈ (Finset.univ : Finset (Fin (n + 1))),
         ∀ i ∈ bondCoordSet n e, |x i| < η} := by
-    ext x
-    simp [allBondStrongEvent]
-  rw [hcomp]
+    intro x hx
+    rw [mem_compl_iff] at hx
+    unfold allBondStrongEvent at hx
+    rw [mem_setOf_eq] at hx
+    push Not at hx
+    obtain ⟨e, hi⟩ := hx
+    exact ⟨e, Finset.mem_univ e, hi⟩
+  have hmono := measureReal_mono (μ := Measure.pi fun _ : PrefixIndex n => gaussianReal 0 1)
+    hsub (measure_ne_top _ _)
   have hbound := pi_smallCube_union_prob_le (Finset.univ : Finset (Fin (n + 1)))
     (bondCoordSet n) 9 (fun e _ => card_bondCoordSet n e) hη
-  simpa only [Finset.card_univ, Fintype.card_fin] using hbound
+  simp only [Finset.card_univ, Fintype.card_fin] at hbound
+  exact ⟨hmono.trans hbound.1, hmono.trans hbound.2⟩
 
 /-- Contiguous half-chain rigidity on `twoCutConnectedEvent n η`: at most one bond in the chain
 can fall below `η`, leaving an unbroken contiguous interval `Icc l r` of `≥ ⌈(n + 2) / 2⌉`
@@ -413,7 +444,7 @@ theorem exists_half_contiguous_subchain_of_twoCutConnected {n : ℕ} {η : ℝ}
       exact ⟨(pathCoeffEquiv n).symm (.inr (e, pq)), ⟨pq, rfl⟩,
         by simpa only [Equiv.apply_symm_apply] using hle⟩
   by_cases hall : ∀ e : Fin (n + 1), ∃ i ∈ bondCoordSet n e, η ≤ |x i|
-  · refine ⟨⟨0, by omega⟩, ⟨n + 1, by omega⟩, by simp [Fin.le_def], ?_, fun e _ _ => ?_⟩
+  · refine ⟨⟨0, by omega⟩, ⟨n + 1, by omega⟩, by simp, ?_, fun e _ _ => ?_⟩
     · have hcard : (Finset.Icc (⟨0, by omega⟩ : Fin (n + 2)) ⟨n + 1, by omega⟩).card = n + 2 := by
         have heq : Finset.Icc (⟨0, by omega⟩ : Fin (n + 2)) ⟨n + 1, by omega⟩ = Finset.univ := by
           ext j; simp [Fin.le_def]; omega
@@ -434,7 +465,7 @@ theorem exists_half_contiguous_subchain_of_twoCutConnected {n : ℕ} {η : ℝ}
         · exact ((he₀ i ha).not_ge hle).elim
         · exact ⟨i, hb, hle⟩
     by_cases hhalf : (n + 3) / 2 ≤ e₀.val + 1
-    · refine ⟨⟨0, by omega⟩, e₀.castSucc, by simp [Fin.le_def], ?_, fun e _ he_hi => ?_⟩
+    · refine ⟨⟨0, by omega⟩, e₀.castSucc, by simp, ?_, fun e _ he_hi => ?_⟩
       · have hcard : (Finset.Icc (⟨0, by omega⟩ : Fin (n + 2)) e₀.castSucc).card = e₀.val + 1 := by
           rw [Fin.card_Icc]; simp
         rw [hcard]; exact hhalf
@@ -446,7 +477,7 @@ theorem exists_half_contiguous_subchain_of_twoCutConnected {n : ℕ} {η : ℝ}
     · refine ⟨e₀.succ, ⟨n + 1, by omega⟩, by simp [Fin.le_def]; omega, ?_, fun e he_lo _ => ?_⟩
       · have hcard : (Finset.Icc e₀.succ (⟨n + 1, by omega⟩ : Fin (n + 2))).card =
             n + 1 - e₀.val := by
-          rw [Fin.card_Icc]; simp; omega
+          rw [Fin.card_Icc]; simp
         rw [hcard]; have := e₀.isLt; omega
       · have hne : e ≠ e₀ := by
           intro rfl
@@ -473,6 +504,7 @@ private theorem choiVector_inner_ge_of_opNorm_sub_le {d : Type*} [Fintype d] [De
     pow_le_pow_left₀ (norm_nonneg _) hdiff_le 2
   have hexp := @norm_sub_sq ℂ _ _ _ _ (choiVector U) (z • choiVector W)
   rw [hu1, norm_smul, hz, hw1, one_mul, one_pow] at hexp
+  simp only [RCLike.re_to_complex] at hexp
   have hre : 1 - ε ^ 2 / 2 ≤ (inner ℂ (choiVector U) (z • choiVector W)).re := by
     linarith only [hdiff_sq, hexp]
   have hnorm_eq : ‖inner ℂ (choiVector U) (z • choiVector W)‖ =
@@ -509,9 +541,9 @@ theorem gaussian_sub_one_gate_per_bond_exponential_onset {ε : ℝ} (hε0 : 0 < 
     obtain ⟨hlo, hhi, _, heq, _⟩ := tenthPlateauOnset_lt_of_not_affordable H zero_le_one hna
     exact hnot_onset ⟨hlo, hhi, heq⟩
   obtain ⟨z, hz, C, hC, herr⟩ := hafford
-  obtain ⟨c_cut, hc_cut⟩ := many_crossed C
-  have hcross_ge : (ε / 2) * (n + 1 : ℕ) ≤ ((crossed c_cut).card : ℝ) := by
-    have hb : ((n + 1 : ℕ) : ℝ) ≤ (C.gateCount : ℝ) + 2 * ((crossed c_cut).card : ℝ) := by
+  obtain ⟨c_cut, hc_cut⟩ := SpanningDensity.many_crossed C
+  have hcross_ge : (ε / 2) * (n + 1 : ℕ) ≤ ((SpanningDensity.crossed c_cut).card : ℝ) := by
+    have hb : ((n + 1 : ℕ) : ℝ) ≤ (C.gateCount : ℝ) + 2 * ((SpanningDensity.crossed c_cut).card : ℝ) := by
       exact_mod_cast hc_cut
     have hCg : (C.gateCount : ℝ) ≤ (s : ℝ) := by exact_mod_cast hC
     linarith only [hb, hCg, hs_le]
@@ -538,8 +570,8 @@ theorem HasBipartiteOperatorRank.mono {N r₁ r₂ : ℕ} {A : Finset (Fin N)} {
   obtain ⟨X, Y, hX, hY, rfl⟩ := h
   refine ⟨fun m => if hm : m.val < r₁ then X ⟨m.val, hm⟩ else 0,
     fun m => if hm : m.val < r₁ then Y ⟨m.val, hm⟩ else 0,
-    fun m => by split_ifs with hm; exact hX _; exact IsSiteSupported.zero A,
-    fun m => by split_ifs with hm; exact hY _; exact IsSiteSupported.zero Aᶜ, ?_⟩
+    fun m => by dsimp only; split_ifs with hm; exact hX _; exact IsSiteSupported.zero A,
+    fun m => by dsimp only; split_ifs with hm; exact hY _; exact IsSiteSupported.zero Aᶜ, ?_⟩
   have hsum : (∑ m : Fin r₂,
       (if hm : m.val < r₁ then X ⟨m.val, hm⟩ else 0) *
       (if hm : m.val < r₁ then Y ⟨m.val, hm⟩ else 0)) =
@@ -548,11 +580,13 @@ theorem HasBipartiteOperatorRank.mono {N r₁ r₂ : ℕ} {A : Finset (Fin N)} {
     rw [Finset.sum_filter]
     refine Finset.sum_congr rfl fun m _ => ?_
     split_ifs <;> simp
+  dsimp only
   rw [hsum]
-  symm
   refine Finset.sum_bij (fun (k : Fin r₁) _ => Fin.castLE hr k) ?_ ?_ ?_ ?_
   · intro k _; exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, k.isLt⟩
-  · intro k₁ _ k₂ _ heq; exact Fin.ext (congrArg Fin.val heq)
+  · intro k₁ _ k₂ _ heq
+    have hv : (Fin.castLE hr k₁).val = (Fin.castLE hr k₂).val := congrArg Fin.val heq
+    exact Fin.ext hv
   · intro m hm
     have hlt := (Finset.mem_filter.mp hm).2
     exact ⟨⟨m.val, hlt⟩, Finset.mem_univ _, Fin.ext rfl⟩
@@ -569,13 +603,16 @@ theorem HasBipartiteOperatorRank.mul {N r₁ r₂ : ℕ} {A : Finset (Fin N)} {M
     fun k => Y₁ (e.symm k).1 * Y₂ (e.symm k).2,
     fun k => (hX₁ _).matrix_mul (hX₂ _),
     fun k => (hY₁ _).matrix_mul (hY₂ _), ?_⟩
-  rw [← Equiv.sum_comp e.symm, Fintype.sum_prod_type, Finset.sum_mul]
+  dsimp only
+  rw [Equiv.sum_comp e.symm (fun k => X₁ k.1 * X₂ k.2 * (Y₁ k.1 * Y₂ k.2)),
+    Fintype.sum_prod_type, Finset.sum_mul]
   refine Finset.sum_congr rfl fun i _ => ?_
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl fun j _ => ?_
+  have hdisj_Ac_A : Disjoint Aᶜ A :=
+    Finset.disjoint_left.mpr fun _ hiAc hiA => (Finset.mem_compl.mp hiAc) hiA
   have hcomm : Y₁ i * X₂ j = X₂ j * Y₁ i :=
-    commute_of_isSiteSupported_disjoint Disjoint.disjoint_sdiff_left.symm
-      (by simpa [Finset.compl_eq_univ_sdiff] using hY₁ i) (hX₂ j)
+    commute_of_isSiteSupported_disjoint hdisj_Ac_A (hY₁ i) (hX₂ j)
   calc (X₁ i * Y₁ i) * (X₂ j * Y₂ j)
       = X₁ i * (Y₁ i * X₂ j) * Y₂ j := by simp only [mul_assoc]
     _ = (X₁ i * X₂ j) * (Y₁ i * Y₂ j) := by rw [hcomm]; simp only [mul_assoc]
@@ -607,7 +644,9 @@ private theorem hasBipartiteOperatorRank_card_left {N : ℕ} (A : Finset (Fin N)
         forall_congr' fun i => by rw [hxA i.1 i.2, hyA i.1 i.2]
       have h2 : (∀ i ∉ A, x i = y i) ↔ (∀ i ∉ A, x' i = y' i) :=
         ⟨fun _ => hrest', fun _ => hrest⟩
-      rw [h1, h2]
+      by_cases hc : (∀ i : A, x i.1 = uv.1 i ∧ y i.1 = uv.2 i) ∧ (∀ i ∉ A, x i = y i)
+      · rw [if_pos hc, if_pos ⟨h1.mp hc.1, h2.mp hc.2⟩]
+      · rw [if_neg hc, if_neg (fun hc' => hc ⟨h1.mpr hc'.1, h2.mpr hc'.2⟩)]
   have hY_supp (uv : SubCfg) : IsSiteSupported Aᶜ (Y_sub uv) := by
     refine ⟨fun x y hdiff => ?_, fun x y x' y' hxAc hyAc hrest hrest' => ?_⟩
     · obtain ⟨i, hi, hne⟩ := hdiff
@@ -626,10 +665,13 @@ private theorem hasBipartiteOperatorRank_card_left {N : ℕ} (A : Finset (Fin N)
         funext i; dsimp only [glue]; split_ifs with hi
         · rfl
         · exact hyAc i (Finset.mem_compl.mpr hi)
-      rw [hA_iff, hg1, hg2]
+      by_cases hA : ∀ i ∈ A, x i = y i
+      · rw [if_pos hA, if_pos (hA_iff.mp hA), hg1, hg2]
+      · rw [if_neg hA, if_neg (mt hA_iff.mpr hA)]
   refine ⟨fun m => X_sub (eqv m), fun m => Y_sub (eqv m),
     fun m => hX_supp _, fun m => hY_supp _, ?_⟩
-  rw [Equiv.sum_comp eqv]
+  dsimp only
+  rw [Equiv.sum_comp eqv (fun uv => X_sub uv * Y_sub uv)]
   ext x y
   rw [Matrix.sum_apply]
   let uv₀ : SubCfg := (fun i => x i.1, fun i => y i.1)
@@ -640,7 +682,7 @@ private theorem hasBipartiteOperatorRank_card_left {N : ℕ} (A : Finset (Fin N)
     · have hxX : X_sub uv₀ x z₀ = 1 := by
         dsimp only [X_sub, z₀, glue, uv₀]
         rw [if_pos]
-        exact ⟨fun i => ⟨rfl, dif_pos i.2⟩, fun i hi => (dif_neg hi).symm⟩
+        exact ⟨fun i => ⟨rfl, by rw [dif_pos i.2]⟩, fun i hi => by rw [dif_neg hi]⟩
       have hzY : Y_sub uv₀ z₀ y = M x y := by
         dsimp only [Y_sub, z₀, glue, uv₀]
         rw [if_pos (fun i hi => by simp [hi])]
@@ -687,8 +729,9 @@ theorem universal_bipartiteOperatorRank_ceiling {N : ℕ} (A : Finset (Fin N)) (
     refine ⟨X', Y', hX_supp, hY', ?_⟩
     rw [hM]
     refine Finset.sum_congr rfl fun m _ => ?_
-    exact commute_of_isSiteSupported_disjoint Disjoint.disjoint_sdiff_left.symm
-      (by simpa [Finset.compl_eq_univ_sdiff] using hY' m) (hX_supp m)
+    have hdisj_Ac_A : Disjoint Aᶜ A :=
+      Finset.disjoint_left.mpr fun _ hiAc hiA => (Finset.mem_compl.mp hiAc) hiA
+    exact commute_of_isSiteSupported_disjoint hdisj_Ac_A (hY' m) (hX_supp m)
 
 /-- Iterated commutator `(ad_H)^k(O)` in a ring `R`. -/
 def iteratedCommutator {R : Type*} [Ring R] (H : R) : ℕ → R → R
@@ -721,7 +764,7 @@ private theorem iteratedCommutator_neg {A : Type*} [Ring A] [Module ℂ A] [IsSc
               rw [mul_smul_comm, smul_mul_assoc, ← smul_sub]
             rw [h1, ihm]
       dsimp only [iteratedCommutator]
-      rw [ih, hcomm_neg, hsmul, smul_smul, pow_succ']
+      rw [ih, hcomm_neg, hsmul, smul_smul, ← pow_succ]
 
 theorem norm_iteratedCommutator_le {A : Type*} [NormedRing A] (H : A) (k : ℕ) (O : A) :
     ‖iteratedCommutator H k O‖ ≤ (2 * ‖H‖) ^ k * ‖O‖ := by
@@ -776,7 +819,7 @@ private theorem heisenbergOrbit_eq_twoSided_exp {A : Type*} [CStarAlgebra A]
     have hcomm : Commute (t • (Complex.I • H)) (t • ((-Complex.I) • H)) := by
       rw [show t • ((-Complex.I) • H) = -(t • (Complex.I • H)) by rw [neg_smul, smul_neg]]
       exact (Commute.refl _).neg_right
-    rw [← exp_add_of_commute hcomm, hadd, exp_zero]
+    rw [← exp_add_of_commute hcomm, hadd, NormedSpace.exp_zero]
   calc star (exp (t • ((-Complex.I) • H)))
       = 1 * star (exp (t • ((-Complex.I) • H))) := (one_mul _).symm
     _ = (exp (t • (Complex.I • H)) * exp (t • ((-Complex.I) • H))) *
@@ -848,7 +891,8 @@ theorem norm_heisenbergOrbit_sub_commutatorTaylor_le {A : Type*} [CStarAlgebra A
         · simp [iteratedCommutator]
         · intro k _ hk0; rw [zero_pow hk0, zero_div, Complex.ofReal_zero, zero_mul, zero_smul]
         · simp
-      have ho0 : heisenbergOrbit G O 0 = O := by simp [heisenbergOrbit]
+      have ho0 : heisenbergOrbit G O 0 = O := by
+        simp [heisenbergOrbit, NormedSpace.exp_zero]
       rw [ho0, ht0, sub_self, norm_zero, zero_pow (Nat.succ_ne_zero K), mul_zero, zero_div]
     · have htaylor_eq : taylorWithinEval f K (Icc 0 u) 0 u =
           heisenbergCommutatorTaylor G O K u := by
@@ -858,8 +902,11 @@ theorem norm_heisenbergOrbit_sub_commutatorTaylor_le {A : Type*} [CStarAlgebra A
         rw [iteratedDerivWithin_eq_iteratedDeriv (uniqueDiffOn_Icc hu_pos)
           ((hf_smooth k).contDiffAt) (left_mem_Icc.mpr hu),
           congrFun (iteratedDeriv_twoSided_exp G O k) 0]
-        simp only [sub_zero, zero_smul, exp_zero, one_mul, mul_one]
-        rw [← Complex.real_smul, smul_smul]
+        simp only [sub_zero, zero_smul, NormedSpace.exp_zero, one_mul, mul_one]
+        have h1 (r : ℝ) : (r : ℂ) • ((Complex.I ^ k) • iteratedCommutator G k O) =
+            r • ((Complex.I ^ k) • iteratedCommutator G k O) := by
+          simp
+        rw [← h1 ((k.factorial : ℝ)⁻¹ * u ^ k), smul_smul]
         congr 1; push_cast; ring
       rw [hf_eq u, ← htaylor_eq]
       refine norm_sub_taylorWithinEval_le_factorial hu (hf_smooth (K + 1)).contDiffOn
@@ -867,6 +914,12 @@ theorem norm_heisenbergOrbit_sub_commutatorTaylor_le {A : Type*} [CStarAlgebra A
       rw [iteratedDerivWithin_eq_iteratedDeriv (uniqueDiffOn_Icc hu_pos)
         ((hf_smooth (K + 1)).contDiffAt) hs,
         congrFun (iteratedDeriv_twoSided_exp G O (K + 1)) s]
+      rcases subsingleton_or_nontrivial A with hsubA | _hntA
+      · rw [Subsingleton.elim
+          (exp (s • (Complex.I • G)) *
+            ((Complex.I ^ (K + 1)) • iteratedCommutator G (K + 1) O) *
+            exp (s • ((-Complex.I) • G))) 0, norm_zero]
+        exact mul_nonneg (pow_nonneg (mul_nonneg two_pos.le (norm_nonneg G)) _) (norm_nonneg O)
       have hy_skew : Complex.I • G ∈ skewAdjoint A := by
         rw [skewAdjoint.mem_iff, star_smul, hG.star_eq]; simp
       have hx_skew : (-Complex.I) • G ∈ skewAdjoint A := by
@@ -901,7 +954,7 @@ theorem norm_heisenbergOrbit_sub_commutatorTaylor_le {A : Type*} [CStarAlgebra A
     have horb_eq : heisenbergOrbit (-H) O (-t) = heisenbergOrbit H O t := by
       unfold heisenbergOrbit
       have hexp_eq : (-t) • ((-Complex.I) • (-H)) = t • ((-Complex.I) • H) := by
-        rw [smul_neg, neg_smul, neg_smul, neg_neg]
+        rw [smul_neg, smul_neg, neg_smul, neg_neg]
       rw [hexp_eq]
     have htay_eq : heisenbergCommutatorTaylor (-H) O K (-t) =
         heisenbergCommutatorTaylor H O K t := by
@@ -910,12 +963,19 @@ theorem norm_heisenbergOrbit_sub_commutatorTaylor_le {A : Type*} [CStarAlgebra A
       rw [iteratedCommutator_neg, smul_smul]
       congr 1
       have hp : (-t) ^ k = (-1 : ℝ) ^ k * t ^ k := by rw [← mul_pow]; ring
+      have hc1 : ((-1 : ℂ) ^ k) * ((-1 : ℂ) ^ k) = 1 := by
+        rw [← mul_pow]; norm_num
       rw [hp]
-      push_cast; ring
+      push_cast
+      linear_combination ((t : ℂ) ^ k / (k.factorial : ℂ)) * Complex.I ^ k * hc1
     rw [horb_eq, htay_eq, norm_neg] at h
     rw [abs_of_neg ht_neg]
     refine h.trans_eq ?_
-    rw [mul_pow]; ring
+    have hpow_eq : (2 * ‖H‖) ^ (K + 1) * (-t) ^ (K + 1) = (2 * ‖H‖ * (-t)) ^ (K + 1) :=
+      (mul_pow (2 * ‖H‖) (-t) (K + 1)).symm
+    calc (2 * ‖H‖) ^ (K + 1) * ‖O‖ * (-t) ^ (K + 1) / ((K + 1).factorial : ℝ)
+        = ((2 * ‖H‖) ^ (K + 1) * (-t) ^ (K + 1)) / ((K + 1).factorial : ℝ) * ‖O‖ := by ring
+      _ = (2 * ‖H‖ * -t) ^ (K + 1) / ((K + 1).factorial : ℝ) * ‖O‖ := by rw [hpow_eq]
 
 /-! ## Section 5: Exact `(n + 1)`-gate diagonal Ising synthesis and strong-bond survival tube -/
 
@@ -971,9 +1031,6 @@ private theorem realizes_one_twoSite_diagonal {N : ℕ} (a b : Fin N) (hab : a �
     ring
   rw [hgate, smul_smul, hzunit, one_smul, ← unitaryEvolution_twoQubitLiftMatrix,
     twoQubitLiftMatrix_diagonal, unitaryEvolution_diagonal]
-  congr 1; funext x; congr 1
-  simp only [Complex.real_smul]
-  ring
 
 /-- Every diagonal `Z`/`ZZ` chain Hamiltonian on `n + 2` qubits (`∀ l, ¬ IsDiagLabel l → u l = 0`)
 is synthesized **exactly** for all `t ∈ ℝ` by `n + 1` two-qubit gates (one gate per bond). -/
@@ -997,16 +1054,16 @@ theorem realizes_one_gate_per_bond_of_isDiag {n : ℕ} (u : PathShell n)
     simp_rw [hz1, hz2, gBond]
     rw [Finset.sum_add_distrib, Finset.sum_add_distrib]
     congr 1
-    rw [← Fin.sum_univ_succ (fun s : Fin (n + 2) => u (.inl (s, 2)) * bSign (x s))]
     have he0 : (∑ e : Fin (n + 1),
         if e.val = 0 then u (.inl (0, 2)) * bSign (x e.castSucc) else 0) =
         u (.inl (0, 2)) * bSign (x 0) := by
       rw [Finset.sum_eq_single (0 : Fin (n + 1))]
       · simp
       · intro e _ he
-        rw [if_neg (Fin.val_ne_of_ne he)]
+        have hev : (e : ℕ) ≠ 0 := fun h => he (Fin.ext h)
+        rw [if_neg hev]
       · simp
-    rw [he0]
+    rw [he0, Fin.sum_univ_succ]
   let U_part (S : Finset (Fin (n + 1))) : Register (n + 2) :=
     Matrix.diagonal fun x : Config (n + 2) =>
       Complex.exp (-(Complex.I * ((t : ℂ) *
@@ -1020,7 +1077,7 @@ theorem realizes_one_gate_per_bond_of_isDiag {n : ℕ} (u : PathShell n)
           · subst hxy; simp [U_part]
           · simp [U_part, hxy]
         rw [Finset.card_empty, h1]
-        exact Realizes.one (n + 2)
+        exact DiagonalSynthesis.Realizes.one (n + 2)
     | @insert e S he ih =>
         have hstep := realizes_one_twoSite_diagonal e.castSucc e.succ
           (Fin.castSucc_lt_succ (i := e)).ne (gBond e) t
@@ -1033,8 +1090,10 @@ theorem realizes_one_gate_per_bond_of_isDiag {n : ℕ} (u : PathShell n)
           congr 1; funext x
           rw [Finset.sum_insert he, Complex.ofReal_add, ← Complex.exp_add]
           congr 1; ring
-        rw [Finset.card_insert_of_notMem he, hmul_eq, Nat.add_comm]
-        exact hstep.mul ih
+        have hcard_ins : (insert e S).card = 1 + S.card :=
+          (Finset.card_insert_of_notMem he).trans (Nat.add_comm _ _)
+        rw [hcard_ins, hmul_eq]
+        exact DiagonalSynthesis.Realizes.mul hstep ih
   have htot := hpart Finset.univ
   rw [Finset.card_univ, Fintype.card_fin] at htot
   have hev_eq : unitaryEvolution (pathHamiltonian u) t = U_part Finset.univ := by
@@ -1042,8 +1101,6 @@ theorem realizes_one_gate_per_bond_of_isDiag {n : ℕ} (u : PathShell n)
     dsimp only [U_part]
     congr 1; funext x; congr 1
     rw [hsum_energy x]
-    simp only [Complex.real_smul]
-    ring
   rwa [← hev_eq] at htot
 
 private theorem scalarReturnExcised_of_onsiteZ {k : ℕ} (u : PathShell (k + 1))
@@ -1068,7 +1125,6 @@ private theorem scalarReturnExcised_of_onsiteZ {k : ℕ} (u : PathShell (k + 1))
         change _ • Matrix.trace (star W * W) = _
         rw [h1, Matrix.trace_one, Fintype.card_fun, Fintype.card_fin, Fintype.card_bool,
           smul_eq_mul, mul_comm]
-        push_cast; rfl
       · intro l _ hne
         rw [Matrix.mul_smul, Matrix.trace_smul]
         have hword_ne : onsiteWord (0 : Fin (k + 3)) 2 ≠ pathWord l := by
@@ -1212,14 +1268,14 @@ private theorem scalarReturnExcised_of_onsiteZ {k : ℕ} (u : PathShell (k + 1))
   exact Real.sqrt_le_iff.mpr ⟨norm_nonneg _, hsq_ge2⟩
 
 /-- Strong-bond commuting Ising survival tube strictly inside `allBondStrongEvent (k + 1) η ⊆
-twoCutConnectedEvent (k + 1) η`: for every `η ≥ 0` and all sufficiently large `k` (`N = k + 3`),
+twoCutConnectedEvent (k + 1) η`: for every `η : ℝ` and all sufficiently large `k` (`N = k + 3`),
 there is `c > 0` such that for every `T ≥ 2`, a `pathPauliDisorderLaw` event of probability
 `≥ c * T ^ (-(10 * k + 22))` simultaneously satisfies:
 1. `allBondStrongEvent (k + 1) η` and `twoCutConnectedEvent (k + 1) η` (every bond has strength `≥ η`),
 2. maximally projective simple spectrum and full `2^N` Vandermonde rank inside `[0, 1]`,
 3. scalar-return distance `≥ √2` at some `t₀ ∈ (0, T]`, and
 4. `T < tenthPlateauOnset H s` for **every** budget `k + 2 ≤ s ≤ P` (`N - 1 ≤ s ≤ P`). -/
-theorem gaussian_strongBond_ising_tube_tail {η : ℝ} (hη : 0 ≤ η) :
+theorem gaussian_strongBond_ising_tube_tail (η : ℝ) :
     ∀ᶠ k : ℕ in atTop,
       let N := k + 3
       let P := nearHilbertContinuousCircuitBudget N
@@ -1250,7 +1306,7 @@ theorem gaussian_strongBond_ising_tube_tail {η : ℝ} (hη : 0 ≤ η) :
       have hind : ∀ m : ℕ, 16 ≤ m → 64 * (m + 4) * (2 * (m + 2)) ≤ 2 ^ (m + 3) := by
         intro m hm
         induction m, hm using Nat.le_induction with
-        | base => decide
+        | base => norm_num
         | succ m hm ih =>
             have hstep : 64 * (m + 5) * (2 * (m + 3)) ≤ 2 * (64 * (m + 4) * (2 * (m + 2))) := by
               nlinarith only [hm]
@@ -1260,40 +1316,37 @@ theorem gaussian_strongBond_ising_tube_tail {η : ℝ} (hη : 0 ≤ η) :
               _ = 2 ^ (m + 4) := by rw [← pow_succ']
       exact hind k hk16
     exact (Nat.le_div_iff_mul_le (by omega)).mpr (by rw [mul_comm]; exact hpow)
-  let zzEmb : Fin (k + 2) ↪ PrefixIndex (k + 1) :=
-    ⟨fun e => (pathCoeffEquiv (k + 1)).symm (.inr (e, (2, 2))),
-     fun _ _ h => (Prod.mk.inj (Sum.inr.inj ((pathCoeffEquiv (k + 1)).symm.injective h))).1⟩
-  let offEmb : Fin (10 * (k + 1) + 12) ↪ PrefixIndex (k + 1) :=
-    ⟨fun j => (pathCoeffEquiv (k + 1)).symm (pathPatchEquiv (k + 1) (.inr j)),
-     fun _ _ h => Sum.inr.inj ((pathPatchEquiv (k + 1)).injective
-       ((pathCoeffEquiv (k + 1)).symm.injective h))⟩
-  let S_strong : Finset (PrefixIndex (k + 1)) := Finset.univ.map zzEmb
-  let S_weak : Finset (PrefixIndex (k + 1)) := Finset.univ.map offEmb
-  let i₀ : PrefixIndex (k + 1) := (pathCoeffEquiv (k + 1)).symm (.inl (0, 2))
+  let zzEmb : Fin (k + 2) ↪ PathLabel (k + 1) :=
+    ⟨fun e => .inr (e, (2, 2)), fun _ _ h => (Prod.mk.inj (Sum.inr.inj h)).1⟩
+  let offEmb : Fin (10 * (k + 1) + 12) ↪ PathLabel (k + 1) :=
+    ⟨fun j => pathPatchEquiv (k + 1) (.inr j),
+     fun _ _ h => Sum.inr.inj ((pathPatchEquiv (k + 1)).injective h)⟩
+  let S_strong : Finset (PathLabel (k + 1)) := Finset.univ.map zzEmb
+  let S_weak : Finset (PathLabel (k + 1)) := Finset.univ.map offEmb
+  let l₀ : PathLabel (k + 1) := .inl (0, 2)
   have hcard_s : S_strong.card = k + 2 := by
     simp [S_strong, Finset.card_map]
   have hcard_w : S_weak.card = 10 * k + 22 := by
     simp only [S_weak, Finset.card_map, Finset.card_univ, Fintype.card_fin]; omega
   have hdisj : Disjoint S_strong S_weak := by
-    refine Finset.disjoint_left.mpr fun i his hiw => ?_
-    obtain ⟨e, _, rfl⟩ := Finset.mem_map.mp his
-    obtain ⟨j, _, heq⟩ := Finset.mem_map.mp hiw
-    have hl : pathPatchEquiv (k + 1) (.inr j) = .inr (e, (2, 2)) :=
-      (pathCoeffEquiv (k + 1)).symm.injective heq
+    refine Finset.disjoint_left.mpr fun l hls hlw => ?_
+    obtain ⟨e, _, rfl⟩ := Finset.mem_map.mp hls
+    obtain ⟨j, _, heq⟩ := Finset.mem_map.mp hlw
     have hnd := notDiag_pathPatchEquiv_inr (n := k + 1) j
-    rw [hl] at hnd
+    change pathPatchEquiv (k + 1) (.inr j) = .inr (e, (2, 2)) at heq
+    rw [heq] at hnd
     exact hnd rfl
-  have hi₀_s : i₀ ∉ S_strong := by
+  have hl₀_s : l₀ ∉ S_strong := by
     intro h
     obtain ⟨e, _, heq⟩ := Finset.mem_map.mp h
-    cases (pathCoeffEquiv (k + 1)).symm.injective heq
-  have hi₀_w : i₀ ∉ S_weak := by
+    dsimp only [zzEmb, l₀] at heq
+    exact nomatch heq
+  have hl₀_w : l₀ ∉ S_weak := by
     intro h
     obtain ⟨j, _, heq⟩ := Finset.mem_map.mp h
-    have hl : pathPatchEquiv (k + 1) (.inr j) = .inl (0, 2) :=
-      (pathCoeffEquiv (k + 1)).symm.injective heq
     have hnd := notDiag_pathPatchEquiv_inr (n := k + 1) j
-    rw [hl] at hnd
+    change pathPatchEquiv (k + 1) (.inr j) = .inl (0, 2) at heq
+    rw [heq] at hnd
     exact hnd rfl
   have hp_strong : 0 < γ.real (Icc (η + 1) (η + 2)) :=
     ENNReal.toReal_pos (gaussianReal_Icc_pos (by linarith)).ne' (measure_ne_top _ _)
@@ -1319,18 +1372,46 @@ theorem gaussian_strongBond_ising_tube_tail {η : ℝ} (hη : 0 ≤ η) :
       have : (1 : ℝ) ≤ ((10 * k + 22 : ℕ) : ℝ) := by exact_mod_cast (show 1 ≤ 10 * k + 22 by omega)
       linarith only [this]
     exact div_le_one_of_le₀ (by nlinarith only [hW1, hT2]) (mul_pos hW_pos hT_pos).le
-  let Cyl := strongWeakAnchorCylinder S_strong S_weak i₀ (η + 1) (η + 2) δ
+  let Cyl := strongWeakAnchorCylinder S_strong S_weak l₀ (η + 1) (η + 2) δ
   have hCyl_meas : MeasurableSet Cyl :=
-    measurableSet_strongWeakAnchorCylinder S_strong S_weak i₀ (η + 1) (η + 2) δ
-  have hCyl_mass := pi_strongWeakAnchorCylinder_floor S_strong S_weak i₀ hdisj hi₀_s hi₀_w
+    measurableSet_strongWeakAnchorCylinder S_strong S_weak l₀ (η + 1) (η + 2) δ
+  have hCyl_mass := pi_strongWeakAnchorCylinder_floor S_strong S_weak l₀ hdisj hl₀_s hl₀_w
     hδ_pos.le hδ_le1 (a := η + 1) (b := η + 2)
   rw [hcard_s, hcard_w] at hCyl_mass
-  let x_map : PathPauliDisorder → PrefixIndex (k + 1) → ℝ :=
-    fun ω i => pathPauliDisorderShell ω (k + 1) (pathCoeffEquiv (k + 1) i)
-  have hmp := gaussian_pauli_prefix_coordinates_law (k + 1)
-  have hpre_mass : pathPauliDisorderLaw.real (x_map ⁻¹' Cyl) =
-      (Measure.pi fun _ : PrefixIndex (k + 1) => γ).real Cyl :=
-    congrArg ENNReal.toReal (hmp.measure_preimage hCyl_meas.nullMeasurableSet)
+  let u_map : PathPauliDisorder → PathLabel (k + 1) → ℝ :=
+    fun ω l => pathPauliDisorderShell ω (k + 1) l
+  have hmp_lbl : MeasurePreserving u_map pathPauliDisorderLaw
+      (Measure.pi fun _ : PathLabel (k + 1) => γ) := by
+    let f_idx : PathLabel (k + 1) → ℕ × PathPauliDirections
+      | .inl (s, a) => (s.val, .inl a)
+      | .inr (e, ab) => (e.val, .inr ab)
+    have hf_inj : Function.Injective f_idx := by
+      intro l j h
+      rcases l with ⟨a, b⟩ | ⟨a, b⟩ <;> rcases j with ⟨c', d'⟩ | ⟨c', d'⟩
+      · have he := Prod.mk.inj h
+        exact congrArg Sum.inl (Prod.ext (Fin.ext he.1) (Sum.inl.inj he.2))
+      · exact nomatch congrArg Prod.snd h
+      · exact nomatch congrArg Prod.snd h
+      · have he := Prod.mk.inj h
+        exact congrArg Sum.inr (Prod.ext (Fin.ext he.1) (Sum.inr.inj he.2))
+    have hi := iIndepFun_infinitePi (P := fun _ : ℕ × PathPauliDirections => γ)
+      (X := fun _ => (id : ℝ → ℝ)) (fun _ => measurable_id)
+    have heval : MeasurePreserving
+        (fun ω : PathPauliDisorder => fun l : PathLabel (k + 1) => ω (f_idx l))
+        pathPauliDisorderLaw (Measure.pi fun _ : PathLabel (k + 1) => γ) := by
+      refine ⟨measurable_pi_lambda _ (fun _ => measurable_pi_apply _), ?_⟩
+      have h := (hi.precomp hf_inj).map_fun_eq_pi_map (fun _ => (measurable_pi_apply _).aemeasurable)
+      have hmap (l : PathLabel (k + 1)) :
+          Measure.map (fun ω : PathPauliDisorder => ω (f_idx l)) pathPauliDisorderLaw = γ :=
+        (measurePreserving_eval_infinitePi (fun _ : ℕ × PathPauliDirections => γ) (f_idx l)).map_eq
+      exact h.trans (congrArg Measure.pi (funext hmap))
+    convert heval using 1
+    funext ω l
+    change pathPauliDisorderShell ω (k + 1) l = ω (f_idx l)
+    cases l <;> rfl
+  have hpre_mass : pathPauliDisorderLaw.real (u_map ⁻¹' Cyl) =
+      (Measure.pi fun _ : PathLabel (k + 1) => γ).real Cyl :=
+    congrArg ENNReal.toReal (hmp_lbl.measure_preimage hCyl_meas.nullMeasurableSet)
   let TargetEvent : Set PathPauliDisorder := {ω : PathPauliDisorder |
     let u := pathPauliDisorderShell ω (k + 1)
     let x : PrefixIndex (k + 1) → ℝ := fun i => u (pathCoeffEquiv (k + 1) i)
@@ -1344,11 +1425,11 @@ theorem gaussian_strongBond_ising_tube_tail {η : ℝ} (hη : 0 ≤ η) :
     (∃ t₀ ∈ Ioc (0 : ℝ) T, ∀ z : ℂ, ‖z‖ = 1 →
       Real.sqrt 2 ≤ ‖unitaryEvolution H.val t₀ - z • (1 : Register N)‖) ∧
     (∀ s : ℕ, k + 2 ≤ s → s ≤ P → T < tenthPlateauOnset H s)}
-  have hae_sub : x_map ⁻¹' Cyl ≤ᵐ[pathPauliDisorderLaw] TargetEvent := by
+  have hae_sub : u_map ⁻¹' Cyl ≤ᵐ[pathPauliDisorderLaw] TargetEvent := by
     filter_upwards [gaussian_path_all_prefixes_maximally_projective] with ω hmax_all
     rintro ⟨hstrong, hweak, hanchor⟩
     let u := pathPauliDisorderShell ω (k + 1)
-    let x : PrefixIndex (k + 1) → ℝ := x_map ω
+    let x : PrefixIndex (k + 1) → ℝ := fun i => u (pathCoeffEquiv (k + 1) i)
     let H : selfAdjoint (Register N) := ⟨pathHamiltonian u, isSelfAdjoint_pathHamiltonian u⟩
     have hmax : MaximallyProjectiveEnergy H.2.isHermitian.eigenvalues := hmax_all k
     -- 1. Strong bonds (`allBondStrongEvent` and `twoCutConnectedEvent`)
@@ -1356,8 +1437,12 @@ theorem gaussian_strongBond_ising_tube_tail {η : ℝ} (hη : 0 ≤ η) :
       intro e
       have hmem_s : zzEmb e ∈ S_strong := Finset.mem_map.mpr ⟨e, Finset.mem_univ e, rfl⟩
       have hval := (hstrong (zzEmb e) hmem_s).1
-      refine ⟨zzEmb e, Finset.mem_image.mpr ⟨(2, 2), Finset.mem_univ _, rfl⟩, ?_⟩
-      exact (by linarith only [hval] : η ≤ x (zzEmb e)).trans (le_abs_self _)
+      refine ⟨(pathCoeffEquiv (k + 1)).symm (.inr (e, (2, 2))),
+        Finset.mem_image.mpr ⟨(2, 2), Finset.mem_univ _, rfl⟩, ?_⟩
+      have heq_x : x ((pathCoeffEquiv (k + 1)).symm (.inr (e, (2, 2)))) = u_map ω (zzEmb e) := by
+        dsimp only [x, u, u_map, zzEmb]; rw [Equiv.apply_symm_apply]; rfl
+      rw [heq_x]
+      exact (by linarith only [hval] : η ≤ u_map ω (zzEmb e)).trans (le_abs_self _)
     have hconn : x ∈ twoCutConnectedEvent (k + 1) η :=
       allBondStrongEvent_subset_twoCutConnectedEvent (k + 1) η hbond
     -- 2. Vandermonde rank 2^N on [0, 1]
@@ -1387,11 +1472,7 @@ theorem gaussian_strongBond_ising_tube_tail {η : ℝ} (hη : 0 ≤ η) :
           (le_add_of_nonneg_left (norm_nonneg _)))
       · rw [hspan_eq, hfinrank]
     -- 3. Scalar-return excision ≥ √2 at t₀ ∈ (0, π / 2) ⊆ (0, T]
-    have honsiteZ : 3 ≤ |u (.inl (0, 2))| := by
-      have hcoord : x i₀ = u (.inl (0, 2)) := by
-        dsimp only [x, x_map, i₀, u]; rw [Equiv.apply_symm_apply]
-      rw [← hcoord]
-      exact hanchor.1.trans (le_abs_self _)
+    have honsiteZ : 3 ≤ |u (.inl (0, 2))| := hanchor.1.trans (le_abs_self _)
     obtain ⟨t₀, ht₀_mem, ht₀_exc⟩ := scalarReturnExcised_of_onsiteZ u honsiteZ
     have ht₀_T : t₀ ∈ Ioc 0 T := ⟨ht₀_mem.1, ht₀_mem.2.le.trans
       ((div_le_div_of_nonneg_right Real.pi_lt_four.le two_pos.le).trans (by norm_num; exact hT2))⟩
@@ -1430,15 +1511,14 @@ theorem gaussian_strongBond_ising_tube_tail {η : ℝ} (hη : 0 ≤ η) :
             finitePauliMatrix (pathWord (pathPatchEquiv (k + 1) (.inr j)))‖ ≤ δ := by
         rw [norm_smul, norm_finitePauliMatrix, mul_one, Complex.norm_real, Real.norm_eq_abs]
         have hmem_w : offEmb j ∈ S_weak := Finset.mem_map.mpr ⟨j, Finset.mem_univ j, rfl⟩
-        have hw := hweak (offEmb j) hmem_w
-        simpa only [x_map, offEmb, u, Equiv.apply_symm_apply, Function.Embedding.coeFn_mk] using hw
+        exact hweak (offEmb j) hmem_w
       calc ∑ j : Fin (10 * (k + 1) + 12),
               ‖((u (pathPatchEquiv (k + 1) (.inr j)) : ℝ) : ℂ) •
                 finitePauliMatrix (pathWord (pathPatchEquiv (k + 1) (.inr j)))‖
           ≤ ∑ _j : Fin (10 * (k + 1) + 12), δ := Finset.sum_le_sum fun j _ => hterm j
         _ = ((10 * k + 22 : ℕ) : ℝ) * δ := by
             rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-            congr 1; exact_mod_cast (show 10 * (k + 1) + 12 = 10 * k + 22 by omega)
+            rfl
     have hearly_inc (t : ℝ) (ht : |t| ≤ T) :
         HasProjectiveCircuitApproximation N (1 / 100 : ℝ) (k + 2)
           (unitaryEvolution H.val t) := by
@@ -1453,12 +1533,12 @@ theorem gaussian_strongBond_ising_tube_tail {η : ℝ} (hη : 0 ≤ η) :
             mul_le_mul ht hdiff_norm (norm_nonneg _) hT_pos.le
         _ = 1 / 100 := by
             dsimp only [δ, W_num]
-            field_simp [hT_pos.ne', hW_pos.ne']; ring
+            field_simp [hT_pos.ne', hW_pos.ne']
     let d := 2 ^ N - 1
     let e_fin : Config N ≃ Fin (d + 1) := (Fintype.equivFin _).trans
       (finCongr (by
         simp only [Config, Fintype.card_fun, Fintype.card_fin, Fintype.card_bool]
-        have hd : 0 < 2 ^ N := pow_pos (by decide) N
+        have hd : 0 < 2 ^ N := Nat.two_pow_pos N
         dsimp [d]; omega))
     obtain ⟨σ, hσ_gt, hσ_eq, _, _, _⟩ := first_circuit_threshold_of_increment e_fin H
       (hmax.comp_equiv e_fin.symm) hentropy T hT_pos.le hP_ge hearly_inc
@@ -1481,7 +1561,7 @@ theorem gaussian_strongBond_ising_tube_tail {η : ℝ} (hη : 0 ≤ η) :
         linarith only [hmono]
       exact (tenthPlateauOnset_spec H hT_pos (hT_pos.trans hσ_gt).le hearly hB_gt).1
     exact ⟨hbond, hconn, hmax, hvand, ⟨t₀, ht₀_T, ht₀_exc⟩, honset_gt⟩
-  have hmeas_le : (Measure.pi fun _ : PrefixIndex (k + 1) => γ).real Cyl ≤
+  have hmeas_le : (Measure.pi fun _ : PathLabel (k + 1) => γ).real Cyl ≤
       pathPauliDisorderLaw.real TargetEvent := by
     rw [← hpre_mass]
     exact ENNReal.toReal_mono (measure_ne_top _ _) (measure_mono_ae hae_sub)

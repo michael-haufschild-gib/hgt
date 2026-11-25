@@ -24,7 +24,8 @@ theorem xProd_eq_monomial (s : Finset ι) :
   induction s using Finset.induction_on with
   | empty => simp [coordinateExponent]
   | insert i s hi ih =>
-    rw [xProd, Finset.prod_insert hi, ih]
+    have ih' : (∏ j ∈ s, (X j : MvPolynomial ι R)) = monomial (coordinateExponent s) 1 := ih
+    rw [xProd, Finset.prod_insert hi, ih']
     simp only [X, monomial_mul, one_mul, coordinateExponent, Finset.sum_insert hi]
 
 /-- The Laurent exponent of a numerator monomial after division by `xProd s ^ k`. -/
@@ -57,7 +58,8 @@ theorem shiftedExponent_sum [Fintype ι] (s : Finset ι) (k : ℕ) (a : ι →�
   simp only [shiftedExponent, Finset.sum_sub_distrib, ← Finset.mul_sum, ← Nat.cast_sum,
     coordinateExponent_sum]
   congr 2
-  rw [Finsupp.degree_apply, Finsupp.sum_fintype _ _ (fun _ => rfl)]
+  change ∑ i, a i = a.sum (fun _ v => v)
+  exact (Finsupp.sum_fintype a (fun _ v => v) (fun _ => rfl)).symm
 
 variable (R) in
 def shiftedCoefficients (s : Finset ι) (k : ℕ) : MvPolynomial ι R →ₗ[R] (ι → ℤ) →₀ R :=

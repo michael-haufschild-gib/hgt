@@ -1,4 +1,6 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.PolynomialLocalizationCoefficients
+import Mathlib.Data.Fintype.Pi
+import Mathlib.Data.Int.Interval
 import Mathlib.RingTheory.Noetherian.Basic
 
 /-! Fixed total degree bounds all exponents when their signs are the same. -/
@@ -14,10 +16,10 @@ def fullyNegativeExponents (ι : Type) [Fintype ι] (n : ℤ) : Set (ι → ℤ)
 
 theorem finite_fullyNegativeExponents (n : ℤ) : (fullyNegativeExponents ι n).Finite := by
   classical
-  refine (Set.finite_Icc (fun _ : ι => n) (fun _ => (0 : ℤ))).subset ?_
-  intro a ha
+  refine (Set.Finite.pi' fun _ : ι => Set.finite_Icc n (0 : ℤ)).subset ?_
+  intro a ha i
   have hneg : ∀ i, a i ≤ 0 := fun i => (ha.2 i).le
-  refine ⟨fun i => ?_, hneg⟩
+  refine ⟨?_, hneg i⟩
   have h := Finset.sum_erase_add Finset.univ a (Finset.mem_univ i)
   have hrest : ∑ j ∈ Finset.univ.erase i, a j ≤ 0 := Finset.sum_nonpos fun j _ => hneg j
   rw [ha.1] at h
@@ -25,10 +27,10 @@ theorem finite_fullyNegativeExponents (n : ℤ) : (fullyNegativeExponents ι n).
 
 theorem finite_localizedExponents_empty (n : ℤ) : (localizedExponents (∅ : Finset ι) n).Finite := by
   classical
-  refine (Set.finite_Icc (fun _ : ι => (0 : ℤ)) (fun _ => n)).subset ?_
-  intro a ha
+  refine (Set.Finite.pi' fun _ : ι => Set.finite_Icc (0 : ℤ) n).subset ?_
+  intro a ha i
   have hpos : ∀ i, 0 ≤ a i := fun i => ha.2 i (Finset.notMem_empty _)
-  refine ⟨hpos, fun i => ?_⟩
+  refine ⟨hpos i, ?_⟩
   rw [← ha.1]
   exact Finset.single_le_sum (f := a) (fun j _ => hpos j) (Finset.mem_univ i)
 

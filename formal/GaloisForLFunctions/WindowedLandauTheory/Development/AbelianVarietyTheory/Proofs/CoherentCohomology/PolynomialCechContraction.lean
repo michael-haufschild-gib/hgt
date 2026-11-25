@@ -23,12 +23,11 @@ theorem polynomialCechCoefficients_d {n : ℤ} (c : (polynomialCechDatum (ι := 
     (s : Finset ι) :
     polynomialCechCoefficients ((polynomialCechDatum (ι := ι) R n).d c) s =
       monoCechD (polynomialCechCoefficients c) s := by
-  rw [polynomialCechCoefficients, FinsetCechDatum.d, map_sum, monoCechD]
+  change localizedCoefficients R s n (∑ i ∈ s, (cechSign s i : ℤ) •
+    homLocRes (polyGrading ι R) (Finset.erase_subset i s) n (c (s.erase i))) = _
+  rw [map_sum, monoCechD]
   refine Finset.sum_congr rfl fun i _ => ?_
-  rw [map_zsmul]
-  change (cechSign s i : ℤ) • localizedCoefficients R s n
-    (homLocRes (polyGrading ι R) (Finset.erase_subset i s) n (c (s.erase i))) = _
-  rw [localizedCoefficients_restrict]
+  rw [map_zsmul, localizedCoefficients_restrict]
   have hsign : ((cechSign s i : ℤ) : R) = cechSign s i := by simp [cechSign]
   rw [← hsign, Int.cast_smul_eq_zsmul]
   rfl
@@ -47,8 +46,9 @@ theorem polynomialCech_exists_primitive [Nonempty ι] {n : ℤ} {p : ℕ}
       neg a ⊆ s := by
     intro i hi
     by_contra h
-    exact not_lt_of_ge (localizedCoefficients_support s n (c s) a ha).2 i h
-      (Finset.mem_filter.1 hi).2
+    have hbound := (localizedCoefficients_support s n (c s) a ha).2 i h
+    have hlt : a i < 0 := (Finset.mem_filter.1 hi).2
+    exact (not_lt_of_ge hbound) hlt
   have hproper (s : Finset ι) (a : ι → ℤ) (ha : a ∈ (polynomialCechCoefficients c s).support) :
       neg a ≠ Finset.univ := by
     intro e
@@ -56,9 +56,13 @@ theorem polynomialCech_exists_primitive [Nonempty ι] {n : ℤ} {p : ℕ}
     rw [e, Finset.univ_subset_iff] at hs
     subst s
     apply (Finsupp.mem_support_iff.1 ha)
-    exact hfull a fun i => (Finset.mem_filter.1 (e.symm ▸ Finset.mem_univ i)).2
+    exact hfull a fun i => by
+      have hi : i ∈ neg a := e.symm ▸ Finset.mem_univ i
+      change i ∈ Finset.univ.filter (fun j => a j < 0) at hi
+      exact (Finset.mem_filter.1 hi).2
   have hdegree (s : Finset ι) (hs : s.card ≠ p + 1) : polynomialCechCoefficients c s = 0 := by
-    rw [polynomialCechCoefficients, hc s hs, map_zero]
+    have hz : (c s : homLoc (polyGrading ι R) s n) = 0 := hc s hs
+    exact (congrArg (localizedCoefficients R s n) hz).trans (localizedCoefficients R s n).map_zero
   have hclosed : monoCechD (polynomialCechCoefficients c) = 0 := by
     funext s
     rw [← polynomialCechCoefficients_d, hδ]
@@ -75,7 +79,7 @@ theorem polynomialCech_exists_primitive [Nonempty ι] {n : ℤ} {p : ℕ}
   choose b hb using hlift
   refine ⟨b, fun s hs => localizedCoefficients_injective s n ((hb s).trans ?_),
     funext fun s => localizedCoefficients_injective s n ?_⟩
-  · rw [hηdeg s hs, map_zero]
+  · exact (hηdeg s hs).trans (localizedCoefficients R s n).map_zero.symm
   · change polynomialCechCoefficients ((polynomialCechDatum (ι := ι) R n).d b) s =
       polynomialCechCoefficients c s
     rw [polynomialCechCoefficients_d, show polynomialCechCoefficients b = η from funext hb, hηd]

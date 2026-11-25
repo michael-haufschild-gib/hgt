@@ -15,6 +15,7 @@ variable {ι R : Type} [Fintype ι] [DecidableEq ι] [LinearOrder ι] [CommRing 
 abbrev polynomialGradedCech (R : Type) [CommRing R] (n : ℤ) :=
   gradedCech (ι := ι) (polyGrading ι R) n
 
+omit [Fintype ι] in
 theorem polynomialGradedCech_d_val (n : ℤ) (p : ℕ)
     (x : (polynomialGradedCech (ι := ι) R n).X p) :
     ((polynomialGradedCech (ι := ι) R n).d p (p + 1) x).1 = (polynomialCechDatum (ι := ι) R n).d x.1 := by
@@ -30,16 +31,17 @@ theorem finite_polynomialGradedCech_homology_succ [IsNoetherianRing R] [Nonempty
   let B := LinearMap.range S.moduleCatToCycles
   let A := fullyNegativeExponents ι n
   letI : Fintype A := (finite_fullyNegativeExponents (ι := ι) n).fintype
-  let φ : V →ₗ[R] (A → R) where
-    toFun x a := polynomialCechCoefficients x.1.1 Finset.univ a.1
-    map_add' x y := funext fun a => by
-      change localizedCoefficients R _ n (x.1.1 Finset.univ + y.1.1 Finset.univ) a.1 =
-        localizedCoefficients R _ n (x.1.1 Finset.univ) a.1 + localizedCoefficients R _ n (y.1.1 Finset.univ) a.1
-      rw [map_add, Finsupp.add_apply]
-    map_smul' r x := funext fun a => by
-      change localizedCoefficients R _ n (r • x.1.1 Finset.univ) a.1 =
-        r • localizedCoefficients R _ n (x.1.1 Finset.univ) a.1
-      rw [map_smul, Finsupp.smul_apply]
+  let U : Finset ι := Finset.univ
+  let coeff := localizedCoefficients R U n
+  let component (x : V) : homLoc (polyGrading ι R) U n := x.1.1 U
+  let φ : V →ₗ[R] (A → R) :=
+    { toFun := fun x a => coeff (component x) a.1
+      map_add' := fun x y => funext fun a => by
+        change coeff (component x + component y) a.1 = coeff (component x) a.1 + coeff (component y) a.1
+        rw [map_add, Finsupp.add_apply]
+      map_smul' := fun r x => funext fun a => by
+        change coeff (r • component x) a.1 = r • coeff (component x) a.1
+        rw [map_smul, Finsupp.smul_apply] }
   have hker : B = LinearMap.ker φ := by
     ext x
     constructor
@@ -50,8 +52,10 @@ theorem finite_polynomialGradedCech_homology_succ [IsNoetherianRing R] [Nonempty
       exact polynomialCech_boundary_full_negative z.1 a.1 a.2.2
     · intro hx
       have hz : (polynomialCechDatum (ι := ι) R n).d x.1.1 = 0 := by
-        rw [← polynomialGradedCech_d_val n (p + 1) x.1]
-        exact congrArg Subtype.val (LinearMap.mem_ker.1 x.2)
+        have hx0 : C.d (p + 1) (p + 2) x.1 = (0 : C.X (p + 2)) :=
+          LinearMap.mem_ker.1 x.2
+        exact (polynomialGradedCech_d_val n (p + 1) x.1).symm.trans
+          (congrArg (fun z : C.X (p + 2) => z.1) hx0)
       have hfull (a : ι → ℤ) (ha : ∀ i, a i < 0) :
           polynomialCechCoefficients x.1.1 Finset.univ a = 0 := by
         by_contra h
@@ -67,12 +71,13 @@ theorem finite_polynomialGradedCech_homology_succ [IsNoetherianRing R] [Nonempty
       rw [polynomialGradedCech_d_val]
       exact hzd
   let L := B.liftQ φ hker.le
-  haveI : Module.Finite R (V ⧸ B) := by
+  have hfinite : Module.Finite R (V ⧸ B) := by
     apply Module.Finite.of_injective L
     rw [injective_iff_map_eq_zero]
     intro x hx
     obtain ⟨z, rfl⟩ := B.mkQ_surjective x
     exact (Submodule.Quotient.mk_eq_zero B).2 (hker.symm ▸ LinearMap.mem_ker.2 hx)
+  haveI : Module.Finite R S.moduleCatLeftHomologyData.H := hfinite
   let e := C.homologyIsoSc' p (p + 1) (p + 2) (by simp) (by simp) ≪≫ S.moduleCatHomologyIso
   exact Module.Finite.equiv e.symm.toLinearEquiv
 

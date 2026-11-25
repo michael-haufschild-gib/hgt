@@ -25,7 +25,7 @@ even when the two pinned levels are removed from the Haar short-arc test. -/
 theorem spectator_net_scale {s : ℕ→ℕ} (hs : subcriticalBudget s) {η y b : ℝ}
     (hη : 0<η) (hy : 0<y) (hyb : y<b) :
     ∀ᶠ k : ℕ in atTop, let N := k+3
-      let d := 2^N-3
+      let d : ℕ := 2^N-3
       ((s N:ℝ)+1)*((((N:ℝ)+1)^2)*(1+4*(s N:ℝ)/η)^32)^(s N)*
         (((d:ℝ)+2)*y^d) < b^(2^N:ℕ) := by
   obtain ⟨z,hyz,hzb⟩ := exists_between hyb
@@ -36,7 +36,7 @@ theorem spectator_net_scale {s : ℕ→ℕ} (hs : subcriticalBudget s) {η y b :
     omega
   have htop : Tendsto d atTop atTop := tendsto_atTop_mono (fun k => by
     have := Nat.lt_two_pow_self (n:=k+3)
-    dsimp only [d]
+    change k ≤ 2^(k+3)-3
     omega) tendsto_id
   have hcost := (tendsto_add_atTop_nat 3).eventually
     ((enlarged_arc_eventually_lt hs (36+128/η) z b (hy.trans hyz) hzb).and (budget_le_dimension_eventually hs))

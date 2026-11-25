@@ -33,8 +33,11 @@ private theorem finite_freeGradedCech_homology [Nonempty ι] {a : ℕ} (d : Fin 
   let p (j : Fin a) : H.obj C ⟶ H.obj (E j) := H.map (freeCechProj d n j)
   let i (j : Fin a) : H.obj (E j) ⟶ H.obj C := H.map (freeCechIncl d n j)
   have h : (∑ j, p j ≫ i j) = 𝟙 (H.obj C) := by
-    simpa only [p, i, Functor.map_sum, Functor.map_comp, Functor.map_id] using
-      congrArg H.map (sum_freeCechProj_comp_freeCechIncl (ι := ι) (R := R) d n)
+    calc
+      _ = H.map (∑ j, freeCechProj (ι := ι) (R := R) d n j ≫ freeCechIncl d n j) := by
+        simp only [p, i, Functor.map_sum, Functor.map_comp]
+      _ = _ := (congrArg H.map (sum_freeCechProj_comp_freeCechIncl (ι := ι) (R := R) d n)).trans
+        (H.map_id C)
   haveI (j : Fin a) : Module.Finite R (H.obj (E j)) :=
     finite_polynomialGradedCech_homology (n - d j) q
   let g : (∀ j, H.obj (E j)) →ₗ[R] H.obj C :=
@@ -49,7 +52,9 @@ private theorem finite_freeGradedCech_homology [Nonempty ι] {a : ℕ} (d : Fin 
 private theorem finite_of_exact_of_finite {A B C : Type} [AddCommGroup A] [Module R A]
     [AddCommGroup B] [Module R B] [AddCommGroup C] [Module R C]
     {f : A →ₗ[R] B} {g : B →ₗ[R] C} (h : Function.Exact f g)
-    [Module.Finite R A] [Module.Finite R C] : Module.Finite R B := by
+    (hA : Module.Finite R A) (hC : Module.Finite R C) : Module.Finite R B := by
+  letI := hA
+  letI := hC
   letI := isNoetherian_of_range_eq_ker f g h.linearMap_ker_eq.symm
   infer_instance
 
@@ -78,14 +83,14 @@ theorem finite_gradedCech_homology {M : Type} [AddCommGroup M] [Module R M]
     exact finite_gradedCech_homology_of_bound E p n (by omega)
   | succ j ih =>
     intro p hp N _ _ _ _ E _ _ _
-    obtain ⟨a, d, g, hg, hs⟩ := exists_graded_surjection E
+    obtain ⟨a, d, g, hg, hs⟩ := exists_graded_surjection (ι := ι) E
     let F := grFree ι R d
     let K := LinearMap.ker g
     let A := grSub F K
     letI : Decomposition A := grSubDecomposition hg.isHomogeneous_ker
     letI : Module.Finite (MvPolynomial ι R) K := inferInstance
-    haveI := ih (p + 1) (by omega) K A
-    haveI := finite_freeGradedCech_homology (ι := ι) (R := R) d n p
+    have hK := ih (p + 1) (by omega) K A
+    have hF := finite_freeGradedCech_homology (ι := ι) (R := R) d n p
     have hi : IsGradedMap A F K.subtype := fun _ _ hz => hz
     have he : Function.Exact K.subtype g := by
       intro x
@@ -105,6 +110,6 @@ theorem finite_gradedCech_homology {M : Type} [AddCommGroup M] [Module R M]
         exact hs y⟩) n)
     have hex := (ShortComplex.ShortExact.moduleCat_exact_iff_function_exact _).1
       (hseq.homology_exact₃ p (p + 1) rfl)
-    exact finite_of_exact_of_finite hex
+    exact finite_of_exact_of_finite hex hF hK
 
 end GlobalTheory

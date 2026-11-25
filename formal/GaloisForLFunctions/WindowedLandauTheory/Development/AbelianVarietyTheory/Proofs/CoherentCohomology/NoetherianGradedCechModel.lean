@@ -24,11 +24,12 @@ private theorem nonempty_gradedCechIso_of_saturating {ι R G M : Type} [Decidabl
   let φ := homLocDatumMap hf n
   have hφ (s : Finset ι) (r : R) (x : (homLocDatum (ι := ι) D n).obj s) :
       φ.app s (r • x) = r • φ.app s x := (homLocMap hf s n).map_smul r x
-  let g := FinsetCechDatum.linearCochainMap
-    (fun h => homLocDatum_res_smul D h n) (fun h => homLocDatum_res_smul E h n) φ hφ
-  haveI : IsIso g := FinsetCechDatum.isIso_linearCochainMap _ _ _ _ (fun _ ⟨i, hi⟩ =>
+  let g : gradedCech (ι := ι) D n ⟶ gradedCech (ι := ι) E n :=
+    FinsetCechDatum.linearCochainMap
+      (fun h => homLocDatum_res_smul D h n) (fun h => homLocDatum_res_smul E h n) φ hφ
+  have hg : IsIso g := FinsetCechDatum.isIso_linearCochainMap _ _ _ _ (fun _ ⟨i, hi⟩ =>
     homLocMap_bijective_of_X hf hi (hsat i).1 (hsat i).2 n)
-  exact ⟨asIso g⟩
+  exact ⟨@asIso _ _ _ _ g hg⟩
 
 /-- Smooth coefficient charts with finite projective dehomogenizations give a flat,
 bounded Čech model with finite cohomology over a Noetherian coefficient ring. -/
@@ -52,20 +53,27 @@ theorem exists_noetherian_gradedCech_model {ι R G : Type} [Fintype ι] [Decidab
         Nonempty (((ModuleCat.extendScalars R₀.val.toRingHom).mapHomologicalComplex (ComplexShape.up ℕ)).obj C
           ≅ gradedCech (ι := ι) D n) := by
   obtain ⟨R₀, hnoeth, a, b, d, e, Φ₀, ψ, hΦ₀, hψ, h⟩ := exists_descended_graded_presentation D hChart
-  let Φ := Φ₀.map (MvPolynomial.map R₀.val.toRingHom)
+  let Φ := Φ₀.map (MvPolynomial.map (algebraMap R₀ R))
   let D₀ := grQuot (grFree ι R₀ d) (LinearMap.range Φ₀.mulVecLin)
   let D₁ := grQuot (grFree ι R d) (LinearMap.range Φ.mulVecLin)
   have hΦ (l : Fin a) (j : Fin b) : Φ l j ∈ polyGrading ι R (e j - d l) :=
-    map_mem_polyGrading R₀.val.toRingHom (hΦ₀ l j)
+    map_mem_polyGrading (algebraMap R₀ R) (hΦ₀ l j)
   letI : Decomposition D₀ := grQuotDecomposition (isGradedMap_mulVecLin hΦ₀).isHomogeneous_range
   letI : Decomposition D₁ := grQuotDecomposition (isGradedMap_mulVecLin hΦ).isHomogeneous_range
   obtain ⟨f, hf, hX, hdeg⟩ := exists_graded_matrix_baseChange (R := R) d Φ₀
-  obtain ⟨iso₀⟩ := nonempty_gradedCech_baseChangeIso D₀ D₁ f hf hX hdeg n
-  obtain ⟨iso₁⟩ := nonempty_gradedCechIso_of_saturating hψ (fun i => (h i).2) n
+  letI : IsScalarTower R₀ R ((Fin a → MvPolynomial ι R) ⧸ LinearMap.range Φ.mulVecLin) :=
+    Submodule.Quotient.isScalarTower (S := R₀) (LinearMap.range Φ.mulVecLin) R
+  letI : IsScalarTower R (MvPolynomial ι R) ((Fin a → MvPolynomial ι R) ⧸ LinearMap.range Φ.mulVecLin) :=
+    Submodule.Quotient.isScalarTower (S := R) (LinearMap.range Φ.mulVecLin) (MvPolynomial ι R)
+  obtain ⟨iso₀⟩ := nonempty_gradedCech_baseChangeIso (ι := ι) D₀ D₁ f hf hX hdeg n
+  let ψ₁ : ((Fin a → MvPolynomial ι R) ⧸ LinearMap.range Φ.mulVecLin) →ₗ[MvPolynomial ι R] G := ψ
+  have hψ' : IsGradedMap D₁ D ψ₁ := hψ
+  obtain ⟨iso₁⟩ := nonempty_gradedCechIso_of_saturating (D := D₁) (E := D) hψ'
+    (fun i => (h i).2) n
   letI := hnoeth
   refine ⟨R₀, hnoeth, a, b, d, e, Φ₀, hΦ₀,
     flat_gradedCech_of_flat_specializations D₀ (fun i => (h i).1) n, ?_,
-    finite_gradedCech_homology D₀ n, ⟨iso₀ ≪≫ iso₁⟩⟩
+    finite_gradedCech_homology (ι := ι) D₀ n, ⟨iso₀ ≪≫ iso₁⟩⟩
   exact (homLocDatum (ι := ι) D₀ n).linearComplex_X_isZero (fun h => homLocDatum_res_smul D₀ h n)
 
 end GlobalTheory.SmoothDescent

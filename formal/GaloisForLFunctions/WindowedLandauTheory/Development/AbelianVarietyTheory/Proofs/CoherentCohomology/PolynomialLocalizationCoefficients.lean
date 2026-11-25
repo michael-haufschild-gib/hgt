@@ -18,6 +18,7 @@ private def coefficientNumerator (R : Type) [CommRing R] (s : Finset ι) (n : �
     polyGrading ι R (n + k * s.card) →ₗ[R] (ι → ℤ) →₀ R :=
   (shiftedCoefficients R s k).comp (polyGrading ι R _).subtype
 
+omit [Fintype ι] in
 private theorem coefficientNumerator_step (s : Finset ι) (n : ℤ) (k : ℕ)
     (a : polyGrading ι R (n + k * s.card)) (b : polyGrading ι R (n + (k + 1 : ℕ) * s.card))
     (h : (b : MvPolynomial ι R) = xProd R s • (a : MvPolynomial ι R)) :
@@ -31,11 +32,13 @@ variable (R) in
 def localizedCoefficients (s : Finset ι) (n : ℤ) : homLoc (polyGrading ι R) s n →ₗ[R] (ι → ℤ) →₀ R :=
   homLocLift (coefficientNumerator R s n) (coefficientNumerator_step s n)
 
+omit [Fintype ι] in
 theorem localizedCoefficients_mk (s : Finset ι) (n : ℤ) (k : ℕ)
     (a : polyGrading ι R (n + k * s.card)) :
     localizedCoefficients R s n (homLocMk (polyGrading ι R) s n k a) = shiftedCoefficients R s k a :=
   homLocLift_mk _ _ _ _
 
+omit [Fintype ι] in
 theorem localizedCoefficients_injective (s : Finset ι) (n : ℤ) :
     Function.Injective (localizedCoefficients R s n) := by
   refine (homLocLift_injective_iff _ _).2 fun k a ha => ?_
@@ -80,7 +83,8 @@ theorem localizedCoefficients_range (s : Finset ι) (n : ℤ) :
     have heq : shiftedExponent s k b = e := by
       funext i
       have hbi : b i = (e i + (k : ℤ) * coordinateExponent s i).toNat :=
-        congrFun (Finsupp.equivFunOnFinite.apply_symm_apply _) i
+        congrFun ((Finsupp.equivFunOnFinite : (ι →₀ ℕ) ≃ (ι → ℕ)).apply_symm_apply
+          (fun j => (e j + (k : ℤ) * coordinateExponent s j).toNat)) i
       rw [shiftedExponent, hbi, Int.toNat_of_nonneg (hnonneg i), add_sub_cancel_right]
     have hb : (b.degree : ℤ) = n + k * s.card := by
       have h := shiftedExponent_sum s k b
@@ -91,22 +95,49 @@ theorem localizedCoefficients_range (s : Finset ι) (n : ℤ) :
     refine ⟨homLocMk _ s n k ⟨_, hm⟩, ?_⟩
     rw [localizedCoefficients_mk, shiftedCoefficients_monomial, heq]
 
-theorem localizedCoefficients_restrict {s t : Finset ι} (h : s ⊆ t) (n : ℤ)
-    (z : homLoc (polyGrading ι R) s n) :
-    localizedCoefficients R t n (homLocRes (polyGrading ι R) h n z) = localizedCoefficients R s n z := by
-  classical
-  obtain ⟨k, a, rfl⟩ := exists_homLocMk _ z
-  let b := xProd R (t \ s) ^ k * (a : MvPolynomial ι R)
+omit [Fintype ι] in
+private theorem restrict_polynomial_homLocMk [DecidableEq ι] {s t : Finset ι} (h : s ⊆ t) (n : ℤ) (k : ℕ)
+    (a : polyGrading ι R (n + k * s.card)) (b : polyGrading ι R (n + k * t.card))
+    (hb : (b : MvPolynomial ι R) = xProd R (t \ s) ^ k • (a : MvPolynomial ι R)) :
+    homLocRes (polyGrading ι R) h n (homLocMk (polyGrading ι R) s n k a) =
+      homLocMk (polyGrading ι R) t n k b := by
+  apply Subtype.ext
+  change ModuleFraction.restrict (xProd_dvd R h) (ModuleFraction.frac (xProd R s) k a.1) =
+    ModuleFraction.frac (xProd R t) k b.1
+  have hprod : xProd R t = xProd R (t \ s) * xProd R s := (Finset.prod_sdiff h).symm
+  exact (ModuleFraction.restrict_frac (xProd_dvd R h) hprod k a.1).trans
+    (congrArg (ModuleFraction.frac (xProd R t) k) hb.symm)
+
+omit [Fintype ι] in
+private theorem restrictionNumerator_mem [DecidableEq ι] {s t : Finset ι} (h : s ⊆ t) (n : ℤ) (k : ℕ)
+    (a : polyGrading ι R (n + k * s.card)) :
+    xProd R (t \ s) ^ k • (a : MvPolynomial ι R) ∈ polyGrading ι R (n + k * t.card) := by
   have hdeg : n + k * (s.card : ℤ) + k * ((t \ s).card : ℤ) = n + k * (t.card : ℤ) := by
     rw [← Finset.card_sdiff_add_card_eq_card h]
     push_cast
     ring
-  have hb : b ∈ polyGrading ι R (n + k * t.card) :=
-    hdeg ▸ grSMul_mem (polyGrading ι R) (xProd_pow_mem R (t \ s) k) a.2
-  have he : homLocRes (polyGrading ι R) h n (homLocMk (polyGrading ι R) s n k a) =
-      homLocMk (polyGrading ι R) t n k ⟨b, hb⟩ :=
-    Subtype.ext (ModuleFraction.restrict_frac _ (Finset.prod_sdiff h).symm k a.1)
-  rw [he, localizedCoefficients_mk, localizedCoefficients_mk]
-  exact shiftedCoefficients_restrict h k a
+  exact hdeg ▸ grSMul_mem (polyGrading ι R) (xProd_pow_mem R (t \ s) k) a.2
+
+omit [Fintype ι] in
+private theorem localizedCoefficients_restrict_mk {s t : Finset ι} (h : s ⊆ t) (n : ℤ) (k : ℕ)
+    (a : polyGrading ι R (n + k * s.card)) :
+    localizedCoefficients R t n (homLocRes (polyGrading ι R) h n (homLocMk (polyGrading ι R) s n k a)) =
+      shiftedCoefficients R s k a := by
+  classical
+  let b : polyGrading ι R (n + k * t.card) :=
+    ⟨xProd R (t \ s) ^ k • (a : MvPolynomial ι R), restrictionNumerator_mem h n k a⟩
+  have he := restrict_polynomial_homLocMk h n k a b rfl
+  have hm := localizedCoefficients_mk t n k b
+  have hc : shiftedCoefficients R t k (b : MvPolynomial ι R) = shiftedCoefficients R s k a := by
+    change shiftedCoefficients R t k (xProd R (t \ s) ^ k * (a : MvPolynomial ι R)) = _
+    exact shiftedCoefficients_restrict h k (a : MvPolynomial ι R)
+  exact (congrArg (localizedCoefficients R t n) he).trans (hm.trans hc)
+
+omit [Fintype ι] in
+theorem localizedCoefficients_restrict {s t : Finset ι} (h : s ⊆ t) (n : ℤ)
+    (z : homLoc (polyGrading ι R) s n) :
+    localizedCoefficients R t n (homLocRes (polyGrading ι R) h n z) = localizedCoefficients R s n z := by
+  obtain ⟨k, a, rfl⟩ := exists_homLocMk _ z
+  exact (localizedCoefficients_restrict_mk h n k a).trans (localizedCoefficients_mk s n k a).symm
 
 end GlobalTheory

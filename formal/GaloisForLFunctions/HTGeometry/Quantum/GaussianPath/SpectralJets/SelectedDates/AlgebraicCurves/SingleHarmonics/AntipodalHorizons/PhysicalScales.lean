@@ -21,16 +21,21 @@ def origin (k n : ℕ) (ω : PathPauliDisorder) : ℝ :=
 def elapsed (k n : ℕ) (ε : ℝ) (ω : PathPauliDisorder) : ℝ :=
   PrecisionReturns.firstVisit (register k ω) (origin k n ω) 0 ε-origin k n ω
 
+/-- Number of full-width turns per unit of physical time. -/
+def periodRate (k : ℕ) (ω : PathPauliDisorder) : ℝ :=
+  let x := fun l => pathPauliDisorderShell ω (k+1) (pathCoeffEquiv (k+1) l)
+  let E := sortedEnsembleSpectrum (chainPauliFin_isHermitian (k+3)) x
+  (E (topLevel k)-E 0)/(2*π)
+
 /-- Finite spectral-width density bounds the number of full-width periods
 per unit of physical time by a constant times the register size. -/
-theorem gaussian_periods_per_time :
-    ∃ C>0, ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ k : ℕ in atTop, ∀ n : ℕ, ∀ ε>0,
-      firstPeriods k n ε ω ≤ elapsed k n ε ω*(C*(k+3:ℕ)) := by
+theorem gaussian_periodRate :
+    ∃ C>0, ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ k : ℕ in atTop, periodRate k ω ≤ C*(k+3:ℕ) := by
   obtain ⟨w,hw,_,hd⟩ := gaussian_energy_density
   refine ⟨w+1,by linarith only [hw],?_⟩
   filter_upwards [hd,gaussian_path_all_prefixes_maximally_projective] with ω hω hsimple
   have hlim := hω.comp (tendsto_add_atTop_nat 1)
-  filter_upwards [hlim.eventually_lt_const (lt_add_one w)] with k hk n ε hε
+  filter_upwards [hlim.eventually_lt_const (lt_add_one w)] with k hk
   let H := register k ω
   let x := fun l => pathPauliDisorderShell ω (k+1) (pathCoeffEquiv (k+1) l)
   let E := sortedEnsembleSpectrum (chainPauliFin_isHermitian (k+3)) x
@@ -48,13 +53,21 @@ theorem gaussian_periods_per_time :
   have hwidth : physicalWidth ω (k+1) < (w+1)*(k+3:ℕ) := by
     apply (div_lt_iff₀ (by positivity : (0:ℝ) < (k+3:ℕ))).mp
     exact hk
-  have hrate : (E i-E j)/(2*π) ≤ (w+1)*(k+3:ℕ) := by
-    apply (div_le_iff₀ two_pi_pos).mpr
-    refine (hbound.trans hwidth.le).trans ?_
-    exact le_mul_of_one_le_right (by positivity) (by linarith only [pi_gt_three])
-  change elapsed k n ε ω*((E i-E j)/(2*π)) ≤ _
+  change (E i-E j)/(2*π) ≤ (w+1)*(k+3:ℕ)
+  apply (div_le_iff₀ two_pi_pos).mpr
+  refine (hbound.trans hwidth.le).trans ?_
+  exact le_mul_of_one_le_right (by positivity) (by linarith only [pi_gt_three])
+
+theorem gaussian_periods_per_time :
+    ∃ C>0, ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ k : ℕ in atTop, ∀ n : ℕ, ∀ ε>0,
+      firstPeriods k n ε ω ≤ elapsed k n ε ω*(C*(k+3:ℕ)) := by
+  obtain ⟨C,hC,h⟩ := gaussian_periodRate
+  refine ⟨C,hC,?_⟩
+  filter_upwards [h] with ω hω
+  filter_upwards [hω] with k hrate n ε hε
+  change elapsed k n ε ω*periodRate k ω ≤ _
   exact mul_le_mul_of_nonneg_left hrate (sub_nonneg.mpr
-    (PrecisionReturns.firstVisit_isLeast H (origin k n ω) 0 hε).1.1)
+    (PrecisionReturns.firstVisit_isLeast (register k ω) (origin k n ω) 0 hε).1.1)
 
 /-- Every origin on a sufficiently long frozen prefix has a zero-gate
 return within the same doubly exponential physical time horizon. -/

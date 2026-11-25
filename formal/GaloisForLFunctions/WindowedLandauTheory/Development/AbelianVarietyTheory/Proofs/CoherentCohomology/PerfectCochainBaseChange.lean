@@ -30,6 +30,7 @@ theorem exists_perfect_cochain_of_noetherian_model {B R : Type} [CommRing B] [Co
     (T.map_isZero (hzero p hp)).of_iso
       ((HomologicalComplex.eval _ _ p).mapIso e.symm)
   have hproj p : Module.Finite R (K.X p) ∧ Module.Projective R (K.X p) := by
+    letI : Algebra B R := (algebraMap B R).toAlgebra
     letI := hfinK₀ p
     letI := hprojK₀ p
     change Module.Finite R (R ⊗[B] K₀.X p) ∧ Module.Projective R (R ⊗[B] K₀.X p)
