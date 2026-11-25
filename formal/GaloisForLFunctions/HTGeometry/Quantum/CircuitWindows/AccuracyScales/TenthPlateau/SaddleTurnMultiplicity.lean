@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.TenthPlateau.EnvelopeTransversality
+import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.TenthPlateau.ReturnExcisedVandermonde
 
 /-! # Active-saddle switching proliferation vs. micro-band sign-coherent coercivity at 1/10
 
@@ -103,7 +104,7 @@ private theorem projectiveSpectralMatrix_mem_unitary' {N d : ℕ} (e : Config N 
     (V : UGroup N) (θ : Fin d → UnitAddCircle) :
     projectiveSpectralMatrix e V θ ∈ unitary (Register N) := by
   unfold projectiveSpectralMatrix
-  refine Submonoid.mul_mem _ (Submonoid.mul_mem _ V.2 ?_) (Unitary.star_mem V.2)
+  refine mul_mem (mul_mem V.2 ?_) (Unitary.star_mem V.2)
   rw [Unitary.mem_iff, star_eq_conjTranspose, diagonal_conjTranspose,
     diagonal_mul_diagonal, diagonal_mul_diagonal]
   constructor <;> ext a b <;> by_cases hab : a = b
@@ -208,19 +209,17 @@ theorem levelBand_dini_diam_le {I : Set ℝ} (hI : Convex ℝ I)
   have hall_lt_hi : ∀ s ∈ Icc t₁ t₂, g s < v_hi := by
     intro s hs
     by_contra hge; push Not at hge
-    refine hno_down hs.1 hs.2 le_rfl
+    exact hno_down (v := v_hi) hs.1 hs.2 le_rfl
       ⟨by dsimp [v_hi]; linarith only [hab_band, hη_pad], by dsimp [v_hi]; linarith only [hη_pad]⟩
-      (by rwa [hg_ext_eq hs]) ?_
-    rw [hg_ext_eq ⟨hlt.le, le_rfl⟩]
-    dsimp only [v_hi]
-    linarith only [hg₂.2, hη_pad]
+      (by rw [hg_ext_eq hs]; exact hge)
+      (by rw [hg_ext_eq ⟨hlt.le, le_rfl⟩]; dsimp [v_hi]; linarith only [hg₂.2, hη_pad])
   have hall_ge_lo : ∀ s ∈ Icc t₁ t₂, a_band ≤ g s := by
     intro s hs
     by_contra hlt_a; push Not at hlt_a
-    exact hno_down le_rfl hs.1 hs.2
+    exact hno_down (v := a_band) le_rfl hs.1 hs.2
       ⟨by linarith only [hη_pad], by linarith only [hab_band, hη_pad]⟩
       (by rw [hg_ext_eq ⟨le_rfl, hlt.le⟩]; exact hg₁.1)
-      (by rwa [hg_ext_eq hs])
+      (by rw [hg_ext_eq hs]; exact hlt_a)
   have hall_band : ∀ s ∈ Icc t₁ t₂, g s ∈ Ioo (a_band - η_pad) (b_band + η_pad) := fun s hs =>
     ⟨by linarith only [hall_ge_lo s hs, hη_pad],
      (hall_lt_hi s hs).trans (by dsimp [v_hi]; linarith only [hη_pad])⟩
@@ -293,8 +292,7 @@ theorem gaussian_levelBand_dini_anticoncentration {ι : Type*} [Fintype ι] [Dec
             have hbound := levelBand_dini_diam_le hconv hcont hc (by linarith only [hδ]) hη_pad
               hdini_pos ht₁.1 ht₂.1 h12 ⟨ht₁.2.1.le, ht₁.2.2⟩ ⟨ht₂.2.1.le, ht₂.2.2⟩
             simpa only [add_sub_cancel_left] using hbound
-          · have hsgn_f : sgn m = false := Bool.eq_false_iff.mpr hsgn
-            let g_neg : ℝ → ℝ := fun t => -g t
+          · let g_neg : ℝ → ℝ := fun t => -g t
             have hcont_neg : ContinuousOn g_neg (I_piece m) := hcont.neg
             have hdini_neg : ∀ t ∈ I_piece m,
                 g_neg t ∈ Ioo (-(e₀ + δ) - η_pad) (-e₀ + η_pad) →
@@ -305,7 +303,7 @@ theorem gaussian_levelBand_dini_anticoncentration {ι : Type*} [Fintype ι] [Dec
                 ⟨by dsimp [g_neg] at hgt; linarith only [hgt.2],
                  by dsimp [g_neg] at hgt; linarith only [hgt.1]⟩
               obtain ⟨h, hh_mem, hh_step⟩ := hdini_m t ht hgt_orig b hb htb ε hε
-              rw [hsgn_f, Bool.false_eq_true, if_false] at hh_step
+              rw [if_neg hsgn] at hh_step
               exact ⟨h, hh_mem, by dsimp [g_neg]; linarith only [hh_step]⟩
             have hbound := levelBand_dini_diam_le hconv hcont_neg hc (by linarith only [hδ]) hη_pad
               hdini_neg ht₁.1 ht₂.1 h12
@@ -494,8 +492,7 @@ theorem deriv_deriv_sawtoothBranches_zero (c e₀ δ : ℝ) (a : ℕ) :
     ext t
     have hd : HasDerivAt (sawtoothRight c e₀ δ a) (-c) t := by
       unfold sawtoothRight
-      simpa using ((hasDerivAt_const t (e₀ + (4 * (a : ℝ) + 4) * δ)).sub
-        ((hasDerivAt_id t).const_mul c))
+      simpa using ((hasDerivAt_id t).const_mul c).const_sub (e₀ + (4 * (a : ℝ) + 4) * δ)
     exact hd.deriv
   refine ⟨fun t => ⟨congrFun hL t, congrFun hR t⟩, ?_, ?_⟩
   · rw [hL]; ext t; exact deriv_const t c
@@ -522,13 +519,13 @@ theorem maxMinSawtooth_gaussian_violation {ι : Type*} [Fintype ι] [DecidableEq
     rcases lt_or_gt_of_ne hne with hlt | hgt
     · have hb1 : (b : ℝ) + 1 ≤ (a : ℝ) := by exact_mod_cast hlt
       have hct : 4 * (a : ℝ) * δ ≤ c * t := by
-        have := (le_div_iff₀ hc).mp ht.1; linarith only [this]
+        have := (div_le_iff₀ hc).mp ht.1; linarith only [this]
       refine (min_le_right _ _).trans ?_
       unfold sawtoothRight
       nlinarith only [hb1, hct, hδ]
     · have ha1 : (a : ℝ) + 1 ≤ (b : ℝ) := by exact_mod_cast hgt
       have hct : c * t ≤ (4 * (a : ℝ) + 4) * δ := by
-        have := (div_le_iff₀ hc).mp ht.2; linarith only [this]
+        have := (le_div_iff₀ hc).mp ht.2; linarith only [this]
       refine (min_le_left _ _).trans ?_
       unfold sawtoothLeft
       nlinarith only [ha1, hct, hδ]
@@ -539,9 +536,9 @@ theorem maxMinSawtooth_gaussian_violation {ι : Type*} [Fintype ι] [DecidableEq
           fun b : Fin (K + 1) => max e₀ (sawtoothTooth c e₀ δ b.val t)) =
           sawtoothTooth c e₀ δ a.val t := by
     have hlo : 4 * (a.val : ℝ) * δ ≤ c * t := by
-      have := (le_div_iff₀ hc).mp ht.1; linarith only [this]
+      have := (div_le_iff₀ hc).mp ht.1; linarith only [this]
     have hhi : c * t ≤ (4 * (a.val : ℝ) + 4) * δ := by
-      have := (div_le_iff₀ hc).mp ht.2; linarith only [this]
+      have := (le_div_iff₀ hc).mp ht.2; linarith only [this]
     have hge_e₀ : e₀ ≤ sawtoothTooth c e₀ δ a.val t :=
       le_min (by unfold sawtoothLeft; linarith only [hlo])
              (by unfold sawtoothRight; linarith only [hhi])
@@ -601,9 +598,10 @@ theorem maxMinSawtooth_gaussian_violation {ι : Type*} [Fintype ι] [DecidableEq
       {x : ι → ℝ | maxMinSawtooth i₀ K c e₀ δ x ∈ Ioc e₀ (e₀ + δ)} =
       γ.real {t : ℝ | f_1d t ∈ Ioc e₀ (e₀ + δ)} := by
     have hset : {x : ι → ℝ | maxMinSawtooth i₀ K c e₀ δ x ∈ Ioc e₀ (e₀ + δ)} =
-        (fun x : ι → ℝ => x i₀) ⁻¹' {t : ℝ | f_1d t ∈ Ioc e₀ (e₀ + δ)} := rfl
-    rw [hset, Measure.real_def, Measure.real_def,
-      hmp_eval.measure_preimage (hf_1d_cont.measurable measurableSet_Ioc).nullMeasurableSet]
+        (fun x : ι → ℝ => x i₀) ⁻¹' (f_1d ⁻¹' Ioc e₀ (e₀ + δ)) := rfl
+    have h1 := congrArg ENNReal.toReal
+      (hmp_eval.measure_preimage (hf_1d_cont.measurable measurableSet_Ioc).nullMeasurableSet)
+    simpa only [Measure.real_def, hset] using h1
   rw [hpre_eq]
   let J : Fin (K + 1) × Bool → Set ℝ := fun p =>
     if p.2 then
@@ -626,20 +624,20 @@ theorem maxMinSawtooth_gaussian_violation {ι : Type*} [Fintype ι] [DecidableEq
     dsimp only [J] at ht
     by_cases hb : p.2 = true
     · rw [if_pos hb] at ht
-      have hlo := (le_div_iff₀ hc).mp ht.1
-      have hhi := (div_le_iff₀ hc).mp ht.2
+      have hlo := (div_le_iff₀ hc).mp ht.1
+      have hhi := (le_div_iff₀ hc).mp ht.2
       have hmin_eq : sawtoothTooth c e₀ δ p.1.val t = sawtoothLeft c e₀ δ p.1.val t :=
         min_eq_left (by unfold sawtoothLeft sawtoothRight; linarith only [hhi, hδ])
       rw [hmin_eq]; unfold sawtoothLeft
       exact ⟨by linarith only [hlo, hδ], by linarith only [hhi]⟩
     · rw [if_neg hb] at ht
-      have hlo := (le_div_iff₀ hc).mp ht.1
-      have hhi := (div_le_iff₀ hc).mp ht.2
+      have hlo := (div_le_iff₀ hc).mp ht.1
+      have hhi := (le_div_iff₀ hc).mp ht.2
       have hmin_eq : sawtoothTooth c e₀ δ p.1.val t = sawtoothRight c e₀ δ p.1.val t :=
         min_eq_right (by unfold sawtoothLeft sawtoothRight; linarith only [hlo, hδ])
       rw [hmin_eq]; unfold sawtoothRight
       exact ⟨by linarith only [hhi, hδ], by linarith only [hlo]⟩
-  have hJ_disj : Pairwise (Disjoint on J) := by
+  have hJ_disj : Pairwise fun p₁ p₂ => Disjoint (J p₁) (J p₂) := by
     intro p₁ p₂ hpne
     refine Set.disjoint_left.mpr fun t ht₁ ht₂ => ?_
     have htooth_bounds (p : Fin (K + 1) × Bool) {s : ℝ} (hs : s ∈ J p) :
@@ -647,11 +645,11 @@ theorem maxMinSawtooth_gaussian_violation {ι : Type*} [Fintype ι] [DecidableEq
       dsimp only [J] at hs
       by_cases hb : p.2 = true
       · rw [if_pos hb] at hs
-        exact ⟨by linarith only [(le_div_iff₀ hc).mp hs.1, hδ],
-               by linarith only [(div_le_iff₀ hc).mp hs.2, hδ]⟩
+        exact ⟨by linarith only [(div_le_iff₀ hc).mp hs.1, hδ],
+               by linarith only [(le_div_iff₀ hc).mp hs.2, hδ]⟩
       · rw [if_neg hb] at hs
-        exact ⟨by linarith only [(le_div_iff₀ hc).mp hs.1, hδ],
-               by linarith only [(div_le_iff₀ hc).mp hs.2, hδ]⟩
+        exact ⟨by linarith only [(div_le_iff₀ hc).mp hs.1, hδ],
+               by linarith only [(le_div_iff₀ hc).mp hs.2, hδ]⟩
     by_cases ha : p₁.1 = p₂.1
     · have hb_ne : p₁.2 ≠ p₂.2 := fun hb => hpne (Prod.ext ha hb)
       dsimp only [J] at ht₁ ht₂
@@ -659,9 +657,9 @@ theorem maxMinSawtooth_gaussian_violation {ι : Type*} [Fintype ι] [DecidableEq
       cases h1 : p₁.2 <;> cases h2 : p₂.2
       · exact hb_ne (h1.trans h2.symm)
       · rw [h1] at ht₁; rw [h2] at ht₂; simp only [if_true, Bool.false_eq_true, if_false] at ht₁ ht₂
-        linarith only [(div_le_iff₀ hc).mp ht₁.2, (le_div_iff₀ hc).mp ht₂.1, hδ]
+        linarith only [(le_div_iff₀ hc).mp ht₁.2, (div_le_iff₀ hc).mp ht₂.1, hδ]
       · rw [h1] at ht₁; rw [h2] at ht₂; simp only [if_true, Bool.false_eq_true, if_false] at ht₁ ht₂
-        linarith only [(le_div_iff₀ hc).mp ht₁.1, (div_le_iff₀ hc).mp ht₂.2, hδ]
+        linarith only [(div_le_iff₀ hc).mp ht₁.1, (le_div_iff₀ hc).mp ht₂.2, hδ]
       · exact hb_ne (h1.trans h2.symm)
     · have hb₁ := htooth_bounds p₁ ht₁
       have hb₂ := htooth_bounds p₂ ht₂
@@ -697,16 +695,8 @@ theorem maxMinSawtooth_gaussian_violation {ι : Type*} [Fintype ι] [DecidableEq
     filter_upwards with t ht
     have ht01 := h_i01 ht
     rw [gaussianPDF]
-    apply ENNReal.ofReal_le_ofReal
-    rw [gaussianPDFReal_def]
-    simp only [NNReal.coe_one, mul_one, sub_zero]
-    unfold gaussianDensityFloor
-    have hsq1 : t ^ 2 ≤ 1 := by nlinarith only [ht01.1, ht01.2]
-    have hexp : Real.exp (-(1 : ℝ) / 2) ≤ Real.exp (-t ^ 2 / 2) :=
-      Real.exp_le_exp.mpr (by linarith only [hsq1])
-    have hdiv : (Real.sqrt (2 * Real.pi))⁻¹ * Real.exp (-(1 : ℝ) / 2) =
-        Real.exp (-(1 : ℝ) / 2) / Real.sqrt (2 * Real.pi) := by ring
-    exact (le_of_eq hdiv.symm).trans (mul_le_mul_of_nonneg_left hexp (by positivity))
+    exact ENNReal.ofReal_le_ofReal
+      (gaussianPDFReal_ge_floor (abs_le.mpr ⟨by linarith only [ht01.1], ht01.2⟩))
   have hunion_sub : (⋃ p : Fin (K + 1) × Bool, J p) ⊆ {t : ℝ | f_1d t ∈ Ioc e₀ (e₀ + δ)} :=
     iUnion_subset hJ_sub
   have hmeas_sum : γ (⋃ p : Fin (K + 1) × Bool, J p) = ∑ p : Fin (K + 1) × Bool, γ (J p) := by
@@ -724,44 +714,46 @@ theorem maxMinSawtooth_gaussian_violation {ι : Type*} [Fintype ι] [DecidableEq
               ← ENNReal.ofReal_mul (Nat.cast_nonneg _)]
             congr 1; push_cast; ring
       _ ≤ ∑ p : Fin (K + 1) × Bool, γ (J p) := Finset.sum_le_sum fun p _ => hJ_mass p
-  have hlhs_nn : 0 ≤ (3 / 2 : ℝ) * gaussianDensityFloor * (((K + 1 : ℕ) : ℝ) * δ / c) :=
-    mul_nonneg (mul_nonneg (by norm_num) gaussianDensityFloor_pos.le)
-      (div_nonneg (mul_nonneg (Nat.cast_nonneg _) hδ.le) hc.le)
-  rw [Measure.real, ← ENNReal.ofReal_toReal (measure_ne_top γ _)] at *
-  exact (ENNReal.ofReal_le_ofReal_iff (ENNReal.toReal_nonneg)).mp
-    (hsum_enn.trans_eq (ENNReal.ofReal_toReal (measure_ne_top γ _)))
+  rw [Measure.real]
+  exact (ENNReal.ofReal_le_iff_le_toReal (measure_ne_top _ _)).mp hsum_enn
 
 /-! ## Section 3: Kato spectral-gap connection bound and mode-slope Lipschitz stability -/
 
-/-- Off-diagonal Kato resolvent connection `K ∈ selfAdjoint (Register N)` associated with `(H, P)`,
-defined in `hermitianEigenbasisUnitary H` by `K̃_{a b} = i P̃_{a b} / (E_b - E_a)` (`0` when
-`E_b = E_a`). -/
-def katoOffDiagGenerator {N : ℕ} (H P : selfAdjoint (Register N)) : selfAdjoint (Register N) := by
+private def katoCoreMatrix {N : ℕ} (H P : selfAdjoint (Register N)) : Register N :=
   let V := hermitianEigenbasisUnitary H.2.isHermitian
   let E := H.2.isHermitian.eigenvalues
   let P_tilde : Register N := star V.val * P.val * V.val
-  let K_tilde : Register N := fun a b =>
-    if E b = E a then 0 else Complex.I * P_tilde a b / ((E b - E a : ℝ) : ℂ)
-  refine ⟨V.val * K_tilde * star V.val, ?_⟩
-  have hP_sa : star P_tilde = P_tilde := by
-    dsimp only [P_tilde]
-    rw [star_mul, star_mul, star_star, P.2.star_eq, mul_assoc]
-  have hK_sa : star K_tilde = K_tilde := by
-    ext a b
-    rw [Matrix.star_eq_conjTranspose, Matrix.conjTranspose_apply]
-    dsimp only [K_tilde]
-    by_cases h : E a = E b
-    · rw [if_pos h, if_pos h.symm, star_zero]
-    · have hba : ¬ E b = E a := fun heq => h heq.symm
-      rw [if_neg h, if_neg hba]
-      have hP_entry : star (P_tilde b a) = P_tilde a b := by
-        have h1 := congrArg (fun M : Register N => M a b) hP_sa
-        simpa [Matrix.star_eq_conjTranspose] using h1
-      rw [Complex.star_def, map_div₀, map_mul, Complex.conj_I, ← Complex.star_def, hP_entry,
-        Complex.conj_ofReal]
-      have hden : ((E a - E b : ℝ) : ℂ) = -((E b - E a : ℝ) : ℂ) := by push_cast; ring
-      rw [hden, div_neg, neg_mul, neg_neg]
-  rw [selfAdjoint.mem_iff, star_mul, star_mul, star_star, hK_sa, mul_assoc]
+  fun a b => if E b = E a then 0 else -Complex.I * P_tilde a b / ((E b - E a : ℝ) : ℂ)
+
+/-- Off-diagonal Kato resolvent connection `K ∈ selfAdjoint (Register N)` associated with `(H, P)`,
+defined in `hermitianEigenbasisUnitary H` by `K̃_{a b} = -i P̃_{a b} / (E_b - E_a)` (`0` when
+`E_b = E_a`). -/
+def katoOffDiagGenerator {N : ℕ} (H P : selfAdjoint (Register N)) : selfAdjoint (Register N) :=
+  ⟨(hermitianEigenbasisUnitary H.2.isHermitian).val * katoCoreMatrix H P *
+      star (hermitianEigenbasisUnitary H.2.isHermitian).val, by
+    let V := hermitianEigenbasisUnitary H.2.isHermitian
+    let E := H.2.isHermitian.eigenvalues
+    let P_tilde : Register N := star V.val * P.val * V.val
+    have hP_sa : star P_tilde = P_tilde := by
+      dsimp [P_tilde]
+      rw [star_mul, star_mul, star_star, P.2.star_eq, mul_assoc]
+    have hK_sa : star (katoCoreMatrix H P) = katoCoreMatrix H P := by
+      ext a b
+      rw [Matrix.star_eq_conjTranspose, Matrix.conjTranspose_apply]
+      change star (if E a = E b then 0 else -Complex.I * P_tilde b a / ((E a - E b : ℝ) : ℂ)) =
+        if E b = E a then 0 else -Complex.I * P_tilde a b / ((E b - E a : ℝ) : ℂ)
+      by_cases h : E a = E b
+      · rw [if_pos h, if_pos h.symm, star_zero]
+      · have hba : ¬ E b = E a := fun heq => h heq.symm
+        rw [if_neg h, if_neg hba]
+        have hP_entry : star (P_tilde b a) = P_tilde a b := by
+          have h1 := congrArg (fun M : Register N => M a b) hP_sa
+          simpa [Matrix.star_eq_conjTranspose] using h1
+        rw [Complex.star_def, map_div₀, map_mul, map_neg, Complex.conj_I, neg_neg,
+          ← Complex.star_def, hP_entry, Complex.star_def, Complex.conj_ofReal]
+        have hden : ((E a - E b : ℝ) : ℂ) = -((E b - E a : ℝ) : ℂ) := by push_cast; ring
+        rw [hden, div_neg, neg_mul]
+    rw [selfAdjoint.mem_iff, star_mul, star_mul, star_star, hK_sa, mul_assoc]⟩
 
 /-- Exact Kato commutator equation under simple spectrum of `H`:
 `i (K * H - H * K) = P - V * diagonal (diag (V* P V)) * V*`. -/
@@ -774,8 +766,7 @@ theorem katoOffDiagGenerator_commutator_eq {N : ℕ} (H P : selfAdjoint (Registe
       P.val - V.val * Matrix.diagonal (fun a => P_tilde a a) * star V.val := by
   intro V P_tilde
   let E := H.2.isHermitian.eigenvalues
-  let K_tilde : Register N := fun a b =>
-    if E b = E a then 0 else Complex.I * P_tilde a b / ((E b - E a : ℝ) : ℂ)
+  let K_tilde : Register N := katoCoreMatrix H P
   have hspec : H.val = V.val * Matrix.diagonal (Complex.ofReal ∘ E) * star V.val :=
     H.2.isHermitian.spectral_theorem
   have hK_def : (katoOffDiagGenerator H P).val = V.val * K_tilde * star V.val := rfl
@@ -787,17 +778,19 @@ theorem katoOffDiagGenerator_commutator_eq {N : ℕ} (H P : selfAdjoint (Registe
     ext a b
     simp only [Matrix.smul_apply, Matrix.sub_apply, Matrix.mul_diagonal, Matrix.diagonal_mul,
       Function.comp_apply, smul_eq_mul]
-    dsimp only [K_tilde]
+    change Complex.I *
+      ((if E b = E a then 0 else -Complex.I * P_tilde a b / ((E b - E a : ℝ) : ℂ)) * (E b : ℂ) -
+       (E a : ℂ) * (if E b = E a then 0 else -Complex.I * P_tilde a b / ((E b - E a : ℝ) : ℂ))) =
+      P_tilde a b - Matrix.diagonal (fun c => P_tilde c c) a b
     by_cases hab : a = b
-    · subst hab
-      simp
+    · subst hab; simp
     · have hE_ne : E b ≠ E a := fun heq => hab (hsimple heq.symm)
       have hdiff_ne : ((E b - E a : ℝ) : ℂ) ≠ 0 := by
         exact_mod_cast sub_ne_zero.mpr hE_ne
       rw [if_neg hE_ne, Matrix.diagonal_apply_ne _ hab, sub_zero]
-      calc Complex.I * (Complex.I * P_tilde a b / ((E b - E a : ℝ) : ℂ) * (E b : ℂ) -
-              (E a : ℂ) * (Complex.I * P_tilde a b / ((E b - E a : ℝ) : ℂ)))
-          = (Complex.I * Complex.I) * P_tilde a b *
+      calc Complex.I * (-Complex.I * P_tilde a b / ((E b - E a : ℝ) : ℂ) * (E b : ℂ) -
+              (E a : ℂ) * (-Complex.I * P_tilde a b / ((E b - E a : ℝ) : ℂ)))
+          = -(Complex.I * Complex.I) * P_tilde a b *
               (((E b : ℂ) - (E a : ℂ)) / ((E b - E a : ℝ) : ℂ)) := by ring
         _ = P_tilde a b := by
             rw [Complex.I_mul_I, show (E b : ℂ) - (E a : ℂ) = ((E b - E a : ℝ) : ℂ) by push_cast; ring,
@@ -808,7 +801,7 @@ theorem katoOffDiagGenerator_commutator_eq {N : ℕ} (H P : selfAdjoint (Registe
       V.val * (K_tilde * Matrix.diagonal (Complex.ofReal ∘ E)) * star V.val := by
     calc (V.val * K_tilde * star V.val) * (V.val * Matrix.diagonal (Complex.ofReal ∘ E) * star V.val)
         = V.val * K_tilde * (star V.val * V.val) * Matrix.diagonal (Complex.ofReal ∘ E) * star V.val := by
-            simp only [mul_assoc]
+            noncomm_ring
       _ = V.val * (K_tilde * Matrix.diagonal (Complex.ofReal ∘ E)) * star V.val := by
             rw [hV_mul1, mul_one, mul_assoc]
   have hprod2 : (V.val * Matrix.diagonal (Complex.ofReal ∘ E) * star V.val) *
@@ -816,13 +809,13 @@ theorem katoOffDiagGenerator_commutator_eq {N : ℕ} (H P : selfAdjoint (Registe
       V.val * (Matrix.diagonal (Complex.ofReal ∘ E) * K_tilde) * star V.val := by
     calc (V.val * Matrix.diagonal (Complex.ofReal ∘ E) * star V.val) * (V.val * K_tilde * star V.val)
         = V.val * Matrix.diagonal (Complex.ofReal ∘ E) * (star V.val * V.val) * K_tilde * star V.val := by
-            simp only [mul_assoc]
+            noncomm_ring
       _ = V.val * (Matrix.diagonal (Complex.ofReal ∘ E) * K_tilde) * star V.val := by
             rw [hV_mul1, mul_one, mul_assoc]
   have hVP : V.val * P_tilde * star V.val = P.val := by
-    dsimp only [P_tilde]
+    dsimp [P_tilde]
     calc V.val * (star V.val * P.val * V.val) * star V.val
-        = (V.val * star V.val) * P.val * (V.val * star V.val) := by simp only [mul_assoc]
+        = (V.val * star V.val) * P.val * (V.val * star V.val) := by noncomm_ring
       _ = P.val := by rw [hV_mul2, one_mul, mul_one]
   rw [hK_def, hspec, hprod1, hprod2]
   calc Complex.I • (V.val * (K_tilde * Matrix.diagonal (Complex.ofReal ∘ E)) * star V.val -
@@ -845,11 +838,11 @@ theorem norm_katoOffDiagGenerator_le {N : ℕ} (H P : selfAdjoint (Register N))
   let V := hermitianEigenbasisUnitary H.2.isHermitian
   let E := H.2.isHermitian.eigenvalues
   let P_tilde : Register N := star V.val * P.val * V.val
-  let K_tilde : Register N := fun a b =>
-    if E b = E a then 0 else Complex.I * P_tilde a b / ((E b - E a : ℝ) : ℂ)
+  let K_tilde : Register N := katoCoreMatrix H P
   have hP_norm : ‖P_tilde‖ = ‖P.val‖ := l2_opNorm_unitary_conj_eq (Unitary.star_mem V.2) P.val
-  have hK_norm : ‖(katoOffDiagGenerator H P).val‖ = ‖K_tilde‖ :=
-    l2_opNorm_unitary_conj_eq V.2 K_tilde
+  have hK_def : (katoOffDiagGenerator H P).val = V.val * K_tilde * star V.val := rfl
+  have hK_norm : ‖(katoOffDiagGenerator H P).val‖ = ‖K_tilde‖ := by
+    rw [hK_def]; exact l2_opNorm_unitary_conj_eq V.2 K_tilde
   rw [hK_norm]
   have hrow_sq (a : Config N) (ψ : StateSpace N) :
       ‖(matAct K_tilde ψ).ofLp a‖ ^ 2 ≤
@@ -867,12 +860,12 @@ theorem norm_katoOffDiagGenerator_le {N : ℕ} (H P : selfAdjoint (Register N))
   have hcol_sum : (∑ a : Config N, ∑ b : Config N, ‖K_tilde a b‖ ^ 2) ≤
       ((2 : ℝ) ^ N * ‖P.val‖ ^ 2) / Δ ^ 2 := by
     have hpt (a b : Config N) : ‖K_tilde a b‖ ^ 2 ≤ ‖P_tilde a b‖ ^ 2 / Δ ^ 2 := by
-      dsimp only [K_tilde]
+      change ‖if E b = E a then 0 else -Complex.I * P_tilde a b / ((E b - E a : ℝ) : ℂ)‖ ^ 2 ≤ _
       by_cases hE : E b = E a
       · rw [if_pos hE, norm_zero, zero_pow two_pos.ne']
         exact div_nonneg (sq_nonneg _) (sq_nonneg _)
       · have hab : a ≠ b := fun heq => hE (congrArg E heq.symm)
-        rw [if_neg hE, norm_div, norm_mul, Complex.norm_I, one_mul,
+        rw [if_neg hE, norm_div, norm_mul, norm_neg, Complex.norm_I, one_mul,
           Complex.norm_real, Real.norm_eq_abs, div_pow]
         exact div_le_div_of_nonneg_left (sq_nonneg _) (pow_pos hΔ 2)
           (pow_le_pow_left₀ hΔ.le (hgap a b hab) 2)
@@ -930,7 +923,7 @@ theorem transverse_mode_slope_lipschitz {N : ℕ} {U₀ : Register N} (hU₀ : �
   intro U_u
   let W := unitaryEvolution K.val u
   have hW_unit : W ∈ unitary (Register N) := unitaryEvolution_mem_unitary K.2 u
-  have hcomm_K : K.val * W = W * K.val := (unitaryEvolution_commutes_generator K.val u).symm
+  have hcomm_K : K.val * W = W * K.val := unitaryEvolution_commutes_generator K.val u
   let φ : StateSpace N := matAct (star W) ψ
   have hφ_norm : ‖φ‖ ≤ 1 := by
     have hst : ‖star W‖ = 1 := by rw [norm_star]; exact CStarRing.norm_of_mem_unitary hW_unit
@@ -960,8 +953,9 @@ theorem transverse_mode_slope_lipschitz {N : ℕ} {U₀ : Register N} (hU₀ : �
       rw [← matAct_map_sub', matAct_sub_left]
       have hone : matAct 1 ψ = ψ := by ext i; simp [matAct]
       rw [hone]
-    have hst_diff : ‖star W - (1 : Register N)‖ = ‖W - 1‖ := by
-      rw [← star_one, ← star_sub, norm_star]
+    have hst_diff : ‖star W - (1 : Register N)‖ = ‖W - 1‖ :=
+      calc ‖star W - (1 : Register N)‖ = ‖star (W - 1)‖ := by rw [star_sub, star_one]
+        _ = ‖W - 1‖ := norm_star _
     have hW_diff : ‖W - 1‖ ≤ ‖K.val‖ * |u| := by
       have h0 : unitaryEvolution K.val 0 = 1 := by simp [unitaryEvolution]
       simpa only [W, h0, sub_zero] using norm_unitaryEvolution_time_sub_le K.2 u 0
@@ -1067,22 +1061,18 @@ private theorem blkDiag_mul {M : ℕ} (A B : Fin M → Matrix Bool Bool ℂ) :
     · intro m _ hne; simp [blkDiag, hne.symm]
     · simp
   · simp [blkDiag, hm]
-    refine Finset.sum_eq_zero fun m _ => Finset.sum_eq_zero fun b _ => ?_
-    by_cases h1 : m₁ = m
-    · subst h1; simp [hm]
-    · simp [h1]
 
 private theorem blkDiag_conjTranspose {M : ℕ} (A : Fin M → Matrix Bool Bool ℂ) :
     (blkDiag A)ᴴ = blkDiag fun m => (A m)ᴴ := by
   ext ⟨b₁, m₁⟩ ⟨b₂, m₂⟩
-  simp [blkDiag, Matrix.conjTranspose_apply, eq_comm]
+  by_cases hm : m₁ = m₂ <;> simp [blkDiag, Matrix.conjTranspose_apply, hm, eq_comm]
 
 private theorem blkDiag_one {M : ℕ} :
     blkDiag (fun _ : Fin M => (1 : Matrix Bool Bool ℂ)) = 1 := by
   ext ⟨b₁, m₁⟩ ⟨b₂, m₂⟩
   by_cases hm : m₁ = m₂
   · subst hm; simp [blkDiag, Matrix.one_apply, Prod.ext_iff]
-  · simp [blkDiag, hm, Matrix.one_apply, Prod.ext_iff]
+  · simp [blkDiag, hm, Prod.ext_iff]
 
 private theorem blkDiag_add {M : ℕ} (A B : Fin M → Matrix Bool Bool ℂ) :
     blkDiag A + blkDiag B = blkDiag fun m => A m + B m := by
@@ -1102,19 +1092,20 @@ private theorem blkDiag_smul {M : ℕ} (z : ℂ) (A : Fin M → Matrix Bool Bool
 private def cfgSplitEquiv {N : ℕ} (hN : 2 ≤ N) : Config N ≃ Bool × Fin (2 ^ (N - 1)) :=
   let e_tail : (Fin (N - 1) → Bool) ≃ Fin (2 ^ (N - 1)) :=
     (Fintype.equivFin (Fin (N - 1) → Bool)).trans
-      (finCongr (by simp [Fintype.card_fun, Fintype.card_fin, Fintype.card_bool]))
+      (finCongr (by simp [Fintype.card_fin, Fintype.card_bool]))
   let e_cons : Config N ≃ Bool × (Fin (N - 1) → Bool) :=
     { toFun := fun x => (x ⟨0, by omega⟩, fun j => x ⟨j.val + 1, by omega⟩)
       invFun := fun p i => if hi : i.val = 0 then p.1 else p.2 ⟨i.val - 1, by omega⟩
       left_inv := fun x => by
         funext i
+        dsimp only
         by_cases hi : i.val = 0
         · rw [dif_pos hi]; congr 1; exact Fin.ext hi.symm
         · rw [dif_neg hi]; congr 1; exact Fin.ext (by omega)
       right_inv := fun ⟨b, y⟩ => by
         ext
         · simp
-        · rename_i j; dsimp only; rw [dif_neg (Nat.succ_ne_zero j.val)]; congr 1; exact Fin.ext (by omega) }
+        · rename_i j; dsimp only; rw [dif_neg (Nat.succ_ne_zero j.val)] }
   e_cons.trans (Equiv.prodCongr (Equiv.refl Bool) e_tail)
 
 private theorem reindex_l2_opNorm_le {α β : Type*} [Fintype α] [DecidableEq α]
@@ -1141,8 +1132,8 @@ private theorem reindex_l2_opNorm_le {α β : Type*} [Fintype α] [DecidableEq �
         ‖Matrix.toEuclideanCLM (n := α) (𝕜 := ℂ) A pe‖ ^ 2 := by
       rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq]
       refine Fintype.sum_equiv e.symm _ _ fun b => ?_
-      change ‖(Matrix.toEuclideanCLM (Matrix.reindex e e A) ψ).ofLp b‖ ^ 2 =
-        ‖(Matrix.toEuclideanCLM A pe).ofLp (e.symm b)‖ ^ 2
+      change ‖(Matrix.toEuclideanCLM (n := β) (𝕜 := ℂ) (Matrix.reindex e e A) ψ).ofLp b‖ ^ 2 =
+        ‖(Matrix.toEuclideanCLM (n := α) (𝕜 := ℂ) A pe).ofLp (e.symm b)‖ ^ 2
       rw [hcoord b]
     exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp hsq
   rw [hact_norm, ← hpe_norm]
@@ -1163,40 +1154,39 @@ private def singleBlk {M : ℕ} (m : Fin M) (A : Matrix Bool Bool ℂ) :
 private theorem singleBlk_l2_opNorm_eq {M : ℕ} (m : Fin M) (A : Matrix Bool Bool ℂ) :
     ‖singleBlk m A‖ = ‖A‖ := by
   rw [← Matrix.l2_opNorm_toEuclideanCLM, ← Matrix.l2_opNorm_toEuclideanCLM]
+  let T_blk := Matrix.toEuclideanCLM (n := Bool × Fin M) (𝕜 := ℂ) (singleBlk m A)
+  let T_loc := Matrix.toEuclideanCLM (n := Bool) (𝕜 := ℂ) A
+  change ‖T_blk‖ = ‖T_loc‖
   refine le_antisymm ?_ ?_
-  · refine (Matrix.toEuclideanCLM (n := Bool × Fin M) (𝕜 := ℂ) (singleBlk m A)).opNorm_le_bound
-      (ContinuousLinearMap.opNorm_nonneg _) fun ψ => ?_
+  · refine T_blk.opNorm_le_bound (ContinuousLinearMap.opNorm_nonneg _) fun ψ => ?_
     let ψ_m : EuclideanSpace ℂ Bool := WithLp.toLp 2 (fun b => ψ.ofLp (b, m))
-    have hcoord_eq (b : Bool) :
-        (Matrix.toEuclideanCLM (singleBlk m A) ψ).ofLp (b, m) =
-          (Matrix.toEuclideanCLM A ψ_m).ofLp b := by
+    have hcoord_eq (b : Bool) : (T_blk ψ).ofLp (b, m) = (T_loc ψ_m).ofLp b := by
+      dsimp only [T_blk, T_loc]
       rw [Matrix.ofLp_toEuclideanCLM, Matrix.ofLp_toEuclideanCLM]
       simp only [Matrix.mulVec, dotProduct, Fintype.sum_prod_type]
       rw [Finset.sum_comm, Finset.sum_eq_single m]
       · simp [singleBlk, blkDiag, ψ_m]
       · intro m' _ hne; simp [singleBlk, blkDiag, hne.symm]
       · simp
-    have hcoord_ne (b : Bool) {m' : Fin M} (hne : m' ≠ m) :
-        (Matrix.toEuclideanCLM (singleBlk m A) ψ).ofLp (b, m') = 0 := by
+    have hcoord_ne (b : Bool) {m' : Fin M} (hne : m' ≠ m) : (T_blk ψ).ofLp (b, m') = 0 := by
+      dsimp only [T_blk]
       rw [Matrix.ofLp_toEuclideanCLM]
       simp only [Matrix.mulVec, dotProduct, Fintype.sum_prod_type]
       refine Finset.sum_eq_zero fun b' _ => Finset.sum_eq_zero fun m'' _ => ?_
       by_cases h1 : m' = m''
       · subst h1; simp [singleBlk, blkDiag, hne]
       · simp [singleBlk, blkDiag, h1]
-    have hact_eq : ‖Matrix.toEuclideanCLM (singleBlk m A) ψ‖ = ‖Matrix.toEuclideanCLM A ψ_m‖ := by
-      have hsq : ‖Matrix.toEuclideanCLM (singleBlk m A) ψ‖ ^ 2 =
-          ‖Matrix.toEuclideanCLM A ψ_m‖ ^ 2 := by
+    have hact_eq : ‖T_blk ψ‖ = ‖T_loc ψ_m‖ := by
+      have hsq : ‖T_blk ψ‖ ^ 2 = ‖T_loc ψ_m‖ ^ 2 := by
         rw [EuclideanSpace.norm_sq_eq, Fintype.sum_prod_type, Finset.sum_comm,
           Finset.sum_eq_single m]
         · rw [EuclideanSpace.norm_sq_eq]
           refine Finset.sum_congr rfl fun b _ => ?_
-          change ‖(Matrix.toEuclideanCLM (singleBlk m A) ψ).ofLp (b, m)‖ ^ 2 =
-            ‖(Matrix.toEuclideanCLM A ψ_m).ofLp b‖ ^ 2
+          change ‖(T_blk ψ).ofLp (b, m)‖ ^ 2 = ‖(T_loc ψ_m).ofLp b‖ ^ 2
           rw [hcoord_eq b]
         · intro m' _ hne
           refine Finset.sum_eq_zero fun b _ => ?_
-          change ‖(Matrix.toEuclideanCLM (singleBlk m A) ψ).ofLp (b, m')‖ ^ 2 = 0
+          change ‖(T_blk ψ).ofLp (b, m')‖ ^ 2 = 0
           rw [hcoord_ne b hne, norm_zero, zero_pow two_pos.ne']
         · simp
       exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp hsq
@@ -1208,10 +1198,9 @@ private theorem singleBlk_l2_opNorm_eq {M : ℕ} (m : Fin M) (A : Matrix Bool Bo
           (Finset.mem_univ m)
       exact (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).mp hsq
     rw [hact_eq]
-    exact ((Matrix.toEuclideanCLM A).le_opNorm ψ_m).trans
+    exact (T_loc.le_opNorm ψ_m).trans
       (mul_le_mul_of_nonneg_left hψm_le (ContinuousLinearMap.opNorm_nonneg _))
-  · refine (Matrix.toEuclideanCLM (n := Bool) (𝕜 := ℂ) A).opNorm_le_bound
-      (ContinuousLinearMap.opNorm_nonneg _) fun φ => ?_
+  · refine T_loc.opNorm_le_bound (ContinuousLinearMap.opNorm_nonneg _) fun φ => ?_
     let ι_m : EuclideanSpace ℂ (Bool × Fin M) :=
       WithLp.toLp 2 (fun p => if p.2 = m then φ.ofLp p.1 else 0)
     have hι_norm : ‖ι_m‖ = ‖φ‖ := by
@@ -1227,32 +1216,28 @@ private theorem singleBlk_l2_opNorm_eq {M : ℕ} (m : Fin M) (A : Matrix Bool Bo
           simp [ι_m, hne]
         · simp
       exact (sq_eq_sq₀ (norm_nonneg _) (norm_nonneg _)).mp hsq
-    have hact_le : ‖Matrix.toEuclideanCLM A φ‖ ≤
-        ‖Matrix.toEuclideanCLM (singleBlk m A) ι_m‖ := by
-      have hcoord (b : Bool) :
-          (Matrix.toEuclideanCLM A φ).ofLp b =
-            (Matrix.toEuclideanCLM (singleBlk m A) ι_m).ofLp (b, m) := by
+    have hact_le : ‖T_loc φ‖ ≤ ‖T_blk ι_m‖ := by
+      have hcoord (b : Bool) : (T_loc φ).ofLp b = (T_blk ι_m).ofLp (b, m) := by
+        dsimp only [T_blk, T_loc]
         rw [Matrix.ofLp_toEuclideanCLM, Matrix.ofLp_toEuclideanCLM]
         simp only [Matrix.mulVec, dotProduct, Fintype.sum_prod_type]
         rw [Finset.sum_comm, Finset.sum_eq_single m]
         · simp [singleBlk, blkDiag, ι_m]
         · intro m' _ hne; simp [singleBlk, blkDiag, hne.symm]
         · simp
-      have hsq : ‖Matrix.toEuclideanCLM A φ‖ ^ 2 ≤
-          ‖Matrix.toEuclideanCLM (singleBlk m A) ι_m‖ ^ 2 := by
+      have hsq : ‖T_loc φ‖ ^ 2 ≤ ‖T_blk ι_m‖ ^ 2 := by
         rw [EuclideanSpace.norm_sq_eq, EuclideanSpace.norm_sq_eq, Fintype.sum_prod_type,
           Finset.sum_comm]
-        have h1 : (∑ b : Bool, ‖(Matrix.toEuclideanCLM A φ).ofLp b‖ ^ 2) =
-            ∑ b : Bool, ‖(Matrix.toEuclideanCLM (singleBlk m A) ι_m).ofLp (b, m)‖ ^ 2 := by
+        have h1 : (∑ b : Bool, ‖(T_loc φ).ofLp b‖ ^ 2) =
+            ∑ b : Bool, ‖(T_blk ι_m).ofLp (b, m)‖ ^ 2 := by
           refine Finset.sum_congr rfl fun b _ => ?_
           rw [hcoord b]
-        change (∑ b : Bool, ‖(Matrix.toEuclideanCLM A φ).ofLp b‖ ^ 2) ≤ _
+        change (∑ b : Bool, ‖(T_loc φ).ofLp b‖ ^ 2) ≤ _
         rw [h1]
         exact Finset.single_le_sum (fun _ _ => Finset.sum_nonneg fun _ _ => sq_nonneg _)
           (Finset.mem_univ m)
       exact (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).mp hsq
-    exact hact_le.trans (((Matrix.toEuclideanCLM (singleBlk m A)).le_opNorm ι_m).trans_eq
-      (by rw [hι_norm]))
+    exact hact_le.trans ((T_blk.le_opNorm ι_m).trans_eq (by rw [hι_norm]))
 
 private def pullSplit {N : ℕ} (hN : 2 ≤ N)
     (B : Matrix (Bool × Fin (2 ^ (N - 1))) (Bool × Fin (2 ^ (N - 1))) ℂ) : Register N :=
@@ -1270,7 +1255,7 @@ private theorem pullSplit_star {N : ℕ} (hN : 2 ≤ N)
     (A : Matrix (Bool × Fin (2 ^ (N - 1))) (Bool × Fin (2 ^ (N - 1))) ℂ) :
     star (pullSplit hN A) = pullSplit hN Aᴴ := by
   ext x y
-  simp [pullSplit, Matrix.star_eq_conjTranspose, Matrix.conjTranspose_apply, Matrix.reindex_apply]
+  simp [pullSplit, Matrix.conjTranspose_apply, Matrix.reindex_apply]
 
 private theorem pullSplit_one {N : ℕ} (hN : 2 ≤ N) :
     pullSplit hN 1 = (1 : Register N) := by
@@ -1328,7 +1313,7 @@ private theorem matAct_pullSplit_blkDiag_liftBlockState {N : ℕ} (hN : 2 ≤ N)
   rw [Fintype.sum_prod_type, Finset.sum_comm]
   by_cases hm : (cfgSplitEquiv hN x).2 = m
   · rw [if_pos hm, Finset.sum_eq_single m]
-    · simp [blkDiag, hm, Matrix.mulVec, dotProduct]
+    · simp [blkDiag, hm]
     · intro m' _ hne; simp [hne]
     · simp
   · rw [if_neg hm]
@@ -1341,16 +1326,16 @@ private theorem norm_sq_liftBlockState {N : ℕ} (hN : 2 ≤ N) (m : Fin (2 ^ (N
     (φ : Bool → ℂ) :
     ‖liftBlockState hN m φ‖ ^ 2 = ‖φ false‖ ^ 2 + ‖φ true‖ ^ 2 := by
   rw [EuclideanSpace.norm_sq_eq]
-  rw [Fintype.sum_equiv (cfgSplitEquiv hN) _
+  refine (Fintype.sum_equiv (cfgSplitEquiv hN) _
     (fun q : Bool × Fin (2 ^ (N - 1)) => ‖if q.2 = m then φ q.1 else (0 : ℂ)‖ ^ 2)
-    (fun x => rfl)]
+    fun _ => rfl).trans ?_
   rw [Fintype.sum_prod_type, Finset.sum_comm, Finset.sum_eq_single m]
   · simp [Fintype.sum_bool]
   · intro m' _ hne; simp [hne]
   · simp
 
 private theorem onsiteZ0_eq_pullSplit {N : ℕ} (hN : 2 ≤ N) :
-    finitePauliMatrix (onsiteWord ⟨0, by omega⟩ 2) =
+    finitePauliMatrix (fun s : Fin N => if s.val = 0 then some (2 : Fin 3) else none) =
       pullSplit hN (blkDiag fun _ => finiteQubitPauli 2) := by
   ext x y
   simp only [finitePauliMatrix, pullSplit, Matrix.reindex_apply, Matrix.submatrix_apply,
@@ -1363,16 +1348,16 @@ private theorem onsiteZ0_eq_pullSplit {N : ℕ} (hN : 2 ≤ N) :
         (fun j : Fin (N - 1) => y ⟨j.val + 1, by omega⟩) := by
       let e_tail : (Fin (N - 1) → Bool) ≃ Fin (2 ^ (N - 1)) :=
         (Fintype.equivFin (Fin (N - 1) → Bool)).trans
-          (finCongr (by simp [Fintype.card_fun, Fintype.card_fin, Fintype.card_bool]))
+          (finCongr (by simp [Fintype.card_fin, Fintype.card_bool]))
       exact e_tail.injective hm
     rw [Finset.prod_eq_single (⟨0, by omega⟩ : Fin N)]
-    · simp [onsiteWord, boolPauliOptionEntry, boolPauliOption]
+    · simp [boolPauliOptionEntry, boolPauliOption]
     · intro s _ hs0
       have hsv : s.val ≠ 0 := fun hv => hs0 (Fin.ext hv)
       let j : Fin (N - 1) := ⟨s.val - 1, by omega⟩
       have hs_eq : s = ⟨j.val + 1, by omega⟩ := Fin.ext (by dsimp [j]; omega)
       have hxy_s : x s = y s := by rw [hs_eq]; exact congrFun htail_eq j
-      simp [onsiteWord, hs0, boolPauliOptionEntry, boolPauliOption, hxy_s]
+      simp [hsv, boolPauliOptionEntry, boolPauliOption, hxy_s]
     · simp
   · rw [if_neg hm]
     have hnot_all : ¬ ∀ j : Fin (N - 1), x ⟨j.val + 1, by omega⟩ = y ⟨j.val + 1, by omega⟩ := by
@@ -1385,10 +1370,8 @@ private theorem onsiteZ0_eq_pullSplit {N : ℕ} (hN : 2 ≤ N) :
     push Not at hnot_all
     obtain ⟨j, hj_ne⟩ := hnot_all
     let s₀ : Fin N := ⟨j.val + 1, by omega⟩
-    have hs₀_ne0 : s₀ ≠ ⟨0, by omega⟩ := fun heq => by
-      have hv := congrArg Fin.val heq; dsimp [s₀] at hv; omega
     refine Finset.prod_eq_zero (Finset.mem_univ s₀) ?_
-    simp [onsiteWord, hs₀_ne0, boolPauliOptionEntry, boolPauliOption, s₀, hj_ne]
+    simp [s₀, boolPauliOptionEntry, boolPauliOption, hj_ne]
 
 /-! ### Explicit `2 × 2` avoided-crossing matrices on `Bool` -/
 
@@ -1467,7 +1450,7 @@ private theorem rot2_diag_ham2 {ε : ℝ} (hε : 0 < ε) (c_off Δ : ℝ) :
   ext b₁ b₂; cases b₁ <;> cases b₂ <;>
     simp only [rot2, ham2, Matrix.mul_apply, Matrix.diagonal_apply, Matrix.conjTranspose_apply,
       Fintype.sum_bool, Complex.star_def, Complex.conj_ofReal, map_neg, Bool.false_eq_true,
-      if_true, if_false, reduceCtorEq, zero_mul, mul_zero, add_zero, zero_add] <;> push_cast
+      if_true, if_false, reduceCtorEq, add_zero, zero_add] <;> push_cast
   · linear_combination (c_off : ℂ) * hcsC + hdiffC
   · linear_combination hprodC
   · linear_combination hprodC
@@ -1479,7 +1462,7 @@ private theorem rot2_pauliZ2_conj (c s : ℝ) :
     simp only [rot2, refl2, finiteQubitPauli, Matrix.mul_apply, Matrix.conjTranspose_apply,
       Fintype.sum_bool, Complex.star_def, Complex.conj_ofReal, map_neg,
       show (2 : Fin 3) ≠ 0 by decide, show (2 : Fin 3) ≠ 1 by decide,
-      if_true, if_false, reduceCtorEq] <;> push_cast <;> ring
+      if_true, if_false, reduceCtorEq] <;> ring
 
 private theorem refl2_sub_neg_pauliZ2 {c s : ℝ} (hcs : c ^ 2 + s ^ 2 = 1) :
     refl2 c s - (-finiteQubitPauli 2) = ((2 * c : ℝ) : ℂ) • reflMinusUnit2 c s := by
@@ -1567,10 +1550,15 @@ private theorem kato2_commutator_eq {ε : ℝ} (hε : 0 < ε) (c_off Δ : ℝ) :
   have hR_ne : (acRad ε Δ : ℂ) ≠ 0 := by exact_mod_cast hR_pos.ne'
   have hR_sq : (acRad ε Δ : ℂ) ^ 2 = (Δ : ℂ) ^ 2 + (ε : ℂ) ^ 2 := by
     exact_mod_cast Real.sq_sqrt (by positivity : 0 ≤ Δ ^ 2 + ε ^ 2)
+  have hR_pow4 : (acRad ε Δ : ℂ) ^ 4 = ((Δ : ℂ) ^ 2 + (ε : ℂ) ^ 2) ^ 2 := by
+    rw [show (4 : ℕ) = 2 * 2 from rfl, pow_mul, hR_sq]
   have hdiffC : (acRad ε Δ : ℂ) * ((acCos ε Δ : ℂ) ^ 2 - (acSin ε Δ : ℂ) ^ 2) = (Δ : ℂ) := by
     exact_mod_cast hdiff
-  have hprodC : (acRad ε Δ : ℂ) * (2 * (acCos ε Δ : ℂ) * (acSin ε Δ : ℂ)) = (ε : ℂ) := by
-    exact_mod_cast hprod
+  have hc2s2 : acCos ε Δ ^ 2 - acSin ε Δ ^ 2 = Δ / acRad ε Δ :=
+    eq_div_of_mul_eq hR_pos.ne' (by linarith only [hdiff])
+  have hs2c2 : acSin ε Δ ^ 2 - acCos ε Δ ^ 2 = -Δ / acRad ε Δ := by linarith only [hc2s2]
+  have h2cs : 2 * acCos ε Δ * acSin ε Δ = ε / acRad ε Δ :=
+    eq_div_of_mul_eq hR_pos.ne' (by linarith only [hprod])
   have hdiag_eq : Matrix.diagonal (fun b : Bool => (V₂ᴴ * finiteQubitPauli 2 * V₂) b b) =
       (((Δ / acRad ε Δ : ℝ) : ℂ)) • finiteQubitPauli 2 := by
     ext b₁ b₂; cases b₁ <;> cases b₂ <;>
@@ -1586,29 +1574,13 @@ private theorem kato2_commutator_eq {ε : ℝ} (hε : 0 < ε) (c_off Δ : ℝ) :
   rw [hdiag_eq, Matrix.mul_smul, Matrix.smul_mul, rot2_pauliZ2_conj]
   unfold kato2
   ext b₁ b₂; cases b₁ <;> cases b₂ <;>
-    simp only [ham2, refl2, finiteQubitPauli, Matrix.smul_apply, Matrix.sub_apply,
-      Matrix.mul_apply, Fintype.sum_bool, smul_eq_mul,
+    simp only [ham2, refl2, finiteQubitPauli, hc2s2, hs2c2, h2cs,
+      Matrix.smul_apply, Matrix.sub_apply, Matrix.mul_apply, Fintype.sum_bool, smul_eq_mul,
       show (1 : Fin 3) ≠ 0 by decide, show (2 : Fin 3) ≠ 0 by decide,
       show (2 : Fin 3) ≠ 1 by decide,
-      if_true, if_false, reduceCtorEq, Bool.false_eq_true] <;> push_cast
-  · have hI2 : Complex.I * Complex.I = -1 := Complex.I_mul_I
-    field_simp [hR_ne]
-    linear_combination -2 * (ε : ℂ) ^ 2 * (acRad ε Δ : ℂ) ^ 2 * hI2 +
-      2 * (acRad ε Δ : ℂ) ^ 2 * hR_sq -
-      2 * (Δ : ℂ) * (acRad ε Δ : ℂ) * hdiffC
-  · have hI2 : Complex.I * Complex.I = -1 := Complex.I_mul_I
-    field_simp [hR_ne]
-    linear_combination 2 * (Δ : ℂ) * (ε : ℂ) * (acRad ε Δ : ℂ) ^ 2 * hI2 +
-      2 * (Δ : ℂ) * (acRad ε Δ : ℂ) * hprodC
-  · have hI2 : Complex.I * Complex.I = -1 := Complex.I_mul_I
-    field_simp [hR_ne]
-    linear_combination 2 * (Δ : ℂ) * (ε : ℂ) * (acRad ε Δ : ℂ) ^ 2 * hI2 +
-      2 * (Δ : ℂ) * (acRad ε Δ : ℂ) * hprodC
-  · have hI2 : Complex.I * Complex.I = -1 := Complex.I_mul_I
-    field_simp [hR_ne]
-    linear_combination 2 * (ε : ℂ) ^ 2 * (acRad ε Δ : ℂ) ^ 2 * hI2 -
-      2 * (acRad ε Δ : ℂ) ^ 2 * hR_sq +
-      2 * (Δ : ℂ) * (acRad ε Δ : ℂ) * hdiffC
+      if_true, if_false, reduceCtorEq, Bool.false_eq_true] <;>
+    push_cast <;> field_simp [hR_ne] <;> ring_nf <;>
+    simp only [Complex.I_sq, hR_pow4, hR_sq] <;> ring
 
 /-! ### Closed-form `1 / 10` crossing values and far-block decay -/
 
@@ -1619,24 +1591,29 @@ private theorem ac_values_at_crossings {ε : ℝ} (hε : 0 < ε) :
     (2 * acCos ε 0 = Real.sqrt 2 ∧ 2 * acSin ε 0 = Real.sqrt 2) ∧
     δc < 40 * ε := by
   intro δc
+  have hδc_def : δc = 199 / Real.sqrt 399 * ε := rfl
   have h399_pos : (0 : ℝ) < Real.sqrt 399 := Real.sqrt_pos.mpr (by norm_num)
   have hsq399 : Real.sqrt 399 ^ 2 = 399 := Real.sq_sqrt (by norm_num)
+  have hsq399_4 : Real.sqrt 399 ^ 4 = 399 ^ 2 := by
+    rw [show (4 : ℕ) = 2 * 2 from rfl, pow_mul, hsq399]
   have hrad_eq (s_sgn : ℝ) (hs_sq : s_sgn ^ 2 = 1) :
       acRad ε (s_sgn * δc) = 200 / Real.sqrt 399 * ε := by
     unfold acRad
     have h1 : (s_sgn * δc) ^ 2 + ε ^ 2 = (200 / Real.sqrt 399 * ε) ^ 2 := by
-      dsimp only [δc]
+      rw [hδc_def]
       field_simp [h399_pos.ne']
-      linear_combination (199 ^ 2 * ε ^ 2) * hs_sq - 399 * ε ^ 2 * hsq399
+      ring_nf
+      simp only [hs_sq, hsq399_4, hsq399]
+      ring
     rw [h1, Real.sqrt_sq (by positivity)]
   have hrad_neg : acRad ε (-δc) = 200 / Real.sqrt 399 * ε := by
     simpa using hrad_eq (-1) (by norm_num)
   have hrad_pos : acRad ε δc = 200 / Real.sqrt 399 * ε := by
     simpa using hrad_eq 1 (by norm_num)
   have hdiv_neg : (-δc) / acRad ε (-δc) = -199 / 200 := by
-    rw [hrad_neg]; dsimp only [δc]; field_simp [hε.ne', h399_pos.ne']
+    rw [hrad_neg, hδc_def]; field_simp [hε.ne', h399_pos.ne']
   have hdiv_pos : δc / acRad ε δc = 199 / 200 := by
-    rw [hrad_pos]; dsimp only [δc]; field_simp [hε.ne', h399_pos.ne']
+    rw [hrad_pos, hδc_def]; field_simp [hε.ne', h399_pos.ne']
   have hcos_neg : acCos ε (-δc) = 1 / 20 := by
     unfold acCos; rw [hdiv_neg]
     have h1 : (1 + -199 / 200 : ℝ) / 2 = (1 / 20 : ℝ) ^ 2 := by norm_num
@@ -1663,7 +1640,7 @@ private theorem ac_values_at_crossings {ε : ℝ} (hε : 0 < ε) :
     unfold acCos acSin
     simp only [zero_div, add_zero, sub_zero, hhalf, and_self]
   have hδc_lt : δc < 40 * ε := by
-    dsimp only [δc]
+    rw [hδc_def]
     have h19 : (19 : ℝ) < Real.sqrt 399 := by
       rw [← Real.sqrt_sq (by norm_num : (0 : ℝ) ≤ 19)]
       exact Real.sqrt_lt_sqrt (by norm_num) (by norm_num)
@@ -1675,55 +1652,61 @@ private theorem ac_values_at_crossings {ε : ℝ} (hε : 0 < ε) :
 
 private theorem min_two_acCos_acSin_lt_of_two_le_abs {Δ : ℝ} (hΔ : 2 ≤ |Δ|) :
     min (2 * acCos (1 / 40) Δ) (2 * acSin (1 / 40) Δ) < 1 / 20 := by
-  let ε : ℝ := 1 / 40
-  have hε : 0 < ε := by norm_num
+  have hε : (0 : ℝ) < 1 / 40 := by norm_num
   have hR_pos := acRad_pos hε Δ
   have habs := abs_div_acRad_lt_one hε Δ
-  have hR_sq : acRad ε Δ ^ 2 = Δ ^ 2 + ε ^ 2 := Real.sq_sqrt (by positivity)
+  have hR_sq : acRad (1 / 40) Δ ^ 2 = Δ ^ 2 + (1 / 40 : ℝ) ^ 2 := Real.sq_sqrt (by positivity)
+  have hR_pow4 : acRad (1 / 40) Δ ^ 4 = (Δ ^ 2 + (1 / 40 : ℝ) ^ 2) ^ 2 := by
+    rw [show (4 : ℕ) = 2 * 2 from rfl, pow_mul, hR_sq]
   have hΔ_sq : 4 ≤ Δ ^ 2 := by
-    have := pow_le_pow_left₀ (by norm_num) hΔ 2
-    rwa [sq_abs] at this
-  have hR_ge4 : 4 < acRad ε Δ ^ 2 := by linarith only [hR_sq, hΔ_sq, sq_pos_of_pos hε]
+    have h1 := pow_le_pow_left₀ (by norm_num) hΔ 2
+    rw [sq_abs] at h1
+    linarith only [h1]
+  have hR_ge4 : 4 < acRad (1 / 40) Δ ^ 2 := by linarith only [hR_sq, hΔ_sq]
   rcases le_total Δ 0 with hneg | hpos
   · refine lt_of_le_of_lt (min_le_left _ _) ?_
-    have hgt_neg1 : -1 < Δ / acRad ε Δ := by
+    have hgt_neg1 : -1 < Δ / acRad (1 / 40) Δ := by
       have := (neg_le_abs Δ).trans_lt ((div_lt_one hR_pos).mp habs)
       exact (lt_div_iff₀ hR_pos).mpr (by linarith only [this])
-    have hc_sq : acCos ε Δ ^ 2 = (1 + Δ / acRad ε Δ) / 2 :=
+    have hc_sq : acCos (1 / 40) Δ ^ 2 = (1 + Δ / acRad (1 / 40) Δ) / 2 :=
       Real.sq_sqrt (by linarith only [hgt_neg1])
-    have h1_ge : 1 ≤ 1 - Δ / acRad ε Δ := by
-      have : Δ / acRad ε Δ ≤ 0 := div_nonpos_of_nonpos_of_nonneg hneg hR_pos.le
+    have h1_ge : 1 ≤ 1 - Δ / acRad (1 / 40) Δ := by
+      have : Δ / acRad (1 / 40) Δ ≤ 0 := div_nonpos_of_nonpos_of_nonneg hneg hR_pos.le
       linarith only [this]
-    have hprod_id : 4 * acCos ε Δ ^ 2 * (1 - Δ / acRad ε Δ) = 2 * ε ^ 2 / acRad ε Δ ^ 2 := by
-      rw [hc_sq]; field_simp [hR_pos.ne']; linear_combination 2 * hR_sq
-    have hsq_lt : (2 * acCos ε Δ) ^ 2 < (1 / 20 : ℝ) ^ 2 := by
-      have hle : (2 * acCos ε Δ) ^ 2 ≤ 4 * acCos ε Δ ^ 2 * (1 - Δ / acRad ε Δ) := by
-        nlinarith only [h1_ge, sq_nonneg (acCos ε Δ)]
+    have hprod_id : 4 * acCos (1 / 40) Δ ^ 2 * (1 - Δ / acRad (1 / 40) Δ) =
+        2 * (1 / 40 : ℝ) ^ 2 / acRad (1 / 40) Δ ^ 2 := by
+      rw [hc_sq]; field_simp [hR_pos.ne']; ring_nf; simp only [hR_pow4, hR_sq]; ring
+    have hsq_lt : (2 * acCos (1 / 40) Δ) ^ 2 < (1 / 20 : ℝ) ^ 2 := by
+      have hle : (2 * acCos (1 / 40) Δ) ^ 2 ≤
+          4 * acCos (1 / 40) Δ ^ 2 * (1 - Δ / acRad (1 / 40) Δ) := by
+        nlinarith only [h1_ge, sq_nonneg (acCos (1 / 40) Δ)]
       rw [hprod_id] at hle
-      have hdiv_lt : 2 * ε ^ 2 / acRad ε Δ ^ 2 < (1 / 20 : ℝ) ^ 2 := by
+      have hdiv_lt : 2 * (1 / 40 : ℝ) ^ 2 / acRad (1 / 40) Δ ^ 2 < (1 / 20 : ℝ) ^ 2 := by
         rw [div_lt_iff₀ (sq_pos_of_pos hR_pos)]
-        dsimp only [ε]; nlinarith only [hR_ge4]
+        nlinarith only [hR_ge4]
       exact hle.trans_lt hdiv_lt
-    nlinarith only [hsq_lt, acCos_nonneg ε Δ]
+    nlinarith only [hsq_lt, acCos_nonneg (1 / 40) Δ]
   · refine lt_of_le_of_lt (min_le_right _ _) ?_
-    have hlt1 : Δ / acRad ε Δ < 1 :=
+    have hlt1 : Δ / acRad (1 / 40) Δ < 1 :=
       (le_abs_self Δ |>.trans_lt ((div_lt_one hR_pos).mp habs) |> (div_lt_one hR_pos).mpr)
-    have hs_sq : acSin ε Δ ^ 2 = (1 - Δ / acRad ε Δ) / 2 :=
+    have hs_sq : acSin (1 / 40) Δ ^ 2 = (1 - Δ / acRad (1 / 40) Δ) / 2 :=
       Real.sq_sqrt (by linarith only [hlt1])
-    have h1_ge : 1 ≤ 1 + Δ / acRad ε Δ := by
-      have : 0 ≤ Δ / acRad ε Δ := div_nonneg hpos hR_pos.le
+    have h1_ge : 1 ≤ 1 + Δ / acRad (1 / 40) Δ := by
+      have : 0 ≤ Δ / acRad (1 / 40) Δ := div_nonneg hpos hR_pos.le
       linarith only [this]
-    have hprod_id : 4 * acSin ε Δ ^ 2 * (1 + Δ / acRad ε Δ) = 2 * ε ^ 2 / acRad ε Δ ^ 2 := by
-      rw [hs_sq]; field_simp [hR_pos.ne']; linear_combination 2 * hR_sq
-    have hsq_lt : (2 * acSin ε Δ) ^ 2 < (1 / 20 : ℝ) ^ 2 := by
-      have hle : (2 * acSin ε Δ) ^ 2 ≤ 4 * acSin ε Δ ^ 2 * (1 + Δ / acRad ε Δ) := by
-        nlinarith only [h1_ge, sq_nonneg (acSin ε Δ)]
+    have hprod_id : 4 * acSin (1 / 40) Δ ^ 2 * (1 + Δ / acRad (1 / 40) Δ) =
+        2 * (1 / 40 : ℝ) ^ 2 / acRad (1 / 40) Δ ^ 2 := by
+      rw [hs_sq]; field_simp [hR_pos.ne']; ring_nf; simp only [hR_pow4, hR_sq]; ring
+    have hsq_lt : (2 * acSin (1 / 40) Δ) ^ 2 < (1 / 20 : ℝ) ^ 2 := by
+      have hle : (2 * acSin (1 / 40) Δ) ^ 2 ≤
+          4 * acSin (1 / 40) Δ ^ 2 * (1 + Δ / acRad (1 / 40) Δ) := by
+        nlinarith only [h1_ge, sq_nonneg (acSin (1 / 40) Δ)]
       rw [hprod_id] at hle
-      have hdiv_lt : 2 * ε ^ 2 / acRad ε Δ ^ 2 < (1 / 20 : ℝ) ^ 2 := by
+      have hdiv_lt : 2 * (1 / 40 : ℝ) ^ 2 / acRad (1 / 40) Δ ^ 2 < (1 / 20 : ℝ) ^ 2 := by
         rw [div_lt_iff₀ (sq_pos_of_pos hR_pos)]
-        dsimp only [ε]; nlinarith only [hR_ge4]
+        nlinarith only [hR_ge4]
       exact hle.trans_lt hdiv_lt
-    nlinarith only [hsq_lt, acSin_nonneg ε Δ]
+    nlinarith only [hsq_lt, acSin_nonneg (1 / 40) Δ]
 
 /-! ### Super-polynomial (`2^(N - 1)`) active-saddle switches and sign reversals on `H₀ + t Z₀` -/
 
@@ -1744,7 +1727,7 @@ explicit self-adjoint base `H₀` exhibits:
 theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
     let M := 2 ^ (N - 1)
     let d := 2 ^ N - 1
-    let Z₀ : Register N := finitePauliMatrix (onsiteWord ⟨0, by omega⟩ 2)
+    let Z₀ : Register N := finitePauliMatrix (fun s : Fin N => if s.val = 0 then some (2 : Fin 3) else none)
     ∃ (e_enum : Config N ≃ Fin (d + 1))
       (H₀ : selfAdjoint (Register N))
       (V : ℝ → UGroup N)
@@ -1813,7 +1796,7 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
   let c_anchor : Config N := (cfgSplitEquiv hN).symm (false, ⟨0, hM_pos⟩)
   let e_enum : Config N ≃ Fin (d + 1) := e_raw.trans (Equiv.swap (e_raw c_anchor) 0)
   have he_anchor : e_enum c_anchor = 0 := by
-    dsimp only [e_enum, Equiv.trans_apply]; exact Equiv.swap_apply_left _ _
+    dsimp [e_enum]; exact Equiv.swap_apply_left _ _
   -- 2. Block parameters, H₀, V(t), E(t), K(t), θ_branch, W_minus, W_plus, t_minus, t_plus, ψ_±
   let t_center (m : Fin M) : ℝ := 4 * (m.val : ℝ) + 2
   let c_offset (m : Fin M) : ℝ := (8 * (M : ℝ) + 10) * (m.val : ℝ)
@@ -1827,7 +1810,7 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
     pullSplit hN (blkDiag fun m => rot2 (acCos ε (t - t_center m)) (acSin ε (t - t_center m)))
   have hV_unit (t : ℝ) : V_mat t ∈ unitary (Register N) := by
     rw [Unitary.mem_iff]
-    dsimp only [V_mat]
+    dsimp [V_mat]
     rw [pullSplit_star, ← pullSplit_mul, ← pullSplit_mul, blkDiag_conjTranspose,
       blkDiag_mul, blkDiag_mul]
     have h1 : (fun m : Fin M =>
@@ -1866,11 +1849,11 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
     rw [Unitary.mem_iff, pullSplit_star, ← pullSplit_mul, ← pullSplit_mul,
       blkDiag_conjTranspose, blkDiag_mul, blkDiag_mul]
     have h1 : (fun m' => (W_minus_blk m m')ᴴ * W_minus_blk m m') = fun _ => 1 := by
-      funext m'; dsimp only [W_minus_blk]; split_ifs
+      funext m'; dsimp [W_minus_blk]; split_ifs
       · rw [Matrix.conjTranspose_neg, neg_mul_neg, hZ2_sq.1]
       · simp
     have h2 : (fun m' => W_minus_blk m m' * (W_minus_blk m m')ᴴ) = fun _ => 1 := by
-      funext m'; dsimp only [W_minus_blk]; split_ifs
+      funext m'; dsimp [W_minus_blk]; split_ifs
       · rw [Matrix.conjTranspose_neg, mul_neg, neg_mul, neg_neg, hZ2_sq.2]
       · simp
     rw [h1, h2, blkDiag_one, pullSplit_one]; exact ⟨rfl, rfl⟩
@@ -1878,11 +1861,11 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
     rw [Unitary.mem_iff, pullSplit_star, ← pullSplit_mul, ← pullSplit_mul,
       blkDiag_conjTranspose, blkDiag_mul, blkDiag_mul]
     have h1 : (fun m' => (W_plus_blk m m')ᴴ * W_plus_blk m m') = fun _ => 1 := by
-      funext m'; dsimp only [W_plus_blk]; split_ifs
+      funext m'; dsimp [W_plus_blk]; split_ifs
       · exact hZ2_sq.1
       · simp
     have h2 : (fun m' => W_plus_blk m m' * (W_plus_blk m m')ᴴ) = fun _ => 1 := by
-      funext m'; dsimp only [W_plus_blk]; split_ifs
+      funext m'; dsimp [W_plus_blk]; split_ifs
       · exact hZ2_sq.2
       · simp
     rw [h1, h2, blkDiag_one, pullSplit_one]; exact ⟨rfl, rfl⟩
@@ -1954,7 +1937,7 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
       · simp [blkDiag, hm', Matrix.diagonal_apply, Prod.ext_iff]
     change V_mat t * pullSplit hN (Matrix.diagonal _) * star (V_mat t) = _
     rw [hdiag_blk]
-    dsimp only [V_mat]
+    dsimp [V_mat]
     rw [pullSplit_star, ← pullSplit_mul, ← pullSplit_mul, blkDiag_conjTranspose,
       blkDiag_mul, blkDiag_mul]
     congr 1; funext m'
@@ -1974,7 +1957,7 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
         singleBlk m (refl2 (acCos ε (t - t_center m)) (acSin ε (t - t_center m)) -
           (-finiteQubitPauli 2)) := by
       unfold singleBlk; congr 1; funext m'
-      dsimp only [W_minus_blk]; split_ifs <;> simp
+      dsimp [W_minus_blk]; split_ifs <;> simp
     rw [hblk, singleBlk_l2_opNorm_eq, norm_refl2_sub_neg_pauliZ2 hε]
   have hnorm_plus (m : Fin M) (t : ℝ) :
       ‖projectiveSpectralMatrix e_enum (V t) (θ_branch m) - (W_plus m).val‖ =
@@ -1988,7 +1971,7 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
         singleBlk m (refl2 (acCos ε (t - t_center m)) (acSin ε (t - t_center m)) -
           finiteQubitPauli 2) := by
       unfold singleBlk; congr 1; funext m'
-      dsimp only [W_plus_blk]; split_ifs <;> simp
+      dsimp [W_plus_blk]; split_ifs <;> simp
     rw [hblk, singleBlk_l2_opNorm_eq, norm_refl2_sub_pauliZ2 hε]
   refine ⟨e_enum, H₀, V, E, K, θ_branch, W_minus, W_plus, t_minus, t_plus, ψ_minus, ψ_plus,
     ?_, ?_, ?_, ?_, ?_⟩
@@ -2000,7 +1983,7 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
           pullSplit hN (blkDiag fun m => Matrix.diagonal fun b : Bool =>
             if b then ((c_offset m - acRad ε (t - t_center m) : ℝ) : ℂ)
             else ((c_offset m + acRad ε (t - t_center m) : ℝ) : ℂ)) := by
-        dsimp only [E]
+        dsimp [E]
         rw [← Function.comp_assoc, ← pullSplit_diagonal]
         congr 1
         ext ⟨b₁, m₁⟩ ⟨b₂, m₂⟩
@@ -2009,7 +1992,7 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
         · simp [blkDiag, hm, Matrix.diagonal_apply, Prod.ext_iff]
       change _ = V_mat t * Matrix.diagonal (Complex.ofReal ∘ E t) * star (V_mat t)
       rw [hEdiag]
-      dsimp only [V_mat]
+      dsimp [V_mat]
       rw [pullSplit_star, ← pullSplit_mul, ← pullSplit_mul, blkDiag_conjTranspose,
         blkDiag_mul, blkDiag_mul]
       congr 1; funext m
@@ -2022,7 +2005,7 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
               rot2 (acCos ε (t - t_center m)) (acSin ε (t - t_center m))) := by
         change star (V_mat t) * Z₀ * V_mat t = _
         rw [hZ₀_eq]
-        dsimp only [V_mat]
+        dsimp [V_mat]
         rw [pullSplit_star, ← pullSplit_mul, ← pullSplit_mul, blkDiag_conjTranspose,
           blkDiag_mul, blkDiag_mul]
       have hdiag_VzV : Matrix.diagonal (fun x => (star (V t).val * Z₀ * (V t).val) x x) =
@@ -2052,7 +2035,7 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
       rw [hdiag_VzV, hZ₀_eq]
       change (-Complex.I) • (pullSplit hN _ * pullSplit hN _ - pullSplit hN _ * pullSplit hN _) =
         pullSplit hN _ - V_mat t * pullSplit hN _ * star (V_mat t)
-      dsimp only [V_mat]
+      dsimp [V_mat]
       rw [pullSplit_star, ← pullSplit_mul, ← pullSplit_mul, ← pullSplit_sub, ← pullSplit_smul,
         ← pullSplit_mul, ← pullSplit_mul, ← pullSplit_sub,
         blkDiag_conjTranspose, blkDiag_mul, blkDiag_mul, blkDiag_sub, blkDiag_smul,
@@ -2077,16 +2060,16 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
           rw [← sq_abs (t - t_center m)]
           exact pow_le_pow_left₀ (abs_nonneg _) hdiff_abs 2
         have hM_nn : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg M
-        dsimp only [ε]; nlinarith only [h1, hM_nn]
+        dsimp [ε]; nlinarith only [h1, hM_nn]
       exact (sq_le_sq₀ (acRad_pos hε _).le (by positivity)).mp hsq_le
     have hrad_lb (m : Fin M) : (1 / 40 : ℝ) ≤ acRad ε (t - t_center m) := by
       have hsq : (1 / 40 : ℝ) ^ 2 ≤ acRad ε (t - t_center m) ^ 2 := by
-        rw [acRad, Real.sq_sqrt (by positivity)]; dsimp only [ε]; nlinarith only [sq_nonneg (t - t_center m)]
+        rw [acRad, Real.sq_sqrt (by positivity)]; dsimp [ε]; nlinarith only [sq_nonneg (t - t_center m)]
       exact (sq_le_sq₀ (by norm_num) (acRad_pos hε _).le).mp hsq
     by_cases hm : p.2 = q.2
     · have hb_ne : p.1 ≠ q.1 := fun hb => hpq (Prod.ext hb hm)
       have hrad := hrad_lb p.2
-      dsimp only [E_split]
+      dsimp [E_split]
       rw [← hm]
       cases hp1 : p.1 <;> cases hq1 : q.1
       · exact (hb_ne (hp1.trans hq1.symm)).elim
@@ -2104,11 +2087,11 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
         have hm_step : (a.2.val : ℝ) + 1 ≤ (b.2.val : ℝ) := by exact_mod_cast hab
         have hM_nn : (0 : ℝ) ≤ (M : ℝ) := Nat.cast_nonneg M
         have hcoff_diff : 8 * (M : ℝ) + 10 ≤ c_offset b.2 - c_offset a.2 := by
-          dsimp only [c_offset]; nlinarith only [hm_step, hM_nn]
+          dsimp [c_offset]; nlinarith only [hm_step, hM_nn]
         have ha_ub : E_split t a ≤ c_offset a.2 + (4 * (M : ℝ) + 3) := by
-          dsimp only [E_split]; split_ifs <;> linarith only [hrad_ub a.2, acRad_pos hε (t - t_center a.2)]
+          dsimp [E_split]; split_ifs <;> linarith only [hrad_ub a.2, acRad_pos hε (t - t_center a.2)]
         have hb_lb : c_offset b.2 - (4 * (M : ℝ) + 3) ≤ E_split t b := by
-          dsimp only [E_split]; split_ifs <;> linarith only [hrad_ub b.2, acRad_pos hε (t - t_center b.2)]
+          dsimp [E_split]; split_ifs <;> linarith only [hrad_ub b.2, acRad_pos hε (t - t_center b.2)]
         linarith only [hcoff_diff, ha_ub, hb_lb]
       rcases lt_or_gt_of_ne (Fin.val_ne_of_ne hm) with hlt | hgt
       · rw [abs_sub_comm]
@@ -2119,8 +2102,10 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
     obtain ⟨⟨hc_neg, hs_neg⟩, ⟨hc_pos, hs_pos⟩, _, hδc_lt⟩ := ac_values_at_crossings hε
     have hδc_pos : 0 < δc := by
       have : (0 : ℝ) < Real.sqrt 399 := Real.sqrt_pos.mpr (by norm_num)
-      dsimp only [δc]; positivity
-    have hδc_lt1 : δc < 1 := by dsimp only [ε] at hδc_lt; linarith only [hδc_lt]
+      dsimp [δc, ε]; positivity
+    have hδc_lt1 : δc < 1 := by
+      have h40 : 40 * ε = 1 := by dsimp [ε]; norm_num
+      linarith only [hδc_lt, h40]
     have h399_gt1 : (1 : ℝ) < Real.sqrt 399 := by
       rw [← Real.sqrt_one]; exact Real.sqrt_lt_sqrt zero_le_one (by norm_num)
     have hdiff_minus : t_minus m - t_center m = -δc := by dsimp [t_minus]; ring
@@ -2137,10 +2122,12 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
   -- Part (3): Global envelope G oscillates 2^N times across 1/10
   · dsimp only
     obtain ⟨⟨hc_neg, hs_neg⟩, ⟨hc_pos, hs_pos⟩, ⟨h0_cos, h0_sin⟩, hδc_lt⟩ := ac_values_at_crossings hε
-    have hδc_lt1 : δc < 1 := by dsimp only [ε] at hδc_lt; linarith only [hδc_lt]
+    have hδc_lt1 : δc < 1 := by
+      have h40 : 40 * ε = 1 := by dsimp [ε]; norm_num
+      linarith only [hδc_lt, h40]
     have hδc_nn : 0 ≤ δc := by
       have : (0 : ℝ) < Real.sqrt 399 := Real.sqrt_pos.mpr (by norm_num)
-      dsimp only [δc]; positivity
+      dsimp [δc, ε]; positivity
     have h399_gt1 : (1 : ℝ) < Real.sqrt 399 := by
       rw [← Real.sqrt_one]; exact Real.sqrt_lt_sqrt zero_le_one (by norm_num)
     have hsqrt2_gt : (1 / 20 : ℝ) < Real.sqrt 2 := by
@@ -2239,14 +2226,14 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
     have hdiff_minus : t_minus m - t_center m = -δc := by dsimp [t_minus]; ring
     have hdiff_plus : t_plus m - t_center m = δc := by dsimp [t_plus]; ring
     have hinv2_norm : ‖invSqrt2‖ ^ 2 = 1 / 2 := by
-      dsimp only [invSqrt2]
+      dsimp [invSqrt2]
       rw [Complex.norm_real, Real.norm_eq_abs, abs_of_pos (inv_pos.mpr (Real.sqrt_pos.mpr two_pos)),
         inv_pow, Real.sq_sqrt two_pos.le]
       norm_num
     have hψ_minus_norm : ‖ψ_minus m‖ = 1 := by
       have hsq : ‖ψ_minus m‖ ^ 2 = 1 ^ 2 := by
         rw [norm_sq_liftBlockState hN m φ_minus]
-        dsimp only [φ_minus]
+        dsimp [φ_minus]
         simp only [Bool.false_eq_true, if_false, if_true, norm_mul, Complex.norm_I, one_mul,
           hinv2_norm]
         norm_num
@@ -2254,17 +2241,21 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
     have hψ_plus_norm : ‖ψ_plus m‖ = 1 := by
       have hsq : ‖ψ_plus m‖ ^ 2 = 1 ^ 2 := by
         rw [norm_sq_liftBlockState hN m φ_plus]
-        dsimp only [φ_plus]
+        dsimp [φ_plus]
         simp only [Bool.false_eq_true, if_false, if_true, norm_mul, norm_neg, Complex.norm_I,
           one_mul, hinv2_norm]
         norm_num
       exact (sq_eq_sq₀ (norm_nonneg _) zero_le_one).mp hsq
     have hsq399C : ((Real.sqrt 399 : ℝ) : ℂ) ^ 2 = 399 := by
       exact_mod_cast Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 399)
+    have hsq399C_3 : ((Real.sqrt 399 : ℝ) : ℂ) ^ 3 = 399 * ((Real.sqrt 399 : ℝ) : ℂ) := by
+      rw [pow_succ, hsq399C]
+    have hsq399C_4 : ((Real.sqrt 399 : ℝ) : ℂ) ^ 4 = 399 ^ 2 := by
+      rw [show (4 : ℕ) = 2 * 2 from rfl, pow_mul, hsq399C]
     -- Actions of U_minus, W_minus, K(t_minus m) on ψ_minus m
     have hU_minus_act : matAct U_minus (ψ_minus m) =
         liftBlockState hN m (refl2 (1 / 20) (Real.sqrt 399 / 20) *ᵥ φ_minus) := by
-      dsimp only [U_minus, ψ_minus]
+      dsimp [U_minus, ψ_minus]
       rw [hU_branch_eq m (t_minus m), matAct_pullSplit_blkDiag_liftBlockState,
         if_pos rfl, hdiff_minus, hc_neg, hs_neg]
     have hW_minus_act : matAct (W_minus m).val (ψ_minus m) =
@@ -2274,7 +2265,7 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
       simp [W_minus_blk]
     have hU_plus_act : matAct U_plus (ψ_plus m) =
         liftBlockState hN m (refl2 (Real.sqrt 399 / 20) (1 / 20) *ᵥ φ_plus) := by
-      dsimp only [U_plus, ψ_plus]
+      dsimp [U_plus, ψ_plus]
       rw [hU_branch_eq m (t_plus m), matAct_pullSplit_blkDiag_liftBlockState,
         if_pos rfl, hdiff_plus, hc_pos, hs_pos]
     have hW_plus_act : matAct (W_plus m).val (ψ_plus m) =
@@ -2286,41 +2277,23 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
     have hratio_minus_2d : (-finiteQubitPauli 2) *ᵥ φ_minus =
         (((1 - (1 / 10 : ℝ) ^ 2 / 2 : ℝ) : ℂ) + Complex.I * (β : ℂ)) •
           (refl2 (1 / 20) (Real.sqrt 399 / 20) *ᵥ φ_minus) := by
-      have hI2 : Complex.I * Complex.I = -1 := Complex.I_mul_I
-      ext b; cases b <;>
-        simp only [refl2, finiteQubitPauli, φ_minus, β, Matrix.mulVec, dotProduct, Fintype.sum_bool,
+      ext b; dsimp [φ_minus, β]; cases b <;>
+        simp only [refl2, finiteQubitPauli, Matrix.mulVec, dotProduct, Fintype.sum_bool,
           Pi.smul_apply, Matrix.neg_apply, smul_eq_mul,
           show (2 : Fin 3) ≠ 0 by decide, show (2 : Fin 3) ≠ 1 by decide,
-          if_true, if_false, reduceCtorEq, Bool.false_eq_true] <;> push_cast
-      · linear_combination -invSqrt2 / 40000 * hsq399C +
-          (Complex.I * ((Real.sqrt 399 : ℝ) : ℂ) * invSqrt2 / 40000 -
-            399 * invSqrt2 / 40000) * hI2
-      · linear_combination (-39601 * Complex.I * invSqrt2 / 40000) * hI2 +
-          (Complex.I * invSqrt2 / 40000 * hsq399C) * hI2 -
-          Complex.I * invSqrt2 / 40000 * hsq399C -
-          (Complex.I * invSqrt2 * 399 / 40000) * hI2
+          if_true, if_false, reduceCtorEq, Bool.false_eq_true] <;>
+        push_cast <;> ring_nf <;>
+        simp only [Complex.I_sq, hsq399C_4, hsq399C_3, hsq399C] <;> ring
     have hratio_plus_2d : finiteQubitPauli 2 *ᵥ φ_plus =
         (((1 - (1 / 10 : ℝ) ^ 2 / 2 : ℝ) : ℂ) + Complex.I * (β : ℂ)) •
           (refl2 (Real.sqrt 399 / 20) (1 / 20) *ᵥ φ_plus) := by
-      have hI2 : Complex.I * Complex.I = -1 := Complex.I_mul_I
-      ext b; cases b <;>
-        simp only [refl2, finiteQubitPauli, φ_plus, β, Matrix.mulVec, dotProduct, Fintype.sum_bool,
+      ext b; dsimp [φ_plus, β]; cases b <;>
+        simp only [refl2, finiteQubitPauli, Matrix.mulVec, dotProduct, Fintype.sum_bool,
           Pi.smul_apply, smul_eq_mul,
           show (2 : Fin 3) ≠ 0 by decide, show (2 : Fin 3) ≠ 1 by decide,
-          if_true, if_false, reduceCtorEq, Bool.false_eq_true] <;> push_cast
-      · linear_combination -199 * invSqrt2 / 40000 * hsq399C -
-          Complex.I * ((Real.sqrt 399 : ℝ) : ℂ) * invSqrt2 / 40000 * hsq399C -
-          (invSqrt2 / 40000 * hsq399C) * hI2 +
-          (399 * invSqrt2 / 40000 +
-            Complex.I * 399 * ((Real.sqrt 399 : ℝ) : ℂ) * invSqrt2 / 40000) * hI2 +
-          199 * 399 * invSqrt2 / 40000
-      · linear_combination Complex.I * invSqrt2 / 40000 * hsq399C +
-          (199 * Complex.I * invSqrt2 / 40000 * hsq399C) * hI2 -
-          ((Real.sqrt 399 : ℝ) : ℂ) * invSqrt2 / 40000 * hsq399C -
-          (199 * 399 * Complex.I * invSqrt2 / 40000 +
-            399 * invSqrt2 * Complex.I / 40000) * hI2 +
-          399 * ((Real.sqrt 399 : ℝ) : ℂ) * invSqrt2 / 40000 -
-          399 * Complex.I * invSqrt2 / 40000
+          if_true, if_false, reduceCtorEq, Bool.false_eq_true] <;>
+        push_cast <;> ring_nf <;>
+        simp only [Complex.I_sq, hsq399C_4, hsq399C_3, hsq399C] <;> ring
     have hlift_smul (z : ℂ) (φ : Bool → ℂ) :
         liftBlockState hN m (z • φ) = z • liftBlockState hN m φ := by
       ext x; simp [liftBlockState]; split_ifs <;> simp
@@ -2339,7 +2312,7 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
           ((((1 - (1 / 10 : ℝ) ^ 2 / 2 : ℝ) : ℂ) + Complex.I * (β : ℂ)))‖ ^ 2 =
           (1 / 10 : ℝ) ^ 2 := by
         rw [Complex.sq_norm, Complex.normSq_apply]
-        dsimp only [β]
+        dsimp [β]
         simp only [Complex.sub_re, Complex.sub_im, Complex.add_re, Complex.add_im,
           Complex.one_re, Complex.one_im, Complex.ofReal_re, Complex.ofReal_im,
           Complex.mul_re, Complex.mul_im, Complex.I_re, Complex.I_im]
@@ -2348,7 +2321,7 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
       exact (sq_eq_sq₀ (norm_nonneg _) (by norm_num)).mp hsq_norm
     have hmem_minus : ψ_minus m ∈ maxRightSingularSphere (U_minus - (W_minus m).val) := by
       have hnorm_U_W : ‖U_minus - (W_minus m).val‖ = 1 / 10 := by
-        dsimp only [U_minus]
+        dsimp [U_minus]
         rw [hnorm_minus m (t_minus m), hdiff_minus, hc_neg]; norm_num
       refine ⟨hψ_minus_norm, ?_⟩
       rw [hnorm_U_W, matAct_sub_left, hratio_minus]
@@ -2363,7 +2336,7 @@ theorem pauliPencil_exponential_saddle_switches {N : ℕ} (hN : 2 ≤ N) :
       rw [hsub_smul, norm_smul, hcoef_norm, norm_matAct_unitary' hU_unit, hψ_minus_norm, mul_one]
     have hmem_plus : ψ_plus m ∈ maxRightSingularSphere (U_plus - (W_plus m).val) := by
       have hnorm_U_W : ‖U_plus - (W_plus m).val‖ = 1 / 10 := by
-        dsimp only [U_plus]
+        dsimp [U_plus]
         rw [hnorm_plus m (t_plus m), hdiff_plus, hs_pos]; norm_num
       refine ⟨hψ_plus_norm, ?_⟩
       rw [hnorm_U_W, matAct_sub_left, hratio_plus]

@@ -31,6 +31,63 @@ private theorem nonempty_gradedCechIso_of_saturating {ι R G M : Type} [Decidabl
     homLocMap_bijective_of_X hf hi (hsat i).1 (hsat i).2 n)
   exact ⟨@asIso _ _ _ _ g hg⟩
 
+private theorem nonempty_matrixCech_baseChangeIso {ι B R : Type} [Fintype ι]
+    [DecidableEq ι] [LinearOrder ι] [CommRing B] [CommRing R] [Algebra B R]
+    {a b : ℕ} {d : Fin a → ℤ} {e : Fin b → ℤ}
+    {Φ₀ : Matrix (Fin a) (Fin b) (MvPolynomial ι B)}
+    (hΦ₀ : ∀ l j, Φ₀ l j ∈ polyGrading ι B (e j - d l)) (n : ℤ) :
+    let Φ := Φ₀.map (MvPolynomial.map (algebraMap B R))
+    let D₀ := grQuot (grFree ι B d) (LinearMap.range Φ₀.mulVecLin)
+    let D₁ := grQuot (grFree ι R d) (LinearMap.range Φ.mulVecLin)
+    Nonempty (((ModuleCat.extendScalars (algebraMap B R)).mapHomologicalComplex (ComplexShape.up ℕ)).obj
+      (gradedCech (ι := ι) D₀ n) ≅ gradedCech (ι := ι) D₁ n) := by
+  intro Φ D₀ D₁
+  have hΦ (l : Fin a) (j : Fin b) : Φ l j ∈ polyGrading ι R (e j - d l) :=
+    map_mem_polyGrading (algebraMap B R) (hΦ₀ l j)
+  letI : Decomposition D₀ := grQuotDecomposition (isGradedMap_mulVecLin hΦ₀).isHomogeneous_range
+  letI : Decomposition D₁ := grQuotDecomposition (isGradedMap_mulVecLin hΦ).isHomogeneous_range
+  obtain ⟨f, hf, hX, hdeg⟩ := exists_graded_matrix_baseChange (R := R) d Φ₀
+  letI : IsScalarTower B R ((Fin a → MvPolynomial ι R) ⧸ LinearMap.range Φ.mulVecLin) :=
+    Submodule.Quotient.isScalarTower (S := B) (LinearMap.range Φ.mulVecLin) R
+  exact nonempty_gradedCech_baseChangeIso (ι := ι) D₀ D₁ f hf hX hdeg n
+
+private theorem exists_model_of_saturating_matrix {ι B R G : Type} [Fintype ι] [DecidableEq ι]
+    [LinearOrder ι] [CommRing B] [IsNoetherianRing B] [CommRing R] [Algebra B R]
+    [AddCommGroup G] [Module R G] [Module (MvPolynomial ι R) G]
+    [IsScalarTower R (MvPolynomial ι R) G]
+    (D : ℤ → Submodule R G) [Decomposition D] [PolyGradedSMul ι D]
+    {a b : ℕ} {d : Fin a → ℤ} {e : Fin b → ℤ} (Φ₀ : Matrix (Fin a) (Fin b) (MvPolynomial ι B))
+    (hΦ₀ : ∀ l j, Φ₀ l j ∈ polyGrading ι B (e j - d l)) (n : ℤ) :
+    let Φ := Φ₀.map (MvPolynomial.map (algebraMap B R))
+    let Q := (Fin a → MvPolynomial ι R) ⧸ LinearMap.range Φ.mulVecLin
+    ∀ (ψ : Q →ₗ[MvPolynomial ι R] G),
+      IsGradedMap (grQuot (grFree ι R d) (LinearMap.range Φ.mulVecLin)) D ψ →
+      (∀ i : ι,
+        Module.Flat B (QuotSMulTop (X i - 1 : MvPolynomial ι B)
+          ((Fin a → MvPolynomial ι B) ⧸ LinearMap.range Φ₀.mulVecLin)) ∧
+        (∀ y, ψ y = 0 → ∃ k : ℕ, (X i : MvPolynomial ι R) ^ k • y = 0) ∧
+        (∀ z : G, ∃ k : ℕ, (X i : MvPolynomial ι R) ^ k • z ∈ LinearMap.range ψ)) →
+      ∃ C : CochainComplex (ModuleCat B) ℕ,
+        (∀ q, Module.Flat B (C.X q)) ∧ (∀ q, Fintype.card ι ≤ q → Limits.IsZero (C.X q)) ∧
+          (∀ q, Module.Finite B (C.homology q)) ∧
+          Nonempty (((ModuleCat.extendScalars (algebraMap B R)).mapHomologicalComplex (ComplexShape.up ℕ)).obj C
+            ≅ gradedCech (ι := ι) D n) := by
+  intro Φ Q ψ hψ h
+  let D₀ := grQuot (grFree ι B d) (LinearMap.range Φ₀.mulVecLin)
+  let D₁ := grQuot (grFree ι R d) (LinearMap.range Φ.mulVecLin)
+  have hΦ (l : Fin a) (j : Fin b) : Φ l j ∈ polyGrading ι R (e j - d l) :=
+    map_mem_polyGrading (algebraMap B R) (hΦ₀ l j)
+  letI : Decomposition D₀ := grQuotDecomposition (isGradedMap_mulVecLin hΦ₀).isHomogeneous_range
+  letI : Decomposition D₁ := grQuotDecomposition (isGradedMap_mulVecLin hΦ).isHomogeneous_range
+  letI : IsScalarTower R (MvPolynomial ι R) Q :=
+    Submodule.Quotient.isScalarTower (S := R) (LinearMap.range Φ.mulVecLin) (MvPolynomial ι R)
+  obtain ⟨iso₀⟩ := nonempty_matrixCech_baseChangeIso (R := R) hΦ₀ n
+  obtain ⟨iso₁⟩ := nonempty_gradedCechIso_of_saturating (D := D₁) (E := D) hψ
+    (fun i => (h i).2) n
+  refine ⟨gradedCech (ι := ι) D₀ n, flat_gradedCech_of_flat_specializations D₀ (fun i => (h i).1) n,
+    ?_, finite_gradedCech_homology (ι := ι) D₀ n, ⟨iso₀ ≪≫ iso₁⟩⟩
+  exact (homLocDatum (ι := ι) D₀ n).linearComplex_X_isZero (fun k => homLocDatum_res_smul D₀ k n)
+
 /-- Smooth coefficient charts with finite projective dehomogenizations give a flat,
 bounded Čech model with finite cohomology over a Noetherian coefficient ring. -/
 theorem exists_noetherian_gradedCech_model {ι R G : Type} [Fintype ι] [DecidableEq ι] [LinearOrder ι]
@@ -44,36 +101,15 @@ theorem exists_noetherian_gradedCech_model {ι R G : Type} [Fintype ι] [Decidab
         (letI := Module.compHom P π.toRingHom
          Nonempty (QuotSMulTop (X i - 1 : MvPolynomial ι R) G ≃ₗ[MvPolynomial ι R] P)))
     (n : ℤ) :
-    ∃ (R₀ : Subalgebra ℤ R) (_ : IsNoetherianRing R₀) (a b : ℕ) (d : Fin a → ℤ) (e : Fin b → ℤ)
-      (Φ₀ : Matrix (Fin a) (Fin b) (MvPolynomial ι R₀)),
-      (∀ l j, Φ₀ l j ∈ polyGrading ι R₀ (e j - d l)) ∧
-      let C := gradedCech (ι := ι) (grQuot (grFree ι R₀ d) (LinearMap.range Φ₀.mulVecLin)) n
+    ∃ (R₀ : Subalgebra ℤ R) (_ : IsNoetherianRing R₀) (C : CochainComplex (ModuleCat R₀) ℕ),
       (∀ q, Module.Flat R₀ (C.X q)) ∧ (∀ q, Fintype.card ι ≤ q → Limits.IsZero (C.X q)) ∧
         (∀ q, Module.Finite R₀ (C.homology q)) ∧
         Nonempty (((ModuleCat.extendScalars R₀.val.toRingHom).mapHomologicalComplex (ComplexShape.up ℕ)).obj C
           ≅ gradedCech (ι := ι) D n) := by
   obtain ⟨R₀, hnoeth, a, b, d, e, Φ₀, ψ, hΦ₀, hψ, h⟩ := exists_descended_graded_presentation D hChart
-  let Φ := Φ₀.map (MvPolynomial.map (algebraMap R₀ R))
-  let D₀ := grQuot (grFree ι R₀ d) (LinearMap.range Φ₀.mulVecLin)
-  let D₁ := grQuot (grFree ι R d) (LinearMap.range Φ.mulVecLin)
-  have hΦ (l : Fin a) (j : Fin b) : Φ l j ∈ polyGrading ι R (e j - d l) :=
-    map_mem_polyGrading (algebraMap R₀ R) (hΦ₀ l j)
-  letI : Decomposition D₀ := grQuotDecomposition (isGradedMap_mulVecLin hΦ₀).isHomogeneous_range
-  letI : Decomposition D₁ := grQuotDecomposition (isGradedMap_mulVecLin hΦ).isHomogeneous_range
-  obtain ⟨f, hf, hX, hdeg⟩ := exists_graded_matrix_baseChange (R := R) d Φ₀
-  letI : IsScalarTower R₀ R ((Fin a → MvPolynomial ι R) ⧸ LinearMap.range Φ.mulVecLin) :=
-    Submodule.Quotient.isScalarTower (S := R₀) (LinearMap.range Φ.mulVecLin) R
-  letI : IsScalarTower R (MvPolynomial ι R) ((Fin a → MvPolynomial ι R) ⧸ LinearMap.range Φ.mulVecLin) :=
-    Submodule.Quotient.isScalarTower (S := R) (LinearMap.range Φ.mulVecLin) (MvPolynomial ι R)
-  obtain ⟨iso₀⟩ := nonempty_gradedCech_baseChangeIso (ι := ι) D₀ D₁ f hf hX hdeg n
-  let ψ₁ : ((Fin a → MvPolynomial ι R) ⧸ LinearMap.range Φ.mulVecLin) →ₗ[MvPolynomial ι R] G := ψ
-  have hψ' : IsGradedMap D₁ D ψ₁ := hψ
-  obtain ⟨iso₁⟩ := nonempty_gradedCechIso_of_saturating (D := D₁) (E := D) hψ'
-    (fun i => (h i).2) n
   letI := hnoeth
-  refine ⟨R₀, hnoeth, a, b, d, e, Φ₀, hΦ₀,
-    flat_gradedCech_of_flat_specializations D₀ (fun i => (h i).1) n, ?_,
-    finite_gradedCech_homology (ι := ι) D₀ n, ⟨iso₀ ≪≫ iso₁⟩⟩
-  exact (homLocDatum (ι := ι) D₀ n).linearComplex_X_isZero (fun h => homLocDatum_res_smul D₀ h n)
+  obtain ⟨C, hflat, hzero, hfin, hiso⟩ :=
+    exists_model_of_saturating_matrix (B := R₀) D Φ₀ hΦ₀ n ψ hψ h
+  exact ⟨R₀, hnoeth, C, hflat, hzero, hfin, hiso⟩
 
 end GlobalTheory.SmoothDescent

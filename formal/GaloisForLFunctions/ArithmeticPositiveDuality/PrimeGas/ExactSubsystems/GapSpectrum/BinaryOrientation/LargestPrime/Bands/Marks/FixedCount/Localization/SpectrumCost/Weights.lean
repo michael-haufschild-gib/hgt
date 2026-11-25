@@ -26,7 +26,7 @@ theorem partitionWith_tilt (S : Finset Nat.Primes) (β : ℝ) (h : Ioi (0:ℝ)) 
   rw [← Real.exp_add,← Real.exp_add,tiltedObservable,sum_spectrum]
   congr 1
   field_simp [(show 0 < h.val from h.property).ne']
-  <;> ring
+  ring
 
 /-- Normalizing the finite count slice recovers the Born expectation of its exponential reading. -/
 theorem partitionWith_eq (c d β : ℝ) (h : Ioi (0:ℝ)) {k : ℕ} (F : (Fin k → ℝ) → ℝ) :

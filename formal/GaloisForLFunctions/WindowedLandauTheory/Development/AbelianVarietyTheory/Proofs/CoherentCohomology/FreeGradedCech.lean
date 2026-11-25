@@ -117,4 +117,39 @@ theorem sum_freeCechProj_comp_freeCechIncl :
   change (∑ j : Fin a, freePieceIncl d n j s (freePieceProj d n j s (z.1 s))) = z.1 s
   exact sum_freePiece d n s (z.1 s)
 
+/-- A finite sum of shifted polynomial Čech data is exact wherever every summand is exact.
+In degree zero, summing the primitives gives a primitive in the augmentation term. -/
+theorem freeGradedCech_exactAt (q : ℕ)
+    (h : ∀ j : Fin a, (homLocDatum (ι := ι) E (n - d j)).ExactAt q) :
+    (homLocDatum (ι := ι) D n).ExactAt q := by
+  classical
+  let A := homLocDatum (ι := ι) D n
+  intro c hc hδ
+  have localLift (j : Fin a) :
+      ∃ b : (homLocDatum (ι := ι) E (n - d j)).Cochain,
+        (∀ s, s.card ≠ q → b s = 0) ∧
+          (homLocDatum (ι := ι) E (n - d j)).d b = (freeDatumProj d n j).onCochain c := by
+    apply h j _ ((freeDatumProj d n j).onCochain_isDeg hc)
+    rw [(freeDatumProj d n j).d_onCochain, hδ]
+    funext s
+    exact map_zero ((freeDatumProj d n j).app s)
+  choose b hb hdb using localLift
+  let u (j : Fin a) : A.Cochain := (freeDatumIncl d n j).onCochain (b j)
+  refine ⟨∑ j, u j, fun s hs => ?_, ?_⟩
+  · rw [Finset.sum_apply]
+    apply Finset.sum_eq_zero
+    intro j _
+    change (freeDatumIncl d n j).app s (b j s) = 0
+    rw [hb j s hs, map_zero]
+  · funext s
+    change (A.dHom (∑ j, u j)) s = c s
+    rw [map_sum, Finset.sum_apply]
+    calc
+      _ = ∑ j, freePieceIncl d n j s (freePieceProj d n j s (c s)) := by
+        apply Finset.sum_congr rfl
+        intro j _
+        exact congrFun (((freeDatumIncl d n j).d_onCochain (b j)).trans
+          (congrArg (freeDatumIncl d n j).onCochain (hdb j))) s
+      _ = _ := sum_freePiece d n s (c s)
+
 end GlobalTheory

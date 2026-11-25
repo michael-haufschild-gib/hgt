@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.FluxOccupation.Variance
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.CircuitCellAverage
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.WeakBonds.FixedRadius
 
 /-! # A deterministic bandwidth floor at fixed Pauli coefficient norm -/
@@ -35,17 +36,21 @@ least twice that norm, even on the weak-bond events. -/
 theorem twice_coefficientNorm_le_width (n : ℕ) (x : PrefixIndex n→ℝ) :
     2*coefficientNorm x ≤ circuitHamiltonianSpectralWidth (prefixGenerator n x) := by
   let u : PathShell n := WithLp.toLp 2 (fun l => x ((pathCoeffEquiv n).symm l))
-  let H : selfAdjoint (SharpOccupation.Register (n+2)) := ⟨pathHamiltonian u,isSelfAdjoint_pathHamiltonian u⟩
+  let H : selfAdjoint (Matrix (Fin (n+2)→Bool) (Fin (n+2)→Bool) ℂ) :=
+    ⟨pathHamiltonian u,isSelfAdjoint_pathHamiltonian u⟩
   have heq : prefixGenerator n x=H := by
     apply Subtype.ext
+    change numberedGenerator n x=pathHamiltonian u
     simpa only [u,WithLp.ofLp_toLp,Equiv.symm_apply_apply] using numberedGenerator_shell u
   have hmass : (∑ l : PathLabel n, (u l)^2)=(coefficientNorm x)^2 := by
     rw [coefficientNorm,EuclideanSpace.norm_sq_eq]
     simpa only [Real.norm_eq_abs,sq_abs] using (Equiv.sum_comp (pathCoeffEquiv n).symm (fun i => x i^2))
   obtain ⟨hc,hm⟩ := FluxOccupation.path_spectral_moments u
   rw [heq]
-  apply twice_deviation_le_width H.2.isHermitian.eigenvalues (norm_nonneg _) hc
-  simpa only [Fintype.card_fun,Fintype.card_fin,Fintype.card_bool,hmass] using hm
+  apply twice_deviation_le_width (r:=coefficientNorm x) H.2.isHermitian.eigenvalues (norm_nonneg _) hc
+  rw [hmass] at hm
+  rw [Fintype.card_fun,Fintype.card_fin,Fintype.card_bool]
+  exact hm
 
 #print axioms twice_coefficientNorm_le_width
 end

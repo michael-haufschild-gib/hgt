@@ -13,7 +13,7 @@ theorem tiltedObservable_continuousOn {c d β : ℝ} {k : ℕ} {F : (Fin k → �
     (hF : ContinuousOn F (orderedBand c d k)) :
     ContinuousOn (tiltedObservable β F) (orderedBand c d k) := by
   have hs : Continuous (fun v : Fin k → ℝ => ∑ i, v i) :=
-    continuous_finset_sum Finset.univ fun i _ => continuous_apply i
+    continuous_finsetSum Finset.univ fun i _ => continuous_apply i
   exact hF.add (hs.continuousOn.const_mul (1-β))
 
 /-- For every observable continuous on the ordered band, the conditional exponential reading is

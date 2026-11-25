@@ -5,7 +5,7 @@ import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory
 noncomputable section
 
 open AlgebraicGeometry CategoryTheory TopologicalSpace
-open GlobalTheory.SchemeCohomology
+open GlobalTheory.LineBundleSections GlobalTheory.SchemeCohomology
 open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestriction.G.Out
 
 namespace GlobalTheory.ProjectiveSections.Coordinates
@@ -58,9 +58,11 @@ theorem coordinateBundle_isLB : (C.coordinateBundle).IsLB where
 def coordinateSection (j : Fin (n + 1)) : (C.coordinateBundle).Sec where
   f i := C.ratio i j
   compat i k := by
-    change resG X (inf_le_left : C.U i ⊓ C.U k ≤ C.U i) (C.ratio i j) =
-      ((C.coordinateBundle).g i k).val * resG X inf_le_right (C.ratio k j)
-    rw [coordinateBundle_g]
+    let W := C.U i ⊓ C.U k
+    let a : Γ(X, W) := ((C.coordinateBundle).g i k).val
+    change resG X (inf_le_left : W ≤ C.U i) (C.ratio i j) =
+      a * resG X (inf_le_right : W ≤ C.U k) (C.ratio k j)
+    rw [show a = resG X (inf_le_left : W ≤ C.U i) (C.ratio i k) from coordinateBundle_g C i k]
     exact (C.ratio_mul i k j).symm
 
 theorem nonzeroLocus_coordinateSection (i : Fin (n + 1)) : nonzeroLocus (C.coordinateSection i) = C.U i := by
@@ -71,14 +73,19 @@ def coordinateSectionRatio (i j : Fin (n + 1)) : Γ(X, nonzeroLocus (C.coordinat
   resG X (C.nonzeroLocus_coordinateSection i).le (C.ratio i j)
 
 theorem coordinateSectionRatio_rel (i j k : Fin (n + 1)) :
-    resG X (inf_le_right : nonzeroLocus (C.coordinateSection i) ⊓ C.U k ≤ C.U k)
-      ((C.coordinateSection j).f k) =
-      resG X inf_le_left (C.coordinateSectionRatio i j) * resG X inf_le_right ((C.coordinateSection i).f k) := by
-  change resG X inf_le_right (C.ratio k j) =
-    resG X inf_le_left (resG X (C.nonzeroLocus_coordinateSection i).le (C.ratio i j)) *
-      resG X inf_le_right (C.ratio k i)
-  rw [resG_resG, mul_comm]
-  exact (C.ratio_mul_on k i j inf_le_right (inf_le_left.trans (C.nonzeroLocus_coordinateSection i).le)).symm
+    let V := nonzeroLocus (C.coordinateSection i)
+    let W := V ⊓ C.U k
+    let hk : W ≤ C.U k := inf_le_right
+    resG X hk ((C.coordinateSection j).f k) =
+      resG X (inf_le_left : W ≤ V) (C.coordinateSectionRatio i j) *
+        resG X hk ((C.coordinateSection i).f k) := by
+  intro V W hk
+  let hi : W ≤ V := inf_le_left
+  have hv : V ≤ C.U i := (C.nonzeroLocus_coordinateSection i).le
+  change resG X hk (C.ratio k j) =
+    resG X hi (resG X hv (C.ratio i j)) * resG X hk (C.ratio k i)
+  rw [resG_resG]
+  exact (C.ratio_mul_on k i j hk (hi.trans hv)).symm.trans (mul_comm _ _)
 
 theorem coordinateSectionRatio_aeval_surjective {R : Type} [CommRing R]
     (f : X ⟶ Spec (CommRingCat.of R)) (i : Fin (n + 1))
@@ -97,10 +104,12 @@ theorem coordinateSectionRatio_aeval_surjective {R : Type} [CommRing R]
     change resG X e.le (resG X e.ge x) = x
     rw [resG_resG, resG_self]
   have he : ρ.comp (MvPolynomial.aeval (R := R) (C.ratio i)) =
-      MvPolynomial.aeval (C.coordinateSectionRatio i) := by
+      MvPolynomial.aeval (R := R) (C.coordinateSectionRatio i) := by
     apply MvPolynomial.algHom_ext
     intro j
-    simp only [AlgHom.comp_apply, MvPolynomial.aeval_X]
+    change ρ (MvPolynomial.aeval (R := R) (C.ratio i) (MvPolynomial.X j)) =
+      MvPolynomial.aeval (R := R) (C.coordinateSectionRatio i) (MvPolynomial.X j)
+    rw [MvPolynomial.aeval_X, MvPolynomial.aeval_X]
     rfl
   rw [← he]
   exact hρ.comp h

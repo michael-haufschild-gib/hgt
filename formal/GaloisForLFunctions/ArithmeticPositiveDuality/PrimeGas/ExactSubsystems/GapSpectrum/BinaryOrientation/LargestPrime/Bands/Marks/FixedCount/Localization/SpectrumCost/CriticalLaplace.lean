@@ -49,7 +49,7 @@ theorem critical_laplace {c d : ℝ} (hc : 0 < c) (hcd : c < d) {k : ℕ} {F : (
   constructor
   · intro z hz
     obtain ⟨t,hzt,htv⟩ := exists_between hz
-    obtain ⟨r,hr,hnear⟩ := Metric.continuousWithinAt_iff.mp (hF hv) (F v-t) (sub_pos.mpr htv)
+    obtain ⟨r,hr,hnear⟩ := Metric.continuousWithinAt_iff.mp (hF v hv) (F v-t) (sub_pos.mpr htv)
     let U := Metric.ball v r
     obtain ⟨a,ha,hU⟩ := eventWeight_eventually_pos hc hcd hv Metric.isOpen_ball (Metric.mem_ball_self hr)
     filter_upwards [hU,(shifted t a).eventually_const_lt hzt] with h hU' hz'

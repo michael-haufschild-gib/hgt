@@ -26,6 +26,7 @@ theorem gaussian_preplateau_antipode_mass :
   refine ⟨c,hc,?_⟩
   filter_upwards [h] with k hk
   intro n P r μ m
+  letI : IsProbabilityMeasure μ := by dsimp only [μ]; infer_instance
   have hdim : 0<Fintype.card (PrefixIndex n) := by
     rw [Fintype.card_congr (pathCoeffEquiv n)]
     simp only [PathLabel,Fintype.card_sum,Fintype.card_prod,Fintype.card_fin]
@@ -42,11 +43,11 @@ theorem gaussian_preplateau_antipode_mass :
     linarith only [hr]
   apply (hk T hT).trans
   apply mul_le_mul_of_nonneg_left _ (pow_nonneg (zero_le_one.trans hT) _)
-  apply measureReal_mono
+  refine measureReal_mono ?_ (measure_ne_top _ _)
   intro x hx t ht
   let g := circuitHamiltonianSpectralWidth (prefixGenerator n x)
   let σ := crossingOrigin n P (9/80) x
-  have hturn : M<σ*g/(2*π) := hthreshold.trans hx
+  have hturn : M<σ*g/(2*π) := hthreshold.trans hx.1
   have hg : 0<g := by
     by_contra! hn
     have hz : g=0 := le_antisymm hn (circuitHamiltonianSpectralWidth_nonneg _)
@@ -54,8 +55,8 @@ theorem gaussian_preplateau_antipode_mass :
     exact (not_lt_of_ge hm.le) hturn
   have ha : extremalAntipode n m x<σ := (div_lt_iff₀ hg).mpr ((lt_div_iff₀ two_pi_pos).mp hturn)
   by_contra! hdist
-  have hh : t∈crossingTimes n P (9/80) x := ⟨ht.1,hdist⟩
-  have hσ : σ≤t := csInf_le (show BddBelow (crossingTimes n P (9/80) x) from ⟨0,fun _ h => h.1⟩) hh
+  let C := {v : ℝ | 0≤v ∧ 9/80≤pathGateDistance n P x v}
+  have hσ : σ≤t := csInf_le (s:=C) ⟨0,fun _ h => h.1⟩ ⟨ht.1,hdist⟩
   exact (ht.2.trans_lt ha).not_ge hσ
 
 #print axioms gaussian_preplateau_antipode_mass

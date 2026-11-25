@@ -3,9 +3,11 @@ import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.AbelianSchemeLaws.CubeNormalizedGluing
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.AbelianSchemeLaws.FibreTrivialityCharts
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.AbelianSchemeLaws.ProjectiveProducts
-import Mathlib.AlgebraicGeometry.Noetherian
+import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.AbelianSchemeLaws.ProjectivityFromRelativeAmple
+import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.PerfectSmoothProjectiveSections
+import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.PELModuli.PELRelativeAmplePullback
 
-/-! The theorem of the cube for projective abelian schemes over a Noetherian affine base. -/
+/-! The theorem of the cube for abelian schemes with a relatively ample line bundle. -/
 
 noncomputable section
 
@@ -18,12 +20,13 @@ namespace GlobalTheory.AbLaw.Cube
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-variable {R : Type} [CommRing R] [IsNoetherianRing R]
-  {A : Over (Spec (CommRingCat.of R))} [GrpObj A]
+variable {S : Scheme.{0}} {A : Over S} [GrpObj A]
 
-/-- On a projective abelian scheme over a Noetherian affine base, the alternating
-product trivializes globally. -/
-theorem cube_gen_of_projective (hA : IsAbelianScheme A) (hproj : IsProjOver A.hom)
+/-- Projective section models on affine charts of the third factor detect the
+clopen fibrewise triviality locus, and generators glue after normalization. -/
+private theorem cube_gen_of_projective_pullbacks (hA : IsAbelianScheme A)
+    (hproj : ∀ {R : Type} [CommRing R] (b : Spec (CommRingCat.of R) ⟶ S),
+      IsProjOver ((Over.pullback b).obj A).hom)
     {L : LB A.left} (hL : L.IsLB) :
     letI := hA.comm
     ∃ u : (cubeBundle A L).Gen, u.IsGen := by
@@ -52,13 +55,11 @@ theorem cube_gen_of_projective (hA : IsAbelianScheme A) (hproj : IsProjOver A.ho
     infer_instance
   haveI : GeometricallyConnected p :=
     GeometricallyConnected.comp (snd A (A ⊗ A)).left (snd A A).left
-  haveI : IsLocallyNoetherian A.left := LocallyOfFiniteType.isLocallyNoetherian A.hom
   obtain ⟨hClosed, hLocal⟩ := closed_and_locally_trivial_of_affine_charts hM p (fun t => by
     obtain ⟨_, ⟨V, hV, rfl⟩, ht, -⟩ := A.left.isBasis_affineOpens.exists_subset_of_mem_open
       (Set.mem_univ t) isOpen_univ
     obtain ⟨x, hx⟩ := hV.range_fromSpec.ge ht
     let T := Γ(A.left, V)
-    haveI : IsNoetherianRing T := IsLocallyNoetherian.component_noetherian ⟨V, hV⟩
     let j := hV.fromSpec
     let b := j ≫ A.hom
     let B := (Over.pullback b).obj A
@@ -68,20 +69,15 @@ theorem cube_gen_of_projective (hA : IsAbelianScheme A) (hproj : IsProjOver A.ho
     haveI : IsOpenImmersion j := hV.isOpenImmersion_fromSpec
     have hB : IsAbelianScheme B := hA.pullback b
     letI : IsCommMonObj B := hB.comm
-    have hBproj : IsProjOver B.hom := by
-      obtain ⟨α, hα⟩ := Spec.map_surjective b
-      apply isProjOver_baseChange α.hom (π := pullback.fst A.hom b) (f := A.hom)
-      · rw [show Spec.map (CommRingCat.ofHom α.hom) = b from hα]
-        exact IsPullback.of_hasPullback _ _
-      · exact hproj
+    have hBproj : IsProjOver B.hom := hproj b
     have hprod : IsPullback (fst B B).left (snd B B).left B.hom B.hom :=
       IsPullback.of_hasPullback _ _
     have hproj' : IsProjOver f := isProjOver_product hprod hBproj hBproj
     let N := M.pull q
     have hN : N.IsLB := hM.pull q
     haveI := (hB.tensor hB).smooth
-    obtain ⟨P⟩ := nonempty_perfectSections_of_projective f hN hproj'
-    obtain ⟨Q⟩ := nonempty_perfectSections_of_projective f (dual_isLB N hN) hproj'
+    obtain ⟨P⟩ := nonempty_perfectSections_of_smooth_projective f hN hproj'
+    obtain ⟨Q⟩ := nonempty_perfectSections_of_smooth_projective f (dual_isLB N hN) hproj'
     have hone : (1 : B ⟶ B).left ≫ pullback.fst A.hom b = (B.hom ≫ b) ≫ η[A].left :=
       (Category.assoc _ _ _).trans
         ((congrArg (B.hom ≫ ·) (GlobalTheory.GrpTangent.one_pullback_left_fst b A)).trans
@@ -105,9 +101,8 @@ theorem cube_gen_of_projective (hA : IsAbelianScheme A) (hproj : IsProjOver A.ho
     obtain ⟨U, hU, u, hu⟩ := hLocal t ht
     exact ⟨U, fun _ hy => mem_fibreTriviality_of_trivial_on_open p hy hu, U.isOpen, hU⟩)⟩
   have hall (t : A.left) : t ∈ fibreTriviality p M := by
-    let K := (Spec (CommRingCat.of R)).residueField (A.hom t)
-    let b : Spec (CommRingCat.of K) ⟶ Spec (CommRingCat.of R) :=
-      (Spec (CommRingCat.of R)).fromSpecResidueField (A.hom t)
+    let K := S.residueField (A.hom t)
+    let b : Spec (CommRingCat.of K) ⟶ S := S.fromSpecResidueField (A.hom t)
     let g := b ≫ η[A].left
     have hb : Set.range b = {A.hom t} := Scheme.range_fromSpecResidueField _
     obtain ⟨y, hy⟩ := hb.ge rfl
@@ -115,7 +110,7 @@ theorem cube_gen_of_projective (hA : IsAbelianScheme A) (hproj : IsProjOver A.ho
     have hg : g ≫ A.hom = b :=
       (Category.assoc _ _ _).trans ((congrArg (b ≫ ·) he).trans (Category.comp_id _))
     have hgy : A.hom (g y) = A.hom t :=
-      (congrArg (fun a : Spec (CommRingCat.of K) ⟶ Spec (CommRingCat.of R) => a y) hg).trans hy
+      (congrArg (fun a : Spec (CommRingCat.of K) ⟶ S => a y) hg).trans hy
     refine (A.hom.isConnected_preimage_singleton (A.hom t)).isPreconnected.subset_isClopen hclopen
       ⟨g y, hgy, ?_⟩ rfl
     refine ⟨K, inferInstance, g, _, _, _, ⟨y, rfl⟩, IsPullback.of_hasPullback p g, ?_⟩
@@ -132,5 +127,36 @@ theorem cube_gen_of_projective (hA : IsAbelianScheme A) (hproj : IsProjOver A.ho
   · intro t
     obtain ⟨U, hU, u, hu⟩ := hLocal t (hall t)
     exact ⟨U, hU, (trivial_pull_linComb L hL (cubeMorphism A) cubeExponent _).1 ⟨u, hu⟩⟩
+
+/-- Over any affine base, the cube bundle of a projective abelian scheme is trivial. -/
+theorem cube_gen_of_projective {R : Type} [CommRing R]
+    {A : Over (Spec (CommRingCat.of R))} [GrpObj A]
+    (hA : IsAbelianScheme A) (hproj : IsProjOver A.hom) {L : LB A.left} (hL : L.IsLB) :
+    letI := hA.comm
+    ∃ u : (cubeBundle A L).Gen, u.IsGen := by
+  refine cube_gen_of_projective_pullbacks hA ?_ hL
+  intro T _ b
+  obtain ⟨α, hα⟩ := Spec.map_surjective b
+  apply isProjOver_baseChange α.hom (π := pullback.fst A.hom b) (f := A.hom)
+  · rw [show Spec.map (CommRingCat.ofHom α.hom) = b from hα]
+    exact IsPullback.of_hasPullback _ _
+  · exact hproj
+
+/-- Relative ampleness gives projective embeddings over affine charts, yielding the cube theorem
+without any affineness hypothesis on the base. -/
+theorem cube_gen_of_relAmple (hA : IsAbelianScheme A) {H L : LB A.left}
+    (hH : H.IsLB) (hAmp : ReciprocityTheory.ChartRestriction.G.Out.RelAmple A H) (hL : L.IsLB) :
+    letI := hA.comm
+    ∃ u : (cubeBundle A L).Gen, u.IsGen := by
+  refine cube_gen_of_projective_pullbacks hA ?_ hL
+  intro R _ b
+  let B := (Over.pullback b).obj A
+  let π := pullback.fst A.hom b
+  letI : GrpObj B := inferInstanceAs (GrpObj ((Over.pullback b).obj A))
+  letI : IsProper B.hom := (hA.pullback b).proper
+  have hp : IsPullback π B.hom A.hom b := IsPullback.of_hasPullback _ _
+  have hπ := hH.pull π
+  exact isProjOver_of_relAmple hπ
+    (GlobalTheory.PolPull.relAmple_baseChange hp hH hπ hπ.gen_refl inferInstance inferInstance hAmp)
 
 end GlobalTheory.AbLaw.Cube

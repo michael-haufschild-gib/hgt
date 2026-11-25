@@ -10,7 +10,12 @@ open Set Filter Topology MeasureTheory Endpoints _root_.RHTower
 attribute [local instance] Classical.propDecidable
 
 theorem continuous_rate (c d β : ℝ) (k : ℕ) : Continuous (rate c d (k := k) β) :=
-  continuous_const.sub ((continuous_finset_sum Finset.univ fun i _ => continuous_apply i).const_mul (1-β))
+  continuous_const.sub ((continuous_finsetSum Finset.univ fun i _ => continuous_apply i).const_mul (1-β))
+
+/-- Finite rate sublevel sets are compact, including the flat critical case. -/
+theorem compact_sublevels (c d β r : ℝ) (k : ℕ) :
+    IsCompact (orderedBand c d k ∩ (rate c d β) ⁻¹' Iic r) :=
+  (orderedBand_compact c d k).inter_right (isClosed_Iic.preimage (continuous_rate c d β k))
 
 private theorem prefactor (h : Ioi (0:ℝ)) (x : ℝ) {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
     Real.exp (x/h.val)*a/b = Real.exp ((x+h.val*Real.log a-h.val*Real.log b)/h.val) := by
@@ -98,6 +103,7 @@ theorem open_lower {c d : ℝ} (hc : 0 < c) (hcd : c < d) (β : ℝ) {k : ℕ} (
          ((mul_le_mul_of_nonneg_left hU' (Real.exp_pos _).le).trans he) hβ.1.le
        _ = (thermalLaw c d h β k G : ℝ) := (thermalLaw_event h k hG.measurableSet hβ.1).symm
 
+#print axioms compact_sublevels
 #print axioms closed_upper
 #print axioms open_lower
 

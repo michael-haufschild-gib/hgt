@@ -32,7 +32,7 @@ theorem exists_perfect_cech_of_smooth_charts
   let D := GrSum.grading (twistSections_commute f M ⊤ s)
   have ha (i : ι) : IsAffineOpen (nonzeroLocus (s i)) := by
     simpa only [coverInter, top_inf_eq, Finset.inf_singleton] using haff {i} (Finset.singleton_nonempty i)
-  obtain ⟨R₀, hR₀, a, b, d, e, Φ, _, hflat, hzero, hfin, ⟨e₀⟩⟩ :=
+  obtain ⟨R₀, hR₀, _, hflat, hzero, hfin, ⟨e₀⟩⟩ :=
     SmoothDescent.exists_noetherian_gradedCech_model D
       (fun i => exists_smooth_dehomogenized_twist_chart f hM hH s i (ha i) (r i) (hr i) (hgen i)) 0
   letI := hR₀

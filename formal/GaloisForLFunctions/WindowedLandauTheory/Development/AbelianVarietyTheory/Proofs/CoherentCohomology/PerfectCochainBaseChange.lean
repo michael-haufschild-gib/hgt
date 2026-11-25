@@ -8,13 +8,13 @@ namespace GlobalTheory
 
 theorem exists_perfect_cochain_of_noetherian_model {B R : Type} [CommRing B] [CommRing R]
     [Algebra B R] [IsNoetherianRing B]
-    (C₀ : CochainComplex (ModuleCat B) ℕ) (C : CochainComplex (ModuleCat R) ℕ)
+    (C₀ : CochainComplex (ModuleCat.{0} B) ℕ) (C : CochainComplex (ModuleCat.{0} R) ℕ)
     (e : (((ModuleCat.extendScalars (algebraMap B R)).mapHomologicalComplex
       (ComplexShape.up ℕ)).obj C₀) ≅ C) (n : ℕ)
     (hzero : ∀ p, n < p → IsZero (C₀.X p))
     (hflat₀ : ∀ p, Module.Flat B (C₀.X p)) (hfin : ∀ p, Module.Finite B (C₀.homology p))
     (hflat : ∀ p, Module.Flat R (C.X p)) :
-    ∃ (K : CochainComplex (ModuleCat R) ℕ) (φ : K ⟶ C),
+    ∃ (K : CochainComplex (ModuleCat.{0} R) ℕ) (φ : K ⟶ C),
       (∀ p, n < p → IsZero (K.X p)) ∧
       (∀ p, Module.Finite R (K.X p) ∧ Module.Projective R (K.X p)) ∧
       (∀ (S : Type) [CommRing S] (α : R →+* S),
