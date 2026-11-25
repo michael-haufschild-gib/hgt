@@ -21,7 +21,8 @@ private def freePieceProj (j : Fin a) (s : Finset ι) :
   ((ModuleFraction.map (xProd R s) (LinearMap.proj j : (Fin a → P) →ₗ[P] P)).restrictScalars R).restrict
     (by
       intro z hz
-      obtain ⟨k, b, hb, rfl⟩ := exists_frac_of_mem_homLoc D hz
+      obtain ⟨k, hk⟩ := exists_frac_of_mem_homLoc D hz
+      obtain ⟨b, hb, rfl⟩ := hk k le_rfl
       change ModuleFraction.map _ _ (ModuleFraction.frac _ k b) ∈ _
       rw [ModuleFraction.map_frac]
       exact frac_mem_homLoc E (mem_grFree.1 hb j) (by omega))
@@ -31,7 +32,8 @@ private def freePieceIncl (j : Fin a) (s : Finset ι) :
   ((ModuleFraction.map (xProd R s) (LinearMap.single P (fun _ : Fin a => P) j)).restrictScalars R).restrict
     (by
       intro z hz
-      obtain ⟨k, b, hb, rfl⟩ := exists_frac_of_mem_homLoc E hz
+      obtain ⟨k, hk⟩ := exists_frac_of_mem_homLoc E hz
+      obtain ⟨b, hb, rfl⟩ := hk k le_rfl
       change ModuleFraction.map _ _ (ModuleFraction.frac _ k b) ∈ _
       rw [ModuleFraction.map_frac]
       refine frac_mem_homLoc D (mem_grFree.2 fun i => ?_) rfl
@@ -42,23 +44,23 @@ private def freePieceIncl (j : Fin a) (s : Finset ι) :
       · rw [LinearMap.coe_single, Pi.single_eq_of_ne hij]
         exact zero_mem _)
 
-private def freeDatumProj (j : Fin a) : (homLocDatum D n).Hom (homLocDatum E (n - d j)) where
+private def freeDatumProj (j : Fin a) : (homLocDatum (ι := ι) D n).Hom (homLocDatum (ι := ι) E (n - d j)) where
   app s := (freePieceProj d n j s).toAddMonoidHom
   comm h z := Subtype.ext (ModuleFraction.map_restrict (xProd_dvd R h) (LinearMap.proj j) z.1).symm
 
-private def freeDatumIncl (j : Fin a) : (homLocDatum E (n - d j)).Hom (homLocDatum D n) where
+private def freeDatumIncl (j : Fin a) : (homLocDatum (ι := ι) E (n - d j)).Hom (homLocDatum (ι := ι) D n) where
   app s := (freePieceIncl d n j s).toAddMonoidHom
   comm h z := Subtype.ext (ModuleFraction.map_restrict (xProd_dvd R h)
     (LinearMap.single P (fun _ : Fin a => P) j) z.1).symm
 
 /-- Projection to a shifted free generator commutes with the Čech differential. -/
-def freeCechProj (j : Fin a) : gradedCech D n ⟶ gradedCech E (n - d j) :=
+def freeCechProj (j : Fin a) : gradedCech (ι := ι) D n ⟶ gradedCech (ι := ι) E (n - d j) :=
   FinsetCechDatum.linearCochainMap (fun h => homLocDatum_res_smul D h n)
     (fun h => homLocDatum_res_smul E h (n - d j)) (freeDatumProj d n j)
     (fun s r z => (freePieceProj d n j s).map_smul r z)
 
 /-- Inclusion of a shifted free generator commutes with the Čech differential. -/
-def freeCechIncl (j : Fin a) : gradedCech E (n - d j) ⟶ gradedCech D n :=
+def freeCechIncl (j : Fin a) : gradedCech (ι := ι) E (n - d j) ⟶ gradedCech (ι := ι) D n :=
   FinsetCechDatum.linearCochainMap (fun h => homLocDatum_res_smul E h (n - d j))
     (fun h => homLocDatum_res_smul D h n) (freeDatumIncl d n j)
     (fun s r z => (freePieceIncl d n j s).map_smul r z)
@@ -86,7 +88,7 @@ private theorem sum_freePiece (s : Finset ι) (z : homLoc D s n) :
     (Pi.single_eq_same i (b.1 i))
 
 theorem sum_freeCechProj_comp_freeCechIncl :
-    ∑ j : Fin a, freeCechProj (ι := ι) (R := R) d n j ≫ freeCechIncl d n j = 𝟙 (gradedCech D n) := by
+    ∑ j : Fin a, freeCechProj (ι := ι) (R := R) d n j ≫ freeCechIncl d n j = 𝟙 (gradedCech (ι := ι) D n) := by
   apply HomologicalComplex.Hom.ext
   intro q
   let g (j : Fin a) :=
@@ -99,8 +101,8 @@ theorem sum_freeCechProj_comp_freeCechIncl :
   apply LinearMap.ext
   intro z
   rw [ModuleCat.hom_sum, LinearMap.sum_apply]
-  let ev (s : Finset ι) : (gradedCech D n).X q →ₗ[R] homLoc D s n :=
-    LinearMap.proj s ∘ₗ ((homLocDatum D n).degreeSubmodule q).subtype
+  let ev (s : Finset ι) : (gradedCech (ι := ι) D n).X q →ₗ[R] homLoc D s n :=
+    LinearMap.proj s ∘ₗ ((homLocDatum (ι := ι) D n).degreeSubmodule q).subtype
   apply Subtype.ext
   funext s
   change ev s (∑ j, ((g j).f q).hom z) = ev s z

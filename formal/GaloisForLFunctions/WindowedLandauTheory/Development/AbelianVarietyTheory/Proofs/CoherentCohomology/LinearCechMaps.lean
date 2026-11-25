@@ -55,7 +55,7 @@ theorem shortExact_linearCochainMap
       exact Subtype.ext (funext fun s => hcomp s (x.1 s)))).ShortExact := by
   apply HomologicalComplex.shortExact_of_degreewise_shortExact
   intro n
-  have h := (HomologicalComplex.shortExact_iff_degreewise_shortExact.1
+  have h := ((HomologicalComplex.shortExact_iff_degreewise_shortExact _).1
     (shortExact_cochainMap φ ψ hcomp hinj hex hsurj)) n
   exact ModuleCat.shortComplex_shortExact _
     ((ShortComplex.ab_exact_iff_function_exact _).1 h.exact)

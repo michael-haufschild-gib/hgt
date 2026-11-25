@@ -50,7 +50,10 @@ theorem translated_spread_bound (k : ℕ) (i j : Level k) (hij : i≠j)
   let t := 2*π*((n:ℝ)+(1/2+q))
   change (translatedSnapshot μ (gapFrequency k i j) _ u hu t : Measure _) S<b at hn
   have hm := hu.add (measurable_gap_point k i j t)
-  rwa [translatedSnapshot,ProbabilityMeasure.toMeasure_map,Measure.map_apply hm hc.measurableSet] at hn
+  rw [translatedSnapshot,ProbabilityMeasure.toMeasure_map] at hn
+  change (μ:Measure (Coupling k)).map (u+fun x => finiteClockPhasePoint (gapFrequency k i j x) t) S<b at hn
+  rw [Measure.map_apply hm hc.measurableSet] at hn
+  exact hn
 
 #print axioms translated_spread_bound
 end

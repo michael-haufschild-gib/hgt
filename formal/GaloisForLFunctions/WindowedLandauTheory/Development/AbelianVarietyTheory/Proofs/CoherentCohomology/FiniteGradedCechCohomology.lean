@@ -18,17 +18,17 @@ variable {ι R : Type} [Fintype ι] [DecidableEq ι] [LinearOrder ι] [CommRing 
 private theorem finite_gradedCech_homology_of_bound {M : Type} [AddCommGroup M] [Module R M]
     [Module (MvPolynomial ι R) M] [IsScalarTower R (MvPolynomial ι R) M]
     (D : ℤ → Submodule R M) [PolyGradedSMul ι D] (q : ℕ) (m : ℤ)
-    (h : Fintype.card ι ≤ q) : Module.Finite R ((gradedCech D m).homology q) := by
-  let C := gradedCech D m
+    (h : Fintype.card ι ≤ q) : Module.Finite R ((gradedCech (ι := ι) D m).homology q) := by
+  let C := gradedCech (ι := ι) D m
   have hz : Limits.IsZero (C.X q) :=
-    (homLocDatum D m).linearComplex_X_isZero (fun k => homLocDatum_res_smul D k m) q h
+    (homLocDatum (ι := ι) D m).linearComplex_X_isZero (fun k => homLocDatum_res_smul D k m) q h
   haveI := ModuleCat.subsingleton_of_isZero (HomologicalComplex.ExactAt.of_isZero hz).isZero_homology
   infer_instance
 
 private theorem finite_freeGradedCech_homology [Nonempty ι] {a : ℕ} (d : Fin a → ℤ)
-    (n : ℤ) (q : ℕ) : Module.Finite R ((gradedCech (grFree ι R d) n).homology q) := by
-  let C := gradedCech (grFree ι R d) n
-  let E (j : Fin a) := gradedCech (polyGrading ι R) (n - d j)
+    (n : ℤ) (q : ℕ) : Module.Finite R ((gradedCech (ι := ι) (grFree ι R d) n).homology q) := by
+  let C := gradedCech (ι := ι) (grFree ι R d) n
+  let E (j : Fin a) := gradedCech (ι := ι) (polyGrading ι R) (n - d j)
   let H := HomologicalComplex.homologyFunctor (ModuleCat R) (ComplexShape.up ℕ) q
   let p (j : Fin a) : H.obj C ⟶ H.obj (E j) := H.map (freeCechProj d n j)
   let i (j : Fin a) : H.obj (E j) ⟶ H.obj C := H.map (freeCechIncl d n j)
@@ -59,7 +59,7 @@ theorem finite_gradedCech_homology {M : Type} [AddCommGroup M] [Module R M]
     [Module (MvPolynomial ι R) M] [IsScalarTower R (MvPolynomial ι R) M]
     (D : ℤ → Submodule R M) [PolyGradedSMul ι D] [Decomposition D]
     [Module.Finite (MvPolynomial ι R) M] (n : ℤ) (q : ℕ) :
-    Module.Finite R ((gradedCech D n).homology q) := by
+    Module.Finite R ((gradedCech (ι := ι) D n).homology q) := by
   classical
   rcases isEmpty_or_nonempty ι with hι | hι
   · letI := hι
@@ -69,7 +69,7 @@ theorem finite_gradedCech_homology {M : Type} [AddCommGroup M] [Module R M]
       ∀ (N : Type) [AddCommGroup N] [Module R N] [Module (MvPolynomial ι R) N]
       [IsScalarTower R (MvPolynomial ι R) N] (E : ℤ → Submodule R N)
       [PolyGradedSMul ι E] [Decomposition E] [Module.Finite (MvPolynomial ι R) N],
-      Module.Finite R ((gradedCech E n).homology p) from
+      Module.Finite R ((gradedCech (ι := ι) E n).homology p) from
     aux (Fintype.card ι) q (by omega) M D
   intro j
   induction j with

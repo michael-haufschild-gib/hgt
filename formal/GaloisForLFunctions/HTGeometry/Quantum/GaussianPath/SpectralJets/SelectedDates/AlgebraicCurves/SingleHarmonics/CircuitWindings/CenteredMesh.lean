@@ -16,7 +16,7 @@ def centerOffset {k : ℕ} (i j : Level k) (d : Level k→ℝ) : UnitAddTorus (O
 forces a slightly wider corrected arc at the preceding mesh observation. -/
 theorem centered_prior_spread (k : ℕ) (i j : Level k) [Nonempty (Outside i j)]
     (x : Coupling k) (d : Level k→ℝ) (n : ℕ) {q s δ r : ℝ}
-    (hr : 0≤r) (hq : q≤s) (hδ : s-q≤δ) :
+    (hr : 0 ≤ r) (hq : q ≤ s) (hδ : s-q ≤ δ) :
     let E := sortedEnsembleSpectrum (chainPauliFin_isHermitian (k+3)) x
     E j < E i → (∀ l, E j ≤ E l ∧ E l ≤ E i) →
     (fun l => ((date E i j n s*(-E l/(2*π))-d l:ℝ):UnitAddCircle))∈enclosingUnitArc r →
@@ -40,6 +40,21 @@ theorem centered_prior_spread (k : ℕ) (i j : Level k) [Nonempty (Outside i j)]
     (q-s)*(-((E l.val-E j)/(E i-E j)))
   field_simp [hg.ne',Real.pi_ne_zero]
   ring
+
+/-- One of the M+1 mesh points precedes any visit in the closed window
+by at most one time step, including a visit at the final endpoint. -/
+theorem preceding_grid_point (M : ℕ) {δ s : ℝ} (hd : 0<δ)
+    (hs : s∈Icc (0:ℝ) ((M:ℝ)*δ)) :
+    ∃ h : Fin (M+1), (h.val:ℝ)*δ ≤ s ∧ s-(h.val:ℝ)*δ≤δ := by
+  let m := ⌊s/δ⌋₊
+  have hlo : (m:ℝ) ≤ s/δ := Nat.floor_le (div_nonneg hs.1 hd.le)
+  have hM : (m:ℝ)≤M := hlo.trans ((div_le_iff₀ hd).mpr hs.2)
+  have hm : m≤M := by exact_mod_cast hM
+  refine ⟨⟨m,Nat.lt_succ_of_le hm⟩,(le_div_iff₀ hd).mp hlo,?_⟩
+  have hhi := (div_lt_iff₀ hd).mp (Nat.lt_floor_add_one (s/δ))
+  change s-(m:ℝ)*δ≤δ
+  dsimp only [m]
+  linarith only [hhi]
 
 #print axioms centered_prior_spread
 end

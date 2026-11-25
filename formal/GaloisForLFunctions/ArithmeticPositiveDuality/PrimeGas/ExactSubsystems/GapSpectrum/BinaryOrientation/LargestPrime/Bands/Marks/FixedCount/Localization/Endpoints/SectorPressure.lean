@@ -96,7 +96,9 @@ theorem pressure_limit {c d : ℝ} (hc : 0 < c) (hcd : c < d) (s : ℝ) {k : ℕ
     field_simp [ht.ne',(show 0 < h.val from h.property).ne']
   · have H := (hv.mono_right nhdsWithin_le_nhds).mul
       ((Real.continuousAt_log (critical_limit_pos hc hcd k).ne').tendsto.comp (coefficient_limit hc hcd k))
-    simpa only [pressure,le_refl,if_true,sub_self,zero_mul] using H
+    rw [pressure,if_pos le_rfl,sub_self,zero_mul]
+    rw [zero_mul] at H
+    exact H
   · have ht := sub_pos.mpr hs
     have H := (cooling_log_limit hc hcd (hinv.const_mul_atTop ht) hk).const_mul (s-1)
     rw [pressure,if_neg hs.not_ge,show (1-s)*(k*c) = (s-1)*(-(k*c)) by ring]

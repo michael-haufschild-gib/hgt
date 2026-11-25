@@ -14,7 +14,7 @@ private noncomputable def pieceProjection {R M : Type} [CommRing R] [AddCommGrou
 theorem isBaseChange_gradedPiece {B R M N : Type} [CommRing B] [CommRing R] [Algebra B R]
     [AddCommGroup M] [Module B M] [AddCommGroup N] [Module B N] [Module R N] [IsScalarTower B R N]
     (D : ℤ → Submodule B M) [Decomposition D] (E : ℤ → Submodule R N) [Decomposition E]
-    (f : M →ₗ[B] N) (n : ℤ) [Module B (E n)] [IsScalarTower B R (E n)]
+    (f : M →ₗ[B] N) (n : ℤ)
     (φ : D n →ₗ[B] E n) (h : IsBaseChange R f)
     (hf : ∀ j, ∀ x ∈ D j, f x ∈ E j) (hφ : ∀ x : D n, (φ x : N) = f x) :
     IsBaseChange R φ := by

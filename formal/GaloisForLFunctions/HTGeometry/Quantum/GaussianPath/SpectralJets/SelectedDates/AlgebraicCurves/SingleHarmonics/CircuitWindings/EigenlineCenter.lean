@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.LagrangeSpectralProjector
+import Mathlib.MeasureTheory.Function.SpecialFunctions.Basic
 
 /-! # Circuit diagonal entries in a simple, ordered eigensystem -/
 
@@ -30,24 +31,30 @@ theorem circuitEntry_eq {E : I→ℝ} {H : Matrix I I ℂ} {v : I→I→ℂ}
 /-- The interpolation formula is Borel on the entire coefficient space,
 including the convention of inverse zero at a collision. -/
 theorem measurable_circuitEntry {X : Type*} [MeasurableSpace X]
-    {H : X→Matrix I I ℂ} {E : X→I→ℝ} (hH : Measurable H) (hE : Measurable E)
+    {H : X→Matrix I I ℂ} {E : X→I→ℝ} (hH : ∀ a b, Measurable (fun x => H x a b)) (hE : Measurable E)
     (W : Matrix I I ℂ) (i : I) : Measurable (fun x => circuitEntry (E x) (H x) W i) := by
   classical
   have he (l : I) : Measurable (fun x => ((E x l:ℝ):ℂ)) :=
     Complex.continuous_ofReal.measurable.comp ((measurable_pi_apply l).comp hE)
-  have hf (l : I) : Measurable (fun x => lagrangeFactor (E x) i (H x) l) := by
+  have hf (l a b : I) : Measurable (fun x => lagrangeFactor (E x) i (H x) l a b) := by
     simp only [lagrangeFactor,Complex.ofReal_sub]
-    exact ((he i).sub (he l)).inv.smul (hH.sub ((he l).smul measurable_const))
-  have hprod (L : List I) : Measurable (fun x => (L.map (lagrangeFactor (E x) i (H x))).prod) := by
-    induction L with
+    exact ((he i).sub (he l)).inv.mul ((hH a b).sub ((he l).mul_const ((1:Matrix I I ℂ) a b)))
+  have hprod (L : List I) (a b : I) : Measurable (fun x => (L.map (lagrangeFactor (E x) i (H x))).prod a b) := by
+    induction L generalizing a b with
     | nil => exact measurable_const
-    | cons l L ih => exact (hf l).mul ih
+    | cons l L ih =>
+      simp only [List.map_cons,List.prod_cons,Matrix.mul_apply]
+      exact Finset.measurable_fun_sum _ fun j _ => (hf l a j).mul (ih j b)
   apply Finset.measurable_fun_sum
   intro a _
   apply Finset.measurable_fun_sum
   intro b _
-  exact ((continuous_inner_mulVec (Pi.single b 1) (Pi.single a 1)).measurable.comp
-    (hprod (Finset.univ.erase i).toList)).const_mul (W a b)
+  apply Measurable.const_mul
+  unfold spectralCrossWeight finiteComplexInner Matrix.mulVec dotProduct
+  apply Finset.measurable_fun_sum
+  intro j _
+  apply Measurable.const_mul
+  exact Finset.measurable_fun_sum _ fun l _ => (hprod (Finset.univ.erase i).toList j l).mul_const _
 
 /-- On the simple-spectrum locus the line diagonal is continuous even
 when the chosen eigenvectors have no continuous choice of phase. -/
@@ -55,12 +62,8 @@ theorem continuousAt_circuitEntry {X : Type*} [TopologicalSpace X]
     {H : X→Matrix I I ℂ} {E : X→I→ℝ} (hH : Continuous H) (hE : Continuous E)
     {x : X} (hs : Function.Injective (E x)) (W : Matrix I I ℂ) (i : I) :
     ContinuousAt (fun y => circuitEntry (E y) (H y) W i) x := by
-  apply continuousAt_finsetSum
-  intro a _
-  apply continuousAt_finsetSum
-  intro b _
-  apply continuousAt_const.mul
-  exact continuousAt_spectralCrossWeight hE hH _ _ i hs
+  exact tendsto_finsetSum _ fun a _ => tendsto_finsetSum _ fun b _ =>
+    continuousAt_const.mul (continuousAt_spectralCrossWeight hE hH _ _ i hs)
 
 #print axioms circuitEntry_eq
 end

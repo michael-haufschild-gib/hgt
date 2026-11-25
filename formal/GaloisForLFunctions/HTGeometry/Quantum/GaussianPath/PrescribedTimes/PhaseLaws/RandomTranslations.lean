@@ -28,7 +28,7 @@ theorem translatedSnapshot_haar (μ : ProbabilityMeasure X) (f : X→I→ℝ) (h
   rw [finiteTorusHaarProbabilityMeasure_mFourier_integral]
   by_cases hm : m=0
   · subst m
-    simp only [if_pos rfl,UnitAddTorus.mFourier_zero,ContinuousMap.one_apply,integral_const,probReal_univ,one_smul]
+    simp only [UnitAddTorus.mFourier_zero,ContinuousMap.one_apply,integral_const,probReal_univ,one_smul]
     exact tendsto_const_nhds
   rw [if_neg hm]
   let A (x : X) := -finiteTorusCharacterDetuning m (f x)
@@ -45,7 +45,10 @@ theorem translatedSnapshot_haar (μ : ProbabilityMeasure X) (f : X→I→ℝ) (h
   · apply integral_congr_ae
     filter_upwards with x
     change g x*oscillation (A x) t=UnitAddTorus.mFourier m (u x+finiteClockPhasePoint (f x) t)
-    rw [mFourier_add_point,mFourier_finiteClockPhasePoint]
+    have hadd (a b : UnitAddTorus I) : UnitAddTorus.mFourier m (a+b)=
+        UnitAddTorus.mFourier m a*UnitAddTorus.mFourier m b := by
+      simp only [UnitAddTorus.mFourier,ContinuousMap.coe_mk,Pi.add_apply,fourier_add_point,Finset.prod_mul_distrib]
+    rw [hadd,mFourier_finiteClockPhasePoint]
     simp only [g,A,oscillation,mul_neg,Complex.ofReal_neg,neg_neg]
   · exact (hu.add (measurable_pi_lambda _ fun i => (AddCircle.continuous_mk' (1:ℝ)).measurable.comp
       ((((measurable_pi_apply i).comp hf).const_mul t).div_const (2*Real.pi)))).aemeasurable

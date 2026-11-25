@@ -10,6 +10,14 @@ namespace GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.ExactSubsystems
 
 open Filter Topology Set
 
+/-- The limiting pressure is the larger of the two endpoint exponents. -/
+theorem pressure_eq_max {c d : ℝ} (hcd : c ≤ d) (k : ℕ) (s : ℝ) :
+    pressure c d k s = max ((1-s)*(k*c)) ((1-s)*(k*d)) := by
+  have h := mul_le_mul_of_nonneg_left hcd (Nat.cast_nonneg k : (0:ℝ) ≤ k)
+  by_cases hs : s ≤ 1
+  · rw [pressure,if_pos hs,max_eq_right (mul_le_mul_of_nonneg_left h (sub_nonneg.mpr hs))]
+  · rw [pressure,if_neg hs,max_eq_left (mul_le_mul_of_nonpos_left h (sub_nonpos.mpr (le_of_not_ge hs)))]
+
 private theorem pressure_right {s : ℝ} (hs : 1 ≤ s) (c d : ℝ) (k : ℕ) :
     pressure c d k s = (1-s)*(k*c) := by
   rcases eq_or_lt_of_le hs with h | h
@@ -76,6 +84,7 @@ theorem split_isometric_iff_pressure_corner {c d : ℝ} (hc : 0 < c) (hcd : c < 
     rw [he,pressure_corner_iff hcd hk] at hnd
     linarith only [hnd]
 
+#print axioms pressure_eq_max
 #print axioms pressure_derivative_jump
 #print axioms pressure_slopes
 #print axioms pressure_corner_iff

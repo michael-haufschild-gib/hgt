@@ -33,7 +33,7 @@ theorem sharp_line_chord {V : Type*} [NormedAddCommGroup V] [InnerProductSpace �
     _ = _ := by simp only [Complex.re_ofReal_mul]
   have hd : ‖z • u-v‖^2=2-2*(conj z*a).re := by
     rw [norm_sub_sq (𝕜:=ℂ),norm_smul,hz,hu,hv,inner_smul_left]
-    change _=2-2*(conj z*inner ℂ u v).re
+    change ((1:ℝ)*1)^2-2*(conj z*a).re+1^2=2-2*(conj z*a).re
     ring
   have hs : 0 < (conj z*a).re := by
     have h := (sq_lt_sq₀ (norm_nonneg _) (Real.sqrt_nonneg 2)).mpr hnear
