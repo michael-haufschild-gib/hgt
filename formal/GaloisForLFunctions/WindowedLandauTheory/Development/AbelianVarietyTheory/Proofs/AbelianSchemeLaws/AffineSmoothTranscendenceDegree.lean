@@ -40,6 +40,7 @@ theorem trdeg_sectionRing_of_smooth {K : Type} [Field K] [IsAlgClosed K]
     Algebra.trdeg K (SectionRing f U) = d := by
   letI : Nonempty U := hne.to_subtype
   haveI : IsDomain (SectionRing f U) := inferInstanceAs (IsDomain Γ(X, U))
+  haveI : Smooth f := SmoothOfRelativeDimension.smooth (n := d) (f := f)
   have hf := HasRingHomProperty.appLE (@LocallyOfFiniteType) f inferInstance
     ⟨⊤, isAffineOpen_top _⟩ ⟨U, hU⟩ le_top
   let e := (Scheme.ΓSpecIso (CommRingCat.of K)).symm.commRingCatIsoToRingEquiv

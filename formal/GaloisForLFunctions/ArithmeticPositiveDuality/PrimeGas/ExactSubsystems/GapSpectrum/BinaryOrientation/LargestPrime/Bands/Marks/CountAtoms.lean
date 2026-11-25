@@ -52,9 +52,10 @@ private theorem poisson_tent (r : ℝ≥0) (k : ℕ) :
 theorem poissonCount_injective : Function.Injective poissonCount := by
   intro r t he
   have h := congrArg (fun μ : ProbabilityMeasure ℝ => ∫ x, tent 0 x ∂(μ : Measure ℝ)) he
-  simp only [poisson_tent,pow_zero,mul_one,Nat.factorial_zero,Nat.cast_one,div_one,
-    Real.exp_inj,neg_inj] at h
-  exact Subtype.ext h
+  simp only [poisson_tent,pow_zero,mul_one,Nat.factorial_zero,Nat.cast_one,div_one] at h
+  have hn := congrArg Real.log h
+  rw [Real.log_exp,Real.log_exp] at hn
+  exact NNReal.eq (neg_inj.mp hn)
 
 private theorem transfer_atoms {c d : ℝ} {s : Ioi (0:ℝ) → ℝ} {r : ℝ≥0}
     (H : Tendsto (fun h => countLaw c d h (s h)) criticalApproach (𝓝 (poissonCount r))) (k : ℕ) :
@@ -93,6 +94,7 @@ theorem split_isometric_iff_poisson_count {c : ℝ} (hc : 0 < c) (s : ℂ) :
   · intro H
     apply (VacuumCalibration.split_isometric_iff_half_vacuum hc s).mpr
     have h := transfer_atoms H 0
+    change Tendsto _ criticalApproach (𝓝 (Real.exp (-Real.log 2)*(Real.log 2)^0/(Nat.factorial 0:ℝ))) at h
     simpa only [zero_atom,pow_zero,mul_one,Nat.factorial_zero,Nat.cast_one,div_one,Real.exp_neg,
       Real.exp_log (by norm_num : (0:ℝ) < 2),one_div] using h
 

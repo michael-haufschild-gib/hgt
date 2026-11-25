@@ -17,7 +17,8 @@ def openBox (I : Type*) (r : ℝ) : Set (I → UnitAddCircle) := Set.pi univ (fu
 
 def closedBox (I : Type*) (r : ℝ) : Set (I → UnitAddCircle) := Set.pi univ (fun _ => forwardUnitArc r)
 
-private theorem box_volumes {I : Type*} [Fintype I] (r : Icc (0:ℝ) (1/2)) :
+/-- Open and closed endpoint boxes have the same Haar mass and null frontier. -/
+theorem box_volumes {I : Type*} [Fintype I] (r : Icc (0:ℝ) (1/2)) :
     volume (openBox I r) = ENNReal.ofReal (r:ℝ)^(Fintype.card I) ∧
       volume (frontier (openBox I r))=0 ∧
       volume (closedBox I r) = ENNReal.ofReal (r:ℝ)^(Fintype.card I) ∧

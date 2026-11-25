@@ -34,9 +34,12 @@ theorem cube_face_cancels {Z : Scheme.{0}} (r : Z ⟶ (A ⊗ (A ⊗ A)).left)
   let T := Over.mk (r ≫ (A ⊗ (A ⊗ A)).hom)
   let x : T ⟶ A ⊗ (A ⊗ A) := Over.homMk r rfl
   have hb : b = T.hom := by
-    have e := congrArg (· ≫ A.hom) h
-    simp only [Category.assoc, Over.w] at e
-    exact (e.trans (Category.comp_id _)).symm
+    have e₁ : (r ≫ (cubeProjection A i).left) ≫ A.hom = T.hom :=
+      (Category.assoc _ _ _).trans (congrArg (r ≫ ·) (Over.w (cubeProjection A i)))
+    have he : η[A].left ≫ A.hom = 𝟙 S := Over.w (η[A])
+    have e₂ : (b ≫ η[A].left) ≫ A.hom = b :=
+      (Category.assoc _ _ _).trans ((congrArg (b ≫ ·) he).trans (Category.comp_id _))
+    exact (e₁.symm.trans ((congrArg (· ≫ A.hom) h).trans e₂)).symm
   have hx : x ≫ cubeProjection A i = 1 := by
     apply Over.OverMorphism.ext
     rw [Hom.one_def]
@@ -51,7 +54,7 @@ theorem cube_face_cancels {Z : Scheme.{0}} (r : Z ⟶ (A ⊗ (A ⊗ A)).left)
     have hm : r ≫ cubeMorphism A (insert i I) = r ≫ cubeMorphism A I := by
       change (E (∏ j ∈ insert i I, cubeProjection A j)).left =
         (E (∏ j ∈ I, cubeProjection A j)).left
-      rw [Finset.prod_insert hi, map_mul, show E (cubeProjection A i) = 1 from hx, one_mul]
+      rw [Finset.prod_insert hi, map_mul, show E (cubeProjection A i) = 1 from hx, _root_.one_mul]
     have hcard : I.card + 1 ≤ 3 := by
       simpa only [Finset.card_insert_of_notMem hi, Fintype.card_fin] using
         (Finset.card_le_univ (insert i I))

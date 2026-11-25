@@ -10,6 +10,7 @@ open AlgebraicGeometry CategoryTheory CategoryTheory.Limits MonoidalCategory Car
 open ReciprocityTheory.ChartRestriction.G.Semi
 open ReciprocityTheory.ChartRestriction.G.Pdiv.PullbackComparison
 open GlobalTheory.LineBundleSections
+open scoped CategoryTheory.Obj
 
 namespace GlobalTheory.AbLaw.Cube
 

@@ -36,7 +36,9 @@ theorem mass_strictAnti {c d : ℝ} (hc : 0 < c) (hcd : c < d) : StrictAnti (mas
 theorem dilation_invariant_iff {c d r : ℝ} (hc : 0 < c) (hcd : c < d) (hr : 0 < r) (hne : r ≠ 1) (a : ℝ) :
     poissonCount ⟨mass (r*c) (r*d) a,mass_nonneg (mul_pos hr hc) (mul_le_mul_of_nonneg_left hcd.le hr.le) a⟩ =
       poissonCount ⟨mass c d a,mass_nonneg hc hcd.le a⟩ ↔ a = 0 := by
-  rw [poissonCount_injective.eq_iff,Subtype.mk.injEq,mass_dilate _ _ _ hr,(mass_strictAnti hc hcd).injective.eq_iff]
+  rw [poissonCount_injective.eq_iff,← NNReal.coe_injective.eq_iff]
+  change mass (r*c) (r*d) a = mass c d a ↔ a = 0
+  rw [mass_dilate _ _ _ hr,(mass_strictAnti hc hcd).injective.eq_iff]
   constructor
   · intro H
     by_contra ha

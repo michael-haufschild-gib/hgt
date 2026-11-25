@@ -23,11 +23,16 @@ def dual : LB X where
 theorem dual_isLB (hL : L.IsLB) : (dual L).IsLB where
   cover := hL.cover
   g_self i := by
-    change res _ ((L.g i i)⁻¹) = 1
-    rw [map_inv, hL.g_self i, inv_one]
+    let r := res (le_inf le_rfl le_rfl : L.U i ≤ L.U i ⊓ L.U i)
+    exact (map_inv r (L.g i i)).trans ((congrArg Inv.inv (hL.g_self i)).trans inv_one)
   cocycle i j k := by
-    have e := congrArg (fun u => u⁻¹) (hL.cocycle i j k)
-    simpa only [dual, map_inv, mul_inv] using e
+    let U := L.U i ⊓ L.U j ⊓ L.U k
+    let r₁ := res (inf_le_left : U ≤ L.U i ⊓ L.U j)
+    let r₂ := res (le_inf (inf_le_left.trans inf_le_right) inf_le_right : U ≤ L.U j ⊓ L.U k)
+    let r₃ := res (le_inf (inf_le_left.trans inf_le_left) inf_le_right : U ≤ L.U i ⊓ L.U k)
+    exact (congrArg₂ (· * ·) (map_inv r₁ (L.g i j)) (map_inv r₂ (L.g j k))).trans
+      ((mul_inv (r₁ (L.g i j)) (r₂ (L.g j k))).symm.trans
+        ((congrArg Inv.inv (hL.cocycle i j k)).trans (map_inv r₃ (L.g i k)).symm))
 
 theorem pull_dual (π : Y ⟶ X) : (dual L).pull π = dual (L.pull π) := by
   refine congrArg (LB.mk (L.pull π).ι (L.pull π).U) ?_
@@ -47,7 +52,7 @@ theorem nontrivial_sections_iff :
   constructor
   · intro h
     by_contra hn
-    push_neg at hn
+    push Not at hn
     cases s with
     | mk vals compat =>
       have he : vals = fun _ => 0 := funext hn
@@ -99,7 +104,7 @@ theorem exists_gen_iff_nontrivial_sections_and_dual [IsIntegral X]
       intro hz
       have e : resG X inf_le_left (s.f i) = (L.g i j).val * resG X inf_le_right (s.f j) := s.compat i j
       rw [hz, map_zero, mul_zero] at e
-      exact hi (Scheme.map_injective_of_isIntegral X (homOfLE inf_le_left) (e.trans (map_zero _).symm))
+      exact hi (map_injective_of_isIntegral X (homOfLE inf_le_left) (e.trans (map_zero _).symm))
     haveI : Nonempty (L.U j) := (nonempty_of_section_ne_zero hsj).to_subtype
     have ha₀ : a ≠ 0 := by
       intro hz

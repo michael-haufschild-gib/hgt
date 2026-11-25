@@ -1,4 +1,5 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.AbelianSchemeLaws.FormalPullbackGenerators
+import Mathlib.AlgebraicGeometry.Restrict
 
 /-! Agreement on the overlaps of an open cover glues local generators of a formal product. -/
 

@@ -22,7 +22,8 @@ theorem replaced_affine (ω : PathPauliDisorder) (k : ℕ) (y : ℝ) :
   simp only [add_zero] at h
   rw [boundaryHamiltonian,Complex.ofReal_zero,zero_smul,add_zero] at h
   change pathHamiltonian _=_
-  rw [h,boundaryHamiltonian,boundaryHamiltonian,add_assoc,←add_smul,←Complex.ofReal_add,
+  rw [h,boundaryHamiltonian,boundaryHamiltonian,
+    add_assoc (pathHamiltonian (pathPauliDisorderShell ω (k+1))) _ _,←add_smul,←Complex.ofReal_add,
     show -ω (terminalCoordinate k)+y=y-ω (terminalCoordinate k) by ring]
 
 /-- After revealing all other couplings, the probability of any genuine

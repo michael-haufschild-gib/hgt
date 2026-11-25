@@ -34,7 +34,7 @@ def globalSectionsLinearEquivKernel (F : X.Modules)
     change (E (x + y)).1.1 s = (E x).1.1 s + (E y).1.1 s
     by_cases hs : s.card = 1
     · obtain ⟨i, rfl⟩ := Finset.card_eq_one.mp hs
-      simp only [E, globalSectionsEquivKernel_singleton, map_add]
+      simp only [E, globalSectionsEquivKernel_singleton, map_add] <;> rfl
     · rw [he _ s hs, he _ s hs, he _ s hs, add_zero]
   · intro r x
     apply Subtype.ext
@@ -72,7 +72,7 @@ theorem moduleFinite_globalSections [IsNoetherianRing R] (hf : IsProjOver f)
   let C := cech f (toMod L) V
   haveI : Module.Finite R (C.homology 0) := cech_homology_finite f hL V hc ha ⟨n, i, hi, hif⟩ 0
   let H := LinearMap.ker (C.d 0 1).hom
-  have h := GlobalTheory.finite_ker_quotient_of_finite_homology C 0 0 1 rfl rfl
+  have h := GlobalTheory.finite_ker_quotient_of_finite_homology C 0 0 1 (by simp) (by simp)
   have hd : C.d 0 0 = 0 := C.shape 0 0 (by simp [ComplexShape.up])
   have hbot : (LinearMap.range (C.d 0 0).hom).comap H.subtype = ⊥ := by
     rw [hd]
@@ -93,16 +93,18 @@ variable {K : Type} [Field K] {Y : Scheme.{0}} (g : Y ⟶ Spec (CommRingCat.of K
 
 private def globalChartLinearMap (i : L.ι) :
     letI := sectionBaseModule g (toMod L) ⊤
-    Γ(toMod L, ⊤) →ₗ[K] SectionRing g (L.U i) := by
+    letI := sectionAlgebra g (L.U i)
+    Γ(toMod L, ⊤) →ₗ[K] Γ(Y, L.U i) := by
   letI := sectionBaseModule g (toMod L) ⊤
+  letI := sectionAlgebra g (L.U i)
   refine
     { toFun := fun x => (globalCoordinates x).f i
-      map_add' := fun x y => by simp only [globalCoordinates_apply, coord_add, map_add]
+      map_add' := fun x y => by simp only [globalCoordinates_apply, coord_add, map_add] <;> rfl
       map_smul' := fun r x => ?_ }
   let j : L.U i ≤ (⊤ : Y.Opens) ⊓ L.U i := le_inf le_top le_rfl
   letI := sectionAlgebra g (⊤ : Y.Opens)
   change resG Y j (coord ((algebraMap K Γ(Y, ⊤) r) • x) i) =
-    (algebraMap K (SectionRing g (L.U i)) r) * resG Y j (coord x i)
+    (algebraMap K Γ(Y, L.U i) r) * resG Y j (coord x i)
   rw [coord_smul, map_mul, resG_resG]
   exact congrArg (· * resG Y j (coord x i)) ((sectionRes g (homOfLE le_top)).commutes r)
 
@@ -110,7 +112,8 @@ private def globalChartLinearMap (i : L.ι) :
 holds in every bundle chart. -/
 theorem exists_chartwise_linear_dependence (hg : IsProjOver g) (hL : L.IsLB) :
     ∃ n : ℕ, ∀ s : Fin n → L.Sec, ∃ c : Fin n → K, c ≠ 0 ∧
-      ∀ i, ∑ k, (algebraMap K (SectionRing g (L.U i)) (c k)) * (s k).f i = 0 := by
+      ∀ i, letI := sectionAlgebra g (L.U i)
+        ∑ k, algebraMap K Γ(Y, L.U i) (c k) * (s k).f i = 0 := by
   classical
   let F := Γ(toMod L, ⊤)
   letI : Module K F := sectionBaseModule g (toMod L) ⊤
@@ -120,13 +123,14 @@ theorem exists_chartwise_linear_dependence (hg : IsProjOver g) (hL : L.IsLB) :
   let v (k : Fin n) : F := globalCoordinates.symm (s k)
   have h : ¬ LinearIndependent K v := by
     intro hv
-    have hcard := Fintype.card_le_finrank_of_linearIndependent hv
+    have hcard := hv.fintype_card_le_finrank
     simp only [Fintype.card_fin, n] at hcard
     exact Nat.not_succ_le_self _ hcard
   rw [Fintype.linearIndependent_iff] at h
-  push_neg at h
+  push Not at h
   obtain ⟨c, hc, k, hk⟩ := h
   refine ⟨c, fun hz => hk (congrFun hz k), fun i => ?_⟩
+  letI := sectionAlgebra g (L.U i)
   let ρ := globalChartLinearMap (L := L) g i
   have hρ (k : Fin n) : ρ (v k) = (s k).f i := by
     change (globalCoordinates (globalCoordinates.symm (s k))).f i = _

@@ -81,7 +81,7 @@ theorem cube_gen_of_projective (hA : IsAbelianScheme A) (hproj : IsProjOver A.ho
     have hN : N.IsLB := hM.pull q
     haveI := (hB.tensor hB).smooth
     obtain ⟨P⟩ := nonempty_perfectSections_of_projective f hN hproj'
-    obtain ⟨Q⟩ := nonempty_perfectSections_of_projective f (dual_isLB hN) hproj'
+    obtain ⟨Q⟩ := nonempty_perfectSections_of_projective f (dual_isLB N hN) hproj'
     have hone : (1 : B ⟶ B).left ≫ pullback.fst A.hom b = (B.hom ≫ b) ≫ η[A].left :=
       (Category.assoc _ _ _).trans
         ((congrArg (B.hom ≫ ·) (GlobalTheory.GrpTangent.one_pullback_left_fst b A)).trans
@@ -105,15 +105,20 @@ theorem cube_gen_of_projective (hA : IsAbelianScheme A) (hproj : IsProjOver A.ho
     obtain ⟨U, hU, u, hu⟩ := hLocal t ht
     exact ⟨U, fun _ hy => mem_fibreTriviality_of_trivial_on_open p hy hu, U.isOpen, hU⟩)⟩
   have hall (t : A.left) : t ∈ fibreTriviality p M := by
-    let b := (Spec (CommRingCat.of R)).fromSpecResidueField (A.hom t)
+    let K := (Spec (CommRingCat.of R)).residueField (A.hom t)
+    let b : Spec (CommRingCat.of K) ⟶ Spec (CommRingCat.of R) :=
+      (Spec (CommRingCat.of R)).fromSpecResidueField (A.hom t)
     let g := b ≫ η[A].left
     have hb : Set.range b = {A.hom t} := Scheme.range_fromSpecResidueField _
     obtain ⟨y, hy⟩ := hb.ge rfl
-    have hg : g ≫ A.hom = b := by
-      rw [Category.assoc, Over.w, Category.comp_id]
+    have he : η[A].left ≫ A.hom = 𝟙 _ := Over.w (η[A])
+    have hg : g ≫ A.hom = b :=
+      (Category.assoc _ _ _).trans ((congrArg (b ≫ ·) he).trans (Category.comp_id _))
+    have hgy : A.hom (g y) = A.hom t :=
+      (congrArg (fun a : Spec (CommRingCat.of K) ⟶ Spec (CommRingCat.of R) => a y) hg).trans hy
     refine (A.hom.isConnected_preimage_singleton (A.hom t)).isPreconnected.subset_isClopen hclopen
-      ⟨g y, (congrArg (fun f => f y) hg).trans hy, ?_⟩ rfl
-    refine ⟨_, inferInstance, g, _, _, _, ⟨y, rfl⟩, IsPullback.of_hasPullback p g, ?_⟩
+      ⟨g y, hgy, ?_⟩ rfl
+    refine ⟨K, inferInstance, g, _, _, _, ⟨y, rfl⟩, IsPullback.of_hasPullback p g, ?_⟩
     apply trivial_cube_face A hL (pullback.fst p g) 2 (pullback.snd p g ≫ b)
     exact pullback.condition.trans (Category.assoc _ _ _).symm
   let e : A ⟶ A ⊗ (A ⊗ A) := lift 1 (lift 1 (𝟙 A))

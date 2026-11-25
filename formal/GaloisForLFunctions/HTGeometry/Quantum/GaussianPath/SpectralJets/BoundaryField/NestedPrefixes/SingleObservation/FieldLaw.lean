@@ -1,4 +1,4 @@
-import GaloisForLFunctions.HTGeometry.FreeFockMatrixSemicircleFourierDecay
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.PrescribedTimes.PhaseLaws.FrequencyDistribution
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.BoundaryField.NestedPrefixes.ConditionalLaw
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.BoundaryField.JointHaar
 
@@ -34,13 +34,11 @@ theorem gaussian_field_snapshot :
       Tendsto (snapshot ω k r μ) atTop (𝓝 (finiteTorusHaarProbabilityMeasure _)) := by
   classical
   filter_upwards [gaussian_ordered_null_frequencies] with ω hω k r μ hμ
-  apply probabilityMeasure_tendsto_of_mFourier_integral_tendsto
-  intro m
-  rw [finiteTorusHaarProbabilityMeasure_mFourier_integral]
-  by_cases h₀ : m=0
-  · subst m
-    simp
-  rw [if_neg h₀]
+  let f (y : ℝ) := projectiveFrequency (fun i => -fieldEnergy ω k y i) r
+  have hf : Measurable f := measurable_pi_lambda _ fun i =>
+    ((continuous_fieldEnergy ω k i.val).neg.sub (continuous_fieldEnergy ω k r).neg).measurable
+  apply PrescribedTimes.PhaseLaws.frequencySnapshot_haar μ f hf
+  intro m h₀
   let c := liftPacket r m
   have hc : c≠0 := by
     intro h
@@ -50,29 +48,18 @@ theorem gaussian_field_snapshot :
   let A (y : ℝ) := ∑ i, (c i:ℝ)*fieldEnergy ω k y i
   have hA : Continuous A := continuous_finsetSum _ fun i _ =>
     continuous_const.mul (continuous_fieldEnergy ω k i)
-  let ν := (μ : Measure ℝ).map A
-  have hac : ν ≪ volume := by
-    apply Measure.AbsolutelyContinuous.mk
-    intro S hS hz
-    rw [Measure.map_apply hA.measurable hS]
-    apply measure_eq_zero_iff_ae_notMem.mpr
-    have hh := (measurePreserving_add_right (volume : Measure ℝ) (-ω (PrefixCouplings.terminalCoordinate k))).quasiMeasurePreserving
-    filter_upwards [hμ.ae_le (hh.ae (hω k S hz))] with y hy
-    simpa only [A,fieldEnergy,sub_eq_add_neg,mem_preimage,c] using hy c hc (lift_sum r m)
-  have hf := (spectralDensityFourierAmplitude_tendsto_zero_cocompact (spectralMeasureDensity ν)).mono_left
-    (atTop_le_cocompact : (atTop : Filter ℝ)≤cocompact ℝ)
-  apply hf.congr
-  intro T
-  rw [spectralDensityFourierAmplitude_spectralMeasureDensity ν hac,snapshot,ProbabilityMeasure.toMeasure_map,
-    integral_map _ (UnitAddTorus.mFourier m).continuous.aestronglyMeasurable]
-  rw [show ν=(μ : Measure ℝ).map A from rfl,integral_map hA.aemeasurable (by fun_prop)]
-  apply integral_congr_ae
-  filter_upwards with y
-  rw [mFourier_finiteClockPhasePoint]
-  have hdet : finiteTorusCharacterDetuning m (projectiveFrequency (fun i => -fieldEnergy ω k y i) r) = -A y := by
-    rw [←lift_energy]
-    simp only [A,c,mul_neg,Finset.sum_neg_distrib]
-  rw [hdet,mul_neg,Complex.ofReal_neg]
+  have heq : (fun y => -finiteTorusCharacterDetuning m (f y))=A := by
+    funext y
+    rw [show f y=projectiveFrequency (fun i => -fieldEnergy ω k y i) r from rfl,←lift_energy]
+    simp only [A,c,mul_neg,Finset.sum_neg_distrib,neg_neg]
+  rw [heq]
+  apply Measure.AbsolutelyContinuous.mk
+  intro S hS hz
+  rw [Measure.map_apply hA.measurable hS]
+  apply measure_eq_zero_iff_ae_notMem.mpr
+  have hh := (measurePreserving_add_right (volume : Measure ℝ) (-ω (PrefixCouplings.terminalCoordinate k))).quasiMeasurePreserving
+  filter_upwards [hμ.ae_le (hh.ae (hω k S hz))] with y hy
+  simpa only [A,fieldEnergy,sub_eq_add_neg,mem_preimage,c] using hy c hc (lift_sum r m)
 
 #print axioms gaussian_field_snapshot
 end

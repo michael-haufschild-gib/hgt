@@ -31,7 +31,7 @@ theorem sections_finite_of_relAmple {K : Type} [Field K]
   apply hc
   funext k
   apply (ConcreteCategory.bijective_of_isIso e).1
-  rw [map_zero]
-  exact congrFun he k
+  change e (c k) = e (0 : K)
+  exact (congrFun he k).trans e.hom.map_zero.symm
 
 end GlobalTheory.AbLaw

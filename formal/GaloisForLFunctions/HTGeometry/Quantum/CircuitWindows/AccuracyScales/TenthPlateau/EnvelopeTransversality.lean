@@ -135,6 +135,49 @@ private theorem continuous_matAct_pair {N : ℕ} :
 private theorem continuous_matAct {N : ℕ} (A : Register N) : Continuous (matAct A) :=
   continuous_matAct_pair.comp (continuous_const.prodMk continuous_id)
 
+private theorem tendsto_matAct_of_norm_sub {N : ℕ} {A : ℕ → Register N} {A₀ : Register N}
+    {x : ℕ → StateSpace N} {x₀ : StateSpace N}
+    (hA : Tendsto (fun k => ‖A k - A₀‖) atTop (𝓝 0))
+    (hx : Tendsto x atTop (𝓝 x₀)) :
+    Tendsto (fun k => matAct (A k) (x k)) atTop (𝓝 (matAct A₀ x₀)) := by
+  have hbound (k : ℕ) : ‖matAct (A k) (x k) - matAct A₀ x₀‖ ≤
+      ‖A k - A₀‖ * ‖x k‖ + ‖A₀‖ * ‖x k - x₀‖ := by
+    have hsplit : matAct (A k) (x k) - matAct A₀ x₀ =
+        matAct (A k - A₀) (x k) + matAct A₀ (x k - x₀) := by
+      rw [matAct_sub, matAct_map_sub]; abel
+    rw [hsplit]
+    exact (norm_add_le _ _).trans (add_le_add (norm_matAct_le _ _) (norm_matAct_le _ _))
+  have hlim : Tendsto (fun k => ‖A k - A₀‖ * ‖x k‖ + ‖A₀‖ * ‖x k - x₀‖) atTop (𝓝 0) := by
+    have h1 := hA.mul hx.norm
+    have h2 := (tendsto_const_nhds (x := ‖A₀‖)).mul (tendsto_iff_norm_sub_tendsto_zero.mp hx)
+    simpa only [zero_mul, mul_zero, add_zero] using h1.add h2
+  exact tendsto_iff_norm_sub_tendsto_zero.mpr (squeeze_zero (fun _ => norm_nonneg _) hbound hlim)
+
+private theorem tendsto_lin_rem (c : ℝ) :
+    Tendsto (fun x : ℝ => 2 * |x| * c) (𝓝 0) (𝓝 0) := by
+  have hc : Continuous (fun x : ℝ => 2 * |x| * c) := by fun_prop
+  simpa only [abs_zero, mul_zero, zero_mul] using hc.tendsto 0
+
+private theorem tendsto_quad_rem (c : ℝ) :
+    Tendsto (fun x : ℝ => x * c ^ 2 * (2 + x * c / 2)) (𝓝 0) (𝓝 0) := by
+  have hc : Continuous (fun x : ℝ => x * c ^ 2 * (2 + x * c / 2)) := by fun_prop
+  simpa only [zero_mul] using hc.tendsto 0
+
+private theorem orthonormal_two_residual_inner {N : ℕ} {p_hat q_hat : StateSpace N}
+    (hp1 : ‖p_hat‖ = 1) (hq1 : ‖q_hat‖ = 1) (hpq : inner ℂ p_hat q_hat = 0)
+    (x : StateSpace N) (a b : ℂ) :
+    inner ℂ (a • p_hat + b • q_hat) (x - (a • p_hat + b • q_hat)) =
+      starRingEnd ℂ a * (inner ℂ p_hat x - a) +
+        starRingEnd ℂ b * (inner ℂ q_hat x - b) := by
+  rw [inner_sub_right, inner_add_left, inner_add_left, inner_add_right, inner_add_right,
+    inner_smul_left, inner_smul_left, inner_smul_left, inner_smul_left,
+    inner_smul_left, inner_smul_left,
+    inner_smul_right, inner_smul_right, inner_smul_right, inner_smul_right,
+    inner_self_eq_norm_sq_to_K, inner_self_eq_norm_sq_to_K,
+    hp1, hq1, hpq, ← inner_conj_symm q_hat p_hat, hpq]
+  simp only [RCLike.ofReal_one, one_pow, map_zero, mul_zero, mul_one, add_zero, zero_add]
+  ring
+
 private theorem inner_self_complex {N : ℕ} (x : StateSpace N) :
     inner ℂ x x = ((‖x‖ ^ 2 : ℝ) : ℂ) := by
   rw [inner_self_eq_norm_sq_to_K, ← RCLike.ofReal_pow]
@@ -529,7 +572,7 @@ private theorem norm_conj_unitaryEvolution_sub_linear_le {N : ℕ}
         (norm_star E).le (norm_nonneg _) h1L_nn
     _ ≤ (1 + u * ‖K.val‖) * ((u * ‖K.val‖) ^ 2 / 2) := by
         have hnorm1 : ‖(1 : Register N)‖ = 1 :=
-          CStarRing.norm_of_mem_unitary (one_mem : (1 : Register N) ∈ unitary (Register N))
+          CStarRing.norm_of_mem_unitary (Unitary.mem_iff.mpr ⟨by simp, by simp⟩)
         have h1L : ‖(1 : Register N) + L‖ ≤ 1 + u * ‖K.val‖ :=
           (norm_add_le 1 L).trans (by rw [hL_norm, hnorm1])
         rw [mul_one]
@@ -601,9 +644,8 @@ theorem dini_torusPointDistance_sandwich {N d : ℕ} (e : Config N ≃ Fin (d + 
     have hev1 := (Metric.tendsto_nhds.mp htend (ε / 2) (half_pos hε)).mono fun u hu =>
       (abs_lt.mp (Real.dist_eq _ _ ▸ hu)).2
     have hquad_lim : Tendsto (fun u : ℝ => u * ‖K.val‖ ^ 2 * (2 + u * ‖K.val‖ / 2))
-        (𝓝[>] 0) (𝓝 0) := by
-      have hc : Continuous (fun u : ℝ => u * ‖K.val‖ ^ 2 * (2 + u * ‖K.val‖ / 2)) := by continuity
-      simpa using (hc.tendsto 0).mono_left nhdsWithin_le_nhds
+        (𝓝[>] 0) (𝓝 0) :=
+      (tendsto_quad_rem ‖K.val‖).mono_left nhdsWithin_le_nhds
     filter_upwards [self_mem_nhdsWithin, hev1,
       hquad_lim.eventually_lt_const (half_pos hε)] with u hu_pos hu1 hu_quad
     have hu_pos' : 0 < u := hu_pos
@@ -630,7 +672,7 @@ theorem dini_torusPointDistance_sandwich {N d : ℕ} (e : Config N ≃ Fin (d + 
           u * ‖K.val‖ ^ 2 * (2 + u * ‖K.val‖ / 2)) * u =
           (‖(U₀ - W_star) + (u : ℂ) • skewAdjointCommutator K U₀‖ - ‖U₀ - W_star‖) +
             u ^ 2 * ‖K.val‖ ^ 2 * (2 + u * ‖K.val‖ / 2) := by
-        field_simp [hu_pos'.ne']; ring
+        field_simp [hu_pos'.ne']
       linarith only [hinf_le, htri, hsplit]
     linarith only [hq_le, hu1, hu_quad]
   · intro ε hε
@@ -691,11 +733,16 @@ theorem dini_torusPointDistance_sandwich {N d : ℕ} (e : Config N ≃ Fin (d + 
             _ ≤ |x| * ‖K.val‖ := by linarith only [hU_step]
         exact (norm_add_le _ _).trans (by linarith only [ha, hb])
       refine tendsto_iff_norm_sub_tendsto_zero.mpr (squeeze_zero (fun _ => norm_nonneg _)
-        (fun k => hflow_lip (u (φ k))) ?_)
-      have hc : Continuous (fun x : ℝ => 2 * |x| * ‖K.val‖) := by continuity
-      simpa using (hc.tendsto 0).comp (hu_tend.comp hφ_mono.tendsto_atTop)
+        (fun k => hflow_lip (u (φ k)))
+        ((tendsto_lin_rem ‖K.val‖).comp (hu_tend.comp hφ_mono.tendsto_atTop)))
+    have hW_diff0 : Tendsto (fun k => ‖(U₀ - Wn (φ k)) - (U₀ - W_lim)‖) atTop (𝓝 0) := by
+      have heq (k : ℕ) : ‖(U₀ - Wn (φ k)) - (U₀ - W_lim)‖ = dist (Wn (φ k)) W_lim := by
+        rw [dist_eq_norm, show (U₀ - Wn (φ k)) - (U₀ - W_lim) = -(Wn (φ k) - W_lim) by abel, norm_neg]
+      simp_rw [heq]
+      exact tendsto_iff_dist_tendsto_zero.mp hW_tend
     have hnorm_Wn_tend : Tendsto (fun k => ‖U₀ - Wn (φ k)‖) atTop (𝓝 ‖U₀ - W_lim‖) :=
-      (continuous_const.sub continuous_id).norm.tendsto W_lim |>.comp hW_tend
+      tendsto_iff_dist_tendsto_zero.mpr (squeeze_zero (fun _ => dist_nonneg)
+        (fun k => by rw [Real.dist_eq]; exact abs_norm_sub_norm_le _ _) hW_diff0)
     have hr_tend : Tendsto (fun k =>
         ‖projectiveSpectralMatrix e (transverseEigenspaceFlow K V (u (φ k))) θ - Wn (φ k)‖)
         atTop (𝓝 r) := by
@@ -706,44 +753,65 @@ theorem dini_torusPointDistance_sandwich {N d : ℕ} (e : Config N ≃ Fin (d + 
         rw [← dist_eq_norm, (hWn_dist (φ k)).symm]
       simp_rw [heq_dist]
       exact (Metric.continuous_infDist_pt _).tendsto U₀ |>.comp hflow_tend
+    have hflow_sub_tend : Tendsto (fun k =>
+        ‖projectiveSpectralMatrix e (transverseEigenspaceFlow K V (u (φ k))) θ - Wn (φ k)‖)
+        atTop (𝓝 ‖U₀ - W_lim‖) := by
+      have hbf (k : ℕ) : dist
+          ‖projectiveSpectralMatrix e (transverseEigenspaceFlow K V (u (φ k))) θ - Wn (φ k)‖
+          ‖U₀ - W_lim‖ ≤
+          ‖projectiveSpectralMatrix e (transverseEigenspaceFlow K V (u (φ k))) θ - U₀‖ +
+            ‖(U₀ - Wn (φ k)) - (U₀ - W_lim)‖ := by
+        rw [Real.dist_eq]
+        refine (abs_norm_sub_norm_le _ _).trans ?_
+        have hsplit : (projectiveSpectralMatrix e (transverseEigenspaceFlow K V (u (φ k))) θ - Wn (φ k)) -
+            (U₀ - W_lim) =
+            (projectiveSpectralMatrix e (transverseEigenspaceFlow K V (u (φ k))) θ - U₀) +
+              ((U₀ - Wn (φ k)) - (U₀ - W_lim)) := by abel
+        rw [hsplit]
+        exact norm_add_le _ _
+      have hlf : Tendsto (fun k =>
+          ‖projectiveSpectralMatrix e (transverseEigenspaceFlow K V (u (φ k))) θ - U₀‖ +
+            ‖(U₀ - Wn (φ k)) - (U₀ - W_lim)‖) atTop (𝓝 0) := by
+        simpa only [add_zero] using (tendsto_iff_norm_sub_tendsto_zero.mp hflow_tend).add hW_diff0
+      exact tendsto_iff_dist_tendsto_zero.mpr (squeeze_zero (fun _ => dist_nonneg) hbf hlf)
     have hW_lim_eq : ‖U₀ - W_lim‖ = r :=
-      tendsto_nhds_unique (hflow_tend.sub hW_tend).norm hr_tend
+      tendsto_nhds_unique hflow_sub_tend hr_tend
     have hW_lim_opt : W_lim ∈ W_opt := ⟨hW_lim_mem, hW_lim_eq⟩
+    have hmatAct_tend : Tendsto (fun k => matAct (U₀ - Wn (φ k)) (ψn (φ k))) atTop
+        (𝓝 (matAct (U₀ - W_lim) ψ_lim)) :=
+      tendsto_matAct_of_norm_sub hW_diff0 hψ_tend
     have hψ_lim_max : ψ_lim ∈ maxRightSingularSphere (U₀ - W_lim) := by
       refine ⟨mem_sphere_zero_iff_norm.mp hψ_lim_sph, ?_⟩
       have h1 : Tendsto (fun k => ‖matAct (U₀ - Wn (φ k)) (ψn (φ k))‖) atTop
-          (𝓝 ‖matAct (U₀ - W_lim) ψ_lim‖) :=
-        continuous_matAct_pair.norm.tendsto (U₀ - W_lim, ψ_lim) |>.comp
-          ((tendsto_const_nhds.sub hW_tend).prodMk_nhds hψ_tend)
+          (𝓝 ‖matAct (U₀ - W_lim) ψ_lim‖) := hmatAct_tend.norm
       have h2 : Tendsto (fun k => ‖matAct (U₀ - Wn (φ k)) (ψn (φ k))‖) atTop (𝓝 ‖U₀ - W_lim‖) := by
         simp_rw [(hψn_mem _).2]
         exact hnorm_Wn_tend
       exact tendsto_nhds_unique h1 h2
+    have hW_lim_pos : 0 < ‖U₀ - W_lim‖ := by rw [hW_lim_eq]; exact hr
     have hlim_quot : Tendsto (fun k =>
         (inner ℂ (matAct (U₀ - Wn (φ k)) (ψn (φ k)))
           (matAct (skewAdjointCommutator K U₀) (ψn (φ k)))).re / ‖U₀ - Wn (φ k)‖ -
           u (φ k) * ‖K.val‖ ^ 2 * (2 + u (φ k) * ‖K.val‖ / 2))
         atTop (𝓝 (dirVal W_lim ψ_lim)) := by
+      have hcomm_ψ_tend : Tendsto (fun k => matAct (skewAdjointCommutator K U₀) (ψn (φ k)))
+          atTop (𝓝 (matAct (skewAdjointCommutator K U₀) ψ_lim)) :=
+        ((continuous_matAct (skewAdjointCommutator K U₀)).tendsto ψ_lim).comp hψ_tend
       have hnum : Tendsto (fun k =>
           (inner ℂ (matAct (U₀ - Wn (φ k)) (ψn (φ k)))
             (matAct (skewAdjointCommutator K U₀) (ψn (φ k)))).re) atTop
           (𝓝 (inner ℂ (matAct (U₀ - W_lim) ψ_lim)
             (matAct (skewAdjointCommutator K U₀) ψ_lim)).re) :=
-        Complex.continuous_re.tendsto _ |>.comp <|
-          (Continuous.inner
-            (continuous_matAct_pair.comp ((continuous_const.sub continuous_fst).prodMk continuous_snd))
-            ((continuous_matAct (skewAdjointCommutator K U₀)).comp continuous_snd)).tendsto
-            (W_lim, ψ_lim) |>.comp (hW_tend.prodMk_nhds hψ_tend)
-      have hdiv := hnum.div hnorm_Wn_tend (hW_lim_eq.symm ▸ hr.ne')
+        (Complex.continuous_re.tendsto _).comp (hmatAct_tend.inner hcomm_ψ_tend)
+      have hdiv := hnum.div hnorm_Wn_tend hW_lim_pos.ne'
       have hrem0 : Tendsto (fun k => u (φ k) * ‖K.val‖ ^ 2 * (2 + u (φ k) * ‖K.val‖ / 2))
-          atTop (𝓝 0) := by
-        have hc : Continuous (fun x : ℝ => x * ‖K.val‖ ^ 2 * (2 + x * ‖K.val‖ / 2)) := by continuity
-        simpa using (hc.tendsto 0).comp (hu_tend.comp hφ_mono.tendsto_atTop)
+          atTop (𝓝 0) :=
+        (tendsto_quad_rem ‖K.val‖).comp (hu_tend.comp hφ_mono.tendsto_atTop)
       have hsub0 := hdiv.sub hrem0
       rw [sub_zero, re_inner_unitary_sub_skewAdjointCommutator hU₀_unit W_lim K ψ_lim, hW_lim_eq] at hsub0
       exact hsub0
     obtain ⟨k, hk_gt, hk_pos⟩ := ((hlim_quot.eventually (Ioi_mem_nhds (sub_lt_self (dirVal W_lim ψ_lim) hε))).and
-      (hnorm_Wn_tend.eventually (Ioi_mem_nhds (hW_lim_eq.symm ▸ hr)))).exists
+      (hnorm_Wn_tend.eventually (Ioi_mem_nhds hW_lim_pos))).exists
     have hu_pos : 0 < u (φ k) := (hu_mem (φ k)).1
     have hstep_ge : (inner ℂ (matAct (U₀ - Wn (φ k)) (ψn (φ k)))
         (matAct (skewAdjointCommutator K U₀) (ψn (φ k)))).re / ‖U₀ - Wn (φ k)‖ -
@@ -1002,21 +1070,17 @@ theorem exists_unitaryRatio_singularEigenmode {N : ℕ} (U_star W_star : UGroup 
       dsimp only [Z]
       rw [← mul_assoc, (Unitary.mem_iff.mp U_star.2).2, one_mul]
     rw [← hUZ, matAct_mul, hZψ, matAct_map_smul]
+  have hc_re_im : (((1 - r ^ 2 / 2 : ℝ) : ℂ) + Complex.I * (β : ℂ)) = ⟨1 - r ^ 2 / 2, β⟩ := by
+    apply Complex.ext <;> simp [sq]
   have hlam_norm_sq : (1 - r ^ 2 / 2) ^ 2 + β ^ 2 = 1 := by
     have hZ_isom : ‖matAct Z ψ‖ = 1 := (norm_matAct_unitary hZ_unit ψ).trans hψ_norm
-    rw [hZψ, norm_smul, hψ_norm, mul_one] at hZ_isom
-    have hc_eq : (((1 - r ^ 2 / 2 : ℝ) : ℂ) + Complex.I * (β : ℂ)) =
-        ⟨1 - r ^ 2 / 2, β⟩ := by
-      apply Complex.ext <;> simp
-    rw [hc_eq] at hZ_isom
+    rw [hZψ, norm_smul, hψ_norm, mul_one, hc_re_im] at hZ_isom
     have hsq := congrArg (· ^ 2) hZ_isom
     rw [one_pow, Complex.sq_norm, Complex.normSq_mk] at hsq
     linarith only [hsq]
   have hβ_sq : β ^ 2 = r ^ 2 * (1 - r ^ 2 / 4) := by linarith only [hlam_norm_sq]
   have hlam_norm : ‖(((1 - r ^ 2 / 2 : ℝ) : ℂ) + Complex.I * (β : ℂ))‖ = 1 := by
-    have hc_eq : (((1 - r ^ 2 / 2 : ℝ) : ℂ) + Complex.I * (β : ℂ)) = ⟨1 - r ^ 2 / 2, β⟩ := by
-      apply Complex.ext <;> simp
-    rw [hc_eq, Complex.norm_def, Complex.normSq_mk]
+    rw [hc_re_im, Complex.norm_def, Complex.normSq_mk]
     rw [show (1 - r ^ 2 / 2) * (1 - r ^ 2 / 2) + β * β = 1 by linarith only [hlam_norm_sq], Real.sqrt_one]
   refine ⟨ψ, hψ_mem, β, hβ_sq, hWψ, ?_, ?_⟩
   · rw [hWψ, inner_smul_right, norm_mul, hlam_norm, one_mul]
@@ -1029,8 +1093,9 @@ theorem exists_unitaryRatio_singularEigenmode {N : ℕ} (U_star W_star : UGroup 
     have hcomm_inner : inner ℂ (matAct U_star.val ψ) (matAct (K.val * U_star.val - U_star.val * K.val) ψ) =
         inner ℂ (matAct U_star.val ψ) (matAct K.val (matAct U_star.val ψ)) -
           inner ℂ ψ (matAct K.val ψ) := by
-      rw [matAct_sub, inner_sub_right, matAct_mul, matAct_mul,
-        ← inner_matAct_star_left U_star.val, ← matAct_mul,
+      rw [matAct_sub, inner_sub_right, matAct_mul K.val U_star.val ψ,
+        matAct_mul U_star.val K.val ψ, ← inner_matAct_star_left U_star.val,
+        ← matAct_mul (star U_star.val) U_star.val ψ,
         (Unitary.mem_iff.mp U_star.2).1, matAct_one]
     rw [hcomm_inner]
     set d : ℝ := (inner ℂ (matAct U_star.val ψ) (matAct K.val (matAct U_star.val ψ))).re -
@@ -1043,6 +1108,7 @@ theorem exists_unitaryRatio_singularEigenmode {N : ℕ} (U_star W_star : UGroup 
     rw [hd_eq]
     have him : -((starRingEnd ℂ (((1 - r ^ 2 / 2 : ℝ) : ℂ) + Complex.I * (β : ℂ)) * (d : ℂ)).im) =
         β * d := by
+      rw [hc_re_im]
       simp [Complex.mul_im]
     rw [him, mul_div_right_comm]
 
@@ -1168,20 +1234,12 @@ theorem sup_selfAdjoint_expectation_diff_eq {N : ℕ} {ξ ψ : StateSpace N}
         have horth_add_sq (a b : ℂ) : ‖a • p_hat + b • q_hat‖ ^ 2 = ‖a‖ ^ 2 + ‖b‖ ^ 2 := by
           rw [norm_add_sq_complex, inner_smul_left, inner_smul_right, hpq_hat_orth,
             mul_zero, mul_zero, Complex.zero_re, mul_zero, add_zero,
-            norm_smul, norm_smul, hp_hat_norm, hq_hat_norm, mul_one, mul_one]
-        have horth_res_gen (a b : ℂ) :
+            norm_smul a p_hat, norm_smul b q_hat, hp_hat_norm, hq_hat_norm, mul_one, mul_one]
+        have horth_res_gen (x : StateSpace N) (a b : ℂ) :
             inner ℂ (a • p_hat + b • q_hat) (x - (a • p_hat + b • q_hat)) =
               starRingEnd ℂ a * (inner ℂ p_hat x - a) +
-                starRingEnd ℂ b * (inner ℂ q_hat x - b) := by
-          rw [inner_sub_right, inner_add_left, inner_add_left, inner_add_right, inner_add_right,
-            inner_smul_left, inner_smul_left, inner_smul_left, inner_smul_left,
-            inner_smul_left, inner_smul_left,
-            inner_smul_right, inner_smul_right, inner_smul_right, inner_smul_right,
-            inner_self_complex, inner_self_complex,
-            hp_hat_norm, hq_hat_norm, hpq_hat_orth, ← inner_conj_symm p_hat q_hat, hpq_hat_orth]
-          push_cast
-          simp only [one_pow, map_zero, mul_zero, mul_one, add_zero, zero_add]
-          ring
+                starRingEnd ℂ b * (inner ℂ q_hat x - b) :=
+          orthonormal_two_residual_inner hp_hat_norm hq_hat_norm hpq_hat_orth x a b
         refine opNorm_le_of_matAct_le zero_le_one fun x => ?_
         rw [one_mul, hK_act x]
         refine (sq_le_sq₀ (norm_nonneg _) (norm_nonneg _)).mp ?_
@@ -1192,7 +1250,7 @@ theorem sup_selfAdjoint_expectation_diff_eq {N : ℕ} {ξ ψ : StateSpace N}
         have hexp_x : x = (a_x • p_hat + b_x • q_hat) + r_res := by
           dsimp only [r_res]; abel
         have horth_r : inner ℂ (a_x • p_hat + b_x • q_hat) r_res = 0 := by
-          have h := horth_res_gen a_x b_x
+          have h := horth_res_gen x a_x b_x
           dsimp only [a_x, b_x] at h
           rw [sub_self, sub_self, mul_zero, mul_zero, add_zero] at h
           exact h
@@ -1468,8 +1526,16 @@ theorem pauliCommutator_stationary_iff_eigenmode {N d : ℕ}
       have hdiag_zero : (inner ℂ (matAct U_star ψ) (matAct K_diag (matAct U_star ψ))).re -
           (inner ℂ ψ (matAct K_diag ψ)).re = 0 := by
         have h1 : inner ℂ (matAct U_star ψ) (matAct K_diag (matAct U_star ψ)) =
-            inner ℂ ψ (matAct K_diag ψ) := by
-          rw [← inner_matAct_star_left (star U_star), star_star, ← matAct_mul, ← matAct_mul, hU_Kdiag]
+            inner ℂ ψ (matAct K_diag ψ) := calc
+          inner ℂ (matAct U_star ψ) (matAct K_diag (matAct U_star ψ))
+              = inner ℂ (matAct (star (star U_star)) ψ) (matAct K_diag (matAct U_star ψ)) := by
+                  rw [star_star]
+            _ = inner ℂ ψ (matAct (star U_star) (matAct K_diag (matAct U_star ψ))) :=
+                  inner_matAct_star_left (star U_star) ψ _
+            _ = inner ℂ ψ (matAct (star U_star * K_diag * U_star) ψ) := by
+                  rw [← matAct_mul K_diag U_star ψ, ← matAct_mul (star U_star) (K_diag * U_star) ψ,
+                    ← mul_assoc]
+            _ = inner ℂ ψ (matAct K_diag ψ) := by rw [hU_Kdiag]
         rw [h1, sub_self]
       have hP0 : (inner ℂ (matAct U_star ψ)
           (matAct (pauliTransverseGenerator H P).val (matAct U_star ψ))).re -
@@ -1910,7 +1976,9 @@ theorem gaussian_degreeFree_dini_anticoncentration {ι : Type*} [Fintype ι] [De
     (fun _ => gaussianReal 0 1)
   have hE_eq : γ_pi E = (μ_one.prod μ_rest) (e_split.symm ⁻¹' E) := by
     rw [← hmp.measure_preimage (e_split.symm.measurable hE_meas).nullMeasurableSet]
-    congr 1; ext x; simp
+    congr 1; ext x
+    change x ∈ E ↔ e_split.symm (e_split x) ∈ E
+    rw [e_split.symm_apply_apply]
   have hprod_eval : (μ_one.prod μ_rest) (e_split.symm ⁻¹' E) =
       ∫⁻ z, μ_one {w : Subtype p_i₀ → ℝ | e_split.symm (w, z) ∈ E} ∂μ_rest :=
     Measure.prod_apply_symm (e_split.symm.measurable hE_meas)
@@ -1941,12 +2009,13 @@ theorem gaussian_degreeFree_dini_anticoncentration {ι : Type*} [Fintype ι] [De
     have hpi : μ_one (Set.univ.pi fun _ : Subtype p_i₀ => {t : ℝ | Function.update y i₀ t ∈ E}) =
         (gaussianReal 0 1) {t : ℝ | Function.update y i₀ t ∈ E} := by
       dsimp only [μ_one]
-      rw [Measure.pi_pi]
+      rw [@Measure.pi_pi (Subtype p_i₀) (fun _ => ℝ) (Subtype.fintype p_i₀) _
+        (fun _ => gaussianReal 0 1)]
       refine Finset.prod_eq_single j₀ ?_ ?_
       · rintro ⟨j, hj⟩ _ hne
         exact (hne (Subtype.ext hj)).elim
       · intro h
-        exact (h (Finset.mem_univ j₀)).elim
+        exact (h (@Finset.mem_univ (Subtype p_i₀) (Subtype.fintype p_i₀) j₀)).elim
     rw [hpi]
     exact h1d y
   have htot : γ_pi E ≤ ENNReal.ofReal ((M : ℝ) * δ / (Real.sqrt (2 * Real.pi) * c)) := by

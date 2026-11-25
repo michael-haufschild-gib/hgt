@@ -1,6 +1,7 @@
 import Mathlib.RingTheory.NoetherNormalization
 import Mathlib.RingTheory.AlgebraicIndependent.TranscendenceBasis
 import Mathlib.RingTheory.MvPolynomial.Basic
+import Mathlib.RingTheory.MvPolynomial.Homogeneous
 import Mathlib.LinearAlgebra.Dimension.Finite
 import Mathlib.Tactic.GCongr
 import Mathlib.Tactic.Ring
@@ -182,7 +183,7 @@ theorem lower {s m : ℕ} (φ : MvPolynomial (Fin s) K →ₐ[K] B) (hφ : Funct
     intro a
     refine ⟨∏ i, q i ^ (a i : ℕ), ?_, ?_⟩
     · refine (MvPolynomial.mem_restrictTotalDegree _ _ _).2 ?_
-      refine (MvPolynomial.totalDegree_finset_prod _ _).trans ?_
+      refine (MvPolynomial.totalDegree_finsetProd _ _).trans ?_
       calc ∑ i, (q i ^ (a i : ℕ)).totalDegree ≤ ∑ i, (t / E) * (q i).totalDegree :=
             Finset.sum_le_sum fun i _ => (MvPolynomial.totalDegree_pow _ _).trans
               (Nat.mul_le_mul_right _ (Nat.le_of_lt_succ (a i).2))
@@ -197,6 +198,37 @@ theorem lower {s m : ℕ} (φ : MvPolynomial (Fin s) K →ₐ[K] B) (hφ : Funct
   simp only [Fintype.card_pi, Fintype.card_fin, Finset.prod_const, Finset.card_univ] at hc
   calc t ^ s ≤ (E * (t / E + 1)) ^ s := Nat.pow_le_pow_left (Nat.lt_mul_div_succ t hE0).le _
     _ ≤ _ := by rw [mul_pow]; exact Nat.mul_le_mul_left _ hc
+
+section Homogeneous
+
+variable {σ R A : Type} [CommRing R] [CommRing A]
+
+/-- Scaling all the inputs to a homogeneous form scales its value by the degree power. -/
+theorem eval₂Hom_mul_of_isHomogeneous (c : R →+* A) (u : A) (x : σ → A)
+    {F : MvPolynomial σ R} {t : ℕ} (hF : F.IsHomogeneous t) :
+    MvPolynomial.eval₂Hom c (fun j => u * x j) F = u ^ t * MvPolynomial.eval₂Hom c x F := by
+  simp only [MvPolynomial.coe_eval₂Hom, MvPolynomial.eval₂_eq, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun d hd => ?_
+  rw [hF.degree_eq_sum_deg_support hd]
+  simp only [mul_pow, Finset.prod_mul_distrib, Finset.prod_pow_eq_pow_sum]
+  ring
+
+/-- Homogenization in a coordinate of value one preserves the evaluation. -/
+theorem exists_isHomogeneous_eval₂Hom_eq (c : R →+* A) (x : σ → A) (i : σ) (hi : x i = 1)
+    (p : MvPolynomial σ R) {t : ℕ} (hp : p.totalDegree ≤ t) :
+    ∃ F : MvPolynomial σ R, F.IsHomogeneous t ∧
+      MvPolynomial.eval₂Hom c x F = MvPolynomial.eval₂Hom c x p := by
+  refine ⟨∑ d ∈ Finset.range (p.totalDegree + 1),
+    MvPolynomial.homogeneousComponent d p * MvPolynomial.X i ^ (t - d), ?_, ?_⟩
+  · refine MvPolynomial.IsHomogeneous.sum _ _ _ fun d hd => ?_
+    have hh := (MvPolynomial.homogeneousComponent_isHomogeneous d p).mul
+      (MvPolynomial.isHomogeneous_X_pow (R := R) i (t - d))
+    have hd' := Finset.mem_range.1 hd
+    rwa [show d + (t - d) = t by omega] at hh
+  · conv_rhs => rw [← MvPolynomial.sum_homogeneousComponent p]
+    simp only [map_sum, map_mul, map_pow, MvPolynomial.eval₂Hom_X', hi, one_pow, mul_one]
+
+end Homogeneous
 
 end DegreeGrowth
 

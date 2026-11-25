@@ -7,13 +7,14 @@ import GaloisForLFunctions.HTGeometry.AveragedCentralizerProjectionFloor
 open Matrix Set Real
 open scoped Matrix.Norms.L2Operator
 namespace GaloisForLFunctions.HTGeometry.SpectralJets.BoundaryField.EntryWindows
-open PrecisionReturns SharpOccupation
+open PrecisionReturns
+open SharpOccupation (physicalArc physicalArc_spec)
 noncomputable section
 
 /-- A single small gap costs one extra factor of the field scale in a
 determinant bound. Absorb it into the Dth power before taking a sublevel length. -/
 private theorem absorb_scale {D : ℕ} (hD : 0<D) {c Q M S r : ℝ}
-    (hc : 0<c) (hQ : 0≤Q) (hM : 0≤M) (hS : 1≤S) (hr : 0≤r) :
+    (hc : 0<c) (hM : 0≤M) (hS : 1≤S) (hr : 0≤r) :
     Q*S*r^D*(M*S)^D ≤ c/2*((max 1 (2*Q/c)*M)*S^2*r)^D := by
   let a := max 1 (2*Q/c)
   have ha : 1≤a := le_max_left .. 
@@ -86,7 +87,7 @@ theorem shell_entry_sublevel {N : ℕ} (A Z : Register N)
     have h := hnear.trans (mul_le_mul_of_nonneg_left hwin hQS)
     linarith only [htri,h,hg]
   have hfac : 1+|b n|+2*max (L*S/2) 0≤M*S := by
-    rw [max_eq_left (half_nonneg (mul_nonneg hL.le hS₀))]
+    rw [max_eq_left (div_nonneg (mul_nonneg hL.le hS₀) zero_le_two)]
     dsimp only [M]
     linarith only [hS,hbn]
   refine ⟨n,hbox,?_⟩
@@ -94,7 +95,7 @@ theorem shell_entry_sublevel {N : ℕ} (A Z : Register N)
   refine (gap_determinant_bound _ (hH y) _ _ hE i j).trans ?_
   refine (mul_le_mul hgap (pow_le_pow_left₀ (by positivity) hfac D) (by positivity)
     (mul_nonneg hQS (pow_nonneg hr.1.le D))).trans ?_
-  exact absorb_scale hD hc hQ.le hM.le hS hr.1.le
+  exact absorb_scale hD hc hM.le hS hr.1.le
 
 #print axioms shell_entry_sublevel
 end

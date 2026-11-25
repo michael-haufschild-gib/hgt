@@ -16,17 +16,25 @@ variable {X Y Z W : Scheme.{0}} {I : Type} [Fintype I]
 private def linCombChartPull (L : LB X) (f : I → (Y ⟶ X)) (e : I → ℤ) (r : Z ⟶ Y) :
     ChartPull (LB.LinComb L (fun i => r ≫ f i) e) (LB.LinComb L f e) r where
   idx i := i
-  le _ := fun _ h => h
+  le _ := fun _ h => Set.mem_iInter.2 fun k => Set.mem_iInter.1 h k
   g i j := by
     let V := LB.wchart L (fun k => r ≫ f k) i ⊓ LB.wchart L (fun k => r ≫ f k) j
-    have hV : V ≤ r ⁻¹ᵁ (LB.wchart L f i ⊓ LB.wchart L f j) := fun _ h => h
+    have hV : V ≤ r ⁻¹ᵁ (LB.wchart L f i ⊓ LB.wchart L f j) := fun _ h =>
+      ⟨Set.mem_iInter.2 fun k => Set.mem_iInter.1 h.1 k,
+        Set.mem_iInter.2 fun k => Set.mem_iInter.1 h.2 k⟩
     apply unit_ext
     intro z hz
-    have hi : r ((𝟙 Z : Z ⟶ Z) z) ∈ LB.wchart L f i := hz.1
-    have hj : r ((𝟙 Z : Z ⟶ Z) z) ∈ LB.wchart L f j := hz.2
+    have hi : r ((𝟙 Z : Z ⟶ Z) z) ∈ LB.wchart L f i := (hV hz).1
+    have hj : r ((𝟙 Z : Z ⟶ Z) z) ∈ LB.wchart L f j := (hV hz).2
+    let a := (LB.LinComb L f e).g i j
+    have ha : gm (𝟙 Z) z V (pullLE r hV a) =
+        gm (𝟙 Z ≫ r) z (LB.wchart L f i ⊓ LB.wchart L f j) a :=
+      (congrArg (gm (𝟙 Z) z V) (res_pullU r _ hV a).symm).trans
+        ((gm_res (𝟙 Z) z hV hz _).trans
+          (gm_pull (𝟙 Z) r z (LB.wchart L f i ⊓ LB.wchart L f j) ⟨hi, hj⟩ a))
     change gm (𝟙 Z) z V _ = gm (𝟙 Z) z V (pullLE r hV _)
-    rw [← res_pullU, gm_res (𝟙 Z) z hV hz, gm_pull (𝟙 Z) r z _ ⟨hi, hj⟩,
-      gm_linComb L _ e (𝟙 Z) z i j hz.1 hz.2, gm_linComb L f e (𝟙 Z ≫ r) z i j hi hj]
+    refine (gm_linComb L (fun k => r ≫ f k) e (𝟙 Z) z i j hz.1 hz.2).trans ?_
+    refine Eq.trans ?_ ((gm_linComb L f e (𝟙 Z ≫ r) z i j hi hj).symm.trans ha.symm)
     simp only [Category.assoc]
 
 /-- Triviality after composing the factors with a map is triviality of the pullback. -/
@@ -55,7 +63,8 @@ theorem exists_gen_of_cancellation (L : LB X) (hL : L.IsLB)
     fun U _ k => (Fintype.prod_empty _).trans (h U k).symm
   have hs : (LB.oneGen L (Y := Y)).IsGen := by
     intro i j
-    simp [LB.oneGen, LB.LinComb]
+    exact (map_one _).trans
+      ((congrArg₂ (· * ·) (Fintype.prod_empty _) (map_one _)).trans (mul_one _)).symm
   obtain ⟨t, ht, hv⟩ := exists_gen_of_formEq hL he (LB.oneGen L) hs
   refine ⟨t, ht, fun Z r z J hJ => (hv Z r z J hJ).trans ?_⟩
   exact map_one _

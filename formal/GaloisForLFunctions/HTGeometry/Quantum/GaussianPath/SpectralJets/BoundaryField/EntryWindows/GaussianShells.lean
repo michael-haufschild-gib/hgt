@@ -17,7 +17,7 @@ theorem shell_measurable (n : ℕ) : MeasurableSet (shell n) :=
 private theorem shell_pdf {n : ℕ} {y : ℝ} (hy : y∈shell n) :
     gaussianPDF 0 1 y≤ENNReal.ofReal (exp (-(1/2:ℝ)*(n:ℝ)^2)) := by
   apply ENNReal.ofReal_le_ofReal
-  have hroot : 1≤sqrt (2*π) := (Real.le_sqrt (by norm_num) (by positivity)).mpr
+  have hroot : 1≤ sqrt (2*π) := (Real.le_sqrt (by norm_num) (by positivity)).mpr
     (by linarith only [pi_gt_three])
   have hs := mul_self_le_mul_self (Nat.cast_nonneg n) hy.1
   have hh : -(y-0)^2/(2*(1:ℝ))≤-(1/2:ℝ)*(n:ℝ)^2 := by
@@ -50,7 +50,7 @@ theorem gaussian_of_shell_covers (d : ℕ) :
       _ ≤ ∫⁻ _y in B n, ENNReal.ofReal w := lintegral_mono_ae
         ((ae_restrict_mem (hm n)).mono fun y hy => shell_pdf (hb n hy))
       _ = ENNReal.ofReal w*volume (B n) := by simp
-      _ ≤ ENNReal.ofReal w*ENNReal.ofReal (u*(1+(n:ℝ))^d) := mul_le_mul_left' (hvol n) _
+      _ ≤ ENNReal.ofReal w*ENNReal.ofReal (u*(1+(n:ℝ))^d) := mul_le_mul_right (hvol n) _
       _ = ENNReal.ofReal (u*g n) := by
         rw [←ENNReal.ofReal_mul (exp_pos _).le]
         congr 1

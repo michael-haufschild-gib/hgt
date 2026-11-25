@@ -76,7 +76,10 @@ theorem mem_fibreTriviality_iff (hL : L.IsLB) {p : Y ⟶ T}
     · apply (mem_range_Spec_map α.hom x).1
       refine ⟨y, j.isOpenEmbedding.injective ?_⟩
       exact (congrArg (fun b : Spec (CommRingCat.of K) ⟶ T => b y) e).trans hy
-    · exact IsPullback.of_right (by rw [ha]; rw [e]; exact hp) (H.lift_snd _ _ _) H
+    · refine IsPullback.of_right ?_ (H.lift_snd _ _ _) H
+      rw [ha]
+      change IsPullback π g p (Spec.map α ≫ j)
+      exact e.symm ▸ hp
     · apply (trivial_pull_comp_iff hL q a).2
       rwa [ha]
   · rintro ⟨K, _, α, Z, π, g, hα, hp, ht⟩

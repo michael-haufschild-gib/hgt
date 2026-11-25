@@ -63,7 +63,7 @@ private theorem left_subset {c b d : ℝ} (hbd : b ≤ d) (h : Ioi (0:ℝ)) :
 private theorem right_packet {c b d : ℝ} (hcb : c ≤ b) (h : Ioi (0:ℝ)) :
     added c d h \ added c b h = added b d h := by
   ext p
-  simp only [Finset.mem_sdiff,mem_added]
+  rw [Finset.mem_sdiff,mem_added c d h p,mem_added c b h p,mem_added b d h p]
   constructor
   · rintro ⟨⟨hc,hd⟩,hn⟩
     exact ⟨lt_of_not_ge (fun hb => hn ⟨hc,hb⟩),hd⟩

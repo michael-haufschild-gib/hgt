@@ -1,13 +1,14 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.BoundaryField.EntryWindows.LocalSublevel
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.BoundaryField.EntryWindows.WindingForecast
-import GaloisForLFunctions.HTGeometry.DivisorHeightRatioGate
+import Mathlib.Data.Fintype.Lattice
 
 /-! # Short-window probability for an actual scalar entry under a Gaussian field -/
 
 open Matrix Set Real Filter MeasureTheory ProbabilityTheory
 open scoped Matrix.Norms.L2Operator
 namespace GaloisForLFunctions.HTGeometry.SpectralJets.BoundaryField.EntryWindows
-open PrecisionReturns SharpOccupation
+open PrecisionReturns
+open SharpOccupation (physicalArc physicalArc_spec)
 noncomputable section
 
 /-- A field chosen from a standard Gaussian makes a genuine entry in a
@@ -38,8 +39,10 @@ theorem pencil_entry_window {N : ℕ} (A Z : Register N)
     · have h : (n:ℝ)≤-1 := by exact_mod_cast (show n≤-1 by omega)
       linarith only [h,hx.2]
   choose d hd hdet using fun n : F => gap_small_window A Z hH (b n.val) L (hP _ (hn _))
-  obtain ⟨u,hu,hmin⟩ := exists_pos_lowerBound_of_finite_pos (Set.finite_range d)
-    (fun _ ⟨n,hn⟩ => hn ▸ hd n)
+  letI : Nonempty F := ⟨⟨0,Finset.mem_Icc.mpr ⟨neg_nonpos.mpr (Nat.cast_nonneg _),Nat.cast_nonneg _⟩⟩⟩
+  obtain ⟨n₀,hmin⟩ := Finite.exists_min d
+  let u := d n₀
+  have hu : 0<u := hd n₀
   let Q := 2*L/T
   have hQ : 0<Q := div_pos (mul_pos zero_lt_two hL) hT
   let c := min 1 (u/Q)
@@ -53,22 +56,25 @@ theorem pencil_entry_window {N : ℕ} (A Z : Register N)
     ∃ i j, |b n.val-((hH y).eigenvalues i-(hH y).eigenvalues j)|<d n*r^D}
   have hmass (n : F) : (gaussianReal 0 1).real (B n)≤2*D*r := by
     simpa only [B,hcard] using hdet n r hr
-  apply (measureReal_mono (t:=(⋃ n : F, B n)) ?_).trans
-  · refine (measureReal_iUnion_fintype_le B).trans ((Finset.sum_le_sum fun n _ => hmass n).trans_eq ?_)
-    simp only [Finset.sum_const,Finset.card_univ,Fintype.card_coe,nsmul_eq_mul,mul_assoc]
-  · rintro y ⟨hE,a,ha,hout,hwindow⟩
-    let v := firstVisit (H y) a 0 ε
-    obtain ⟨hv,i,j,n,_,hgap⟩ := first_entry_gap (H y) ha he.1 he.2 hout
-    let g := (hH y).eigenvalues i-(hH y).eigenvalues j
-    have hg : |g|≤2*L := (abs_sub _ _).trans (by linarith only [hE i,hE j])
-    have hvT : |v-T|≤1 := hwindow.le.trans (mul_le_one₀ (min_le_left ..) (pow_nonneg hr.1.le _) (pow_le_one₀ hr.1.le hr.2))
-    obtain ⟨hnF,herr⟩ := hF v g n hv hvT hg hgap
-    let m : F := ⟨n,hnF⟩
-    refine mem_iUnion.mpr ⟨m,hE,i,j,herr.trans_lt ?_⟩
-    calc
-      Q*|v-T| < Q*(c*r^D) := mul_lt_mul_of_pos_left hwindow hQ
-      _ = (Q*c)*r^D := (mul_assoc ..).symm
-      _ ≤ d m*r^D := mul_le_mul_of_nonneg_right (hscale.trans (hmin _ ⟨m,rfl⟩)) (pow_nonneg hr.1.le _)
+  calc
+    _ ≤ (gaussianReal 0 1).real (⋃ n : F, B n) := by
+      refine measureReal_mono ?_ (measure_ne_top _ _)
+      rintro y ⟨hE,a,ha,hout,hwindow⟩
+      let v := firstVisit (H y) a 0 ε
+      obtain ⟨hv,i,j,n,_,hgap⟩ := first_entry_gap (H y) ha he.1 he.2 hout
+      let g := (hH y).eigenvalues i-(hH y).eigenvalues j
+      have hg : |g|≤2*L := (abs_sub _ _).trans (by linarith only [hE i,hE j])
+      have hvT : |v-T|≤1 := hwindow.le.trans (mul_le_one₀ (min_le_left ..) (pow_nonneg hr.1.le _) (pow_le_one₀ hr.1.le hr.2))
+      obtain ⟨hnF,herr⟩ := hF v g n hv hvT hg hgap
+      let m : F := ⟨n,hnF⟩
+      refine mem_iUnion.mpr ⟨m,hE,i,j,herr.trans_lt ?_⟩
+      calc
+        Q*|v-T| < Q*(c*r^D) := mul_lt_mul_of_pos_left hwindow hQ
+        _ = (Q*c)*r^D := (mul_assoc ..).symm
+        _ ≤ d m*r^D := mul_le_mul_of_nonneg_right (hscale.trans (hmin m)) (pow_nonneg hr.1.le _)
+    _ ≤ _ := by
+      refine (measureReal_iUnion_fintype_le B).trans ((Finset.sum_le_sum fun n _ => hmass n).trans_eq ?_)
+      simp only [Finset.sum_const,Finset.card_univ,Fintype.card_coe,nsmul_eq_mul,mul_assoc]
 
 #print axioms pencil_entry_window
 end

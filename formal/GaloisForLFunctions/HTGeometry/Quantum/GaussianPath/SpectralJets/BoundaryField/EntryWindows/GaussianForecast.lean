@@ -9,7 +9,8 @@ import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.Boundary
 open Set Filter MeasureTheory ProbabilityTheory Real
 open scoped Matrix.Norms.L2Operator
 namespace GaloisForLFunctions.HTGeometry.SpectralJets.BoundaryField.EntryWindows
-open PrecisionReturns SharpOccupation PrefixCouplings
+open PrecisionReturns PrefixCouplings
+open SharpOccupation (physicalArc physicalArc_spec)
 noncomputable section
 
 private theorem pencil_forecast {N : ℕ} (A Z : Register N)
@@ -28,8 +29,8 @@ private theorem pencil_forecast {N : ℕ} (A Z : Register N)
   have hn (m : ℤ) : b m≠0 := by
     apply div_ne_zero _ hT.ne'
     apply mul_ne_zero two_pi_pos.ne'
-    by_cases hm : 0≤m
-    · exact (add_pos_of_nonneg_of_pos (by exact_mod_cast hm : (0:ℝ)≤m) hx.1).ne'
+    by_cases hm : 0 ≤ m
+    · exact (add_pos_of_nonneg_of_pos (by exact_mod_cast hm : (0:ℝ) ≤ m) hx.1).ne'
     · have hu : (m:ℝ)≤-1 := by exact_mod_cast (show m≤-1 by omega)
       linarith only [hu,hx.2]
   have hA : A.IsHermitian := by simpa only [Complex.ofReal_zero,zero_smul,add_zero] using hH 0
@@ -43,10 +44,10 @@ private theorem pencil_forecast {N : ℕ} (A Z : Register N)
   have hF : 0<F := by dsimp only [F]; positivity
   have hJ : 0<J := by dsimp only [J]; positivity
   refine ⟨F*J*G,fun r hr => ?_⟩
-  refine (hG _ (F*J*r) (by positivity) ?_).trans_eq (by ring)
+  refine (hG _ (F*J*r) (mul_nonneg (mul_nonneg hF.le hJ.le) hr.1.le) ?_).trans_eq (by ring)
   intro n
   let S := 1+(n:ℝ)
-  have hS : 1≤S := by dsimp only [S]; linarith only [Nat.cast_nonneg n]
+  have hS : 1≤S := le_add_of_nonneg_right (Nat.cast_nonneg n : (0:ℝ) ≤ n)
   have hS₀ : 0<S := zero_lt_one.trans_le hS
   let W := windingBox T (L*S)
   let u := C*S^2*r
@@ -81,7 +82,7 @@ private theorem pencil_forecast {N : ℕ} (A Z : Register N)
     rw [Finset.sum_const,Finset.card_univ,Fintype.card_coe,nsmul_eq_mul,←ENNReal.ofReal_natCast,
       ←ENNReal.ofReal_mul (Nat.cast_nonneg _)]
     apply ENNReal.ofReal_le_ofReal
-    apply (mul_le_mul_of_nonneg_right hcard (by positivity : 0≤J*S^3*r)).trans_eq
+    apply (mul_le_mul_of_nonneg_right hcard (mul_nonneg (mul_nonneg hJ.le (pow_nonneg hS₀.le _)) hr.1.le)).trans_eq
     change F*S*(J*S^3*r)=F*J*r*S^4
     ring
 
@@ -123,7 +124,7 @@ theorem gaussian_first_crossing_forecast :
   filter_upwards [gaussian_first_entry_window] with ω hω k T hT
   intro P D
   obtain ⟨K,hK⟩ := hω k T hT (1/10) he
-  refine ⟨K,fun r hr => (measureReal_mono ?_).trans (hK r hr)⟩
+  refine ⟨K,fun r hr => (measureReal_mono (μ:=gaussianReal 0 1) ?_ (measure_ne_top _ _)).trans (hK r hr)⟩
   rintro y ⟨σ,hσ,hcross,_,hnear⟩
   let H := replacedGenerator ω k y
   refine ⟨σ,hσ,?_,hnear⟩
