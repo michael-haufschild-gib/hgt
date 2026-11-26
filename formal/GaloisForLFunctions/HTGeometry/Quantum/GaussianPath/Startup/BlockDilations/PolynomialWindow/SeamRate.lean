@@ -49,7 +49,7 @@ theorem split_probability {n s : ℕ} (T : Finset (PathLabel n)) (F E B e t : �
     μ.real (affordableDraw n s e t ∩ globalBounds n F E) ≤
       μ.real (affordableDraw n s e t ∩ drawBounds T F E B)+μ.real {x | B≤energyOn T x} := by
   intro μ
-  apply (measureReal_mono (t:=((affordableDraw n s e t ∩ drawBounds T F E B) ∪
+  apply (measureReal_mono (μ:=μ) (s₂:=((affordableDraw n s e t ∩ drawBounds T F E B) ∪
     {x | B≤energyOn T x})) ?_).trans (measureReal_union_le ..)
   rintro x ⟨hx,he⟩
   rcases le_total (energyOn T x) B with h|h

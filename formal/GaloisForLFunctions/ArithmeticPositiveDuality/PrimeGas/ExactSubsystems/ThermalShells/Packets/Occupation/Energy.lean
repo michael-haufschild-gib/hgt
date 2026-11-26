@@ -6,7 +6,8 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.ExactSubsystems.ThermalShells.Packets.Occupation
 
-open Finset Filter Topology Real Set _root_.RHTower
+open Finset Filter Topology Real _root_.RHTower
+open Set (Ioi)
 open BinaryOrientation.LargestPrime.Bands
 open BinaryOrientation.LargestPrime.Bands.Marks.FixedCount.Localization.Endpoints
 local instance : LinearOrder Nat.Primes := LinearOrder.lift' Subtype.val Subtype.val_injective
@@ -27,20 +28,23 @@ theorem energy_local {S : Finset Nat.Primes} {D k t : ℝ} (hk : 0 < k) (ht : 0 
   let w := max (log (1+1/t)) (log (1+k/t))
   let e (p : ↥S) := squarefreePrimeEnergy p.val-t-(if p ∈ H then D else 0)
   have each p (hp : p ∈ R.val) : |e p| ≤ w := by
-    have hn : serial p ∈ both D k t := (mem_filter.mp ((mem_filter.mp hr).2 hp)).2
+    have sub : R.val ⊆ modes S (both D k t) := (mem_filter.mp hr).2
+    have hn : serial p ∈ both D k t := (mem_filter.mp (sub hp)).2
     by_cases hh : serial p ∈ high D k t
     · have hm : p ∈ H := mem_filter.mpr ⟨mem_univ _,hh⟩
       obtain ⟨_,hl,hu⟩ := high_energy hk ht hh
       change t+(D-log (1+k/t)) < squarefreePrimeEnergy p.val at hl
       change squarefreePrimeEnergy p.val ≤ t+D at hu
-      rw [e,if_pos hm,abs_le]
+      dsimp only [e]
+      rw [if_pos hm,abs_le]
       have hw : 0 ≤ log (1+k/t) := log_nonneg (by linarith only [div_pos hk ht])
       constructor <;> linarith only [hl,hu,hw,(le_max_right (log (1+1/t)) (log (1+k/t)) : _ ≤ w)]
     · have hm : p ∉ H := fun h => hh (mem_filter.mp h).2
       obtain ⟨_,hl,hu⟩ := low_energy ht ((mem_union.mp hn).resolve_right hh)
       change t < squarefreePrimeEnergy p.val at hl
       change squarefreePrimeEnergy p.val ≤ t+log (1+1/t) at hu
-      rw [e,if_neg hm,sub_zero,abs_of_nonneg (sub_nonneg.mpr hl.le)]
+      dsimp only [e]
+      rw [if_neg hm,sub_zero,abs_of_nonneg (sub_nonneg.mpr hl.le)]
       exact (by linarith only [hu,(le_max_left (log (1+1/t)) (log (1+k/t)) : _ ≤ w)])
   have q : (∑ p ∈ R.val, if p ∈ H then D else 0) = (upperCount H R:ℝ)*D := by
     rw [← sum_filter,sum_const,nsmul_eq_mul]; rfl
@@ -100,7 +104,9 @@ theorem energy_limit {c d D k : ℝ} (hc : 0 < c) (hcd : c < d) (hD : 0 < D) (hk
     Tendsto (energyRead c d D k b m f) criticalApproach
       (𝓝 (∑ j ∈ range (m+1), bin m j (upperProbability D k b)*f ((j:ℝ)*D))) := by
   let lattice (h : Ioi (0:ℝ)) := ∑ j ∈ range (m+1), read c d D k b m {j} h*f ((j:ℝ)*D)
-  have lim : Tendsto lattice criticalApproach _ := tendsto_finsetSum _ fun j _ => (cell_limit hc hcd hD hk b m j).mul_const _
+  have lim : Tendsto lattice criticalApproach
+      (𝓝 (∑ j ∈ range (m+1), bin m j (upperProbability D k b)*f ((j:ℝ)*D))) :=
+    tendsto_finsetSum (range (m+1)) fun j _ => (cell_limit hc hcd hD hk b m j).mul_const _
   have rad := (radius_limit k m).comp (translation_limit hc)
   have err : Tendsto (fun h => energyRead c d D k b m f h-lattice h) criticalApproach (𝓝 0) := by
     rw [Metric.tendsto_nhds]
@@ -110,7 +116,8 @@ theorem energy_limit {c d D k : ℝ} (hc : 0 < c) (hcd : c < d) (hD : 0 < D) (hk
       obtain ⟨δ,hδ,hd⟩ := Metric.continuousAt_iff.mp (hf.continuousAt (x := (j:ℝ)*D)) (ε/2) (half_pos hε)
       filter_upwards [rad.eventually_lt_const hδ] with h hr
       intro x hx
-      exact (hd ((Real.dist_eq _ _).symm ▸ hx.trans_lt hr)).le
+      have hx' : dist x ((j:ℝ)*D) < δ := by rw [Real.dist_eq]; exact hx.trans_lt hr
+      simpa only [Real.dist_eq] using (hd hx').le
     filter_upwards [(Filter.eventually_all_finset (range (m+1))).mpr (fun j _ => localBound j)] with h hh
     let t := c/h.val
     let S := added c d h

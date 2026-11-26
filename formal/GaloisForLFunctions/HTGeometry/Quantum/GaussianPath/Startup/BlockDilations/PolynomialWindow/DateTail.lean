@@ -60,7 +60,7 @@ theorem gaussian_packet_date_tail {u v : ℝ} (hu : 0<u) (hv : 0<v) :
       δ*K/(log K)^2*q = η*(L:ℝ)*(q^2/(4*(M*log K)^2)) := by
         dsimp only [δ]
         nth_rw 1 [←hrec]
-        field_simp; ring
+        field_simp
       _ ≤ η*(L:ℝ)*1 := mul_le_mul_of_nonneg_left hratio (mul_nonneg hη.le hLp.le)
       _ = _ := mul_one _
   have hc' := h n L hU ((le_max_right ..).trans hq) t ht.1 htime
@@ -78,7 +78,7 @@ theorem gaussian_packet_date_tail {u v : ℝ} (hu : 0<u) (hv : 0<v) :
       (neg_le_neg (min_le_left c 1)) hqp.le))
     have h₂ := hb.trans (exp_le_exp.mpr (show -q≤ -d*q by
       linarith only [mul_le_mul_of_nonneg_right (min_le_right c 1) hqp.le]))
-    linarith only [h₁,h₂,he]
+    exact (add_le_add (h₁.trans he) (h₂.trans he)).trans_eq (by ring)
   have hX : MeasurableSet X := (measurable_affordableDraw ..).inter (measurable_globalBounds ..)
   unfold Measure.real
   rw [(prefix_measure n).measure_preimage hX.nullMeasurableSet]

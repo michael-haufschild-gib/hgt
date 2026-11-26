@@ -7,7 +7,8 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.ExactSubsystems.ThermalShells.Packets.Occupation
 
-open Finset Filter Topology Real Set _root_.RHTower
+open Finset Filter Topology Real _root_.RHTower
+open Set (Ioi)
 open BinaryOrientation.LargestPrime.Bands
 open BinaryOrientation.LargestPrime.Bands.Marks.FixedCount.Localization.Endpoints
 local instance : LinearOrder Nat.Primes := LinearOrder.lift' Subtype.val Subtype.val_injective
@@ -83,7 +84,11 @@ theorem finite_error {c d D k : ℝ} (hc : 0 < c) (hcd : c < d) (hD : 0 < D) (hk
   change |countRead _ (both D k t) (high D k t) b m B-binEvent m B (upper D k b t)| ≤ _
   rw [born_subset _ _ hP b t]
   change |subsetRead q _ m B-binEvent m B (upper D k b t)| ≤ _
-  simpa only [q,draw_event hm (show high D k t ⊆ both D k t from subset_union_right),upper] using H
+  have hcov : (modes (added c d h) (both D k t)).image serial = both D k t := hm
+  have prob : (∑ x ∈ modes (added c d h) (high D k t), q x) = upper D k b t :=
+    draw_event hcov (show high D k t ⊆ both D k t from subset_union_right) b t
+  rw [prob] at H
+  exact H
 
 #print axioms born_subset
 #print axioms finite_error

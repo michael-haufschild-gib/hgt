@@ -47,6 +47,7 @@ theorem mode_coverage {c d D k : ℝ} (hc : 0 < c) (hcd : c < d) (hD : 0 < D) (h
     obtain ⟨p,hp⟩ := Finset.card_eq_one.mp R.property
     have hr : R = oneMode p := Subtype.ext hp
     rw [hr,label_oneMode] at he
+    change serial p = n at he
     exact Finset.mem_image.mpr ⟨p,Finset.mem_filter.mpr ⟨Finset.mem_univ _,he ▸ hn⟩,he⟩
 
 def draw (S : Finset Nat.Primes) (P : Finset ℕ) (b t : ℝ) (p : ↥S) :=
@@ -62,7 +63,7 @@ theorem draw_total {P : Finset ℕ} (hp : P.Nonempty) (him : (modes S P).image s
     ∑ p, draw S P b t p = 1 := by
   classical
   have he : (∑ p ∈ modes S P, shifted b t (serial p)) = mass (shifted b t) P := by
-    rw [mass,← him,Finset.sum_image (serial_inj S).injOn]
+    conv_rhs => rw [mass,← him,Finset.sum_image (serial_inj S).injOn]
   simp only [draw,← Finset.sum_filter,Finset.filter_mem_eq_inter,Finset.univ_inter,← Finset.sum_div,
     he,div_self (mass_pos (shifted_pos b t) hp).ne']
 

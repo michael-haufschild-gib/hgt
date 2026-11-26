@@ -6,7 +6,8 @@ noncomputable section
 
 namespace GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.ExactSubsystems.ThermalShells.Packets.Occupation
 
-open Finset Filter Topology Real Set _root_.RHTower
+open Finset Filter Topology Real _root_.RHTower
+open Set (Ioi)
 open BinaryOrientation.LargestPrime.Bands
 
 /-- Total variation for two readings on the count space {0,...,m}. -/
@@ -39,7 +40,7 @@ private theorem collision_vanishes {c d D k : ℝ} (hc : 0 < c) (hcd : c < d) (h
   intro h
   have hs : 0 < scale (c/h.val) := div_pos (sq_pos_of_pos (div_pos hc h.property)) (exp_pos _)
   change _ * scale (c/h.val) * (_ / scale (c/h.val)) = _
-  rw [mul_assoc,mul_div_cancel₀' _ hs.ne']
+  rw [mul_assoc,← mul_div_assoc,mul_div_cancel_left₀ _ hs.ne']
 
 /-- Even a growing count has a binomial approximation in total variation when the birthday
 scale times the number of coordinate pairs tends to zero. The parameter is the finite packet share. -/
@@ -108,7 +109,8 @@ theorem binomial_limit {c d D k : ℝ} (hc : 0 < c) (hcd : c < d) (hD : 0 < D) (
   simp only [sub_self,abs_zero,sum_const_zero] at total
   apply squeeze_zero' (Eventually.of_forall fun h => distance_nonneg _ _ _) _ total
   exact Eventually.of_forall fun h => distance_le fun B hB =>
-    single_le_sum (fun i _ => abs_nonneg _) (mem_powerset.mpr hB)
+    single_le_sum (s := P) (f := fun A => |read c d D k b m A h-binEvent m A (upperProbability D k b)|)
+      (fun _ _ => abs_nonneg _) (mem_powerset.mpr hB)
 
 #print axioms eventual_sector
 #print axioms growing_binomial

@@ -80,6 +80,31 @@ theorem eq_one_of_trivial_weil {K : Type} [Field K] [IsAlgClosed K]
   let r := ((fst T A).left ⁻¹ᵁ (⊤ : S.Opens)).ι
   exact (AbLaw.Cube.trivial_pull_linComb L hL g d r).2 ⟨_, hu.pullGen g d r⟩
 
+/-- Multiplication by an invertible exponent has finitely many geometric torsion points. -/
+theorem finite_prime_to_char_torsion {K : Type} [Field K] [IsAlgClosed K]
+    {A : Over (Spec (.of K))} [GrpObj A] (hA : IsAbelianScheme A)
+    (n : ℕ) (hn : (n : K) ≠ 0) :
+    Finite {x : 𝟙_ (Over (Spec (.of K))) ⟶ A // x ^ n = 1} := by
+  letI := hA.comm
+  letI := hA.smooth
+  letI := hA.proper
+  letI := hA.geomConnected
+  let e : K ≃+* Γ(Spec (.of K), ⊤) := (Scheme.ΓSpecIso (.of K)).commRingCatIsoToRingEquiv.symm
+  have hunit : IsUnit (n : Γ(Spec (.of K), ⊤)) := by
+    simpa only [map_natCast] using (Ne.isUnit hn).map e.toRingHom
+  letI : IsFinite (mulN A n).left := (finiteEtaleSurjective_mulN A hunit).1
+  exact finite_torsion_points (A := A) n
+
+/-- The global section ring of the spectrum of an algebraically closed field
+has enough roots of unity for each invertible exponent. -/
+theorem spec_hasEnoughRootsOfUnity (K : Type) [Field K] [IsAlgClosed K]
+    (n : ℕ) (hn : (n : K) ≠ 0) : HasEnoughRootsOfUnity Γ(Spec (.of K), ⊤) n := by
+  letI : NeZero (n : K) := ⟨hn⟩
+  letI : NeZero n := .of_neZero_natCast K
+  let e : K ≃+* Γ(Spec (.of K), ⊤) := (Scheme.ΓSpecIso (.of K)).commRingCatIsoToRingEquiv.symm
+  letI : HasEnoughRootsOfUnity K n := inferInstance
+  exact MulEquiv.hasEnoughRootsOfUnity (e.toMulEquiv.restrictRootsOfUnity n)
+
 /-- Every character of the prime-to-characteristic torsion group is pairing
 with a unique torsion point when the line bundle has trivial translation kernel. -/
 theorem existsUnique_weil_character {K : Type} [Field K] [IsAlgClosed K]
@@ -89,26 +114,29 @@ theorem existsUnique_weil_character {K : Type} [Field K] [IsAlgClosed K]
     (χ : {x : 𝟙_ (Over (Spec (.of K))) ⟶ A // x ^ n = 1} → Γ(Spec (.of K), ⊤)ˣ)
     (hχ : ∀ x y, χ ⟨x.1 * y.1, by
       letI := hA.comm
-      rw [mul_pow, x.2, y.2, _root_.one_mul]⟩ = χ x * χ y) :
+      exact (mul_pow x.1 y.1 n).trans
+        ((congrArg₂ (· * ·) x.2 y.2).trans (_root_.one_mul _))⟩ = χ x * χ y) :
     ∃! b : 𝟙_ (Over (Spec (.of K))) ⟶ A, b ^ n = 1 ∧
       ∀ x : {x : 𝟙_ (Over (Spec (.of K))) ⟶ A // x ^ n = 1}, WeilIs A L (n : ℤ) x.1 b (χ x) := by
   letI := hA.comm
-  letI := hA.smooth
-  letI := hA.proper
-  letI := hA.geomConnected
   letI : NeZero (n : K) := ⟨hn⟩
   letI : NeZero n := .of_neZero_natCast K
-  let e : K ≃+* Γ(Spec (.of K), ⊤) := (Scheme.ΓSpecIso (.of K)).commRingCatIsoToRingEquiv.symm
-  letI : HasEnoughRootsOfUnity Γ(Spec (.of K), ⊤) n :=
-    MulEquiv.hasEnoughRootsOfUnity (e.toMulEquiv.restrictRootsOfUnity n)
-  have hunit : IsUnit (n : Γ(Spec (.of K), ⊤)) := by
-    simpa using (Ne.isUnit hn).map (Scheme.ΓSpecIso (.of K)).inv.hom
-  letI : IsFinite (mulN A n).left := (finiteEtaleSurjective_mulN A hunit).1
-  letI := finite_torsion_points (A := A) n
-  exact existsUnique_pairing_eq_character n (fun x y c => WeilIs A L (n : ℤ) x y c)
-    (fun x y => existsUnique_weilIs_of_pow_eq_one hA hL hAmp x y n)
-    (fun _ _ _ _ _ => weilIs_mul_left_of_local_lifts hA hL)
-    (fun _ _ _ => weilIs_swap_of_local_lifts hA hL)
-    (eq_one_of_trivial_weil hA hL hAmp hK n hn) χ hχ
+  let S := Spec (.of K)
+  let T := 𝟙_ (Over S)
+  let R := Γ(S, ⊤)
+  let H := T ⟶ A
+  letI : CommGroup H := inferInstanceAs (CommGroup (T ⟶ A))
+  letI : CommMonoid R := inferInstanceAs (CommMonoid Γ(S, ⊤))
+  letI : HasEnoughRootsOfUnity R n := spec_hasEnoughRootsOfUnity K n hn
+  letI : Finite {x : H // x ^ n = 1} := finite_prime_to_char_torsion hA n hn
+  let W : H → H → Rˣ → Prop := fun x y c => WeilIs A L (T := T) (n : ℤ) x y c
+  have hex (x y : H) := existsUnique_weilIs_of_pow_eq_one (T := T) hA hL hAmp x y n
+  have hmul (x x' y : H) (c c' : Rˣ) (h : W x y c) (h' : W x' y c') : W (x * x') y (c * c') :=
+    weilIs_mul_left_of_local_lifts (T := T) hA hL h h'
+  have hskew (x y : H) (c : Rˣ) (h : W x y c) : W y x c⁻¹ :=
+    weilIs_swap_of_local_lifts (T := T) hA hL h
+  have hnd (x : H) (hx : x ^ n = 1) (h : ∀ y : H, y ^ n = 1 → W x y 1) : x = 1 :=
+    eq_one_of_trivial_weil hA hL hAmp hK n hn x hx h
+  exact existsUnique_pairing_eq_character (H := H) (M := R) n W hex hmul hskew hnd χ hχ
 
 end GlobalTheory.CommPairing

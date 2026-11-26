@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.BlockDilations.PolynomialWindow.DateTail
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.NoncontextualDynamics
 import GaloisForLFunctions.HTGeometry.ContinuousPlateauGrid
 import Mathlib.Analysis.PSeries
 
@@ -18,7 +19,7 @@ private def date (n : ℕ) (a T : ℝ) (j : Fin (gridSize n)) :=
 private theorem grid_size (n : ℕ) : gridSize n=(n+2)^3+1 := by
   unfold gridSize plateauGridCount mesh
   have h : ((n+2:ℕ):ℝ)/(1/((n+2:ℕ):ℝ)^2)=(((n+2)^3:ℕ):ℝ) := by
-    rw [Nat.cast_pow]; field_simp; ring
+    rw [Nat.cast_pow]; field_simp
   rw [h,Nat.ceil_natCast]
 
 private def badGrid (n : ℕ) (a T τ u v : ℝ) : Set PathPauliDisorder :=
@@ -40,9 +41,9 @@ private theorem grid_bound (n : ℕ) (a T τ u v : ℝ) :
     apply (measureReal_iUnion_fintype_le _).trans
     have h := Finset.sum_le_sum (s:=Finset.univ) (fun j _ => ht (date n a T j)
       ⟨le_min ha (plateauGridPoint_le a (by unfold mesh; positivity) _),min_le_left ..⟩)
-    rw [Finset.sum_const,Finset.card_univ,Fintype.card_fin,grid_size,nsmul_eq_mul,Nat.cast_add,
-      Nat.cast_one,Nat.cast_pow] at h
     apply h.trans
+    rw [Finset.sum_const,Finset.card_univ,Fintype.card_fin,grid_size,nsmul_eq_mul,Nat.cast_add,
+      Nat.cast_one,Nat.cast_pow]
     change (K^3+1)*(2/K^6)≤4/K^3
     have he : K^6=(K^3)^2 := by ring
     rw [he]
@@ -62,10 +63,10 @@ private theorem excludes_grid {n : ℕ} {a T τ u v C : ℝ} {ω : PathPauliDiso
     τ*(n+2:ℕ)<(s:ℝ) := by
   let K : ℝ := (n+2:ℕ)
   have hKp : 0<K := by dsimp only [K]; positivity
-  have hm : 0<mesh n := by unfold mesh; positivity
+  have hm : 0 < mesh n := by unfold mesh; positivity
   obtain ⟨j,hj⟩ := exists_plateauGrid_near hm a (show t∈Icc a (a+K) from ⟨ht.1,ht.2.trans hT⟩)
   let d := date n a T j
-  have hd : |d-t|≤mesh n := by
+  have hd : |d-t| ≤ mesh n := by
     rw [abs_le] at hj ⊢
     dsimp only [d,date]
     rcases le_total T (plateauGridPoint a (mesh n) j.val) with h|h
@@ -122,17 +123,18 @@ theorem gaussian_polynomial_gate_floor :
   let K : ℝ := (n+2:ℕ)
   have hKp : 0<K := by dsimp only [K]; positivity
   have hl₁ : 1≤log K := (le_max_left ..).trans hl
-  have hlog : δ≤(log K)^2 := ((le_max_right ..).trans hl).trans (by nlinarith only [hl₁,
-    mul_nonneg (sub_nonneg.mpr hl₁) (zero_lt_one.trans_le hl₁).le])
+  have hlδ : δ≤log K := (le_max_right ..).trans hl
+  have hlog : δ≤(log K)^2 := by
+    rw [pow_two]
+    exact hlδ.trans (le_mul_of_one_le_right (zero_le_one.trans hl₁) hl₁)
   have hT : T n≤a+K := by
     apply le_trans (b:=K) _ (le_add_of_nonneg_left ha.le)
     apply (div_le_iff₀ (sq_pos_of_pos (zero_lt_one.trans_le hl₁))).mpr
     exact (mul_le_mul_of_nonneg_right hlog hKp.le).trans_eq (mul_comm ..)
-  intro t ht s hf
-  apply excludes_grid hC hK hT hH _ he ht hf
+  intro _ t ht s hf
+  apply excludes_grid (u:=u) (v:=v) hC hK hT hH _ he ht hf
   refine ⟨hg.1,?_⟩
-  rw [←total_energy]
-  exact hg.2
+  exact (total_energy (pathPauliDisorderShell ω n).ofLp).symm.trans_le hg.2
 
 #print axioms gaussian_polynomial_gate_floor
 end

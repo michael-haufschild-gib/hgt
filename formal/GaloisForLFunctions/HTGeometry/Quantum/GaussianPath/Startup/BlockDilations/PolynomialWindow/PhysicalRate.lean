@@ -59,11 +59,11 @@ theorem physical_packet_rate {u v B : ℝ} (hu : 0<u) (hv : 0<v) (hB : 0<B) :
   have hδ : t^2*a*(84*(B*q))≤1/32 := by
     have hz := (le_div_iff₀ hqp).mp hend
     have hid : t^2*a*(84*(B*q))=(t*q)*(84*A*B)/(L:ℝ) := by
-      dsimp only [a]; field_simp; ring
+      dsimp only [a]; field_simp
     rw [hid,div_le_iff₀ hL']
     have h := mul_le_mul_of_nonneg_right hz (show 0≤84*A*B by positivity)
     apply h.trans_eq
-    dsimp only [η]; field_simp; ring
+    dsimp only [η]; field_simp
   have hg₀ : (g:ℝ)≤γ*q := Nat.floor_le (mul_nonneg hγ.le hqp.le)
   have hg₁ : γ*q/2≤(g:ℝ) := by
     have h := (div_le_iff₀ hγ).mp ((le_max_right ..).trans hq)
@@ -100,10 +100,10 @@ theorem physical_packet_rate {u v B : ℝ} (hu : 0<u) (hv : 0<v) (hB : 0<B) :
     have hjac : (Fintype.card (PathLabel n):ℝ)*a≤γ*q*ρ/8 := by
       have htbig : 96*A/(γ*ρ)≤t := (le_max_right ..).trans ht
       have htime := (div_le_iff₀ (mul_pos hγ hρ)).mp htbig
-      have hd : (Fintype.card (PathLabel n):ℝ)≤12*K := by exact_mod_cast hdim
+      have hd : (Fintype.card (PathLabel n):ℝ)≤12*K := by dsimp only [K]; exact_mod_cast hdim
       apply (mul_le_mul_of_nonneg_right hd ha).trans
       rw [hK]
-      have he : 12*(q*L)*a=12*q*A/t := by dsimp only [a]; field_simp; ring
+      have he : 12*(q*L)*a=12*q*A/t := by dsimp only [a]; field_simp
       rw [he,div_le_iff₀ ht']
       nlinarith only [mul_le_mul_of_nonneg_left htime hqp.le]
     have hlog := log_of_packet_count hp ha b _ k g hkb hgb hphysical

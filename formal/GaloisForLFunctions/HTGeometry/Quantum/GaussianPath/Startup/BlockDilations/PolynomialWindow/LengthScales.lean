@@ -16,8 +16,9 @@ theorem packet_number {n L : ℕ} (hL : 0<L) :
   intro K b
   have hL' : (0:ℝ)<L := Nat.cast_pos.mpr hL
   have h₁ : n+2≤b*L := by
-    simpa only [b,Nat.mul_comm L] using Nat.lt_mul_div_succ (n+1) hL
-  refine ⟨(div_le_iff₀ hL').mpr (by exact_mod_cast h₁),?_,?_⟩
+    rw [Nat.mul_comm]
+    exact Nat.succ_le_of_lt (Nat.lt_mul_div_succ (n+1) hL)
+  refine ⟨(div_le_iff₀ hL').mpr (by dsimp only [K]; exact_mod_cast h₁),?_,?_⟩
   · change (((n+1)/L+1:ℕ):ℝ)≤K/L+1
     rw [Nat.cast_add,Nat.cast_one]
     exact add_le_add (Nat.cast_div_le.trans (div_le_div_of_nonneg_right

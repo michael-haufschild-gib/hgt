@@ -24,7 +24,7 @@ theorem exists_mass_scales {u v : ℝ} (hu : 0<u) (hv : 0<v) :
     have h := (le_div_iff₀ (show 0<16*C by positivity)).mp (min_le_right 1 (u/(16*C)))
     change min 1 (u/(16*C))*C≤u/16
     linarith only [h]
-  have hCv : v/C=u/16 := by dsimp only [C]; field_simp; ring
+  have hCv : v/C=u/16 := by dsimp only [C]; field_simp
   refine ⟨C,hC,γ,hγ,min_le_left ..,?_⟩
   intro L q b g a hL hq hb hg ha ha₁
   have hs := sqrt_pos.mpr hL
@@ -32,7 +32,7 @@ theorem exists_mass_scales {u v : ℝ} (hu : 0<u) (hv : 0<v) :
   have h₂ := mul_le_mul_of_nonneg_right hg (mul_nonneg hC.le hL.le)
   have h₃ := mul_le_mul_of_nonneg_right hγC (mul_nonneg hq.le hL.le)
   have he : sqrt L*(C*sqrt L)=C*L := by nlinarith only [congrArg (C*·) (sq_sqrt hL.le)]
-  have hf : sqrt L/(C*sqrt L)*(v*(q*L))=(v/C)*(q*L) := by field_simp; ring
+  have hf : sqrt L/(C*sqrt L)*(v*(q*L))=(v/C)*(q*L) := by field_simp
   have hhalf : u*(q*L)/2≤u*(q*L)/(1+a) :=
     div_le_div_of_nonneg_left (by positivity) (by positivity) (by linarith only [ha₁])
   rw [he,hf,hCv]
@@ -51,7 +51,7 @@ theorem packet_bit_budget {α τ L q : ℝ} (hα : 0<α) (hL : 0<L)
   apply h₀.trans
   apply (div_le_iff₀ (by positivity)).mpr
   calc 2*(s:ℝ) ≤ 2*(τ*(q*L)) := mul_le_mul_of_nonneg_left hs zero_le_two
-       _ = (2*τ/α)*q*(α*L) := by field_simp; ring
+       _ = (2*τ/α)*q*(α*L) := by field_simp
        _ ≤ _ := mul_le_mul_of_nonneg_left hr (by positivity)
 
 #print axioms exists_mass_scales
