@@ -43,7 +43,7 @@ theorem ideal_pattern_count (R : I→Finset (Fin (n+2))) (hR : Pairwise (fun i j
       by_cases hw : packetFit (R i) r ε W
       · simp [tag,hw] at hh'
         exact hreg.2.not_ge (longitudinal_flip_cost (R i) u W r h ε hreg.1 hw hh')
-      · simpa [tag,hw] using hh'
+      · simp [tag,hw] at hh'
     have hb := failed_packets_cost R hR T r s ε _ hf failed
     exact mem_filter.mpr ⟨mem_univ _,(Nat.le_div_iff_mul_le (Nat.succ_pos r)).mpr hb⟩
   exact (Nat.mul_le_mul_right _ (card_le_card hsub)).trans (few_matching_patterns G tag _)

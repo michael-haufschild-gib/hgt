@@ -1,5 +1,6 @@
 import Mathlib.RingTheory.Flat.EquationalCriterion
 import Mathlib.RingTheory.Ideal.Quotient.Basic
+import Mathlib.Tactic.Abel
 
 /-! A relation in a flat quotient module lifts to a tensor relation upstairs. -/
 

@@ -1,6 +1,5 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.AbelianSchemeLaws.FlatReductionRelations
 import Mathlib.RingTheory.Flat.Localization
-import Mathlib.RingTheory.LocalRing.ResidueField.Ideal
 import Mathlib.RingTheory.LocalRing.Module
 
 /-! A finite module flat over the base is flat over a Noetherian algebra if all its

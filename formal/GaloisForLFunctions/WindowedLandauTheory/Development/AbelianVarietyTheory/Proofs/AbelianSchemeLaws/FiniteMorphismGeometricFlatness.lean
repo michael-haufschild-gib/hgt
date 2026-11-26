@@ -2,12 +2,13 @@ import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.Foundations.GaloisRepresentations.IsogenyEtaleTranslation.GroupMultiplicationEtale
 import Mathlib.AlgebraicGeometry.Morphisms.FlatDescent
 import Mathlib.AlgebraicGeometry.Noetherian
-import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
+import Mathlib.Tactic.WLOG
 
 /-! A finite morphism with source flat over a locally Noetherian base is flat
 if its geometric fibres over the base are flat. -/
 
 open AlgebraicGeometry CategoryTheory CategoryTheory.Limits
+open scoped TensorProduct
 
 namespace GlobalTheory.FiniteFibreFlat
 
@@ -53,10 +54,12 @@ private theorem flatOver_of_pullback {X Y : Over S} (f : X ⟶ Y) (t : T ⟶ S)
   intro W Z a b j h sq e
   let j' : Z ⟶ pullback Y.hom t := pullback.lift j h e
   have hj : j' ≫ pullback.fst Y.hom t = j := pullback.lift_fst _ _ _
-  have sq₀ := isPullback_baseChange t f
+  let m : pullback X.hom t ⟶ pullback Y.hom t := ((Over.pullback t).map f).left
+  have sq₀ : IsPullback (pullback.fst X.hom t) m f.left (pullback.fst Y.hom t) :=
+    isPullback_baseChange t f
   let a' : W ⟶ pullback X.hom t :=
     sq₀.lift a (b ≫ j') (by rw [Category.assoc, hj]; exact sq.w)
-  have sq₁ : IsPullback a' b ((Over.pullback t).map f).left j' :=
+  have sq₁ : IsPullback a' b m j' :=
     IsPullback.of_right (by rw [hj, sq₀.lift_fst]; exact sq) (sq₀.lift_snd _ _ _) sq₀
   exact MorphismProperty.of_isPullback sq₁ H
 
@@ -69,19 +72,19 @@ private theorem flatOver_descend {T' : Scheme.{0}} {f : X ⟶ Y} {g : Y ⟶ S} {
   have hflat : Flat (pullback.snd b (pullback.fst h σ)) :=
     H _ _ _ (pullback.snd h σ) (sq₁.paste_horiz sq)
       (by rw [Category.assoc, e, ← Category.assoc, pullback.condition, Category.assoc])
-  have hbase : (@Surjective ⊓ @Flat ⊓ @QuasiCompact) (pullback.fst h σ) :=
+  let Q : MorphismProperty Scheme.{0} := @Surjective ⊓ @Flat ⊓ @QuasiCompact
+  have hbase : Q (pullback.fst h σ) :=
     ⟨⟨inferInstance, inferInstance⟩, inferInstance⟩
-  exact MorphismProperty.of_isPullback_of_descendsAlong (P := @Flat)
-    (Q := @Surjective ⊓ @Flat ⊓ @QuasiCompact) sq₁.flip hbase hflat
+  exact MorphismProperty.of_isPullback_of_descendsAlong (P := @Flat) (Q := Q) sq₁.flip hbase hflat
 
 private theorem flat_of_flatOver_fields (f : X ⟶ Y) (g : Y ⟶ S) (hY : IsLocallyNoetherian Y)
     (hSource : Flat (f ≫ g)) (hf : IsFinite f)
     (H : ∀ (k : Type) [Field k] (t : Spec (CommRingCat.of k) ⟶ S), FlatOver f g t) :
     Flat f := by
-  letI := hY
-  letI := hf
   wlog hS : ∃ R, S = Spec R generalizing X Y S
-  · refine IsZariskiLocalAtTarget.of_openCover (S.affineCover.pullback₁ g) fun i => ?_
+  · letI hNoether : IsLocallyNoetherian Y := hY
+    letI hFinite : IsFinite f := hf
+    refine IsZariskiLocalAtTarget.of_openCover (S.affineCover.pullback₁ g) fun i => ?_
     let u := S.affineCover.f i
     let v := pullback.fst g u
     let q := pullback.snd g u
@@ -95,27 +98,38 @@ private theorem flat_of_flatOver_fields (f : X ⟶ Y) (g : Y ⟶ S) (hY : IsLoca
     intro W Z a b j h sq₀ e
     refine (H k (t ≫ u)).target sq a b j h sq₀ ?_
     have hv : v ≫ g = q ≫ u := sq'.w
-    rw [Category.assoc, hv, ← Category.assoc, e, Category.assoc]
+    calc
+      j ≫ v ≫ g = j ≫ q ≫ u := congrArg (j ≫ ·) hv
+      _ = (j ≫ q) ≫ u := (Category.assoc j q u).symm
+      _ = (h ≫ t) ≫ u := congrArg (· ≫ u) e
+      _ = h ≫ t ≫ u := Category.assoc h t u
   obtain ⟨R, rfl⟩ := hS
   wlog hA : ∃ A, Y = Spec A generalizing X Y
-  · refine IsZariskiLocalAtTarget.of_openCover Y.affineCover fun i => ?_
+  · letI hNoether : IsLocallyNoetherian Y := hY
+    letI hFinite : IsFinite f := hf
+    refine IsZariskiLocalAtTarget.of_openCover Y.affineCover fun i => ?_
     let u := Y.affineCover.f i
     let f' := pullback.snd f u
     have sq := IsPullback.of_hasPullback f u
     have e : f' ≫ u ≫ g = pullback.fst f u ≫ f ≫ g :=
       (Category.assoc _ _ _).symm.trans
         ((congrArg (· ≫ g) sq.w.symm).trans (Category.assoc _ _ _))
-    letI : Flat (f ≫ g) := hSource
+    letI hFlat : Flat (f ≫ g) := hSource
     change Flat f'
-    exact this f' (u ≫ g) (LocallyOfFiniteType.isLocallyNoetherian u)
-      (by rw [e]; infer_instance) inferInstance (fun k _ t => (H k t).target sq) ⟨_, rfl⟩
+    exact this f' (LocallyOfFiniteType.isLocallyNoetherian u) inferInstance (u ≫ g)
+      (e.symm ▸ (inferInstance : Flat (pullback.fst f u ≫ f ≫ g)))
+      (fun k _ t => (H k t).target sq) ⟨_, rfl⟩
   obtain ⟨A, rfl⟩ := hA
   wlog hX : ∃ B, X = Spec B generalizing X
-  · letI : IsAffine X := isAffine_of_isAffineHom f
-    letI : Flat (f ≫ g) := hSource
-    rw [← MorphismProperty.cancel_left_of_respectsIso @Flat X.isoSpec.inv]
-    exact this (X.isoSpec.inv ≫ f) (by rw [Category.assoc]; infer_instance) inferInstance
-      (fun k _ t => (H k t).source X.isoSpec.inv) ⟨_, rfl⟩
+  · letI hFinite : IsFinite f := hf
+    letI hAffine : IsAffine X := isAffine_of_isAffineHom f
+    letI hFlat : Flat (f ≫ g) := hSource
+    let i : Spec Γ(X, ⊤) ⟶ X := X.isoSpec.inv
+    letI hIso : IsIso i := inferInstanceAs (IsIso X.isoSpec.inv)
+    have hi : Flat ((i ≫ f) ≫ g) := (Category.assoc i f g).symm ▸
+      (inferInstance : Flat (i ≫ (f ≫ g)))
+    rw [← MorphismProperty.cancel_left_of_respectsIso @Flat i]
+    exact this (i ≫ f) inferInstance hi (fun k _ t => (H k t).source i) ⟨_, rfl⟩
   obtain ⟨B, rfl⟩ := hX
   obtain ⟨f, rfl⟩ := Spec.map_surjective f
   obtain ⟨g, rfl⟩ := Spec.map_surjective g
@@ -139,7 +153,9 @@ private theorem flat_of_flatOver_fields (f : X ⟶ Y) (g : Y ⟶ S) (hY : IsLoca
       congr 1
       ext1
       exact e)
-  rwa [Flat.SpecMap_iff, RingHom.flat_algebraMap_iff] at hflat
+  rw [Flat.SpecMap_iff] at hflat
+  change (algebraMap C (C ⊗[A] B)).Flat at hflat
+  exact RingHom.flat_algebraMap_iff.mp hflat
 
 /-- A finite morphism from a flat scheme to a locally finite type scheme over a locally
 Noetherian base is flat if every geometric fibre over the base is flat. -/
@@ -150,10 +166,11 @@ theorem flat_of_isFinite_of_flat_geometric_fibres [IsLocallyNoetherian S]
   refine flat_of_flatOver_fields f.left Y.hom (LocallyOfFiniteType.isLocallyNoetherian Y.hom)
     (by rwa [Over.w]) hf fun k _ t => ?_
   let σ := Spec.map (CommRingCat.ofHom (algebraMap k (AlgebraicClosure k)))
+  letI : Surjective σ := ⟨fun y => ⟨IsLocalRing.closedPoint (AlgebraicClosure k), Subsingleton.elim _ y⟩⟩
   haveI : Flat σ := by
     change Flat (Spec.map _)
-    rw [Flat.SpecMap_iff, RingHom.flat_algebraMap_iff]
-    infer_instance
+    rw [Flat.SpecMap_iff]
+    exact (RingHom.flat_algebraMap_iff (R := k) (S := AlgebraicClosure k)).mpr inferInstance
   exact flatOver_descend σ (flatOver_of_pullback f _ (H _ _))
 
 end GlobalTheory.FiniteFibreFlat

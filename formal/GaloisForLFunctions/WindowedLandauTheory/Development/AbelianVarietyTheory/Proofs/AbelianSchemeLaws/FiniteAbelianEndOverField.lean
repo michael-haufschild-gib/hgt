@@ -3,7 +3,7 @@ import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory
 import GaloisForLFunctions.WindowedLandauTheory.Development.AutomorphicArithmetic.Foundations.EtaleClopenDescent.SmoothGeometricIntegrality
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.PELModuli.PELOrderAction
 import Mathlib.AlgebraicGeometry.AlgClosed.Basic
-import Mathlib.CategoryTheory.Monoidal.Grp
+import Mathlib.CategoryTheory.Monoidal.Cartesian.Grp
 
 /-! For a finite group endomorphism over an algebraically closed field,
 translations carry generic flatness to every closed point. -/

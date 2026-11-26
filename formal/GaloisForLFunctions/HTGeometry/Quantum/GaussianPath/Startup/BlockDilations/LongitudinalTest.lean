@@ -23,7 +23,7 @@ theorem longitudinal_flip_cost {n : ℕ} (R : Finset (Fin (n+2))) (u : PathShell
   have ht : 0<t := by
     by_contra! h
     have hh := mul_nonpos_of_nonpos_of_nonneg (mul_nonpos_of_nonneg_of_nonpos zero_le_two h)
-      (Finset.sum_nonneg fun (i : Fin (n+2)) _ => abs_nonneg (v (.inl (i,2))))
+      (Finset.sum_nonneg (s:=Finset.univ) fun (i : Fin (n+2)) _ => abs_nonneg (v (.inl (i,2))))
     exact pi_pos.not_ge (hm.trans hh)
   let U : unitaryGroup (Fin (n+2) → Bool) ℂ :=
     ⟨V,unitaryEvolution_mem_unitary (isSelfAdjoint_pathHamiltonianOnSites R u) t⟩
@@ -33,7 +33,7 @@ theorem longitudinal_flip_cost {n : ℕ} (R : Finset (Fin (n+2))) (u : PathShell
   dsimp only at hs hz
   rw [sin_pi_div_two] at hs
   rw [←pathHamiltonianOnSites_eq_pathHamiltonian_pathShellOnSites R u] at hs
-  have hroot : sqrt (21*((R∩S).card:ℝ))≤sqrt (21*(2*(r:ℝ))) :=
+  have hroot : sqrt (21*((R∩S).card:ℝ))≤ sqrt (21*(2*(r:ℝ))) :=
     sqrt_le_sqrt (mul_le_mul_of_nonneg_left (by exact_mod_cast hr) (by norm_num))
   have hpen := mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hroot (norm_nonneg v))
     (mul_nonneg zero_le_two ht.le)

@@ -15,7 +15,7 @@ variable {n : ℕ}
 /-- Only pairs of overlapping Pauli words with one changed and one
 unchanged coefficient enter the commutator of a local time change. -/
 def boundaryMass (u : PathShell n) (S : Finset (PathLabel n)) : ℝ :=
-  ∑ q ∈ Sᶜ, ∑ l ∈ S∩pathOverlaps q, 2*|u q|*|u l|
+  ∑ q ∈ Sᶜ, ∑ l ∈ S∩pathOverlaps q, 2*|u q| *|u l|
 
 private theorem subset_commutator (u : PathShell n) (S : Finset (PathLabel n)) :
     let A := ∑ l ∈ S, pathTermGenerator u l

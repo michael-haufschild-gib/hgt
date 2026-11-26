@@ -8,11 +8,12 @@ namespace GaloisForLFunctions.HTGeometry.BlockDilations
 noncomputable section
 variable {ι J : Type*} [Fintype ι] [DecidableEq ι] [Fintype J]
 
+omit [Fintype ι] in
 private theorem measurable_expand (S : Finset ι) (a : ℝ) : Measurable (expand S a) := by
   apply measurable_pi_lambda
   intro i
   by_cases h : i∈S
-  · simpa only [expand,if_pos h] using (measurable_pi_apply i).const_mul a
+  · simpa only [expand,if_pos h] using (measurable_pi_apply (X:=fun _ : ι => ℝ) i).const_mul a
   · simpa only [expand,if_neg h] using (measurable_pi_apply (X:=fun _ : ι => ℝ) i)
 
 /-- The mass of an event times the sum of reciprocal Gaussian
@@ -41,7 +42,7 @@ theorem gaussian_pattern_mass (S : J→Finset ι) {a : ℝ} (ha : 1≤a)
   apply integral_congr_ae
   filter_upwards with x
   change ∑ j, (T j).indicator (1 : (ι→ℝ)→ℝ) x = _
-  simpa only [Set.indicator_apply,Pi.one_apply,T,mem_preimage] using
+  simpa only [Set.indicator_apply,Pi.one_apply,T,Set.mem_preimage] using
     (sum_boole (R:=ℝ) (fun j => expand (S j) a x∈E) univ)
 
 #print axioms gaussian_pattern_mass

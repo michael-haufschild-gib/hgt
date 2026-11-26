@@ -1,4 +1,5 @@
 import Mathlib.Algebra.BigOperators.Ring.Finset
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Data.Fintype.Card
 import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
@@ -23,7 +24,7 @@ theorem few_matching_patterns {I : Type*} [Fintype I] [DecidableEq I]
     dsimp only [W]
     rw [←prod_filter,he,prod_const,card_compl]
   have hsum (i : I) : (∑ v : Bool, W i v)=if i∈G then 3 else 4 := by
-    by_cases hi : i∈G <;> cases ht : tag i <;> simp [W,Fintype.sum_bool,hi,ht]
+    by_cases hi : i∈G <;> cases ht : tag i <;> simp [W,hi,ht]
   have hprod : (∏ i : I, if i∈G then 3 else (4:ℕ))=3^G.card*4^(Fintype.card I-G.card) := by
     rw [Finset.prod_ite]
     have h₁ : univ.filter (fun i => i∈G)=G := by ext; simp

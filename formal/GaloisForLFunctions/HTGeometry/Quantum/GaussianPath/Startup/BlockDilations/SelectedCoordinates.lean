@@ -33,6 +33,7 @@ private theorem first_factor {ι Y : Type*} [Fintype ι] [MeasurableSpace Y]
     rw [Measure.prod_apply_symm hE,Measure.prod_apply_symm hF,←lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
     exact lintegral_mono h
   have hh := ENNReal.toReal_mono (ENNReal.mul_ne_top ENNReal.ofReal_ne_top (measure_ne_top _ _)) hprod
+  change (μ.prod ν E).toReal ≤ c*(μ.prod ν F).toReal
   simpa only [ENNReal.toReal_mul,ENNReal.toReal_ofReal hc] using hh
 
 /-- Multiply the specified coordinates by a common factor. -/
@@ -44,6 +45,8 @@ Jacobian fraction of the original mass of every measurable event. -/
 theorem selected_gaussian_comparison {ι : Type*} [Fintype ι] [DecidableEq ι]
     (S : Finset ι) {a : ℝ} (ha : 1≤a) {E : Set (ι→ℝ)} (hE : MeasurableSet E) :
     (law ι).real E ≤ a^S.card*(law ι).real (expand S a ⁻¹' E) := by
+  letI : Fintype ↥S := Subtype.fintype (fun i : ι => i∈S)
+  letI : Fintype {i : ι // i∉S} := Subtype.fintype (fun i : ι => i∉S)
   let e := MeasurableEquiv.piEquivPiSubtypeProd (fun _ : ι => ℝ) (·∈S)
   let B := e.symm ⁻¹' E
   have hB : MeasurableSet B := hE.preimage e.symm.measurable
@@ -63,8 +66,9 @@ theorem selected_gaussian_comparison {ι : Type*} [Fintype ι] [DecidableEq ι]
   change (law ι).real (e ⁻¹' (D ⁻¹' B))=_ at h₂
   rw [hpre] at h₁
   rw [hpre'] at h₂
-  rw [h₁,h₂,←Fintype.card_coe S]
-  exact first_factor (law {i : ι // i∉S}) ha hB
+  have hcard : Fintype.card ↥S=S.card := (Fintype.card_congr S.equivFin).trans (Fintype.card_fin _)
+  rw [h₁,h₂]
+  simpa only [law,D,hcard] using first_factor (ι:=↥S) (law {i : ι // i∉S}) ha hB
 
 #print axioms selected_gaussian_comparison
 end

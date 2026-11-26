@@ -40,9 +40,10 @@ private theorem term_dilate (S : Finset (PathLabel n)) (a : ℝ) (u : PathShell 
   let v := restrictShell S u
   change (-Complex.I) • ((((u l+a*v l:ℝ):ℂ)) • P)=
     a • ((-Complex.I) • ((v l:ℂ) • P)) + (-Complex.I) • ((u l:ℂ) • P)
-  rw [Complex.ofReal_add,Complex.ofReal_mul,add_smul,smul_add,add_comm,mul_smul]
-  congr 1
-  rw [smul_comm (-Complex.I),Complex.coe_smul]
+  ext i j
+  simp only [Matrix.smul_apply,Matrix.add_apply,Complex.ofReal_add,Complex.ofReal_mul,
+    Complex.real_smul,smul_eq_mul]
+  ring
 
 /-- At every nonnegative time, the physical selective dilation is
 approximated by a local rotation before the original evolution with

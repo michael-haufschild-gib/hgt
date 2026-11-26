@@ -18,7 +18,7 @@ theorem exists_light_seam {L : ℕ} (color : PathLabel n→Fin (L+1)) (u : PathS
     ∃ p, ((L+1:ℕ):ℝ)*seamEnergy color p u≤84*‖u‖^2 ∧
       ∀ S : Finset (PathLabel n),
         (∀ q∉S, ∀ l∈S, l∈pathOverlaps q → color q=p) →
-        boundaryMass u S≤seamEnergy color p u := by
+        boundaryMass u S≤ seamEnergy color p u := by
   classical
   have hsum : (∑ p, seamEnergy color p u)≤84*‖u‖^2 := by
     unfold seamEnergy

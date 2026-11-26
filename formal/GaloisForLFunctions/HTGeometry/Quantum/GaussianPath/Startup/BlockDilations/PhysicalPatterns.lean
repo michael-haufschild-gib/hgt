@@ -15,15 +15,7 @@ def selectedLabels (R : I→Finset (Fin (n+2))) (x : I→Bool) : Finset (PathLab
   classical
   exact univ.filter fun l => ∃ i, x i=true ∧ PathWordSupportedIn (R i) l
 
-private theorem unique_packet {R T : Finset (Fin (n+2))} {l : PathLabel n}
-    (hR : PathWordSupportedIn R l) (hT : PathWordSupportedIn T l) : ¬Disjoint R T := by
-  intro hd
-  apply pathWord_ne_identity l
-  funext v
-  by_cases hv : v∈R
-  · exact hT v (fun h => disjoint_left.mp hd hv h)
-  · exact hR v hv
-
+omit [DecidableEq I] in
 private theorem selected_generator (R : I→Finset (Fin (n+2)))
     (hR : Pairwise (fun i j => Disjoint (R i) (R j))) (x : I→Bool) (u : PathShell n) :
     pathHamiltonian (restrictShell (selectedLabels R x) u)=
@@ -33,12 +25,12 @@ private theorem selected_generator (R : I→Finset (Fin (n+2)))
   let p := fun i l => x i=true ∧ PathWordSupportedIn (R i) l
   have row (i : I) : (if x i then pathHamiltonianOnSites (R i) u else 0)=
       ∑ l : PathLabel n, if p i l then Y l else 0 := by
-    cases hx : x i
-    · simp [p,hx]
-    · change pathHamiltonianOnSites (R i) u = _
+    by_cases hx : x i=true
+    · rw [if_pos hx]
       apply sum_congr rfl
       intro l _
       by_cases hl : PathWordSupportedIn (R i) l <;> simp [p,hx,hl,Y]
+    · simp [p,hx]
   rw [pathHamiltonian_eq_sum]
   simp_rw [row]
   rw [sum_comm]
@@ -50,7 +42,7 @@ private theorem selected_generator (R : I→Finset (Fin (n+2)))
     rw [sum_eq_single i]
     · simp [restrictShell,hm,hi,Y]
     · intro j _ hji
-      exact if_neg (fun hj => unique_packet hj.2 hi.2 (hR hji))
+      exact if_neg (fun hj => packet_support_intersects hj.2 hi.2 (hR hji))
     · exact fun hn => (hn (mem_univ i)).elim
   · have hm : l∉selectedLabels R x := fun h => hl (mem_filter.mp h).2
     have hnone (i : I) : ¬p i l := fun hi => hl ⟨i,hi⟩
@@ -89,7 +81,9 @@ theorem physical_pattern_count (R : I→Finset (Fin (n+2))) (hR : Pairwise (fun 
     refine mem_filter.mpr ⟨mem_univ _,z,hz,A,hA,?_⟩
     let U := unitaryEvolution (pathHamiltonian (dilateShell (selectedLabels R x) a u)) t
     let V := idealPattern R u x (t*a) W
-    have hd : ‖U-V‖≤δ := (pattern_error R hR u x ht ha).trans (le_sup' _ (mem_univ x))
+    have hmax : t^2*a*boundaryMass u (selectedLabels R x)≤δ :=
+      le_sup' (fun y : I→Bool => t^2*a*boundaryMass u (selectedLabels R y)) (mem_univ x)
+    have hd : ‖U-V‖≤δ := (pattern_error R hR u x ht ha).trans hmax
     have hh := norm_sub_le_norm_sub_add_norm_sub V U (z • A.eval.val)
     rw [norm_sub_rev V U] at hh
     exact hh.trans ((add_le_add hd hfit).trans_eq (add_comm ..))

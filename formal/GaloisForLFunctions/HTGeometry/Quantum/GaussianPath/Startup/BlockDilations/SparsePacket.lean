@@ -8,6 +8,16 @@ namespace GaloisForLFunctions.HTGeometry.BlockDilations
 noncomputable section
 private abbrev Reg (N : ℕ) := Matrix (Fin N → Bool) (Fin N → Bool) ℂ
 
+/-- A nonidentity Pauli word cannot lie in two disjoint packets. -/
+theorem packet_support_intersects {n : ℕ} {R T : Finset (Fin (n+2))} {l : PathLabel n}
+    (hR : PathWordSupportedIn R l) (hT : PathWordSupportedIn T l) : ¬Disjoint R T := by
+  intro hd
+  apply pathWord_ne_identity l
+  funext v
+  by_cases hv : v∈R
+  · exact hT v (fun h => Finset.disjoint_left.mp hd hv h)
+  · exact hR v hv
+
 private theorem restrict_inter {n : ℕ} (R T : Finset (Fin (n+2))) (u : PathShell n) :
     pathHamiltonianOnSites T (pathShellOnSites R u) = pathHamiltonianOnSites (R∩T) u := by
   apply Finset.sum_congr rfl
@@ -32,7 +42,7 @@ theorem packet_scalar_comparison {n : ℕ} (R S : Finset (Fin (n+2))) (u : PathS
     let H := pathHamiltonianOnSites R u
     ∃ z : ℂ, ‖unitaryEvolution H t - z • (1 : Reg (n+2))‖ ≤
       ‖unitaryEvolution H t-C‖ +
-        2*|t|*(sqrt (21*((R∩S).card:ℝ))*‖pathShellOnSites R u‖) := by
+        2*|t| *(sqrt (21*((R∩S).card:ℝ))*‖pathShellOnSites R u‖) := by
   intro H
   let v := pathShellOnSites R u
   let J := R∩S
@@ -45,7 +55,7 @@ theorem packet_scalar_comparison {n : ℕ} (R S : Finset (Fin (n+2))) (u : PathS
   obtain ⟨z,hz⟩ := truncated_local_evolution_scalar_bound hdis
     ⟨H,isSelfAdjoint_pathHamiltonianOnSites R u⟩ ⟨K,isSelfAdjoint_pathHamiltonianOnSites _ _⟩ hK C hC t
   have hsq := path_idle_deletion_norm_sq J v
-  have hb : ‖H-K‖≤sqrt (21*(J.card:ℝ))*‖v‖ := by
+  have hb : ‖H-K‖≤ sqrt (21*(J.card:ℝ))*‖v‖ := by
     rw [show H=pathHamiltonian v from pathHamiltonianOnSites_eq_pathHamiltonian_pathShellOnSites R u]
     have hh := Real.sqrt_le_sqrt hsq
     rwa [Real.sqrt_sq (norm_nonneg _),Real.sqrt_mul (by positivity),Real.sqrt_sq (norm_nonneg _)] at hh
@@ -60,7 +70,7 @@ theorem packet_chord_floor {n : ℕ} (R S : Finset (Fin (n+2))) (u : PathShell n
     let E := (isSelfAdjoint_pathHamiltonianOnSites R u).isHermitian.eigenvalues
     ‖anchorPhase E i t - anchorPhase E j t‖ ≤
       2*(‖unitaryEvolution H t-C‖ +
-        2*|t|*(sqrt (21*((R∩S).card:ℝ))*‖pathShellOnSites R u‖)) := by
+        2*|t| *(sqrt (21*((R∩S).card:ℝ))*‖pathShellOnSites R u‖)) := by
   intro H E
   obtain ⟨z,hz⟩ := packet_scalar_comparison R S u C hC t
   have hH := (isSelfAdjoint_pathHamiltonianOnSites R u).isHermitian

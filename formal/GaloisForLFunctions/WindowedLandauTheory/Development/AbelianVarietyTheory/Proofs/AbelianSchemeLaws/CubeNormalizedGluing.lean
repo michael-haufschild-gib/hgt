@@ -11,7 +11,8 @@ open ReciprocityTheory.ChartRestriction.G.Semi ReciprocityTheory.ChartRestrictio
 
 namespace GlobalTheory.AbLaw.Cube
 
-private theorem normalized_values_eq {X Y T : Scheme.{0}} {L : LB X} (hL : L.IsLB)
+/-- A section determines the ratio of two generators when global functions come from the base. -/
+theorem normalized_values_eq {X Y T : Scheme.{0}} {L : LB X} (hL : L.IsLB)
     {I J : Type} [Fintype I] [Fintype J]
     {f : I → (Y ⟶ X)} {d : I → ℤ} {g : J → (Y ⟶ X)} {e : J → ℤ}
     (hf : FormEq f d g e) (p : Y ⟶ T) [IsIso p.appTop] (s : T ⟶ Y) (hs : s ≫ p = 𝟙 T)

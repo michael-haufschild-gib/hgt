@@ -1,7 +1,7 @@
 import Mathlib.AlgebraicGeometry.Noetherian
 import Mathlib.AlgebraicGeometry.Morphisms.QuasiFinite
 import Mathlib.AlgebraicGeometry.Morphisms.Proper
-import Mathlib.RingTheory.Ideal.Height
+import Mathlib.RingTheory.Ideal.KrullsHeightTheorem
 
 /-! Quasi-finite maps preserve strict specialization. A finite endomorphism with a
 fixed point on an irreducible locally Noetherian scheme is surjective. -/

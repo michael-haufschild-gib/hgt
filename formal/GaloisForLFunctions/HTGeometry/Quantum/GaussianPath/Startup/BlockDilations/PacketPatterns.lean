@@ -47,6 +47,7 @@ theorem pattern_fit_iff (R : I→Finset (Fin (n+2))) (hR : Pairwise (fun i j => 
   rw [←hsum,hF,mul_assoc,packetFit_exterior U hU]
   cases hi : x i <;> simp [B,hi,unitaryEvolution,NormedSpace.exp_zero]
 
+omit [Fintype I] [DecidableEq I] in
 /-- A single circuit pays at least one wire for each requested wire in
 a disjoint collection of failed packet tests. -/
 theorem failed_packets_cost {N : ℕ} (R : I→Finset (Fin N))

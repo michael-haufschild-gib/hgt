@@ -83,8 +83,10 @@ theorem eventually_weak_contrast {c d ε : ℝ} (hc : 0 < c) (hcd : c < d) (hε 
   have h0 : Tendsto (fun z : ℝ => z) (𝓝[>] 0) (𝓝 0) := tendsto_id.mono_left nhdsWithin_le_nhds
   have H := h0.const_mul |β-γ|
   rw [mul_zero] at H
-  obtain ⟨D,hD,ht⟩ := ((self_mem_nhdsWithin : ∀ᶠ z : ℝ in 𝓝[>] 0, 0 < z).and
-    ((small_contrast H).eventually_lt_const hε)).exists
+  have good : ∀ᶠ z : ℝ in 𝓝[>] 0, 0 < z ∧ Real.tanh (|β-γ| * z/4) < ε := by
+    filter_upwards [self_mem_nhdsWithin (s := Ioi (0:ℝ)),(small_contrast H).eventually_lt_const hε] with z hz ht
+    exact ⟨hz,ht⟩
+  obtain ⟨D,hD,ht⟩ := Filter.Eventually.exists good
   filter_upwards [eventually_close_modes hc hcd hD] with h he
   obtain ⟨p,q,hpq,hgap⟩ := he
   let U := twoModes p q
@@ -92,8 +94,8 @@ theorem eventually_weak_contrast {c d ε : ℝ} (hc : 0 < c) (hcd : c < d) (hε 
   have hq : oneMode q ∈ U := Finset.mem_insert.mpr (Or.inr (Finset.mem_singleton_self _))
   have hU : U.Nonempty := ⟨_,hp⟩
   have hn : variation (weight β energyOf) (weight γ energyOf) U ≠ 0 := by
-    rw [variation_zero_iff energyOf hU]
-    rintro (h | h)
+    intro hz
+    rcases (variation_zero_iff energyOf hU β γ).mp hz with h | h
     · exact hb h
     · exact (sub_pos.mp hpq).ne (by simpa only [oneMode_energy] using h _ hp _ hq)
   refine ⟨p,q,sub_pos.mp hpq,?_,?_⟩

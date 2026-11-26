@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.BlockDilations.SparsePacket
+import GaloisForLFunctions.HTGeometry.Quantum.LocalPacketComparison
 
 /-! # A local rotation cannot preserve two sparse fits across the same packet -/
 
@@ -24,7 +25,8 @@ theorem packetFit_exterior {N : ℕ} {R : Finset (Fin N)} {r : ℕ} {ε : ℝ} {
     rintro ⟨S,A,hr,hA,he⟩
     have hsites : R∩(Rᶜ∪S)=R∩S := by ext; simp only [Finset.mem_inter,Finset.mem_union,Finset.mem_compl]; tauto
     refine ⟨Rᶜ∪S,U*A,by rwa [hsites],
-      (hU.mono Finset.subset_union_left).matrix_mul (hA.mono Finset.subset_union_right),?_⟩
+      IsSiteSupported.matrix_mul (S:=Rᶜ∪S) (hU.mono Finset.subset_union_left)
+        (hA.mono Finset.subset_union_right),?_⟩
     change ‖U.val*X-U.val*A.val‖≤ε
     rw [←mul_sub]
     exact (norm_mul_le _ _).trans (by rwa [CStarRing.norm_of_mem_unitary U.2,one_mul])
@@ -59,7 +61,8 @@ theorem packetFit_relative {N : ℕ} {R : Finset (Fin N)} {r : ℕ} {ε : ℝ}
   refine ⟨T∪S,B*A⁻¹,?_,?_,?_⟩
   · rw [Finset.inter_union_distrib_left]
     exact (Finset.card_union_le _ _).trans ((Nat.add_le_add hT hS).trans_eq (two_mul r).symm)
-  · exact (hB.mono Finset.subset_union_left).matrix_mul (hA.conjTranspose.mono Finset.subset_union_right)
+  · exact IsSiteSupported.matrix_mul (S:=T∪S) (hB.mono Finset.subset_union_left)
+      (hA.conjTranspose.mono Finset.subset_union_right)
   · exact (quotient_fit V A W B.val).trans ((add_le_add he hf).trans_eq (two_mul ε).symm)
 
 /-- With a single baseline, fits before and after a packet rotation
@@ -71,7 +74,7 @@ theorem two_sparse_fits_chord {n : ℕ} (R : Finset (Fin (n+2))) (u : PathShell 
     let E := (isSelfAdjoint_pathHamiltonianOnSites R u).isHermitian.eigenvalues
     packetFit R r ε W → packetFit R r ε (unitaryEvolution H t*W) →
     ‖anchorPhase E i t-anchorPhase E j t‖ ≤
-      2*(2*ε+2*|t|*(sqrt (21*(2*(r:ℝ)))*‖pathShellOnSites R u‖)) := by
+      2*(2*ε+2*|t| *(sqrt (21*(2*(r:ℝ)))*‖pathShellOnSites R u‖)) := by
   intro H E h₁ h₂
   let V : UReg (n+2) := ⟨_,unitaryEvolution_mem_unitary (isSelfAdjoint_pathHamiltonianOnSites R u) t⟩
   obtain ⟨S,A,hcard,hsupp,herr⟩ := packetFit_relative V W h₁ h₂

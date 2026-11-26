@@ -17,7 +17,7 @@ namespace GlobalTheory.MulFinite
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-variable {S : Scheme.{0}} {A : Over S} [GrpObj A] {L : LB A.left}
+variable {S : Scheme.{0}} {A : Over S} {L : LB A.left}
 
 /-- A proper endomorphism pulling a relatively ample bundle back to a positive power
 has a principal affine cover on each fibre and is therefore finite. -/
@@ -69,7 +69,7 @@ theorem isFinite_of_relAmple_pullback [IsProper A.hom] (hL : L.IsLB) (hAmp : Rel
     exact (hs i).1.preimage r
 
 /-- Multiplication by a nonzero natural number is finite. -/
-theorem isFinite_mul_of_rigidified_symmetric (hA : IsAbelianScheme A) (hL : L.IsLB)
+theorem isFinite_mul_of_rigidified_symmetric [GrpObj A] (hA : IsAbelianScheme A) (hL : L.IsLB)
     (hAmp : RelAmple A L) (hrig : ∃ t : (L.pull η[A].left).Gen, t.IsGen)
     (hsym : ∀ s : S, ∃ U : S.Opens, s ∈ U ∧ ∃ t : (LB.LinComb L (K := Fin 2)
       ![(A.hom ⁻¹ᵁ U).ι ≫ (GrpObj.inv : A ⟶ A).left, (A.hom ⁻¹ᵁ U).ι] ![1, -1]).Gen, t.IsGen)
