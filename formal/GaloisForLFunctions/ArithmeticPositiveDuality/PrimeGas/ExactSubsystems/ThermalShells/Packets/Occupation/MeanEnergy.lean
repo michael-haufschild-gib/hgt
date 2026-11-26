@@ -51,7 +51,9 @@ theorem split_isometric_iff_reflected_means {c d D : ℝ} (hc : 0 < c) (hcd : c 
   have atom (j : ℕ) : Tendsto (fun h => read c d D 1 b m {j} h-read c d D 1 g m {m-j} h)
       criticalApproach (𝓝 0) ↔ bin m j p=bin m (m-j) q := by
     refine ⟨fun h => sub_eq_zero.mp (tendsto_nhds_unique (mass j) h),fun h => ?_⟩
-    exact (sub_eq_zero.mpr h) ▸ mass j
+    have L := mass j
+    change Tendsto _ criticalApproach (𝓝 (bin m j p-bin m (m-j) q)) at L
+    rwa [sub_eq_zero.mpr h] at L
   have hp : 0 ≤ p := div_nonneg (odds_pos D zero_lt_one b).le (add_pos zero_lt_one (odds_pos D zero_lt_one b)).le
   have hq : q ≤ 1 := (div_le_one (add_pos zero_lt_one (odds_pos D zero_lt_one g))).mpr (by linarith)
   have counts : (∀ j ≤ m, Tendsto (fun h => read c d D 1 b m {j} h-read c d D 1 g m {m-j} h) criticalApproach (𝓝 0)) ↔ p=1-q := by
@@ -86,7 +88,6 @@ theorem split_isometric_iff_mean_midpoint {c d D : ℝ} (hc : 0 < c) (hcd : c < 
   · intro h
     apply (h.div_const 2).congr
     intro u
-    change (_+_)/2=_
     ring
   · intro h
     simpa only [show (m:ℝ)*D/2+((m:ℝ)*D/2)=(m:ℝ)*D by ring] using h.add h
@@ -95,7 +96,7 @@ theorem split_isometric_iff_mean_midpoint {c d D : ℝ} (hc : 0 < c) (hcd : c < 
 exactly on the critical line. -/
 theorem critical_line_iff_mean_two (s : ℂ) :
     s.re=1/2 ↔ Tendsto (energyRead 1 2 1 1 (2*s.re) 2 id) criticalApproach (𝓝 1) := by
-  have h := split_isometric_iff_mean_midpoint (c:=1) (d:=2) (D:=1) zero_lt_one one_lt_two zero_lt_one
+  have h := split_isometric_iff_mean_midpoint (c:=1) (d:=2) (D:=1) (m:=2) zero_lt_one one_lt_two zero_lt_one
     (Nat.zero_lt_succ 1) s
   rw [split_isometric_iff] at h
   simpa only [Nat.cast_ofNat,mul_one,div_self (two_ne_zero : (2:ℝ) ≠ 0)] using h

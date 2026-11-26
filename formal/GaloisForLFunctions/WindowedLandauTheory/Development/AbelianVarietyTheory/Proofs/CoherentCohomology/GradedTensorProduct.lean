@@ -5,7 +5,7 @@ import Mathlib.Algebra.BigOperators.NatAntidiagonal
 
 noncomputable section
 
-open TensorProduct
+open TensorProduct Finset.HasAntidiagonal
 
 namespace GlobalTheory.CechDR.FiniteGradedComplex
 
@@ -26,7 +26,7 @@ theorem tensor_ext_degrees {U : Type} [AddCommGroup U] [Module K U]
 
 /-- Projection to the specified total degree. -/
 def tensorProjection (n : ℕ) : V ⊗[K] W →ₗ[K] V ⊗[K] W :=
-  ∑ x ∈ Finset.Nat.antidiagonal n, TensorProduct.map (G.π x.1) (H.π x.2)
+  ∑ x ∈ antidiagonal n, TensorProduct.map (G.π x.1) (H.π x.2)
 
 theorem tensorProjection_tmul (n p q : ℕ) (a : V) (b : W)
     (ha : G.π p a = a) (hb : H.π q b = b) :
@@ -39,11 +39,13 @@ theorem tensorProjection_tmul (n p q : ℕ) (a : V) (b : W)
       rw [← hb, H.orth _ _ _ hq, tmul_zero]
     · rw [← ha, G.orth _ _ _ hp, zero_tmul]
   by_cases h : p + q = n
-  · rw [if_pos h, Finset.sum_eq_single_of_mem (p, q) (Finset.Nat.mem_antidiagonal.2 h)
+  · have hmem : (p, q) ∈ antidiagonal n := by simpa using h
+    rw [if_pos h, Finset.sum_eq_single_of_mem (p, q) hmem
       (fun x _ hx => hz x hx), ha, hb]
   · rw [if_neg h]
     refine Finset.sum_eq_zero fun x hx => hz x fun he => h ?_
-    exact (Finset.Nat.mem_antidiagonal.1 hx : x.1 + x.2 = n) |> fun he' => he ▸ he'
+    have hs : x.1 + x.2 = n := by simpa using hx
+    simpa only [he] using hs
 
 private theorem sign_of_fixed {p : ℕ} {a : V} (ha : G.π p a = a) :
     G.σ a = ((-1 : ℤ) ^ p) • a := by
@@ -68,14 +70,14 @@ def tensorComplex : FiniteGradedComplex K (V ⊗[K] W) where
       refine TensorProduct.ext' fun a b => ?_
       simp only [tensorDifferential, LinearMap.comp_apply, LinearMap.add_apply, map_add,
         TensorProduct.map_tmul, LinearMap.id_apply, LinearMap.zero_apply,
-        G.dd, H.dd, G.σd, zero_tmul, tmul_zero, neg_tmul, zero_add, add_zero, add_neg_cancel]
+        G.dd, H.dd, G.σd, zero_tmul, tmul_zero, neg_tmul, zero_add, add_zero, neg_add_cancel]
     exact LinearMap.congr_fun h z
   idem n z := by
     have h : tensorProjection G H n ∘ₗ tensorProjection G H n = tensorProjection G H n := by
       refine tensor_ext_degrees G H fun p q a b => ?_
       simp only [LinearMap.comp_apply, tensorProjection_tmul G H n p q _ _ (G.idem p a) (H.idem q b)]
       split_ifs with h
-      · exact tensorProjection_tmul G H n p q _ _ (G.idem p a) (H.idem q b) |>.trans (if_pos h)
+      · exact (tensorProjection_tmul G H n p q _ _ (G.idem p a) (H.idem q b)).trans (if_pos h)
       · exact map_zero _
     exact LinearMap.congr_fun h z
   orth n m z hnm := by
@@ -85,7 +87,7 @@ def tensorComplex : FiniteGradedComplex K (V ⊗[K] W) where
         tensorProjection_tmul G H m p q _ _ (G.idem p a) (H.idem q b)]
       split_ifs with hm
       · rw [tensorProjection_tmul G H n p q _ _ (G.idem p a) (H.idem q b),
-          if_neg (hm.trans_ne hnm.symm)]
+          if_neg (fun he => hnm (he.symm.trans hm))]
       · exact map_zero _
     exact LinearMap.congr_fun h z
   sum z := by
@@ -95,17 +97,21 @@ def tensorComplex : FiniteGradedComplex K (V ⊗[K] W) where
         tensorProjection_tmul G H _ p q _ _ (G.idem p a) (H.idem q b)]
       by_cases h : p + q ∈ Finset.range (G.N + H.N)
       · rw [Finset.sum_eq_single_of_mem (p + q) h (fun _ _ hne => if_neg hne.symm), if_pos rfl]
-      · rw [Finset.sum_eq_zero fun n hn => if_neg fun he => h (he ▸ hn)]
+      · have hz (n : ℕ) (hn : n ∈ Finset.range (G.N + H.N)) :
+            (if p + q = n then G.π p a ⊗ₜ[K] H.π q b else 0) = 0 :=
+            if_neg fun he : p + q = n => h (by simpa only [he] using hn)
+        rw [Finset.sum_eq_zero hz]
         have hj : G.N ≤ p ∨ H.N ≤ q := by
           rw [Finset.mem_range] at h
           omega
         rcases hj with hp | hq
         · rw [G.big hp, zero_tmul]
         · rw [H.big hq, tmul_zero]
-    exact LinearMap.congr_fun h z
+    simpa only [LinearMap.sum_apply, LinearMap.id_apply] using LinearMap.congr_fun h z
   zero z := by
     have h : tensorProjection G H 0 = 0 := TensorProduct.ext' fun a b => by
-      simp [tensorProjection, LinearMap.sum_apply, G.zero]
+      simp only [tensorProjection, Finset.Nat.antidiagonal_zero, Finset.sum_singleton,
+        TensorProduct.map_tmul, G.zero, zero_tmul, LinearMap.zero_apply]
     exact LinearMap.congr_fun h z
   dπ n z := by
     have h : tensorDifferential G H ∘ₗ tensorProjection G H n =
@@ -133,8 +139,12 @@ def tensorComplex : FiniteGradedComplex K (V ⊗[K] W) where
       simp only [LinearMap.comp_apply, LinearMap.smul_apply,
         tensorProjection_tmul G H n p q _ _ (G.idem p a) (H.idem q b)]
       split_ifs with hpq
-      · rw [TensorProduct.map_tmul, G.sign_of_fixed (G.idem p a), H.sign_of_fixed (H.idem q b),
-          zsmul_tmul', tmul_zsmul, smul_smul, ← pow_add, hpq]
+      · have hleft (m : ℤ) (x : V) (y : W) : (m • x) ⊗ₜ[K] y = m • (x ⊗ₜ y) :=
+          map_zsmul ((TensorProduct.mk K V W).flip y) m x
+        have hright (m : ℤ) (x : V) (y : W) : x ⊗ₜ[K] (m • y) = m • (x ⊗ₜ y) :=
+          map_zsmul (TensorProduct.mk K V W x) m y
+        rw [TensorProduct.map_tmul, G.sign_of_fixed (G.idem p a), H.sign_of_fixed (H.idem q b),
+          hleft, hright, smul_smul, ← pow_add, hpq]
       · rw [map_zero, smul_zero]
     exact LinearMap.congr_fun h z
 

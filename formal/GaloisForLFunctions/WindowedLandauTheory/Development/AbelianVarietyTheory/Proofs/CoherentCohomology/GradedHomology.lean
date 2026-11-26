@@ -28,8 +28,12 @@ def termMap (G : FiniteGradedComplex K V) (n : ℕ) : G.term n →ₗ[K] G.term 
 /-- The three consecutive terms compute cohomology in degree `n + 1`. -/
 def degreeShort (G : FiniteGradedComplex K V) (n : ℕ) : ShortComplex (ModuleCat K) :=
   ShortComplex.mk (ModuleCat.ofHom (G.termMap n)) (ModuleCat.ofHom (G.termMap (n + 1))) (by
-    ext x
-    exact Subtype.ext (G.dd x.1))
+    apply ModuleCat.hom_ext
+    apply LinearMap.ext
+    intro x
+    apply Subtype.ext
+    change G.d (G.d x.1) = 0
+    exact G.dd x.1)
 
 /-- Squaring the representative map of a contraction makes it a projection.
 The additional homotopy is the original homotopy applied to those representatives. -/
@@ -95,6 +99,7 @@ theorem nonempty_homology_equiv_termRange (G : FiniteGradedComplex K V) (e h : V
     have hy : G.π n (h x.1) = h x.1 :=
       (hh n x.1).symm.trans (congrArg h (G.π_apply_term (n + 1) x))
     refine ⟨⟨h x.1, ⟨h x.1, hy⟩⟩, Subtype.ext ?_⟩
+    change G.d (h x.1) = x.1
     simpa only [hx₀, hx₁, map_zero, add_zero] using he x.1
 
 end GlobalTheory.CechDR.FiniteGradedComplex

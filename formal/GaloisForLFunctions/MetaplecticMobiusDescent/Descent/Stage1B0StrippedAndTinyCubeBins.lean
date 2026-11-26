@@ -814,6 +814,23 @@ private lemma sum_comm_lbls_EJ {α β γ δ : Type*}
   intro J _
   rw [Finset.mul_sum]
 
+private lemma secondLabelWeight_nonneg (K : ℕ) (I : Ideal O) :
+    0 ≤ secondLabelWeight K I := by
+  unfold secondLabelWeight
+  positivity
+
+private lemma sum_mul_sum_ite_eq_sum_filter {α β : Type*}
+    (s : Finset α) (t : Finset β) (P : α → Prop) [DecidablePred P]
+    (w : α → ℝ) (f : α → β → ℝ) :
+    (∑ x ∈ s, w x * ∑ y ∈ t, if P x then f x y else 0) =
+      ∑ x ∈ s.filter P, w x * ∑ y ∈ t, f x y := by
+  rw [Finset.sum_filter]
+  apply Finset.sum_congr rfl
+  intro x _
+  by_cases hx : P x
+  · simp only [if_pos hx]
+  · simp only [if_neg hx, Finset.sum_const_zero, mul_zero]
+
 include hp hcop hg in
 /-- `q0`-stripped `ChildBounds`: given `CanonicalRankMoments` for `(ω₁, ω₂)` and their
 `canonical_clipped_uniform` companions `(ω₁_clip, ω₂_clip)` at margin `c_out`, every cube bin
@@ -950,8 +967,8 @@ theorem childBounds_of_q0_stripped_rank_moments
         Z ^ (secondCellExponent Z d 0 - secondCellExponent Z d 1 + 2 * eta) :=
       second_residual_norm_power_bound p hp _ _ (hsrc_cond.second_divisor x hxs)
         Z (secondCellExponent Z d 0) (secondCellExponent Z d 1) eta hz0
-        (by simpa only [outerNorms, Matrix.cons_val_zero] using hG_x)
-        (by simpa only [outerNorms, Matrix.cons_val_one, Matrix.cons_val_zero] using hD_x)
+        (by simpa only [InverseSecondSourceBlocks.outerNorms, Matrix.cons_val_zero] using hG_x)
+        (by simpa only [InverseSecondSourceBlocks.outerNorms, Matrix.cons_val_one, Matrix.cons_val_zero] using hD_x)
     have hQ_strip_le : Q_strip ≤ Qwidth + exponent Z l + secondCellExponent Z d 0 - secondCellExponent Z d 1 + 3 * eta := by
       apply (Real.logb_le_iff_le_rpow hZ (sq_pos_of_pos (norm_pos_iff.mpr (ringComplex_ne_zero hm_strip0)))).mpr
       calc
@@ -973,8 +990,8 @@ theorem childBounds_of_q0_stripped_rank_moments
     have hgt_center : -2 * eta ≤ secondCellExponent Z d 0 - secondCellExponent Z d 1 :=
       actual_second_common_center p hp x (hsrc_cond.second_divisor x hxs)
         Z (secondCellExponent Z d 0) (secondCellExponent Z d 1) eta hZ
-        (by simpa only [outerNorms, Matrix.cons_val_zero] using hG_x)
-        (by simpa only [outerNorms, Matrix.cons_val_one, Matrix.cons_val_zero] using hD_x)
+        (by simpa only [InverseSecondSourceBlocks.outerNorms, Matrix.cons_val_zero] using hG_x)
+        (by simpa only [InverseSecondSourceBlocks.outerNorms, Matrix.cons_val_one, Matrix.cons_val_zero] using hD_x)
     have hF_in_margin : CanonicalMargins F_in M_in Q_strip z c_out := by
       change CanonicalMargins
         (actualCellTotalExponent Z (Z ^ (r - columnA Z k negative - exponent Z (k 2) - exponent Z l))
@@ -986,7 +1003,11 @@ theorem childBounds_of_q0_stripped_rank_moments
       exact stripped_child_margins h₁_p h₂_p
         (dyadic_exponent_nonneg Z hZ _) (dyadic_exponent_nonneg Z hZ _) hV (dyadic_exponent_nonneg Z hZ _)
         hgt_center
-        (by unfold actualCellClipping; have := le_max_right 0 (secondCellColumnExponent Z (columnScale Z r k l negative) d); linarith)
+        (by
+          unfold actualCellClipping
+          have hmax0 := sub_nonneg.mpr (le_max_right 0
+            (secondCellColumnExponent Z (Z ^ (r - columnA Z k negative - exponent Z (k 2) - exponent Z l)) d))
+          linarith)
         heta hQ_strip_le hc₁_out hc₂_out
     have hEJ_bound : ∀ E ∈ B₀.powerset, ∀ J ∈ sub.powerset,
         (∑ I ∈ lbls, secondLabelWeight K I * ∑ k_r ∈ rws,
@@ -1029,13 +1050,9 @@ theorem childBounds_of_q0_stripped_rank_moments
           _ = ∑ I ∈ lbls_cop, secondLabelWeight K I * ∑ k_r ∈ rws,
                 ‖((Z ^ (-F_in / 2) : ℝ) : ℂ) *
                   finiteCanonicalMarkedRow p hg pool Ξ m_strip (primaryIdealGenerator I * ∏ i ∈ E, p i) k_r
-                    (sub \ J) lists a (childLogTest w0 s_ht) (Z ^ (N_in - e_E))‖ ^ 2 := by
-              rw [Finset.sum_filter]
-              apply Finset.sum_congr rfl
-              intro I _
-              by_cases hnd : ∀ i ∈ E, ¬ (p i ∣ primaryIdealGenerator I)
-              · simp only [if_pos hnd]
-              · simp only [if_neg hnd, Finset.sum_const_zero, mul_zero]
+                    (sub \ J) lists a (childLogTest w0 s_ht) (Z ^ (N_in - e_E))‖ ^ 2 :=
+              sum_mul_sum_ite_eq_sum_filter lbls rws
+                (fun I => ∀ i ∈ E, ¬ (p i ∣ primaryIdealGenerator I)) (secondLabelWeight K) _
           _ ≤ ∑ I ∈ lbls_cop, secondLabelWeight K (sourceIdeal p E * I) * ∑ k_r ∈ rws,
                 ‖((Z ^ (-F_in / 2) : ℝ) : ℂ) *
                   finiteCanonicalMarkedRow p hg pool Ξ m_strip
@@ -1053,7 +1070,12 @@ theorem childBounds_of_q0_stripped_rank_moments
           _ = normalizedColumnEnergy p hg pool Ξ m_strip (sub \ J) lists a lbls' rws
                 (secondLabelWeight K) (childLogTest w0 s_ht) (Z ^ (N_in - e_E)) Z F_in := by
               unfold normalizedColumnEnergy
-              exact (Finset.sum_image (fun I₁ _ I₂ _ he => sourceIdeal_mul_injective p hp E he)).symm
+              exact (Finset.sum_image
+                (f := fun f => secondLabelWeight K f * ∑ k_r ∈ rws,
+                  ‖((Z ^ (-F_in / 2) : ℝ) : ℂ) *
+                    finiteCanonicalMarkedRow p hg pool Ξ m_strip (primaryIdealGenerator f) k_r
+                      (sub \ J) lists a (childLogTest w0 s_ht) (Z ^ (N_in - e_E))‖ ^ 2)
+                (fun I₁ _ I₂ _ he => sourceIdeal_mul_injective p hp E he)).symm
       apply hsum_le_energy.trans
       let N_E := N_in - e_E
       have hNE_sum : N_E + (V_in + e_E) = F_in := by dsimp [N_E, F_in, actualCellTotalExponent, N_in, V_in]; ring
@@ -1154,8 +1176,21 @@ theorem childBounds_of_q0_stripped_rank_moments
         (primaryIdealGenerator I) k_r hm sub lists a (childLogTest w0 s_ht) (Z ^ N_in)]
       rw [finiteCanonicalMarkedRow_q0_split p hp hcop hg hpr pool B₀ hB₀_sub Ξ m_strip
         (primaryIdealGenerator I) k_r sub lists a (childLogTest w0 s_ht) (Z ^ N_in)]
-      rw [Finset.mul_sum]
-      simp_rw [Finset.mul_sum, ← Finset.sum_product']
+      have hlhs_prod : ((Z ^ (-F_in / 2) : ℝ) : ℂ) *
+          (∑ E ∈ B₀.powerset, ∑ J ∈ sub.powerset,
+            (supportMobius E * secondPreColumn p hg Ξ m_strip (primaryIdealGenerator I) 1 1 k_r (fun _ => 1) E *
+                primeMark J lists a E) *
+              finiteCanonicalMarkedRow p hg pool Ξ m_strip (primaryIdealGenerator I * ∏ i ∈ E, p i) k_r
+                (sub \ J) lists a (childLogTest w0 s_ht) (Z ^ N_in / primeProductNorm p E)) =
+          ∑ x ∈ B₀.powerset ×ˢ sub.powerset,
+            ((Z ^ (-F_in / 2) : ℝ) : ℂ) *
+              ((supportMobius x.1 * secondPreColumn p hg Ξ m_strip (primaryIdealGenerator I) 1 1 k_r (fun _ => 1) x.1 *
+                  primeMark x.2 lists a x.1) *
+                finiteCanonicalMarkedRow p hg pool Ξ m_strip (primaryIdealGenerator I * ∏ i ∈ x.1, p i) k_r
+                  (sub \ x.2) lists a (childLogTest w0 s_ht) (Z ^ N_in / primeProductNorm p x.1)) := by
+        rw [Finset.sum_product, Finset.mul_sum]
+        exact Finset.sum_congr rfl (fun _ _ => Finset.mul_sum _ _ _)
+      rw [hlhs_prod]
       apply (norm_sum_sq_le_card_sum_norm_sq (B₀.powerset ×ˢ sub.powerset) _).trans
       rw [Finset.card_product, Nat.cast_mul, hcard_B₀, Finset.sum_product]
       have hcard_prod : (2 : ℝ) ^ B₀.card * (sub.powerset.card : ℝ) ≤
@@ -1215,7 +1250,24 @@ theorem childBounds_of_q0_stripped_rank_moments
               rw [secondPreColumn_zero_of_dvd p hg Ξ m_strip (primaryIdealGenerator I) k_r E hiE hdvd]
               simp
         _ = _ := by
-            simp_rw [← Finset.mul_sum]
+            have hpull :
+                (∑ E ∈ B₀.powerset, ∑ J ∈ sub.powerset,
+                  ((2 : ℝ) ^ B₀.card) ^ 2 *
+                    (if ∀ i ∈ E, ¬ (p i ∣ primaryIdealGenerator I) then
+                      ‖((Z ^ (-F_in / 2) : ℝ) : ℂ) *
+                        finiteCanonicalMarkedRow p hg pool Ξ m_strip (primaryIdealGenerator I * ∏ i ∈ E, p i) k_r
+                          (sub \ J) lists a (childLogTest w0 s_ht) (Z ^ N_in / primeProductNorm p E)‖ ^ 2
+                    else 0)) =
+                ((2 : ℝ) ^ B₀.card) ^ 2 *
+                  ∑ E ∈ B₀.powerset, ∑ J ∈ sub.powerset,
+                    if ∀ i ∈ E, ¬ (p i ∣ primaryIdealGenerator I) then
+                      ‖((Z ^ (-F_in / 2) : ℝ) : ℂ) *
+                        finiteCanonicalMarkedRow p hg pool Ξ m_strip (primaryIdealGenerator I * ∏ i ∈ E, p i) k_r
+                          (sub \ J) lists a (childLogTest w0 s_ht) (Z ^ N_in / primeProductNorm p E)‖ ^ 2
+                    else 0 := by
+              rw [Finset.mul_sum]
+              exact Finset.sum_congr rfl (fun _ _ => (Finset.mul_sum _ _ _).symm)
+            rw [hpull]
             ring
     have hdiv_B₀ : ((2 : ℝ) ^ B₀.card) ^ 4 ≤ C_div * Z ^ (eps_div * (ell + eta)) := by
       calc
@@ -1247,7 +1299,7 @@ theorem childBounds_of_q0_stripped_rank_moments
           apply Finset.sum_le_sum
           intro I hI
           exact mul_le_mul_of_nonneg_left (Finset.sum_le_sum (hpointwise I hI))
-            (by unfold secondLabelWeight; positivity)
+            (secondLabelWeight_nonneg K I)
       _ = ((2 : ℝ) ^ K * ((2 : ℝ) ^ B₀.card) ^ 3) *
             ∑ E ∈ B₀.powerset, ∑ J ∈ sub.powerset,
               ∑ I ∈ lbls, secondLabelWeight K I * ∑ k_r ∈ rws,
@@ -1449,7 +1501,7 @@ miss-branch tuples `tup : ∀ i : U_cand \ J_hit, lists i.val` shifts `z ↦ (�
 and `X ↦ X / primeProductNorm p V_tup` while keeping `∑ v ∈ Q` coherent inside `varyingReopenedRow`! -/
 theorem varyingReopenedRow_sextic_label_transfer
     (hpr : ∀ i, lambda ^ 2 ∣ p i - 1)
-    (pool : Finset ι) (Q : Finset (ι →₀ ℕ)) (hQ_pool : ∀ v ∈ Q, v.support ⊆ pool)
+    (pool : Finset ι) (Q : Finset (ι →₀ ℕ)) (_hQ_pool : ∀ v ∈ Q, v.support ⊆ pool)
     (β : (ι →₀ ℕ) → ℂ) (n_cube : (ι →₀ ℕ) → ℝ)
     (Ψ : O →* ℂ) (m f z : O) (W : ℝ → ℂ) (X : ℝ)
     (slots U_cand : Finset σ) (hU : U_cand ⊆ slots)
@@ -1691,8 +1743,8 @@ theorem varyingReopenedRow_sextic_label_transfer
               have hscale_eq : primeProductNorm p (V_tup ∪ N) / (X / n_cube v) =
                   primeProductNorm p N / ((X / primeProductNorm p V_tup) / n_cube v) := by
                 rw [primeProductNorm_union p V_tup N hdVN]
-                have hpV_ne : primeProductNorm p V_tup ≠ 0 := (primeProductNorm_pos p hp V_tup).ne'
-                field_simp [hpV_ne]
+                simp only [div_div_eq_mul_div]
+                ring
               rw [hpm_eq, hscale_eq]
               unfold secondChildColumn
               ring
@@ -1720,7 +1772,7 @@ theorem varyingReopenedRow_sextic_label_transfer
             exact Finset.disjoint_left.mp hdv hiV (Finsupp.mem_support_iff.mpr hvi)
           rw [hT_eq, hmult]
           dsimp only [V_tup]
-          simp only [Finset.mul_sum, canonicalSourceCoefficient, secondChildColumn, one_mul, mul_one]
+          simp only [Finset.mul_sum, canonicalSourceCoefficient, secondChildColumn]
           apply Finset.sum_congr rfl
           intro N _
           ring
@@ -1748,9 +1800,9 @@ theorem rowFamilyEnergy_shift_mul
     intro z hz
     obtain ⟨hz0, hz_disk⟩ := Finset.mem_erase.mp hz
     have hznorm : ‖ringComplex z‖ ^ 2 ≤ 2 * K :=
-      (CanonicalLogEnergy.mem_firstFrequencyDisk (2 * K) z).mp hz_disk
+      (mem_firstFrequencyDisk (2 * K) z).mp hz_disk
     refine Finset.mem_erase.mpr ⟨mul_ne_zero hg0 hz0, ?_⟩
-    apply (CanonicalLogEnergy.mem_firstFrequencyDisk (2 * K') (g * z)).mpr
+    apply (mem_firstFrequencyDisk (2 * K') (g * z)).mpr
     rw [map_mul, norm_mul, mul_pow]
     calc
       ‖ringComplex g‖ ^ 2 * ‖ringComplex z‖ ^ 2
@@ -1765,7 +1817,7 @@ theorem rowFamilyEnergy_shift_mul
     intro z hz
     obtain ⟨_hz0, hz_disk⟩ := Finset.mem_erase.mp hz
     have hznorm : ‖ringComplex z‖ ^ 2 ≤ 2 * K :=
-      (CanonicalLogEnergy.mem_firstFrequencyDisk (2 * K) z).mp hz_disk
+      (mem_firstFrequencyDisk (2 * K) z).mp hz_disk
     have hle1 : (rowMajorant (‖ringComplex z‖ ^ 2 / K)).re ≤ 1 := by
       change sieveBump (‖ringComplex z‖ ^ 2 / K) ≤ 1
       exact sieveBump.le_one
@@ -1787,7 +1839,9 @@ theorem rowFamilyEnergy_shift_mul
       ≤ ∑ z ∈ D₀, (rowMajorant (‖ringComplex (g * z)‖ ^ 2 / K')).re * ‖P I (g * z)‖ ^ 2 :=
         Finset.sum_le_sum hterm_le
     _ = ∑ w ∈ D₀.image (fun z => g * z), (rowMajorant (‖ringComplex w‖ ^ 2 / K')).re * ‖P I w‖ ^ 2 :=
-        (Finset.sum_image (fun _ _ _ _ he => mul_left_cancel₀ hg0 he)).symm
+        (Finset.sum_image
+          (f := fun w => (rowMajorant (‖ringComplex w‖ ^ 2 / K')).re * ‖P I w‖ ^ 2)
+          (fun _ _ _ _ he => mul_left_cancel₀ hg0 he)).symm
     _ ≤ ∑ w ∈ D₁, (rowMajorant (‖ringComplex w‖ ^ 2 / K')).re * ‖P I w‖ ^ 2 := by
         apply Finset.sum_le_sum_of_subset_of_nonneg
         · intro w hw
@@ -1810,7 +1864,7 @@ private lemma sum_comm_four {α β γ : Type*} {δ : γ → Type*} [∀ g, Finty
         = ∑ z ∈ sD, ∑ J ∈ sJ, ∑ tup : δ J, c0 * (c J * (w z * F J tup I z)) := by
             apply Finset.sum_congr rfl
             intro z _
-            simp only [Finset.mul_sum, mul_assoc, mul_left_comm]
+            simp only [Finset.mul_sum, mul_left_comm]
       _ = ∑ J ∈ sJ, ∑ z ∈ sD, ∑ tup : δ J, c0 * (c J * (w z * F J tup I z)) := Finset.sum_comm
       _ = ∑ J ∈ sJ, ∑ tup : δ J, ∑ z ∈ sD, c0 * (c J * (w z * F J tup I z)) :=
             Finset.sum_congr rfl (fun _ _ => Finset.sum_comm)
@@ -1820,13 +1874,26 @@ private lemma sum_comm_four {α β γ : Type*} {δ : γ → Type*} [∀ g, Finty
             apply Finset.sum_congr rfl
             intro tup _
             simp only [Finset.mul_sum]
-  rw [h1, Finset.sum_comm, Finset.mul_sum]
+  rw [h1, Finset.sum_comm]
+  rw [Finset.mul_sum]
   apply Finset.sum_congr rfl
   intro J _
-  rw [Finset.sum_comm, Finset.mul_sum]
-  apply Finset.sum_congr rfl
-  intro tup _
+  rw [Finset.sum_comm]
   simp only [Finset.mul_sum]
+
+private def sexticBranchRow
+    (pool : Finset ι) (Q : Finset (ι →₀ ℕ)) (β : Ideal O → (ι →₀ ℕ) → ℂ)
+    (n_cube : (ι →₀ ℕ) → ℝ) (Ψ : O →* ℂ) (m : O) (W : ℝ → ℂ) (X : ℝ)
+    (slots U_cand : Finset σ) (lists : σ → Finset ι) (a : σ → ι → ℂ)
+    (J_hit : Finset σ) (tup : ∀ i : (U_cand \ J_hit : Finset σ), lists i.val)
+    (I : Ideal O) (w : O) : ℂ :=
+  varyingReopenedRow p hg pool Q
+    (fun v => if Disjoint (tuplePrimeSet tup) v.support then
+        primeMark J_hit lists a v.support * β I v else 0)
+    Ψ m (cubicIdealGenerator I)
+    (fun v N => primeMark (slots \ U_cand) lists a (N ∪ v.support) *
+      W (primeProductNorm p N / ((X / primeProductNorm p (tuplePrimeSet tup)) / n_cube v)))
+    w
 
 include hp hcop hg in
 /-- Energy bound for `varyingReopenedRow` under `4 × 3 = 12` sextic label transfer:
@@ -1870,7 +1937,25 @@ theorem rowFamilyEnergy_sextic_label_transfer
                   W (primeProductNorm p N / ((X / primeProductNorm p (tuplePrimeSet tup)) / n_cube v)))
                 z') (K_out J_hit tup) := by
   intro validHits
-  -- Pointwise norm-squared bound for each (I, z)
+  have hfold_rhs :
+      ((validHits.card : ℝ) * ∑ J_hit ∈ validHits,
+        (∏ i ∈ U_cand \ J_hit, ((lists i).card : ℝ)) *
+          ∑ tup : (∀ i : (U_cand \ J_hit : Finset σ), lists i.val),
+            rowFamilyEnergy labels
+              (sexticBranchRow p hg pool Q β n_cube Ψ m W X slots U_cand lists a J_hit tup)
+              (K_out J_hit tup)) =
+      (validHits.card : ℝ) * ∑ J_hit ∈ validHits,
+        (∏ i ∈ U_cand \ J_hit, ((lists i).card : ℝ)) *
+          ∑ tup : (∀ i : (U_cand \ J_hit : Finset σ), lists i.val),
+            rowFamilyEnergy labels
+              (fun I z' => varyingReopenedRow p hg pool Q
+                (fun v => if Disjoint (tuplePrimeSet tup) v.support then
+                    primeMark J_hit lists a v.support * β I v else 0)
+                Ψ m (cubicIdealGenerator I)
+                (fun v N => primeMark (slots \ U_cand) lists a (N ∪ v.support) *
+                  W (primeProductNorm p N / ((X / primeProductNorm p (tuplePrimeSet tup)) / n_cube v)))
+                z') (K_out J_hit tup) := rfl
+  rw [← hfold_rhs]
   have hpt (I : Ideal O) (z : O) :
       ‖varyingReopenedRow p hg pool Q (β I) Ψ m (cubicIdealGenerator I)
           (fun v T => primeMark slots lists a (T ∪ v.support) *
@@ -1878,17 +1963,11 @@ theorem rowFamilyEnergy_sextic_label_transfer
         (validHits.card : ℝ) * ∑ J_hit ∈ validHits,
           (∏ i ∈ U_cand \ J_hit, ((lists i).card : ℝ)) *
             ∑ tup : (∀ i : (U_cand \ J_hit : Finset σ), lists i.val),
-              ‖varyingReopenedRow p hg pool Q
-                (fun v => if Disjoint (tuplePrimeSet tup) v.support then
-                    primeMark J_hit lists a v.support * β I v else 0)
-                Ψ m (cubicIdealGenerator I)
-                (fun v N => primeMark (slots \ U_cand) lists a (N ∪ v.support) *
-                  W (primeProductNorm p N / ((X / primeProductNorm p (tuplePrimeSet tup)) / n_cube v)))
-                ((∏ j ∈ tuplePrimeSet tup, p j) ^ 4 * z)‖ ^ 2 := by
+              ‖sexticBranchRow p hg pool Q β n_cube Ψ m W X slots U_cand lists a J_hit tup
+                I ((∏ j ∈ tuplePrimeSet tup, p j) ^ 4 * z)‖ ^ 2 := by
     rw [varyingReopenedRow_sextic_label_transfer p hp hcop hg hpr pool Q hQ_pool (β I) n_cube
       Ψ m (cubicIdealGenerator I) z W X slots U_cand hU lists hlists_pool hdisj a]
-    -- Restrict U_cand.powerset to validHits
-    have hrestrict :
+    have hfold_sum :
         (∑ J_hit ∈ U_cand.powerset,
           ∑ tup : (∀ i : (U_cand \ J_hit : Finset σ), lists i.val),
             (tupleCoeff a tup *
@@ -1900,17 +1979,27 @@ theorem rowFamilyEnergy_sextic_label_transfer
               (fun v N => primeMark (slots \ U_cand) lists a (N ∪ v.support) *
                 W (primeProductNorm p N / ((X / primeProductNorm p (tuplePrimeSet tup)) / n_cube v)))
               ((∏ j ∈ tuplePrimeSet tup, p j) ^ 4 * z)) =
+        ∑ J_hit ∈ U_cand.powerset,
+          ∑ tup : (∀ i : (U_cand \ J_hit : Finset σ), lists i.val),
+            (tupleCoeff a tup *
+              secondPreColumn p hg Ψ m (cubicIdealGenerator I) 1 1 z (fun _ => 1) (tuplePrimeSet tup)) *
+            sexticBranchRow p hg pool Q β n_cube Ψ m W X slots U_cand lists a J_hit tup
+              I ((∏ j ∈ tuplePrimeSet tup, p j) ^ 4 * z) :=
+      Finset.sum_congr rfl (fun _ _ => Finset.sum_congr rfl (fun _ _ => rfl))
+    rw [hfold_sum]
+    have hrestrict :
+        (∑ J_hit ∈ U_cand.powerset,
+          ∑ tup : (∀ i : (U_cand \ J_hit : Finset σ), lists i.val),
+            (tupleCoeff a tup *
+              secondPreColumn p hg Ψ m (cubicIdealGenerator I) 1 1 z (fun _ => 1) (tuplePrimeSet tup)) *
+            sexticBranchRow p hg pool Q β n_cube Ψ m W X slots U_cand lists a J_hit tup
+              I ((∏ j ∈ tuplePrimeSet tup, p j) ^ 4 * z)) =
         ∑ J_hit ∈ validHits,
           ∑ tup : (∀ i : (U_cand \ J_hit : Finset σ), lists i.val),
             (tupleCoeff a tup *
               secondPreColumn p hg Ψ m (cubicIdealGenerator I) 1 1 z (fun _ => 1) (tuplePrimeSet tup)) *
-            varyingReopenedRow p hg pool Q
-              (fun v => if Disjoint (tuplePrimeSet tup) v.support then
-                  primeMark J_hit lists a v.support * β I v else 0)
-              Ψ m (cubicIdealGenerator I)
-              (fun v N => primeMark (slots \ U_cand) lists a (N ∪ v.support) *
-                W (primeProductNorm p N / ((X / primeProductNorm p (tuplePrimeSet tup)) / n_cube v)))
-              ((∏ j ∈ tuplePrimeSet tup, p j) ^ 4 * z) := by
+            sexticBranchRow p hg pool Q β n_cube Ψ m W X slots U_cand lists a J_hit tup
+              I ((∏ j ∈ tuplePrimeSet tup, p j) ^ 4 * z) := by
       symm
       apply Finset.sum_subset (Finset.filter_subset _ _)
       intro J_hit hJp hnot
@@ -1920,25 +2009,9 @@ theorem rowFamilyEnergy_sextic_label_transfer
       have hJU : J_hit ⊆ U_cand := Finset.mem_powerset.mp hJp
       apply Finset.sum_eq_zero
       intro tup _
-      have hcoef0 : (fun v => if Disjoint (tuplePrimeSet tup) v.support then
-          primeMark J_hit lists a v.support * β I v else 0) = (fun v => if v ∈ Q then 0 else
-            if Disjoint (tuplePrimeSet tup) v.support then primeMark J_hit lists a v.support * β I v else 0) := by
-        funext v
-        by_cases hvQ : v ∈ Q
-        · rw [if_pos hvQ]
-          have hpm0 := primeMark_cube_hit_zero_of_norm_gt p hp J_hit lists a
-            (fun i hi j hj hij => hdisj (hU (hJU hi)) (hU (hJU hj)) hij)
-            L_slot (fun i hi => hL_nonneg i (hJU hi))
-            (fun i hi => hL_bound i (hJU hi)) v ((hQ_B v hvQ).trans_lt hgt_B)
-          simp [hpm0]
-        · rw [if_neg hvQ]
-      have hrow0 : varyingReopenedRow p hg pool Q
-          (fun v => if Disjoint (tuplePrimeSet tup) v.support then
-              primeMark J_hit lists a v.support * β I v else 0)
-          Ψ m (cubicIdealGenerator I)
-          (fun v N => primeMark (slots \ U_cand) lists a (N ∪ v.support) *
-            W (primeProductNorm p N / ((X / primeProductNorm p (tuplePrimeSet tup)) / n_cube v)))
-          ((∏ j ∈ tuplePrimeSet tup, p j) ^ 4 * z) = 0 := by
+      have hrow0 : sexticBranchRow p hg pool Q β n_cube Ψ m W X slots U_cand lists a J_hit tup
+          I ((∏ j ∈ tuplePrimeSet tup, p j) ^ 4 * z) = 0 := by
+        unfold sexticBranchRow
         rw [varyingReopenedRow_integrand]
         apply Finset.sum_eq_zero
         intro v hvQ
@@ -1958,8 +2031,9 @@ theorem rowFamilyEnergy_sextic_label_transfer
     apply (norm_sum_sq_le_card_sum_norm_sq Finset.univ _).trans
     have hcard_tup : ((Finset.univ : Finset (∀ i : U_free, lists i.val)).card : ℝ) =
         ∏ i ∈ U_free, ((lists i).card : ℝ) := by
-      rw [Finset.card_univ, Fintype.card_pi, Finset.prod_coe_sort]
-      simp [Nat.cast_prod]
+      rw [Finset.card_univ, Fintype.card_pi]
+      simp only [Fintype.card_coe, Nat.cast_prod]
+      exact Finset.prod_coe_sort U_free (fun i => ((lists i).card : ℝ))
     rw [hcard_tup]
     apply mul_le_mul_of_nonneg_left _ (Finset.prod_nonneg (fun _ _ => Nat.cast_nonneg _))
     apply Finset.sum_le_sum
@@ -1972,8 +2046,10 @@ theorem rowFamilyEnergy_sextic_label_transfer
     rw [norm_mul, mul_pow]
     exact (mul_le_of_le_one_left (sq_nonneg _)
       (pow_le_one₀ (norm_nonneg _) (by rw [norm_mul]; exact (mul_le_mul htc hpre (norm_nonneg _) zero_le_one).trans_eq (one_mul 1)))).trans (le_refl _)
-  -- Sum hpt over labels and firstFrequencyDisk, commute sums, and apply rowFamilyEnergy_shift_mul
-  rw [rowFamilyEnergy_eq_sum labels _ K_rad hK_rad]
+  rw [rowFamilyEnergy_eq_sum labels
+    (fun I z => varyingReopenedRow p hg pool Q (β I) Ψ m (cubicIdealGenerator I)
+      (fun v T => primeMark slots lists a (T ∪ v.support) *
+        W (primeProductNorm p T / (X / n_cube v))) z) K_rad hK_rad]
   let D₀ := (firstFrequencyDisk (2 * K_rad)).erase 0
   calc
     (∑ I ∈ labels, ∑ z ∈ D₀,
@@ -1986,37 +2062,31 @@ theorem rowFamilyEnergy_sextic_label_transfer
             ((validHits.card : ℝ) * ∑ J_hit ∈ validHits,
               (∏ i ∈ U_cand \ J_hit, ((lists i).card : ℝ)) *
                 ∑ tup : (∀ i : (U_cand \ J_hit : Finset σ), lists i.val),
-                  ‖varyingReopenedRow p hg pool Q
-                    (fun v => if Disjoint (tuplePrimeSet tup) v.support then
-                        primeMark J_hit lists a v.support * β I v else 0)
-                    Ψ m (cubicIdealGenerator I)
-                    (fun v N => primeMark (slots \ U_cand) lists a (N ∪ v.support) *
-                      W (primeProductNorm p N / ((X / primeProductNorm p (tuplePrimeSet tup)) / n_cube v)))
-                    ((∏ j ∈ tuplePrimeSet tup, p j) ^ 4 * z)‖ ^ 2) :=
+                  ‖sexticBranchRow p hg pool Q β n_cube Ψ m W X slots U_cand lists a J_hit tup
+                    I ((∏ j ∈ tuplePrimeSet tup, p j) ^ 4 * z)‖ ^ 2) :=
         Finset.sum_le_sum (fun I _ => Finset.sum_le_sum
           (fun z _ => mul_le_mul_of_nonneg_left (hpt I z) (rowMajorant_nonneg _)))
     _ = (validHits.card : ℝ) * ∑ J_hit ∈ validHits,
           (∏ i ∈ U_cand \ J_hit, ((lists i).card : ℝ)) *
             ∑ tup : (∀ i : (U_cand \ J_hit : Finset σ), lists i.val),
               rowFamilyEnergy labels
-                (fun I z => varyingReopenedRow p hg pool Q
-                  (fun v => if Disjoint (tuplePrimeSet tup) v.support then
-                      primeMark J_hit lists a v.support * β I v else 0)
-                  Ψ m (cubicIdealGenerator I)
-                  (fun v N => primeMark (slots \ U_cand) lists a (N ∪ v.support) *
-                    W (primeProductNorm p N / ((X / primeProductNorm p (tuplePrimeSet tup)) / n_cube v)))
-                  ((∏ j ∈ tuplePrimeSet tup, p j) ^ 4 * z)) K_rad := by
+                (fun I z => sexticBranchRow p hg pool Q β n_cube Ψ m W X slots U_cand lists a J_hit tup
+                  I ((∏ j ∈ tuplePrimeSet tup, p j) ^ 4 * z)) K_rad := by
         rw [sum_comm_four labels D₀ validHits
           (fun z => (rowMajorant (‖ringComplex z‖ ^ 2 / K_rad)).re)
           (validHits.card : ℝ)
-          (fun J_hit => ∏ i ∈ U_cand \ J_hit, ((lists i).card : ℝ))]
+          (fun J_hit => ∏ i ∈ U_cand \ J_hit, ((lists i).card : ℝ))
+          (fun J_hit tup I z => ‖sexticBranchRow p hg pool Q β n_cube Ψ m W X slots U_cand lists a J_hit tup
+            I ((∏ j ∈ tuplePrimeSet tup, p j) ^ 4 * z)‖ ^ 2)]
         congr 1
         apply Finset.sum_congr rfl
         intro J_hit _
         congr 1
         apply Finset.sum_congr rfl
         intro tup _
-        exact (rowFamilyEnergy_eq_sum labels _ K_rad hK_rad).symm
+        exact (rowFamilyEnergy_eq_sum labels
+          (fun I z => sexticBranchRow p hg pool Q β n_cube Ψ m W X slots U_cand lists a J_hit tup
+            I ((∏ j ∈ tuplePrimeSet tup, p j) ^ 4 * z)) K_rad hK_rad).symm
     _ ≤ _ := by
         apply mul_le_mul_of_nonneg_left _ (Nat.cast_nonneg _)
         apply Finset.sum_le_sum
@@ -2032,11 +2102,15 @@ theorem rowFamilyEnergy_sextic_label_transfer
             rw [map_prod, norm_prod, ← Finset.prod_pow]
           dsimp [g]
           rw [map_pow, norm_pow, ← pow_mul, show 4 * 2 = 2 * 4 by decide, pow_mul, h1]
-        apply rowFamilyEnergy_shift_mul labels _ hg0 hK_rad
+        apply rowFamilyEnergy_shift_mul labels
+          (sexticBranchRow p hg pool Q β n_cube Ψ m W X slots U_cand lists a J_hit tup) hg0 hK_rad
         rw [hgnorm]
         exact hK_out J_hit hJ_hit tup
 
 /-! ### Part V: Finite-sum `parentPoisson` identity and conductor radical bound for tiny bins -/
+
+section ParentPoissonTinyBins
+open InversePrioritySecondSource InversePrincipalEnergy InverseSecondPrincipalCaller RayFourExpansion
 
 include hp hg in
 /-- Finite-sum formula for `parentPoisson` on `rowMajorantBall Y`: for `y = parent p x`,
@@ -2064,15 +2138,16 @@ theorem parentPoisson_eq_rowMajorantBall_sum
   intro y χ_ray Ψ₀ res_lists H₀
   have hD_avoid : ∀ i ∈ slots \ J, Disjoint (res_lists i) (quotientSupport p y) := by
     intro i _
-    exact residual_lists_avoid _ _ _ i
+    exact residualLists_disjoint p negative (fun i => lists i \ extra x.cube) y i
   have hq : y.quotient = sourceIdeal p (quotientSupport p y) := by
     change sourceIdeal p x.quotientSupport = sourceIdeal p (quotientSupport p (parent p x))
     rw [quotientSupport_parent p hinj]
   let H_core := firstCoreTest (primeMark (slots \ J) res_lists a) (fun u => om (Real.exp u))
     (columnLog p (primeProductNorm p (quotientSupport p y) * X)) negative (-t) (quotientSupport p y)
-  let m₀ := (m * b0Label p y.cube.support
+  let m_base := m * b0Label p y.cube.support
     (fun i => y.cube.leftExponent i + y.cube.rightExponent i)
-    y.cube.leftBit y.cube.rightBit) * ∏ i ∈ quotientSupport p y, p i
+    y.cube.leftBit y.cube.rightBit
+  let m₀ := m_base * ∏ i ∈ quotientSupport p y, p i
   have he (z : O) :
       inputConjugateRow p (fun i => complexSexticChar (Ideal.span {p i}) (hg i))
         pool Ψ₀ m₀ (secondParentLabel p y) (secondParentDivisor p y) H_core z =
@@ -2085,8 +2160,9 @@ theorem parentPoisson_eq_rowMajorantBall_sum
           unfold inputConjugateRow supportConjugateSum
           apply Finset.sum_congr rfl
           intro U _
-          exact firstCoreTest_coefficient p hp hg hinj (slots \ J) res_lists a (quotientSupport p y) U
-            hD_avoid om lo hi hlo hs negative X t hX Ψ₀ _ _ _
+          dsimp only [m₀, H_core, H₀]
+          rw [firstCoreTest_coefficient p hp hg hinj (slots \ J) res_lists a (quotientSupport p y) U
+            hD_avoid om lo hi hlo hs negative X t hX Ψ₀ m_base (secondParentLabel p y) (secondParentDivisor p y)]
       _ = _ := fresh_input_parent_mask p hg y pool (quotientSupport p y) hq Ψ₀ m H₀ z
   unfold parentPoisson
   rw [firstFreshSecondPoisson_fixed_pool p hp hg hinj hc (hY := hY)]
@@ -2163,6 +2239,8 @@ theorem secondParent_conductor_radical_bound
         dsimp [g]
         rw [map_mul, map_mul, norm_mul, norm_mul, mul_pow, mul_pow]
         rfl
+
+end ParentPoissonTinyBins
 
 end TinyCubeBinLabelTransfer
 

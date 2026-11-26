@@ -49,8 +49,6 @@ theorem exists_gen_additive_of_constant
       ![1, -1, -1, 1, -1, 1]).Gen, s.IsGen := by
   letI := hA.comm
   let a := toUnit T ≫ x
-  let f : Fin 2 → (T.left ⟶ A.left) := ![a.left, (1 : T ⟶ A).left]
-  let e : Fin 2 → ℤ := ![-1, 1]
   obtain ⟨v, hv⟩ := constant_inverse_difference (T := T) hL x
   obtain ⟨u, hu⟩ := AbLaw.Cube.cube_gen_of_relAmple hA hL hAmp hL
   let r := (lift a (lift b c)).left
@@ -64,7 +62,7 @@ theorem exists_gen_additive_of_constant
       change (∏ j, k (r ≫ AbLaw.Cube.cubeMorphism A j) ^ AbLaw.Cube.cubeExponent j) = _ at hp
       rw [hp]
       apply Additive.ofMul.injective
-      simp only [f, e, Fin.prod_univ_succ, Fin.prod_univ_zero, Matrix.cons_val_zero,
+      simp only [Fin.prod_univ_succ, Fin.prod_univ_zero, Matrix.cons_val_zero,
         Matrix.cons_val_succ, zpow_one, zpow_neg_one, _root_.mul_one, ofMul_inv, ofMul_mul]
       abel) _ (mulGen_isGen hv (hu.pullGen (AbLaw.Cube.cubeMorphism A) AbLaw.Cube.cubeExponent r))
   exact ⟨w, hw⟩
@@ -94,6 +92,7 @@ theorem exists_gen_inverse_product (hA : IsAbelianScheme A) (hL : L.IsLB)
   have hτ : ν ≫ τ = a * ν := by
     change ν ≫ ((toUnit A ≫ x) * 𝟙 A) = _
     rw [MonObj.comp_mul, comp_toUnit_assoc, Category.comp_id]
+  have hτleft : ν.left ≫ τ.left = (a * ν).left := congrArg Over.Hom.left hτ
   let u := LB.mulGen L f d g e v w
   have hu := mulGen_isGen hv hw
   obtain ⟨s, hs, -⟩ := exists_gen_of_formEq hL (g := ![τ.left, 𝟙 A.left, ν.left ≫ τ.left, ν.left])
@@ -101,7 +100,7 @@ theorem exists_gen_inverse_product (hA : IsAbelianScheme A) (hL : L.IsLB)
       rw [Fintype.prod_sum_type]
       apply Additive.ofMul.injective
       simp only [f, g, d, e, Sum.elim_inl, Sum.elim_inr, Fin.prod_univ_succ, Fin.prod_univ_zero,
-        Matrix.cons_val_zero, Matrix.cons_val_succ, ha, hν, hτ, zpow_one, zpow_neg_one, neg_neg,
+        Matrix.cons_val_zero, Matrix.cons_val_succ, ha, hν, hτleft, zpow_one, zpow_neg_one, neg_neg,
         _root_.mul_one, ofMul_inv, ofMul_mul]
       abel) (LB.invGen L (Sum.elim f g) (Sum.elim d e) u) (invGen_isGen hu)
   exact ⟨s, hs⟩

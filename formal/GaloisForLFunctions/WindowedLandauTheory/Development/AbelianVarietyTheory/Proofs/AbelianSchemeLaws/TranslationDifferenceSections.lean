@@ -44,8 +44,8 @@ private theorem gs_mul_pullSec {Y : Scheme.{0}} {L : LB Y} {I : Type} [Fintype I
       ((gs_res (𝟙 Y) z h₃ (h₂ hz) _).trans ((gs_pull (𝟙 Y) ν z _ hj _).trans
         (congrArg (fun r : Y ⟶ Y => gs r z _ (s.f j)) (Category.id_comp ν))))))
 
-/-- A nontrivial translating point of a principal polarization has an acyclic
-translation difference in degree zero. -/
+/-- The translation difference of a principal polarization at a nonidentity
+point has no nonzero global sections. -/
 theorem section_eq_zero_of_translation_ne_one {K : Type} [Field K]
     {A : Over (Spec (.of K))} [GrpObj A] {L : LB A.left}
     (hA : IsAbelianScheme A) (hL : L.IsLB) (hAmp : RelAmple A L) (hK : KTriv A L)
@@ -94,15 +94,20 @@ theorem section_eq_zero_of_translation_ne_one {K : Type} [Field K]
     (ν.left ⁻¹ᵁ A.left.basicOpen (s.f i)).isOpen hU hV
   have hunit {z : A.left} {j : Fin 2 → L.ι} {r : A.left ⟶ A.left}
       (h : r z ∈ A.left.basicOpen (s.f j)) : IsUnit (gs r z (M.U j) (s.f j)) := by
-    rw [gs_eq r z _ (A.left.basicOpen_le (s.f j) h)]
-    exact (A.left.mem_basicOpen _ z (A.left.basicOpen_le _ (by
-      rw [← Scheme.preimage_basicOpen]; exact h))).1 (by rw [← Scheme.preimage_basicOpen]; exact h)
+    have hz : r z ∈ M.U j := A.left.basicOpen_le (s.f j) h
+    rw [← gs_stalkMap r z (M.U j) hz (s.f j)]
+    have hu : IsUnit (gs (𝟙 A.left) (r z) (M.U j) (s.f j)) := by
+      rw [gs_eq (𝟙 A.left) (r z) (M.U j) hz]
+      exact (A.left.mem_basicOpen (s.f j) (r z) hz).1 h
+    exact hu.map (r.stalkMap z).hom
   have hb₀ : b ≠ 0 := by
     intro hz
     have e := gs_mul_pullSec s ν.left y i i (A.left.basicOpen_le _ hy) (A.left.basicOpen_le _ hy')
     have e₀ : s'.f (Sum.elim i i) = 0 := by
       rw [hb, hz, map_zero, zero_mul]
-    have e₁ : gs (𝟙 A.left) y (B.U (Sum.elim i i)) 0 = 0 := by simp [gs]
+    have e₁ : gs (𝟙 A.left) y (B.U (Sum.elim i i)) 0 = 0 := by
+      unfold gs
+      split <;> simp only [map_zero]
     have he := (congrArg (gs (𝟙 A.left) y (B.U (Sum.elim i i))) e₀).trans e₁
     exact not_isUnit_zero ((congrArg IsUnit (e.symm.trans he)).mp ((hunit hy).mul (hunit hy')))
   have hu₀ : IsUnit b := Ne.isUnit hb₀
@@ -122,7 +127,8 @@ theorem section_eq_zero_of_translation_ne_one {K : Type} [Field K]
       exact (he.map _).map _
     have hr := isUnit_of_mul_isUnit_left
       ((congrArg IsUnit (gs_mul_pullSec s ν.left z j k hz hk)).mp huv)
-    rwa [gs_eq (𝟙 A.left) z (M.U j) hz] at hr
+    have hg := gs_eq (𝟙 A.left) z (M.U j) hz (s.f j)
+    exact (congrArg IsUnit hg).mp hr
   let v : M.Gen := ⟨fun j => (hcoeff j).unit⟩
   have hv : v.IsGen := fun j k => Units.ext (s.compat j k)
   let E := 𝟙_ (Over (Spec (.of K)))
@@ -138,7 +144,8 @@ theorem section_eq_zero_of_translation_ne_one {K : Type} [Field K]
   obtain ⟨w, hw, -⟩ := exists_gen_of_formEq hL (g := H) (d := d)
     (fun U _ k => Finset.prod_congr rfl fun j _ => congrArg (fun a => k a ^ d j) (hf j))
     (LB.pullGen L f d v p.left) (hv.pullGen f d p.left)
-  exact hx (hK K (𝟙 _) x fun _ => ⟨⊤, trivial,
-    (AbLaw.Cube.trivial_pull_linComb L hL H d _).2 ⟨_, hw.pullGen H d _⟩⟩)
+  apply hx (hK K (𝟙 _) x fun _ => ⟨⊤, trivial, ?_⟩)
+  let r := ((fst E A).left ⁻¹ᵁ (⊤ : (Spec (.of K)).Opens)).ι
+  exact (AbLaw.Cube.trivial_pull_linComb L hL H d r).2 ⟨_, hw.pullGen H d r⟩
 
 end GlobalTheory.TranslateAdditive

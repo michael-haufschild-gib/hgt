@@ -69,7 +69,8 @@ theorem weakest_bond_pattern_cap (L : B→I→Fin 9→ι) (S : (B→I)→J→Fin
   apply Nat.cast_le.mpr
   apply Finset.card_le_card
   intro j hj
-  exact mem_filter.mpr ⟨mem_univ _,(mem_filter.mp hj).2.2⟩
+  have hjE := (mem_filter.mp (p:=fun y => expand (S (owners L x) y) a x∈E (owners L x)) hj).2
+  exact mem_filter.mpr ⟨mem_univ _,hjE.2⟩
 
 #print axioms weakest_bond_pattern_cap
 end

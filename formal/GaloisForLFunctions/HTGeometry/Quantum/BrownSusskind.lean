@@ -247,8 +247,9 @@ import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.Tent
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.TenthPlateau.MicroCollarBipolarCodimension
 
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitWindows.AccuracyScales.IntervalMinima.PrescribedFirst
-import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.BlockDilations.PolynomialWindow.VisitWindows
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.ReturnExcursions.PrefixDeadlines.PolynomialWindows.ActualFirstDip
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.BlockDilations.AdaptiveCuts.BondSamples
-import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.SelectedDates.AlgebraicCurves.SingleHarmonics.FiniteWindings.InitialAntipodes
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.SpectralJets.SelectedDates.AlgebraicCurves.SingleHarmonics.FiniteWindings.SharedDates
 
 /-! # Circuit complexity along static local Hamiltonian trajectories -/
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.ReturnExcursions.InitialBudgets.SpanningRange
