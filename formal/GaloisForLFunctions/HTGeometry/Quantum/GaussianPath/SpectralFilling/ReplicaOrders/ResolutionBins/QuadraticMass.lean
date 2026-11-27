@@ -44,11 +44,14 @@ private theorem forward_bin_kernel {x y : ℝ} (h : ⌊x⌋ ≤ ⌊y⌋) :
   exact (gaussian_floor_weight _).trans (mul_le_mul_of_nonneg_left
     (pow_le_pow_of_le_one (by norm_num) (by norm_num) hn) (by norm_num))
 
+private theorem bin_distance_symm (u v : ℤ) : (u-v).natAbs=(v-u).natAbs := by
+  rw [←Int.natAbs_neg (u-v),neg_sub]
+
 private theorem bin_kernel (x y : ℝ) :
     exp (-(x-y)^2/2) ≤ 4*(1/2:ℝ)^(⌊x⌋-⌊y⌋).natAbs := by
   rcases le_total ⌊x⌋ ⌊y⌋ with h|h
   · exact forward_bin_kernel h
-  · rw [sub_sq_comm x y,Int.natAbs_sub_comm]
+  · rw [sub_sq_comm x y,bin_distance_symm ⌊x⌋ ⌊y⌋]
     exact forward_bin_kernel h
 
 private abbrev Bins (F : I → ℝ) := ↥(univ.image (fun i => ⌊F i⌋))
@@ -109,7 +112,7 @@ theorem gaussian_energy_bins (F a : I → ℝ) (ha : ∀ i, 0 ≤ a i) :
       rw [←mul_sum]
       linarith only [hd]
     have hSchur := weighted_double_sum_le_rowBound (b:=m) (K:=hi)
-      (fun u v => by simp only [hi,Int.natAbs_sub_comm u.val v.val])
+      (fun u v => by simp only [hi,bin_distance_symm u.val v.val])
       (fun u v => by dsimp only [hi]; positivity) hrow
     simp only [abs_of_nonneg (hm _)] at hSchur
     calc Q ≤ ∑ i, ∑ l, a i*a l*hi (c i) (c l) := sum_le_sum fun i _ => sum_le_sum fun l _ =>

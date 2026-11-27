@@ -26,7 +26,7 @@ private theorem occupancy_card_le (I : Type*) [Fintype I] [DecidableEq I] (q : �
     exact congrArg Fin.val (congrFun h i)
   simpa only [Fintype.card_fun,Fintype.card_fin] using Fintype.card_le_of_injective code hinj
 
-private theorem geometric_decay {η : ℝ} (hη : 0 ≤ η) (h₁ : η ≤ 1) (m : ℕ) :
+private theorem geometric_decay {η : ℝ} (h₁ : η ≤ 1) (m : ℕ) :
     (m:ℝ)*η*(1-η)^m ≤ 1 := by
   have hx : 1-η ≤ exp (-η) := by linarith only [add_one_le_exp (-η)]
   have h := pow_le_pow_left₀ (sub_nonneg.mpr h₁) hx m
@@ -59,7 +59,7 @@ theorem alignmentOrder_price (I : Type*) [Fintype I] [Nonempty I] [DecidableEq I
     have hq : (q:ℝ)+1 ≤ ((D:ℝ)+1)*m := by exact_mod_cast hm₁
     have hmul := (div_le_iff₀ (mul_pos discount_pos (sq_pos_of_pos hη))).mp hm
     exact hq.trans ((mul_le_mul_of_nonneg_right hmul (Nat.cast_nonneg m)).trans_eq (by ring))
-  have hpow := geometric_decay hη.le hη₁ m
+  have hpow := geometric_decay hη₁ m
   have hx : 0 ≤ (1-η)^m := pow_nonneg (sub_nonneg.mpr hη₁) _
   have ht : ((q:ℝ)+1)*(1-η)^(2*m) ≤ discount := by
     rw [Nat.mul_comm 2 m,pow_mul]

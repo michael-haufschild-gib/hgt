@@ -32,8 +32,8 @@ theorem gaussian_replica_phase_filling :
   have hd : 0 < δ := lt_min hε zero_lt_one
   let q := alignmentOrder (2^K) δ
   have hp := alignmentOrder_price (Level k) hd (min_le_right ε 1)
-  rw [Fintype.card_fin] at hp
-  obtain ⟨t,ht,z,hz,hall⟩ := all_targets_at_order E q (recordGap_pos k E q) hd (hk q) hp v hv a
+  obtain ⟨t,ht,z,hz,hall⟩ := all_targets_at_order E q (recordGap_pos k E q) hd (hk q)
+    (by simpa only [Fintype.card_fin] using hp) v hv a
   exact ⟨t,ht,z,hz,fun i => (hall i).trans_le (min_le_left ..)⟩
 
 private theorem scalar_chords {n : ℕ} (H : selfAdjoint (SharpOccupation.Register n)) (t ε : ℝ)
@@ -52,11 +52,13 @@ private theorem scalar_chords {n : ℕ} (H : selfAdjoint (SharpOccupation.Regist
       congr 1
       ring
     simpa only [←h,c,←star_sub,norm_star] using he i
-  have hone : c • (1 : SharpOccupation.Register n)=V.val*diagonal (fun _ => c)*star V.val := by
+  have hone : c • (1 : SharpOccupation.Register n)=V.val*Matrix.diagonal (fun _ => c)*star V.val := by
     rw [←smul_one_eq_diagonal_const,Matrix.mul_smul,mul_one,Matrix.smul_mul,(Unitary.mem_iff.mp V.property).2]
   refine ⟨c,hc,TwoQubitCircuit.one n,Nat.zero_le _,?_⟩
-  rw [TwoQubitCircuit.one_eval,hone,unitaryEvolution_spectral H.2.isHermitian,←Matrix.sub_mul,←Matrix.mul_sub,
-    ←Matrix.diagonal_sub,l2_opNorm_unitary_conj_eq V.property,Matrix.l2_opNorm_diagonal]
+  rw [TwoQubitCircuit.one_eval]
+  change ‖unitaryEvolution H.val t-c • (1 : SharpOccupation.Register n)‖ ≤ ε
+  rw [hone,unitaryEvolution_spectral H.2.isHermitian,←Matrix.sub_mul,←Matrix.mul_sub,
+    l2_opNorm_unitary_conj_eq V.property,Matrix.diagonal_sub,Matrix.l2_opNorm_diagonal]
   exact (pi_norm_le_iff_of_nonneg hε).mpr hf
 
 /-- The same measured horizon bounds the wait for a zero-gate visit
@@ -74,7 +76,7 @@ theorem gaussian_replica_scalar_windows :
   intro K u H E ε hε a
   obtain ⟨t,ht,z,hz,he⟩ := hk ε hε a (fun _ => 1) (fun _ => norm_one)
   refine ⟨t,ht,scalar_chords H t ε hε.le z hz (fun i => ?_)⟩
-  simpa only [E,Function.comp_apply,Equiv.symm_apply_apply,one_mul] using (he (qubitConfigFin K i)).le
+  simpa only [Function.comp_apply,Equiv.symm_apply_apply,one_mul] using (he (qubitConfigFin (k+3) i)).le
 
 /-- One measured order bounds the true first affordable date at every
 budget and every positive tolerance, after any selected physical date. -/

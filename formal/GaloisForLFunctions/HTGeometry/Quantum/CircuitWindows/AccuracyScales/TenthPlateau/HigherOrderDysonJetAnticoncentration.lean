@@ -113,8 +113,8 @@ private theorem polya_lagrange_bounded_sublevel_le {k : ℕ} (hk : 1 ≤ k)
   have hsepm : 2 * (k : ℝ) * δ < (volume S).toReal := by
     have hlt : δ < m_vol / (2 * (k : ℝ)) := by dsimp [δ]; linarith only [hdiv_gt]
     have h1 := mul_lt_mul_of_pos_left hlt (by positivity : 0 < 2 * (k : ℝ))
-    have h2 : 2 * (k : ℝ) * (m_vol / (2 * (k : ℝ))) = m_vol := by
-      field_simp [hk_pos.ne']
+    have h2 : 2 * (k : ℝ) * (m_vol / (2 * (k : ℝ))) = m_vol :=
+      mul_div_cancel₀ m_vol (by positivity)
     rwa [h2] at h1
   obtain ⟨T, hTS, hTcard, hTsep⟩ :=
     KleinbockMargulis.exists_finset_separated hδ_pos k hsepm
@@ -146,9 +146,9 @@ private theorem polya_lagrange_bounded_sublevel_le {k : ℕ} (hk : 1 ≤ k)
   have hP_coeff : P.coeff k =
       ∑ i : Fin (k + 1), F 0 (v i) * ∏ j ∈ Finset.univ.erase i, (v i - v j)⁻¹ := by
     dsimp [P]
-    rw [Lagrange.interpolate_apply, Polynomial.finset_sum_coeff]
+    rw [Lagrange.interpolate_apply, Polynomial.finsetSum_coeff]
     refine Finset.sum_congr rfl fun i _ => ?_
-    rw [Polynomial.coeff_smul, smul_eq_mul, coeff_lagrangeBasis_top]
+    rw [Polynomial.coeff_C_mul, coeff_lagrangeBasis_top]
   have hterm_le (i : Fin (k + 1)) :
       |F 0 (v i) * ∏ j ∈ Finset.univ.erase i, (v i - v j)⁻¹| ≤
         ε * (δ⁻¹ ^ k * (∏ j ∈ Finset.univ.erase i, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)|)⁻¹) := by
@@ -165,7 +165,7 @@ private theorem polya_lagrange_bounded_sublevel_le {k : ℕ} (hk : 1 ≤ k)
             have hij_pos : 0 < |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)| := by
               rw [abs_pos, sub_ne_zero]
               exact fun h => hne (Fin.ext (by exact_mod_cast h))
-            rw [abs_inv, ← mul_inv, mul_comm δ⁻¹]
+            rw [abs_inv, mul_comm δ⁻¹, ← mul_inv]
             exact inv_anti₀ (mul_pos hij_pos hδ_pos) (hv_sep i j)
         _ = δ⁻¹ ^ k * (∏ j ∈ Finset.univ.erase i, |((i : ℕ) : ℝ) - ((j : ℕ) : ℝ)|)⁻¹ := by
             rw [Finset.prod_mul_distrib, Finset.prod_const, hcard_er, Finset.prod_inv_distrib]
@@ -202,9 +202,9 @@ private theorem polya_lagrange_bounded_sublevel_le {k : ℕ} (hk : 1 ≤ k)
       pow_lt_pow_left₀ hδ_gt (by positivity) (by omega)
     rw [mul_pow, hr₀_pow] at hpow_lt
     have hlt_ck : ε * (2 / δ) ^ k < c_k := by
-      rw [div_pow, mul_div_assoc, div_lt_iff₀ (pow_pos hδ_pos k)]
+      rw [div_pow, mul_div_assoc', div_lt_iff₀ (pow_pos hδ_pos k)]
       have h1 : (2 : ℝ) ^ k * (ε / c_k) * c_k = ε * (2 : ℝ) ^ k := by
-        field_simp [hc.ne']
+        rw [mul_assoc, div_mul_cancel₀ _ hc.ne', mul_comm]
       nlinarith only [hpow_lt, hc, h1]
     linarith only [hc_le, hlt_ck]
 
@@ -370,7 +370,7 @@ theorem gaussian_higherDeriv_piecewise_anticoncentration
       simp only [G_shift, ↓reduceIte, hG0 t htI, mid]
       exact abs_le.mpr ⟨by linarith only [hlo], by linarith only [hhi]⟩
     have hvol := (polya_lagrange_derivChain_sublevel_le (hk m) hord hchain_shift hc
-      (half_nonneg hδ) hderiv_shift).1
+      (by linarith only [hδ] : 0 ≤ δ / 2) hderiv_shift).1
     have hdiv_eq : (δ / 2) / c = δ / (2 * c) := by ring
     rw [hdiv_eq] at hvol
     calc (gaussianReal 0 1) {t ∈ I_piece m | F (Function.update y i₀ t) ∈ Ioc e₀ (e₀ + δ)}
@@ -476,7 +476,8 @@ theorem fixed_tenth_locking_of_higherDeriv_sublinearOrder
           (M : ℝ) * (4 * (k : ℝ) / Real.sqrt (2 * Real.pi)) * (δ / (2 * c)) ^ ((k : ℝ)⁻¹) := by
           refine Finset.sum_le_sum fun j hj => ?_
           have h1 := gaussian_higherDeriv_piecewise_anticoncentration i₀ (hH_meas j) (hΩ_meas j)
-            (fun _ : Fin M => k) (fun _ => hk) hc hδ (hfib j (Finset.mem_range.mp hj))
+            (fun _ : Fin M => k) (fun _ => hk) (e₀ := (1 / 10 : ℝ)) hc hδ
+            (hfib j (Finset.mem_range.mp hj))
           simpa only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul,
             mul_assoc] using h1
     _ = (Q : ℝ) * ((M : ℝ) * (4 * (k : ℝ) / Real.sqrt (2 * Real.pi)) *
@@ -509,9 +510,8 @@ theorem activeBudget_union_order_threshold {N b k : ℕ} (hN : 1 ≤ N) :
     exact Real.rpow_le_rpow_of_exponent_le one_le_two (by linarith only [hdiv])
   · have hN_pos : 0 < (N : ℝ) := by exact_mod_cast hN
     have hdiv : -(N : ℝ) / 25 ≤ -(b : ℝ) * (N : ℝ)⁻¹ := by
-      rw [← div_eq_mul_inv, div_le_div_iff_of_pos_right hN_pos]
-      have h1 : -(N : ℝ) / 25 * (N : ℝ) = -((N : ℝ) ^ 2 / 25) := by ring
-      linarith only [hcap, h1]
+      rw [← div_eq_mul_inv, div_le_div_iff₀ (by norm_num) hN_pos]
+      nlinarith only [hcap]
     rw [h4N, ← Real.rpow_mul two_pos.le, ← Real.rpow_add two_pos]
     exact Real.rpow_le_rpow_of_exponent_le one_le_two (by linarith only [hdiv])
 
@@ -534,6 +534,8 @@ theorem unitaryJet_isSelfAdjoint {A : Type*} [CStarAlgebra A] {m : ℕ} (hm : 1 
       rw [← neg_eq_iff_eq_neg] at h1
       exact h1
     rw [← smul_neg, hneg]
+  rcases subsingleton_or_nontrivial A with hsub | hnt
+  · exact Subsingleton.elim _ _
   have h0_unit : V 0 * star (V 0) = 1 := (Unitary.mem_iff.mp (hV_unit 0 le_rfl)).2
   have hV0_norm : ‖V 0‖ ≤ 1 := (CStarRing.norm_of_mem_unitary (hV_unit 0 le_rfl)).le
   let R : ℝ → A := fun u => V u - (V 0 + ((u ^ m : ℝ) : ℂ) • M_m)
@@ -580,7 +582,7 @@ theorem unitaryJet_isSelfAdjoint {A : Type*} [CStarAlgebra A] {m : ℕ} (hm : 1 
         _ ≤ (1 + u ^ m * ‖M_m‖) * ‖R u‖ := by
             refine mul_le_mul_of_nonneg_right ((norm_add_le _ _).trans ?_) (norm_nonneg _)
             rw [norm_smul, Complex.norm_real, Real.norm_of_nonneg hum_pos.le]
-            exact add_le_add_right hV0_norm _
+            linarith only [hV0_norm]
     have h3 : ‖(((u ^ m : ℝ) * (u ^ m : ℝ) : ℝ) : ℂ) • (M_m * star M_m)‖ ≤
         (u ^ m) ^ 2 * ‖M_m‖ ^ 2 := by
       rw [norm_smul, Complex.norm_real, Real.norm_of_nonneg (mul_nonneg hum_pos.le hum_pos.le), ← sq]
@@ -589,8 +591,11 @@ theorem unitaryJet_isSelfAdjoint {A : Type*} [CStarAlgebra A] {m : ℕ} (hm : 1 
     have htot_mul : u ^ m * ‖S_skew‖ ≤
         (u ^ m) ^ 2 * ‖M_m‖ ^ 2 + ‖R u‖ + (1 + u ^ m * ‖M_m‖) * ‖R u‖ := by
       rw [hnorm_smul, hid, norm_neg]
-      have htri := (norm_add_le _ _).trans (add_le_add (norm_add_le _ _) le_rfl)
-      linarith only [htri, h1, h2, h3]
+      have htri1 := norm_add_le
+        (R u * star (V u) + (V 0 + ((u ^ m : ℝ) : ℂ) • M_m) * star (R u))
+        ((((u ^ m : ℝ) * (u ^ m : ℝ) : ℝ) : ℂ) • (M_m * star M_m))
+      have htri2 := norm_add_le (R u * star (V u)) ((V 0 + ((u ^ m : ℝ) : ℂ) • M_m) * star (R u))
+      linarith only [htri1, htri2, h1, h2, h3]
     rw [← le_div_iff₀' hum_pos] at htot_mul
     refine htot_mul.trans_eq ?_
     field_simp [hum_pos.ne']
@@ -612,22 +617,24 @@ theorem unitaryJet_isSelfAdjoint {A : Type*} [CStarAlgebra A] {m : ℕ} (hm : 1 
 private theorem abs_torusCriticalHeight_sub_le {N d : ℕ} (e : Config N ≃ Fin (d + 1))
     (V₁ V₂ : UGroup N) (j : ℕ) :
     |torusCriticalHeight e V₁ j - torusCriticalHeight e V₂ j| ≤ 2 * ‖V₁.val - V₂.val‖ := by
+  have hdiag_unit (θ : Fin d → UnitAddCircle) :
+      (Matrix.diagonal fun q => fourier 1 (RHTower.zeroAnchoredPhase d θ (e q)) : Register N) ∈
+        unitary (Register N) := by
+    rw [Unitary.mem_iff, star_eq_conjTranspose, diagonal_conjTranspose,
+      diagonal_mul_diagonal, diagonal_mul_diagonal]
+    constructor <;> ext a b <;> by_cases hab : a = b
+    · subst hab; simp only [diagonal_apply_eq, one_apply_eq]
+      exact Complex.normSq_eq_conj_mul_self.symm.trans (by simp)
+    · simp [hab]
+    · subst hab; simp only [diagonal_apply_eq, one_apply_eq]; rw [mul_comm]
+      exact Complex.normSq_eq_conj_mul_self.symm.trans (by simp)
+    · simp [hab]
   have hpt_le (W₁ W₂ : UGroup N) (θ : Fin d → UnitAddCircle) :
       Metric.infDist (projectiveSpectralMatrix e W₁ θ) (phaseCircuitMatrixImageAtMost N j) ≤
         torusCriticalHeight e W₂ j + 2 * ‖W₁.val - W₂.val‖ := by
     let D_θ : Register N :=
       Matrix.diagonal (fun q => fourier 1 (RHTower.zeroAnchoredPhase d θ (e q)))
-    have hD_unit : D_θ ∈ unitary (Register N) := by
-      rw [Unitary.mem_iff, star_eq_conjTranspose, diagonal_conjTranspose,
-        diagonal_mul_diagonal, diagonal_mul_diagonal]
-      constructor <;> ext a b <;> by_cases hab : a = b
-      · subst hab; simp only [diagonal_apply_eq, one_apply_eq]
-        exact Complex.normSq_eq_conj_mul_self.symm.trans (by simp)
-      · simp [hab]
-      · subst hab; simp only [diagonal_apply_eq, one_apply_eq]; rw [mul_comm]
-        exact Complex.normSq_eq_conj_mul_self.symm.trans (by simp)
-      · simp [hab]
-    have hD_norm : ‖D_θ‖ ≤ 1 := (CStarRing.norm_of_mem_unitary hD_unit).le
+    have hD_norm : ‖D_θ‖ ≤ 1 := (CStarRing.norm_of_mem_unitary (hdiag_unit θ)).le
     have hW1_st : ‖(W₁⁻¹ : UGroup N).val‖ ≤ 1 :=
       (CStarRing.norm_of_mem_unitary (W₁⁻¹ : UGroup N).2).le
     have hW2_n : ‖W₂.val‖ ≤ 1 := (CStarRing.norm_of_mem_unitary W₂.2).le
@@ -651,7 +658,7 @@ private theorem abs_torusCriticalHeight_sub_le {N d : ℕ} (e : Config N ≃ Fin
         calc _ ≤ ‖W₂.val * D_θ‖ * ‖star (W₁.val - W₂.val)‖ := norm_mul_le _ _
           _ ≤ (1 * 1) * ‖W₁.val - W₂.val‖ := mul_le_mul
               ((norm_mul_le _ _).trans (mul_le_mul hW2_n hD_norm (norm_nonneg _) zero_le_one))
-              (norm_star _).le (norm_nonneg _) zero_le_one
+              (norm_star _).le (norm_nonneg _) (by norm_num)
           _ = ‖W₁.val - W₂.val‖ := by ring
       exact (norm_add_le _ _).trans (by linarith only [ha, hb])
     have hinf_tri : Metric.infDist (projectiveSpectralMatrix e W₁ θ)
@@ -668,12 +675,22 @@ private theorem abs_torusCriticalHeight_sub_le {N d : ℕ} (e : Config N ≃ Fin
           phaseCircuitMatrixImageAtMost N j :=
         mem_phaseCircuitMatrixImageAtMost_iff.mpr ⟨1, norm_one, TwoQubitCircuit.one N, Nat.zero_le _, rfl⟩
       refine (Metric.infDist_le_dist_of_mem h1).trans ?_
-      rw [dist_eq_norm, one_smul, TwoQubitCircuit.one_eval]
-      exact (norm_sub_le _ _).trans (by
-        have hu1 := CStarRing.norm_of_mem_unitary (projectiveSpectralMatrix_mem_unitary e W₂ θ')
-        have hu2 : ‖(1 : Register N)‖ = 1 :=
-          CStarRing.norm_of_mem_unitary (Unitary.mem_iff.mpr ⟨by simp, by simp⟩)
-        linarith only [hu1, hu2])
+      rw [dist_eq_norm, one_smul, TwoQubitCircuit.one_eval, OneMemClass.coe_one]
+      have hD'_n : ‖(Matrix.diagonal fun q =>
+          fourier 1 (RHTower.zeroAnchoredPhase d θ' (e q)) : Register N)‖ ≤ 1 :=
+        (CStarRing.norm_of_mem_unitary (hdiag_unit θ')).le
+      have hW2_inv_n : ‖(W₂⁻¹ : UGroup N).val‖ ≤ 1 :=
+        (CStarRing.norm_of_mem_unitary (W₂⁻¹ : UGroup N).2).le
+      have hu1 : ‖projectiveSpectralMatrix e W₂ θ'‖ ≤ 1 := by
+        unfold projectiveSpectralMatrix
+        calc _ ≤ ‖W₂.val * _‖ * ‖(W₂⁻¹ : UGroup N).val‖ := norm_mul_le _ _
+          _ ≤ (1 * 1) * 1 := mul_le_mul
+              ((norm_mul_le _ _).trans (mul_le_mul hW2_n hD'_n (norm_nonneg _) zero_le_one))
+              hW2_inv_n (norm_nonneg _) (by norm_num)
+          _ = 1 := by ring
+      have hu2 : ‖(1 : Register N)‖ = 1 :=
+        CStarRing.norm_of_mem_unitary (OneMemClass.one_mem _)
+      exact (norm_sub_le _ _).trans (by linarith only [hu1, hu2])
     rw [dist_eq_norm] at hinf_tri
     linarith only [hinf_tri, hle_sup, hdiff_spec]
   have hsup_le (W₁ W₂ : UGroup N) :
@@ -687,31 +704,16 @@ private theorem abs_torusCriticalHeight_sub_le {N d : ℕ} (e : Config N ≃ Fin
   rw [norm_sub_rev V₂.val V₁.val] at h2
   exact abs_le.mpr ⟨by linarith only [h2], by linarith only [h1]⟩
 
-/-- Higher-order unitary-jet Danskin lower Dini envelope theorem (`s = u^m`) without `C_j` nets:
-if `V : ℝ → UGroup N` satisfies `‖V(u) - (V(0) + u^m • M_m)‖ / u^m → 0` as `u → 0⁺` (`m ≥ 1`),
-then `K_m := ⟨i • (M_m * star V(0)), _⟩` governs the reparameterized `s = u^m` right Dini slope of
-`s ↦ torusCriticalHeight e (V (s ^ (1 / m))) j` at any maximizing phase point `θ_⋆`. -/
-theorem liminf_torusCriticalHeight_higherOrderUnitaryJet_ge {N d m : ℕ} (hm : 1 ≤ m)
-    (e : Config N ≃ Fin (d + 1)) (V : ℝ → UGroup N) (M_m : Register N)
-    (hjet : Tendsto (fun u : ℝ => ‖(V u).val - ((V 0).val + ((u ^ m : ℝ) : ℂ) • M_m)‖ / u ^ m)
-      (𝓝[>] 0) (𝓝 0))
-    (j : ℕ) (θ_star : Fin d → UnitAddCircle)
-    (hmax : torusCriticalHeight e (V 0) j =
-      Metric.infDist (projectiveSpectralMatrix e (V 0) θ_star) (phaseCircuitMatrixImageAtMost N j))
-    (hr : 0 < torusCriticalHeight e (V 0) j) :
-    let hKm : IsSelfAdjoint (Complex.I • (M_m * star (V 0).val)) :=
-      unitaryJet_isSelfAdjoint hm (fun u _ => (V u).2) hjet
-    let K_m : selfAdjoint (Register N) := ⟨Complex.I • (M_m * star (V 0).val), hKm⟩
-    let U₀ := projectiveSpectralMatrix e (V 0) θ_star
-    let r := torusCriticalHeight e (V 0) j
-    let W_opt := {W ∈ phaseCircuitMatrixImageAtMost N j | ‖U₀ - W‖ = r}
-    ∀ ε > 0, ∀ᶠ s in 𝓝[>] 0,
-      ∃ W_star ∈ W_opt, ∃ ψ_star ∈ maxRightSingularSphere (U₀ - W_star),
-        -(inner ℂ (matAct W_star ψ_star) (matAct (K_m.val * U₀ - U₀ * K_m.val) ψ_star)).im / r - ε <
-          (torusCriticalHeight e (V (s ^ ((m : ℝ)⁻¹))) j - r) / s := by
-  intro hKm K_m U₀ r W_opt ε hε
+private theorem matrix_unitaryJet_flow_diff_tendsto {ι : Type*} [Fintype ι] [DecidableEq ι]
+    [Nonempty ι] {m : ℕ} (hm : 1 ≤ m) {V : ℝ → Matrix ι ι ℂ} {M_m K : Matrix ι ι ℂ}
+    (hV0 : V 0 ∈ unitary (Matrix ι ι ℂ))
+    (hK_def : K = Complex.I • (M_m * star (V 0)))
+    (hK_sa : IsSelfAdjoint K)
+    (hjet : Tendsto (fun u : ℝ => ‖V u - (V 0 + ((u ^ m : ℝ) : ℂ) • M_m)‖ / u ^ m)
+      (𝓝[>] 0) (𝓝 0)) :
+    Tendsto (fun s : ℝ => ‖V (s ^ ((m : ℝ)⁻¹)) - unitaryEvolution K s * V 0‖ / s)
+      (𝓝[>] 0) (𝓝 0) := by
   have hm_pos : 0 < (m : ℝ) := by exact_mod_cast hm
-  -- Map `s ↦ s ^ (1 / m)` sends `𝓝[>] 0` to `𝓝[>] 0`!
   have hroot_tend : Tendsto (fun s : ℝ => s ^ ((m : ℝ)⁻¹)) (𝓝[>] 0) (𝓝[>] 0) := by
     refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ ?_ ?_
     · have hc : ContinuousAt (fun s : ℝ => s ^ ((m : ℝ)⁻¹)) 0 :=
@@ -720,73 +722,88 @@ theorem liminf_torusCriticalHeight_higherOrderUnitaryJet_ge {N d m : ℕ} (hm : 
         hc.tendsto.mono_left nhdsWithin_le_nhds
     · filter_upwards [self_mem_nhdsWithin] with s hs
       exact Real.rpow_pos_of_pos hs _
-  -- Compare `V (s ^ (1/m))` with `transverseEigenspaceFlow K_m (V 0) s` at order `o(s)`!
-  have hflow_diff : Tendsto (fun s : ℝ =>
-      ‖(V (s ^ ((m : ℝ)⁻¹))).val - (transverseEigenspaceFlow K_m (V 0) s).val‖ / s)
+  have hjet_s : Tendsto (fun s : ℝ =>
+      ‖V (s ^ ((m : ℝ)⁻¹)) - (V 0 + (((s ^ ((m : ℝ)⁻¹)) ^ m : ℝ) : ℂ) • M_m)‖ /
+        (s ^ ((m : ℝ)⁻¹)) ^ m)
+      (𝓝[>] 0) (𝓝 0) := hjet.comp hroot_tend
+  have hM_eq : M_m = (-Complex.I) • (K * V 0) := by
+    rw [hK_def, smul_mul_assoc, mul_assoc, (Unitary.mem_iff.mp hV0).1, mul_one, smul_smul,
+      show (-Complex.I) * Complex.I = 1 by rw [neg_mul, Complex.I_mul_I, neg_neg], one_smul]
+  have hV0_n : ‖V 0‖ ≤ 1 := (CStarRing.norm_of_mem_unitary hV0).le
+  have hexp_rem : Tendsto (fun s : ℝ =>
+      ‖(V 0 + ((s : ℝ) : ℂ) • M_m) - unitaryEvolution K s * V 0‖ / s)
       (𝓝[>] 0) (𝓝 0) := by
-    have hjet_s := hjet.comp hroot_tend
-    have hexp_rem : Tendsto (fun s : ℝ =>
-        ‖((V 0).val + (s : ℂ) • M_m) - (transverseEigenspaceFlow K_m (V 0) s).val‖ / s)
-        (𝓝[>] 0) (𝓝 0) := by
-      have hbound : ∀ᶠ s in 𝓝[>] (0 : ℝ),
-          ‖((V 0).val + (s : ℂ) • M_m) - (transverseEigenspaceFlow K_m (V 0) s).val‖ / s ≤
-            (s / 2) * ‖K_m.val‖ ^ 2 := by
-        filter_upwards [self_mem_nhdsWithin] with s hs_pos
-        have hs : 0 < s := hs_pos
-        have hM_eq : M_m = (-Complex.I) • (K_m.val * (V 0).val) := by
-          dsimp [K_m]
-          rw [smul_mul_assoc, mul_assoc, (Unitary.mem_iff.mp (V 0).2).1, mul_one, smul_smul,
-            show (-Complex.I) * Complex.I = 1 by rw [neg_mul, Complex.I_mul_I, neg_neg], one_smul]
-        have hlin : (V 0).val + (s : ℂ) • M_m =
-            (1 + (s : ℂ) • ((-Complex.I) • K_m.val)) * (V 0).val := by
-          rw [hM_eq, add_mul, one_mul, smul_mul_assoc]
-        have hfl : (transverseEigenspaceFlow K_m (V 0) s).val =
-            unitaryEvolution K_m.val s * (V 0).val := rfl
-        have hV0_n : ‖(V 0).val‖ ≤ 1 := (CStarRing.norm_of_mem_unitary (V 0).2).le
-        have htay := norm_selfAdjoint_exp_sub_hamiltonianTaylor_le K_m.val K_m.2 1 s
-        have htay1 : selfAdjointHamiltonianTaylor K_m.val 1 s =
-            1 + (s : ℂ) • ((-Complex.I) • K_m.val) := by
-          simp [selfAdjointHamiltonianTaylor, cstarExponentialTaylor, Finset.sum_range_succ,
-            Complex.real_smul, smul_smul]
-        rw [hlin, hfl, ← sub_mul, norm_sub_rev]
-        have hmul_le : ‖(unitaryEvolution K_m.val s - (1 + (s : ℂ) • ((-Complex.I) • K_m.val))) *
-            (V 0).val‖ ≤ ‖K_m.val‖ ^ 2 * |s| ^ 2 / 2 := by
-          calc _ ≤ ‖unitaryEvolution K_m.val s - (1 + (s : ℂ) • ((-Complex.I) • K_m.val))‖ *
-                ‖(V 0).val‖ := norm_mul_le _ _
-            _ ≤ ‖unitaryEvolution K_m.val s - (1 + (s : ℂ) • ((-Complex.I) • K_m.val))‖ * 1 :=
-                mul_le_mul_of_nonneg_left hV0_n (norm_nonneg _)
-            _ ≤ ‖K_m.val‖ ^ 2 * |s| ^ 2 / 2 := by
-                rw [mul_one, ← htay1]
-                simpa [unitaryEvolution, Nat.factorial] using htay
-        rw [abs_of_pos hs, div_le_iff₀ hs]
-        have h1 : (s / 2) * ‖K_m.val‖ ^ 2 * s = ‖K_m.val‖ ^ 2 * s ^ 2 / 2 := by ring
-        linarith only [hmul_le, h1]
-      have hlin0 : Tendsto (fun s : ℝ => (s / 2) * ‖K_m.val‖ ^ 2) (𝓝[>] 0) (𝓝 0) := by
-        have hc : Continuous (fun s : ℝ => (s / 2) * ‖K_m.val‖ ^ 2) := by fun_prop
-        simpa only [zero_div, zero_mul] using (hc.tendsto 0).mono_left nhdsWithin_le_nhds
-      refine squeeze_zero' ?_ hbound hlin0
-      filter_upwards [self_mem_nhdsWithin] with s hs
-      exact div_nonneg (norm_nonneg _) (le_of_lt hs)
-    have htri_s : ∀ᶠ s in 𝓝[>] (0 : ℝ),
-        ‖(V (s ^ ((m : ℝ)⁻¹))).val - (transverseEigenspaceFlow K_m (V 0) s).val‖ / s ≤
-          ‖(V (s ^ ((m : ℝ)⁻¹))).val -
-            ((V 0).val + (((s ^ ((m : ℝ)⁻¹)) ^ m : ℝ) : ℂ) • M_m)‖ / (s ^ ((m : ℝ)⁻¹)) ^ m +
-          ‖((V 0).val + (s : ℂ) • M_m) - (transverseEigenspaceFlow K_m (V 0) s).val‖ / s := by
+    have hbound : ∀ᶠ s : ℝ in 𝓝[>] (0 : ℝ),
+        ‖(V 0 + ((s : ℝ) : ℂ) • M_m) - unitaryEvolution K s * V 0‖ / s ≤
+          (s / 2) * ‖K‖ ^ 2 := by
       filter_upwards [self_mem_nhdsWithin] with s hs_pos
       have hs : 0 < s := hs_pos
-      have hpow_s : (s ^ ((m : ℝ)⁻¹)) ^ m = s := by
-        rw [← Real.rpow_natCast, ← Real.rpow_mul hs.le, inv_mul_cancel₀ hm_pos.ne', Real.rpow_one]
-      rw [hpow_s, ← add_div]
-      refine div_le_div_of_nonneg_right ?_ hs.le
-      have hsplit : (V (s ^ ((m : ℝ)⁻¹))).val - (transverseEigenspaceFlow K_m (V 0) s).val =
-          ((V (s ^ ((m : ℝ)⁻¹))).val - ((V 0).val + (s : ℂ) • M_m)) +
-            (((V 0).val + (s : ℂ) • M_m) - (transverseEigenspaceFlow K_m (V 0) s).val) := by
-        abel
-      rw [hsplit]
-      exact norm_add_le _ _
-    refine squeeze_zero' ?_ htri_s (by simpa only [add_zero] using hjet_s.add hexp_rem)
+      have hlin : V 0 + ((s : ℝ) : ℂ) • M_m =
+          (1 + ((s : ℝ) : ℂ) • ((-Complex.I) • K)) * V 0 := by
+        rw [hM_eq, add_mul, one_mul, smul_mul_assoc, smul_mul_assoc]
+      have htay := norm_selfAdjoint_exp_sub_hamiltonianTaylor_le K hK_sa 1 s
+      have htay1 : selfAdjointHamiltonianTaylor K 1 s =
+          1 + ((s : ℝ) : ℂ) • ((-Complex.I) • K) := by
+        simp only [selfAdjointHamiltonianTaylor, cstarExponentialTaylor, Finset.sum_range_succ,
+          Finset.range_zero, Finset.sum_empty, zero_add, pow_zero, Nat.factorial_zero, Nat.cast_one,
+          inv_one, one_smul, pow_one, Nat.factorial_one]
+        rw [← Complex.coe_smul]
+      rw [hlin, ← sub_mul, norm_sub_rev]
+      have hmul_le : ‖(unitaryEvolution K s - (1 + ((s : ℝ) : ℂ) • ((-Complex.I) • K))) * V 0‖ ≤
+          ‖K‖ ^ 2 * |s| ^ 2 / 2 := by
+        calc _ ≤ ‖unitaryEvolution K s - (1 + ((s : ℝ) : ℂ) • ((-Complex.I) • K))‖ * ‖V 0‖ :=
+              norm_mul_le _ _
+          _ ≤ ‖unitaryEvolution K s - (1 + ((s : ℝ) : ℂ) • ((-Complex.I) • K))‖ * 1 :=
+              mul_le_mul_of_nonneg_left hV0_n (norm_nonneg _)
+          _ ≤ ‖K‖ ^ 2 * |s| ^ 2 / 2 := by
+              rw [mul_one, ← htay1]
+              simpa [unitaryEvolution, Nat.factorial] using htay
+      rw [abs_of_pos hs, div_le_iff₀ hs]
+      have h1 : (s / 2) * ‖K‖ ^ 2 * s = ‖K‖ ^ 2 * s ^ 2 / 2 := by ring
+      linarith only [hmul_le, h1]
+    have hlin0 : Tendsto (fun s : ℝ => (s / 2) * ‖K‖ ^ 2) (𝓝[>] 0) (𝓝 0) := by
+      have hc : Continuous (fun s : ℝ => (s / 2) * ‖K‖ ^ 2) := by fun_prop
+      simpa only [zero_div, zero_mul] using (hc.tendsto 0).mono_left nhdsWithin_le_nhds
+    refine squeeze_zero' ?_ hbound hlin0
     filter_upwards [self_mem_nhdsWithin] with s hs
     exact div_nonneg (norm_nonneg _) (le_of_lt hs)
+  have htri_s : ∀ᶠ s : ℝ in 𝓝[>] (0 : ℝ),
+      ‖V (s ^ ((m : ℝ)⁻¹)) - unitaryEvolution K s * V 0‖ / s ≤
+        ‖V (s ^ ((m : ℝ)⁻¹)) -
+          (V 0 + (((s ^ ((m : ℝ)⁻¹)) ^ m : ℝ) : ℂ) • M_m)‖ / (s ^ ((m : ℝ)⁻¹)) ^ m +
+        ‖(V 0 + ((s : ℝ) : ℂ) • M_m) - unitaryEvolution K s * V 0‖ / s := by
+    filter_upwards [self_mem_nhdsWithin] with s hs_pos
+    have hs : 0 < s := hs_pos
+    have hpow_s : (s ^ ((m : ℝ)⁻¹)) ^ m = s := by
+      rw [← Real.rpow_natCast, ← Real.rpow_mul hs.le, inv_mul_cancel₀ hm_pos.ne', Real.rpow_one]
+    rw [hpow_s, ← add_div]
+    refine div_le_div_of_nonneg_right ?_ hs.le
+    have hsplit : V (s ^ ((m : ℝ)⁻¹)) - unitaryEvolution K s * V 0 =
+        (V (s ^ ((m : ℝ)⁻¹)) - (V 0 + ((s : ℝ) : ℂ) • M_m)) +
+          ((V 0 + ((s : ℝ) : ℂ) • M_m) - unitaryEvolution K s * V 0) := by abel
+    rw [hsplit]
+    exact norm_add_le _ _
+  refine squeeze_zero' ?_ htri_s (by simpa only [add_zero] using hjet_s.add hexp_rem)
+  filter_upwards [self_mem_nhdsWithin] with s hs
+  exact div_nonneg (norm_nonneg _) (le_of_lt hs)
+
+private theorem liminf_higherOrderJet_of_selfAdjoint {N d m : ℕ}
+    (e : Config N ≃ Fin (d + 1)) (V : ℝ → UGroup N) (K_m : selfAdjoint (Register N))
+    (hflow_diff : Tendsto (fun s : ℝ =>
+      ‖(V (s ^ ((m : ℝ)⁻¹))).val - (transverseEigenspaceFlow K_m (V 0) s).val‖ / s)
+      (𝓝[>] 0) (𝓝 0))
+    (j : ℕ) (θ_star : Fin d → UnitAddCircle)
+    (hmax : torusCriticalHeight e (V 0) j =
+      Metric.infDist (projectiveSpectralMatrix e (V 0) θ_star) (phaseCircuitMatrixImageAtMost N j))
+    (hr : 0 < torusCriticalHeight e (V 0) j) :
+    let U₀ := projectiveSpectralMatrix e (V 0) θ_star
+    let r := torusCriticalHeight e (V 0) j
+    let W_opt := {W ∈ phaseCircuitMatrixImageAtMost N j | ‖U₀ - W‖ = r}
+    ∀ ε > 0, ∀ᶠ s in 𝓝[>] 0,
+      ∃ W_star ∈ W_opt, ∃ ψ_star ∈ maxRightSingularSphere (U₀ - W_star),
+        -(inner ℂ (matAct W_star ψ_star) (matAct (K_m.val * U₀ - U₀ * K_m.val) ψ_star)).im / r - ε <
+          (torusCriticalHeight e (V (s ^ ((m : ℝ)⁻¹))) j - r) / s := by
+  intro U₀ r W_opt ε hε
   have hbase := liminf_torusCriticalHeight_transverseFlow_ge e (V 0) K_m j θ_star hmax hr
     (ε / 2) (half_pos hε)
   have herr := (hflow_diff.const_mul 2).eventually_lt_const (half_pos hε)
@@ -794,19 +811,47 @@ theorem liminf_torusCriticalHeight_higherOrderUnitaryJet_ge {N d m : ℕ} (hm : 
   have hs : 0 < s := hs_pos
   have hlip := abs_torusCriticalHeight_sub_le e
     (V (s ^ ((m : ℝ)⁻¹))) (transverseEigenspaceFlow K_m (V 0) s) j
-  have hquot_diff : |(torusCriticalHeight e (V (s ^ ((m : ℝ)⁻¹))) j - r) / s -
-      (torusCriticalHeight e (transverseEigenspaceFlow K_m (V 0) s) j - r) / s| ≤
+  have hquot_diff :
+      |(torusCriticalHeight e (V (s ^ ((m : ℝ)⁻¹))) j - r) / s -
+        (torusCriticalHeight e (transverseEigenspaceFlow K_m (V 0) s) j - r) / s| ≤
       2 * (‖(V (s ^ ((m : ℝ)⁻¹))).val - (transverseEigenspaceFlow K_m (V 0) s).val‖ / s) := by
-    have hsub : (torusCriticalHeight e (V (s ^ ((m : ℝ)⁻¹))) j - r) / s -
-        (torusCriticalHeight e (transverseEigenspaceFlow K_m (V 0) s) j - r) / s =
+    have hsub :
+        (torusCriticalHeight e (V (s ^ ((m : ℝ)⁻¹))) j - r) / s -
+          (torusCriticalHeight e (transverseEigenspaceFlow K_m (V 0) s) j - r) / s =
         (torusCriticalHeight e (V (s ^ ((m : ℝ)⁻¹))) j -
           torusCriticalHeight e (transverseEigenspaceFlow K_m (V 0) s) j) / s := by
       ring
     rw [hsub, abs_div, abs_of_pos hs, ← mul_div_assoc]
     exact div_le_div_of_nonneg_right hlip hs.le
   have hlow := (abs_le.mp hquot_diff).1
-  refine ⟨W_star, hW, ψ_star, hψ, ?_⟩
-  linarith only [hlt, hlow, herr_s]
+  exact ⟨W_star, hW, ψ_star, hψ, by linarith only [hlt, hlow, herr_s]⟩
+
+/-- Higher-order unitary-jet Danskin lower Dini envelope theorem (`s = u^m`) without `C_j` nets:
+if `V : ℝ → UGroup N` satisfies `‖V(u) - (V(0) + u^m • M_m)‖ / u^m → 0` as `u → 0⁺` (`m ≥ 1`),
+then `K_raw := i • (M_m * star V(0))` is self-adjoint and governs the reparameterized `s = u^m`
+right Dini slope of `s ↦ torusCriticalHeight e (V (s ^ (1 / m))) j` at any maximizing phase `θ_⋆`. -/
+theorem liminf_torusCriticalHeight_higherOrderUnitaryJet_ge {N d m : ℕ} (hm : 1 ≤ m)
+    (e : Config N ≃ Fin (d + 1)) (V : ℝ → UGroup N) (M_m : Register N)
+    (hjet : Tendsto (fun u : ℝ => ‖(V u).val - ((V 0).val + ((u ^ m : ℝ) : ℂ) • M_m)‖ / u ^ m)
+      (𝓝[>] 0) (𝓝 0))
+    (j : ℕ) (θ_star : Fin d → UnitAddCircle)
+    (hmax : torusCriticalHeight e (V 0) j =
+      Metric.infDist (projectiveSpectralMatrix e (V 0) θ_star) (phaseCircuitMatrixImageAtMost N j))
+    (hr : 0 < torusCriticalHeight e (V 0) j) :
+    let U₀ := projectiveSpectralMatrix e (V 0) θ_star
+    let r := torusCriticalHeight e (V 0) j
+    let W_opt := {W ∈ phaseCircuitMatrixImageAtMost N j | ‖U₀ - W‖ = r}
+    ∀ ε > 0, ∀ᶠ s in 𝓝[>] 0,
+      ∃ W_star ∈ W_opt, ∃ ψ_star ∈ maxRightSingularSphere (U₀ - W_star),
+        -(inner ℂ (matAct W_star ψ_star)
+            (matAct ((Complex.I • (M_m * star (V 0).val)) * U₀ -
+              U₀ * (Complex.I • (M_m * star (V 0).val))) ψ_star)).im / r - ε <
+          (torusCriticalHeight e (V (s ^ ((m : ℝ)⁻¹))) j - r) / s := by
+  have hKm : IsSelfAdjoint (Complex.I • (M_m * star (V 0).val)) :=
+    unitaryJet_isSelfAdjoint hm (fun u _ => (V u).2) hjet
+  exact liminf_higherOrderJet_of_selfAdjoint e V ⟨Complex.I • (M_m * star (V 0).val), hKm⟩
+    (matrix_unitaryJet_flow_diff_tendsto hm (V := fun u => (V u).val) (V 0).2 rfl hKm hjet)
+    j θ_star hmax hr
 
 private theorem add_pow_ge_pow_add_pow {x y : ℝ} (hx : 0 ≤ x) (hy : 0 ≤ y) :
     ∀ {m : ℕ}, 1 ≤ m → x ^ m + y ^ m ≤ (x + y) ^ m := by
@@ -1054,9 +1099,9 @@ private theorem prodLocal_hetero_conj_twoQubitLiftMatrix {N : ℕ}
     rw [prodLocalMatrix_star, prodLocalMatrix_mul, prodLocalMatrix_mul]
     congr 1; funext s
     by_cases hsa : s = a
-    · simp [hsa]
+    · subst hsa; simp
     · by_cases hsb : s = b
-      · simp [hsa, hsb]
+      · subst hsb; simp [hsa]
       · simp [hsa, hsb, mul_one, (hR s).2]
   let E₁ (p q : Bool) : Matrix Bool Bool ℂ := fun x y => if x = p ∧ y = q then 1 else 0
   have hU_sum : twoQubitLiftMatrix a b hab U =
@@ -1239,14 +1284,15 @@ theorem torusCriticalHeight_prodLocal_left_eq {N d : ℕ} (e : Config N ≃ Fin 
       ⟨(1 : ℂ) • ((TwoQubitCircuit.one N).eval : Register N),
         mem_phaseCircuitMatrixImageAtMost_iff.mpr ⟨1, norm_one, TwoQubitCircuit.one N, Nat.zero_le _, rfl⟩⟩
     apply le_antisymm
-    · refine (Metric.infDist_le_iff hC_ne).2 fun ε hε => ?_
+    · refine le_of_forall_pos_le_add fun ε hε => ?_
       obtain ⟨M, hM_mem, hM_lt⟩ := (Metric.infDist_lt_iff hC_ne).1
         (lt_add_of_pos_right _ hε)
-      refine ⟨W_loc * M * star W_loc, conj_mem_phaseCircuitMatrixImageAtMost_prodLocal R hR hM_mem, ?_⟩
+      refine (Metric.infDist_le_dist_of_mem
+        (conj_mem_phaseCircuitMatrixImageAtMost_prodLocal R hR hM_mem)).trans ?_
       rw [dist_eq_norm, ← Matrix.sub_mul, ← Matrix.mul_sub, l2_opNorm_unitary_conj_eq hW_unit,
         ← dist_eq_norm]
-      exact hM_lt
-    · refine (Metric.infDist_le_iff hC_ne).2 fun ε hε => ?_
+      exact hM_lt.le
+    · refine le_of_forall_pos_le_add fun ε hε => ?_
       obtain ⟨M, hM_mem, hM_lt⟩ := (Metric.infDist_lt_iff hC_ne).1
         (lt_add_of_pos_right _ hε)
       let M' := prodLocalMatrix (fun s => star (R s)) * M *
@@ -1260,13 +1306,12 @@ theorem torusCriticalHeight_prodLocal_left_eq {N d : ℕ} (e : Config N ≃ Fin 
               star (prodLocalMatrix R)
             = (W_loc * star W_loc) * M * (W_loc * star W_loc) := by simp only [W_loc, mul_assoc]
           _ = M := by rw [hWR, one_mul, mul_one]
-      refine ⟨M', hM'_mem, ?_⟩
+      refine (Metric.infDist_le_dist_of_mem hM'_mem).trans ?_
       rw [dist_eq_norm, ← l2_opNorm_unitary_conj_eq hW_unit, Matrix.mul_sub, Matrix.sub_mul,
         hconj_M', ← dist_eq_norm]
-      exact hM_lt
+      exact hM_lt.le
   unfold torusCriticalHeight
-  congr 1; ext y
-  simp only [mem_range, hpt_eq]
+  exact congrArg (fun f : (Fin d → UnitAddCircle) → ℝ => sSup (Set.range f)) (funext hpt_eq)
 
 /-- Every `1`-local spin-flip eigenframe curve `u ↦ prodLocalMatrix (R u) * V₀` has **identically
 constant** `torusCriticalHeight` and hence zero `k`-th iterated derivative for all `k ≥ 1`. -/
@@ -1289,70 +1334,61 @@ theorem torusCriticalHeight_const_along_localUnitary_curve {N d : ℕ} (e : Conf
         torusCriticalHeight e V₀ j :=
     fun u => torusCriticalHeight_prodLocal_left_eq e (R u) (hR u) V₀ j
   refine ⟨hconst, fun k hk u₀ => ?_⟩
-  rw [show (fun u : ℝ => torusCriticalHeight e
-      ⟨prodLocalMatrix (R u) * V₀.val, mul_mem (prodLocalMatrix_mem_unitary (R u) (hR u)) V₀.2⟩ j) =
-      fun _ : ℝ => torusCriticalHeight e V₀ j from funext hconst]
+  refine (congrArg (fun f : ℝ → ℝ => iteratedDeriv k f u₀) (funext hconst)).trans ?_
   rcases Nat.exists_eq_succ_of_ne_zero (Nat.pos_iff_ne_zero.mp hk) with ⟨k', rfl⟩
   rw [iteratedDeriv_succ']
-  simp [deriv_const]
+  simp
+
+private def dysonOrderedDenomProd {m : ℕ} (B : Fin m → ℝ) (σ : Equiv.Perm (Fin m)) : ℝ :=
+  ∏ r : Fin m, (∑ j : Fin m, if r ≤ j then B (σ j) else 0)⁻¹
+
+private theorem dysonOrderedDenomProd_sum_eq :
+    ∀ {m : ℕ} (B : Fin m → ℝ), (∀ j : Fin m, 0 < B j) →
+      (∑ σ : Equiv.Perm (Fin m), dysonOrderedDenomProd B σ) = ∏ j : Fin m, (B j)⁻¹
+  | 0, _, _ => by simp [dysonOrderedDenomProd]
+  | m + 1, B, hB => by
+      have hS_pos : 0 < ∑ j : Fin (m + 1), B j :=
+        Finset.sum_pos (fun j _ => hB j) ⟨0, Finset.mem_univ 0⟩
+      rw [← Equiv.Perm.decomposeFin.symm.sum_comp (dysonOrderedDenomProd B), Fintype.sum_prod_type]
+      have hterm_pe (p : Fin (m + 1)) (e : Equiv.Perm (Fin m)) :
+          dysonOrderedDenomProd B (Equiv.Perm.decomposeFin.symm (p, e)) =
+            (∑ j : Fin (m + 1), B j)⁻¹ *
+              dysonOrderedDenomProd (fun k : Fin m => B (Equiv.swap 0 p k.succ)) e := by
+        unfold dysonOrderedDenomProd
+        rw [Fin.prod_univ_succ]
+        congr 1
+        · congr 1
+          simp only [Fin.zero_le, ↓reduceIte]
+          exact Equiv.sum_comp (Equiv.Perm.decomposeFin.symm (p, e)) B
+        · refine Finset.prod_congr rfl fun r' _ => ?_
+          congr 1
+          rw [Fin.sum_univ_succ, if_neg (not_le_of_gt (Fin.succ_pos r')), zero_add]
+          exact Finset.sum_congr rfl fun j' _ => by
+            simp only [Fin.succ_le_succ_iff, Equiv.Perm.decomposeFin_symm_apply_succ]
+      have hsub_prod (p : Fin (m + 1)) :
+          (∏ k : Fin m, (B (Equiv.swap 0 p k.succ))⁻¹) =
+            B p * ∏ j : Fin (m + 1), (B j)⁻¹ := by
+        have hperm : (∏ j : Fin (m + 1), (B j)⁻¹) =
+            ∏ j : Fin (m + 1), (B (Equiv.swap 0 p j))⁻¹ :=
+          (Equiv.prod_comp (Equiv.swap (0 : Fin (m + 1)) p) (fun j => (B j)⁻¹)).symm
+        rw [hperm, Fin.prod_univ_succ, Equiv.swap_apply_left, ← mul_assoc,
+          mul_inv_cancel₀ (hB p).ne', one_mul]
+      have hp_sum (p : Fin (m + 1)) :
+          (∑ e : Equiv.Perm (Fin m), dysonOrderedDenomProd B (Equiv.Perm.decomposeFin.symm (p, e))) =
+            ((∑ j : Fin (m + 1), B j)⁻¹ * B p) * ∏ j : Fin (m + 1), (B j)⁻¹ := by
+        rw [Finset.sum_congr rfl fun e _ => hterm_pe p e, ← Finset.mul_sum,
+          dysonOrderedDenomProd_sum_eq _ (fun k => hB _), hsub_prod p, mul_assoc]
+      rw [Finset.sum_congr rfl fun p _ => hp_sum p, ← Finset.sum_mul, ← Finset.mul_sum,
+        inv_mul_cancel₀ hS_pos.ne', one_mul]
 
 /-- Exact `m!`-term Euler-shuffle geodesic reciprocal identity: for any `B : Fin m → ℝ` with
 `∀ j, 0 < B j`, summing the ordered Dyson energy-denominator products over all `m!` spin-flip
-orderings `π ∈ S_m` collapses identically to `∏_{j : Fin m} (B j)⁻¹`. -/
-theorem euler_shuffle_reciprocal_sum :
-    ∀ {m : ℕ} (B : Fin m → ℝ), (∀ j : Fin m, 0 < B j) →
-      (∑ π : Equiv.Perm (Fin m),
-        ∏ r : Fin m, (∑ j : Fin m, if r ≤ j then B (π j) else 0)⁻¹) =
-        ∏ j : Fin m, (B j)⁻¹
-  | 0, B, _ => by simp
-  | m + 1, B, hB => by
-      let S_tot : ℝ := ∑ j : Fin (m + 1), B j
-      have hS_pos : 0 < S_tot :=
-        Finset.sum_pos (fun j _ => hB j) ⟨0, Finset.mem_univ 0⟩
-      let B_sub (p : Fin (m + 1)) : Fin m → ℝ := fun k => B (Equiv.swap 0 p k.succ)
-      have hB_sub_pos (p : Fin (m + 1)) (k : Fin m) : 0 < B_sub p k := hB _
-      rw [← Equiv.sum_comp Equiv.Perm.decomposeFin.symm, Fintype.sum_prod_type]
-      have hterm_pe (p : Fin (m + 1)) (e : Equiv.Perm (Fin m)) :
-          (∏ r : Fin (m + 1),
-            (∑ j : Fin (m + 1), if r ≤ j then B (Equiv.Perm.decomposeFin.symm (p, e) j) else 0)⁻¹) =
-            S_tot⁻¹ * ∏ r' : Fin m,
-              (∑ j' : Fin m, if r' ≤ j' then B_sub p (e j') else 0)⁻¹ := by
-        rw [Fin.prod_univ_succ]
-        congr 1
-        · have h0 : (∑ j : Fin (m + 1),
-              if (0 : Fin (m + 1)) ≤ j then B (Equiv.Perm.decomposeFin.symm (p, e) j) else 0) =
-              S_tot := by
-            simp only [Fin.zero_le, ↓reduceIte]
-            exact Equiv.Perm.sum_comp _ Finset.univ _ (by simp)
-          rw [h0]
-        · refine Finset.prod_congr rfl fun r' _ => ?_
-          congr 1
-          rw [Fin.sum_univ_succ]
-          have hn0 : ¬ (r'.succ ≤ (0 : Fin (m + 1))) := not_le_of_gt (Fin.succ_pos r')
-          rw [if_neg hn0, zero_add]
-          refine Finset.sum_congr rfl fun j' _ => ?_
-          simp only [Fin.succ_le_succ_iff, Equiv.Perm.decomposeFin_symm_apply_succ, B_sub]
-      simp_rw [hterm_pe, ← Finset.mul_sum]
-      have hsub_prod (p : Fin (m + 1)) :
-          (∏ k : Fin m, (B_sub p k)⁻¹) = B p * ∏ j : Fin (m + 1), (B j)⁻¹ := by
-        have hperm : (∏ j : Fin (m + 1), (B j)⁻¹) =
-            ∏ j : Fin (m + 1), (B (Equiv.swap 0 p j))⁻¹ :=
-          ((Equiv.swap (0 : Fin (m + 1)) p).prod_comp fun j => (B j)⁻¹).symm
-        rw [hperm, Fin.prod_univ_succ, Equiv.swap_apply_left]
-        dsimp only [B_sub]
-        have hBp_ne : B p ≠ 0 := (hB p).ne'
-        field_simp [hBp_ne]
-      have hinner (p : Fin (m + 1)) :
-          (∑ e : Equiv.Perm (Fin m),
-            ∏ r' : Fin m, (∑ j' : Fin m, if r' ≤ j' then B_sub p (e j') else 0)⁻¹) =
-            B p * ∏ j : Fin (m + 1), (B j)⁻¹ :=
-        (euler_shuffle_reciprocal_sum (B_sub p) (hB_sub_pos p)).trans (hsub_prod p)
-      simp_rw [hinner]
-      rw [← Finset.sum_mul, ← Finset.mul_sum]
-      change (∑ p : Fin (m + 1), S_tot⁻¹ * B p) * ∏ j : Fin (m + 1), (B j)⁻¹ = _
-      rw [← Finset.mul_sum]
-      change (S_tot⁻¹ * S_tot) * ∏ j : Fin (m + 1), (B j)⁻¹ = _
-      rw [inv_mul_cancel₀ hS_pos.ne', one_mul]
+orderings `σ ∈ S_m` collapses identically to `∏_{j : Fin m} (B j)⁻¹`. -/
+theorem euler_shuffle_reciprocal_sum {m : ℕ} (B : Fin m → ℝ) (hB : ∀ j : Fin m, 0 < B j) :
+    (∑ σ : Equiv.Perm (Fin m),
+      ∏ r : Fin m, (∑ j : Fin m, if r ≤ j then B (σ j) else 0)⁻¹) =
+      ∏ j : Fin m, (B j)⁻¹ :=
+  dysonOrderedDenomProd_sum_eq B hB
 
 /-- Second-order Rayleigh–Schrödinger / Dyson off-diagonal eigenstate amplitude
 `((E b - E a)⁻¹) * ∑_{c : E c ≠ E b} P_{a c} P_{c b} / (E b - E c)` between basis states `a, b`. -/
@@ -1360,6 +1396,460 @@ def secondOrderDysonOffDiag {N : ℕ} (E : Config N → ℝ) (P : Register N) (a
   (((E b - E a : ℝ) : ℂ)⁻¹) *
     ∑ c ∈ Finset.univ.filter (fun c : Config N => E c ≠ E b),
       (P a c * P c b) / ((E b - E c : ℝ) : ℂ)
+
+private theorem unitaryEvolution_involution_pi_div_four {ι : Type*} [Fintype ι] [DecidableEq ι]
+    [Nonempty ι] {X : Matrix ι ι ℂ} (hX : X * X = 1) :
+    unitaryEvolution X (Real.pi / 4) =
+      ((1 / Real.sqrt 2 : ℝ) : ℂ) • (1 : Matrix ι ι ℂ) +
+        (-Complex.I * ((1 / Real.sqrt 2 : ℝ) : ℂ)) • X := by
+  unfold unitaryEvolution
+  have hM_eq : (Real.pi / 4 : ℝ) • ((-Complex.I) • X) =
+      (((Real.pi / 4 : ℝ) : ℂ) * (-Complex.I)) • X := by
+    rw [← Complex.coe_smul, smul_smul]
+  have hM_sq : ((((Real.pi / 4 : ℝ) : ℂ) * (-Complex.I)) • X) *
+      ((((Real.pi / 4 : ℝ) : ℂ) * (-Complex.I)) • X) =
+      (-(((Real.pi / 4 : ℝ) : ℂ) ^ (2 : ℕ))) • (1 : Matrix ι ι ℂ) := by
+    rw [smul_mul_smul_comm, hX]
+    congr 1
+    linear_combination (((Real.pi / 4 : ℝ) : ℂ) ^ 2) * Complex.I_sq
+  rw [hM_eq, _root_.HTGeometry.exp_of_mul_self_eq_neg_sq_smul_one _ (Real.pi / 4) hM_sq]
+  have hsqrt2 : Real.sqrt 2 / 2 = 1 / Real.sqrt 2 := by
+    rw [div_eq_div_iff (by norm_num) (Real.sqrt_pos.mpr two_pos).ne', mul_comm,
+      Real.mul_self_sqrt two_pos.le, one_mul]
+  have hsinc : Real.sinc (Real.pi / 4) * (Real.pi / 4) = 1 / Real.sqrt 2 := by
+    have hne : (Real.pi / 4 : ℝ) ≠ 0 := by linarith only [Real.pi_pos]
+    rw [Real.sinc_of_ne_zero hne, div_mul_cancel₀ _ hne, Real.sin_pi_div_four, hsqrt2]
+  rw [Real.cos_pi_div_four, hsqrt2, smul_smul]
+  congr 2
+  rw [← mul_assoc, ← Complex.ofReal_mul, hsinc, mul_comm]
+
+private theorem finitePauliMatrix_pureX_apply {N : ℕ} (S : Fin N → Bool)
+    (P : Fin N → Option (Fin 3)) (hP : ∀ s, P s = if S s then some 0 else none)
+    (x y : Config N) :
+    finitePauliMatrix P x y = if y = (fun s => xor (x s) (S s)) then 1 else 0 := by
+  unfold finitePauliMatrix
+  by_cases hy : y = fun s => xor (x s) (S s)
+  · subst hy
+    rw [if_pos rfl]
+    refine Finset.prod_eq_one fun s _ => ?_
+    rw [hP s]
+    dsimp only
+    cases x s <;> cases S s <;>
+      simp [boolPauliOptionEntry, boolPauliOption, finiteQubitPauli, Matrix.one_apply]
+  · rw [if_neg hy]
+    obtain ⟨s, hs⟩ := Function.ne_iff.mp hy
+    refine Finset.prod_eq_zero (Finset.mem_univ s) ?_
+    rw [hP s]
+    cases hx : x s <;> cases hS : S s <;> cases hy_s : y s <;>
+      simp_all [boolPauliOptionEntry, boolPauliOption, finiteQubitPauli]
+
+private def dysonBlindDiagEnergy (N : ℕ) (x : Config N) : ℝ :=
+  ∑ s : Fin N, (if x s then (1 : ℝ) else -1) * (2 : ℝ) ^ s.val
+
+private def dysonBlindX0 (N : ℕ) : Config N := fun _ => false
+
+private def dysonBlindX1 (N : ℕ) : Config N := fun s => decide (s.val < 3)
+
+private def dysonBlindShell (n : ℕ) (hn : 1 ≤ n) : PathShell n :=
+  WithLp.toLp 2 fun l : PathLabel n =>
+    if l = .inr (0, (0, 0)) ∨ l = .inl (⟨2, by omega⟩, 0) then 1 else 0
+
+private theorem dysonBlind_coupling0_word {n : ℕ} (hn : 1 ≤ n) (s : Fin (n + 2)) :
+    couplingWord (0 : Fin (n + 1)) (0, 0) s =
+      if decide (s.val < 2) then some 0 else none := by
+  let s₀ : Fin (n + 2) := ⟨0, by omega⟩
+  let s₁ : Fin (n + 2) := ⟨1, by omega⟩
+  have hs₀_val : s₀.val = 0 := rfl
+  have hs₁_val : s₁.val = 1 := rfl
+  have hs01 : s₀ ≠ s₁ := fun h => by have hv : (0 : ℕ) = 1 := congrArg Fin.val h; omega
+  have hc0 : (0 : Fin (n + 1)).castSucc = s₀ := Fin.ext rfl
+  have hc1 : (0 : Fin (n + 1)).succ = s₁ := Fin.ext (by simp [hs₁_val])
+  unfold couplingWord
+  rw [hc0, hc1]
+  by_cases h0 : s = s₀
+  · subst h0; simp [hs₀_val]
+  · by_cases h1 : s = s₁
+    · subst h1; simp [hs01.symm, hs₁_val]
+    · have hv0 : s.val ≠ 0 := fun hv => h0 (Fin.ext (hv.trans hs₀_val.symm))
+      have hv1 : s.val ≠ 1 := fun hv => h1 (Fin.ext (hv.trans hs₁_val.symm))
+      have hnot2 : ¬ s.val < 2 := by omega
+      simp [h0, h1, hnot2]
+
+private theorem dysonBlind_onsite2_word {n : ℕ} (hn : 1 ≤ n) (s : Fin (n + 2)) :
+    onsiteWord (⟨2, by omega⟩ : Fin (n + 2)) 0 s =
+      if decide (s.val = 2) then some 0 else none := by
+  let s₂ : Fin (n + 2) := ⟨2, by omega⟩
+  have hs₂_val : s₂.val = 2 := rfl
+  change onsiteWord s₂ 0 s = _
+  unfold onsiteWord
+  by_cases hs : s = s₂
+  · subst hs; simp [hs₂_val]
+  · have hv2 : s.val ≠ 2 := fun hv => hs (Fin.ext (hv.trans hs₂_val.symm))
+    simp [hs, hv2]
+
+private theorem dysonBlind_pathHamiltonian_eq {n : ℕ} (hn : 1 ≤ n) :
+    pathHamiltonian (dysonBlindShell n hn) =
+      finitePauliMatrix (couplingWord 0 (0, 0)) +
+        finitePauliMatrix (onsiteWord (⟨2, by omega⟩ : Fin (n + 2)) 0) := by
+  rw [pathHamiltonian_eq_sum]
+  let lA : PathLabel n := .inr (0, (0, 0))
+  let lB : PathLabel n := .inl (⟨2, by omega⟩, 0)
+  have hne_AB : lA ≠ lB := by simp [lA, lB]
+  rw [← Finset.sum_subset (Finset.subset_univ ({lA, lB} : Finset (PathLabel n))),
+    Finset.sum_pair hne_AB]
+  · have huA : dysonBlindShell n hn lA = 1 := by simp [dysonBlindShell, lA]
+    have huB : dysonBlindShell n hn lB = 1 := by simp [dysonBlindShell, lB]
+    rw [huA, huB, Complex.ofReal_one, one_smul, one_smul]
+    rfl
+  · intro l _ hl
+    simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hl
+    have hu0 : dysonBlindShell n hn l = 0 := by simp [dysonBlindShell, lA, lB, hl.1, hl.2]
+    rw [hu0, Complex.ofReal_zero, zero_smul]
+
+private theorem dysonBlindSpot_firstOrder_zero {n : ℕ} (hn : 1 ≤ n) (u : PathShell n) :
+    (basisKatoGenerator (1 : UGroup (n + 2)) (dysonBlindDiagEnergy (n + 2))
+      ⟨pathHamiltonian u, isSelfAdjoint_pathHamiltonian u⟩).val
+      (dysonBlindX0 (n + 2)) (dysonBlindX1 (n + 2)) = 0 := by
+  have hpauli0 (l : PathLabel n) :
+      finitePauliMatrix (pathWord l) (dysonBlindX0 (n + 2)) (dysonBlindX1 (n + 2)) = 0 := by
+    obtain ⟨t, ht3, ht_none⟩ : ∃ t : Fin (n + 2), t.val < 3 ∧ pathWord l t = none := by
+      rcases l with ⟨s, q⟩ | ⟨e, pq⟩
+      · by_cases hs : s.val = 0
+        · refine ⟨⟨1, by omega⟩, by simp, ?_⟩
+          have hne : (⟨1, by omega⟩ : Fin (n + 2)) ≠ s :=
+            fun h => by have hv : 1 = s.val := congrArg Fin.val h; omega
+          dsimp only [pathWord, onsiteWord]; exact if_neg hne
+        · refine ⟨⟨0, by omega⟩, by simp, ?_⟩
+          have hne : (⟨0, by omega⟩ : Fin (n + 2)) ≠ s :=
+            fun h => by have hv : 0 = s.val := congrArg Fin.val h; omega
+          dsimp only [pathWord, onsiteWord]; exact if_neg hne
+      · by_cases he : e.val = 0
+        · refine ⟨⟨2, by omega⟩, by simp, ?_⟩
+          have h1 : (⟨2, by omega⟩ : Fin (n + 2)) ≠ e.castSucc :=
+            fun h => by have hv : 2 = e.val := congrArg Fin.val h; omega
+          have h2 : (⟨2, by omega⟩ : Fin (n + 2)) ≠ e.succ :=
+            fun h => by have hv : 2 = e.val + 1 := congrArg Fin.val h; omega
+          dsimp only [pathWord, couplingWord]; rw [if_neg h1, if_neg h2]
+        · refine ⟨⟨0, by omega⟩, by simp, ?_⟩
+          have h1 : (⟨0, by omega⟩ : Fin (n + 2)) ≠ e.castSucc :=
+            fun h => by have hv : 0 = e.val := congrArg Fin.val h; omega
+          have h2 : (⟨0, by omega⟩ : Fin (n + 2)) ≠ e.succ :=
+            fun h => by have hv : 0 = e.val + 1 := congrArg Fin.val h; omega
+          dsimp only [pathWord, couplingWord]; rw [if_neg h1, if_neg h2]
+    unfold finitePauliMatrix
+    refine Finset.prod_eq_zero (Finset.mem_univ t) ?_
+    rw [ht_none]
+    have hdiff : dysonBlindX0 (n + 2) t ≠ dysonBlindX1 (n + 2) t := by
+      simp [dysonBlindX0, dysonBlindX1, ht3]
+    simp [boolPauliOptionEntry, boolPauliOption, hdiff]
+  have hHu0 : pathHamiltonian u (dysonBlindX0 (n + 2)) (dysonBlindX1 (n + 2)) = 0 := by
+    rw [pathHamiltonian_eq_sum, Matrix.sum_apply]
+    exact Finset.sum_eq_zero fun l _ => by rw [Matrix.smul_apply, hpauli0 l, smul_zero]
+  have h1val : (1 : UGroup (n + 2)).val = 1 := rfl
+  change ((1 : UGroup (n + 2)).val *
+    basisOffDiagCore (1 : UGroup (n + 2)) (dysonBlindDiagEnergy (n + 2))
+      ⟨pathHamiltonian u, isSelfAdjoint_pathHamiltonian u⟩ *
+    star (1 : UGroup (n + 2)).val) (dysonBlindX0 (n + 2)) (dysonBlindX1 (n + 2)) = 0
+  rw [h1val, star_one, one_mul, mul_one]
+  dsimp [basisOffDiagCore]
+  rw [star_one, one_mul, mul_one, hHu0]
+  split_ifs <;> simp
+
+private theorem dysonBlindSpot_secondOrder_eq {n : ℕ} (hn : 1 ≤ n) :
+    secondOrderDysonOffDiag (dysonBlindDiagEnergy (n + 2))
+      (pathHamiltonian (dysonBlindShell n hn))
+      (dysonBlindX0 (n + 2)) (dysonBlindX1 (n + 2)) = (1 / 48 : ℂ) := by
+  have hs01 : (⟨0, by omega⟩ : Fin (n + 2)) ≠ ⟨1, by omega⟩ :=
+    fun h => by have hv : (0 : ℕ) = 1 := congrArg Fin.val h; omega
+  have hs02 : (⟨0, by omega⟩ : Fin (n + 2)) ≠ ⟨2, by omega⟩ :=
+    fun h => by have hv : (0 : ℕ) = 2 := congrArg Fin.val h; omega
+  have hs12 : (⟨1, by omega⟩ : Fin (n + 2)) ≠ ⟨2, by omega⟩ :=
+    fun h => by have hv : (1 : ℕ) = 2 := congrArg Fin.val h; omega
+  have hE_diff (y z : Config (n + 2)) (hyz : ∀ s : Fin (n + 2), 3 ≤ s.val → y s = z s) :
+      dysonBlindDiagEnergy (n + 2) y - dysonBlindDiagEnergy (n + 2) z =
+        ((if y ⟨0, by omega⟩ then 1 else -1) - (if z ⟨0, by omega⟩ then 1 else -1)) * 1 +
+        ((if y ⟨1, by omega⟩ then 1 else -1) - (if z ⟨1, by omega⟩ then 1 else -1)) * 2 +
+        ((if y ⟨2, by omega⟩ then 1 else -1) - (if z ⟨2, by omega⟩ then 1 else -1)) * 4 := by
+    unfold dysonBlindDiagEnergy
+    let S₃ : Finset (Fin (n + 2)) := {⟨0, by omega⟩, ⟨1, by omega⟩, ⟨2, by omega⟩}
+    have hnot_mem0 : (⟨0, by omega⟩ : Fin (n + 2)) ∉
+        ({⟨1, by omega⟩, ⟨2, by omega⟩} : Finset (Fin (n + 2))) :=
+      Finset.notMem_insert.mpr ⟨hs01, Finset.notMem_singleton.mpr hs02⟩
+    rw [← Finset.sum_sub_distrib, ← Finset.sum_subset (Finset.subset_univ S₃)]
+    · rw [Finset.sum_insert hnot_mem0, Finset.sum_pair hs12]
+      dsimp only
+      ring
+    · intro s _ hs
+      have hge3 : 3 ≤ s.val := by
+        by_contra hlt3; apply hs
+        simp only [S₃, Finset.mem_insert, Finset.mem_singleton]
+        rcases (show s.val = 0 ∨ s.val = 1 ∨ s.val = 2 by omega) with h0 | h1 | h2
+        · exact Or.inl (Fin.ext h0)
+        · exact Or.inr (Or.inl (Fin.ext h1))
+        · exact Or.inr (Or.inr (Fin.ext h2))
+      rw [hyz s hge3]; ring
+  let x_01 : Config (n + 2) := fun s => decide (s.val < 2)
+  let x_2 : Config (n + 2) := fun s => decide (s.val = 2)
+  have hx01_ne_x2 : x_01 ≠ x_2 := fun h => by
+    have hv := congrFun h ⟨0, by omega⟩; simp [x_01, x_2] at hv
+  have hE_10 : dysonBlindDiagEnergy (n + 2) (dysonBlindX1 (n + 2)) -
+      dysonBlindDiagEnergy (n + 2) (dysonBlindX0 (n + 2)) = 14 := by
+    rw [hE_diff _ _ (fun s hs => by
+      simp only [dysonBlindX1, dysonBlindX0, decide_eq_false (by omega : ¬ s.val < 3)])]
+    simp only [dysonBlindX1, dysonBlindX0]; norm_num
+  have hE_1_01 : dysonBlindDiagEnergy (n + 2) (dysonBlindX1 (n + 2)) -
+      dysonBlindDiagEnergy (n + 2) x_01 = 8 := by
+    rw [hE_diff _ _ (fun s hs => by
+      simp only [dysonBlindX1, x_01, decide_eq_false (by omega : ¬ s.val < 3),
+        decide_eq_false (by omega : ¬ s.val < 2)])]
+    simp only [dysonBlindX1, x_01]; norm_num
+  have hE_1_2 : dysonBlindDiagEnergy (n + 2) (dysonBlindX1 (n + 2)) -
+      dysonBlindDiagEnergy (n + 2) x_2 = 6 := by
+    rw [hE_diff _ _ (fun s hs => by
+      simp only [dysonBlindX1, x_2, decide_eq_false (by omega : ¬ s.val < 3),
+        decide_eq_false (by omega : ¬ s.val = 2)])]
+    simp only [dysonBlindX1, x_2]; norm_num
+  have hA_apply := finitePauliMatrix_pureX_apply (fun s : Fin (n + 2) => decide (s.val < 2))
+    (couplingWord (0 : Fin (n + 1)) (0, 0)) (dysonBlind_coupling0_word hn)
+  have hB_apply := finitePauliMatrix_pureX_apply (fun s : Fin (n + 2) => decide (s.val = 2))
+    (onsiteWord (⟨2, by omega⟩ : Fin (n + 2)) 0) (dysonBlind_onsite2_word hn)
+  unfold secondOrderDysonOffDiag
+  have hprod_c (c : Config (n + 2)) :
+      pathHamiltonian (dysonBlindShell n hn) (dysonBlindX0 (n + 2)) c *
+        pathHamiltonian (dysonBlindShell n hn) c (dysonBlindX1 (n + 2)) =
+        if c = x_01 ∨ c = x_2 then 1 else 0 := by
+    rw [dysonBlind_pathHamiltonian_eq hn, Matrix.add_apply, Matrix.add_apply,
+      hA_apply _ c, hB_apply _ c, hA_apply c _, hB_apply c _]
+    have hx0_A : (fun s : Fin (n + 2) => xor (dysonBlindX0 (n + 2) s) (decide (s.val < 2))) = x_01 := by
+      funext s; simp [dysonBlindX0, x_01]
+    have hx0_B : (fun s : Fin (n + 2) => xor (dysonBlindX0 (n + 2) s) (decide (s.val = 2))) = x_2 := by
+      funext s; simp [dysonBlindX0, x_2]
+    rw [hx0_A, hx0_B]
+    by_cases hc01 : c = x_01
+    · subst hc01
+      have h1 : dysonBlindX1 (n + 2) ≠ fun s : Fin (n + 2) => xor (x_01 s) (decide (s.val < 2)) :=
+        fun h => by have hv := congrFun h ⟨0, by omega⟩; simp [dysonBlindX1, x_01] at hv
+      have h2 : dysonBlindX1 (n + 2) = fun s : Fin (n + 2) => xor (x_01 s) (decide (s.val = 2)) := by
+        funext s; dsimp [dysonBlindX1, x_01]
+        by_cases hs2 : s.val = 2
+        · simp [hs2]
+        · by_cases hs_lt : s.val < 2
+          · have : s.val < 3 := by omega
+            simp [hs2, hs_lt, this]
+          · have : ¬ s.val < 3 := by omega
+            simp [hs2, hs_lt, this]
+      rw [if_pos rfl, if_neg hx01_ne_x2, if_neg h1, if_pos h2, if_pos (Or.inl rfl)]
+      norm_num
+    · by_cases hc2 : c = x_2
+      · subst hc2
+        have h1 : dysonBlindX1 (n + 2) = fun s : Fin (n + 2) => xor (x_2 s) (decide (s.val < 2)) := by
+          funext s; dsimp [dysonBlindX1, x_2]
+          by_cases hs2 : s.val = 2
+          · simp [hs2]
+          · by_cases hs_lt : s.val < 2
+            · have : s.val < 3 := by omega
+              simp [hs2, hs_lt, this]
+            · have : ¬ s.val < 3 := by omega
+              simp [hs2, hs_lt, this]
+        have h2 : dysonBlindX1 (n + 2) ≠ fun s : Fin (n + 2) => xor (x_2 s) (decide (s.val = 2)) :=
+          fun h => by have hv := congrFun h ⟨0, by omega⟩; simp [dysonBlindX1, x_2] at hv
+        rw [if_neg hc01, if_pos rfl, if_pos h1, if_neg h2, if_pos (Or.inr rfl)]
+        norm_num
+      · have hne_or : ¬ (c = x_01 ∨ c = x_2) := not_or.mpr ⟨hc01, hc2⟩
+        rw [if_neg hc01, if_neg hc2, if_neg hne_or]
+        norm_num
+  have hsub_pair : ({x_01, x_2} : Finset (Config (n + 2))) ⊆
+      Finset.univ.filter (fun c : Config (n + 2) =>
+        dysonBlindDiagEnergy (n + 2) c ≠ dysonBlindDiagEnergy (n + 2) (dysonBlindX1 (n + 2))) := by
+    intro c hc
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+    rcases Finset.mem_insert.mp hc with rfl | hc'
+    · linarith only [hE_1_01]
+    · rw [Finset.mem_singleton.mp hc']; linarith only [hE_1_2]
+  rw [← Finset.sum_subset hsub_pair]
+  · rw [Finset.sum_pair hx01_ne_x2, hprod_c x_01, hprod_c x_2,
+      if_pos (Or.inl rfl), if_pos (Or.inr rfl), hE_10, hE_1_01, hE_1_2]
+    norm_num
+  · intro c _ hc_not
+    simp only [Finset.mem_insert, Finset.mem_singleton] at hc_not
+    rw [hprod_c c, if_neg hc_not, zero_div]
+
+private theorem dysonBlindSpot_not_prodLocal {n : ℕ} (hn : 1 ≤ n) :
+    unitaryEvolution (pathHamiltonian (dysonBlindShell n hn)) (Real.pi / 4) ∉
+      Set.range (@prodLocalMatrix (n + 2)) := by
+  rintro ⟨R, hR_eq⟩
+  letI : NormedAlgebra ℚ (Register (n + 2)) := .restrictScalars ℚ ℂ (Register (n + 2))
+  let x₀ := dysonBlindX0 (n + 2)
+  let x_0 : Config (n + 2) := fun s => decide (s.val = 0)
+  let x_1 : Config (n + 2) := fun s => decide (s.val = 1)
+  let x_01 : Config (n + 2) := fun s => decide (s.val < 2)
+  let x_2 : Config (n + 2) := fun s => decide (s.val = 2)
+  have hs01 : (⟨0, by omega⟩ : Fin (n + 2)) ≠ ⟨1, by omega⟩ :=
+    fun h => by have hv : (0 : ℕ) = 1 := congrArg Fin.val h; omega
+  have hminor_prod :
+      prodLocalMatrix R x₀ x₀ * prodLocalMatrix R x_01 x₀ -
+        prodLocalMatrix R x_0 x₀ * prodLocalMatrix R x_1 x₀ = 0 := by
+    let pair01 : Finset (Fin (n + 2)) := {⟨0, by omega⟩, ⟨1, by omega⟩}
+    have hsplit (y : Config (n + 2)) (hy : ∀ s ∈ pair01ᶜ, y s = false) :
+        prodLocalMatrix R y x₀ =
+          R ⟨0, by omega⟩ (y ⟨0, by omega⟩) false *
+            R ⟨1, by omega⟩ (y ⟨1, by omega⟩) false *
+            ∏ s ∈ pair01ᶜ, R s false false := by
+      unfold prodLocalMatrix
+      rw [← Finset.prod_mul_prod_compl pair01, Finset.prod_pair hs01]
+      congr 1
+      exact Finset.prod_congr rfl fun s hs => by rw [hy s hs]; rfl
+    have hout (y : Config (n + 2)) (hy : ∀ s : Fin (n + 2), 2 ≤ s.val → y s = false) :
+        ∀ s ∈ pair01ᶜ, y s = false := by
+      intro s hs
+      simp only [pair01, Finset.mem_compl, Finset.mem_insert, Finset.mem_singleton, not_or] at hs
+      have hge2 : 2 ≤ s.val := by
+        by_contra hlt2
+        rcases (show s.val = 0 ∨ s.val = 1 by omega) with h0 | h1
+        · exact hs.1 (Fin.ext h0)
+        · exact hs.2 (Fin.ext h1)
+      exact hy s hge2
+    rw [hsplit x₀ (hout x₀ fun _ _ => rfl),
+      hsplit x_01 (hout x_01 fun s hs => by
+        simp only [x_01, decide_eq_false (by omega : ¬ s.val < 2)]),
+      hsplit x_0 (hout x_0 fun s hs => by
+        simp only [x_0, decide_eq_false (by omega : ¬ s.val = 0)]),
+      hsplit x_1 (hout x_1 fun s hs => by
+        simp only [x_1, decide_eq_false (by omega : ¬ s.val = 1)])]
+    simp only [x₀, dysonBlindX0, x_01, x_0, x_1]
+    norm_num
+    ring
+  have hA_apply := finitePauliMatrix_pureX_apply (fun s : Fin (n + 2) => decide (s.val < 2))
+    (couplingWord (0 : Fin (n + 1)) (0, 0)) (dysonBlind_coupling0_word hn)
+  have hB_apply := finitePauliMatrix_pureX_apply (fun s : Fin (n + 2) => decide (s.val = 2))
+    (onsiteWord (⟨2, by omega⟩ : Fin (n + 2)) 0) (dysonBlind_onsite2_word hn)
+  have hAB_comm : Commute
+      (finitePauliMatrix (couplingWord (0 : Fin (n + 1)) (0, 0)))
+      (finitePauliMatrix (onsiteWord (⟨2, by omega⟩ : Fin (n + 2)) 0)) := by
+    change _ * _ = _ * _
+    rw [finitePauliMatrix_mul, finitePauliMatrix_mul]
+    have hlbl : (fun s => optMul (couplingWord 0 (0, 0) s)
+        (onsiteWord (⟨2, by omega⟩ : Fin (n + 2)) 0 s)) =
+        fun s => optMul (onsiteWord (⟨2, by omega⟩ : Fin (n + 2)) 0 s)
+          (couplingWord 0 (0, 0) s) :=
+      funext fun _ => optMul_comm _ _
+    have hph1 : ∀ s : Fin (n + 2),
+        optPhase (couplingWord 0 (0, 0) s) (onsiteWord (⟨2, by omega⟩ : Fin (n + 2)) 0 s) = 1 := by
+      intro s; rw [dysonBlind_coupling0_word hn s, dysonBlind_onsite2_word hn s]
+      by_cases h : s.val < 2
+      · have hv2 : s.val ≠ 2 := by omega
+        simp [h, hv2, optPhase]
+      · simp [h, optPhase]
+    have hph2 : ∀ s : Fin (n + 2),
+        optPhase (onsiteWord (⟨2, by omega⟩ : Fin (n + 2)) 0 s) (couplingWord 0 (0, 0) s) = 1 := by
+      intro s; rw [dysonBlind_coupling0_word hn s, dysonBlind_onsite2_word hn s]
+      by_cases h : s.val = 2
+      · simp [h, optPhase_none_right]
+      · simp [h, optPhase]
+    rw [hlbl, Finset.prod_eq_one fun s _ => hph1 s, Finset.prod_eq_one fun s _ => hph2 s]
+  have hexp_split :
+      unitaryEvolution (pathHamiltonian (dysonBlindShell n hn)) (Real.pi / 4) =
+        unitaryEvolution (finitePauliMatrix (couplingWord (0 : Fin (n + 1)) (0, 0))) (Real.pi / 4) *
+          unitaryEvolution (finitePauliMatrix (onsiteWord (⟨2, by omega⟩ : Fin (n + 2)) 0)) (Real.pi / 4) := by
+    rw [dysonBlind_pathHamiltonian_eq hn]; unfold unitaryEvolution
+    rw [smul_add, smul_add, NormedSpace.exp_add_of_commute
+      (((hAB_comm.smul_left (-Complex.I)).smul_right (-Complex.I)).smul_left (Real.pi / 4) |>.smul_right (Real.pi / 4))]
+  have hc_sq : (((1 / Real.sqrt 2 : ℝ) : ℂ) * ((1 / Real.sqrt 2 : ℝ) : ℂ)) = (1 / 2 : ℂ) := by
+    rw [← Complex.ofReal_mul, div_mul_div_comm, one_mul, ← sq, Real.sq_sqrt two_pos.le]; norm_num
+  have hUA := unitaryEvolution_involution_pi_div_four
+    (finitePauliMatrix_mul_self (couplingWord (0 : Fin (n + 1)) (0, 0)))
+  have hUB := unitaryEvolution_involution_pi_div_four
+    (finitePauliMatrix_mul_self (onsiteWord (⟨2, by omega⟩ : Fin (n + 2)) 0))
+  have hx0_ne_x2 : x₀ ≠ x_2 := fun h => by
+    have hv := congrFun h ⟨2, by omega⟩; simp [x₀, dysonBlindX0, x_2] at hv
+  have heval_col0 (y : Config (n + 2)) (hys₂ : y ⟨2, by omega⟩ = false) :
+      (unitaryEvolution (finitePauliMatrix (couplingWord (0 : Fin (n + 1)) (0, 0))) (Real.pi / 4) *
+        unitaryEvolution (finitePauliMatrix (onsiteWord (⟨2, by omega⟩ : Fin (n + 2)) 0)) (Real.pi / 4)) y x₀ =
+        ((1 / Real.sqrt 2 : ℝ) : ℂ) *
+          unitaryEvolution (finitePauliMatrix (couplingWord (0 : Fin (n + 1)) (0, 0))) (Real.pi / 4) y x₀ := by
+    rw [Matrix.mul_apply, hUB]
+    have hUB_col (z : Config (n + 2)) :
+        (((1 / Real.sqrt 2 : ℝ) : ℂ) • (1 : Register (n + 2)) +
+          (-Complex.I * ((1 / Real.sqrt 2 : ℝ) : ℂ)) •
+            finitePauliMatrix (onsiteWord (⟨2, by omega⟩ : Fin (n + 2)) 0)) z x₀ =
+          if z = x₀ then ((1 / Real.sqrt 2 : ℝ) : ℂ)
+          else if z = x_2 then -Complex.I * ((1 / Real.sqrt 2 : ℝ) : ℂ) else 0 := by
+      simp only [Matrix.add_apply, Matrix.smul_apply, Matrix.one_apply, smul_eq_mul, hB_apply z x₀]
+      have hsymm_B : (x₀ = fun s => xor (z s) (decide (s.val = 2))) ↔ z = x_2 := by
+        constructor
+        · intro h; funext s
+          have hs : false = xor (z s) (decide (s.val = 2)) := congrFun h s
+          dsimp only [x_2]
+          revert hs
+          cases z s <;> cases decide (s.val = 2) <;> decide
+        · rintro rfl; funext s; dsimp only [x₀, dysonBlindX0, x_2]
+          cases decide (s.val = 2) <;> rfl
+      rw [if_congr hsymm_B rfl rfl]
+      by_cases hz0 : z = x₀
+      · subst hz0; rw [if_pos rfl, if_neg hx0_ne_x2, if_pos rfl]; ring
+      · by_cases hz2 : z = x_2
+        · subst hz2; rw [if_neg hz0, if_pos rfl, if_neg hz0, if_pos rfl]; ring
+        · rw [if_neg hz0, if_neg hz2, if_neg hz0, if_neg hz2]; ring
+    simp_rw [hUB_col]
+    rw [← Finset.sum_subset (Finset.subset_univ ({x₀, x_2} : Finset (Config (n + 2)))),
+      Finset.sum_pair hx0_ne_x2]
+    · rw [if_pos rfl, if_neg hx0_ne_x2.symm, if_pos rfl]
+      have hUA_x2 :
+          unitaryEvolution (finitePauliMatrix (couplingWord (0 : Fin (n + 1)) (0, 0)))
+            (Real.pi / 4) y x_2 = 0 := by
+        rw [hUA, Matrix.add_apply, Matrix.smul_apply, Matrix.smul_apply, Matrix.one_apply,
+          hA_apply y x_2]
+        have hy_ne : y ≠ x_2 := fun h => by
+          have hv := congrFun h ⟨2, by omega⟩; rw [hys₂] at hv; simp [x_2] at hv
+        have hA_ne : x_2 ≠ fun s => xor (y s) (decide (s.val < 2)) := fun h => by
+          have hv := congrFun h ⟨2, by omega⟩; simp [x_2, hys₂] at hv
+        rw [if_neg hy_ne, if_neg hA_ne, smul_zero, smul_zero, add_zero]
+      rw [hUA_x2, zero_mul, add_zero, mul_comm]
+    · intro z _ hz
+      simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hz
+      rw [if_neg hz.1, if_neg hz.2, mul_zero]
+  have hU_00 :
+      unitaryEvolution (pathHamiltonian (dysonBlindShell n hn)) (Real.pi / 4) x₀ x₀ = 1 / 2 := by
+    rw [hexp_split, heval_col0 x₀ rfl, hUA]
+    have hne : x₀ ≠ fun s : Fin (n + 2) => xor (x₀ s) (decide (s.val < 2)) := fun h => by
+      have hv := congrFun h ⟨0, by omega⟩; simp [x₀, dysonBlindX0] at hv
+    rw [Matrix.add_apply, Matrix.smul_apply, Matrix.smul_apply, Matrix.one_apply,
+      if_pos rfl, hA_apply x₀ x₀, if_neg hne, smul_eq_mul, mul_one, smul_zero, add_zero, hc_sq]
+  have hU_01_0 :
+      unitaryEvolution (pathHamiltonian (dysonBlindShell n hn)) (Real.pi / 4) x_01 x₀ =
+        -Complex.I / 2 := by
+    rw [hexp_split, heval_col0 x_01 (by simp [x_01]), hUA]
+    have hne1 : x_01 ≠ x₀ := fun h => by
+      have hv := congrFun h ⟨0, by omega⟩; simp [x_01, x₀, dysonBlindX0] at hv
+    have heqA : x₀ = fun s : Fin (n + 2) => xor (x_01 s) (decide (s.val < 2)) := by
+      funext s; simp [x₀, dysonBlindX0, x_01]
+    rw [Matrix.add_apply, Matrix.smul_apply, Matrix.smul_apply, Matrix.one_apply,
+      if_neg hne1, hA_apply x_01 x₀, if_pos heqA, smul_zero, zero_add, smul_eq_mul, mul_one]
+    calc ((1 / Real.sqrt 2 : ℝ) : ℂ) * (-Complex.I * ((1 / Real.sqrt 2 : ℝ) : ℂ))
+        = -Complex.I * (((1 / Real.sqrt 2 : ℝ) : ℂ) * ((1 / Real.sqrt 2 : ℝ) : ℂ)) := by ring
+      _ = -Complex.I / 2 := by rw [hc_sq]; ring
+  have hU_0_0 :
+      unitaryEvolution (pathHamiltonian (dysonBlindShell n hn)) (Real.pi / 4) x_0 x₀ = 0 := by
+    rw [hexp_split, heval_col0 x_0 (by simp [x_0]), hUA]
+    have hne1 : x_0 ≠ x₀ := fun h => by
+      have hv := congrFun h ⟨0, by omega⟩; simp [x_0, x₀, dysonBlindX0] at hv
+    have hneA : x₀ ≠ fun s : Fin (n + 2) => xor (x_0 s) (decide (s.val < 2)) := fun h => by
+      have hv := congrFun h ⟨1, by omega⟩; simp [x₀, dysonBlindX0, x_0] at hv
+    rw [Matrix.add_apply, Matrix.smul_apply, Matrix.smul_apply, Matrix.one_apply,
+      if_neg hne1, hA_apply x_0 x₀, if_neg hneA, smul_zero, smul_zero, add_zero, mul_zero]
+  have hU_1_0 :
+      unitaryEvolution (pathHamiltonian (dysonBlindShell n hn)) (Real.pi / 4) x_1 x₀ = 0 := by
+    rw [hexp_split, heval_col0 x_1 (by simp [x_1]), hUA]
+    have hne1 : x_1 ≠ x₀ := fun h => by
+      have hv := congrFun h ⟨1, by omega⟩; simp [x_1, x₀, dysonBlindX0] at hv
+    have hneA : x₀ ≠ fun s : Fin (n + 2) => xor (x_1 s) (decide (s.val < 2)) := fun h => by
+      have hv := congrFun h ⟨0, by omega⟩; simp [x₀, dysonBlindX0, x_1] at hv
+    rw [Matrix.add_apply, Matrix.smul_apply, Matrix.smul_apply, Matrix.one_apply,
+      if_neg hne1, hA_apply x_1 x₀, if_neg hneA, smul_zero, smul_zero, add_zero, mul_zero]
+  rw [hR_eq, hU_00, hU_01_0, hU_0_0, hU_1_0] at hminor_prod
+  have hval : (1 / 2 : ℂ) * (-Complex.I / 2) - 0 * 0 = -Complex.I / 4 := by ring
+  rw [hval] at hminor_prod
+  exact (div_ne_zero (neg_ne_zero.mpr Complex.I_ne_zero) (by norm_num)) hminor_prod
 
 /-- Explicit `2`-local second-order Dyson escape from the Hamming-distance-`3` first-order Kato
 blind spot (`N = n + 2 ≥ 3`): for `E_diag(x) = ∑_s (±1) 2^s`, `x₀ = 0^N`, `x₁ = 1^3 0^{N-3}`, and
@@ -1385,383 +1875,9 @@ theorem twoLocal_secondOrder_dyson_escapes_hammingThree_blindSpot {n : ℕ} (hn 
       (basisKatoGenerator (1 : UGroup N) E_diag
         ⟨pathHamiltonian u, isSelfAdjoint_pathHamiltonian u⟩).val x₀ x₁ = 0) ∧
     secondOrderDysonOffDiag E_diag V_chain x₀ x₁ = (1 / 48 : ℂ) ∧
-    unitaryEvolution V_chain (Real.pi / 4) ∉ Set.range (@prodLocalMatrix N) := by
-  intro N E_diag x₀ x₁ s₂ u_ent V_chain
-  let s₀ : Fin N := ⟨0, by omega⟩
-  let s₁ : Fin N := ⟨1, by omega⟩
-  have hs01 : s₀ ≠ s₁ := fun h => by have hv : (0 : ℕ) = 1 := congrArg Fin.val h; omega
-  have hs02 : s₀ ≠ s₂ := fun h => by have hv : (0 : ℕ) = 2 := congrArg Fin.val h; omega
-  have hs12 : s₁ ≠ s₂ := fun h => by have hv : (1 : ℕ) = 2 := congrArg Fin.val h; omega
-  -- Part 1: Every `PathShell n` vanishes on `(x₀, x₁)` at first Kato order.
-  have hkato_zero : ∀ u : PathShell n,
-      (basisKatoGenerator (1 : UGroup N) E_diag
-        ⟨pathHamiltonian u, isSelfAdjoint_pathHamiltonian u⟩).val x₀ x₁ = 0 := by
-    intro u
-    have hpauli0 (l : PathLabel n) : finitePauliMatrix (pathWord l) x₀ x₁ = 0 := by
-      obtain ⟨t, ht3, ht_none⟩ : ∃ t : Fin N, t.val < 3 ∧ pathWord l t = none := by
-        rcases l with ⟨s, q⟩ | ⟨e, pq⟩
-        · by_cases hs : s.val = 0
-          · refine ⟨s₁, by decide, ?_⟩
-            have hne : s₁ ≠ s := fun h => by have hv : 1 = s.val := congrArg Fin.val h; omega
-            simp [pathWord, onsiteWord, hne]
-          · refine ⟨s₀, by decide, ?_⟩
-            have hne : s₀ ≠ s := fun h => by have hv : 0 = s.val := congrArg Fin.val h; omega
-            simp [pathWord, onsiteWord, hne]
-        · by_cases he : e.val = 0
-          · refine ⟨s₂, by decide, ?_⟩
-            have h1 : s₂ ≠ e.castSucc := fun h => by have hv : 2 = e.val := congrArg Fin.val h; omega
-            have h2 : s₂ ≠ e.succ := fun h => by have hv : 2 = e.val + 1 := congrArg Fin.val h; omega
-            simp [pathWord, couplingWord, h1, h2]
-          · refine ⟨s₀, by decide, ?_⟩
-            have h1 : s₀ ≠ e.castSucc := fun h => by have hv : 0 = e.val := congrArg Fin.val h; omega
-            have h2 : s₀ ≠ e.succ := fun h => by have hv : 0 = e.val + 1 := congrArg Fin.val h; omega
-            simp [pathWord, couplingWord, h1, h2]
-      unfold finitePauliMatrix
-      refine Finset.prod_eq_zero (Finset.mem_univ t) ?_
-      rw [ht_none]
-      have hdiff : x₀ t ≠ x₁ t := by simp [x₀, x₁, ht3]
-      simp [boolPauliOptionEntry, boolPauliOption, hdiff]
-    have hHu0 : pathHamiltonian u x₀ x₁ = 0 := by
-      rw [pathHamiltonian_eq_sum, Matrix.sum_apply]
-      exact Finset.sum_eq_zero fun l _ => by rw [Matrix.smul_apply, hpauli0 l, smul_zero]
-    have h1val : (1 : UGroup N).val = 1 := rfl
-    change ((1 : UGroup N).val *
-      basisOffDiagCore (1 : UGroup N) E_diag ⟨pathHamiltonian u, isSelfAdjoint_pathHamiltonian u⟩ *
-      star (1 : UGroup N).val) x₀ x₁ = 0
-    rw [h1val, star_one, one_mul, mul_one]
-    dsimp [basisOffDiagCore]
-    rw [star_one, one_mul, mul_one, hHu0]
-    split_ifs <;> simp
-  -- Decompose `V_chain = A + B` where `A = X_0 X_1` and `B = X_2`.
-  let A : Register N := finitePauliMatrix (couplingWord 0 (0, 0))
-  let B : Register N := finitePauliMatrix (onsiteWord s₂ 0)
-  have hV_eq : V_chain = A + B := by
-    dsimp [V_chain]
-    rw [pathHamiltonian_eq_sum]
-    let lA : PathLabel n := .inr (0, (0, 0))
-    let lB : PathLabel n := .inl (s₂, 0)
-    have hne_AB : lA ≠ lB := by simp [lA, lB]
-    rw [← Finset.sum_subset (Finset.subset_univ ({lA, lB} : Finset (PathLabel n))),
-      Finset.sum_pair hne_AB]
-    · have huA : u_ent lA = 1 := by simp [u_ent, lA]
-      have huB : u_ent lB = 1 := by simp [u_ent, lB]
-      rw [huA, huB, Complex.ofReal_one, one_smul, one_smul]
-      rfl
-    · intro l _ hl
-      simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hl
-      have hu0 : u_ent l = 0 := by simp [u_ent, lA, lB, hl.1, hl.2]
-      rw [hu0, Complex.ofReal_zero, zero_smul]
-  -- Intermediate states `x_01` (flips `0, 1`) and `x_2` (flips `2`).
-  let x_01 : Config N := fun s => decide (s.val < 2)
-  let x_2 : Config N := fun s => decide (s.val = 2)
-  have hx01_ne_x2 : x_01 ≠ x_2 := fun h => by
-    have hv := congrFun h s₀; simp [x_01, x_2, s₀] at hv
-  -- Helper: `finitePauliMatrix` of a pure-`X` word flips its support!
-  have hX_entry (S : Fin N → Bool) (P : Fin N → Option (Fin 3))
-      (hP : ∀ s, P s = if S s then some 0 else none) (x y : Config N) :
-      finitePauliMatrix P x y = if y = (fun s => xor (x s) (S s)) then 1 else 0 := by
-    unfold finitePauliMatrix
-    by_cases hy : y = fun s => xor (x s) (S s)
-    · subst hy
-      rw [if_pos rfl]
-      refine Finset.prod_eq_one fun s _ => ?_
-      rw [hP s]
-      cases x s <;> cases S s <;> simp [boolPauliOptionEntry, boolPauliOption, finiteQubitPauli]
-    · rw [if_neg hy]
-      obtain ⟨s, hs⟩ := Function.ne_iff.mp hy
-      refine Finset.prod_eq_zero (Finset.mem_univ s) ?_
-      rw [hP s]
-      cases hx : x s <;> cases hS : S s <;> cases hy_s : y s <;>
-        simp_all [boolPauliOptionEntry, boolPauliOption, finiteQubitPauli]
-  have hA_word (s : Fin N) : couplingWord (0 : Fin (n + 1)) (0, 0) s =
-      if decide (s.val < 2) then some 0 else none := by
-    by_cases h0 : s = (0 : Fin (n + 1)).castSucc
-    · subst h0; simp [couplingWord]
-    · by_cases h1 : s = (0 : Fin (n + 1)).succ
-      · subst h1
-        have hne : (0 : Fin (n + 1)).succ ≠ (0 : Fin (n + 1)).castSucc :=
-          (0 : Fin (n + 1)).castSucc_lt_succ.ne'
-        simp [couplingWord, hne]
-      · have hv0 : s.val ≠ 0 := fun hv => h0 (Fin.ext (by simpa using hv))
-        have hv1 : s.val ≠ 1 := fun hv => h1 (Fin.ext (by simpa using hv))
-        have hnot2 : ¬ s.val < 2 := by omega
-        simp [couplingWord, h0, h1, hnot2]
-  have hB_word (s : Fin N) : onsiteWord s₂ 0 s =
-      if decide (s.val = 2) then some 0 else none := by
-    by_cases hs : s = s₂
-    · subst hs; simp [onsiteWord, s₂]
-    · have hv2 : s.val ≠ 2 := fun hv => hs (Fin.ext hv)
-      simp [onsiteWord, hs, hv2]
-  have hA_apply (x y : Config N) :
-      A x y = if y = (fun s => xor (x s) (decide (s.val < 2))) then 1 else 0 :=
-    hX_entry _ _ hA_word x y
-  have hB_apply (x y : Config N) :
-      B x y = if y = (fun s => xor (x s) (decide (s.val = 2))) then 1 else 0 :=
-    hX_entry _ _ hB_word x y
-  -- Energy differences on `S₃ = {s₀, s₁, s₂}`:
-  let S₃ : Finset (Fin N) := {s₀, s₁, s₂}
-  have hE_diff (y z : Config N) (hyz : ∀ s : Fin N, 3 ≤ s.val → y s = z s) :
-      E_diag y - E_diag z =
-        ((if y s₀ then 1 else -1) - (if z s₀ then 1 else -1)) * 1 +
-        ((if y s₁ then 1 else -1) - (if z s₁ then 1 else -1)) * 2 +
-        ((if y s₂ then 1 else -1) - (if z s₂ then 1 else -1)) * 4 := by
-    dsimp [E_diag]
-    rw [← Finset.sum_sub_distrib, ← Finset.sum_subset (Finset.subset_univ S₃)]
-    · rw [Finset.sum_insert (by simp [hs01, hs02]), Finset.sum_pair hs12]
-      simp [s₀, s₁, s₂]; ring
-    · intro s _ hs
-      have hge3 : 3 ≤ s.val := by
-        by_contra hlt3
-        apply hs
-        simp only [S₃, Finset.mem_insert, Finset.mem_singleton]
-        rcases (show s.val = 0 ∨ s.val = 1 ∨ s.val = 2 by omega) with h0 | h1 | h2
-        · exact Or.inl (Fin.ext h0)
-        · exact Or.inr (Or.inl (Fin.ext h1))
-        · exact Or.inr (Or.inr (Fin.ext h2))
-      rw [hyz s hge3]; ring
-  have hE_10 : E_diag x₁ - E_diag x₀ = 14 := by
-    rw [hE_diff x₁ x₀ (fun s hs => by have : ¬ s.val < 3 := by omega; simp [x₁, x₀, this])]
-    simp [x₁, x₀, s₀, s₁, s₂]; norm_num
-  have hE_1_01 : E_diag x₁ - E_diag x_01 = 8 := by
-    rw [hE_diff x₁ x_01 (fun s hs => by
-      have h3 : ¬ s.val < 3 := by omega
-      have h2 : ¬ s.val < 2 := by omega
-      simp [x₁, x_01, h3, h2])]
-    simp [x₁, x_01, s₀, s₁, s₂]; norm_num
-  have hE_1_2 : E_diag x₁ - E_diag x_2 = 6 := by
-    rw [hE_diff x₁ x_2 (fun s hs => by
-      have h3 : ¬ s.val < 3 := by omega
-      have h2 : s.val ≠ 2 := by omega
-      simp [x₁, x_2, h3, h2])]
-    simp [x₁, x_2, s₀, s₁, s₂]; norm_num
-  -- Part 2: `secondOrderDysonOffDiag E_diag V_chain x₀ x₁ = 1 / 48`!
-  have hdyson : secondOrderDysonOffDiag E_diag V_chain x₀ x₁ = (1 / 48 : ℂ) := by
-    unfold secondOrderDysonOffDiag
-    have hprod_c (c : Config N) :
-        V_chain x₀ c * V_chain c x₁ = if c = x_01 ∨ c = x_2 then 1 else 0 := by
-      rw [hV_eq, Matrix.add_apply, Matrix.add_apply, hA_apply x₀ c, hB_apply x₀ c,
-        hA_apply c x₁, hB_apply c x₁]
-      have hx0_A : (fun s : Fin N => xor (x₀ s) (decide (s.val < 2))) = x_01 := by
-        funext s; simp [x₀, x_01]
-      have hx0_B : (fun s : Fin N => xor (x₀ s) (decide (s.val = 2))) = x_2 := by
-        funext s; simp [x₀, x_2]
-      rw [hx0_A, hx0_B]
-      by_cases hc01 : c = x_01
-      · subst hc01
-        have h1 : x₁ ≠ fun s : Fin N => xor (x_01 s) (decide (s.val < 2)) := fun h => by
-          have hv := congrFun h s₀; simp [x₁, x_01, s₀] at hv
-        have h2 : x₁ = fun s : Fin N => xor (x_01 s) (decide (s.val = 2)) := by
-          funext s; dsimp [x₁, x_01]
-          by_cases hs2 : s.val = 2
-          · simp [hs2]
-          · by_cases hs_lt : s.val < 2
-            · have : s.val < 3 := by omega
-              simp [hs2, hs_lt, this]
-            · have : ¬ s.val < 3 := by omega
-              simp [hs2, hs_lt, this]
-        simp [hx01_ne_x2, h1, h2]
-      · by_cases hc2 : c = x_2
-        · subst hc2
-          have h1 : x₁ = fun s : Fin N => xor (x_2 s) (decide (s.val < 2)) := by
-            funext s; dsimp [x₁, x_2]
-            by_cases hs2 : s.val = 2
-            · simp [hs2]
-            · by_cases hs_lt : s.val < 2
-              · have : s.val < 3 := by omega
-                simp [hs2, hs_lt, this]
-              · have : ¬ s.val < 3 := by omega
-                simp [hs2, hs_lt, this]
-          have h2 : x₁ ≠ fun s : Fin N => xor (x_2 s) (decide (s.val = 2)) := fun h => by
-            have hv := congrFun h s₀; simp [x₁, x_2, s₀] at hv
-          simp [hc01, h1, h2]
-        · simp [hc01, hc2]
-    have hmem_01 : x_01 ∈ Finset.univ.filter (fun c : Config N => E_diag c ≠ E_diag x₁) := by
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-      linarith only [hE_1_01]
-    have hmem_2 : x_2 ∈ Finset.univ.filter (fun c : Config N => E_diag c ≠ E_diag x₁) := by
-      simp only [Finset.mem_filter, Finset.mem_univ, true_and]
-      linarith only [hE_1_2]
-    have hsub_pair : ({x_01, x_2} : Finset (Config N)) ⊆
-        Finset.univ.filter (fun c : Config N => E_diag c ≠ E_diag x₁) := by
-      intro c hc
-      rcases Finset.mem_insert.mp hc with rfl | hc'
-      · exact hmem_01
-      · rw [Finset.mem_singleton.mp hc']; exact hmem_2
-    rw [← Finset.sum_subset hsub_pair]
-    · rw [Finset.sum_pair hx01_ne_x2, hprod_c x_01, hprod_c x_2,
-        if_pos (Or.inl rfl), if_pos (Or.inr rfl), hE_10, hE_1_01, hE_1_2]
-      norm_num
-    · intro c _ hc_not
-      simp only [Finset.mem_insert, Finset.mem_singleton] at hc_not
-      rw [hprod_c c, if_neg hc_not, zero_div]
-  -- Part 3: `unitaryEvolution V_chain (π / 4) ∉ Set.range prodLocalMatrix`!
-  have hnot_prod : unitaryEvolution V_chain (Real.pi / 4) ∉ Set.range (@prodLocalMatrix N) := by
-    rintro ⟨R, hR_eq⟩
-    let _ : NormedAlgebra ℚ (Register N) := .restrictScalars ℚ ℂ (Register N)
-    let x_0 : Config N := fun s => decide (s.val = 0)
-    let x_1 : Config N := fun s => decide (s.val = 1)
-    -- Every `prodLocalMatrix R` has zero `2 × 2` minor on `{x₀, x_0, x_1, x_01}`!
-    have hminor_prod :
-        prodLocalMatrix R x₀ x₀ * prodLocalMatrix R x_01 x₀ -
-          prodLocalMatrix R x_0 x₀ * prodLocalMatrix R x_1 x₀ = 0 := by
-      let pair01 : Finset (Fin N) := {s₀, s₁}
-      have hsplit (y : Config N) (hy : ∀ s ∈ pair01ᶜ, y s = false) :
-          prodLocalMatrix R y x₀ =
-            R s₀ (y s₀) false * R s₁ (y s₁) false *
-              ∏ s ∈ pair01ᶜ, R s false false := by
-        unfold prodLocalMatrix
-        rw [← Finset.prod_mul_prod_compl pair01, Finset.prod_pair hs01]
-        congr 1
-        refine Finset.prod_congr rfl fun s hs => by rw [hy s hs]; rfl
-      have hout (y : Config N) (hy : ∀ s : Fin N, 2 ≤ s.val → y s = false) :
-          ∀ s ∈ pair01ᶜ, y s = false := by
-        intro s hs
-        simp only [pair01, Finset.mem_compl, Finset.mem_insert, Finset.mem_singleton, not_or] at hs
-        have hge2 : 2 ≤ s.val := by
-          by_contra hlt2
-          rcases (show s.val = 0 ∨ s.val = 1 by omega) with h0 | h1
-          · exact hs.1 (Fin.ext h0)
-          · exact hs.2 (Fin.ext h1)
-        exact hy s hge2
-      rw [hsplit x₀ (hout x₀ fun _ _ => rfl),
-        hsplit x_01 (hout x_01 fun s hs => by have : ¬ s.val < 2 := by omega; simp [x_01, this]),
-        hsplit x_0 (hout x_0 fun s hs => by have : s.val ≠ 0 := by omega; simp [x_0, this]),
-        hsplit x_1 (hout x_1 fun s hs => by have : s.val ≠ 1 := by omega; simp [x_1, this])]
-      simp only [x₀, x_01, x_0, x_1, s₀, s₁, Nat.zero_lt_two, Nat.one_lt_two, decide_true,
-        Nat.add_eq_zero_iff, one_ne_zero, and_false, decide_false]
-      ring
-    -- Compute `unitaryEvolution (A + B) (π / 4)` via commuting `A` and `B`!
-    have hAB_comm : Commute A B := by
-      change A * B = B * A
-      dsimp [A, B]
-      rw [finitePauliMatrix_mul, finitePauliMatrix_mul]
-      have hlbl : (fun s => optMul (couplingWord 0 (0, 0) s) (onsiteWord s₂ 0 s)) =
-          fun s => optMul (onsiteWord s₂ 0 s) (couplingWord 0 (0, 0) s) :=
-        funext fun _ => optMul_comm _ _
-      have hph1 : ∀ s : Fin N, optPhase (couplingWord 0 (0, 0) s) (onsiteWord s₂ 0 s) = 1 := by
-        intro s; rw [hA_word s, hB_word s]
-        by_cases h : s.val < 2
-        · have hv2 : s.val ≠ 2 := by omega
-          simp [h, hv2, optPhase]
-        · simp [h, optPhase]
-      have hph2 : ∀ s : Fin N, optPhase (onsiteWord s₂ 0 s) (couplingWord 0 (0, 0) s) = 1 := by
-        intro s; rw [hA_word s, hB_word s]
-        by_cases h : s.val = 2
-        · have hnot : ¬ s.val < 2 := by omega
-          simp [h, hnot, optPhase_none_right]
-        · simp [h, optPhase]
-      rw [hlbl, Finset.prod_eq_one fun s _ => hph1 s, Finset.prod_eq_one fun s _ => hph2 s]
-    have hexp_split : unitaryEvolution V_chain (Real.pi / 4) =
-        unitaryEvolution A (Real.pi / 4) * unitaryEvolution B (Real.pi / 4) := by
-      rw [hV_eq]; unfold unitaryEvolution
-      rw [smul_add, smul_add, NormedSpace.exp_add_of_commute
-        (((hAB_comm.smul_left (-Complex.I)).smul_right (-Complex.I)).smul_left (Real.pi / 4) |>.smul_right (Real.pi / 4))]
-    have hexp_inv {X : Register N} (hX : X * X = 1) :
-        unitaryEvolution X (Real.pi / 4) =
-          ((1 / Real.sqrt 2 : ℝ) : ℂ) • (1 : Register N) +
-            ((-Complex.I * ((1 / Real.sqrt 2 : ℝ) : ℂ))) • X := by
-      unfold unitaryEvolution
-      have hneg_sq : ((-Complex.I) • X) * ((-Complex.I) • X) = -1 := by
-        rw [smul_mul_smul_comm, hX, smul_one_eq_coe, mul_neg, neg_mul, neg_neg, Complex.I_mul_I]
-        simp
-      have harg : (Real.pi / 4) • ((-Complex.I) • X) =
-          ((Real.pi / 4 : ℝ) : ℂ) • ((-Complex.I) • X) := Complex.coe_smul _ _
-      rw [harg, _root_.HTGeometry.exp_of_mul_self_eq_neg_sq_smul_one ((-Complex.I) • X) (Real.pi / 4)]
-      · have hsinc : Real.sinc (Real.pi / 4) * (Real.pi / 4) = Real.sin (Real.pi / 4) := by
-          have hne : (Real.pi / 4 : ℝ) ≠ 0 := by linarith only [Real.pi_pos]
-          rw [Real.sinc_of_ne_zero hne, div_mul_cancel₀ _ hne]
-        rw [smul_smul, ← Complex.ofReal_mul, hsinc, Real.cos_pi_div_four, Real.sin_pi_div_four,
-          one_div, one_div, smul_smul, mul_comm _ (-Complex.I)]
-      · rw [smul_mul_smul_comm, hneg_sq, smul_neg, ← neg_smul, pow_two]
-    have hUA := hexp_inv (finitePauliMatrix_mul_self (couplingWord 0 (0, 0)))
-    have hUB := hexp_inv (finitePauliMatrix_mul_self (onsiteWord s₂ 0))
-    let c : ℂ := ((1 / Real.sqrt 2 : ℝ) : ℂ)
-    have hc_sq : c * c = (1 / 2 : ℂ) := by
-      dsimp [c]; rw [← Complex.ofReal_mul, div_mul_div_comm, one_mul, ← sq,
-        Real.sq_sqrt two_pos.le]; norm_num
-    -- Evaluate `(UA * UB) y x₀` for any `y` with `y s₂ = false`:
-    have heval_col0 (y : Config N) (hys₂ : y s₂ = false) :
-        (unitaryEvolution A (Real.pi / 4) * unitaryEvolution B (Real.pi / 4)) y x₀ =
-          c * unitaryEvolution A (Real.pi / 4) y x₀ := by
-      rw [Matrix.mul_apply, hUB]
-      have hUB_col (z : Config N) :
-          (c • (1 : Register N) + (-Complex.I * c) • B) z x₀ =
-            if z = x₀ then c else if z = x_2 then -Complex.I * c else 0 := by
-        simp only [Matrix.add_apply, Matrix.smul_apply, Matrix.one_apply, smul_eq_mul,
-          hB_apply z x₀]
-        have hsymm_B : (x₀ = fun s => xor (z s) (decide (s.val = 2))) ↔ z = x_2 := by
-          constructor
-          · intro h; funext s
-            have hs := congrFun h s
-            dsimp [x₀, x_2] at hs ⊢
-            cases z s <;> cases decide (s.val = 2) <;> simp_all
-          · rintro rfl; funext s; dsimp [x₀, x_2]; cases decide (s.val = 2) <;> simp
-        rw [if_congr hsymm_B rfl rfl]
-        have hx0_ne_x2 : x₀ ≠ x_2 := fun h => by
-          have hv := congrFun h s₂; simp [x₀, x_2, s₂] at hv
-        by_cases hz0 : z = x₀
-        · subst hz0; simp [hx0_ne_x2]
-        · by_cases hz2 : z = x_2
-          · subst hz2; simp [hz0]
-          · simp [hz0, hz2]
-      simp_rw [hUB_col]
-      have hx0_ne_x2 : x₀ ≠ x_2 := fun h => by
-        have hv := congrFun h s₂; simp [x₀, x_2, s₂] at hv
-      rw [← Finset.sum_subset (Finset.subset_univ ({x₀, x_2} : Finset (Config N))),
-        Finset.sum_pair hx0_ne_x2]
-      · simp only [↓reduceIte, hx0_ne_x2.symm]
-        have hUA_x2 : unitaryEvolution A (Real.pi / 4) y x_2 = 0 := by
-          rw [hUA, Matrix.add_apply, Matrix.smul_apply, Matrix.smul_apply, Matrix.one_apply,
-            hA_apply y x_2]
-          have hy_ne : y ≠ x_2 := fun h => by
-            have hv := congrFun h s₂; rw [hys₂] at hv; simp [x_2, s₂] at hv
-          have hA_ne : x_2 ≠ fun s => xor (y s) (decide (s.val < 2)) := fun h => by
-            have hv := congrFun h s₂
-            have hnot2 : ¬ s₂.val < 2 := by simp [s₂]
-            simp [x_2, s₂, hys₂, hnot2] at hv
-          simp [hy_ne, hA_ne]
-        rw [hUA_x2, zero_mul, add_zero, mul_comm]
-      · intro z _ hz
-        simp only [Finset.mem_insert, Finset.mem_singleton, not_or] at hz
-        simp [hz.1, hz.2]
-    let U := unitaryEvolution V_chain (Real.pi / 4)
-    have hU_00 : U x₀ x₀ = 1 / 2 := by
-      dsimp [U]; rw [hexp_split, heval_col0 x₀ rfl, hUA]
-      have hne : x₀ ≠ fun s : Fin N => xor (x₀ s) (decide (s.val < 2)) := fun h => by
-        have hv := congrFun h s₀; simp [x₀, s₀] at hv
-      simp [Matrix.add_apply, Matrix.smul_apply, hA_apply x₀ x₀, hne, smul_eq_mul, hc_sq]
-    have hU_01_0 : U x_01 x₀ = -Complex.I / 2 := by
-      dsimp [U]
-      rw [hexp_split, heval_col0 x_01 (by simp [x_01, s₂]), hUA]
-      have hne1 : x_01 ≠ x₀ := fun h => by
-        have hv := congrFun h s₀; simp [x_01, x₀, s₀] at hv
-      have heqA : x₀ = fun s : Fin N => xor (x_01 s) (decide (s.val < 2)) := by
-        funext s; simp [x₀, x_01]
-      simp only [Matrix.add_apply, Matrix.smul_apply, Matrix.one_apply, if_neg hne1,
-        hA_apply x_01 x₀, if_pos heqA, smul_eq_mul, mul_zero, zero_add, mul_one]
-      calc c * (-Complex.I * c) = -Complex.I * (c * c) := by ring
-        _ = -Complex.I / 2 := by rw [hc_sq]; ring
-    have hU_0_0 : U x_0 x₀ = 0 := by
-      dsimp [U]; rw [hexp_split, heval_col0 x_0 (by simp [x_0, s₂]), hUA]
-      have hne1 : x_0 ≠ x₀ := fun h => by have hv := congrFun h s₀; simp [x_0, x₀, s₀] at hv
-      have hneA : x₀ ≠ fun s : Fin N => xor (x_0 s) (decide (s.val < 2)) := fun h => by
-        have hv := congrFun h s₁; simp [x₀, x_0, s₁] at hv
-      simp [Matrix.add_apply, Matrix.smul_apply, Matrix.one_apply, hne1, hA_apply x_0 x₀, hneA]
-    have hU_1_0 : U x_1 x₀ = 0 := by
-      dsimp [U]; rw [hexp_split, heval_col0 x_1 (by simp [x_1, s₂]), hUA]
-      have hne1 : x_1 ≠ x₀ := fun h => by have hv := congrFun h s₁; simp [x_1, x₀, s₁] at hv
-      have hneA : x₀ ≠ fun s : Fin N => xor (x_1 s) (decide (s.val < 2)) := fun h => by
-        have hv := congrFun h s₀; simp [x₀, x_1, s₀] at hv
-      simp [Matrix.add_apply, Matrix.smul_apply, Matrix.one_apply, hne1, hA_apply x_1 x₀, hneA]
-    have hminor_U : U x₀ x₀ * U x_01 x₀ - U x_0 x₀ * U x_1 x₀ = -Complex.I / 4 := by
-      rw [hU_00, hU_01_0, hU_0_0, hU_1_0]; ring
-    rw [hR_eq] at hminor_prod
-    change U x₀ x₀ * U x_01 x₀ - U x_0 x₀ * U x_1 x₀ = 0 at hminor_prod
-    rw [hminor_U] at hminor_prod
-    have hI_ne : (-Complex.I / 4 : ℂ) ≠ 0 :=
-      div_ne_zero (neg_ne_zero.mpr Complex.I_ne_zero) (by norm_num)
-    exact hI_ne hminor_prod
-  exact ⟨hkato_zero, hdyson, hnot_prod⟩
+    unitaryEvolution V_chain (Real.pi / 4) ∉ Set.range (@prodLocalMatrix N) :=
+  ⟨dysonBlindSpot_firstOrder_zero hn, dysonBlindSpot_secondOrder_eq hn,
+    dysonBlindSpot_not_prodLocal hn⟩
 
 #print axioms polya_lagrange_derivChain_sublevel_le
 #print axioms gaussian_pi_le_of_fiber_bound

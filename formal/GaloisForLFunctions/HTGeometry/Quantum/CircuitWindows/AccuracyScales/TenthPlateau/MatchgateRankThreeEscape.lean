@@ -189,16 +189,16 @@ private theorem exists_orthog3_row_zero_eq {u : Fin 3 → ℝ}
         hv_sq, Matrix.one_apply]
       have hcancel : -(2 / s * v i * v j) - 2 / s * v i * v j +
           4 / s ^ 2 * v i * v j * s = 0 := by
-        field_simp [hs_pos.ne']
+        field_simp [hs_pos.ne']; ring
       linarith only [hcancel]
     refine ⟨O, by rw [hsymm, hOO], by rw [hsymm, hOO], fun p => ?_⟩
     by_cases hp : p = 0
     · subst hp
       simp only [O, v, s, ↓reduceIte]
-      field_simp [hs_pos.ne']
+      field_simp [hs_pos.ne']; ring
     · have h0p : (0 : Fin 3) ≠ p := Ne.symm hp
       simp only [O, v, s, h0p, hp, ↓reduceIte]
-      field_simp [hs_pos.ne']
+      field_simp [hs_pos.ne']; ring
 
 /-- Sharp `3 × 3` determinant-to-singular-matrix Frobenius inequality: for all
 `B, M : Matrix (Fin 3) (Fin 3) ℝ` with `M.det = 0`,
@@ -425,9 +425,10 @@ private theorem nine_gaussian_bondDet_lt_prob_le {η r₁ r₂ : ℝ}
       ext x
       simp only [mem_preimage, MinorSmall, mem_setOf_eq, mem_compl_iff, bondRankTwoEvent,
         not_forall, not_le]
-      exact ⟨fun h => ⟨0, h⟩, fun ⟨e, he⟩ => by
-        have he0 : e = 0 := Fin.ext (by omega)
-        exact he0 ▸ he⟩
+      refine ⟨fun h => ⟨0, h⟩, fun ⟨e, he⟩ => ?_⟩
+      have he0 : e = 0 := Fin.ext (by omega)
+      rw [he0] at he
+      exact he
     have h1 := congrArg ENNReal.toReal (hmp.measure_preimage hmeas_ms.nullMeasurableSet)
     change μ₀.real ((fun x pq => x (emb pq)) ⁻¹' MinorSmall) = μ₉.real MinorSmall at h1
     rw [hpre_eq] at h1
@@ -517,7 +518,7 @@ private theorem nine_gaussian_bondDet_lt_prob_le {η r₁ r₂ : ℝ}
           rw [det3_eq_entry_mul_signedCofactor_add_rest _ pq₀, hc_eq, hr_eq, hw_eq] at hdet_le
           have hdiff : |w u₀ - center| ≤ δ' := by
             have hid : w u₀ - center = (w u₀ * C_z + R_z) / C_z := by
-              dsimp [center]; field_simp [hCz_ne]
+              dsimp [center]; field_simp [hCz_ne]; ring
             rw [hid, abs_div]
             have h1 : |w u₀ * C_z + R_z| / |C_z| ≤ η ^ 3 / (r₂ ^ 2 / 3) :=
               (div_le_div_of_nonneg_right hdet_le hCz_pos.le).trans

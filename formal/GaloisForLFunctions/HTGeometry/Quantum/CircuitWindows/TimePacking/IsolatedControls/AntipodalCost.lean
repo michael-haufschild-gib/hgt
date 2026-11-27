@@ -28,10 +28,7 @@ theorem antipodal_cost {U V W T N : A} (hU : U∈unitary A) (hV : V∈unitary A)
   have hsmall : ‖U*N+N‖ ≤ ‖U-W‖ := by
     rw [show U*N+N=(U-W)*N by rw [sub_mul,hneg,sub_neg_eq_add]]
     simpa only [hN,mul_one] using norm_mul_le (U-W) N
-  have hcomm : ‖V*U-U*V‖ ≤ 2*‖V-T‖ := by
-    rw [show V*U-U*V=(V-T)*U-U*(V-T) by rw [sub_mul,mul_sub,hc.eq]; abel]
-    have h := norm_sub_le ((V-T)*U) (U*(V-T))
-    rwa [CStarRing.norm_mul_mem_unitary _ hU,CStarRing.norm_mem_unitary_mul _ hU,←two_mul] at h
+  have hcomm := pulse_commutator (V:=V) hU hc
   have hsplit : V*(U*N-N)=(U-W)*(V*N)+(V*U-U*V)*N := by
     rw [mul_sub,sub_mul,sub_mul,mul_assoc U V N,mul_assoc V U N,hpos]
     abel

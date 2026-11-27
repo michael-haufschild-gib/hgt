@@ -50,6 +50,13 @@ theorem controlled_distance {P V W T U : A} (hP : ‖P‖ ≤ 1) (hV : V ∈ uni
     ((norm_sub_le_norm_sub_add_norm_sub (V*W) (T*U) (W*V)).trans (add_le_add hl hr))
   linarith only [h]
 
+/-- An approximate pulse tests every unitary commuting with the physical pulse. -/
+theorem pulse_commutator {V T U : A} (hU : U∈unitary A) (hc : Commute T U) :
+    ‖V*U-U*V‖ ≤ 2*‖V-T‖ := by
+  rw [show V*U-U*V=(V-T)*U-U*(V-T) by rw [sub_mul,mul_sub,hc.eq]; abel]
+  have h := norm_sub_le ((V-T)*U) (U*(V-T))
+  rwa [CStarRing.norm_mul_mem_unitary _ hU,CStarRing.norm_mem_unitary_mul _ hU,←two_mul] at h
+
 #print axioms controlled_distance
 end
 end GaloisForLFunctions.HTGeometry.TimePacking.IsolatedControls

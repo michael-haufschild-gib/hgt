@@ -7,6 +7,7 @@ noncomputable section
 namespace GaloisForLFunctions.HTGeometry.SpectralFilling.ReplicaOrders
 variable {I : Type*} [Fintype I] [DecidableEq I] [Nonempty I]
 
+omit [DecidableEq I] [Nonempty I] in
 private theorem common_phase (f : I → ℂ) (hf : ∀ i, ‖f i‖=1) {ε : ℝ} (hε : 0 < ε)
     (h : (Fintype.card I:ℝ)-ε^2/2 < ‖∑ i, f i‖) :
     ∃ z : ℂ, ‖z‖=1 ∧ ∀ i, ‖f i-z‖ < ε := by
@@ -17,7 +18,7 @@ private theorem common_phase (f : I → ℂ) (hf : ∀ i, ‖f i‖=1) {ε : ℝ
     rw [mul_comm]
     exact congrArg Complex.re (star_coherentUnitPhase_mul S)
   have hd (i : I) : ‖f i-z‖^2=2-2*(f i*star z).re := by
-    rw [Complex.sq_norm,Complex.normSq_sub,←Complex.sq_norm,←Complex.sq_norm,hf,hz]
+    rw [Complex.sq_norm,Complex.normSq_sub,←Complex.sq_norm,←Complex.sq_norm,hf,hz,Complex.star_def]
     ring
   have ht : ∑ i, ‖f i-z‖^2=2*((Fintype.card I:ℝ)-‖S‖) := by
     simp only [hd,sum_sub_distrib,sum_const,card_univ,nsmul_eq_mul,←mul_sum,←Complex.re_sum,←sum_mul]
@@ -41,7 +42,7 @@ theorem all_targets_at_order (E : I → ℝ) (q : ℕ) {γ ε : ℝ} (hγ : 0 < 
     ∃ t ∈ Icc a (a+4*π/γ), ∃ z : ℂ, ‖z‖=1 ∧ ∀ i,
       ‖v i*Complex.exp (Complex.I*(E i:ℂ)*(t:ℂ))-z‖ < ε := by
   let D : ℝ := Fintype.card I
-  have hD : 0 < D := by exact_mod_cast Fintype.card_pos (α:=I)
+  have hD : 0 < D := by dsimp only [D]; exact_mod_cast Fintype.card_pos (α:=I)
   let o := a+2*π/γ
   let F (i : I) := E i/γ
   let P (i : I) (t : ℝ) := Complex.exp (Complex.I*(E i:ℂ)*(t:ℂ))
@@ -73,7 +74,8 @@ theorem all_targets_at_order (E : I → ℝ) (q : ℕ) {γ ε : ℝ} (hγ : 0 < 
     rw [spectralSum,mul_sum]
     apply sum_congr rfl
     intro i _
-    simp only [c,f,mul_assoc,hphase]
+    dsimp only [c,f]
+    rw [mul_assoc,mul_assoc (v i),hphase]
   rw [he,norm_mul,Complex.norm_real,Real.norm_eq_abs,abs_of_pos (inv_pos.mpr hD)] at ht
   have hsum : D-ε^2/2 < ‖∑ i, f i‖ := by
     have h := mul_lt_mul_of_pos_left ht hD
@@ -82,9 +84,13 @@ theorem all_targets_at_order (E : I → ℝ) (q : ℕ) {γ ε : ℝ} (hγ : 0 < 
       show D*(ε^2/(2*D))=ε^2/2 by field_simp] at h
   have htmem : t ∈ Icc a (a+4*π/γ) := by
     dsimp only [t,o]
+    rw [add_assoc,←add_div]
+    have hl : -(2*π) ≤ s := hs.1
+    have hr : s ≤ 2*π := hs.2
     constructor
-    · linarith only [div_le_div_of_nonneg_right hs.1 hγ.le,neg_div (2*π) γ]
-    · linarith only [div_le_div_of_nonneg_right hs.2 hγ.le]
+    · exact le_add_of_nonneg_right (div_nonneg (by linarith only [hl]) hγ.le)
+    · have hnum : 2*π+s ≤ 4*π := by linarith only [hr]
+      exact add_le_add (le_refl a) (div_le_div_of_nonneg_right hnum hγ.le)
   exact ⟨t,htmem,common_phase f (fun i => by rw [show f i=v i*P i t from rfl,norm_mul,hv,hu,mul_one])
     hε hsum⟩
 

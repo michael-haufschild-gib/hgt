@@ -23,7 +23,8 @@ theorem isolated_interchange {n : ℕ} (u : PathShell n) (s : Fin (n+2))
     {q η : ℝ} (hq : 0<q) (hη : 0≤η) (hs : isolatedLongitudinalSite u q η s) :
     let P := pauliControlProjection (onsiteWord s 0) true
     let T := unitaryEvolution (pathHamiltonian u) (π/(2*q))
-    ∃ V ∈ unitary (Reg n), V*P=(1-P)*V ∧ ‖V-T‖ ≤ π/(2*q)*(21*η) := by
+    let X := finitePauliMatrix (onsiteWord s 0)
+    ∃ V ∈ unitary (Reg n), V*P=(1-P)*V ∧ V*X= -(X*V) ∧ ‖V-T‖ ≤ π/(2*q)*(21*η) := by
   let S : Finset (Fin (n+2)) := {s}
   let K := pathHamiltonianOnSites Sᶜ u
   let X := finitePauliMatrix (onsiteWord s 0)
@@ -71,7 +72,7 @@ theorem isolated_interchange {n : ℕ} (u : PathShell n) (s : Fin (n+2))
     rw [norm_sub_rev,hJ]
     simpa only [S,Finset.card_singleton,Nat.cast_one,mul_one] using hd
   rw [abs_of_pos ha] at he
-  exact ⟨V,hV,hflip,he.trans (mul_le_mul_of_nonneg_left hdJ ha.le)⟩
+  exact ⟨V,hV,hflip,hanti,he.trans (mul_le_mul_of_nonneg_left hdJ ha.le)⟩
 
 theorem pulse_commutes {n : ℕ} (u : PathShell n) (a t : ℝ) (z : ℂ) :
     Commute (unitaryEvolution (pathHamiltonian u) a) (z • unitaryEvolution (pathHamiltonian u) t) := by
@@ -97,7 +98,7 @@ theorem isolated_branch_distance {n : ℕ} (u : PathShell n) (s : Fin (n+2))
     have hh := norm_sub_le (1:Reg n) X
     rw [norm_one,show ‖X‖=1 from norm_finitePauliMatrix _] at hh
     linarith only [hh]
-  obtain ⟨V,hV,hflip,herr⟩ := isolated_interchange u s hq hη hs
+  obtain ⟨V,hV,hflip,_,herr⟩ := isolated_interchange u s hq hη hs
   have ht := unitaryEvolution_mem_unitary (isSelfAdjoint_pathHamiltonian u) (π/(2*q))
   exact (controlled_distance hp hV hflip (by rwa [hcompl]) hW (CStarRing.norm_of_mem_unitary ht).le
     (pulse_commutes u _ t z)).trans (add_le_add_left herr _)

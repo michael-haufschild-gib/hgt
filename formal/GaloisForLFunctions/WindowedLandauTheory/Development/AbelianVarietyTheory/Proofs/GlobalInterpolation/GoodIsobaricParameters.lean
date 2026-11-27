@@ -139,7 +139,6 @@ theorem isCuspIso_of_goodRow (D : D7) (i : D.nd.Loc) (σ : D.what₂.FT)
     IsCuspIso D.nd D.naut P := by
   have hs : goodSig D.nd D.naut P := by
     intro k
-    dsimp only
     rw [funext (items₂_isoLoc_eq_lab_of_hasParamW D i σ P hP k)]
     exact hg k
   exact isCuspIso_of_goodSig D P hP.1 hP.2.1 hs hTw hdeg

@@ -16,7 +16,8 @@ private theorem replica_wave (E : I → ℝ) (c : I → ℂ) (q : ℕ) (t : ℝ)
     (spectralSum E c t)^q=∑ p : ReplicaMultiplicityIndex I q, complexReplicaMultiplicityAmplitude c p.val*
       Complex.exp (Complex.I*(replicaMultiplicityEnergy E p.val:ℂ)*(t:ℂ)) := by
   rw [spectralSum,←sum_complexReplicaMultiplicityAmplitude_eq_sum_pow,
-    Finset.sum_coe_sort (univ.piAntidiag q)]
+    Finset.sum_coe_sort (univ.piAntidiag q) (fun p => complexReplicaMultiplicityAmplitude c p*
+      Complex.exp (Complex.I*(replicaMultiplicityEnergy E p:ℂ)*(t:ℂ)))]
   apply sum_congr rfl
   intro p _
   have hp : (∏ i, Complex.exp (Complex.I*(E i:ℂ)*(t:ℂ))^p i)=
@@ -28,7 +29,8 @@ private theorem replica_wave (E : I → ℝ) (c : I → ℂ) (q : ℕ) (t : ℝ)
     push_cast
     rw [mul_sum,sum_mul]
     exact sum_congr rfl fun i _ => by ring
-  simp only [complexReplicaMultiplicityAmplitude,mul_pow,prod_mul_distrib,hp,mul_assoc]
+  simp only [complexReplicaMultiplicityAmplitude,mul_pow,prod_mul_distrib,hp]
+  ring
 
 /-- Normalized lower Ingham constant on a span of length 4π at unit spacing. -/
 def coherentFraction : ℝ := inghamConst (2*π) 1/(4*π)
@@ -50,7 +52,8 @@ theorem coherent_date (E : I → ℝ) (c : I → ℂ) (hc : ∑ i, ‖c i‖=1) 
   let C (p : ReplicaMultiplicityIndex I q) := complexReplicaMultiplicityAmplitude c p.val
   let B : ℝ := Fintype.card (ReplicaMultiplicityIndex I q)
   have hm : ∑ p, ‖C p‖=1 := by
-    rw [Finset.sum_coe_sort (univ.piAntidiag q),sum_norm_complexReplicaMultiplicityAmplitude_eq_pow,hc,one_pow]
+    rw [Finset.sum_coe_sort (univ.piAntidiag q) (fun p => ‖complexReplicaMultiplicityAmplitude c p‖),
+      sum_norm_complexReplicaMultiplicityAmplitude_eq_pow,hc,one_pow]
   have hs := sq_sum_le_card_mul_sum_sq (s:=univ) (f:=fun p => ‖C p‖)
   rw [hm,one_pow,card_univ] at hs
   have hpos := inghamConst_pos (by positivity) (by linarith only [pi_pos] : π < 2*π*1)
