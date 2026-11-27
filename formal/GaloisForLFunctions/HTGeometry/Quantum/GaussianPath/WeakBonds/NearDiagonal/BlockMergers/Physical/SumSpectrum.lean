@@ -38,15 +38,17 @@ theorem sum_mem_spectrum (l r : ℕ) (x : PathLabel (l+r+2)→ℝ)
     (isHermitian_liftLocalMatrix (A:=fun _ : Fin (m+2) => Bool) S hA).add
       (isHermitian_liftLocalMatrix (A:=fun _ : Fin (m+2) => Bool) T hB)
   have ha : energies l (extractBlocks l r x).1.1 i ∈ range hA.eigenvalues := by
-    rw [range_eigenvalues_reindex,←energies_range]
+    rw [range_eigenvalues_reindex eL hL,←energies_range]
     exact mem_range_self _
   have hb : energies r (extractBlocks l r x).1.2 j ∈ range hB.eigenvalues := by
-    rw [range_eigenvalues_reindex,←energies_range]
+    rw [range_eigenvalues_reindex eR hR,←energies_range]
     exact mem_range_self _
   obtain ⟨a,ha⟩ := ha
   obtain ⟨b,hb⟩ := hb
-  rw [hsum.spectrum_eq_image_range,range_eigenvalues_add_liftLocalMatrix_disjoint hd hA hB hsum]
-  exact ⟨_,⟨(a,b),by rw [ha,hb]⟩,rfl⟩
+  rw [hsum.spectrum_eq_image_range]
+  refine ⟨_,?_,rfl⟩
+  exact (range_eigenvalues_add_liftLocalMatrix_disjoint hd hA hB hsum).ge
+    ⟨(a,b),congrArg₂ (·+·) ha hb⟩
 
 /-- With a joining bond of size below one quarter of the product spacing,
 the sorted physical energy array keeps at least half that spacing. -/
@@ -70,7 +72,7 @@ theorem physical_merge_gap (l r : ℕ) (x : PathLabel (l+r+2)→ℝ) {g : ℝ} (
   have hh := stable_spacing _ H hH (fun i => d (e i))
     (fun i => sum_mem_spectrum l r x (e i).1 (e i).2) hg
     (fun i j h => hgap (e i) (e j) (e.injective.ne h)) hd
-  exact transfer_spacing (qubitConfigFin (m+2)) (energies_range (n:=m) x).symm (half_pos hg) hh
+  exact transfer_spacing (qubitConfigFin (m+2)) (energies_range (n:=m) x).ge (half_pos hg) hh
 
 #print axioms physical_merge_gap
 end

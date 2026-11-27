@@ -37,7 +37,7 @@ private theorem cut_coordinates {k x : ℝ} (hk : 0<k) (hx : 0<x) :
     show 1-A/C=(C-A)/C by rw [sub_div,div_self cp.ne'],
     ← mul_div_assoc,div_div_div_cancel_right₀ cp.ne',add,sub]
   unfold outerCut
-  field_simp [sh.ne',ch.ne',hk.ne'] <;> ring
+  field_simp [sh.ne',ch.ne',hk.ne']
 
 /-- For every real normalized imbalance between zero and one half, the
 outer-fraction threshold is strictly decreasing on the positive axis. -/
@@ -68,15 +68,16 @@ theorem outerCut_limits {k : ℝ} (hk : 0<k) (half : k<1/2) :
     rw [constants,div_lt_one den]
     linarith only [hk]
   have cont (r : ℝ) (lt : r<1) : ContinuousAt (transform k) r := by
-    apply ContinuousAt.div (by unfold transform; fun_prop) (by fun_prop)
+    apply ContinuousAt.div (by fun_prop) (by fun_prop)
     exact (sub_pos.mpr lt).ne'
   have top : transform k w=(1+2*k^2)/3 := by
-    rw [transform,constants]
-    field_simp [den.ne'] <;> ring
+    rw [transform,div_eq_iff (sub_pos.mpr small).ne',constants]
+    field_simp [den.ne']; ring
   constructor
   · have lim := (cont w small).tendsto.comp (gap_ratio_wall hk hb hc)
     rw [top] at lim
-    exact lim.congr' (self_mem_nhdsWithin.mono fun _ hx => (cut_coordinates hk hx).2.symm)
+    have positive : ∀ᶠ x in 𝓝[>] (0 : ℝ), 0<x := self_mem_nhdsWithin
+    exact lim.congr' (positive.mono fun _ hx => (cut_coordinates hk hx).2.symm)
   · have lim := (cont 0 zero_lt_one).tendsto.comp (gap_ratio_infty hk hb hc)
     rw [show transform k 0=k by simp [transform]] at lim
     exact lim.congr' ((eventually_gt_atTop (0 : ℝ)).mono fun _ hx => (cut_coordinates hk hx).2.symm)

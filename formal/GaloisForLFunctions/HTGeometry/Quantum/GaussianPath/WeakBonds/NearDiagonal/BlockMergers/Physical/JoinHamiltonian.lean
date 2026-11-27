@@ -36,17 +36,19 @@ theorem seam_error (l r : ℕ) (x : PathLabel (l+r+2)→ℝ) {δ : ℝ}
     rw [pathHamiltonian_eq_sum]
     change (∑ i, term i)=_
     rw [←(joinEquiv l r).sum_comp term]
-    simp only [Fintype.sum_sum_type]
+    rw [Fintype.sum_sum_type (fun i => term (joinEquiv l r i)),
+      Fintype.sum_sum_type (fun i => term (joinEquiv l r (.inr i)))]
     change _=(Subregister.place _ (pathHamiltonian (WithLp.toLp 2 (fun i => x (translateLabel (B:=0) _ i)) : PathShell l))+
       Subregister.place _ (pathHamiltonian (WithLp.toLp 2 (fun i => x (translateLabel (B:=l+2) _ i)) : PathShell r)))+cut
-    rw [place_block,place_block,add_assoc]
-    rfl
+    rw [place_block,place_block]
+    exact (add_assoc _ _ _).symm
   rw [he,sub_add_eq_sub_sub,sub_self,zero_sub,norm_neg]
   apply (norm_sum_le ..).trans
   calc _ ≤ ∑ _ : Fin 3×Fin 3, δ := by
          apply sum_le_sum
          intro i _
-         rw [term,norm_smul,norm_finitePauliMatrix,mul_one,Complex.norm_real,Real.norm_eq_abs]
+         dsimp only [term]
+         rw [norm_smul,norm_finitePauliMatrix,mul_one,Complex.norm_real,Real.norm_eq_abs]
          exact hs i
        _ = _ := by simp [nsmul_eq_mul]
 

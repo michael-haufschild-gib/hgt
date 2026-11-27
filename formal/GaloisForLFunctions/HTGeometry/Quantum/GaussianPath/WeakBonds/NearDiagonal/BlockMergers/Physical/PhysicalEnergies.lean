@@ -1,6 +1,7 @@
 import GaloisForLFunctions.HTGeometry.SpectralActionNonconstancy
 import GaloisForLFunctions.HTGeometry.PathChainLabelIdentification
 import GaloisForLFunctions.HTGeometry.DisjointPacketSpectrum
+import GaloisForLFunctions.HTGeometry.PauliEnsembleSimpleSpectrum
 
 /-! # Sorted physical block energies and their Gaussian coordinates -/
 open Set Matrix MeasureTheory
@@ -42,9 +43,9 @@ theorem energies_range {n : ℕ} (x : PathLabel n→ℝ) :
 /-- Gap lower bounds transfer between two enumerations of equal size.
 A positive common spacing rules out a repeated level in either array. -/
 theorem transfer_spacing {I J : Type*} [Fintype I] [Fintype J] (e : I ≃ J)
-    {a : I→ℝ} {b : J→ℝ} (he : range a=range b) {g : ℝ} (hg : 0<g)
+    {a : I→ℝ} {b : J→ℝ} (he : range a⊆range b) {g : ℝ} (hg : 0<g)
     (ha : ∀ i j, i≠j → g≤|a i-a j|) : ∀ i j, i≠j → g≤|b i-b j| := by
-  have h (i : I) : ∃ j, b j=a i := (he ▸ (mem_range_self i : a i∈range a) : a i∈range b)
+  have h (i : I) : ∃ j, b j=a i := he (mem_range_self i)
   choose f hf using h
   have hi : Function.Injective f := by
     intro i j h

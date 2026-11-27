@@ -19,11 +19,11 @@ private theorem key_props {A : ℕ} (ha : 0<A) :
   have inc {a b : ℚ} (ag : 1<a) (lt : a<b) : a+a⁻¹<b+b⁻¹ := by
     have ap := zero_lt_one.trans ag
     have bp := ap.trans lt
-    have ab : 1<a*b := one_lt_mul_of_one_lt_of_one_lt ag (ag.trans lt)
+    have ab : 1<a*b := ag.trans (by simpa only [mul_one] using mul_lt_mul_of_pos_left (ag.trans lt) ap)
     have product := mul_pos (sub_pos.mpr lt) (sub_pos.mpr ab)
     apply (mul_lt_mul_iff_left₀ (mul_pos ap bp)).mp
-    rw [show (a+a⁻¹)*(a*b)=a^2*b+b by field_simp; ring,
-      show (b+b⁻¹)*(a*b)=a*b^2+a by field_simp; ring]
+    rw [show (a+a⁻¹)*(a*b)=a^2*b+b by field_simp,
+      show (b+b⁻¹)*(a*b)=a*b^2+a by field_simp]
     nlinarith only [product]
   refine ⟨fun p => ?_,?_⟩
   · let v := (p.val : ℚ)^A
@@ -34,11 +34,14 @@ private theorem key_props {A : ℕ} (ha : 0<A) :
     apply (mul_lt_mul_iff_left₀ pos).mp
     rw [add_mul,inv_mul_cancel₀ pos.ne']
     nlinarith only [sq]
-  · have strict : StrictMono (key A) := by
-      intro p q lt
+  · have strict {p q : Nat.Primes} (lt : p.val<q.val) : key A p<key A q := by
       apply inc (one p)
-      exact pow_lt_pow_left₀ (Nat.cast_lt.mpr (show p.val<q.val from lt)) (Nat.cast_nonneg _) ha.ne'
-    exact strict.injective
+      exact pow_lt_pow_left₀ (Nat.cast_lt.mpr lt) (Nat.cast_nonneg _) ha.ne'
+    intro p q eq
+    rcases lt_trichotomy p.val q.val with lt | same | gt
+    · exact ((strict lt).ne eq).elim
+    · exact Subtype.ext same
+    · exact ((strict gt).ne eq.symm).elim
 
 private theorem measured (A : ℕ) (p : Nat.Primes) :
     coordinate ((A : ℝ)*log p.val)=(key A p : ℝ) := by
@@ -59,7 +62,7 @@ theorem prescribed_prime_set (S : Finset Nat.Primes) {q : ℚ} (hq : 0<q) :
   have bp : 0<(B : ℝ) := Nat.cast_pos.mpr bpos
   have qa : (q : ℝ)*B=A := by
     have num : (A : ℝ)=(q.num : ℝ) := by exact_mod_cast Int.toNat_of_nonneg (Rat.num_pos.mpr hq).le
-    rw [num,B,Rat.cast_def,div_mul_cancel₀ _ bp.ne']
+    rw [num,Rat.cast_def,div_mul_cancel₀ _ bp.ne']
   obtain ⟨above,inj⟩ := key_props ha
   let T := S.image (key A)
   have good (r : ℚ) (hr : r ∈ T) : 2<r := by
@@ -76,7 +79,7 @@ theorem prescribed_prime_set (S : Finset Nat.Primes) {q : ℚ} (hq : 0<q) :
     rw [levelCount,levelCount,eq,card_image_of_injective _ (fun _ _ h => Nat.eq_of_mul_eq_mul_left bpos h)]
   have refl : Reflects (levels k) ↔ Reflects (primeModes ref a) := by
     rw [scaled,affine_reflects _ _ _ bp.ne',Sparse.mode_grid,affine_reflects _ _ _ (log_pos_prime ref).ne']
-  refine ⟨n,k,kin.trans (ain.trans (by rw [T,card_image_of_injective _ inj])),fun h => asym (refl.mp h),?_⟩
+  refine ⟨n,k,kin.trans (ain.trans (by dsimp only [T]; rw [card_image_of_injective _ inj])),fun h => asym (refl.mp h),?_⟩
   intro p
   let v := (A : ℝ)*log p.val
   have vp : 0<v := mul_pos (Nat.cast_pos.mpr ha) (log_pos_prime p)
@@ -84,7 +87,7 @@ theorem prescribed_prime_set (S : Finset Nat.Primes) {q : ℚ} (hq : 0<q) :
   have test := law (v/log ref.val) (div_pos vp (log_pos_prime ref))
   rw [Sparse.mode_grid,agrees_affine,cancel] at test
   rw [accepts_iff,abs_of_pos (Rat.cast_pos.mpr hq),scaled,agrees_affine,
-    show (q : ℝ)*log p.val*B=v by rw [mul_right_comm,qa]; rfl,test,measured]
+    show (q : ℝ)*log p.val*B=v by rw [mul_right_comm,qa],test,measured]
   constructor
   · rintro ⟨r,hr,e⟩
     obtain ⟨s,hs,rfl⟩ := mem_image.mp hr

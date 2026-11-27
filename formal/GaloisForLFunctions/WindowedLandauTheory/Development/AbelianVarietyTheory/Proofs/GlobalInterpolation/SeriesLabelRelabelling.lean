@@ -73,7 +73,8 @@ private theorem primeLabel_finite (d : ℕ) : Finite (PrimeLabel g d) := by
   letI := Finite.of_equiv _ e.symm
   exact Finite.of_injective (fun P : PrimeLabel g d =>
     (⟨P.val, P.property.1, P.property.2.2.2⟩ : {f : (ZMod g)[X] // f.Monic ∧ f.natDegree = d}))
-    (fun _ _ h => Subtype.ext (congrArg Subtype.val h))
+    (fun _ _ h => Subtype.ext (congrArg (fun f : {f : (ZMod g)[X] // f.Monic ∧ f.natDegree = d} =>
+      f.val) h))
 
 private theorem exists_green_equiv (L : LabelDatum g) (d : ℕ) (hd : 0 < d) :
     ∃ e : PrimeLabel g d ≃ CuspidalCharacter g d, ∀ P, IsCuspOf L P.val (e P).val := by
@@ -120,8 +121,11 @@ theorem exists_cuspidalLabel_permutation (O : CuspidalLabelMap g) (L : LabelDatu
     ((p P.natDegree (primeLabel_pos h)).symm ⟨P, h⟩).val else P
   let π (P : (ZMod g)[X]) := if h : IsPrimeLab P.natDegree P then
     (p P.natDegree (primeLabel_pos h) ⟨P, h⟩).val else P
-  have hσ (P : (ZMod g)[X]) (hP : IsPrimeLab P.natDegree P) :
-      σ P = ((p P.natDegree (primeLabel_pos hP)).symm ⟨P, hP⟩).val := dif_pos hP
+  have hσ (d : ℕ) (P : (ZMod g)[X]) (hP : IsPrimeLab d P) :
+      σ P = ((p d (primeLabel_pos hP)).symm ⟨P, hP⟩).val := by
+    have hd := hP.2.2.2
+    subst d
+    exact dif_pos hP
   have hπ (d : ℕ) (P : (ZMod g)[X]) (hP : IsPrimeLab d P) :
       π P = (p d (primeLabel_pos hP) ⟨P, hP⟩).val := by
     have hd := hP.2.2.2
@@ -129,26 +133,20 @@ theorem exists_cuspidalLabel_permutation (O : CuspidalLabelMap g) (L : LabelDatu
     exact dif_pos hP
   refine ⟨σ, π, ?_, ?_⟩
   · intro d P hP
-    have hd := hP.2.2.2
-    subst d
-    rw [hσ P hP]
-    let Q := (p P.natDegree (primeLabel_pos hP)).symm ⟨P, hP⟩
+    rw [hσ d P hP]
+    let Q := (p d (primeLabel_pos hP)).symm ⟨P, hP⟩
     refine ⟨Q.property, ?_⟩
-    rw [hπ P.natDegree Q.val Q.property]
-    exact congrArg Subtype.val ((p P.natDegree (primeLabel_pos hP)).apply_symm_apply ⟨P, hP⟩)
+    rw [hπ d Q.val Q.property]
+    exact congrArg Subtype.val ((p d (primeLabel_pos hP)).apply_symm_apply ⟨P, hP⟩)
   · intro d χ
     let hd : 0 < d := χ.property.1
     let P := (e d hd).symm χ
     have h : O.lab d χ = p d hd P := by
       change O.lab d χ = O.lab d (e d hd P)
       rw [(e d hd).apply_symm_apply χ]
-    have hσ' (Q : PrimeLabel g d) : σ Q.val = ((p d hd).symm Q).val := by
-      have hQ := Q.property
-      change IsPrimeLab d Q.val at hQ
-      have hd' := hQ.2.2.2
-      subst d
-      exact dif_pos hQ
-    rw [hσ', h, (p d hd).symm_apply_apply]
+    rw [hσ d (O.lab d χ).val (O.lab d χ).property]
+    change IsCuspOf L ((p d hd).symm (O.lab d χ)).val χ.val
+    rw [h, (p d hd).symm_apply_apply]
     have he' := he d hd P
     rwa [(e d hd).apply_symm_apply χ] at he'
 
@@ -165,12 +163,12 @@ private theorem isCuspOf_relabelled (p : Pc g) (hp : IsCusp p.2) :
 omit hχ in
 private theorem relabelled_cuspidal_product (C : List (Pc g)) (hC : ∀ p ∈ C, IsCusp p.2) :
     relabelPolynomial σ (C.map O.polynomial).prod = (C.map fun p => σ (O.polynomial p)).prod := by
-  rw [relabelPolynomial_list_prod, List.map_map]
-  intro P hP
-  obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hP
-  have h := O.polynomial_spec (hC p hp)
-  rw [h.2.2.2]
-  exact h
+  have hprime (P : (ZMod g)[X]) (hP : P ∈ C.map O.polynomial) : IsPrimeLab P.natDegree P := by
+    obtain ⟨p, hp, rfl⟩ := List.mem_map.mp hP
+    have h := O.polynomial_spec (hC p hp)
+    rw [h.2.2.2]
+    exact h
+  simp only [relabelPolynomial_list_prod _ hprime, List.map_map, Function.comp_def]
 
 theorem hasLabel_of_hasLabelO {χ : Gn g n → ℂ} {f : (ZMod g)[X]} (hf : HasLabelO O χ f) :
     HasLabel L χ (relabelPolynomial σ f) := by

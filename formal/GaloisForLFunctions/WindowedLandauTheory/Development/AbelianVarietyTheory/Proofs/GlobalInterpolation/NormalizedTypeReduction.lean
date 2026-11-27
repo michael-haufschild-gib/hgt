@@ -5,6 +5,7 @@ part. The normalized type data therefore give the residue compatibility of the h
 
 noncomputable section
 open WindowedLandauTheory.BasicNotions WindowedLandauTheory.CyclotomicNorms
+open WindowedLandauTheory.MainNotions.N
 open scoped Classical
 
 namespace WindowedLandauTheory.NormalizedTypes
@@ -52,7 +53,7 @@ theorem redThrough_primeToPart {M : Type} [Monoid M]
     change redThrough B κ (t u) ^ orderOf u = 1
     rw [← redThrough_pow B κ hB, ← map_pow, pow_orderOf_eq_one, map_one, redThrough,
       dif_pos (one_mem B)]
-    exact (map_one _).trans (map_one _)
+    exact map_one κ
   have hy' : y ^ m' = 1 := pow_eq_one_of_charP y a m' (by rw [hm]; exact hy)
   have hm₀ : m' ≠ 0 := by
     intro h
@@ -115,15 +116,13 @@ theorem iota_indep (T : NormalizedTypesCompatibility D jE)
 
 theorem globalDatumRegularity_of_typesCompatibility (T : NormalizedTypesCompatibility D jE) :
     GlobalDatumRegularity D := by
-  intro i k v u y _ hy
+  intro i k v u y _ z hy
   letI : Fact (D.host.g k).Prime := ⟨D.host.g_prime k⟩
   letI : Fact (D.what₂.places.resChar (D.nd.w i)).Prime := ⟨D.what₂.places.resChar_prime (D.nd.w i)⟩
   obtain ⟨B, κ, hcomp, hiota⟩ := T.iota_loc i
   obtain ⟨hyB, hyκ⟩ := hcomp y
   rw [← hyκ]
   congr 1
-  let z : Fbar (D.host.g k) :=
-    algebraMap (ZMod (D.host.g k)) (Fbar (D.host.g k)) (u : ZMod (D.host.g k))
   have hz : z ^ orderOf u = 1 := by
     rw [show z = algebraMap (ZMod (D.host.g k)) (Fbar (D.host.g k)) u.val from rfl,
       ← map_pow, ← Units.val_pow_eq_pow_val, pow_orderOf_eq_one, Units.val_one, map_one]

@@ -6,6 +6,7 @@ and cuspidal labels, together with the ray field and regular parabolic data. -/
 noncomputable section
 open Polynomial NumberField IsDedekindDomain
 open WindowedLandauTheory.BasicNotions WindowedLandauTheory.CyclotomicNorms
+open WindowedLandauTheory.MainNotions.N
 open GlobalTheory.GLq
 open scoped Classical
 

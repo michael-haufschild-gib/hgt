@@ -10,8 +10,8 @@ noncomputable section
 Thus an exponential loss per merged length accumulates only once per
 level, including chains whose lengths are not powers of two. -/
 theorem balanced_mass (p : ℕ→ℝ) (hp : ∀ m, 0≤p m) (c : ℝ) (hc : 0≤c)
-    (hsmall : ∀ m, 2≤m → m≤3 → exp (-c*(m:ℝ)) ≤ p m)
-    (hmerge : ∀ m, 4≤m → exp (-c*(m:ℝ))*p (m/2)*p ((m+1)/2) ≤ p m) :
+    (hsmall : ∀ m : ℕ, 2≤m → m≤3 → exp (-c*(m:ℝ)) ≤ p m)
+    (hmerge : ∀ m : ℕ, 4≤m → exp (-c*(m:ℝ))*p (m/2)*p ((m+1)/2) ≤ p m) :
     ∀ t m : ℕ, 2≤m → m≤2^t → exp (-c*(m:ℝ)*((t:ℝ)+1)) ≤ p m := by
   intro t
   induction t with

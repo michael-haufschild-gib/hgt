@@ -1,5 +1,6 @@
 import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.ExactSubsystems.Reflection.Repeated.Half.Arithmetic.Crossing.Family.Lattice.ThreeShell.AllCounts.Crossing
 import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.ExactSubsystems.Reflection.Repeated.Half.Arithmetic.Crossing.Family.Lattice.ThreeShell.AllCounts.Vacuum
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.ExactSubsystems.Reflection.Repeated.Half.Arithmetic.Crossing.Family.Lattice.PrimeCalibration.Counting
 
 /-! # The complete critical-line response of the smallest crossing packet -/
 
@@ -65,6 +66,33 @@ theorem nine_split_law (p : Nat.Primes) :
     simp only [flat,false_or,agrees_odd]
     exact hit
 
+/-- Repeating the same nine-state preparation on any second prime removes
+both exceptional lines. The resulting two Gibbs comparisons detect isometry exactly. -/
+theorem nine_pair_isometry (p q : Nat.Primes) (distinct : p≠q) (s : ℂ) :
+    let a := occupations 1 6 2
+    (PrimeCalibration.accepts a p (2*s.re-1) ∧ PrimeCalibration.accepts a q (2*s.re-1)) ↔
+      (∃ T : Gas →ₗᵢ[ℂ] PairGas, ∀ f x, T f x=split s f x) := by
+  classical
+  let a := occupations 1 6 2
+  have card : PrimeCalibration.levelCount a≤3 := by
+    have sub : univ.image a ⊆ {0,1,2} := by
+      rintro _ h
+      obtain ⟨i,_,rfl⟩ := mem_image.mp h
+      rcases i with i | (i | i) <;> simp [a,occupations]
+    exact (card_le_card sub).trans (by simp)
+  have asym : ¬Reflects (levels a) := by
+    intro symm
+    have f := (affine_reflects (levels a) (log p.val) 0 (PrimeCalibration.log_pos_prime p).ne').mpr symm
+    have physical : Reflects (primeModes p a) := by rw [Sparse.mode_grid]; exact f
+    have h := (agrees_odd (primeModes p a) 1).mp (reflection_agrees physical 1)
+    exact (rare_edge_transcendental p 1 6 1 zero_lt_one zero_lt_one p.property.not_dvd_one zero_lt_one h)
+      (isAlgebraic_one : IsAlgebraic ℚ (1 : ℝ))
+  have enough : PrimeCalibration.levelCount a<({p,q} : Finset Nat.Primes).card+2 := by
+    rw [card_insert_of_notMem (by simpa only [mem_singleton] using distinct),card_singleton]; omega
+  simpa only [mem_insert,mem_singleton,forall_eq_or_imp,forall_eq,asym,or_false] using
+    PrimeCalibration.prime_calibration a {p,q} enough s
+
+#print axioms nine_pair_isometry
 #print axioms rare_edge_transcendental
 #print axioms nine_positive_tie
 #print axioms nine_split_law

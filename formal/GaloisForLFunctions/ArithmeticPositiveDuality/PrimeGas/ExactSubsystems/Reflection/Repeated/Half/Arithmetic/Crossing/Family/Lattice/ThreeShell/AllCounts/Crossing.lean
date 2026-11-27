@@ -46,7 +46,7 @@ private theorem clock_onto (p : Nat.Primes) {n : ℕ} (hn : 0<n) {x : ℝ} (hx :
   exact ⟨x*n/log p.val,div_pos (mul_pos hx np) logp,by
     rw [clock,div_mul_cancel₀ _ logp.ne',mul_div_cancel_right₀ _ np.ne']⟩
 
-/-- Counts admit a positive crossing iff their cubic asymmetry opposes the
+/-- A packet crosses at positive damping iff its cubic asymmetry opposes its
 large-damping sign. Clearing the wall gives a strict integer inequality. -/
 theorem crosses_iff (p : Nat.Primes) (h j m : ℕ) :
     let n := h+j+(h+m)

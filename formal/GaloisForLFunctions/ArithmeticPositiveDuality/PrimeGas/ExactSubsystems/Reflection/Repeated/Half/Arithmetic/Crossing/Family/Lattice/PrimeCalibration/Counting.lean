@@ -23,7 +23,7 @@ theorem log_pos_prime (p : Nat.Primes) : 0<log (p.val : ℝ) :=
 
 /-- Each prime supplies a distinct clock, with unchanged normalized occupation spectrum. -/
 theorem accepts_iff (k : I → ℕ) (p : Nat.Primes) (d : ℝ) :
-    accepts k p d ↔ agrees (levels k) (|d|*log p.val) := by
+    accepts k p d ↔ agrees (levels k) (|d| * log p.val) := by
   rw [accepts,gibbs_order,one_mul,Sparse.mode_grid,agrees_affine,← agrees_abs (levels k) (d*log p.val),
     abs_mul,abs_of_pos (log_pos_prime p)]
 
@@ -50,7 +50,7 @@ theorem accepting_prime_bound (k : I → ℕ) (S : Finset Nat.Primes) {d : ℝ} 
   classical
   let fin := finite_blind (levels k)
   have size : S.card≤fin.toFinset.card := by
-    apply card_le_card_of_injOn (fun p : Nat.Primes => |d|*log p.val)
+    apply card_le_card_of_injOn (fun p : Nat.Primes => |d| * log p.val)
     · intro p hp
       exact fin.mem_toFinset.mpr ⟨mul_pos (abs_pos.mpr hd) (log_pos_prime p),
         (accepts_iff k p d).mp (pass p hp),asym⟩
@@ -75,7 +75,7 @@ theorem prime_calibration (k : I → ℕ) (S : Finset Nat.Primes) (enough : leve
     have non : 2*s.re-1≠0 := by intro h; apply no.1; linarith only [h]
     exact enough.not_ge (accepting_prime_bound k S non no.2 pass)
   · rintro (line | symm) p _
-    · rw [accepts_iff,show 2*s.re-1=0 by rw [line]; ring,abs_zero,zero_mul,agrees,neg_zero]
+    · simp only [accepts_iff,show 2*s.re-1=0 by rw [line]; ring,abs_zero,zero_mul,agrees,neg_zero]
     · exact (accepts_iff k p _).mpr (reflection_agrees symm _)
 
 #print axioms accepting_prime_bound

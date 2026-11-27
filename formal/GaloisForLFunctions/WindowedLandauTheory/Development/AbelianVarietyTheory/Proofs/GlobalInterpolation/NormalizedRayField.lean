@@ -29,9 +29,10 @@ theorem splitsIn_mrayC_iff (T : NormalizedTypesCompatibility D jE) (p : ℕ) :
       (fun _ _ _ _ h => e.injective h) ?_
     intro v hv
     refine ⟨e.symm v, ?_, e.apply_symm_apply v⟩
-    apply (he _).1
-    rwa [e.apply_symm_apply]
-  have hfin := T.eM.toRatAlgEquiv.toLinearEquiv.finrank_eq
+    change (p : 𝓞 (MrayC D jE)) ∈ v.asIdeal at hv
+    exact (he (e.symm v)).1 (by simpa only [e.apply_symm_apply] using hv)
+  let eQ := AlgEquiv.ofBijective T.eM.toRingHom.toRatAlgHom T.eM.bijective
+  have hfin := eQ.toLinearEquiv.finrank_eq
   rw [SplitsIn, ← hcard, ← hfin]
 
 /-- A principal generator congruent to one modulo a positive power of the modulus
@@ -47,7 +48,8 @@ theorem mrayRay_of_tied (T : NormalizedTypesCompatibility D jE) (hC : RayCFT (KQ
     let N : AlgebraicClosure ℚ := D.ntypes.cond
     have he : jE (c : D.host.E) * N ^ (b + 1) = jE (π : D.host.E) - 1 := by
       have h := congrArg (fun x : 𝓞 D.host.E => jE (algebraMap (𝓞 D.host.E) D.host.E x)) hc
-      simpa only [map_mul, map_sub, map_one, map_natCast, Nat.cast_pow] using h
+      simp only [map_mul, map_sub, map_one, map_pow, map_natCast, Nat.cast_pow] at h
+      exact h
     have hN : N ≠ 0 := by
       apply Nat.cast_ne_zero.mpr
       exact (Nat.mul_pos (Nat.mul_pos D.host.QS_pos D.host.hyp.1.pos) D.host.hyp.2.1.pos).ne'
@@ -60,7 +62,8 @@ theorem mrayRay_of_tied (T : NormalizedTypesCompatibility D jE) (hC : RayCFT (KQ
     change IsIntegral ℤ ((jE (π : D.host.E) - 1) / N)
     rw [hdiv]
     exact ((RingOfIntegers.isIntegral_coe c).map jE.toIntAlgHom).mul (hNi.pow b)
-  · letI : Normal ℚ (AlgebraicClosure ℚ) := IsAlgClosure.normal ℚ _
+  · letI : IsAlgClosure ℚ (AlgebraicClosure ℚ) := ⟨inferInstance, AlgebraicClosure.isAlgebraic ℚ⟩
+    letI : Normal ℚ (AlgebraicClosure ℚ) := IsAlgClosure.normal ℚ _
     letI : Algebra D.host.E (AlgebraicClosure ℚ) := jE.toAlgebra
     letI : IsScalarTower ℚ D.host.E (AlgebraicClosure ℚ) :=
       IsScalarTower.of_algebraMap_eq fun x => congrFun (congrArg DFunLike.coe
