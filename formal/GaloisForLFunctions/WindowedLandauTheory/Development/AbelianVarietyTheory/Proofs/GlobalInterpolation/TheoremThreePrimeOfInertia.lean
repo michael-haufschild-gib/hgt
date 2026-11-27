@@ -104,7 +104,7 @@ theorem theoremThreePrime_of_inertia
     (hG : ∀ (i : D.nd.Loc) (P : List (Part D.naut.CG)), (∃ x, HasParamX D.nd D.naut i x P) →
       (∀ (k : Fin 2) (v : D.nd.PlG k), (labelAt D P k v).natDegree =
         D.naut.lpDim (isoLoc D.nd D.naut P (D.naut.plGw k v))) →
-      (∀ (k : Fin 2) (v : D.nd.PlG k), Squarefree (labelAt D P k v)) →
+      goodSig D.nd D.naut P →
       IsCuspIso D.nd D.naut P → ∀ r, IsRepOfSig D.nd D.naut i P r →
       (∀ k, D.nd.l i ≠ D.host.g k → ∀ v, ResidualTameLabels D i P r k v) ∧
       ResidualTameRootExclusion D i r) : TheoremThreePrime D := by
@@ -116,7 +116,7 @@ theorem theoremThreePrime_of_inertia
   letI : Fact (D.nd.l loc).Prime := D.nd.lPrime loc
   letI := D.nd.acOm
   letI : IsGalois D.host.E D.nd.Om := {}
-  obtain ⟨ht, he⟩ := hG loc Sig ⟨x, hP⟩ hd (fun k v => (hg k).1.2.1 v) hcusp rep hr
+  obtain ⟨ht, he⟩ := hG loc Sig ⟨x, hP⟩ hd hg hcusp rep hr
   have key (k : Fin 2) (hk : D.nd.l loc ∉ BB D.R.r (D.host.g k)) :=
     irreducible_of_labels D loc Sig rep hg hBB k hk (ht k fun e => hk (Or.inl e))
   refine ⟨?_, ?_, he⟩

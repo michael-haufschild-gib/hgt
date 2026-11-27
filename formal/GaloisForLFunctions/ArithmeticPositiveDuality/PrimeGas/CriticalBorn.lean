@@ -1,0 +1,7 @@
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.CriticalBorn.Readings
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.CriticalBorn.Joint
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.CriticalBorn.PrimeClocks
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.CriticalBorn.Classification
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.CriticalBorn.ThermalMoment
+
+/-! # Born sampling of the elementary energies of the prime gas -/

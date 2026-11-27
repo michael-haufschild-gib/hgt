@@ -51,7 +51,8 @@ theorem gaussian_spacing_bandwidth :
   let e₀ := univ.inf' univ_nonempty e
   let e₁ := univ.sup' univ_nonempty e
   have hE (i) : E i ∈ Icc e₀ e₁ :=
-    ⟨Finset.inf'_le _ (mem_univ _),Finset.le_sup' _ (mem_univ _)⟩
+    ⟨Finset.inf'_le e (mem_univ ((qubitConfigFin K).symm i)),
+      Finset.le_sup' e (mem_univ ((qubitConfigFin K).symm i))⟩
   have hab : e₀ ≤ e₁ := (hE 0).1.trans (hE 0).2
   simpa only [Fintype.card_fin] using packing E q (recordGap_pos k E q) hab hE (hk q)
 

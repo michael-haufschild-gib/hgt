@@ -20,7 +20,8 @@ private theorem order_rate {D : ℕ} (hD : 0 < D) {ε : ℝ} (hε : 0 < ε) (h�
   have hn : 0 ≤ ((D:ℝ)+1)/(discount*η^2) := div_nonneg (by positivity) (mul_nonneg discount_pos.le (sq_nonneg _))
   have he : ((D:ℝ)+1)/(discount*η^2)=b*(ε⁻¹)^4 := by
     dsimp only [η,b]
-    field_simp [hd.ne',hε.ne',discount_pos.ne'] <;> ring
+    field_simp [hd.ne',hε.ne',discount_pos.ne']
+    ring
   have hh := (Nat.ceil_lt_add_one hn).le
   rw [he] at hh
   change ((D*(⌈((D:ℝ)+1)/(discount*η^2)⌉₊+1):ℕ):ℝ)+1 ≤ _

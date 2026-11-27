@@ -162,7 +162,9 @@ private theorem mul_cliffordListProd_toggle' {A : Type*} [CStarAlgebra A] {m : �
       · have htail_eq : cliffordListProd γ tail (Function.update f c (!f c)) =
             cliffordListProd γ tail f := by
           unfold cliffordListProd; congr 1
-          exact List.map_congr_left fun a ha => by rw [Function.update_of_ne (fun h => hd_not (h ▸ ha))]
+          exact List.map_congr_left fun a ha => by
+            have hne : a ≠ c := fun h => hd_not (h ▸ ha)
+            rw [Function.update_of_ne hne]
         refine ⟨1, Or.inl rfl, ?_⟩
         rw [one_smul]
         change γ c * ((if f c then γ c else 1) * cliffordListProd γ tail f) =
@@ -172,10 +174,19 @@ private theorem mul_cliffordListProd_toggle' {A : Type*} [CStarAlgebra A] {m : �
         cases f c <;> simp [← mul_assoc, hsq c]
       · have hcd : c ≠ d := fun h => hd_not (h ▸ hc_tail)
         obtain ⟨ε, hε, ih⟩ := mul_cliffordListProd_toggle' hsq hanti c tail hnd_tail hc_tail f
-        simp only [cliffordListProd, List.map_cons, List.prod_cons, Function.update_of_ne hcd.symm]
-        cases f d
-        · exact ⟨ε, hε, by simpa using ih⟩
+        cases hfd : f d
+        · refine ⟨ε, hε, ?_⟩
+          change γ c * ((if f d then γ d else 1) * cliffordListProd γ tail f) =
+            ε • ((if Function.update f c (!f c) d then γ d else 1) *
+              cliffordListProd γ tail (Function.update f c (!f c)))
+          rw [Function.update_of_ne hcd.symm, hfd]
+          simp only [Bool.false_eq_true, ↓reduceIte, one_mul]
+          exact ih
         · refine ⟨-ε, by rcases hε with rfl | rfl <;> [exact Or.inr rfl; exact Or.inl (by norm_num)], ?_⟩
+          change γ c * ((if f d then γ d else 1) * cliffordListProd γ tail f) =
+            (-ε) • ((if Function.update f c (!f c) d then γ d else 1) *
+              cliffordListProd γ tail (Function.update f c (!f c)))
+          rw [Function.update_of_ne hcd.symm, hfd]
           simp only [↓reduceIte]
           calc γ c * (γ d * cliffordListProd γ tail f)
               = -(γ d * (γ c * cliffordListProd γ tail f)) := by
@@ -198,11 +209,11 @@ private theorem evenCliffordAdjoin_le_subspace' {A : Type*} [CStarAlgebra A] {m 
     cases hfc : f c
     · have hc_not : c ∉ S := by simp [S, hfc]
       have hS' : S' = insert c S := by
-        ext a; by_cases hac : a = c <;> [subst hac; skip] <;> simp [S', S, hfc, *]
+        ext a; by_cases hac : a = c <;> [subst hac; skip] <;> simp [S', S, *]
       rw [hS', Finset.card_insert_of_notMem hc_not, Nat.even_add_one]
     · have hc_not' : c ∉ S' := by simp [S', hfc]
       have hS : S = insert c S' := by
-        ext a; by_cases hac : a = c <;> [subst hac; skip] <;> simp [S, S', hfc, *]
+        ext a; by_cases hac : a = c <;> [subst hac; skip] <;> simp [S, S', *]
       rw [show S.card = S'.card + 1 by rw [hS, Finset.card_insert_of_notMem hc_not'],
         Nat.even_add_one, not_not]
   have hmul_two (a b : Fin m) : ∀ y ∈ evenCliffordSubspace γ,
@@ -345,7 +356,7 @@ theorem fullJWMajorana_anticommute (n : ℕ) {a b : Fin (2 * (n + 2))} (hab : a 
 onsite `Z_{r/2}` for even `r`, and nearest-neighbor `X_{r/2} X_{r/2 + 1}` for odd `r`. -/
 private def fullJWAdjWord (n : ℕ) (r : ℕ) (hr : r + 1 < 2 * (n + 2)) :
     Fin (n + 2) → Option (Fin 3) :=
-  if r % 2 = 0 then onsiteWord ⟨r / 2, by omega⟩ 2
+  if h : r % 2 = 0 then onsiteWord ⟨r / 2, by omega⟩ 2
   else couplingWord ⟨r / 2, by omega⟩ (0, 0)
 
 private theorem fullJWAdj_skew_eq_pair (n : ℕ) (r : ℕ) (hr : r + 1 < 2 * (n + 2)) :
@@ -357,15 +368,16 @@ private theorem fullJWAdj_skew_eq_pair (n : ℕ) (r : ℕ) (hr : r + 1 < 2 * (n 
   · let v : Fin (n + 2) := ⟨r / 2, by omega⟩
     have hr_div : (r + 1) / 2 = r / 2 := by omega
     have hr1_mod : (r + 1) % 2 = 1 := by omega
+    have hadj_eq : fullJWAdjWord n r hr = onsiteWord v 2 := by
+      unfold fullJWAdjWord; rw [dif_pos hmod]
     have hlbl : (fun s : Fin (n + 2) =>
         optMul (fullJWMajoranaWord n ⟨r, by omega⟩ s) (fullJWMajoranaWord n ⟨r + 1, hr⟩ s)) =
         fullJWAdjWord n r hr := by
+      rw [hadj_eq]
       funext s
-      simp only [fullJWAdjWord, hmod, ↓reduceIte]
       by_cases hsv : s = v
       · subst hsv
         simp [fullJWMajoranaWord, v, hr_div, hmod, hr1_mod, onsiteWord, optMul]
-        decide
       · have hval : s.val ≠ r / 2 := fun h => hsv (Fin.ext h)
         rcases lt_or_gt_of_ne hval with hslt | hsgt
         · simp [fullJWMajoranaWord, hr_div, hslt, onsiteWord, hsv, optMul]
@@ -391,30 +403,30 @@ private theorem fullJWAdj_skew_eq_pair (n : ℕ) (r : ℕ) (hr : r + 1 < 2 * (n 
     let e : Fin (n + 1) := ⟨r / 2, by omega⟩
     have hr_div1 : (r + 1) / 2 = e.val + 1 := by dsimp [e]; omega
     have hr1_mod : (r + 1) % 2 = 0 := by omega
+    have hadj_eq : fullJWAdjWord n r hr = couplingWord e (0, 0) := by
+      unfold fullJWAdjWord; rw [dif_neg hmod]
     have hlbl : (fun s : Fin (n + 2) =>
         optMul (fullJWMajoranaWord n ⟨r, by omega⟩ s) (fullJWMajoranaWord n ⟨r + 1, hr⟩ s)) =
         fullJWAdjWord n r hr := by
+      rw [hadj_eq]
       funext s
-      simp only [fullJWAdjWord, hmod, ↓reduceIte]
       by_cases hs1 : s = e.castSucc
       · subst hs1
         have hlt1 : e.val < e.val + 1 := Nat.lt_succ_self e.val
         simp [fullJWMajoranaWord, e, hr_div1, hmod, hlt1, couplingWord, optMul]
-        decide
       · by_cases hs2 : s = e.succ
         · subst hs2
           have hn1 : ¬ e.val + 1 < e.val := by omega
-          have hne1 : e.val + 1 ≠ e.val := by omega
-          simp [fullJWMajoranaWord, e, hr_div1, hr1_mod, hn1, hne1, couplingWord,
-            e.castSucc_lt_succ.ne', optMul]
+          simp [fullJWMajoranaWord, e, hr_div1, hr1_mod, hn1, couplingWord, optMul]
         · have hv1 : s.val ≠ e.val := fun h => hs1 (Fin.ext h)
           have hv2 : s.val ≠ e.val + 1 := fun h => hs2 (Fin.ext h)
+          rw [couplingWord, if_neg hs1, if_neg hs2]
           rcases lt_or_gt_of_ne hv1 with hslt | hsgt
           · have hslt2 : s.val < e.val + 1 := by omega
-            simp [fullJWMajoranaWord, e, hr_div1, hslt, hslt2, couplingWord, hs1, hs2, optMul]
+            simp [fullJWMajoranaWord, e, hr_div1, hslt, hslt2, optMul]
           · have hn1 : ¬ s.val < e.val := by omega
             have hn2 : ¬ s.val < e.val + 1 := by omega
-            simp [fullJWMajoranaWord, e, hr_div1, hn1, hn2, hv1, hv2, couplingWord, hs1, hs2, optMul]
+            simp [fullJWMajoranaWord, e, hr_div1, hn1, hn2, hv1, hv2, optMul]
     have hout : ∀ s ∈ ({e.castSucc} : Finset (Fin (n + 2)))ᶜ,
         optPhase (fullJWMajoranaWord n ⟨r, by omega⟩ s) (fullJWMajoranaWord n ⟨r + 1, hr⟩ s) = 1 := by
       intro s hs
@@ -448,21 +460,24 @@ private theorem matchgateLabel_skew_eq_pair {n : ℕ} (l : PathLabel n)
     have hmod0 : (2 * v.val) % 2 = 0 := by omega
     have hdiv : (2 * v.val) / 2 = v.val := by omega
     have hword : fullJWAdjWord n (2 * v.val) hr = pathWord (.inl (v, 2)) := by
-      simp [fullJWAdjWord, hmod0, Fin.ext hdiv, pathWord]
+      unfold fullJWAdjWord
+      rw [dif_pos hmod0]
+      have hv_eq : (⟨(2 * v.val) / 2, by omega⟩ : Fin (n + 2)) = v := Fin.ext hdiv
+      rw [hv_eq]; rfl
     refine ⟨⟨2 * v.val, by omega⟩, ⟨2 * v.val + 1, hr⟩, -1,
       fun h => by have hv := congrArg Fin.val h; dsimp at hv; omega, Or.inr rfl, ?_⟩
     rw [← hword, hadj]; norm_num
   · obtain ⟨hp2, hq2⟩ := hl
-    let a : Fin (2 * (n + 2)) := ⟨2 * e.val + (if p = 0 then 1 else 0), by omega⟩
-    let b : Fin (2 * (n + 2)) := ⟨2 * (e.val + 1) + (if q = 0 then 0 else 1), by omega⟩
+    have hp_01 : p = 0 ∨ p = 1 := by clear * - hp2; revert p hp2; decide
+    have hq_01 : q = 0 ∨ q = 1 := by clear * - hq2; revert q hq2; decide
+    let a : Fin (2 * (n + 2)) := ⟨2 * e.val + (if p = 0 then 1 else 0), by split_ifs <;> omega⟩
+    let b : Fin (2 * (n + 2)) := ⟨2 * (e.val + 1) + (if q = 0 then 0 else 1), by split_ifs <;> omega⟩
     have hab : a ≠ b := fun h => by
       have hv := congrArg Fin.val h; dsimp [a, b] at hv; split_ifs at hv <;> omega
     have hadiv : a.val / 2 = e.val := by dsimp [a]; split_ifs <;> omega
     have hbdiv : b.val / 2 = e.val + 1 := by dsimp [b]; split_ifs <;> omega
-    have hamod : (a.val % 2 = 0) ↔ p ≠ 0 := by dsimp [a]; split_ifs with hp0 <;> simp [hp0] <;> omega
-    have hbmod : (b.val % 2 = 0) ↔ q = 0 := by dsimp [b]; split_ifs with hq0 <;> simp [hq0] <;> omega
-    have hp_01 : p = 0 ∨ p = 1 := by revert hp2; decide
-    have hq_01 : q = 0 ∨ q = 1 := by revert hq2; decide
+    have hamod : (a.val % 2 = 0) ↔ p ≠ 0 := by dsimp [a]; split_ifs with hp0 <;> simp [hp0]
+    have hbmod : (b.val % 2 = 0) ↔ q = 0 := by dsimp [b]; split_ifs with hq0 <;> simp [hq0]
     refine ⟨a, b, if p = 0 then -1 else 1, hab,
       by split_ifs <;> [exact Or.inr rfl; exact Or.inl rfl], ?_⟩
     unfold fullJWMajorana
@@ -476,7 +491,7 @@ private theorem matchgateLabel_skew_eq_pair {n : ℕ} (l : PathLabel n)
         have hlt1 : e.val < e.val + 1 := Nat.lt_succ_self e.val
         simp only [fullJWMajoranaWord, hadiv, hbdiv, Fin.val_castSucc, lt_irrefl, hlt1, ↓reduceIte,
           pathWord, couplingWord]
-        rcases hp_01 with rfl | rfl <;> simp [hamod, optMul] <;> decide
+        rcases hp_01 with rfl | rfl <;> simp [hamod, optMul]
       · by_cases hs2 : s = e.succ
         · subst hs2
           have hn1 : ¬ e.val + 1 < e.val := by omega
@@ -632,7 +647,7 @@ private theorem fullJWAdjGate_preserves_and_majMat (n : ℕ) (r : ℕ) (hr : r +
   have hne01 : a₀ ≠ a₁ := fun h => by have hv := congrArg Fin.val h; dsimp [a₀, a₁] at hv; omega
   have hU_exp_eq : U = NormedSpace.exp (((φ / 2 : ℝ) : ℂ) •
       (fullJWMajorana n a₀ * fullJWMajorana n a₁)) := by
-    dsimp only [U, unitaryEvolution]
+    dsimp only [U, unitaryEvolution, a₀, a₁]
     rw [fullJWAdj_skew_eq_pair n r hr, ← Complex.coe_smul, smul_smul]
     congr 1; push_cast; ring
   have hgen_adjoin : fullJWMajorana n a₀ * fullJWMajorana n a₁ ∈
@@ -700,14 +715,15 @@ private theorem fullJWAdjGate_preserves_and_majMat (n : ℕ) (r : ℕ) (hr : r +
     have hw_le2 : pauliWeight (fullJWAdjWord n r hr) ≤ 2 := by
       unfold pauliWeight fullJWAdjWord
       by_cases hmod : r % 2 = 0
-      · simp only [hmod, ↓reduceIte]
+      · rw [dif_pos hmod]
         let v : Fin (n + 2) := ⟨r / 2, by omega⟩
         have hsub : (Finset.univ.filter fun s => onsiteWord v 2 s ≠ none) ⊆ {v} := by
           intro s hs
-          have hne := (Finset.mem_filter.mp hs).2
-          by_contra hv; simp [onsiteWord, hv] at hne
+          rw [Finset.mem_singleton]
+          by_contra hv
+          exact (Finset.mem_filter.mp hs).2 (by simp [onsiteWord, hv])
         exact (Finset.card_le_card hsub).trans (by simp)
-      · simp only [hmod, ↓reduceIte]
+      · rw [dif_neg hmod]
         let e : Fin (n + 1) := ⟨r / 2, by omega⟩
         have hsub : (Finset.univ.filter fun s => couplingWord e (0, 0) s ≠ none) ⊆
             {e.castSucc, e.succ} := by
@@ -721,10 +737,14 @@ private theorem fullJWAdjGate_preserves_and_majMat (n : ℕ) (r : ℕ) (hr : r +
       intro hid
       by_cases hmod : r % 2 = 0
       · have h := congrFun hid ⟨r / 2, by omega⟩
-        simp [fullJWAdjWord, hmod, onsiteWord, pauliIdentityLabel] at h
+        unfold fullJWAdjWord at h
+        rw [dif_pos hmod] at h
+        simp [onsiteWord, pauliIdentityLabel] at h
       · let e : Fin (n + 1) := ⟨r / 2, by omega⟩
         have h := congrFun hid e.castSucc
-        simp [fullJWAdjWord, hmod, couplingWord, e, pauliIdentityLabel] at h
+        unfold fullJWAdjWord at h
+        rw [dif_neg hmod] at h
+        simp [couplingWord, e, pauliIdentityLabel] at h
     let Q : PauliTracelessLabel (n + 2) 2 := ⟨fullJWAdjWord n r hr, hw_le2, hnot_id⟩
     let H_b := finitePauliSelfAdjointBasis (Fin (n + 2)) (fullJWAdjWord n r hr)
     have hc : realPauliCoefficient H_b Q.val = 1 := by
@@ -739,12 +759,12 @@ private theorem fullJWAdjGate_preserves_and_majMat (n : ℕ) (r : ℕ) (hr : r +
     simpa only [twoLocalSkewGenerator, hc, Complex.ofReal_one, one_smul, unitaryEvolution, U] using hG
   exact ⟨hU_unit, hstU_adj, hpres, hmaj, hreal1⟩
 
-/-- Exact `choose(2N, 2) = (n + 2) * (2 * n + 3)`-gate `Spin(2N)` compilation of every
-`(5N - 4)`-parameter `isMatchgateChainLabel` chain Hamiltonian on `n + 2` qubits for **all**
-`t ∈ ℝ`. -/
-theorem realizes_choose_twoN_of_matchgateChain {n : ℕ} (u : PathShell n)
-    (hu : ∀ l : PathLabel n, ¬ isMatchgateChainLabel l → u l = 0) (t : ℝ) :
-    Realizes ((n + 2) * (2 * n + 3)) (unitaryEvolution (pathHamiltonian u) t) := by
+private theorem matchgateChain_evolution_mem_adjoin_and_preserves {n : ℕ} (u : PathShell n)
+    (hu : ∀ l : PathLabel n, ¬ isMatchgateChainLabel l → u l = 0) (s : ℝ) :
+    unitaryEvolution (pathHamiltonian u) s ∈ evenCliffordAdjoin (fullJWMajorana n) ∧
+    ∀ c : Fin (2 * (n + 2)),
+      unitaryEvolution (pathHamiltonian u) s * fullJWMajorana n c *
+        star (unitaryEvolution (pathHamiltonian u) s) ∈ fullRealMajoranaSubspace n := by
   let _ : NormedAlgebra ℚ (Register (n + 2)) := .restrictScalars ℚ ℂ (Register (n + 2))
   let H := pathHamiltonian u
   have hH_sa : IsSelfAdjoint H := isSelfAdjoint_pathHamiltonian u
@@ -757,7 +777,7 @@ theorem realizes_choose_twoN_of_matchgateChain {n : ℕ} (u : PathShell n)
     rw [hu l hnot, Complex.ofReal_zero, zero_smul]
   have hclosed_adj := isClosed_evenCliffordAdjoin' (fullJWMajorana_sq n)
     (fun _ _ h => fullJWMajorana_anticommute n h)
-  have hskew_adjoin (s : ℝ) : s • ((-Complex.I) • H) ∈ evenCliffordAdjoin (fullJWMajorana n) := by
+  have hskew_adjoin : s • ((-Complex.I) • H) ∈ evenCliffordAdjoin (fullJWMajorana n) := by
     rw [hH_eq, Finset.smul_sum, Finset.smul_sum]
     refine Subalgebra.sum_mem _ fun l hl => ?_
     obtain ⟨a, b, ε, hab, _, hpair⟩ := matchgateLabel_skew_eq_pair l (Finset.mem_filter.mp hl).2
@@ -767,8 +787,8 @@ theorem realizes_choose_twoN_of_matchgateChain {n : ℕ} (u : PathShell n)
       congr 1; push_cast; ring
     rw [h1]
     exact Subalgebra.smul_mem _ (Algebra.subset_adjoin ⟨a, b, hab, rfl⟩) _
-  have hUt_adjoin (s : ℝ) : unitaryEvolution H s ∈ evenCliffordAdjoin (fullJWMajorana n) :=
-    NormedSpace.exp_mem (R := ℂ) hclosed_adj (hskew_adjoin s)
+  have hUt_adjoin : unitaryEvolution H s ∈ evenCliffordAdjoin (fullJWMajorana n) :=
+    NormedSpace.exp_mem (R := ℂ) hclosed_adj hskew_adjoin
   have had_mem : ∀ M ∈ fullRealMajoranaSubspace n,
       Complex.I • (H * M - M * H) ∈ fullRealMajoranaSubspace n := by
     intro M hM
@@ -855,43 +875,56 @@ theorem realizes_choose_twoN_of_matchgateChain {n : ℕ} (u : PathShell n)
     haveI : FiniteDimensional ℝ (fullRealMajoranaSubspace n) :=
       FiniteDimensional.span_of_finite ℝ (Set.finite_range _)
     exact (fullRealMajoranaSubspace n).closed_of_finiteDimensional
+  refine ⟨hUt_adjoin, fun c => ?_⟩
+  have horb_eq : unitaryEvolution H s * fullJWMajorana n c * star (unitaryEvolution H s) =
+      heisenbergOrbit H (fullJWMajorana n c) (-s) := by
+    unfold heisenbergOrbit unitaryEvolution
+    have hst (u_s : ℝ) : star (NormedSpace.exp (u_s • ((-Complex.I) • H))) =
+        NormedSpace.exp ((-u_s) • ((-Complex.I) • H)) := by
+      rw [NormedSpace.star_exp, star_smul, star_smul, hH_sa.star_eq]; simp [neg_smul, smul_neg]
+    rw [hst s, hst (-s), neg_neg]
+  rw [horb_eq]
+  have htay_mem (K : ℕ) :
+      heisenbergCommutatorTaylor H (fullJWMajorana n c) K (-s) ∈ fullRealMajoranaSubspace n := by
+    unfold heisenbergCommutatorTaylor
+    refine Submodule.sum_mem _ fun k _ => ?_
+    rw [show ((((-s) ^ k / (k.factorial : ℝ) : ℝ) : ℂ) * Complex.I ^ k) •
+        iteratedCommutator H k (fullJWMajorana n c) =
+        ((-s) ^ k / (k.factorial : ℝ)) •
+          ((Complex.I ^ k) • iteratedCommutator H k (fullJWMajorana n c)) by
+      rw [← Complex.coe_smul, smul_smul]]
+    exact Submodule.smul_mem _ _ (hiter_mem k _ (Submodule.subset_span ⟨c, rfl⟩))
+  let R := 2 * ‖H‖ * |-s|
+  have hsum_R : Summable (fun k : ℕ => R ^ k / (k.factorial : ℝ)) := by
+    have hs := (NormedSpace.expSeries_hasSum_exp (𝕂 := ℝ) R).summable
+    rwa [NormedSpace.expSeries_apply_eq_div' (𝕂 := ℝ) R] at hs
+  have htend0 : Tendsto
+      (fun K : ℕ => R ^ (K + 1) / ((K + 1).factorial : ℝ) * ‖fullJWMajorana n c‖) atTop (𝓝 0) := by
+    simpa only [Function.comp_def, zero_mul] using
+      (hsum_R.tendsto_atTop_zero.comp (tendsto_add_atTop_nat 1)).mul_const ‖fullJWMajorana n c‖
+  have htend_tay : Tendsto
+      (fun K : ℕ => heisenbergCommutatorTaylor H (fullJWMajorana n c) K (-s)) atTop
+      (𝓝 (heisenbergOrbit H (fullJWMajorana n c) (-s))) := by
+    rw [tendsto_iff_norm_sub_tendsto_zero]
+    refine squeeze_zero (fun _ => norm_nonneg _) (fun K => ?_) htend0
+    rw [norm_sub_rev]
+    exact norm_heisenbergOrbit_sub_commutatorTaylor_le hH_sa (fullJWMajorana n c) K (-s)
+  exact hclosed_real.mem_of_tendsto htend_tay (Eventually.of_forall htay_mem)
+
+/-- Exact `choose(2N, 2) = (n + 2) * (2 * n + 3)`-gate `Spin(2N)` compilation of every
+`(5N - 4)`-parameter `isMatchgateChainLabel` chain Hamiltonian on `n + 2` qubits for **all**
+`t ∈ ℝ`. -/
+theorem realizes_choose_twoN_of_matchgateChain {n : ℕ} (u : PathShell n)
+    (hu : ∀ l : PathLabel n, ¬ isMatchgateChainLabel l → u l = 0) (t : ℝ) :
+    Realizes ((n + 2) * (2 * n + 3)) (unitaryEvolution (pathHamiltonian u) t) := by
+  let H := pathHamiltonian u
+  have hH_sa : IsSelfAdjoint H := isSelfAdjoint_pathHamiltonian u
+  have hUt_adjoin (s : ℝ) : unitaryEvolution H s ∈ evenCliffordAdjoin (fullJWMajorana n) :=
+    (matchgateChain_evolution_mem_adjoin_and_preserves u hu s).1
   have hUt_pres (s : ℝ) (c : Fin (2 * (n + 2))) :
       unitaryEvolution H s * fullJWMajorana n c * star (unitaryEvolution H s) ∈
-        fullRealMajoranaSubspace n := by
-    have horb_eq : unitaryEvolution H s * fullJWMajorana n c * star (unitaryEvolution H s) =
-        heisenbergOrbit H (fullJWMajorana n c) (-s) := by
-      unfold heisenbergOrbit unitaryEvolution
-      have hst (u_s : ℝ) : star (NormedSpace.exp (u_s • ((-Complex.I) • H))) =
-          NormedSpace.exp ((-u_s) • ((-Complex.I) • H)) := by
-        rw [NormedSpace.star_exp, star_smul, star_smul, hH_sa.star_eq]; simp [neg_smul, smul_neg]
-      rw [hst s, hst (-s), neg_neg]
-    rw [horb_eq]
-    have htay_mem (K : ℕ) :
-        heisenbergCommutatorTaylor H (fullJWMajorana n c) K (-s) ∈ fullRealMajoranaSubspace n := by
-      unfold heisenbergCommutatorTaylor
-      refine Submodule.sum_mem _ fun k _ => ?_
-      rw [show ((((-s) ^ k / (k.factorial : ℝ) : ℝ) : ℂ) * Complex.I ^ k) •
-          iteratedCommutator H k (fullJWMajorana n c) =
-          ((-s) ^ k / (k.factorial : ℝ)) •
-            ((Complex.I ^ k) • iteratedCommutator H k (fullJWMajorana n c)) by
-        rw [← Complex.coe_smul, smul_smul]]
-      exact Submodule.smul_mem _ _ (hiter_mem k _ (Submodule.subset_span ⟨c, rfl⟩))
-    let R := 2 * ‖H‖ * |-s|
-    have hsum_R : Summable (fun k : ℕ => R ^ k / (k.factorial : ℝ)) := by
-      have hs := (NormedSpace.expSeries_hasSum_exp (𝕂 := ℝ) R).summable
-      rwa [NormedSpace.expSeries_apply_eq_div' (𝕂 := ℝ) R] at hs
-    have htend0 : Tendsto
-        (fun K : ℕ => R ^ (K + 1) / ((K + 1).factorial : ℝ) * ‖fullJWMajorana n c‖) atTop (𝓝 0) := by
-      simpa only [Function.comp_def, zero_mul] using
-        (hsum_R.tendsto_atTop_zero.comp (tendsto_add_atTop_nat 1)).mul_const ‖fullJWMajorana n c‖
-    have htend_tay : Tendsto
-        (fun K : ℕ => heisenbergCommutatorTaylor H (fullJWMajorana n c) K (-s)) atTop
-        (𝓝 (heisenbergOrbit H (fullJWMajorana n c) (-s))) := by
-      rw [tendsto_iff_norm_sub_tendsto_zero]
-      refine squeeze_zero (fun _ => norm_nonneg _) (fun K => ?_) htend0
-      rw [norm_sub_rev]
-      exact norm_heisenbergOrbit_sub_commutatorTaylor_le hH_sa (fullJWMajorana n c) K (-s)
-    exact hclosed_real.mem_of_tendsto htend_tay (Eventually.of_forall htay_mem)
+        fullRealMajoranaSubspace n :=
+    (matchgateChain_evolution_mem_adjoin_and_preserves u hu s).2 c
   let U_t := unitaryEvolution H t
   let O_t := fullMajMat n U_t
   have hUt_unit : ∀ s : ℝ, unitaryEvolution H s ∈ unitary (Register (n + 2)) :=
@@ -1042,7 +1075,9 @@ theorem realizes_choose_twoN_of_matchgateChain {n : ℕ} (u : PathShell n)
       _ = W * U_c := (mul_assoc _ _ _).symm
       _ = z • U_c := by rw [hW_eq, Matrix.smul_mul, one_mul]
   have hchoose_eq : (2 * (n + 2)) * (2 * (n + 2) - 1) / 2 = (n + 2) * (2 * n + 3) := by
-    have h1 : (2 * (n + 2)) * (2 * (n + 2) - 1) = ((n + 2) * (2 * n + 3)) * 2 := by omega
+    have hsub : 2 * (n + 2) - 1 = 2 * n + 3 := by omega
+    have h1 : (2 * (n + 2)) * (2 * (n + 2) - 1) = ((n + 2) * (2 * n + 3)) * 2 := by
+      rw [hsub]; ring
     rw [h1, Nat.mul_div_cancel _ two_pos]
   obtain ⟨z', hz', C, hC, hUc_eq⟩ := hUc_real
   refine ⟨z * z', by rw [norm_mul, hz, hz', mul_one], C, hC.trans (hlen_giv.trans_eq hchoose_eq), ?_⟩
@@ -1080,6 +1115,142 @@ private theorem kronTwoPair_mem_unitary {R₁ R₂ : Matrix Bool Bool ℂ}
     rw [hf, h₁.2, h₂.2, Matrix.one_apply, Matrix.one_apply]
     by_cases hp1 : p₁ = q₁ <;> by_cases hp2 : p₂ = q₂ <;> simp [hp1, hp2]
 
+private theorem prodLocalMatrix_conj_twoQubitLiftMatrix {N : ℕ}
+    (R : Fin N → Matrix Bool Bool ℂ)
+    (hR : ∀ s, star (R s) * R s = 1 ∧ R s * star (R s) = 1)
+    (a b : Fin N) (hab : a ≠ b) (M : Matrix (Bool × Bool) (Bool × Bool) ℂ) :
+    prodLocalMatrix R * twoQubitLiftMatrix a b hab M * star (prodLocalMatrix R) =
+      twoQubitLiftMatrix a b hab (kronTwoPair (R a) (R b) * M * star (kronTwoPair (R a) (R b))) := by
+  let W := prodLocalMatrix R
+  have hlift_apply (X : Matrix (Bool × Bool) (Bool × Bool) ℂ) (u v : Config N) :
+      twoQubitLiftMatrix a b hab X u v =
+        if ∀ r : Fin N, r ≠ a → r ≠ b → u r = v r then X (u a, u b) (v a, v b) else 0 := by
+    dsimp only [twoQubitLiftMatrix, Matrix.reindex_apply, Matrix.submatrix_apply]
+    rw [Equiv.symm_symm]
+    change (Matrix.kroneckerMap (· * ·) X 1)
+      (splitTwoQubitConfig a b hab u) (splitTwoQubitConfig a b hab v) = _
+    rw [Matrix.kroneckerMap_apply]
+    by_cases hall : ∀ r : Fin N, r ≠ a → r ≠ b → u r = v r
+    · rw [if_pos hall, show (splitTwoQubitConfig a b hab u).2 =
+        (splitTwoQubitConfig a b hab v).2 from funext fun ⟨r, hr⟩ => hall r hr.1 hr.2,
+        Matrix.one_apply_eq, mul_one]; rfl
+    · rw [if_neg hall, Matrix.one_apply_ne (fun heq => hall fun r hra hrb =>
+        congrFun heq ⟨r, hra, hrb⟩), mul_zero]
+  let pairSet : Finset (Fin N) := {a, b}
+  have hfactor (A B : Matrix Bool Bool ℂ) :
+      twoQubitLiftMatrix a b hab (fun p q => A p.1 q.1 * B p.2 q.2) =
+        prodLocalMatrix (fun r => if r = a then A else if r = b then B else 1) := by
+    ext u v
+    rw [hlift_apply]; dsimp only [prodLocalMatrix]
+    rw [← Finset.prod_mul_prod_compl pairSet, Finset.prod_pair hab]
+    simp only [↓reduceIte, hab.symm]
+    have hrest : (∏ r ∈ pairSetᶜ,
+        (if r = a then A else if r = b then B else 1) (u r) (v r)) =
+        if ∀ r : Fin N, r ≠ a → r ≠ b → u r = v r then 1 else 0 := by
+      have h1 : ∀ r ∈ pairSetᶜ,
+          (if r = a then A else if r = b then B else 1) (u r) (v r) =
+            if u r = v r then 1 else 0 := by
+        intro r hr
+        simp only [pairSet, Finset.mem_compl, Finset.mem_insert, Finset.mem_singleton, not_or] at hr
+        simp [hr.1, hr.2, Matrix.one_apply]
+      rw [Finset.prod_congr rfl h1]
+      by_cases hall : ∀ r : Fin N, r ≠ a → r ≠ b → u r = v r
+      · rw [if_pos hall]
+        refine Finset.prod_eq_one fun r hr => ?_
+        simp only [pairSet, Finset.mem_compl, Finset.mem_insert, Finset.mem_singleton, not_or] at hr
+        rw [if_pos (hall r hr.1 hr.2)]
+      · rw [if_neg hall]; push Not at hall
+        obtain ⟨r, hra, hrb, hne⟩ := hall
+        exact Finset.prod_eq_zero (by simp [pairSet, hra, hrb]) (if_neg hne)
+    rw [hrest]; split_ifs <;> ring
+  have hconj_factor (A B : Matrix Bool Bool ℂ) :
+      W * twoQubitLiftMatrix a b hab (fun p q => A p.1 q.1 * B p.2 q.2) * star W =
+        twoQubitLiftMatrix a b hab
+          (fun p q => (R a * A * star (R a)) p.1 q.1 * (R b * B * star (R b)) p.2 q.2) := by
+    rw [hfactor A B, hfactor (R a * A * star (R a)) (R b * B * star (R b))]
+    dsimp only [W]
+    rw [prodLocalMatrix_star, prodLocalMatrix_mul, prodLocalMatrix_mul]
+    congr 1; funext r
+    by_cases hra : r = a
+    · subst hra; simp
+    · by_cases hrb : r = b
+      · subst hrb; simp [hab.symm]
+      · simp [hra, hrb, mul_one, (hR r).2]
+  let E₁ (p q : Bool) : Matrix Bool Bool ℂ := fun x y => if x = p ∧ y = q then 1 else 0
+  have hM_sum : twoQubitLiftMatrix a b hab M =
+      ∑ p : Bool × Bool, ∑ q : Bool × Bool,
+        M p q • twoQubitLiftMatrix a b hab (fun r t => E₁ p.1 q.1 r.1 t.1 * E₁ p.2 q.2 r.2 t.2) := by
+    ext u v
+    rw [hlift_apply, Matrix.sum_apply]
+    simp_rw [Matrix.sum_apply, Matrix.smul_apply, hlift_apply, smul_eq_mul]
+    by_cases hall : ∀ r : Fin N, r ≠ a → r ≠ b → u r = v r
+    · simp only [if_pos hall]
+      rw [Finset.sum_eq_single (u a, u b)]
+      · rw [Finset.sum_eq_single (v a, v b)]
+        · simp [E₁]
+        · intro q _ hq
+          have h0 : E₁ (u a) q.1 (u a) (v a) * E₁ (u b) q.2 (u b) (v b) = 0 := by
+            by_cases h1 : v a = q.1
+            · simp [E₁, show v b ≠ q.2 from fun h => hq (Prod.ext h1.symm h.symm)]
+            · simp [E₁, h1]
+          rw [h0, mul_zero]
+        · simp
+      · intro p _ hp
+        refine Finset.sum_eq_zero fun q _ => ?_
+        have h0 : E₁ p.1 q.1 (u a) (v a) * E₁ p.2 q.2 (u b) (v b) = 0 := by
+          by_cases h1 : u a = p.1
+          · simp [E₁, show u b ≠ p.2 from fun h => hp (Prod.ext h1.symm h.symm)]
+          · simp [E₁, h1]
+        rw [h0, mul_zero]
+      · simp
+    · simp [if_neg hall]
+  rw [hM_sum, Matrix.mul_sum, Matrix.sum_mul]
+  simp_rw [Matrix.mul_sum, Matrix.sum_mul, Matrix.mul_smul, Matrix.smul_mul, hconj_factor]
+  ext u v
+  rw [hlift_apply, Matrix.sum_apply]
+  simp_rw [Matrix.sum_apply, Matrix.smul_apply, hlift_apply, smul_eq_mul]
+  by_cases hall : ∀ r : Fin N, r ≠ a → r ≠ b → u r = v r
+  · simp only [if_pos hall]
+    have hE1 (S₀ : Matrix Bool Bool ℂ) (p₀ q₀ x₀ z₀ : Bool) :
+        (S₀ * E₁ p₀ q₀ * star S₀) x₀ z₀ = S₀ x₀ p₀ * (star S₀) q₀ z₀ := by
+      simp only [Matrix.mul_apply, Fintype.sum_bool, E₁]; cases p₀ <;> cases q₀ <;> simp
+    have hstK (q : Bool × Bool) :
+        (star (kronTwoPair (R a) (R b))) q (v a, v b) =
+          (star (R a)) q.1 (v a) * (star (R b)) q.2 (v b) := by
+      simp [kronTwoPair, star_mul']
+    have hrhs : (kronTwoPair (R a) (R b) * M * star (kronTwoPair (R a) (R b)))
+        (u a, u b) (v a, v b) =
+        ∑ p : Bool × Bool, ∑ q : Bool × Bool,
+          M p q * (kronTwoPair (R a) (R b) (u a, u b) p *
+            (star (kronTwoPair (R a) (R b))) q (v a, v b)) := by
+      simp only [Matrix.mul_apply, Finset.sum_mul]; rw [Finset.sum_comm]
+      exact Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => by ring
+    rw [hrhs]
+    refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => ?_
+    rw [hE1, hE1, hstK q]; dsimp only [kronTwoPair]; ring
+  · simp [if_neg hall]
+
+private theorem realizes_one_twoQubitLiftMatrix {N : ℕ}
+    (a b : Fin N) (hab : a ≠ b) (V : Matrix.unitaryGroup (Bool × Bool) ℂ) :
+    Realizes 1 (twoQubitLiftMatrix a b hab V.val) := by
+  let z_loc := scalarSpecialUnitaryPhase V
+  let G_loc := scalarSpecialUnitaryRepresentative V
+  have hz_unit : star z_loc * z_loc = 1 := scalarSpecialUnitaryPhase_unitary V
+  have hznorm : ‖star z_loc‖ = 1 := by
+    have hsq : ‖z_loc‖ * ‖z_loc‖ = 1 := by simpa [norm_mul] using congrArg norm hz_unit
+    have hz0 : ‖z_loc‖ = 1 := by nlinarith [norm_nonneg z_loc, sq_nonneg (‖z_loc‖ - 1)]
+    simpa using hz0
+  refine ⟨star z_loc, hznorm, TwoQubitCircuit.singleOn a b hab G_loc, le_rfl, ?_⟩
+  rw [TwoQubitCircuit.singleOn_eval]
+  have hgate : (twoQubitLift a b hab G_loc : Register N) =
+      z_loc • twoQubitLiftMatrix a b hab V.val := by
+    ext x y
+    simp [G_loc, z_loc, twoQubitLift, twoQubitLiftMatrix, specialUnitaryAsUnitary,
+      scalarSpecialUnitaryRepresentative_coe, unitaryGroupReindex_coe, Quantum.tensorGate_val,
+      Matrix.reindex_apply, Matrix.kronecker, Matrix.smul_apply]
+    ring
+  rw [hgate, smul_smul, hz_unit, one_smul]
+
 /-- Conjugating any `Realizes s U` unitary by an arbitrary local unitary product
 `prodLocalMatrix R ∈ U(2)^⊗N` preserves its exact two-qubit gate budget `s`. -/
 theorem realizes_conj_prodLocalMatrix {N : ℕ} (R : Fin N → Matrix Bool Bool ℂ)
@@ -1087,137 +1258,7 @@ theorem realizes_conj_prodLocalMatrix {N : ℕ} (R : Fin N → Matrix Bool Bool 
     (h : Realizes s U) :
     Realizes s (prodLocalMatrix R * U * star (prodLocalMatrix R)) := by
   let W := prodLocalMatrix R
-  have hW_unit := prodLocalMatrix_mem_unitary R hR
-  obtain ⟨hWL, hWR⟩ := Unitary.mem_iff.mp hW_unit
-  have hlift_conj (a b : Fin N) (hab : a ≠ b) (M : Matrix (Bool × Bool) (Bool × Bool) ℂ) :
-      W * twoQubitLiftMatrix a b hab M * star W =
-        twoQubitLiftMatrix a b hab (kronTwoPair (R a) (R b) * M * star (kronTwoPair (R a) (R b))) := by
-    have hlift_apply (X : Matrix (Bool × Bool) (Bool × Bool) ℂ) (u v : Config N) :
-        twoQubitLiftMatrix a b hab X u v =
-          if ∀ r : Fin N, r ≠ a → r ≠ b → u r = v r then X (u a, u b) (v a, v b) else 0 := by
-      dsimp only [twoQubitLiftMatrix, Matrix.reindex_apply, Matrix.submatrix_apply]
-      rw [Equiv.symm_symm]
-      change (Matrix.kroneckerMap (· * ·) X 1)
-        (splitTwoQubitConfig a b hab u) (splitTwoQubitConfig a b hab v) = _
-      rw [Matrix.kroneckerMap_apply]
-      by_cases hall : ∀ r : Fin N, r ≠ a → r ≠ b → u r = v r
-      · rw [if_pos hall, show (splitTwoQubitConfig a b hab u).2 =
-          (splitTwoQubitConfig a b hab v).2 from funext fun ⟨r, hr⟩ => hall r hr.1 hr.2,
-          Matrix.one_apply_eq, mul_one]; rfl
-      · rw [if_neg hall, Matrix.one_apply_ne (fun heq => hall fun r hra hrb =>
-          congrFun heq ⟨r, hra, hrb⟩), mul_zero]
-    let pairSet : Finset (Fin N) := {a, b}
-    have hfactor (A B : Matrix Bool Bool ℂ) :
-        twoQubitLiftMatrix a b hab (fun p q => A p.1 q.1 * B p.2 q.2) =
-          prodLocalMatrix (fun r => if r = a then A else if r = b then B else 1) := by
-      ext u v
-      rw [hlift_apply]; dsimp only [prodLocalMatrix]
-      rw [← Finset.prod_mul_prod_compl pairSet, Finset.prod_pair hab]
-      simp only [↓reduceIte, hab.symm]
-      have hrest : (∏ r ∈ pairSetᶜ,
-          (if r = a then A else if r = b then B else 1) (u r) (v r)) =
-          if ∀ r : Fin N, r ≠ a → r ≠ b → u r = v r then 1 else 0 := by
-        have h1 : ∀ r ∈ pairSetᶜ,
-            (if r = a then A else if r = b then B else 1) (u r) (v r) =
-              if u r = v r then 1 else 0 := by
-          intro r hr
-          simp only [pairSet, Finset.mem_compl, Finset.mem_insert, Finset.mem_singleton, not_or] at hr
-          simp [hr.1, hr.2, Matrix.one_apply]
-        rw [Finset.prod_congr rfl h1]
-        by_cases hall : ∀ r : Fin N, r ≠ a → r ≠ b → u r = v r
-        · rw [if_pos hall]
-          refine Finset.prod_eq_one fun r hr => ?_
-          simp only [pairSet, Finset.mem_compl, Finset.mem_insert, Finset.mem_singleton, not_or] at hr
-          rw [if_pos (hall r hr.1 hr.2)]
-        · rw [if_neg hall]; push Not at hall
-          obtain ⟨r, hra, hrb, hne⟩ := hall
-          exact Finset.prod_eq_zero (by simp [pairSet, hra, hrb]) (if_neg hne)
-      rw [hrest]; split_ifs <;> ring
-    have hconj_factor (A B : Matrix Bool Bool ℂ) :
-        W * twoQubitLiftMatrix a b hab (fun p q => A p.1 q.1 * B p.2 q.2) * star W =
-          twoQubitLiftMatrix a b hab
-            (fun p q => (R a * A * star (R a)) p.1 q.1 * (R b * B * star (R b)) p.2 q.2) := by
-      rw [hfactor A B, hfactor (R a * A * star (R a)) (R b * B * star (R b))]
-      dsimp only [W]
-      rw [prodLocalMatrix_star, prodLocalMatrix_mul, prodLocalMatrix_mul]
-      congr 1; funext r
-      by_cases hra : r = a
-      · subst hra; simp
-      · by_cases hrb : r = b
-        · subst hrb; simp [hab.symm]
-        · simp [hra, hrb, mul_one, (hR r).2]
-    let E₁ (p q : Bool) : Matrix Bool Bool ℂ := fun x y => if x = p ∧ y = q then 1 else 0
-    have hM_sum : twoQubitLiftMatrix a b hab M =
-        ∑ p : Bool × Bool, ∑ q : Bool × Bool,
-          M p q • twoQubitLiftMatrix a b hab (fun r t => E₁ p.1 q.1 r.1 t.1 * E₁ p.2 q.2 r.2 t.2) := by
-      ext u v
-      rw [hlift_apply, Matrix.sum_apply]
-      simp_rw [Matrix.sum_apply, Matrix.smul_apply, hlift_apply, smul_eq_mul]
-      by_cases hall : ∀ r : Fin N, r ≠ a → r ≠ b → u r = v r
-      · simp only [if_pos hall]
-        rw [Finset.sum_eq_single (u a, u b)]
-        · rw [Finset.sum_eq_single (v a, v b)]
-          · simp [E₁]
-          · intro q _ hq
-            have h0 : E₁ (u a) q.1 (u a) (v a) * E₁ (u b) q.2 (u b) (v b) = 0 := by
-              by_cases h1 : v a = q.1
-              · simp [E₁, show v b ≠ q.2 from fun h => hq (Prod.ext h1.symm h.symm)]
-              · simp [E₁, h1]
-            rw [h0, mul_zero]
-          · simp
-        · intro p _ hp
-          refine Finset.sum_eq_zero fun q _ => ?_
-          have h0 : E₁ p.1 q.1 (u a) (v a) * E₁ p.2 q.2 (u b) (v b) = 0 := by
-            by_cases h1 : u a = p.1
-            · simp [E₁, show u b ≠ p.2 from fun h => hp (Prod.ext h1.symm h.symm)]
-            · simp [E₁, h1]
-          rw [h0, mul_zero]
-        · simp
-      · simp [if_neg hall]
-    rw [hM_sum, Matrix.mul_sum, Matrix.sum_mul]
-    simp_rw [Matrix.mul_sum, Matrix.sum_mul, Matrix.mul_smul, Matrix.smul_mul, hconj_factor]
-    ext u v
-    rw [hlift_apply, Matrix.sum_apply]
-    simp_rw [Matrix.sum_apply, Matrix.smul_apply, hlift_apply, smul_eq_mul]
-    by_cases hall : ∀ r : Fin N, r ≠ a → r ≠ b → u r = v r
-    · simp only [if_pos hall]
-      have hE1 (S₀ : Matrix Bool Bool ℂ) (p₀ q₀ x₀ z₀ : Bool) :
-          (S₀ * E₁ p₀ q₀ * star S₀) x₀ z₀ = S₀ x₀ p₀ * (star S₀) q₀ z₀ := by
-        simp only [Matrix.mul_apply, Fintype.sum_bool, E₁]; cases p₀ <;> cases q₀ <;> simp
-      have hstK (q : Bool × Bool) :
-          (star (kronTwoPair (R a) (R b))) q (v a, v b) =
-            (star (R a)) q.1 (v a) * (star (R b)) q.2 (v b) := by
-        simp [kronTwoPair, star_mul']
-      have hrhs : (kronTwoPair (R a) (R b) * M * star (kronTwoPair (R a) (R b)))
-          (u a, u b) (v a, v b) =
-          ∑ p : Bool × Bool, ∑ q : Bool × Bool,
-            M p q * (kronTwoPair (R a) (R b) (u a, u b) p *
-              (star (kronTwoPair (R a) (R b))) q (v a, v b)) := by
-        simp only [Matrix.mul_apply, Finset.sum_mul]; rw [Finset.sum_comm]
-        exact Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => by ring
-      rw [hrhs]
-      refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => ?_
-      rw [hE1, hE1, hstK q]; dsimp only [kronTwoPair]; ring
-    · simp [if_neg hall]
-  have hreal_one (a b : Fin N) (hab : a ≠ b) (V : Matrix.unitaryGroup (Bool × Bool) ℂ) :
-      Realizes 1 (twoQubitLiftMatrix a b hab V.val) := by
-    let z_loc := scalarSpecialUnitaryPhase V
-    let G_loc := scalarSpecialUnitaryRepresentative V
-    have hz_unit : star z_loc * z_loc = 1 := scalarSpecialUnitaryPhase_unitary V
-    have hznorm : ‖star z_loc‖ = 1 := by
-      have hsq : ‖z_loc‖ * ‖z_loc‖ = 1 := by simpa [norm_mul] using congrArg norm hz_unit
-      have hz0 : ‖z_loc‖ = 1 := by nlinarith [norm_nonneg z_loc, sq_nonneg (‖z_loc‖ - 1)]
-      simpa using hz0
-    refine ⟨star z_loc, hznorm, TwoQubitCircuit.singleOn a b hab G_loc, le_rfl, ?_⟩
-    rw [TwoQubitCircuit.singleOn_eval]
-    have hgate : (twoQubitLift a b hab G_loc : Register N) =
-        z_loc • twoQubitLiftMatrix a b hab V.val := by
-      ext x y
-      simp [G_loc, z_loc, twoQubitLift, twoQubitLiftMatrix, specialUnitaryAsUnitary,
-        scalarSpecialUnitaryRepresentative_coe, unitaryGroupReindex_coe, Quantum.tensorGate_val,
-        Matrix.reindex_apply, Matrix.kronecker, Matrix.smul_apply]
-      ring
-    rw [hgate, smul_smul, hz_unit, one_smul]
+  obtain ⟨hWL, hWR⟩ := Unitary.mem_iff.mp (prodLocalMatrix_mem_unitary R hR)
   obtain ⟨z, hz, C, hC, hU_eq⟩ := h
   have hlist : ∀ L : List (Matrix.unitaryGroup (Config N) ℂ),
       (∀ g ∈ L, Realizes 1 (W * g.val * star W)) →
@@ -1255,8 +1296,8 @@ theorem realizes_conj_prodLocalMatrix {N : ℕ} (R : Fin N → Matrix Bool Bool 
         unitaryGroupReindex_coe, Quantum.tensorGate_val, OneMemClass.coe_one,
         Matrix.kronecker, Matrix.reindex_apply, Matrix.submatrix_apply, a, b, G0]
     have hK_u := kronTwoPair_mem_unitary (hR a) (hR b)
-    rw [hlift_val, hlift_conj a b hab]
-    exact hreal_one a b hab
+    rw [hlift_val, prodLocalMatrix_conj_twoQubitLiftMatrix R hR a b hab]
+    exact realizes_one_twoQubitLiftMatrix a b hab
       ⟨kronTwoPair (R a) (R b) * (specialUnitaryAsUnitary G0).val * star (kronTwoPair (R a) (R b)),
         mul_mem (mul_mem hK_u (specialUnitaryAsUnitary G0).2) (Unitary.star_mem hK_u)⟩
   have hlen : L_gates.length = C.gateCount := by simp [L_gates]
@@ -1280,7 +1321,7 @@ theorem realizes_choose_twoN_of_locallyRotatedMatchgate {n : ℕ} (v : PathShell
   let W_ug : Matrix.unitaryGroup (Config (n + 2)) ℂ := ⟨W, hW_u⟩
   have hc := unitaryEvolution_conj W (pathHamiltonian v) (Unitary.isUnit_coe (U := W_ug)) t
   rw [inv_eq_star_of_mem_unitary hW_u] at hc
-  rw [← hc]
+  rw [hc]
   exact realizes_conj_prodLocalMatrix R hR (realizes_choose_twoN_of_matchgateChain v hv t)
 
 /-! ## Section 2: Hidden rotated matchgate survival tube inside `allCoordStrongEvent ∩ bondRankTwoEvent` -/
@@ -1289,6 +1330,16 @@ private theorem pythRotMat_orthog' :
     pythRotMatᵀ * pythRotMat = 1 ∧ pythRotMat * pythRotMatᵀ = 1 := by
   constructor <;> ext i j <;> fin_cases i <;> fin_cases j <;>
     simp [pythRotMat, Matrix.mul_apply, Fin.sum_univ_three] <;> norm_num
+
+private theorem pythRotMat_col2_ge' (a : Fin 3) : 1 / 3 ≤ pythRotMat a 2 := by
+  fin_cases a <;> simp [pythRotMat] <;> norm_num
+
+private theorem pythRotMat_entry_abs_le' (a b : Fin 3) : |pythRotMat a b| ≤ 1 := by
+  fin_cases a <;> fin_cases b <;> simp [pythRotMat] <;> norm_num
+
+private theorem pythRotMat_mg_sum_abs_ge' (a₁ a₂ : Fin 3) :
+    2 / 9 ≤ |pythRotMat a₁ 0 * pythRotMat a₂ 0 + pythRotMat a₁ 1 * pythRotMat a₂ 1| := by
+  fin_cases a₁ <;> fin_cases a₂ <;> simp [pythRotMat] <;> norm_num
 
 private theorem pythUnitary_unitary' :
     star pythUnitary * pythUnitary = 1 ∧ pythUnitary * star pythUnitary = 1 := by
@@ -1433,13 +1484,14 @@ private theorem pythShellMap_measurePreserving' (n : ℕ) :
   have hmul_eq (u : PathLabel n → ℝ) : pythShellMap n u = O_blk *ᵥ u := by
     funext l; rcases l with ⟨v, a⟩ | ⟨e, ⟨a₁, a₂⟩⟩
     · simp only [pythShellMap, Matrix.mulVec, dotProduct, Fintype.sum_sum_type, Fintype.sum_prod_type]
-      rw [show (∑ x : Fin (n + 1), ∑ y : Fin 3 × Fin 3, O_blk (.inl (v, a)) (.inr (x, y)) * u (.inr (x, y))) = 0
+      rw [show (∑ x : Fin (n + 1), ∑ x_1 : Fin 3, ∑ y : Fin 3,
+          O_blk (.inl (v, a)) (.inr (x, (x_1, y))) * u (.inr (x, (x_1, y)))) = 0
         by simp [O_blk], add_zero, Finset.sum_eq_single v (fun v' _ hne => by simp [O_blk, hne.symm]) (by simp)]
       simp [O_blk]
     · simp only [pythShellMap, Matrix.mulVec, dotProduct, Fintype.sum_sum_type, Fintype.sum_prod_type]
       rw [show (∑ x : Fin (n + 2), ∑ y : Fin 3, O_blk (.inr (e, (a₁, a₂))) (.inl (x, y)) * u (.inl (x, y))) = 0
         by simp [O_blk], zero_add, Finset.sum_eq_single e (fun e' _ hne => by simp [O_blk, hne.symm]) (by simp)]
-      simp [O_blk, Fintype.sum_prod_type]
+      simp [O_blk]
   obtain ⟨hL, hR⟩ := pythRotMat_orthog'
   have hcol (b₁ b₂ : Fin 3) : (∑ a : Fin 3, pythRotMat a b₁ * pythRotMat a b₂) =
       if b₁ = b₂ then 1 else 0 := by
@@ -1485,7 +1537,9 @@ private theorem pythShellMap_measurePreserving' (n : ℕ) :
         simp [hrow a₁ d₁, Prod.ext_iff]
       · rw [if_neg (by simp [hv])]
         exact Finset.sum_eq_zero fun v _ => Finset.sum_eq_zero fun _ _ => by
-          by_cases h1 : v = v₁ <;> [subst h1; skip] <;> simp [Ne.symm hv, Ne.symm h1, *]
+          by_cases h1 : v = v₁
+          · subst h1; simp [Ne.symm hv]
+          · simp [Ne.symm h1]
     · simp [O_blk]
     · simp [O_blk]
     · simp only [O_blk, mul_zero, Finset.sum_const_zero, zero_add]
@@ -1502,27 +1556,41 @@ private theorem pythShellMap_measurePreserving' (n : ℕ) :
         by_cases h1 : a₁ = d₁ <;> by_cases h2 : a₂ = d₂ <;> simp [h1, h2]
       · rw [if_neg (by simp [he])]
         exact Finset.sum_eq_zero fun e _ => Finset.sum_eq_zero fun _ _ => by
-          by_cases h1 : e = e₁ <;> [subst h1; skip] <;> simp [Ne.symm he, Ne.symm h1, *]
+          by_cases h1 : e = e₁
+          · subst h1; simp [Ne.symm he]
+          · simp [Ne.symm h1]
   rw [show pythShellMap n = fun u => O_blk *ᵥ u from funext hmul_eq]
   exact measurePreserving_pi_gaussian_orthogonal O_blk hO_left hO_right
 
-private theorem prodPyth_conj_pathHamiltonian' {n : ℕ} (u : PathShell n) :
-    let W := prodLocalMatrix (fun _ : Fin (n + 2) => pythUnitary)
-    W * pathHamiltonian u * star W = pathHamiltonian (WithLp.toLp 2 (pythShellMap n u.ofLp)) := by
-  intro W
+private theorem prodLocalMatrix_conj_pathHamiltonian {n : ℕ}
+    (S_loc : Fin (n + 2) → Matrix Bool Bool ℂ)
+    (O_S : Fin (n + 2) → Matrix (Fin 3) (Fin 3) ℝ)
+    (hS_unit : ∀ s, S_loc s * star (S_loc s) = 1)
+    (hS_pauli : ∀ (s : Fin (n + 2)) (b : Fin 3),
+      S_loc s * finiteQubitPauli b * star (S_loc s) =
+        ∑ a : Fin 3, ((O_S s a b : ℝ) : ℂ) • finiteQubitPauli a)
+    (u u_rot : PathShell n)
+    (hu_site : ∀ (v : Fin (n + 2)) (a : Fin 3),
+      u_rot (.inl (v, a)) = ∑ b : Fin 3, O_S v a b * u (.inl (v, b)))
+    (hu_bond : ∀ (e : Fin (n + 1)) (a₁ a₂ : Fin 3),
+      u_rot (.inr (e, (a₁, a₂))) =
+        ∑ b₁ : Fin 3, ∑ b₂ : Fin 3, O_S e.castSucc a₁ b₁ * O_S e.succ a₂ b₂ * u (.inr (e, (b₁, b₂)))) :
+    prodLocalMatrix S_loc * pathHamiltonian u * star (prodLocalMatrix S_loc) =
+      pathHamiltonian u_rot := by
+  let W := prodLocalMatrix S_loc
   have honsite (v : Fin (n + 2)) (b : Fin 3) :
       W * finitePauliMatrix (onsiteWord v b) * star W =
-        ∑ a : Fin 3, ((pythRotMat a b : ℝ) : ℂ) • finitePauliMatrix (onsiteWord v a) := by
+        ∑ a : Fin 3, ((O_S v a b : ℝ) : ℂ) • finitePauliMatrix (onsiteWord v a) := by
     rw [prodLocalMatrix_conj_pauli]; ext x y; rw [Matrix.sum_apply]; simp only [prodLocalMatrix]
     rw [← Finset.prod_mul_prod_compl ({v} : Finset (Fin (n + 2))), Finset.prod_singleton]
     have hrest : (∏ s ∈ ({v} : Finset (Fin (n + 2)))ᶜ,
-        (pythUnitary * boolPauliOption (onsiteWord v b s) * star pythUnitary) (x s) (y s)) =
+        (S_loc s * boolPauliOption (onsiteWord v b s) * star (S_loc s)) (x s) (y s)) =
         ∏ s ∈ ({v} : Finset (Fin (n + 2)))ᶜ, boolPauliOptionEntry none (x s, y s) :=
       Finset.prod_congr rfl fun s hs => by
         have hsv : s ≠ v := by simpa using hs
-        simp [onsiteWord, hsv, boolPauliOption, boolPauliOptionEntry, pythUnitary_unitary'.2, Matrix.one_apply]
+        simp [onsiteWord, hsv, boolPauliOption, boolPauliOptionEntry, hS_unit s, Matrix.one_apply]
     rw [show boolPauliOption (onsiteWord v b v) = finiteQubitPauli b by simp [onsiteWord, boolPauliOption],
-      pythUnitary_conj_pauli' b, hrest, Matrix.sum_apply, Finset.sum_mul]
+      hS_pauli v b, hrest, Matrix.sum_apply, Finset.sum_mul]
     refine Finset.sum_congr rfl fun a _ => ?_
     rw [Matrix.smul_apply, Matrix.smul_apply, smul_eq_mul, smul_eq_mul, mul_assoc]; congr 1
     unfold finitePauliMatrix
@@ -1533,23 +1601,23 @@ private theorem prodPyth_conj_pathHamiltonian' {n : ℕ} (u : PathShell n) :
   have hcoupling (e : Fin (n + 1)) (b₁ b₂ : Fin 3) :
       W * finitePauliMatrix (couplingWord e (b₁, b₂)) * star W =
         ∑ a₁ : Fin 3, ∑ a₂ : Fin 3,
-          ((pythRotMat a₁ b₁ * pythRotMat a₂ b₂ : ℝ) : ℂ) • finitePauliMatrix (couplingWord e (a₁, a₂)) := by
+          ((O_S e.castSucc a₁ b₁ * O_S e.succ a₂ b₂ : ℝ) : ℂ) • finitePauliMatrix (couplingWord e (a₁, a₂)) := by
     rw [prodLocalMatrix_conj_pauli]; ext x y
     simp only [prodLocalMatrix, Matrix.sum_apply, Matrix.smul_apply, smul_eq_mul]
     let pairSet : Finset (Fin (n + 2)) := {e.castSucc, e.succ}
     have hne_cs : e.castSucc ≠ e.succ := e.castSucc_lt_succ.ne
     rw [← Finset.prod_mul_prod_compl pairSet, Finset.prod_pair hne_cs]
     have hrest : (∏ s ∈ pairSetᶜ,
-        (pythUnitary * boolPauliOption (couplingWord e (b₁, b₂) s) * star pythUnitary) (x s) (y s)) =
+        (S_loc s * boolPauliOption (couplingWord e (b₁, b₂) s) * star (S_loc s)) (x s) (y s)) =
         ∏ s ∈ pairSetᶜ, boolPauliOptionEntry none (x s, y s) :=
       Finset.prod_congr rfl fun s hs => by
         simp only [pairSet, Finset.mem_compl, Finset.mem_insert, Finset.mem_singleton, not_or] at hs
-        simp [couplingWord, hs.1, hs.2, boolPauliOption, boolPauliOptionEntry, pythUnitary_unitary'.2, Matrix.one_apply]
+        simp [couplingWord, hs.1, hs.2, boolPauliOption, boolPauliOptionEntry, hS_unit s, Matrix.one_apply]
     rw [show boolPauliOption (couplingWord e (b₁, b₂) e.castSucc) = finiteQubitPauli b₁ by
         simp [couplingWord, boolPauliOption],
       show boolPauliOption (couplingWord e (b₁, b₂) e.succ) = finiteQubitPauli b₂ by
         simp [couplingWord, hne_cs.symm, boolPauliOption],
-      pythUnitary_conj_pauli' b₁, pythUnitary_conj_pauli' b₂, hrest,
+      hS_pauli e.castSucc b₁, hS_pauli e.succ b₂, hrest,
       Matrix.sum_apply, Matrix.sum_apply, Finset.sum_mul, Finset.sum_mul]
     refine Finset.sum_congr rfl fun a₁ _ => ?_
     rw [Finset.mul_sum, Finset.sum_mul]
@@ -1573,16 +1641,17 @@ private theorem prodPyth_conj_pathHamiltonian' {n : ℕ} (u : PathShell n) :
   refine congrArg₂ (· + ·) ?_ ?_
   · refine Finset.sum_congr rfl fun v _ => ?_
     trans (∑ b : Fin 3, ∑ a : Fin 3,
-      (((pythRotMat a b * u (.inl (v, b)) : ℝ) : ℂ) • finitePauliMatrix (onsiteWord v a)))
+      (((O_S v a b * u (.inl (v, b)) : ℝ) : ℂ) • finitePauliMatrix (onsiteWord v a)))
     · refine Finset.sum_congr rfl fun b _ => ?_
       rw [Matrix.mul_smul, Matrix.smul_mul, show pathWord (.inl (v, b)) = onsiteWord v b from rfl,
         honsite v b, Finset.smul_sum]
       exact Finset.sum_congr rfl fun a _ => by rw [smul_smul, Complex.ofReal_mul, mul_comm]
     · rw [Finset.sum_comm]
-      exact Finset.sum_congr rfl fun a _ => by rw [← Finset.sum_smul, ← Complex.ofReal_sum]; rfl
+      exact Finset.sum_congr rfl fun a _ => by
+        rw [← Finset.sum_smul, ← Complex.ofReal_sum, ← hu_site v a]; rfl
   · refine Finset.sum_congr rfl fun e _ => ?_
     trans (∑ b₁ : Fin 3, ∑ b₂ : Fin 3, ∑ a₁ : Fin 3, ∑ a₂ : Fin 3,
-      (((pythRotMat a₁ b₁ * pythRotMat a₂ b₂ * u (.inr (e, (b₁, b₂))) : ℝ) : ℂ) •
+      (((O_S e.castSucc a₁ b₁ * O_S e.succ a₂ b₂ * u (.inr (e, (b₁, b₂))) : ℝ) : ℂ) •
         finitePauliMatrix (couplingWord e (a₁, a₂))))
     · refine Finset.sum_congr rfl fun b₁ _ => Finset.sum_congr rfl fun b₂ _ => ?_
       rw [Matrix.mul_smul, Matrix.smul_mul,
@@ -1593,7 +1662,17 @@ private theorem prodPyth_conj_pathHamiltonian' {n : ℕ} (u : PathShell n) :
       exact Finset.sum_congr rfl fun a₂ _ => by rw [smul_smul]; congr 1; push_cast; ring
     · rw [sum4_comm']
       exact Finset.sum_congr rfl fun a₁ _ => Finset.sum_congr rfl fun a₂ _ => by
-        simp_rw [← Finset.sum_smul, ← Complex.ofReal_sum]; rfl
+        simp_rw [← Finset.sum_smul, ← Complex.ofReal_sum]
+        rw [← hu_bond e a₁ a₂]; rfl
+
+private theorem prodPyth_conj_pathHamiltonian' {n : ℕ} (u : PathShell n) :
+    prodLocalMatrix (fun _ : Fin (n + 2) => pythUnitary) * pathHamiltonian u *
+      star (prodLocalMatrix (fun _ : Fin (n + 2) => pythUnitary)) =
+      pathHamiltonian (WithLp.toLp 2 (pythShellMap n u.ofLp)) :=
+  prodLocalMatrix_conj_pathHamiltonian
+    (fun _ : Fin (n + 2) => pythUnitary) (fun _ : Fin (n + 2) => pythRotMat)
+    (fun _ => pythUnitary_unitary'.2) (fun _ b => pythUnitary_conj_pauli' b)
+    u (WithLp.toLp 2 (pythShellMap n u.ofLp)) (fun _ _ => rfl) (fun _ _ _ => rfl)
 
 private def isStrongMatchgateLabel {n : ℕ} : PathLabel n → Prop
   | .inl (_, a) => a = 2
@@ -1603,6 +1682,390 @@ private instance {n : ℕ} (l : PathLabel n) : Decidable (isStrongMatchgateLabel
   cases l with
   | inl va => dsimp [isStrongMatchgateLabel]; infer_instance
   | inr epq => rcases epq with ⟨e, p, q⟩; dsimp [isStrongMatchgateLabel]; infer_instance
+
+private theorem card_filter_matchgateChainLabel (k : ℕ) :
+    (Finset.univ.filter (@isMatchgateChainLabel (k + 1))).card = 5 * k + 11 := by
+  have hbij : (Finset.univ.filter isMatchgateChainLabel : Finset (PathLabel (k + 1))).card =
+      (Finset.univ : Finset (Fin (k + 3))).card + 4 * (Finset.univ : Finset (Fin (k + 2))).card := by
+    let siteSet : Finset (PathLabel (k + 1)) :=
+      Finset.univ.map ⟨fun v : Fin (k + 3) => .inl (v, 2), fun _ _ h => (Prod.mk.inj (Sum.inl.inj h)).1⟩
+    let bondPairs : Finset (Fin 3 × Fin 3) := {(0, 0), (0, 1), (1, 0), (1, 1)}
+    have hbp4 : bondPairs.card = 4 := by decide
+    let bondSet : Finset (PathLabel (k + 1)) :=
+      (Finset.univ ×ˢ bondPairs).map ⟨fun epq : Fin (k + 2) × (Fin 3 × Fin 3) => .inr epq,
+        fun _ _ h => Sum.inr.inj h⟩
+    have hdis : Disjoint siteSet bondSet := by
+      refine Finset.disjoint_left.mpr fun l h1 h2 => ?_
+      obtain ⟨v, _, rfl⟩ := Finset.mem_map.mp h1
+      obtain ⟨epq, _, heq⟩ := Finset.mem_map.mp h2
+      exact nomatch heq
+    have hun : (Finset.univ.filter isMatchgateChainLabel : Finset (PathLabel (k + 1))) =
+        siteSet ∪ bondSet := by
+      ext l
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_union, siteSet, bondSet,
+        Finset.mem_map, Finset.mem_product, bondPairs, Finset.mem_insert, Finset.mem_singleton,
+        Function.Embedding.coeFn_mk]
+      rcases l with ⟨v, a⟩ | ⟨e, ⟨p, q⟩⟩
+      · simp only [isMatchgateChainLabel]
+        exact ⟨fun h => Or.inl ⟨v, h ▸ rfl⟩, fun h => by
+          rcases h with ⟨v', hv⟩ | ⟨epq, _, hc⟩
+          · exact (Prod.mk.inj (Sum.inl.inj hv)).2.symm
+          · exact nomatch hc⟩
+      · simp only [isMatchgateChainLabel]
+        constructor
+        · rintro ⟨hp, hq⟩
+          right; refine ⟨(e, (p, q)), ?_, rfl⟩
+          have hp01 : p = 0 ∨ p = 1 := by clear * - hp; revert p hp; decide
+          have hq01 : q = 0 ∨ q = 1 := by clear * - hq; revert q hq; decide
+          rcases hp01 with rfl | rfl <;> rcases hq01 with rfl | rfl <;> simp
+        · rintro (⟨v', hv⟩ | ⟨⟨e', p', q'⟩, hpq, heq⟩)
+          · exact nomatch hv
+          · obtain ⟨rfl, rfl, rfl⟩ : e' = e ∧ p' = p ∧ q' = q := by
+              have h1 := Prod.mk.inj (Sum.inr.inj heq)
+              exact ⟨h1.1, (Prod.mk.inj h1.2).1, (Prod.mk.inj h1.2).2⟩
+            rcases hpq with h | h | h | h <;> obtain ⟨rfl, rfl⟩ := Prod.mk.inj h <;> decide
+    rw [hun, Finset.card_union_of_disjoint hdis]
+    simp [siteSet, bondSet, Finset.card_product, hbp4, mul_comm]
+  rw [hbij]; simp only [Finset.card_univ, Fintype.card_fin]; omega
+
+private theorem card_filter_strongMatchgateLabel (k : ℕ) :
+    (Finset.univ.filter (@isStrongMatchgateLabel (k + 1))).card = 3 * k + 7 := by
+  let siteSet : Finset (PathLabel (k + 1)) :=
+    Finset.univ.map ⟨fun v : Fin (k + 3) => .inl (v, 2), fun _ _ h => (Prod.mk.inj (Sum.inl.inj h)).1⟩
+  let diagPairs : Finset (Fin 3 × Fin 3) := {(0, 0), (1, 1)}
+  have hdp2 : diagPairs.card = 2 := by decide
+  let bondSet : Finset (PathLabel (k + 1)) :=
+    (Finset.univ ×ˢ diagPairs).map ⟨fun epq : Fin (k + 2) × (Fin 3 × Fin 3) => .inr epq,
+      fun _ _ h => Sum.inr.inj h⟩
+  have hdis : Disjoint siteSet bondSet := by
+    refine Finset.disjoint_left.mpr fun l h1 h2 => ?_
+    obtain ⟨v, _, rfl⟩ := Finset.mem_map.mp h1
+    obtain ⟨epq, _, heq⟩ := Finset.mem_map.mp h2
+    exact nomatch heq
+  have hun : (Finset.univ.filter (@isStrongMatchgateLabel (k + 1))) = siteSet ∪ bondSet := by
+    ext l
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_union, siteSet,
+      bondSet, Finset.mem_map, Finset.mem_product, diagPairs, Finset.mem_insert,
+      Finset.mem_singleton, Function.Embedding.coeFn_mk]
+    rcases l with ⟨v, a⟩ | ⟨e, ⟨p, q⟩⟩
+    · simp only [isStrongMatchgateLabel]
+      exact ⟨fun h => Or.inl ⟨v, h ▸ rfl⟩, fun h => by
+        rcases h with ⟨v', hv⟩ | ⟨epq, _, hc⟩
+        · exact (Prod.mk.inj (Sum.inl.inj hv)).2.symm
+        · exact nomatch hc⟩
+    · simp only [isStrongMatchgateLabel]
+      constructor
+      · rintro (⟨rfl, rfl⟩ | ⟨rfl, rfl⟩)
+        · exact Or.inr ⟨(e, (0, 0)), Or.inl rfl, rfl⟩
+        · exact Or.inr ⟨(e, (1, 1)), Or.inr rfl, rfl⟩
+      · rintro (⟨v', hv⟩ | ⟨⟨e', p', q'⟩, hpq, heq⟩)
+        · exact nomatch hv
+        · have h1 := Prod.mk.inj (Sum.inr.inj heq)
+          obtain ⟨rfl, rfl, rfl⟩ : e' = e ∧ p' = p ∧ q' = q :=
+            ⟨h1.1, (Prod.mk.inj h1.2).1, (Prod.mk.inj h1.2).2⟩
+          rcases hpq with h | h <;> obtain ⟨rfl, rfl⟩ := Prod.mk.inj h
+          · exact Or.inl ⟨rfl, rfl⟩
+          · exact Or.inr ⟨rfl, rfl⟩
+  rw [hun, Finset.card_union_of_disjoint hdis]
+  simp only [siteSet, bondSet, Finset.card_map, Finset.card_product, Finset.card_univ,
+    Fintype.card_fin, hdp2]; omega
+
+private theorem bond_sum_decomp_aux (u₁ u₂ : Fin 3 → ℝ) (f : Fin 3 × Fin 3 → ℝ) (M : ℝ) :
+    (∑ b₁ : Fin 3, ∑ b₂ : Fin 3, u₁ b₁ * u₂ b₂ * f (b₁, b₂)) =
+      M * (u₁ 0 * u₂ 0 + u₁ 1 * u₂ 1) +
+      ∑ pq : Fin 3 × Fin 3, u₁ pq.1 * u₂ pq.2 *
+        (f pq - if (pq.1 = 0 ∧ pq.2 = 0) ∨ (pq.1 = 1 ∧ pq.2 = 1) then M else 0) := by
+  rw [Fintype.sum_prod_type, Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three,
+    Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three, Fin.sum_univ_three,
+    Fin.sum_univ_three]
+  dsimp only
+  rw [if_pos (by decide), if_neg (by decide), if_neg (by decide),
+    if_neg (by decide), if_pos (by decide), if_neg (by decide),
+    if_neg (by decide), if_neg (by decide), if_neg (by decide)]
+  ring
+
+private theorem pythRotMat_bond_decomp' (f : Fin 3 × Fin 3 → ℝ) (M : ℝ) (a₁ a₂ : Fin 3) :
+    (∑ b₁ : Fin 3, ∑ b₂ : Fin 3, pythRotMat a₁ b₁ * pythRotMat a₂ b₂ * f (b₁, b₂)) =
+      M * (pythRotMat a₁ 0 * pythRotMat a₂ 0 + pythRotMat a₁ 1 * pythRotMat a₂ 1) +
+      ∑ pq : Fin 3 × Fin 3, pythRotMat a₁ pq.1 * pythRotMat a₂ pq.2 *
+        (f pq - if (pq.1 = 0 ∧ pq.2 = 0) ∨ (pq.1 = 1 ∧ pq.2 = 1) then M else 0) :=
+  bond_sum_decomp_aux (pythRotMat a₁) (pythRotMat a₂) f M
+
+private theorem pythTube_mem_strong_and_rankTwo (k : ℕ) (η δ : ℝ) (hδ_le : δ ≤ 1 / 200)
+    (u u_tilde : PathShell (k + 1)) (hu_ofLp : u.ofLp = pythShellMap (k + 1) u_tilde.ofLp)
+    (hsite : ∀ v : Fin (k + 3),
+      u_tilde (.inl (v, 2)) ∈ Icc (9 * |η| + 18) (9 * |η| + 18 + 1 / 20) ∧
+      |u_tilde (.inl (v, 0))| ≤ δ ∧ |u_tilde (.inl (v, 1))| ≤ δ)
+    (hbond_diag : ∀ e : Fin (k + 2),
+      9 * |η| + 18 ≤ u_tilde (.inr (e, (0, 0))) ∧ 9 * |η| + 18 ≤ u_tilde (.inr (e, (1, 1))))
+    (hbond_rem : ∀ (e : Fin (k + 2)) (pq : Fin 3 × Fin 3),
+      |u_tilde (.inr (e, pq)) -
+        (if (pq.1 = 0 ∧ pq.2 = 0) ∨ (pq.1 = 1 ∧ pq.2 = 1) then 9 * |η| + 18 else 0)| ≤ 1 / 20) :
+    (fun i => u (pathCoeffEquiv (k + 1) i)) ∈ allCoordStrongEvent (k + 1) η ∧
+    (fun i => u (pathCoeffEquiv (k + 1) i)) ∈ bondRankTwoEvent (k + 1) η ∧
+    3 ≤ |u (.inl (0, 2))| := by
+  let M_η : ℝ := 9 * |η| + 18
+  have hM_ge18 : 18 ≤ M_η := by have hnn := abs_nonneg η; dsimp [M_η]; linarith only [hnn]
+  have hM_nn : 0 ≤ M_η := by linarith only [hM_ge18]
+  let c_mg (a₁ a₂ : Fin 3) : ℝ :=
+    pythRotMat a₁ 0 * pythRotMat a₂ 0 + pythRotMat a₁ 1 * pythRotMat a₂ 1
+  refine ⟨?_, ?_, ?_⟩
+  · intro i
+    change η ≤ |u (pathCoeffEquiv (k + 1) i)|
+    rw [show u (pathCoeffEquiv (k + 1) i) = pythShellMap (k + 1) u_tilde.ofLp (pathCoeffEquiv (k + 1) i)
+      from congrFun hu_ofLp _]
+    rcases pathCoeffEquiv (k + 1) i with ⟨v, a⟩ | ⟨e, ⟨a₁, a₂⟩⟩
+    · obtain ⟨hz, hx, hy⟩ := hsite v
+      have hval_eq : pythShellMap (k + 1) u_tilde.ofLp (.inl (v, a)) =
+          pythRotMat a 0 * u_tilde (.inl (v, 0)) +
+          pythRotMat a 1 * u_tilde (.inl (v, 1)) +
+          pythRotMat a 2 * u_tilde (.inl (v, 2)) := by
+        simp [pythShellMap, Fin.sum_univ_three]
+      have h0_bd : -δ ≤ pythRotMat a 0 * u_tilde (.inl (v, 0)) := by
+        have h := mul_le_mul (pythRotMat_entry_abs_le' a 0) hx (abs_nonneg _) zero_le_one
+        rw [← abs_mul, one_mul] at h; exact (abs_le.mp h).1
+      have h1_bd : -δ ≤ pythRotMat a 1 * u_tilde (.inl (v, 1)) := by
+        have h := mul_le_mul (pythRotMat_entry_abs_le' a 1) hy (abs_nonneg _) zero_le_one
+        rw [← abs_mul, one_mul] at h; exact (abs_le.mp h).1
+      have h2_bd : (1 / 3 : ℝ) * M_η ≤ pythRotMat a 2 * u_tilde (.inl (v, 2)) :=
+        mul_le_mul (pythRotMat_col2_ge' a) hz.1 hM_nn (le_trans (by norm_num) (pythRotMat_col2_ge' a))
+      have hpos_val : η ≤ pythShellMap (k + 1) u_tilde.ofLp (.inl (v, a)) := by
+        dsimp [M_η] at h2_bd
+        linarith only [hval_eq, h0_bd, h1_bd, h2_bd, hδ_le, le_abs_self η, abs_nonneg η]
+      exact hpos_val.trans (le_abs_self _)
+    · let rem (pq : Fin 3 × Fin 3) : ℝ :=
+        u_tilde (.inr (e, pq)) -
+          (if (pq.1 = 0 ∧ pq.2 = 0) ∨ (pq.1 = 1 ∧ pq.2 = 1) then M_η else 0)
+      have hdecomp : pythShellMap (k + 1) u_tilde.ofLp (.inr (e, (a₁, a₂))) =
+          M_η * c_mg a₁ a₂ +
+            ∑ pq : Fin 3 × Fin 3, pythRotMat a₁ pq.1 * pythRotMat a₂ pq.2 * rem pq :=
+        pythRotMat_bond_decomp' (fun pq => u_tilde (.inr (e, pq))) M_η a₁ a₂
+      have hrem_abs : |∑ pq : Fin 3 × Fin 3, pythRotMat a₁ pq.1 * pythRotMat a₂ pq.2 * rem pq| ≤
+          9 / 20 := by
+        calc |∑ pq : Fin 3 × Fin 3, pythRotMat a₁ pq.1 * pythRotMat a₂ pq.2 * rem pq|
+            ≤ ∑ pq : Fin 3 × Fin 3, |pythRotMat a₁ pq.1 * pythRotMat a₂ pq.2 * rem pq| :=
+              Finset.abs_sum_le_sum_abs _ _
+          _ ≤ ∑ _pq : Fin 3 × Fin 3, (1 / 20 : ℝ) := by
+              refine Finset.sum_le_sum fun pq _ => ?_
+              rw [abs_mul, abs_mul]
+              have hc1 : |pythRotMat a₁ pq.1| * |pythRotMat a₂ pq.2| ≤ 1 :=
+                (mul_le_mul (pythRotMat_entry_abs_le' a₁ pq.1) (pythRotMat_entry_abs_le' a₂ pq.2)
+                  (abs_nonneg _) zero_le_one).trans_eq (one_mul 1)
+              exact (mul_le_mul hc1 (hbond_rem e pq) (abs_nonneg _) zero_le_one).trans_eq (one_mul _)
+          _ = 9 / 20 := by
+              have hc9 : (Finset.univ : Finset (Fin 3 × Fin 3)).card = 9 := by decide
+              rw [Finset.sum_const, hc9, nsmul_eq_mul]; norm_num
+      have hmain_abs : (2 / 9 : ℝ) * M_η ≤ |M_η * c_mg a₁ a₂| := by
+        rw [abs_mul, abs_of_nonneg hM_nn, mul_comm (2 / 9 : ℝ) M_η]
+        exact mul_le_mul_of_nonneg_left (pythRotMat_mg_sum_abs_ge' a₁ a₂) hM_nn
+      have htri : |M_η * c_mg a₁ a₂| ≤
+          |pythShellMap (k + 1) u_tilde.ofLp (.inr (e, (a₁, a₂)))| +
+          |∑ pq : Fin 3 × Fin 3, pythRotMat a₁ pq.1 * pythRotMat a₂ pq.2 * rem pq| := by
+        rw [hdecomp]
+        simpa only [add_neg_cancel_right, abs_neg] using
+          abs_add_le (M_η * c_mg a₁ a₂ + ∑ pq, pythRotMat a₁ pq.1 * pythRotMat a₂ pq.2 * rem pq)
+            (-(∑ pq, pythRotMat a₁ pq.1 * pythRotMat a₂ pq.2 * rem pq))
+      dsimp [M_η] at hmain_abs
+      linarith only [htri, hmain_abs, hrem_abs, le_abs_self η, abs_nonneg η]
+  · intro e
+    have hB_eq : bondMatrixOfPrefix (k + 1) (fun i => u (pathCoeffEquiv (k + 1) i)) e =
+        pythRotMat * bondMatrix u_tilde e * pythRotMatᵀ := by
+      ext p q
+      simp only [bondMatrixOfPrefix, Equiv.apply_symm_apply]
+      rw [show u (.inr (e, (p, q))) = pythShellMap (k + 1) u_tilde.ofLp (.inr (e, (p, q)))
+        from congrFun hu_ofLp _]
+      simp only [pythShellMap, Matrix.mul_apply, Matrix.transpose_apply, bondMatrix, Finset.sum_mul]
+      conv_rhs => rw [Finset.sum_comm]
+      exact Finset.sum_congr rfl fun b₁ _ => Finset.sum_congr rfl fun b₂ _ => by ring
+    rw [hB_eq, bondMinorInvariant_orthog_eq _ pythRotMat pythRotMat pythRotMat_orthog'.1 pythRotMat_orthog'.1]
+    obtain ⟨h00, h11⟩ := hbond_diag e
+    have h01 := hbond_rem e (0, 1)
+    have h10 := hbond_rem e (1, 0)
+    simp only [one_ne_zero, zero_ne_one, and_false, false_and, or_self, ↓reduceIte, sub_zero] at h01 h10
+    have hprod01 : |bondMatrix u_tilde e 0 1 * bondMatrix u_tilde e 1 0| ≤ 1 := by
+      dsimp [bondMatrix]
+      rw [abs_mul]
+      exact (mul_le_mul h01 h10 (abs_nonneg _) (by norm_num)).trans (by norm_num)
+    have hmin01 : |η| ^ 2 ≤
+        bondMatrix u_tilde e 0 0 * bondMatrix u_tilde e 1 1 -
+          bondMatrix u_tilde e 0 1 * bondMatrix u_tilde e 1 0 := by
+      have hdiag_prod : M_η * M_η ≤ bondMatrix u_tilde e 0 0 * bondMatrix u_tilde e 1 1 :=
+        mul_le_mul h00 h11 hM_nn (hM_nn.trans h00)
+      have hoff_le : bondMatrix u_tilde e 0 1 * bondMatrix u_tilde e 1 0 ≤ 1 :=
+        (le_abs_self _).trans hprod01
+      dsimp [M_η] at hdiag_prod
+      nlinarith only [hdiag_prod, hoff_le, abs_nonneg η]
+    have hsingle : (bondMatrix u_tilde e 0 0 * bondMatrix u_tilde e 1 1 -
+        bondMatrix u_tilde e 0 1 * bondMatrix u_tilde e 1 0) ^ 2 ≤
+        bondMinorInvariant (bondMatrix u_tilde e) := by
+      unfold bondMinorInvariant
+      have hlt01 : (0 : Fin 3) < 1 := by decide
+      have h1 := Finset.single_le_sum
+        (f := fun q' : Fin 3 × Fin 3 => if (0 : Fin 3) < 1 ∧ q'.1 < q'.2 then
+          (bondMatrix u_tilde e 0 q'.1 * bondMatrix u_tilde e 1 q'.2 -
+            bondMatrix u_tilde e 0 q'.2 * bondMatrix u_tilde e 1 q'.1) ^ 2 else 0)
+        (fun q' _ => by split_ifs <;> [exact sq_nonneg _; exact le_rfl])
+        (Finset.mem_univ ((0 : Fin 3), (1 : Fin 3)))
+      have h2 := Finset.single_le_sum
+        (f := fun p' : Fin 3 × Fin 3 => ∑ q' : Fin 3 × Fin 3,
+          if p'.1 < p'.2 ∧ q'.1 < q'.2 then
+            (bondMatrix u_tilde e p'.1 q'.1 * bondMatrix u_tilde e p'.2 q'.2 -
+              bondMatrix u_tilde e p'.1 q'.2 * bondMatrix u_tilde e p'.2 q'.1) ^ 2 else 0)
+        (fun p' _ => Finset.sum_nonneg fun q' _ => by split_ifs <;> [exact sq_nonneg _; exact le_rfl])
+        (Finset.mem_univ ((0 : Fin 3), (1 : Fin 3)))
+      rw [if_pos ⟨hlt01, hlt01⟩] at h1
+      exact h1.trans h2
+    have hpow4 : η ^ 4 = (|η| ^ 2) ^ 2 := by rw [sq_abs]; ring
+    rw [hpow4]
+    exact (pow_le_pow_left₀ (sq_nonneg _) hmin01 2).trans hsingle
+  · obtain ⟨hz, hx, hy⟩ := hsite 0
+    rw [show u (.inl (0, 2)) = pythShellMap (k + 1) u_tilde.ofLp (.inl (0, 2))
+      from congrFun hu_ofLp _]
+    have hval_eq : pythShellMap (k + 1) u_tilde.ofLp (.inl (0, 2)) =
+        (-2 / 3 : ℝ) * u_tilde (.inl (0, 0)) + (-2 / 3 : ℝ) * u_tilde (.inl (0, 1)) +
+          (1 / 3 : ℝ) * u_tilde (.inl (0, 2)) := by
+      simp [pythShellMap, Fin.sum_univ_three, pythRotMat]
+    have hx2 := (abs_le.mp hx).2
+    have hy2 := (abs_le.mp hy).2
+    have hge : 3 ≤ pythShellMap (k + 1) u_tilde.ofLp (.inl (0, 2)) := by
+      have h18 : 18 ≤ u_tilde (.inl (0, 2)) := hM_ge18.trans hz.1
+      linarith only [hval_eq, hx2, hy2, h18, hδ_le]
+    exact hge.trans (le_abs_self _)
+
+private theorem hiddenMatchgate_onset_of_tilde_bounds (k : ℕ)
+    (hentropy : atMostQuarterCircuitEntropyBound (k + 3)
+      (nearHilbertContinuousCircuitBudget (k + 3)) < ((2 ^ (2 ^ (k + 3) - 1) : ℕ) : ℝ))
+    (hP_ge : 2 * ((k + 3) * (2 * k + 5)) ≤ nearHilbertContinuousCircuitBudget (k + 3))
+    (η T δ : ℝ) (hT2 : 2 ≤ T) (hδ_le_small : δ ≤ 1 / 200)
+    (hδ_prod : T * (((7 * k + 16 : ℕ) : ℝ) * δ) ≤ 1 / 100)
+    (u u_tilde : PathShell (k + 1)) (hu_ofLp : u.ofLp = pythShellMap (k + 1) u_tilde.ofLp)
+    (hsite_in : ∀ v : Fin (k + 3),
+      u_tilde (.inl (v, 2)) ∈ Icc (9 * |η| + 18) (9 * |η| + 18 + 1 / 20) ∧
+      |u_tilde (.inl (v, 0))| ≤ δ ∧ |u_tilde (.inl (v, 1))| ≤ δ)
+    (hbond_diag : ∀ e : Fin (k + 2),
+      9 * |η| + 18 ≤ u_tilde (.inr (e, (0, 0))) ∧ 9 * |η| + 18 ≤ u_tilde (.inr (e, (1, 1))))
+    (hbond_rem : ∀ (e : Fin (k + 2)) (pq : Fin 3 × Fin 3),
+      |u_tilde (.inr (e, pq)) -
+        (if (pq.1 = 0 ∧ pq.2 = 0) ∨ (pq.1 = 1 ∧ pq.2 = 1) then 9 * |η| + 18 else 0)| ≤ 1 / 20)
+    (hweak_le : ∀ l : PathLabel (k + 1), ¬ isMatchgateChainLabel l → |u_tilde l| ≤ δ)
+    (hmax : MaximallyProjectiveEnergy
+      (⟨pathHamiltonian u, isSelfAdjoint_pathHamiltonian u⟩ :
+        selfAdjoint (Register (k + 3))).2.isHermitian.eigenvalues) :
+    (fun i => u (pathCoeffEquiv (k + 1) i)) ∈ allCoordStrongEvent (k + 1) η ∧
+    (fun i => u (pathCoeffEquiv (k + 1) i)) ∈ bondRankTwoEvent (k + 1) η ∧
+    MaximallyProjectiveEnergy
+      (⟨pathHamiltonian u, isSelfAdjoint_pathHamiltonian u⟩ :
+        selfAdjoint (Register (k + 3))).2.isHermitian.eigenvalues ∧
+    (∃ τ > 0, (∀ m : Fin (2 ^ (k + 3)), ((m : ℕ) : ℝ) * τ ∈ Icc (0 : ℝ) 1) ∧
+      Module.finrank ℂ (Submodule.span ℂ (range fun m : Fin (2 ^ (k + 3)) =>
+        unitaryEvolution (pathHamiltonian u) (((m : ℕ) : ℝ) * τ))) = 2 ^ (k + 3)) ∧
+    (∃ t₀ ∈ Ioc (0 : ℝ) T, ∀ z : ℂ, ‖z‖ = 1 →
+      Real.sqrt 2 ≤ ‖unitaryEvolution (pathHamiltonian u) t₀ - z • (1 : Register (k + 3))‖) ∧
+    (∀ s : ℕ, (k + 3) * (2 * k + 5) ≤ s → s ≤ nearHilbertContinuousCircuitBudget (k + 3) →
+      T < tenthPlateauOnset
+        (⟨pathHamiltonian u, isSelfAdjoint_pathHamiltonian u⟩ : selfAdjoint (Register (k + 3))) s) := by
+  have hT_pos : 0 < T := by linarith only [hT2]
+  have hu_eq : u = WithLp.toLp 2 (pythShellMap (k + 1) u_tilde.ofLp) :=
+    WithLp.ofLp_injective 2 hu_ofLp
+  obtain ⟨hall_coord, hrank2, hz0_ge3⟩ :=
+    pythTube_mem_strong_and_rankTwo k η δ hδ_le_small u u_tilde hu_ofLp hsite_in hbond_diag hbond_rem
+  let H : selfAdjoint (Register (k + 3)) := ⟨pathHamiltonian u, isSelfAdjoint_pathHamiltonian u⟩
+  have hvand := vandermonde_full_rank_unit_interval H hmax.injective
+  have hexc := exists_antipodal_return_excision_of_shell_coeff u (.inl (0, 2)) hz0_ge3 hT2
+  let W_pyth : Register (k + 3) := prodLocalMatrix (fun _ : Fin (k + 3) => pythUnitary)
+  have hW_unit : W_pyth ∈ unitary (Register (k + 3)) :=
+    prodLocalMatrix_mem_unitary _ fun _ => pythUnitary_unitary'
+  have hH_conj : W_pyth * pathHamiltonian u_tilde * star W_pyth = H.val := by
+    change W_pyth * pathHamiltonian u_tilde * star W_pyth = pathHamiltonian u
+    rw [prodPyth_conj_pathHamiltonian' u_tilde, ← hu_eq]
+  have hev_conj (t : ℝ) :
+      unitaryEvolution H.val t = W_pyth * unitaryEvolution (pathHamiltonian u_tilde) t * star W_pyth := by
+    let W_ug : Matrix.unitaryGroup (Config (k + 3)) ℂ := ⟨W_pyth, hW_unit⟩
+    have hc := unitaryEvolution_conj W_pyth (pathHamiltonian u_tilde) (Unitary.isUnit_coe (U := W_ug)) t
+    rw [inv_eq_star_of_mem_unitary hW_unit, hH_conj] at hc
+    exact hc
+  let S_mg : Finset (PathLabel (k + 1)) := Finset.univ.filter isMatchgateChainLabel
+  let S_weak : Finset (PathLabel (k + 1)) := Finset.univ \ S_mg
+  have hcard_weak : S_weak.card = 7 * k + 16 := by
+    have hcard_mg : S_mg.card = 5 * k + 11 := card_filter_matchgateChainLabel k
+    have hcard_tot : Fintype.card (PathLabel (k + 1)) = 12 * k + 27 := by
+      simp only [PathLabel, Fintype.card_sum, Fintype.card_prod, Fintype.card_fin]; omega
+    have h1 := Finset.card_sdiff_add_card_eq_card (Finset.subset_univ S_mg)
+    rw [Finset.card_univ, hcard_tot, hcard_mg] at h1; dsimp only [S_weak]; omega
+  let u_tilde_mg : PathShell (k + 1) :=
+    WithLp.toLp 2 fun l => if isMatchgateChainLabel l then u_tilde l else 0
+  have htilde_mg_off : ∀ l : PathLabel (k + 1), ¬ isMatchgateChainLabel l → u_tilde_mg l = 0 :=
+    fun l hl => if_neg hl
+  have hdiff_tilde : ‖pathHamiltonian u_tilde - pathHamiltonian u_tilde_mg‖ ≤
+      ((7 * k + 16 : ℕ) : ℝ) * δ := by
+    have hdis_mw : Disjoint S_mg S_weak := disjoint_sdiff_self_right
+    have hun_mw : S_mg ∪ S_weak = Finset.univ := Finset.union_sdiff_of_subset (Finset.subset_univ _)
+    have hsub_sum : pathHamiltonian u_tilde - pathHamiltonian u_tilde_mg =
+        ∑ l ∈ S_weak, ((u_tilde l : ℝ) : ℂ) • finitePauliMatrix (pathWord l) := by
+      rw [pathHamiltonian_eq_sum, pathHamiltonian_eq_sum, ← Finset.sum_sub_distrib,
+        ← hun_mw, Finset.sum_union hdis_mw]
+      have hmg0 : (∑ l ∈ S_mg, (((u_tilde l : ℝ) : ℂ) • finitePauliMatrix (pathWord l) -
+          ((u_tilde_mg l : ℝ) : ℂ) • finitePauliMatrix (pathWord l))) = 0 :=
+        Finset.sum_eq_zero fun l hl => by
+          rw [show u_tilde_mg l = u_tilde l from if_pos (Finset.mem_filter.mp hl).2, sub_self]
+      rw [hmg0, zero_add]
+      refine Finset.sum_congr rfl fun l hl => ?_
+      have hnot : ¬ isMatchgateChainLabel l := fun h => (Finset.mem_sdiff.mp hl).2
+        (Finset.mem_filter.mpr ⟨Finset.mem_univ l, h⟩)
+      rw [show u_tilde_mg l = 0 from if_neg hnot, Complex.ofReal_zero, zero_smul, sub_zero]
+    rw [hsub_sum]
+    refine (norm_sum_le _ _).trans ?_
+    have hterm (l : PathLabel (k + 1)) (hl : l ∈ S_weak) :
+        ‖((u_tilde l : ℝ) : ℂ) • finitePauliMatrix (pathWord l)‖ ≤ δ := by
+      rw [norm_smul, norm_finitePauliMatrix, mul_one, Complex.norm_real, Real.norm_eq_abs]
+      exact hweak_le l (fun h => (Finset.mem_sdiff.mp hl).2 (Finset.mem_filter.mpr ⟨Finset.mem_univ l, h⟩))
+    calc ∑ l ∈ S_weak, ‖((u_tilde l : ℝ) : ℂ) • finitePauliMatrix (pathWord l)‖
+        ≤ ∑ _l ∈ S_weak, δ := Finset.sum_le_sum hterm
+      _ = ((7 * k + 16 : ℕ) : ℝ) * δ := by rw [Finset.sum_const, hcard_weak, nsmul_eq_mul]
+  have hearly_inc (t : ℝ) (ht : |t| ≤ T) :
+      HasProjectiveCircuitApproximation (k + 3) (1 / 100 : ℝ) ((k + 3) * (2 * k + 5))
+        (unitaryEvolution H.val t) := by
+    have hreal_rot := realizes_conj_prodLocalMatrix (fun _ : Fin (k + 3) => pythUnitary)
+      (fun _ => pythUnitary_unitary')
+      (realizes_choose_twoN_of_matchgateChain u_tilde_mg htilde_mg_off t)
+    have hs_eq : (k + 1 + 2) * (2 * (k + 1) + 3) = (k + 3) * (2 * k + 5) := by ring
+    rw [hs_eq] at hreal_rot
+    obtain ⟨z, hz, C, hC, hU_rot⟩ := hreal_rot
+    refine ⟨z, hz, C, hC, ?_⟩
+    change ‖unitaryEvolution H.val t - z • C.eval.val‖ ≤ _
+    rw [← hU_rot, hev_conj t]
+    change ‖W_pyth * unitaryEvolution (pathHamiltonian u_tilde) t * star W_pyth -
+      W_pyth * unitaryEvolution (pathHamiltonian u_tilde_mg) t * star W_pyth‖ ≤ _
+    rw [← Matrix.sub_mul, ← Matrix.mul_sub, l2_opNorm_unitary_conj_eq (V := W_pyth) hW_unit]
+    exact ((norm_unitaryEvolution_sub_le _ _ (isSelfAdjoint_pathHamiltonian u_tilde)
+      (isSelfAdjoint_pathHamiltonian u_tilde_mg) t).trans
+      (mul_le_mul ht hdiff_tilde (norm_nonneg _) hT_pos.le)).trans hδ_prod
+  let d := 2 ^ (k + 3) - 1
+  let e_fin : Config (k + 3) ≃ Fin (d + 1) := (Fintype.equivFin _).trans
+    (finCongr (by
+      simp only [Config, Fintype.card_fun, Fintype.card_fin, Fintype.card_bool]
+      have hd : 0 < 2 ^ (k + 3) := Nat.two_pow_pos (k + 3)
+      dsimp [d]; omega))
+  obtain ⟨σ, hσ_gt, hσ_eq, _, _, _⟩ := first_circuit_threshold_of_increment e_fin H
+    (hmax.comp_equiv e_fin.symm) hentropy T hT_pos.le hP_ge hearly_inc
+  refine ⟨hall_coord, hrank2, hmax, hvand, hexc, fun s hs_lo hs_hi => ?_⟩
+  have hearly (t : ℝ) (ht : t ∈ Icc 0 T) : orbitCircuitDistance H s t < 1 / 10 := by
+    have habs : |t| ≤ T := by rw [abs_of_nonneg ht.1]; exact ht.2
+    obtain ⟨z, hz, C, hC, herr⟩ := hearly_inc t habs
+    have hd := (hasProjectiveCircuitApproximation_iff_infDist _ s (1 / 100 : ℝ)).mp
+      ⟨z, hz, C, hC.trans hs_lo, herr⟩
+    change orbitCircuitDistance H s t ≤ 1 / 100 at hd
+    linarith only [hd]
+  have hB_gt : 1 / 10 < orbitCircuitDistance H s σ := by
+    have hmono : orbitCircuitDistance H (nearHilbertContinuousCircuitBudget (k + 3)) σ ≤
+        orbitCircuitDistance H s σ := by
+      apply (hasProjectiveCircuitApproximation_iff_infDist _ _ _).mp
+      obtain ⟨z, hz, C, hC, herr⟩ := (hasProjectiveCircuitApproximation_iff_infDist _ s _).mpr
+        (le_rfl : orbitCircuitDistance H s σ ≤ _)
+      exact ⟨z, hz, C, hC.trans hs_hi, herr⟩
+    rw [hσ_eq] at hmono
+    linarith only [hmono]
+  exact (tenthPlateauOnset_spec H hT_pos (hT_pos.trans hσ_gt).le hearly hB_gt).1
 
 /-- Hidden locally rotated matchgate survival tube **strictly inside
 `allCoordStrongEvent (k + 1) η ∩ bondRankTwoEvent (k + 1) η`**: for every `η : ℝ` and all
@@ -1655,7 +2118,9 @@ theorem gaussian_hiddenMatchgate_rankTwo_tube_tail (η : ℝ) :
           exact hstep.trans ((Nat.mul_le_mul_left 2 ih).trans_eq (pow_succ' 2 (m + 3)).symm)
     exact (Nat.le_div_iff_mul_le (by omega)).mpr (by rw [mul_comm]; exact hind k hklarge)
   let M_η : ℝ := 9 * |η| + 18
-  have hM_ge18 : 18 ≤ M_η := by dsimp [M_η]; positivity
+  have hM_ge18 : 18 ≤ M_η := by
+    have hnn : 0 ≤ |η| := abs_nonneg η
+    dsimp [M_η]; linarith only [hnn]
   have hM_ge_eta : 9 * |η| + 18 ≤ M_η := le_rfl
   let S_mg : Finset (PathLabel (k + 1)) := Finset.univ.filter isMatchgateChainLabel
   let S_strong : Finset (PathLabel (k + 1)) := Finset.univ.filter isStrongMatchgateLabel
@@ -1667,92 +2132,9 @@ theorem gaussian_hiddenMatchgate_rankTwo_tube_tail (η : ℝ) :
     refine Finset.mem_filter.mpr ⟨Finset.mem_univ l, ?_⟩
     rcases l with ⟨v, a⟩ | ⟨e, ⟨p, q⟩⟩
     · exact hs
-    · rcases hs with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;> decide
-  have hcard_mg : S_mg.card = 5 * k + 11 := by
-    rw [show S_mg = (Finset.univ.filter fun l : PathLabel (k + 1) =>
-      match l with | .inl (_, a) => a = 2 | .inr (_, (p, q)) => p ≠ 2 ∧ q ≠ 2) from rfl]
-    have hbij : (Finset.univ.filter isMatchgateChainLabel : Finset (PathLabel (k + 1))).card =
-        (Finset.univ : Finset (Fin (k + 3))).card + 4 * (Finset.univ : Finset (Fin (k + 2))).card := by
-      let siteSet : Finset (PathLabel (k + 1)) :=
-        Finset.univ.map ⟨fun v : Fin (k + 3) => .inl (v, 2), fun _ _ h => (Prod.mk.inj (Sum.inl.inj h)).1⟩
-      let bondPairs : Finset (Fin 3 × Fin 3) := {(0, 0), (0, 1), (1, 0), (1, 1)}
-      have hbp4 : bondPairs.card = 4 := by decide
-      let bondSet : Finset (PathLabel (k + 1)) :=
-        (Finset.univ ×ˢ bondPairs).map ⟨fun epq : Fin (k + 2) × (Fin 3 × Fin 3) => .inr epq,
-          fun _ _ h => Sum.inr.inj h⟩
-      have hdis : Disjoint siteSet bondSet := by
-        refine Finset.disjoint_left.mpr fun l h1 h2 => ?_
-        obtain ⟨v, _, rfl⟩ := Finset.mem_map.mp h1
-        obtain ⟨epq, _, heq⟩ := Finset.mem_map.mp h2
-        exact nomatch heq
-      have hun : (Finset.univ.filter isMatchgateChainLabel : Finset (PathLabel (k + 1))) =
-          siteSet ∪ bondSet := by
-        ext l
-        simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_union, siteSet, bondSet,
-          Finset.mem_map, Finset.mem_product, bondPairs, Finset.mem_insert, Finset.mem_singleton,
-          Function.Embedding.coeFn_mk]
-        rcases l with ⟨v, a⟩ | ⟨e, ⟨p, q⟩⟩
-        · simp only [isMatchgateChainLabel]
-          exact ⟨fun h => Or.inl ⟨v, h ▸ rfl⟩, fun h => by
-            rcases h with ⟨v', hv⟩ | ⟨epq, _, hc⟩
-            · exact (Prod.mk.inj (Sum.inl.inj hv)).2.symm
-            · exact nomatch hc⟩
-        · simp only [isMatchgateChainLabel]
-          constructor
-          · rintro ⟨hp, hq⟩
-            right; refine ⟨(e, (p, q)), ?_, rfl⟩
-            have hp01 : p = 0 ∨ p = 1 := by revert hp; decide
-            have hq01 : q = 0 ∨ q = 1 := by revert hq; decide
-            rcases hp01 with rfl | rfl <;> rcases hq01 with rfl | rfl <;> simp
-          · rintro (⟨v', hv⟩ | ⟨⟨e', p', q'⟩, hpq, heq⟩)
-            · exact nomatch hv
-            · obtain ⟨rfl, rfl, rfl⟩ : e' = e ∧ p' = p ∧ q' = q := by
-                have h1 := Prod.mk.inj (Sum.inr.inj heq)
-                exact ⟨h1.1, (Prod.mk.inj h1.2).1, (Prod.mk.inj h1.2).2⟩
-              rcases hpq with h | h | h | h <;> obtain ⟨rfl, rfl⟩ := Prod.mk.inj h <;> decide
-      rw [hun, Finset.card_union_of_disjoint hdis]
-      simp [siteSet, bondSet, Finset.card_product, hbp4, mul_comm]
-    rw [hbij]; simp only [Finset.card_univ, Fintype.card_fin]; omega
-  have hcard_strong : S_strong.card = 3 * k + 7 := by
-    let siteSet : Finset (PathLabel (k + 1)) :=
-      Finset.univ.map ⟨fun v : Fin (k + 3) => .inl (v, 2), fun _ _ h => (Prod.mk.inj (Sum.inl.inj h)).1⟩
-    let diagPairs : Finset (Fin 3 × Fin 3) := {(0, 0), (1, 1)}
-    have hdp2 : diagPairs.card = 2 := by decide
-    let bondSet : Finset (PathLabel (k + 1)) :=
-      (Finset.univ ×ˢ diagPairs).map ⟨fun epq : Fin (k + 2) × (Fin 3 × Fin 3) => .inr epq,
-        fun _ _ h => Sum.inr.inj h⟩
-    have hdis : Disjoint siteSet bondSet := by
-      refine Finset.disjoint_left.mpr fun l h1 h2 => ?_
-      obtain ⟨v, _, rfl⟩ := Finset.mem_map.mp h1
-      obtain ⟨epq, _, heq⟩ := Finset.mem_map.mp h2
-      exact nomatch heq
-    have hun : S_strong = siteSet ∪ bondSet := by
-      ext l
-      simp only [S_strong, Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_union, siteSet,
-        bondSet, Finset.mem_map, Finset.mem_product, diagPairs, Finset.mem_insert,
-        Finset.mem_singleton, Function.Embedding.coeFn_mk]
-      rcases l with ⟨v, a⟩ | ⟨e, ⟨p, q⟩⟩
-      · simp only [isStrongMatchgateLabel]
-        exact ⟨fun h => Or.inl ⟨v, h ▸ rfl⟩, fun h => by
-          rcases h with ⟨v', hv⟩ | ⟨epq, _, hc⟩
-          · exact (Prod.mk.inj (Sum.inl.inj hv)).2.symm
-          · exact nomatch hc⟩
-      · simp only [isStrongMatchgateLabel]
-        constructor
-        · rintro (⟨rfl, rfl⟩ | ⟨rfl, rfl⟩)
-          · exact Or.inr ⟨(e, (0, 0)), Or.inl rfl, rfl⟩
-          · exact Or.inr ⟨(e, (1, 1)), Or.inr rfl, rfl⟩
-        · rintro (⟨v', hv⟩ | ⟨⟨e', p', q'⟩, hpq, heq⟩)
-          · exact nomatch hv
-          · have h1 := Prod.mk.inj (Sum.inr.inj heq)
-            obtain ⟨rfl, rfl, rfl⟩ : e' = e ∧ p' = p ∧ q' = q :=
-              ⟨h1.1, (Prod.mk.inj h1.2).1, (Prod.mk.inj h1.2).2⟩
-            rcases hpq with h | h <;> obtain ⟨rfl, rfl⟩ := Prod.mk.inj h
-            · exact Or.inl ⟨rfl, rfl⟩
-            · exact Or.inr ⟨rfl, rfl⟩
-    rw [hun, Finset.card_union_of_disjoint hdis]
-    simp only [siteSet, bondSet, Finset.card_map, Finset.card_product, Finset.card_univ,
-      Fintype.card_fin, hdp2]; omega
+    · rcases hs with ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩ <;> simp [isMatchgateChainLabel]
+  have hcard_mg : S_mg.card = 5 * k + 11 := card_filter_matchgateChainLabel k
+  have hcard_strong : S_strong.card = 3 * k + 7 := card_filter_strongMatchgateLabel k
   have hcard_xy : S_xy.card = 2 * k + 4 := by
     have h1 := Finset.card_sdiff_add_card_eq_card hstrong_sub
     rw [hcard_mg, hcard_strong] at h1; dsimp only [S_xy]; omega
@@ -1807,7 +2189,8 @@ theorem gaussian_hiddenMatchgate_rankTwo_tube_tail (η : ℝ) :
         Finset.prod_union hdis2, ← hun_mg, Finset.prod_union hdis1]; rfl
     have hps : (∏ l ∈ S_strong, γ.real (F_coord l)) =
         (γ.real (Icc M_η (M_η + 1 / 20))) ^ (3 * k + 7) := by
-      rw [Finset.prod_congr rfl fun l hl => by simp [F_coord, hl], Finset.prod_const, hcard_strong]
+      have h1 : ∀ l ∈ S_strong, F_coord l = Icc M_η (M_η + 1 / 20) := fun _ hl => if_pos hl
+      rw [Finset.prod_congr rfl fun l hl => by rw [h1 l hl], Finset.prod_const, hcard_strong]
     have hpx : (∏ l ∈ S_xy, γ.real (F_coord l)) =
         (γ.real (Icc (0 : ℝ) (1 / 20))) ^ (2 * k + 4) := by
       have h1 : ∀ l ∈ S_xy, F_coord l = Icc (0 : ℝ) (1 / 20) := fun l hl => by
@@ -1873,18 +2256,8 @@ theorem gaussian_hiddenMatchgate_rankTwo_tube_tail (η : ℝ) :
     let u_tilde : PathShell (k + 1) := WithLp.toLp 2 (pythShellInv (k + 1) u.ofLp)
     have hu_ofLp : u.ofLp = pythShellMap (k + 1) u_tilde.ofLp :=
       (pythShellInv_right' (k + 1) u.ofLp).symm
-    have hu_eq : u = WithLp.toLp 2 (pythShellMap (k + 1) u_tilde.ofLp) :=
-      WithLp.ofLp_injective 2 hu_ofLp
     have htilde_box : ∀ l : PathLabel (k + 1), u_tilde l ∈ F_coord l := fun l =>
       hω_in l (mem_univ l)
-    have hcol2_ge (a : Fin 3) : 1 / 3 ≤ pythRotMat a 2 := by
-      fin_cases a <;> simp [pythRotMat] <;> norm_num
-    have hentry_abs_le (a b : Fin 3) : |pythRotMat a b| ≤ 1 := by
-      fin_cases a <;> fin_cases b <;> simp [pythRotMat] <;> norm_num
-    let c_mg (a₁ a₂ : Fin 3) : ℝ :=
-      pythRotMat a₁ 0 * pythRotMat a₂ 0 + pythRotMat a₁ 1 * pythRotMat a₂ 1
-    have hc_mg_ge (a₁ a₂ : Fin 3) : 2 / 9 ≤ |c_mg a₁ a₂| := by
-      fin_cases a₁ <;> fin_cases a₂ <;> simp [c_mg, pythRotMat] <;> norm_num
     have hsite_in (v : Fin (k + 3)) :
         u_tilde (.inl (v, 2)) ∈ Icc M_η (M_η + 1 / 20) ∧
         |u_tilde (.inl (v, 0))| ≤ δ ∧ |u_tilde (.inl (v, 1))| ≤ δ := by
@@ -1899,6 +2272,17 @@ theorem gaussian_hiddenMatchgate_rankTwo_tube_tail (η : ℝ) :
       exact ⟨by simpa [F_coord, hz_s] using hz,
         abs_le.mpr (by simpa [F_coord, hx_ns, hx_nmg] using hx),
         abs_le.mpr (by simpa [F_coord, hy_ns, hy_nmg] using hy)⟩
+    have hbond_diag (e : Fin (k + 2)) :
+        M_η ≤ u_tilde (.inr (e, (0, 0))) ∧ M_η ≤ u_tilde (.inr (e, (1, 1))) := by
+      have h00_mem : Sum.inr (e, ((0 : Fin 3), (0 : Fin 3))) ∈ S_strong :=
+        Finset.mem_filter.mpr ⟨Finset.mem_univ _, Or.inl ⟨rfl, rfl⟩⟩
+      have h11_mem : Sum.inr (e, ((1 : Fin 3), (1 : Fin 3))) ∈ S_strong :=
+        Finset.mem_filter.mpr ⟨Finset.mem_univ _, Or.inr ⟨rfl, rfl⟩⟩
+      have h00 : u_tilde (.inr (e, (0, 0))) ∈ Icc M_η (M_η + 1 / 20) := by
+        simpa [F_coord, h00_mem] using htilde_box (.inr (e, (0, 0)))
+      have h11 : u_tilde (.inr (e, (1, 1))) ∈ Icc M_η (M_η + 1 / 20) := by
+        simpa [F_coord, h11_mem] using htilde_box (.inr (e, (1, 1)))
+      exact ⟨h00.1, h11.1⟩
     have hbond_rem (e : Fin (k + 2)) (pq : Fin 3 × Fin 3) :
         |u_tilde (.inr (e, pq)) -
           (if (pq.1 = 0 ∧ pq.2 = 0) ∨ (pq.1 = 1 ∧ pq.2 = 1) then M_η else 0)| ≤ 1 / 20 := by
@@ -1914,239 +2298,19 @@ theorem gaussian_hiddenMatchgate_rankTwo_tube_tail (η : ℝ) :
           rw [abs_le]; constructor <;> linarith only [hb.1, hb.2]
         · simp only [F_coord, if_neg hnmem, if_neg hmg, mem_Icc] at hb
           rw [abs_le]; constructor <;> linarith only [hb.1, hb.2, hδ_le_small]
-    have hall_coord : (fun i => u (pathCoeffEquiv (k + 1) i)) ∈ allCoordStrongEvent (k + 1) η := by
-      intro i
-      change η ≤ |u (pathCoeffEquiv (k + 1) i)|
-      rw [show u (pathCoeffEquiv (k + 1) i) = pythShellMap (k + 1) u_tilde.ofLp (pathCoeffEquiv (k + 1) i)
-        from congrFun hu_ofLp _]
-      rcases pathCoeffEquiv (k + 1) i with ⟨v, a⟩ | ⟨e, ⟨a₁, a₂⟩⟩
-      · obtain ⟨hz, hx, hy⟩ := hsite_in v
-        have hval_eq : pythShellMap (k + 1) u_tilde.ofLp (.inl (v, a)) =
-            pythRotMat a 0 * u_tilde (.inl (v, 0)) +
-            pythRotMat a 1 * u_tilde (.inl (v, 1)) +
-            pythRotMat a 2 * u_tilde (.inl (v, 2)) := by
-          simp [pythShellMap, Fin.sum_univ_three]
-        have h0_bd : -δ ≤ pythRotMat a 0 * u_tilde (.inl (v, 0)) := by
-          have h := mul_le_mul (hentry_abs_le a 0) hx (abs_nonneg _) zero_le_one
-          rw [← abs_mul, one_mul] at h; exact (abs_le.mp h).1
-        have h1_bd : -δ ≤ pythRotMat a 1 * u_tilde (.inl (v, 1)) := by
-          have h := mul_le_mul (hentry_abs_le a 1) hy (abs_nonneg _) zero_le_one
-          rw [← abs_mul, one_mul] at h; exact (abs_le.mp h).1
-        have h2_bd : (1 / 3 : ℝ) * M_η ≤ pythRotMat a 2 * u_tilde (.inl (v, 2)) :=
-          mul_le_mul (hcol2_ge a) hz.1 (by linarith only [hM_ge18]) (le_trans (by norm_num) (hcol2_ge a))
-        have hpos_val : η ≤ pythShellMap (k + 1) u_tilde.ofLp (.inl (v, a)) := by
-          linarith only [hval_eq, h0_bd, h1_bd, h2_bd, hδ_le_small, hM_ge_eta, le_abs_self η, abs_nonneg η]
-        exact hpos_val.trans (le_abs_self _)
-      · let rem (pq : Fin 3 × Fin 3) : ℝ :=
-          u_tilde (.inr (e, pq)) -
-            (if (pq.1 = 0 ∧ pq.2 = 0) ∨ (pq.1 = 1 ∧ pq.2 = 1) then M_η else 0)
-        have hdecomp : pythShellMap (k + 1) u_tilde.ofLp (.inr (e, (a₁, a₂))) =
-            M_η * c_mg a₁ a₂ +
-              ∑ pq : Fin 3 × Fin 3, pythRotMat a₁ pq.1 * pythRotMat a₂ pq.2 * rem pq := by
-          dsimp only [pythShellMap, c_mg, rem]
-          rw [Fintype.sum_prod_type]
-          simp only [Fin.sum_univ_three, Fin.isValue]
-          ring
-        have hrem_abs : |∑ pq : Fin 3 × Fin 3, pythRotMat a₁ pq.1 * pythRotMat a₂ pq.2 * rem pq| ≤
-            9 / 20 := by
-          calc |∑ pq : Fin 3 × Fin 3, pythRotMat a₁ pq.1 * pythRotMat a₂ pq.2 * rem pq|
-              ≤ ∑ pq : Fin 3 × Fin 3, |pythRotMat a₁ pq.1 * pythRotMat a₂ pq.2 * rem pq| :=
-                Finset.abs_sum_le_sum_abs _ _
-            _ ≤ ∑ _pq : Fin 3 × Fin 3, (1 / 20 : ℝ) := by
-                refine Finset.sum_le_sum fun pq _ => ?_
-                rw [abs_mul, abs_mul]
-                have hc1 : |pythRotMat a₁ pq.1| * |pythRotMat a₂ pq.2| ≤ 1 :=
-                  (mul_le_mul (hentry_abs_le a₁ pq.1) (hentry_abs_le a₂ pq.2)
-                    (abs_nonneg _) zero_le_one).trans_eq (one_mul 1)
-                exact (mul_le_mul hc1 (hbond_rem e pq) (abs_nonneg _) zero_le_one).trans_eq (one_mul _)
-            _ = 9 / 20 := by
-                have hc9 : (Finset.univ : Finset (Fin 3 × Fin 3)).card = 9 := by decide
-                rw [Finset.sum_const, hc9, nsmul_eq_mul]; norm_num
-        have hmain_abs : (2 / 9 : ℝ) * M_η ≤ |M_η * c_mg a₁ a₂| := by
-          rw [abs_mul, abs_of_nonneg (by linarith only [hM_ge18])]
-          exact mul_le_mul_of_nonneg_left (hc_mg_ge a₁ a₂) (by linarith only [hM_ge18])
-        have htri : |M_η * c_mg a₁ a₂| ≤
-            |pythShellMap (k + 1) u_tilde.ofLp (.inr (e, (a₁, a₂)))| +
-            |∑ pq : Fin 3 × Fin 3, pythRotMat a₁ pq.1 * pythRotMat a₂ pq.2 * rem pq| := by
-          rw [hdecomp]
-          simpa only [add_sub_cancel_right] using
-            abs_add_le (M_η * c_mg a₁ a₂ + ∑ pq, pythRotMat a₁ pq.1 * pythRotMat a₂ pq.2 * rem pq)
-              (-(∑ pq, pythRotMat a₁ pq.1 * pythRotMat a₂ pq.2 * rem pq))
-        linarith only [htri, hmain_abs, hrem_abs, hM_ge_eta, le_abs_self η, abs_nonneg η]
-    have hrank2 : (fun i => u (pathCoeffEquiv (k + 1) i)) ∈ bondRankTwoEvent (k + 1) η := by
-      intro e
-      have hB_eq : bondMatrixOfPrefix (k + 1) (fun i => u (pathCoeffEquiv (k + 1) i)) e =
-          pythRotMat * bondMatrix u_tilde e * pythRotMatᵀ := by
-        ext p q
-        simp only [bondMatrixOfPrefix, Equiv.apply_symm_apply]
-        rw [show u (.inr (e, (p, q))) = pythShellMap (k + 1) u_tilde.ofLp (.inr (e, (p, q)))
-          from congrFun hu_ofLp _]
-        simp only [pythShellMap, Matrix.mul_apply, Matrix.transpose_apply, bondMatrix, Finset.sum_mul]
-        exact Finset.sum_congr rfl fun b₁ _ => Finset.sum_congr rfl fun b₂ _ => by ring
-      rw [hB_eq, bondMinorInvariant_orthog_eq _ pythRotMat_orthog'.1 pythRotMat_orthog'.1]
-      have h00_mem : Sum.inr (e, ((0 : Fin 3), (0 : Fin 3))) ∈ S_strong :=
-        Finset.mem_filter.mpr ⟨Finset.mem_univ _, Or.inl ⟨rfl, rfl⟩⟩
-      have h11_mem : Sum.inr (e, ((1 : Fin 3), (1 : Fin 3))) ∈ S_strong :=
-        Finset.mem_filter.mpr ⟨Finset.mem_univ _, Or.inr ⟨rfl, rfl⟩⟩
-      have h00 := (show u_tilde (.inr (e, (0, 0))) ∈ Icc M_η (M_η + 1 / 20) by
-        simpa [F_coord, h00_mem] using htilde_box (.inr (e, (0, 0)))).1
-      have h11 := (show u_tilde (.inr (e, (1, 1))) ∈ Icc M_η (M_η + 1 / 20) by
-        simpa [F_coord, h11_mem] using htilde_box (.inr (e, (1, 1)))).1
-      have h01 := hbond_rem e (0, 1)
-      have h10 := hbond_rem e (1, 0)
-      simp only [one_ne_zero, zero_ne_one, and_false, false_and, or_self, ↓reduceIte, sub_zero] at h01 h10
-      have hprod01 : |bondMatrix u_tilde e 0 1 * bondMatrix u_tilde e 1 0| ≤ 1 := by
-        dsimp [bondMatrix]
-        rw [abs_mul]
-        exact (mul_le_mul h01 h10 (abs_nonneg _) (by norm_num)).trans (by norm_num)
-      have hmin01 : |η| ^ 2 ≤
-          bondMatrix u_tilde e 0 0 * bondMatrix u_tilde e 1 1 -
-            bondMatrix u_tilde e 0 1 * bondMatrix u_tilde e 1 0 := by
-        have hdiag_prod : M_η * M_η ≤ bondMatrix u_tilde e 0 0 * bondMatrix u_tilde e 1 1 :=
-          mul_le_mul h00 h11 (by linarith only [hM_ge18]) (by linarith only [h00, hM_ge18])
-        have hoff_le : bondMatrix u_tilde e 0 1 * bondMatrix u_tilde e 1 0 ≤ 1 :=
-          (le_abs_self _).trans hprod01
-        nlinarith only [hdiag_prod, hoff_le, hM_ge_eta, abs_nonneg η]
-      have hsingle : (bondMatrix u_tilde e 0 0 * bondMatrix u_tilde e 1 1 -
-          bondMatrix u_tilde e 0 1 * bondMatrix u_tilde e 1 0) ^ 2 ≤
-          bondMinorInvariant (bondMatrix u_tilde e) := by
-        unfold bondMinorInvariant
-        have hlt01 : (0 : Fin 3) < 1 := by decide
-        have h1 := Finset.single_le_sum
-          (f := fun q' : Fin 3 × Fin 3 => if (0 : Fin 3) < 1 ∧ q'.1 < q'.2 then
-            (bondMatrix u_tilde e 0 q'.1 * bondMatrix u_tilde e 1 q'.2 -
-              bondMatrix u_tilde e 0 q'.2 * bondMatrix u_tilde e 1 q'.1) ^ 2 else 0)
-          (fun q' _ => by split_ifs <;> [exact sq_nonneg _; exact le_rfl])
-          (Finset.mem_univ ((0 : Fin 3), (1 : Fin 3)))
-        have h2 := Finset.single_le_sum
-          (f := fun p' : Fin 3 × Fin 3 => ∑ q' : Fin 3 × Fin 3,
-            if p'.1 < p'.2 ∧ q'.1 < q'.2 then
-              (bondMatrix u_tilde e p'.1 q'.1 * bondMatrix u_tilde e p'.2 q'.2 -
-                bondMatrix u_tilde e p'.1 q'.2 * bondMatrix u_tilde e p'.2 q'.1) ^ 2 else 0)
-          (fun p' _ => Finset.sum_nonneg fun q' _ => by split_ifs <;> [exact sq_nonneg _; exact le_rfl])
-          (Finset.mem_univ ((0 : Fin 3), (1 : Fin 3)))
-        rw [if_pos ⟨hlt01, hlt01⟩] at h1
-        exact h1.trans h2
-      have hpow4 : η ^ 4 = (|η| ^ 2) ^ 2 := by rw [sq_abs]; ring
-      rw [hpow4]
-      exact (pow_le_pow_left₀ (sq_nonneg _) hmin01 2).trans hsingle
-    have hz0_ge3 : 3 ≤ |u (.inl (0, 2))| := by
-      obtain ⟨hz, hx, hy⟩ := hsite_in 0
-      rw [show u (.inl (0, 2)) = pythShellMap (k + 1) u_tilde.ofLp (.inl (0, 2))
-        from congrFun hu_ofLp _]
-      have hval_eq : pythShellMap (k + 1) u_tilde.ofLp (.inl (0, 2)) =
-          (-2 / 3 : ℝ) * u_tilde (.inl (0, 0)) + (-2 / 3 : ℝ) * u_tilde (.inl (0, 1)) +
-            (1 / 3 : ℝ) * u_tilde (.inl (0, 2)) := by
-        simp [pythShellMap, Fin.sum_univ_three, pythRotMat]
-      have hx2 := (abs_le.mp hx).2
-      have hy2 := (abs_le.mp hy).2
-      have hge : 3 ≤ pythShellMap (k + 1) u_tilde.ofLp (.inl (0, 2)) := by
-        linarith only [hval_eq, hx2, hy2, hz.1, hM_ge18, hδ_le_small]
-      exact hge.trans (le_abs_self _)
-    let H : selfAdjoint (Register N) := ⟨pathHamiltonian u, isSelfAdjoint_pathHamiltonian u⟩
-    have hmax : MaximallyProjectiveEnergy H.2.isHermitian.eigenvalues := hmax_all k
-    have hvand := vandermonde_full_rank_unit_interval H hmax.injective
-    have hexc := exists_antipodal_return_excision_of_shell_coeff u (.inl (0, 2)) hz0_ge3 hT2
-    let W_pyth : Register N := prodLocalMatrix (fun _ : Fin N => pythUnitary)
-    have hW_unit : W_pyth ∈ unitary (Register N) :=
-      prodLocalMatrix_mem_unitary _ fun _ => pythUnitary_unitary'
-    have hH_conj : W_pyth * pathHamiltonian u_tilde * star W_pyth = H.val := by
-      change W_pyth * pathHamiltonian u_tilde * star W_pyth = pathHamiltonian u
-      rw [prodPyth_conj_pathHamiltonian' u_tilde, ← hu_eq]
-    have hev_conj (t : ℝ) :
-        unitaryEvolution H.val t = W_pyth * unitaryEvolution (pathHamiltonian u_tilde) t * star W_pyth := by
-      let W_ug : Matrix.unitaryGroup (Config N) ℂ := ⟨W_pyth, hW_unit⟩
-      have hc := unitaryEvolution_conj W_pyth (pathHamiltonian u_tilde) (Unitary.isUnit_coe (U := W_ug)) t
-      rw [inv_eq_star_of_mem_unitary hW_unit, hH_conj] at hc
-      exact hc
-    let u_tilde_mg : PathShell (k + 1) :=
-      WithLp.toLp 2 fun l => if isMatchgateChainLabel l then u_tilde l else 0
-    have htilde_mg_off : ∀ l : PathLabel (k + 1), ¬ isMatchgateChainLabel l → u_tilde_mg l = 0 :=
-      fun l hl => if_neg hl
-    have hdiff_tilde : ‖pathHamiltonian u_tilde - pathHamiltonian u_tilde_mg‖ ≤
-        ((7 * k + 16 : ℕ) : ℝ) * δ := by
-      have hdis_mw : Disjoint S_mg S_weak := disjoint_sdiff_self_right
-      have hun_mw : S_mg ∪ S_weak = Finset.univ := Finset.union_sdiff_of_subset (Finset.subset_univ _)
-      have hsub_sum : pathHamiltonian u_tilde - pathHamiltonian u_tilde_mg =
-          ∑ l ∈ S_weak, ((u_tilde l : ℝ) : ℂ) • finitePauliMatrix (pathWord l) := by
-        rw [pathHamiltonian_eq_sum, pathHamiltonian_eq_sum, ← Finset.sum_sub_distrib,
-          ← hun_mw, Finset.sum_union hdis_mw]
-        have hmg0 : (∑ l ∈ S_mg, (((u_tilde l : ℝ) : ℂ) • finitePauliMatrix (pathWord l) -
-            ((u_tilde_mg l : ℝ) : ℂ) • finitePauliMatrix (pathWord l))) = 0 :=
-          Finset.sum_eq_zero fun l hl => by
-            rw [show u_tilde_mg l = u_tilde l from if_pos (Finset.mem_filter.mp hl).2, sub_self]
-        rw [hmg0, zero_add]
-        refine Finset.sum_congr rfl fun l hl => ?_
-        have hnot : ¬ isMatchgateChainLabel l := fun h => (Finset.mem_sdiff.mp hl).2
-          (Finset.mem_filter.mpr ⟨Finset.mem_univ l, h⟩)
-        rw [show u_tilde_mg l = 0 from if_neg hnot, Complex.ofReal_zero, zero_smul, sub_zero]
-      rw [hsub_sum]
-      refine (norm_sum_le _ _).trans ?_
-      have hterm (l : PathLabel (k + 1)) (hl : l ∈ S_weak) :
-          ‖((u_tilde l : ℝ) : ℂ) • finitePauliMatrix (pathWord l)‖ ≤ δ := by
-        rw [norm_smul, norm_finitePauliMatrix, mul_one, Complex.norm_real, Real.norm_eq_abs]
-        have hnmg : l ∉ S_mg := (Finset.mem_sdiff.mp hl).2
-        have hns : l ∉ S_strong := fun hs => hnmg (hstrong_sub hs)
-        exact abs_le.mpr (by simpa only [F_coord, if_neg hns, if_neg hnmg, mem_Icc] using htilde_box l)
-      calc ∑ l ∈ S_weak, ‖((u_tilde l : ℝ) : ℂ) • finitePauliMatrix (pathWord l)‖
-          ≤ ∑ _l ∈ S_weak, δ := Finset.sum_le_sum hterm
-        _ = ((7 * k + 16 : ℕ) : ℝ) * δ := by rw [Finset.sum_const, hcard_weak, nsmul_eq_mul]
-    have hearly_inc (t : ℝ) (ht : |t| ≤ T) :
-        HasProjectiveCircuitApproximation N (1 / 100 : ℝ) s_mg (unitaryEvolution H.val t) := by
-      have hreal_rot := realizes_conj_prodLocalMatrix (fun _ : Fin N => pythUnitary)
-        (fun _ => pythUnitary_unitary')
-        (realizes_choose_twoN_of_matchgateChain u_tilde_mg htilde_mg_off t)
-      have hs_eq : (k + 1 + 2) * (2 * (k + 1) + 3) = s_mg := by dsimp [s_mg]; omega
-      rw [hs_eq] at hreal_rot
-      obtain ⟨z, hz, C, hC, hU_rot⟩ := hreal_rot
-      refine ⟨z, hz, C, hC, ?_⟩
-      change ‖unitaryEvolution H.val t - z • C.eval.val‖ ≤ _
-      rw [← hU_rot, hev_conj t]
-      change ‖W_pyth * unitaryEvolution (pathHamiltonian u_tilde) t * star W_pyth -
-        W_pyth * unitaryEvolution (pathHamiltonian u_tilde_mg) t * star W_pyth‖ ≤ _
-      rw [← Matrix.sub_mul, ← Matrix.mul_sub, l2_opNorm_unitary_conj_eq (V := W_pyth) hW_unit]
-      calc ‖unitaryEvolution (pathHamiltonian u_tilde) t -
-              unitaryEvolution (pathHamiltonian u_tilde_mg) t‖
-          ≤ |t| * ‖pathHamiltonian u_tilde - pathHamiltonian u_tilde_mg‖ :=
-            norm_unitaryEvolution_sub_le _ _ (isSelfAdjoint_pathHamiltonian u_tilde)
-              (isSelfAdjoint_pathHamiltonian u_tilde_mg) t
-        _ ≤ T * (((7 * k + 16 : ℕ) : ℝ) * δ) :=
-            mul_le_mul ht hdiff_tilde (norm_nonneg _) hT_pos.le
-        _ = 1 / 100 := by
-            have hWT_ne : W_num * T ≠ 0 := mul_ne_zero hW_pos.ne' hT_pos.ne'
-            refine mul_right_cancel₀ hWT_ne ?_
-            calc T * (((7 * k + 16 : ℕ) : ℝ) * δ) * (W_num * T)
-                = T * ((7 * k + 16 : ℕ) : ℝ) * (δ * (W_num * T)) := by ring
-              _ = T * ((7 * k + 16 : ℕ) : ℝ) * 1 := by
-                    dsimp only [δ]; rw [one_div_mul_cancel hWT_ne]
-              _ = 1 / 100 * (W_num * T) := by dsimp only [W_num]; ring
-    let d := 2 ^ N - 1
-    let e_fin : Config N ≃ Fin (d + 1) := (Fintype.equivFin _).trans
-      (finCongr (by
-        simp only [Config, Fintype.card_fun, Fintype.card_fin, Fintype.card_bool]
-        have hd : 0 < 2 ^ N := Nat.two_pow_pos N
-        dsimp [d]; omega))
-    obtain ⟨σ, hσ_gt, hσ_eq, _, _, _⟩ := first_circuit_threshold_of_increment e_fin H
-      (hmax.comp_equiv e_fin.symm) hentropy T hT_pos.le hP_ge hearly_inc
-    have honset_gt (s : ℕ) (hs_lo : s_mg ≤ s) (hs_hi : s ≤ P) :
-        T < tenthPlateauOnset H s := by
-      have hearly (t : ℝ) (ht : t ∈ Icc 0 T) : orbitCircuitDistance H s t < 1 / 10 := by
-        have habs : |t| ≤ T := by rw [abs_of_nonneg ht.1]; exact ht.2
-        obtain ⟨z, hz, C, hC, herr⟩ := hearly_inc t habs
-        have hd := (hasProjectiveCircuitApproximation_iff_infDist _ s (1 / 100 : ℝ)).mp
-          ⟨z, hz, C, hC.trans hs_lo, herr⟩
-        change orbitCircuitDistance H s t ≤ 1 / 100 at hd
-        linarith only [hd]
-      have hB_gt : 1 / 10 < orbitCircuitDistance H s σ := by
-        have hmono : orbitCircuitDistance H P σ ≤ orbitCircuitDistance H s σ := by
-          apply (hasProjectiveCircuitApproximation_iff_infDist _ P _).mp
-          obtain ⟨z, hz, C, hC, herr⟩ := (hasProjectiveCircuitApproximation_iff_infDist _ s _).mpr
-            (le_rfl : orbitCircuitDistance H s σ ≤ _)
-          exact ⟨z, hz, C, hC.trans hs_hi, herr⟩
-        rw [hσ_eq] at hmono
-        linarith only [hmono]
-      exact (tenthPlateauOnset_spec H hT_pos (hT_pos.trans hσ_gt).le hearly hB_gt).1
-    exact ⟨hall_coord, hrank2, hmax, hvand, hexc, honset_gt⟩
+    have hweak_le (l : PathLabel (k + 1)) (hl : ¬ isMatchgateChainLabel l) : |u_tilde l| ≤ δ := by
+      have hnmg : l ∉ S_mg := fun h => hl (Finset.mem_filter.mp h).2
+      have hns : l ∉ S_strong := fun hs => hnmg (hstrong_sub hs)
+      exact abs_le.mpr (by simpa only [F_coord, if_neg hns, if_neg hnmg, mem_Icc] using htilde_box l)
+    have hδ_prod : T * (((7 * k + 16 : ℕ) : ℝ) * δ) ≤ 1 / 100 := by
+      have hWT_ne : W_num * T ≠ 0 := mul_ne_zero hW_pos.ne' hT_pos.ne'
+      refine le_of_eq (mul_right_cancel₀ hWT_ne ?_)
+      calc T * (((7 * k + 16 : ℕ) : ℝ) * δ) * (W_num * T)
+          = T * ((7 * k + 16 : ℕ) : ℝ) * (δ * (W_num * T)) := by ring
+        _ = T * ((7 * k + 16 : ℕ) : ℝ) * 1 := by dsimp only [δ]; rw [one_div_mul_cancel hWT_ne]
+        _ = 1 / 100 * (W_num * T) := by dsimp only [W_num]; ring
+    exact hiddenMatchgate_onset_of_tilde_bounds k hentropy hP_ge η T δ hT2 hδ_le_small hδ_prod
+      u u_tilde hu_ofLp hsite_in hbond_diag hbond_rem hweak_le (hmax_all k)
   have hmeas_le : (Measure.pi fun _ : PathLabel (k + 1) => γ).real MGBox ≤
       pathPauliDisorderLaw.real TargetEvent := by
     rw [← hpre_mass]
@@ -2222,18 +2386,17 @@ private theorem optMul_conj_self (x y : Option (Fin 3)) :
     (optPhase x y * optPhase (optMul x y) x = 1 ∨
      optPhase x y * optPhase (optMul x y) x = -1) := by
   refine ⟨?_, ?_⟩
-  · cases x with
-    | none => simp [optMul]
-    | some a => cases y with
-      | none => simp [optMul]
-      | some b => fin_cases a <;> fin_cases b <;> decide
-  · cases x with
-    | none => left; simp [optMul, optPhase]
-    | some a => cases y with
-      | none => left; simp [optMul, optPhase]
-      | some b =>
-          fin_cases a <;> fin_cases b <;> simp [optMul, optPhase]
-          all_goals (right; linear_combination Complex.I_sq)
+  · cases x <;> cases y
+    · rfl
+    · rfl
+    · simp [optMul]
+    · rename_i a b; fin_cases a <;> fin_cases b <;> decide
+  · cases x <;> cases y
+    · left; simp [optMul, optPhase]
+    · left; simp [optMul, optPhase]
+    · left; simp [optMul, optPhase]
+    · rename_i a b
+      fin_cases a <;> fin_cases b <;> simp [optMul, optPhase]
 
 private theorem pauli_mem_lieSubalgebra_of_single_anticomm_overlap {N : ℕ}
     {L : LieSubalgebra ℂ (Register N)} {P Q : Fin N → Option (Fin 3)}
@@ -2303,10 +2466,14 @@ private theorem double_comm_pauli_onsite_coupling {n : ℕ} (e₀ : Fin (n + 1))
         funext fun _ => optMul_comm _ _
       have hout1 : ∀ s ∈ ({e₀.castSucc} : Finset (Fin (n + 2)))ᶜ,
           optPhase (onsiteWord e₀.castSucc b s) (couplingWord e₀ (p, q) s) = 1 := by
-        intro s hs; simp [onsiteWord, Finset.mem_compl.mp hs ∘ Finset.mem_singleton.mpr, optPhase]
+        intro s hs
+        have hne : s ≠ e₀.castSucc := by simpa using hs
+        rw [onsiteWord, if_neg hne]; rfl
       have hout2 : ∀ s ∈ ({e₀.castSucc} : Finset (Fin (n + 2)))ᶜ,
           optPhase (couplingWord e₀ (p, q) s) (onsiteWord e₀.castSucc b s) = 1 := by
-        intro s hs; simp [onsiteWord, Finset.mem_compl.mp hs ∘ Finset.mem_singleton.mpr, optPhase_none_right]
+        intro s hs
+        have hne : s ≠ e₀.castSucc := by simpa using hs
+        rw [onsiteWord, if_neg hne, optPhase_none_right]
       rw [hlbl, ← Finset.prod_mul_prod_compl ({e₀.castSucc} : Finset (Fin (n + 2))),
         ← Finset.prod_mul_prod_compl ({e₀.castSucc} : Finset (Fin (n + 2))),
         Finset.prod_singleton, Finset.prod_singleton,
@@ -2315,7 +2482,7 @@ private theorem double_comm_pauli_onsite_coupling {n : ℕ} (e₀ : Fin (n + 1))
       rw [optPhase_swap_distinct3 (Ne.symm hpb), neg_smul]
     have h1 : ⁅X_b, C_pq⁆ = (2 : ℂ) • (X_b * C_pq) := by
       rw [Ring.lie_def]
-      have hneg : -(C_pq * X_b) = X_b * C_pq := by rw [hanti, neg_neg]
+      have hneg : -(C_pq * X_b) = X_b * C_pq := by rw [hanti]
       rw [sub_eq_add_neg, hneg, ← two_smul ℂ]
     rw [h1, Ring.lie_def, Matrix.mul_smul, Matrix.smul_mul, ← mul_assoc, hX_sq, one_mul]
     have h2 : X_b * C_pq * X_b = -C_pq := by
@@ -2325,291 +2492,12 @@ private theorem double_comm_pauli_onsite_coupling {n : ℕ} (e₀ : Fin (n + 1))
 private def twoSiteWord {N : ℕ} (i j : Fin N) (a b : Fin 3) (s : Fin N) : Option (Fin 3) :=
   if s = i then some a else if s = j then some b else none
 
-/-- Boundary `su(2^N)` Lie infection: whenever every bond matrix `bondMatrix u e` is nonsingular
-(`(bondMatrix u e).det ≠ 0`), `chainBoundaryLieSubalgebra u` equals the full `(4^N - 1)`-dimensional
-traceless matrix algebra `LinearMap.ker (Matrix.traceLinearMap (Config (n + 2)) ℂ ℂ)`. -/
-theorem chainBoundaryLieSubalgebra_eq_traceless {n : ℕ} (u : PathShell n)
-    (hdet : ∀ e : Fin (n + 1), (bondMatrix u e).det ≠ 0) :
-    (chainBoundaryLieSubalgebra u).toSubmodule =
-      LinearMap.ker (Matrix.traceLinearMap (Config (n + 2)) ℂ ℂ) := by
-  let N := n + 2
-  let L := chainBoundaryLieSubalgebra u
-  have hH_mem : pathHamiltonian u ∈ L := LieSubalgebra.subset_lieSpan (Or.inl rfl)
-  have h0_mem (a : Fin 3) : finitePauliMatrix (onsiteWord 0 a) ∈ L :=
-    LieSubalgebra.subset_lieSpan (Or.inr ⟨a, rfl⟩)
-  -- Step 1: Chain infection along `0 ≤ k ≤ n + 1`.
-  have hchain : ∀ k : ℕ, k ≤ n + 1 →
-      (∀ (v : Fin N), v.val ≤ k → ∀ a : Fin 3, finitePauliMatrix (onsiteWord v a) ∈ L) ∧
-      (∀ (e : Fin (n + 1)), e.val < k → ∀ pq : Fin 3 × Fin 3,
-        finitePauliMatrix (couplingWord e pq) ∈ L) := by
-    intro k
-    induction k with
-    | zero =>
-        intro _
-        refine ⟨fun v hv a => ?_, fun _ he _ => (Nat.not_lt_zero _ he).elim⟩
-        have hv0 : v = 0 := Fin.ext (by omega)
-        rw [hv0]; exact h0_mem a
-    | succ k ih =>
-        intro hk1
-        obtain ⟨hsite_k, hbond_k⟩ := ih (by omega)
-        let e₀ : Fin (n + 1) := ⟨k, hk1⟩
-        -- Known prefix labels (`v ≤ k` and `e < k`) lie in `L`.
-        let IsKnown : PathLabel n → Prop
-          | .inl (v, _) => v.val ≤ k
-          | .inr (e, _) => e.val < k
-        haveI : DecidablePred IsKnown := fun l => by
-          cases l with
-          | inl va => dsimp [IsKnown]; infer_instance
-          | inr epq => dsimp [IsKnown]; infer_instance
-        let S_kn : Finset (PathLabel n) := Finset.univ.filter IsKnown
-        let S_rem : Finset (PathLabel n) := Finset.univ \ S_kn
-        let H_rem : Register N := ∑ l ∈ S_rem, ((u l : ℝ) : ℂ) • finitePauliMatrix (pathWord l)
-        have hH_rem_mem : H_rem ∈ L := by
-          have hkn_mem : (∑ l ∈ S_kn, ((u l : ℝ) : ℂ) • finitePauliMatrix (pathWord l)) ∈ L := by
-            refine L.toSubmodule.sum_mem fun l hl => L.smul_mem _ ?_
-            have hk := (Finset.mem_filter.mp hl).2
-            rcases l with ⟨v, a⟩ | ⟨e, pq⟩
-            · exact hsite_k v hk a
-            · exact hbond_k e hk pq
-          have hsum : H_rem = pathHamiltonian u -
-              ∑ l ∈ S_kn, ((u l : ℝ) : ℂ) • finitePauliMatrix (pathWord l) := by
-            rw [pathHamiltonian_eq_sum, ← Finset.union_sdiff_of_subset (Finset.subset_univ S_kn),
-              Finset.sum_union disjoint_sdiff_self_right, add_sub_cancel_left]
-          rw [hsum]; exact L.sub_mem hH_mem hkn_mem
-        -- Every label in `S_rem` other than `.inr (e₀, pq)` commutes with `onsiteWord e₀.castSucc b`.
-        have hX_mem (b : Fin 3) : finitePauliMatrix (onsiteWord e₀.castSucc b) ∈ L :=
-          hsite_k e₀.castSucc le_rfl b
-        have hcomm_far (b : Fin 3) (l : PathLabel n) (hl : l ∈ S_rem)
-            (hne_e₀ : ∀ pq, l ≠ .inr (e₀, pq)) :
-            ⁅finitePauliMatrix (onsiteWord e₀.castSucc b), finitePauliMatrix (pathWord l)⁆ = 0 := by
-          have hnkn : ¬ IsKnown l := fun h => (Finset.mem_sdiff.mp hl).2
-            (Finset.mem_filter.mpr ⟨Finset.mem_univ l, h⟩)
-          have hnone : pathWord l e₀.castSucc = none := by
-            rcases l with ⟨v, a⟩ | ⟨e, pq⟩
-            · dsimp [IsKnown] at hnkn
-              have hv_ne : e₀.castSucc ≠ v := fun h => by
-                have hv' := congrArg Fin.val h; dsimp [e₀] at hv'; omega
-              simp [pathWord, onsiteWord, hv_ne]
-            · dsimp [IsKnown] at hnkn
-              have he_gt : k < e.val := by
-                have hne : e ≠ e₀ := fun he => hne_e₀ pq (he ▸ rfl)
-                have hne_v : e.val ≠ k := fun hv => hne (Fin.ext hv)
-                omega
-              have h1 : e₀.castSucc ≠ e.castSucc := fun h => by
-                have hv := congrArg Fin.val h; dsimp [e₀] at hv; omega
-              have h2 : e₀.castSucc ≠ e.succ := fun h => by
-                have hv := congrArg Fin.val h; dsimp [e₀] at hv; omega
-              simp [pathWord, couplingWord, h1, h2]
-          rw [Ring.lie_def, finitePauliMatrix_mul, finitePauliMatrix_mul]
-          have hlbl : (fun s => optMul (onsiteWord e₀.castSucc b s) (pathWord l s)) =
-              fun s => optMul (pathWord l s) (onsiteWord e₀.castSucc b s) :=
-            funext fun _ => optMul_comm _ _
-          have hph1 : ∀ s, optPhase (onsiteWord e₀.castSucc b s) (pathWord l s) = 1 := by
-            intro s; by_cases hs : s = e₀.castSucc
-            · subst hs; rw [hnone, optPhase_none_right]
-            · simp [onsiteWord, hs, optPhase]
-          have hph2 : ∀ s, optPhase (pathWord l s) (onsiteWord e₀.castSucc b s) = 1 := by
-            intro s; by_cases hs : s = e₀.castSucc
-            · subst hs; rw [hnone]; rfl
-            · simp [onsiteWord, hs, optPhase_none_right]
-          rw [hlbl, Finset.prod_eq_one fun s _ => hph1 s, Finset.prod_eq_one fun s _ => hph2 s, sub_self]
-        -- Double commutator isolates `D_b = ∑_{p ≠ b} ∑_q B_{p, q} C_{p, q} ∈ L`.
-        let D (b : Fin 3) : Register N :=
-          ∑ p : Fin 3, ∑ q : Fin 3,
-            if p = b then 0
-            else ((bondMatrix u e₀ p q : ℝ) : ℂ) • finitePauliMatrix (couplingWord e₀ (p, q))
-        have hD_mem (b : Fin 3) : D b ∈ L := by
-          let X_b := finitePauliMatrix (onsiteWord e₀.castSucc b)
-          have hdbl : (1 / 4 : ℂ) • ⁅X_b, ⁅X_b, H_rem⁆⁆ = D b := by
-            dsimp only [H_rem]
-            rw [lie_sum, lie_sum]
-            let S_e₀ : Finset (PathLabel n) :=
-              Finset.univ.map ⟨fun pq : Fin 3 × Fin 3 => .inr (e₀, pq),
-                fun _ _ h => (Prod.mk.inj (Sum.inr.inj h)).2⟩
-            have hsub_e₀ : S_e₀ ⊆ S_rem := by
-              intro l hl
-              obtain ⟨pq, _, rfl⟩ := Finset.mem_map.mp hl
-              refine Finset.mem_sdiff.mpr ⟨Finset.mem_univ _, fun hkn => ?_⟩
-              have hlt : e₀.val < k := (Finset.mem_filter.mp hkn).2
-              dsimp [e₀] at hlt; omega
-            rw [← Finset.sum_subset hsub_e₀]
-            · simp only [S_e₀, Finset.sum_map, Function.Embedding.coeFn_mk, Fintype.sum_prod_type,
-                Finset.smul_sum]
-              refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => ?_
-              rw [lie_smul, lie_smul, show pathWord (.inr (e₀, (p, q))) = couplingWord e₀ (p, q) from rfl,
-                double_comm_pauli_onsite_coupling e₀ b p q]
-              by_cases hpb : p = b
-              · simp [hpb]
-              · rw [if_neg hpb, if_neg hpb, smul_comm, smul_smul]; norm_num; rfl
-            · intro l hl hn_e₀
-              have hne_all : ∀ pq, l ≠ .inr (e₀, pq) := fun pq heq =>
-                hn_e₀ (Finset.mem_map.mpr ⟨pq, Finset.mem_univ pq, heq.symm⟩)
-              rw [lie_smul, hcomm_far b l hl hne_all, smul_zero, lie_zero]
-          rw [← hdbl]
-          exact L.smul_mem _ (L.lie_mem (hX_mem b) (L.lie_mem (hX_mem b) hH_rem_mem))
-        let H_bond : Register N :=
-          ∑ p : Fin 3, ∑ q : Fin 3,
-            ((bondMatrix u e₀ p q : ℝ) : ℂ) • finitePauliMatrix (couplingWord e₀ (p, q))
-        have hH_bond_eq : (1 / 2 : ℂ) • (D 0 + D 1 + D 2) = H_bond := by
-          dsimp only [D, H_bond]
-          simp only [Fin.sum_univ_three, Fin.isValue, ↓reduceIte, one_ne_zero, zero_ne_one,
-            show (2 : Fin 3) ≠ 0 by decide, show (2 : Fin 3) ≠ 1 by decide,
-            show (0 : Fin 3) ≠ 2 by decide, show (1 : Fin 3) ≠ 2 by decide,
-            zero_add, add_zero]
-          ext x y
-          simp only [Matrix.smul_apply, Matrix.add_apply, smul_eq_mul]; ring
-        have hH_bond_mem : H_bond ∈ L := by
-          rw [← hH_bond_eq]
-          exact L.smul_mem _ (L.add_mem (L.add_mem (hD_mem 0) (hD_mem 1)) (hD_mem 2))
-        let R_row (p : Fin 3) : Register N :=
-          ∑ q : Fin 3, ((bondMatrix u e₀ p q : ℝ) : ℂ) • finitePauliMatrix (couplingWord e₀ (p, q))
-        have hR_row_mem (p : Fin 3) : R_row p ∈ L := by
-          have heq : H_bond - D p = R_row p := by
-            dsimp only [H_bond, D, R_row]
-            rw [← Finset.sum_sub_distrib, Finset.sum_eq_single p]
-            · simp
-            · intro p' _ hp'; simp [hp']
-            · simp
-          rw [← heq]; exact L.sub_mem hH_bond_mem (hD_mem p)
-        -- Rotate left Pauli index of `R_row 1` and `R_row 2` onto `0` (`X`).
-        have hrot_left {a p : Fin 3} (hap : a ≠ p) (ha0 : a ≠ 0) (hp0 : p ≠ 0) :
-            ∀ q : Fin 3, ⁅finitePauliMatrix (onsiteWord e₀.castSucc a),
-              finitePauliMatrix (couplingWord e₀ (p, q))⁆ =
-              ((2 : ℂ) * optPhase (some a) (some p)) •
-                finitePauliMatrix (couplingWord e₀ (0, q)) := by
-          intro q
-          rw [Ring.lie_def, finitePauliMatrix_mul, finitePauliMatrix_mul]
-          have hlbl1 : (fun s => optMul (onsiteWord e₀.castSucc a s) (couplingWord e₀ (p, q) s)) =
-              couplingWord e₀ (0, q) := by
-            funext s; by_cases hs1 : s = e₀.castSucc
-            · subst hs1; simp only [onsiteWord, couplingWord, ↓reduceIte]
-              exact (optMul_yz_zero3 hap ha0 hp0).1
-            · simp [onsiteWord, hs1, optMul]
-          have hlbl2 : (fun s => optMul (couplingWord e₀ (p, q) s) (onsiteWord e₀.castSucc a s)) =
-              couplingWord e₀ (0, q) := by
-            rw [← hlbl1]; exact funext fun _ => optMul_comm _ _
-          have hout1 : ∀ s ∈ ({e₀.castSucc} : Finset (Fin N))ᶜ,
-              optPhase (onsiteWord e₀.castSucc a s) (couplingWord e₀ (p, q) s) = 1 := by
-            intro s hs; simp [onsiteWord, Finset.mem_compl.mp hs ∘ Finset.mem_singleton.mpr, optPhase]
-          have hout2 : ∀ s ∈ ({e₀.castSucc} : Finset (Fin N))ᶜ,
-              optPhase (couplingWord e₀ (p, q) s) (onsiteWord e₀.castSucc a s) = 1 := by
-            intro s hs; simp [onsiteWord, Finset.mem_compl.mp hs ∘ Finset.mem_singleton.mpr, optPhase_none_right]
-          rw [hlbl1, hlbl2, ← sub_smul, ← Finset.prod_mul_prod_compl ({e₀.castSucc} : Finset (Fin N)),
-            ← Finset.prod_mul_prod_compl ({e₀.castSucc} : Finset (Fin N)),
-            Finset.prod_singleton, Finset.prod_singleton,
-            Finset.prod_eq_one hout1, Finset.prod_eq_one hout2, mul_one, mul_one]
-          simp only [onsiteWord, couplingWord, ↓reduceIte]
-          rw [(optMul_yz_zero3 hap ha0 hp0).2]
-        let S_row (p : Fin 3) : Register N :=
-          ∑ q : Fin 3, ((bondMatrix u e₀ p q : ℝ) : ℂ) • finitePauliMatrix (couplingWord e₀ (0, q))
-        have hS_row_mem (p : Fin 3) : S_row p ∈ L := by
-          fin_cases p
-          · exact hR_row_mem 0
-          · have h1 := L.lie_mem (hX_mem 2) (hR_row_mem 1)
-            dsimp only [R_row] at h1
-            rw [lie_sum] at h1
-            have h2 : (∑ x : Fin 3, ⁅finitePauliMatrix (onsiteWord e₀.castSucc 2),
-                ((bondMatrix u e₀ 1 x : ℝ) : ℂ) • finitePauliMatrix (couplingWord e₀ (1, x))⁆) =
-                ((-2 * Complex.I) : ℂ) • S_row 1 := by
-              rw [Finset.smul_sum]
-              refine Finset.sum_congr rfl fun q _ => ?_
-              rw [lie_smul, hrot_left (by decide) (by decide) (by decide) q, smul_comm, smul_smul]
-              simp [optPhase]
-            rw [h2] at h1
-            have hne : (-2 * Complex.I : ℂ) ≠ 0 := mul_ne_zero (by norm_num) Complex.I_ne_zero
-            have hs := L.smul_mem (-2 * Complex.I)⁻¹ h1
-            rwa [smul_smul, inv_mul_cancel₀ hne, one_smul] at hs
-          · have h1 := L.lie_mem (hX_mem 1) (hR_row_mem 2)
-            dsimp only [R_row] at h1
-            rw [lie_sum] at h1
-            have h2 : (∑ x : Fin 3, ⁅finitePauliMatrix (onsiteWord e₀.castSucc 1),
-                ((bondMatrix u e₀ 2 x : ℝ) : ℂ) • finitePauliMatrix (couplingWord e₀ (2, x))⁆) =
-                ((2 * Complex.I) : ℂ) • S_row 2 := by
-              rw [Finset.smul_sum]
-              refine Finset.sum_congr rfl fun q _ => ?_
-              rw [lie_smul, hrot_left (by decide) (by decide) (by decide) q, smul_comm, smul_smul]
-              simp [optPhase]
-            rw [h2] at h1
-            have hne : (2 * Complex.I : ℂ) ≠ 0 := mul_ne_zero (by norm_num) Complex.I_ne_zero
-            have hs := L.smul_mem (2 * Complex.I)⁻¹ h1
-            rwa [smul_smul, inv_mul_cancel₀ hne, one_smul] at hs
-        -- Invert `bondMatrix u e₀` via `adjMat3` (`det ≠ 0`) to get `couplingWord e₀ (0, r) ∈ L`.
-        have h0r_mem (r : Fin 3) : finitePauliMatrix (couplingWord e₀ (0, r)) ∈ L := by
-          let B := bondMatrix u e₀
-          have hd_ne : B.det ≠ 0 := hdet e₀
-          have hcomb : (∑ p : Fin 3, ((adjMat3 B r p / B.det : ℝ) : ℂ) • S_row p) =
-              finitePauliMatrix (couplingWord e₀ (0, r)) := by
-            dsimp only [S_row]
-            simp_rw [Finset.smul_sum, smul_smul]
-            rw [Finset.sum_comm]
-            trans (∑ q : Fin 3, (((∑ p : Fin 3, adjMat3 B r p * B p q) / B.det : ℝ) : ℂ) •
-              finitePauliMatrix (couplingWord e₀ (0, q)))
-            · refine Finset.sum_congr rfl fun q _ => ?_
-              rw [← Finset.sum_smul]; congr 1
-              rw [div_eq_mul_inv, Finset.sum_mul, Complex.ofReal_sum]
-              exact Finset.sum_congr rfl fun p _ => by push_cast; ring
-            · simp_rw [adjMat3_mul_eq_det]
-              rw [Finset.sum_eq_single r (fun q _ hqr => by simp [hqr.symm]) (by simp)]
-              rw [if_pos rfl, div_self hd_ne, Complex.ofReal_one, one_smul]
-          rw [← hcomb]
-          exact L.toSubmodule.sum_mem fun p _ => L.smul_mem _ (hS_row_mem p)
-        -- Obtain all `9` couplings `couplingWord e₀ (p, r)` and all `3` onsite Paulis at `e₀.succ`.
-        have hpr_mem (p r : Fin 3) : finitePauliMatrix (couplingWord e₀ (p, r)) ∈ L := by
-          fin_cases p
-          · exact h0r_mem r
-          · have h := pauli_mem_lieSubalgebra_of_single_anticomm_overlap (hX_mem 2) (h0r_mem r)
-              e₀.castSucc (by decide : (2 : Fin 3) ≠ 0) (by simp [onsiteWord])
-              (by simp [couplingWord]) (fun s hs => Or.inr (Or.inl (by simp [onsiteWord, hs])))
-            convert h using 2
-            funext s
-            by_cases hs1 : s = e₀.castSucc
-            · subst hs1; simp [onsiteWord, couplingWord, optMul]; decide
-            · simp [onsiteWord, hs1, optMul]
-          · have h := pauli_mem_lieSubalgebra_of_single_anticomm_overlap (hX_mem 1) (h0r_mem r)
-              e₀.castSucc (by decide : (1 : Fin 3) ≠ 0) (by simp [onsiteWord])
-              (by simp [couplingWord]) (fun s hs => Or.inr (Or.inl (by simp [onsiteWord, hs])))
-            convert h using 2
-            funext s
-            by_cases hs1 : s = e₀.castSucc
-            · subst hs1; simp [onsiteWord, couplingWord, optMul]; decide
-            · simp [onsiteWord, hs1, optMul]
-        have hsucc_mem (a : Fin 3) : finitePauliMatrix (onsiteWord e₀.succ a) ∈ L := by
-          obtain ⟨b, c, hbc, hmul_bc⟩ : ∃ b c : Fin 3, b ≠ c ∧ optMul (some b) (some c) = some a := by
-            fin_cases a
-            · exact ⟨1, 2, by decide, by decide⟩
-            · exact ⟨2, 0, by decide, by decide⟩
-            · exact ⟨0, 1, by decide, by decide⟩
-          have h := pauli_mem_lieSubalgebra_of_single_anticomm_overlap (h0r_mem b) (h0r_mem c)
-            e₀.succ hbc (by simp [couplingWord, e₀.castSucc_lt_succ.ne'])
-            (by simp [couplingWord, e₀.castSucc_lt_succ.ne'])
-            (fun s hs => by
-              by_cases hs1 : s = e₀.castSucc
-              · subst hs1; exact Or.inl (by simp [couplingWord])
-              · exact Or.inr (Or.inl (by simp [couplingWord, hs1, hs])))
-          convert h using 2
-          funext s
-          by_cases hs2 : s = e₀.succ
-          · subst hs2; simp [onsiteWord, couplingWord, e₀.castSucc_lt_succ.ne', hmul_bc]
-          · by_cases hs1 : s = e₀.castSucc
-            · subst hs1; simp [onsiteWord, hs2, couplingWord, optMul]
-            · simp [onsiteWord, couplingWord, hs1, hs2, optMul]
-        refine ⟨fun v hv a => ?_, fun e he pq => ?_⟩
-        · by_cases hvk : v.val ≤ k
-          · exact hsite_k v hvk a
-          · have hveq : v = e₀.succ := Fin.ext (by dsimp [e₀]; omega)
-            rw [hveq]; exact hsucc_mem a
-        · by_cases hek : e.val < k
-          · exact hbond_k e hek pq
-          · have heeq : e = e₀ := Fin.ext (by dsimp [e₀]; omega)
-            rw [heeq]; exact hpr_mem pq.1 pq.2
-  obtain ⟨hall_onsite, hall_bond⟩ := hchain (n + 1) le_rfl
-  have honsite_all (v : Fin N) (a : Fin 3) : finitePauliMatrix (onsiteWord v a) ∈ L :=
-    hall_onsite v (by dsimp [N] at v; omega) a
-  have hbond_all (e : Fin (n + 1)) (pq : Fin 3 × Fin 3) :
-      finitePauliMatrix (couplingWord e pq) ∈ L :=
-    hall_bond e e.isLt pq
-  -- Step 2: Every two-site Pauli `twoSiteWord i j a b` (`i < j`) lies in `L` by gap induction.
-  have htwoSite_lt : ∀ d : ℕ, ∀ (i j : Fin N), i < j → j.val - i.val ≤ d →
+private theorem traceless_le_lieSubalgebra_of_onsite_and_coupling {n : ℕ}
+    {L : LieSubalgebra ℂ (Register (n + 2))}
+    (honsite_all : ∀ (v : Fin (n + 2)) (a : Fin 3), finitePauliMatrix (onsiteWord v a) ∈ L)
+    (hbond_all : ∀ (e : Fin (n + 1)) (pq : Fin 3 × Fin 3), finitePauliMatrix (couplingWord e pq) ∈ L) :
+    LinearMap.ker (Matrix.traceLinearMap (Config (n + 2)) ℂ ℂ) ≤ L.toSubmodule := by
+  have htwoSite_lt : ∀ d : ℕ, ∀ (i j : Fin (n + 2)), i < j → j.val - i.val ≤ d →
       ∀ a b : Fin 3, finitePauliMatrix (twoSiteWord i j a b) ∈ L := by
     intro d
     induction d with
@@ -2619,14 +2507,14 @@ theorem chainBoundaryLieSubalgebra_eq_traceless {n : ℕ} (u : PathShell n)
         intro i j hij hd a b
         have hij_v : i.val < j.val := hij
         by_cases h1 : j.val = i.val + 1
-        · let e : Fin (n + 1) := ⟨i.val, by dsimp [N] at j; omega⟩
+        · let e : Fin (n + 1) := ⟨i.val, by omega⟩
           have hword : twoSiteWord i j a b = couplingWord e (a, b) := by
             funext s
             have hi_e : e.castSucc = i := Fin.ext rfl
             have hj_e : e.succ = j := Fin.ext h1.symm
             simp [twoSiteWord, couplingWord, hi_e, hj_e]
           rw [hword]; exact hbond_all e (a, b)
-        · let m : Fin N := ⟨i.val + 1, by omega⟩
+        · let m : Fin (n + 2) := ⟨i.val + 1, by omega⟩
           have him : i < m := Nat.lt_succ_self i.val
           have hmj : m < j := by change i.val + 1 < j.val; omega
           obtain ⟨c, g, hcg, hmul_cg⟩ : ∃ c g : Fin 3, c ≠ g ∧ optMul (some c) (some g) = some b := by
@@ -2640,7 +2528,6 @@ theorem chainBoundaryLieSubalgebra_eq_traceless {n : ℕ} (u : PathShell n)
             ih m j hmj (by dsimp [m]; omega) 1 c
           have h_mj2 : finitePauliMatrix (twoSiteWord m j 2 g) ∈ L :=
             ih m j hmj (by dsimp [m]; omega) 2 g
-          -- Bridge at `m` (`0` vs `1` gives `2` at `m`).
           have h3_mem := pauli_mem_lieSubalgebra_of_single_anticomm_overlap h_im h_mj1 m
             (by decide : (0 : Fin 3) ≠ 1)
             (by simp [twoSiteWord, him.ne'])
@@ -2649,12 +2536,11 @@ theorem chainBoundaryLieSubalgebra_eq_traceless {n : ℕ} (u : PathShell n)
               by_cases hsi : s = i
               · subst hsi; exact Or.inr (Or.inr (by simp [twoSiteWord, him.ne, hij.ne]))
               · exact Or.inr (Or.inl (by simp [twoSiteWord, hsi, hs])))
-          let W₃ : Fin N → Option (Fin 3) := fun s =>
+          let W₃ : Fin (n + 2) → Option (Fin 3) := fun s =>
             optMul (twoSiteWord i m a 0 s) (twoSiteWord m j 1 c s)
           change finitePauliMatrix W₃ ∈ L at h3_mem
-          have hW₃_m : W₃ m = some 2 := by simp [W₃, twoSiteWord, him.ne', optMul]; decide
+          have hW₃_m : W₃ m = some 2 := by simp [W₃, twoSiteWord, him.ne', optMul]
           have hW₃_j : W₃ j = some c := by simp [W₃, twoSiteWord, hij.ne', hmj.ne', optMul]
-          -- Cancel `some 2` at `m` against `twoSiteWord m j 2 g` while multiplying `c * g = b` at `j`.
           have h2_mem := pauli_mem_lieSubalgebra_of_single_anticomm_overlap h3_mem h_mj2 j hcg
             hW₃_j (by simp [twoSiteWord, hmj.ne'])
             (fun s hs => by
@@ -2668,22 +2554,22 @@ theorem chainBoundaryLieSubalgebra_eq_traceless {n : ℕ} (u : PathShell n)
             simp [twoSiteWord, W₃, him.ne, hij.ne, optMul]
           · by_cases hsj : s = j
             · subst hsj
-              simp [twoSiteWord, hsi, W₃, hmj.ne', hmul_cg]
+              simp only [twoSiteWord, hsi, W₃, hmj.ne', ↓reduceIte]
+              rw [show optMul none (some c) = some c from rfl, hmul_cg]
             · by_cases hsm : s = m
               · subst hsm
                 rw [hW₃_m]; simp [twoSiteWord, hsi, hsj, optMul]
               · simp [twoSiteWord, W₃, hsi, hsj, hsm, optMul]
-  have htwoSite_ne {i j : Fin N} (hij : i ≠ j) (a b : Fin 3) :
+  have htwoSite_ne {i j : Fin (n + 2)} (hij : i ≠ j) (a b : Fin 3) :
       finitePauliMatrix (twoSiteWord i j a b) ∈ L := by
     rcases lt_or_gt_of_ne hij with hlt | hgt
-    · exact htwoSite_lt N i j hlt (by omega) a b
+    · exact htwoSite_lt (n + 2) i j hlt (by omega) a b
     · have hswap : twoSiteWord i j a b = twoSiteWord j i b a := by
         funext s; by_cases h1 : s = i
         · subst h1; simp [twoSiteWord, hij]
         · simp [twoSiteWord, h1]
-      rw [hswap]; exact htwoSite_lt N j i hgt (by omega) b a
-  -- Step 3: Every non-identity Pauli string lies in `L` by weight induction.
-  have hall_pauli : ∀ w : ℕ, 1 ≤ w → ∀ P : Fin N → Option (Fin 3),
+      rw [hswap]; exact htwoSite_lt (n + 2) j i hgt (by omega) b a
+  have hall_pauli : ∀ w : ℕ, 1 ≤ w → ∀ P : Fin (n + 2) → Option (Fin 3),
       pauliWeight P = w → finitePauliMatrix P ∈ L := by
     intro w hw
     induction w, hw using Nat.le_induction with
@@ -2702,7 +2588,7 @@ theorem chainBoundaryLieSubalgebra_eq_traceless {n : ℕ} (u : PathShell n)
         rw [hP_eq]; exact honsite_all v a
     | succ w hw ih =>
         intro P hPw
-        let S := Finset.univ.filter fun s : Fin N => P s ≠ none
+        let S := Finset.univ.filter fun s : Fin (n + 2) => P s ≠ none
         have hScard : S.card = w + 1 := hPw
         obtain ⟨k₀, hk₀⟩ := Finset.card_pos.mp (show 0 < S.card by omega)
         obtain ⟨i₀, hi₀_er⟩ := Finset.card_pos.mp (show 0 < (S.erase k₀).card by
@@ -2716,7 +2602,7 @@ theorem chainBoundaryLieSubalgebra_eq_traceless {n : ℕ} (u : PathShell n)
           · exact ⟨1, 2, by decide, by decide⟩
           · exact ⟨2, 0, by decide, by decide⟩
           · exact ⟨0, 1, by decide, by decide⟩
-        let P₁ : Fin N → Option (Fin 3) := Function.update (Function.update P k₀ none) i₀ (some c)
+        let P₁ : Fin (n + 2) → Option (Fin 3) := Function.update (Function.update P k₀ none) i₀ (some c)
         have hS₁ : (Finset.univ.filter fun s => P₁ s ≠ none) = S.erase k₀ := by
           ext s; simp only [Finset.mem_filter, Finset.mem_univ, true_and, Finset.mem_erase, S]
           by_cases hsi : s = i₀
@@ -2741,7 +2627,388 @@ theorem chainBoundaryLieSubalgebra_eq_traceless {n : ℕ} (u : PathShell n)
         · by_cases hsk : s = k₀
           · subst hsk; simp [P₁, hsi, twoSiteWord, hak, optMul]
           · simp [P₁, twoSiteWord, hsi, hsk, optMul_none_right]
-  -- Step 4: Conclude `L.toSubmodule = ker traceLinearMap`.
+  intro X hX_tr
+  change Matrix.trace X = 0 at hX_tr
+  have hexp_sa (Y : Register (n + 2)) (hY : IsSelfAdjoint Y) :
+      Y = ∑ P : Fin (n + 2) → Option (Fin 3),
+        (((2 : ℂ) ^ (n + 2))⁻¹ * Matrix.trace (star (finitePauliMatrix P) * Y)) • finitePauliMatrix P := by
+    let b := finitePauliSelfAdjointBasis (Fin (n + 2))
+    let y_sa : selfAdjoint (Register (n + 2)) := ⟨Y, hY⟩
+    have hb := b.sum_repr y_sa
+    have hcoe_sum (S : Finset (Fin (n + 2) → Option (Fin 3)))
+        (f : (Fin (n + 2) → Option (Fin 3)) → selfAdjoint (Register (n + 2))) :
+        (∑ P ∈ S, f P).val = ∑ P ∈ S, (f P).val := by
+      induction S using Finset.induction_on with
+      | empty => rfl
+      | insert a S ha ih => rw [Finset.sum_insert ha, Finset.sum_insert ha]; exact congrArg (_ + ·) ih
+    have hbP (P : Fin (n + 2) → Option (Fin 3)) :
+        (b.repr y_sa P • b P).val =
+          ((b.repr y_sa P : ℝ) : ℂ) • finitePauliMatrix P := by
+      change b.repr y_sa P • (b P).val = _
+      rw [finitePauliSelfAdjointBasis_apply, ← Complex.coe_smul]; rfl
+    have hval : ∑ P : Fin (n + 2) → Option (Fin 3),
+        ((b.repr y_sa P : ℝ) : ℂ) • finitePauliMatrix P = Y := by
+      simp_rw [← hbP]; rw [← hcoe_sum]; exact congrArg Subtype.val hb
+    conv_lhs => rw [← hval]
+    refine Finset.sum_congr rfl fun P _ => ?_
+    congr 1
+    have htr := congrArg (fun Z : Register (n + 2) => Matrix.trace (star (finitePauliMatrix P) * Z)) hval
+    rw [Matrix.mul_sum, Matrix.trace_sum, Finset.sum_eq_single P] at htr
+    · rw [Matrix.mul_smul, Matrix.trace_smul] at htr
+      have hu := finitePauliMatrix_mem_unitary P
+      rw [(Unitary.mem_iff.mp hu).1, Matrix.trace_one] at htr
+      simp only [Fintype.card_fun, Fintype.card_fin, Fintype.card_bool, smul_eq_mul,
+        Nat.cast_pow, Nat.cast_ofNat] at htr
+      have h2ne : (2 : ℂ) ^ (n + 2) ≠ 0 := pow_ne_zero (n + 2) (by norm_num)
+      refine mul_left_cancel₀ h2ne ?_
+      rw [← mul_assoc, mul_inv_cancel₀ h2ne, one_mul, mul_comm]
+      exact htr
+    · intro Q _ hQP
+      rw [Matrix.mul_smul, Matrix.trace_smul, trace_star_finitePauliMatrix_mul,
+        if_neg hQP.symm, smul_zero]
+    · simp
+  let H₁ : Register (n + 2) := (1 / 2 : ℂ) • (X + star X)
+  let H₂ : Register (n + 2) := (-Complex.I / 2 : ℂ) • (X - star X)
+  have hH₁_sa : IsSelfAdjoint H₁ := by
+    rw [isSelfAdjoint_iff, star_smul, star_add, star_star, add_comm (star X) X]
+    congr 1; simp
+  have hH₂_sa : IsSelfAdjoint H₂ := by
+    rw [isSelfAdjoint_iff, star_smul, star_sub, star_star]
+    have h : star X - X = -(X - star X) := by abel
+    rw [h, smul_neg, ← neg_smul]; congr 1
+    apply Complex.ext <;> simp <;> norm_num
+  have hX_split : X = H₁ + Complex.I • H₂ := by
+    dsimp only [H₁, H₂]
+    rw [smul_smul, show Complex.I * (-Complex.I / 2) = (1 / 2 : ℂ) by
+      linear_combination -(1 / 2 : ℂ) * Complex.I_sq, ← smul_add]
+    ext a b; simp only [Matrix.smul_apply, Matrix.add_apply, Matrix.sub_apply, smul_eq_mul]; ring
+  have hexp_any : X = ∑ P : Fin (n + 2) → Option (Fin 3),
+      (((2 : ℂ) ^ (n + 2))⁻¹ * Matrix.trace (star (finitePauliMatrix P) * X)) • finitePauliMatrix P := by
+    conv_lhs => rw [hX_split, hexp_sa H₁ hH₁_sa, hexp_sa H₂ hH₂_sa, Finset.smul_sum, ← Finset.sum_add_distrib]
+    refine Finset.sum_congr rfl fun P _ => ?_
+    rw [smul_smul, ← add_smul]; congr 1
+    conv_rhs => rw [hX_split]
+    simp only [Matrix.mul_add, Matrix.mul_smul, Matrix.trace_add, Matrix.trace_smul, smul_eq_mul]
+    ring
+  rw [hexp_any]
+  refine L.toSubmodule.sum_mem fun P _ => ?_
+  by_cases hid : P = pauliIdentityLabel (n + 2)
+  · subst hid
+    have h1 : finitePauliMatrix (pauliIdentityLabel (n + 2)) = (1 : Register (n + 2)) := by
+      ext x y; rw [Matrix.one_apply]
+      by_cases hxy : x = y
+      · subst hxy; simp [finitePauliMatrix, pauliIdentityLabel, boolPauliOptionEntry, boolPauliOption]
+      · rw [if_neg hxy]
+        obtain ⟨s, hs⟩ := Function.ne_iff.mp hxy
+        exact Finset.prod_eq_zero (Finset.mem_univ s)
+          (by simp [pauliIdentityLabel, boolPauliOptionEntry, boolPauliOption, hs])
+    rw [h1, star_one, one_mul, hX_tr, mul_zero, zero_smul]
+    exact L.toSubmodule.zero_mem
+  · have hw_pos : 1 ≤ pauliWeight P := by
+      by_contra h0
+      have heq0 : (Finset.univ.filter fun s => P s ≠ none).card = 0 := by
+        unfold pauliWeight at h0; omega
+      rw [Finset.card_eq_zero] at heq0
+      apply hid; funext s
+      by_contra hne
+      exact Finset.notMem_empty s (heq0 ▸ Finset.mem_filter.mpr ⟨Finset.mem_univ s, hne⟩)
+    exact L.smul_mem _ (hall_pauli (pauliWeight P) hw_pos P rfl)
+
+private theorem chainBoundary_step {n k : ℕ} (hk1 : k < n + 1) (u : PathShell n)
+    (hdet₀ : (bondMatrix u ⟨k, hk1⟩).det ≠ 0)
+    {L : LieSubalgebra ℂ (Register (n + 2))}
+    (hH_mem : pathHamiltonian u ∈ L)
+    (hsite_k : ∀ (v : Fin (n + 2)), v.val ≤ k → ∀ a : Fin 3, finitePauliMatrix (onsiteWord v a) ∈ L)
+    (hbond_k : ∀ (e : Fin (n + 1)), e.val < k → ∀ pq : Fin 3 × Fin 3,
+      finitePauliMatrix (couplingWord e pq) ∈ L) :
+    (∀ (v : Fin (n + 2)), v.val ≤ k + 1 → ∀ a : Fin 3, finitePauliMatrix (onsiteWord v a) ∈ L) ∧
+    (∀ (e : Fin (n + 1)), e.val < k + 1 → ∀ pq : Fin 3 × Fin 3,
+      finitePauliMatrix (couplingWord e pq) ∈ L) := by
+  let e₀ : Fin (n + 1) := ⟨k, hk1⟩
+  let IsKnown : PathLabel n → Prop
+    | .inl (v, _) => v.val ≤ k
+    | .inr (e, _) => e.val < k
+  haveI : DecidablePred IsKnown := fun l => by
+    cases l with
+    | inl va => dsimp [IsKnown]; infer_instance
+    | inr epq => dsimp [IsKnown]; infer_instance
+  let S_kn : Finset (PathLabel n) := Finset.univ.filter IsKnown
+  let S_rem : Finset (PathLabel n) := Finset.univ \ S_kn
+  let H_rem : Register (n + 2) := ∑ l ∈ S_rem, ((u l : ℝ) : ℂ) • finitePauliMatrix (pathWord l)
+  have hH_rem_mem : H_rem ∈ L := by
+    have hkn_mem : (∑ l ∈ S_kn, ((u l : ℝ) : ℂ) • finitePauliMatrix (pathWord l)) ∈ L := by
+      refine L.toSubmodule.sum_mem fun l hl => L.smul_mem _ ?_
+      have hk := (Finset.mem_filter.mp hl).2
+      rcases l with ⟨v, a⟩ | ⟨e, pq⟩
+      · exact hsite_k v hk a
+      · exact hbond_k e hk pq
+    have hsum : H_rem = pathHamiltonian u -
+        ∑ l ∈ S_kn, ((u l : ℝ) : ℂ) • finitePauliMatrix (pathWord l) := by
+      rw [pathHamiltonian_eq_sum, ← Finset.union_sdiff_of_subset (Finset.subset_univ S_kn),
+        Finset.sum_union disjoint_sdiff_self_right, add_sub_cancel_left]
+    rw [hsum]; exact L.sub_mem hH_mem hkn_mem
+  have hX_mem (b : Fin 3) : finitePauliMatrix (onsiteWord e₀.castSucc b) ∈ L :=
+    hsite_k e₀.castSucc le_rfl b
+  have hcomm_far (b : Fin 3) (l : PathLabel n) (hl : l ∈ S_rem)
+      (hne_e₀ : ∀ pq, l ≠ .inr (e₀, pq)) :
+      ⁅finitePauliMatrix (onsiteWord e₀.castSucc b), finitePauliMatrix (pathWord l)⁆ = 0 := by
+    have hnkn : ¬ IsKnown l := fun h => (Finset.mem_sdiff.mp hl).2
+      (Finset.mem_filter.mpr ⟨Finset.mem_univ l, h⟩)
+    have hnone : pathWord l e₀.castSucc = none := by
+      rcases l with ⟨v, a⟩ | ⟨e, pq⟩
+      · dsimp [IsKnown] at hnkn
+        have hv_ne : e₀.castSucc ≠ v := fun h => by
+          have hv' := congrArg Fin.val h; dsimp [e₀] at hv'; omega
+        simp [pathWord, onsiteWord, hv_ne]
+      · dsimp [IsKnown] at hnkn
+        have he_gt : k < e.val := by
+          have hne : e ≠ e₀ := fun he => hne_e₀ pq (he ▸ rfl)
+          have hne_v : e.val ≠ k := fun hv => hne (Fin.ext hv)
+          omega
+        have h1 : e₀.castSucc ≠ e.castSucc := fun h => by
+          have hv := congrArg Fin.val h; dsimp [e₀] at hv; omega
+        have h2 : e₀.castSucc ≠ e.succ := fun h => by
+          have hv := congrArg Fin.val h; dsimp [e₀] at hv; omega
+        simp [pathWord, couplingWord, h1, h2]
+    rw [Ring.lie_def, finitePauliMatrix_mul, finitePauliMatrix_mul]
+    have hlbl : (fun s => optMul (onsiteWord e₀.castSucc b s) (pathWord l s)) =
+        fun s => optMul (pathWord l s) (onsiteWord e₀.castSucc b s) :=
+      funext fun _ => optMul_comm _ _
+    have hph1 : ∀ s, optPhase (onsiteWord e₀.castSucc b s) (pathWord l s) = 1 := by
+      intro s; by_cases hs : s = e₀.castSucc
+      · subst hs; rw [hnone, optPhase_none_right]
+      · simp [onsiteWord, hs, optPhase]
+    have hph2 : ∀ s, optPhase (pathWord l s) (onsiteWord e₀.castSucc b s) = 1 := by
+      intro s; by_cases hs : s = e₀.castSucc
+      · subst hs; rw [hnone]; rfl
+      · simp [onsiteWord, hs, optPhase_none_right]
+    rw [hlbl, Finset.prod_eq_one fun s _ => hph1 s, Finset.prod_eq_one fun s _ => hph2 s, sub_self]
+  let D (b : Fin 3) : Register (n + 2) :=
+    ∑ p : Fin 3, ∑ q : Fin 3,
+      if p = b then 0
+      else ((bondMatrix u e₀ p q : ℝ) : ℂ) • finitePauliMatrix (couplingWord e₀ (p, q))
+  have hD_mem (b : Fin 3) : D b ∈ L := by
+    let X_b := finitePauliMatrix (onsiteWord e₀.castSucc b)
+    have hdbl : (1 / 4 : ℂ) • ⁅X_b, ⁅X_b, H_rem⁆⁆ = D b := by
+      dsimp only [H_rem]
+      rw [lie_sum, lie_sum]
+      let S_e₀ : Finset (PathLabel n) :=
+        Finset.univ.map ⟨fun pq : Fin 3 × Fin 3 => .inr (e₀, pq),
+          fun _ _ h => (Prod.mk.inj (Sum.inr.inj h)).2⟩
+      have hsub_e₀ : S_e₀ ⊆ S_rem := by
+        intro l hl
+        obtain ⟨pq, _, rfl⟩ := Finset.mem_map.mp hl
+        refine Finset.mem_sdiff.mpr ⟨Finset.mem_univ _, fun hkn => ?_⟩
+        have hlt : e₀.val < k := (Finset.mem_filter.mp hkn).2
+        dsimp [e₀] at hlt; omega
+      rw [← Finset.sum_subset hsub_e₀]
+      · simp only [S_e₀, Finset.sum_map, Function.Embedding.coeFn_mk, Fintype.sum_prod_type,
+          Finset.smul_sum]
+        refine Finset.sum_congr rfl fun p _ => Finset.sum_congr rfl fun q _ => ?_
+        rw [lie_smul, lie_smul, show pathWord (.inr (e₀, (p, q))) = couplingWord e₀ (p, q) from rfl,
+          double_comm_pauli_onsite_coupling e₀ b p q]
+        by_cases hpb : p = b
+        · simp [hpb]
+        · rw [if_neg hpb, if_neg hpb, smul_smul, smul_smul]
+          congr 1; dsimp [bondMatrix]; ring
+      · intro l hl hn_e₀
+        have hne_all : ∀ pq, l ≠ .inr (e₀, pq) := fun pq heq =>
+          hn_e₀ (Finset.mem_map.mpr ⟨pq, Finset.mem_univ pq, heq.symm⟩)
+        rw [lie_smul, hcomm_far b l hl hne_all, smul_zero, lie_zero]
+    rw [← hdbl]
+    exact L.smul_mem _ (L.lie_mem (hX_mem b) (L.lie_mem (hX_mem b) hH_rem_mem))
+  let H_bond : Register (n + 2) :=
+    ∑ p : Fin 3, ∑ q : Fin 3,
+      ((bondMatrix u e₀ p q : ℝ) : ℂ) • finitePauliMatrix (couplingWord e₀ (p, q))
+  have hH_bond_eq : (1 / 2 : ℂ) • (D 0 + D 1 + D 2) = H_bond := by
+    dsimp only [D, H_bond]
+    simp only [Fin.sum_univ_three, Fin.isValue, ↓reduceIte, one_ne_zero, zero_ne_one,
+      show (2 : Fin 3) ≠ 0 by decide, show (2 : Fin 3) ≠ 1 by decide,
+      show (0 : Fin 3) ≠ 2 by decide, show (1 : Fin 3) ≠ 2 by decide,
+      zero_add, add_zero]
+    ext x y
+    simp only [Matrix.smul_apply, Matrix.add_apply, smul_eq_mul]; ring
+  have hH_bond_mem : H_bond ∈ L := by
+    rw [← hH_bond_eq]
+    exact L.smul_mem _ (L.add_mem (L.add_mem (hD_mem 0) (hD_mem 1)) (hD_mem 2))
+  let R_row (p : Fin 3) : Register (n + 2) :=
+    ∑ q : Fin 3, ((bondMatrix u e₀ p q : ℝ) : ℂ) • finitePauliMatrix (couplingWord e₀ (p, q))
+  have hR_row_mem (p : Fin 3) : R_row p ∈ L := by
+    have heq : H_bond - D p = R_row p := by
+      dsimp only [H_bond, D, R_row]
+      rw [← Finset.sum_sub_distrib, Finset.sum_eq_single p]
+      · simp
+      · intro p' _ hp'; simp [hp']
+      · simp
+    rw [← heq]; exact L.sub_mem hH_bond_mem (hD_mem p)
+  have hrot_left {a p : Fin 3} (hap : a ≠ p) (ha0 : a ≠ 0) (hp0 : p ≠ 0) :
+      ∀ q : Fin 3, ⁅finitePauliMatrix (onsiteWord e₀.castSucc a),
+        finitePauliMatrix (couplingWord e₀ (p, q))⁆ =
+        ((2 : ℂ) * optPhase (some a) (some p)) •
+          finitePauliMatrix (couplingWord e₀ (0, q)) := by
+    intro q
+    rw [Ring.lie_def, finitePauliMatrix_mul, finitePauliMatrix_mul]
+    have hlbl1 : (fun s => optMul (onsiteWord e₀.castSucc a s) (couplingWord e₀ (p, q) s)) =
+        couplingWord e₀ (0, q) := by
+      funext s; by_cases hs1 : s = e₀.castSucc
+      · subst hs1; simp only [onsiteWord, couplingWord, ↓reduceIte]
+        exact (optMul_yz_zero3 hap ha0 hp0).1
+      · simp [onsiteWord, couplingWord, hs1, optMul]
+    have hlbl2 : (fun s => optMul (couplingWord e₀ (p, q) s) (onsiteWord e₀.castSucc a s)) =
+        couplingWord e₀ (0, q) := by
+      rw [← hlbl1]; exact funext fun _ => optMul_comm _ _
+    have hout1 : ∀ s ∈ ({e₀.castSucc} : Finset (Fin (n + 2)))ᶜ,
+        optPhase (onsiteWord e₀.castSucc a s) (couplingWord e₀ (p, q) s) = 1 := by
+      intro s hs
+      have hne : s ≠ e₀.castSucc := by simpa using hs
+      rw [onsiteWord, if_neg hne]; rfl
+    have hout2 : ∀ s ∈ ({e₀.castSucc} : Finset (Fin (n + 2)))ᶜ,
+        optPhase (couplingWord e₀ (p, q) s) (onsiteWord e₀.castSucc a s) = 1 := by
+      intro s hs
+      have hne : s ≠ e₀.castSucc := by simpa using hs
+      rw [onsiteWord, if_neg hne, optPhase_none_right]
+    rw [hlbl1, hlbl2, ← sub_smul, ← Finset.prod_mul_prod_compl ({e₀.castSucc} : Finset (Fin (n + 2))),
+      ← Finset.prod_mul_prod_compl ({e₀.castSucc} : Finset (Fin (n + 2))),
+      Finset.prod_singleton, Finset.prod_singleton,
+      Finset.prod_eq_one hout1, Finset.prod_eq_one hout2, mul_one, mul_one]
+    simp only [onsiteWord, couplingWord, ↓reduceIte]
+    rw [(optMul_yz_zero3 hap ha0 hp0).2]
+  let S_row (p : Fin 3) : Register (n + 2) :=
+    ∑ q : Fin 3, ((bondMatrix u e₀ p q : ℝ) : ℂ) • finitePauliMatrix (couplingWord e₀ (0, q))
+  have hS_row_mem (p : Fin 3) : S_row p ∈ L := by
+    fin_cases p
+    · exact hR_row_mem 0
+    · have h1 := L.lie_mem (hX_mem 2) (hR_row_mem 1)
+      dsimp only [R_row] at h1
+      rw [lie_sum] at h1
+      have h2 : (∑ x : Fin 3, ⁅finitePauliMatrix (onsiteWord e₀.castSucc 2),
+          ((bondMatrix u e₀ 1 x : ℝ) : ℂ) • finitePauliMatrix (couplingWord e₀ (1, x))⁆) =
+          ((-2 * Complex.I) : ℂ) • S_row 1 := by
+        rw [Finset.smul_sum]
+        refine Finset.sum_congr rfl fun q _ => ?_
+        rw [lie_smul, hrot_left (by decide) (by decide) (by decide) q, smul_smul, smul_smul]
+        congr 1
+        have hph : optPhase (some (2 : Fin 3)) (some 1) = -Complex.I := rfl
+        rw [hph]; ring
+      rw [h2] at h1
+      have hne : (-2 * Complex.I : ℂ) ≠ 0 := mul_ne_zero (by norm_num) Complex.I_ne_zero
+      have hs := L.smul_mem (-2 * Complex.I)⁻¹ h1
+      rwa [smul_smul, inv_mul_cancel₀ hne, one_smul] at hs
+    · have h1 := L.lie_mem (hX_mem 1) (hR_row_mem 2)
+      dsimp only [R_row] at h1
+      rw [lie_sum] at h1
+      have h2 : (∑ x : Fin 3, ⁅finitePauliMatrix (onsiteWord e₀.castSucc 1),
+          ((bondMatrix u e₀ 2 x : ℝ) : ℂ) • finitePauliMatrix (couplingWord e₀ (2, x))⁆) =
+          ((2 * Complex.I) : ℂ) • S_row 2 := by
+        rw [Finset.smul_sum]
+        refine Finset.sum_congr rfl fun q _ => ?_
+        rw [lie_smul, hrot_left (by decide) (by decide) (by decide) q, smul_smul, smul_smul]
+        congr 1
+        have hph : optPhase (some (1 : Fin 3)) (some 2) = Complex.I := rfl
+        rw [hph]; ring
+      rw [h2] at h1
+      have hne : (2 * Complex.I : ℂ) ≠ 0 := mul_ne_zero (by norm_num) Complex.I_ne_zero
+      have hs := L.smul_mem (2 * Complex.I)⁻¹ h1
+      rwa [smul_smul, inv_mul_cancel₀ hne, one_smul] at hs
+  have h0r_mem (r : Fin 3) : finitePauliMatrix (couplingWord e₀ (0, r)) ∈ L := by
+    let B := bondMatrix u e₀
+    have hcomb : (∑ p : Fin 3, ((adjMat3 B r p / B.det : ℝ) : ℂ) • S_row p) =
+        finitePauliMatrix (couplingWord e₀ (0, r)) := by
+      dsimp only [S_row]
+      simp_rw [Finset.smul_sum, smul_smul]
+      rw [Finset.sum_comm]
+      trans (∑ q : Fin 3, (((∑ p : Fin 3, adjMat3 B r p * B p q) / B.det : ℝ) : ℂ) •
+        finitePauliMatrix (couplingWord e₀ (0, q)))
+      · refine Finset.sum_congr rfl fun q _ => ?_
+        rw [← Finset.sum_smul]; congr 1
+        rw [div_eq_mul_inv, Finset.sum_mul, Complex.ofReal_sum]
+        exact Finset.sum_congr rfl fun p _ => by push_cast; ring
+      · simp_rw [adjMat3_mul_eq_det]
+        rw [Finset.sum_eq_single r (fun q _ hqr => by simp [hqr.symm]) (by simp)]
+        rw [if_pos rfl, div_self hdet₀, Complex.ofReal_one, one_smul]
+    rw [← hcomb]
+    exact L.toSubmodule.sum_mem fun p _ => L.smul_mem _ (hS_row_mem p)
+  have hpr_mem (p r : Fin 3) : finitePauliMatrix (couplingWord e₀ (p, r)) ∈ L := by
+    fin_cases p
+    · exact h0r_mem r
+    · have h := pauli_mem_lieSubalgebra_of_single_anticomm_overlap (hX_mem 2) (h0r_mem r)
+        e₀.castSucc (by decide : (2 : Fin 3) ≠ 0) (by simp [onsiteWord])
+        (by simp [couplingWord]) (fun s hs => Or.inr (Or.inl (by simp [onsiteWord, hs])))
+      convert h using 2
+      funext s
+      by_cases hs1 : s = e₀.castSucc
+      · subst hs1; simp [onsiteWord, couplingWord, optMul]
+      · simp [onsiteWord, couplingWord, hs1, optMul]
+    · have h := pauli_mem_lieSubalgebra_of_single_anticomm_overlap (hX_mem 1) (h0r_mem r)
+        e₀.castSucc (by decide : (1 : Fin 3) ≠ 0) (by simp [onsiteWord])
+        (by simp [couplingWord]) (fun s hs => Or.inr (Or.inl (by simp [onsiteWord, hs])))
+      convert h using 2
+      funext s
+      by_cases hs1 : s = e₀.castSucc
+      · subst hs1; simp [onsiteWord, couplingWord, optMul]
+      · simp [onsiteWord, couplingWord, hs1, optMul]
+  have hsucc_mem (a : Fin 3) : finitePauliMatrix (onsiteWord e₀.succ a) ∈ L := by
+    obtain ⟨b, c, hbc, hmul_bc⟩ : ∃ b c : Fin 3, b ≠ c ∧ optMul (some b) (some c) = some a := by
+      fin_cases a
+      · exact ⟨1, 2, by decide, by decide⟩
+      · exact ⟨2, 0, by decide, by decide⟩
+      · exact ⟨0, 1, by decide, by decide⟩
+    have h := pauli_mem_lieSubalgebra_of_single_anticomm_overlap (h0r_mem b) (h0r_mem c)
+      e₀.succ hbc (by simp [couplingWord, e₀.castSucc_lt_succ.ne'])
+      (by simp [couplingWord, e₀.castSucc_lt_succ.ne'])
+      (fun s hs => by
+        by_cases hs1 : s = e₀.castSucc
+        · subst hs1; exact Or.inl (by simp [couplingWord])
+        · exact Or.inr (Or.inl (by simp [couplingWord, hs1, hs])))
+    convert h using 2
+    funext s
+    by_cases hs2 : s = e₀.succ
+    · subst hs2; simp [onsiteWord, couplingWord, e₀.castSucc_lt_succ.ne', hmul_bc]
+    · by_cases hs1 : s = e₀.castSucc
+      · subst hs1; simp [onsiteWord, hs2, couplingWord, optMul]
+      · simp [onsiteWord, couplingWord, hs1, hs2, optMul]
+  refine ⟨fun v hv a => ?_, fun e he pq => ?_⟩
+  · by_cases hvk : v.val ≤ k
+    · exact hsite_k v hvk a
+    · have hveq : v = e₀.succ := Fin.ext (by dsimp [e₀]; omega)
+      rw [hveq]; exact hsucc_mem a
+  · by_cases hek : e.val < k
+    · exact hbond_k e hek pq
+    · have heeq : e = e₀ := Fin.ext (by dsimp [e₀]; omega)
+      rw [heeq]; exact hpr_mem pq.1 pq.2
+
+/-- Boundary `su(2^N)` Lie infection: whenever every bond matrix `bondMatrix u e` is nonsingular
+(`(bondMatrix u e).det ≠ 0`), `chainBoundaryLieSubalgebra u` equals the full `(4^N - 1)`-dimensional
+traceless matrix algebra `LinearMap.ker (Matrix.traceLinearMap (Config (n + 2)) ℂ ℂ)`. -/
+theorem chainBoundaryLieSubalgebra_eq_traceless {n : ℕ} (u : PathShell n)
+    (hdet : ∀ e : Fin (n + 1), (bondMatrix u e).det ≠ 0) :
+    (chainBoundaryLieSubalgebra u).toSubmodule =
+      LinearMap.ker (Matrix.traceLinearMap (Config (n + 2)) ℂ ℂ) := by
+  let L := chainBoundaryLieSubalgebra u
+  have hH_mem : pathHamiltonian u ∈ L := LieSubalgebra.subset_lieSpan (Or.inl rfl)
+  have h0_mem (a : Fin 3) : finitePauliMatrix (onsiteWord 0 a) ∈ L :=
+    LieSubalgebra.subset_lieSpan (Or.inr ⟨a, rfl⟩)
+  have hchain : ∀ k : ℕ, k ≤ n + 1 →
+      (∀ (v : Fin (n + 2)), v.val ≤ k → ∀ a : Fin 3, finitePauliMatrix (onsiteWord v a) ∈ L) ∧
+      (∀ (e : Fin (n + 1)), e.val < k → ∀ pq : Fin 3 × Fin 3,
+        finitePauliMatrix (couplingWord e pq) ∈ L) := by
+    intro k
+    induction k with
+    | zero =>
+        intro _
+        refine ⟨fun v hv a => ?_, fun _ he _ => (Nat.not_lt_zero _ he).elim⟩
+        have hv0 : v = 0 := Fin.ext (by simp only [Fin.val_zero]; omega)
+        rw [hv0]; exact h0_mem a
+    | succ k ih =>
+        intro hk1
+        obtain ⟨hsite_k, hbond_k⟩ := ih (by omega)
+        exact chainBoundary_step hk1 u (hdet ⟨k, hk1⟩) hH_mem hsite_k hbond_k
+  obtain ⟨hall_onsite, hall_bond⟩ := hchain (n + 1) le_rfl
+  have honsite_all (v : Fin (n + 2)) (a : Fin 3) : finitePauliMatrix (onsiteWord v a) ∈ L :=
+    hall_onsite v (by omega) a
+  have hbond_all (e : Fin (n + 1)) (pq : Fin 3 × Fin 3) :
+      finitePauliMatrix (couplingWord e pq) ∈ L :=
+    hall_bond e e.isLt pq
   apply le_antisymm
   · intro X hX
     change Matrix.trace X = 0
@@ -2751,86 +3018,280 @@ theorem chainBoundaryLieSubalgebra_eq_traceless {n : ℕ} (u : PathShell n)
         exact Finset.sum_eq_zero fun l _ => by
           rw [Matrix.trace_smul, finitePauliMatrix_trace_eq_zero_of_ne_identity _ (pathWord_ne_identity l), smul_zero]
       · exact finitePauliMatrix_trace_eq_zero_of_ne_identity _ fun hid => by
-          have h := congrFun hid 0; simp [onsiteWord, pauliIdentityLabel] at h
-    · exact Matrix.trace_zero _ _ _
+          have h := congrFun hid 0; simp [onsiteWord] at h
+    · simp
     · intro A B _ _ hA hB; rw [Matrix.trace_add, hA, hB, add_zero]
     · intro r A _ hA; rw [Matrix.trace_smul, hA, smul_zero]
     · intro A B _ _ _ _; rw [Ring.lie_def, Matrix.trace_sub, Matrix.trace_mul_comm, sub_self]
-  · intro X hX_tr
-    change Matrix.trace X = 0 at hX_tr
-    -- Expand `X` in the complete `4^N` Pauli basis of `Register N` via self-adjoint decomposition.
-    have hexp_sa (Y : Register N) (hY : IsSelfAdjoint Y) :
-        Y = ∑ P : Fin N → Option (Fin 3),
-          (((2 : ℂ) ^ N)⁻¹ * Matrix.trace (star (finitePauliMatrix P) * Y)) • finitePauliMatrix P := by
-      let b := finitePauliSelfAdjointBasis (Fin N)
-      let y_sa : selfAdjoint (Register N) := ⟨Y, hY⟩
-      have hb := b.sum_repr y_sa
-      have hval := congrArg Subtype.val hb
-      rw [AddSubgroupClass.coe_finset_sum] at hval
-      rw [← hval]
-      refine Finset.sum_congr rfl fun P _ => ?_
-      change (((b.repr y_sa P : ℝ) : ℂ) • finitePauliMatrix P) = _
-      congr 1
-      have htr := congrArg (fun Z : Register N => Matrix.trace (star (finitePauliMatrix P) * Z)) hval
-      rw [Matrix.mul_sum, Matrix.trace_sum, Finset.sum_eq_single P] at htr
-      · change _ • Matrix.trace (star (finitePauliMatrix P) * finitePauliMatrix P) = _ at htr
-        have hu := finitePauliMatrix_mem_unitary P
-        rw [(Unitary.mem_iff.mp hu).1, Matrix.trace_one] at htr
-        simp only [Config, Fintype.card_fun, Fintype.card_fin, Fintype.card_bool, smul_eq_mul,
-          Nat.cast_pow, Nat.cast_ofNat] at htr
-        have h2ne : (2 : ℂ) ^ N ≠ 0 := pow_ne_zero N (by norm_num)
-        exact eq_inv_mul_of_mul_eq₀ h2ne (by rw [mul_comm]; exact htr)
-      · intro Q _ hQP
-        change _ • Matrix.trace (star (finitePauliMatrix P) * finitePauliMatrix Q) = 0
-        rw [trace_star_finitePauliMatrix_mul, if_neg hQP.symm, smul_zero]
-      · simp
-    let H₁ : Register N := (1 / 2 : ℂ) • (X + star X)
-    let H₂ : Register N := (-Complex.I / 2 : ℂ) • (X - star X)
-    have hH₁_sa : IsSelfAdjoint H₁ := by
-      rw [isSelfAdjoint_iff, star_smul, star_add, star_star, add_comm (star X) X]
-      congr 1; simp [Complex.ext_iff]
-    have hH₂_sa : IsSelfAdjoint H₂ := by
-      rw [isSelfAdjoint_iff, star_smul, star_sub, star_star]
-      have h : star X - X = -(X - star X) := by abel
-      rw [h, smul_neg, ← neg_smul]; congr 1; simp [Complex.ext_iff]
-    have hX_split : X = H₁ + Complex.I • H₂ := by
-      dsimp only [H₁, H₂]
-      rw [smul_smul, show Complex.I * (-Complex.I / 2) = (1 / 2 : ℂ) by
-        linear_combination -(1 / 2 : ℂ) * Complex.I_sq, ← smul_add]
-      ext a b; simp only [Matrix.smul_apply, Matrix.add_apply, Matrix.sub_apply, smul_eq_mul]; ring
-    have hexp_any : X = ∑ P : Fin N → Option (Fin 3),
-        (((2 : ℂ) ^ N)⁻¹ * Matrix.trace (star (finitePauliMatrix P) * X)) • finitePauliMatrix P := by
-      conv_lhs => rw [hX_split, hexp_sa H₁ hH₁_sa, hexp_sa H₂ hH₂_sa, Finset.smul_sum, ← Finset.sum_add_distrib]
-      refine Finset.sum_congr rfl fun P _ => ?_
-      rw [smul_smul, ← add_smul]; congr 1
-      conv_rhs => rw [hX_split]
-      rw [Matrix.mul_add, Matrix.mul_smul, Matrix.trace_add, Matrix.trace_smul, smul_eq_mul]
-      ring
-    rw [hexp_any]
-    refine L.toSubmodule.sum_mem fun P _ => ?_
-    by_cases hid : P = pauliIdentityLabel N
-    · subst hid
-      have h1 : finitePauliMatrix (pauliIdentityLabel N) = (1 : Register N) := by
-        ext x y; rw [Matrix.one_apply]
-        by_cases hxy : x = y
-        · subst hxy; simp [finitePauliMatrix, pauliIdentityLabel, boolPauliOptionEntry, boolPauliOption]
-        · rw [if_neg hxy]
-          obtain ⟨s, hs⟩ := Function.ne_iff.mp hxy
-          exact Finset.prod_eq_zero (Finset.mem_univ s)
-            (by simp [pauliIdentityLabel, boolPauliOptionEntry, boolPauliOption, hs])
-      rw [h1, star_one, one_mul, hX_tr, mul_zero, zero_smul]
-      exact L.toSubmodule.zero_mem
-    · have hw_pos : 1 ≤ pauliWeight P := by
-        by_contra h0
-        have heq0 : (Finset.univ.filter fun s => P s ≠ none).card = 0 := by
-          unfold pauliWeight at h0; omega
-        rw [Finset.card_eq_zero] at heq0
-        apply hid; funext s
-        by_contra hne
-        exact Finset.notMem_empty s (heq0 ▸ Finset.mem_filter.mpr ⟨Finset.mem_univ s, hne⟩)
-      exact L.smul_mem _ (hall_pauli (pauliWeight P) hw_pos P rfl)
+  · exact traceless_le_lieSubalgebra_of_onsite_and_coupling honsite_all hbond_all
 
 /-! ## Section 4: Dynamical Majorana leakage, all-`r` Krylov barrier, & return-excised onset -/
+
+private theorem finiteQubitPauli_U2_conj_decomp (U₀ : Matrix Bool Bool ℂ)
+    (hU₀ : star U₀ * U₀ = 1 ∧ U₀ * star U₀ = 1) (b : Fin 3) :
+    U₀ * finiteQubitPauli b * star U₀ =
+      ∑ a : Fin 3,
+        (((Matrix.trace (finiteQubitPauli a * (U₀ * finiteQubitPauli b * star U₀))).re / 2 : ℝ) : ℂ) •
+          finiteQubitPauli a := by
+  let M := U₀ * finiteQubitPauli b * star U₀
+  let c_col : Fin 3 → ℝ := fun a => (Matrix.trace (finiteQubitPauli a * M)).re / 2
+  change M = ∑ a : Fin 3, ((c_col a : ℝ) : ℂ) • finiteQubitPauli a
+  have hP_sa (a : Fin 3) : star (finiteQubitPauli a) = finiteQubitPauli a := by
+    rw [Matrix.star_eq_conjTranspose, (finiteQubitPauli_isHermitian a).eq]
+  have htr0 : Matrix.trace M = 0 := by
+    dsimp only [M]; rw [Matrix.trace_mul_comm, ← mul_assoc, hU₀.1, one_mul]
+    fin_cases b <;> simp [Matrix.trace, finiteQubitPauli]
+  have hM_sa : star M = M := by
+    dsimp only [M]; rw [star_mul, star_mul, star_star, hP_sa b, mul_assoc]
+  have hreal_tr (a : Fin 3) :
+      Matrix.trace (finiteQubitPauli a * M) / 2 = ((c_col a : ℝ) : ℂ) := by
+    have htr_st (X : Matrix Bool Bool ℂ) : star (Matrix.trace X) = Matrix.trace (star X) := by
+      simp [Matrix.trace]
+    have hst : star (Matrix.trace (finiteQubitPauli a * M)) =
+        Matrix.trace (finiteQubitPauli a * M) := by
+      rw [htr_st, star_mul, hM_sa, hP_sa a, Matrix.trace_mul_comm]
+    have him0 : (Matrix.trace (finiteQubitPauli a * M)).im = 0 := by
+      have h := congrArg Complex.im hst
+      simp only [Complex.star_def, Complex.conj_im] at h; linarith only [h]
+    dsimp only [c_col]; apply Complex.ext <;> simp [him0]
+  have hdec : M = (Matrix.trace M / 2) • (1 : Matrix Bool Bool ℂ) +
+      ∑ a : Fin 3, (Matrix.trace (finiteQubitPauli a * M) / 2) • finiteQubitPauli a := by
+    ext x y; fin_cases x <;> fin_cases y
+    all_goals simp [finiteQubitPauli, Matrix.trace, Matrix.mul_apply,
+      Fin.sum_univ_three, Matrix.smul_apply, smul_eq_mul]
+    · ring
+    · ring_nf; rw [Complex.I_sq]; ring
+    · ring_nf; rw [Complex.I_sq]; ring
+    · ring
+  rw [htr0, zero_div, zero_smul, zero_add] at hdec
+  rw [hdec]; exact Finset.sum_congr rfl fun a _ => by rw [hreal_tr a]
+
+private theorem trace_finiteQubitPauli_mul (p q : Fin 3) :
+    Matrix.trace (finiteQubitPauli p * finiteQubitPauli q) = if p = q then 2 else 0 := by
+  fin_cases p <;> fin_cases q <;>
+    simp [finiteQubitPauli, Matrix.trace, Matrix.mul_apply] <;> norm_num
+
+private def cliffordTwirl {A : Type*} [CStarAlgebra A] {m : ℕ} (γ : Fin m → A) (c : Fin m) :
+    A →ₗ[ℂ] A where
+  toFun X := (1 / 2 : ℂ) • (X + γ c * X * γ c)
+  map_add' X Y := by rw [← smul_add]; congr 1; rw [mul_add, add_mul]; abel
+  map_smul' r X := by
+    simp only [RingHom.id_apply, mul_smul_comm, smul_mul_assoc, ← smul_add, smul_smul,
+      mul_comm (1 / 2 : ℂ) r]
+
+private def cliffordFoldTwirl {A : Type*} [CStarAlgebra A] {m : ℕ} (γ : Fin m → A)
+    (L : List (Fin m)) : A →ₗ[ℂ] A :=
+  L.foldr (fun c acc => (cliffordTwirl γ c).comp acc) LinearMap.id
+
+private theorem mem_cliffordQuadraticSpan_of_comm_mem_span_and_fold_zero
+    {A : Type*} [CStarAlgebra A] {m : ℕ} {γ : Fin m → A}
+    (hsq : ∀ a, γ a * γ a = 1)
+    (hanti : ∀ a b, a ≠ b → γ a * γ b = -(γ b * γ a))
+    {H' : A}
+    (hcomm : ∀ c : Fin m, H' * γ c - γ c * H' ∈ Submodule.span ℂ (Set.range γ))
+    {L : List (Fin m)} (hfold : cliffordFoldTwirl γ L H' = 0) :
+    H' ∈ cliffordQuadraticSpan γ := by
+  let Q₂ := cliffordQuadraticSpan γ
+  have htwirl_Q₂ (c : Fin m) : ∀ Y ∈ Q₂, cliffordTwirl γ c Y ∈ Q₂ := by
+    intro Y hY
+    refine Submodule.span_induction ?_ (by simp)
+      (fun u v _ _ hu hv => by rw [map_add]; exact Q₂.add_mem hu hv)
+      (fun r u _ hu => by rw [map_smul]; exact Q₂.smul_mem r hu) hY
+    rintro _ (rfl | ⟨a, b, hab, rfl⟩)
+    · change (1 / 2 : ℂ) • ((1 : A) + γ c * 1 * γ c) ∈ Q₂
+      rw [mul_one, hsq c, ← two_smul ℂ, smul_smul]
+      norm_num; exact Submodule.subset_span (Or.inl rfl)
+    · change (1 / 2 : ℂ) • (γ a * γ b + γ c * (γ a * γ b) * γ c) ∈ Q₂
+      by_cases hca : c = a
+      · subst hca
+        have h1 : γ c * (γ c * γ b) * γ c = -(γ c * γ b) := by
+          rw [← mul_assoc (γ c) (γ c), hsq c, one_mul, hanti b c hab.symm]
+        rw [h1, add_neg_cancel, smul_zero]; exact Q₂.zero_mem
+      · by_cases hcb : c = b
+        · subst hcb
+          have h1 : γ c * (γ a * γ c) * γ c = -(γ a * γ c) := by
+            rw [mul_assoc (γ c) (γ a * γ c) (γ c), mul_assoc (γ a) (γ c) (γ c),
+              hsq c, mul_one, hanti c a hca]
+          rw [h1, add_neg_cancel, smul_zero]; exact Q₂.zero_mem
+        · have h1 : γ c * (γ a * γ b) * γ c = γ a * γ b := by
+            calc γ c * (γ a * γ b) * γ c
+                = (γ c * γ a) * (γ b * γ c) := by simp only [mul_assoc]
+              _ = (-(γ a * γ c)) * (-(γ c * γ b)) := by
+                  rw [hanti c a hca, hanti b c (Ne.symm hcb)]
+              _ = γ a * (γ c * γ c) * γ b := by rw [neg_mul, mul_neg, neg_neg]; simp only [mul_assoc]
+              _ = γ a * γ b := by rw [hsq c, mul_one]
+          rw [h1, ← two_smul ℂ, smul_smul]; norm_num
+          exact Submodule.subset_span (Or.inr ⟨a, b, hab, rfl⟩)
+  have hdiff_twirl (c : Fin m) : H' - cliffordTwirl γ c H' ∈ Q₂ := by
+    have hid : H' - cliffordTwirl γ c H' = (1 / 2 : ℂ) • ((H' * γ c - γ c * H') * γ c) := by
+      change H' - (1 / 2 : ℂ) • (H' + γ c * H' * γ c) =
+        (1 / 2 : ℂ) • ((H' * γ c - γ c * H') * γ c)
+      rw [sub_mul, mul_assoc H' (γ c) (γ c), hsq c, mul_one, smul_add, smul_sub]
+      conv_lhs =>
+        arg 1
+        rw [show H' = (1 / 2 : ℂ) • H' + (1 / 2 : ℂ) • H' by rw [← add_smul]; norm_num]
+      abel
+    rw [hid]
+    refine Q₂.smul_mem _ ?_
+    refine Submodule.span_induction ?_ (by simp)
+      (fun u v _ _ hu hv => by rw [add_mul]; exact Q₂.add_mem hu hv)
+      (fun r u _ hu => by rw [smul_mul_assoc]; exact Q₂.smul_mem r hu) (hcomm c)
+    rintro _ ⟨b, rfl⟩
+    by_cases hbc : b = c
+    · subst hbc; rw [hsq b]; exact Submodule.subset_span (Or.inl rfl)
+    · exact Submodule.subset_span (Or.inr ⟨b, c, hbc, rfl⟩)
+  have htelescope : ∀ K : List (Fin m), H' - cliffordFoldTwirl γ K H' ∈ Q₂ := by
+    intro K; induction K with
+    | nil => rw [show cliffordFoldTwirl γ [] H' = H' from rfl, sub_self]; exact Q₂.zero_mem
+    | cons c tail ih =>
+        have h1 : cliffordTwirl γ c H' - cliffordFoldTwirl γ (c :: tail) H' =
+            cliffordTwirl γ c (H' - cliffordFoldTwirl γ tail H') := by
+          rw [map_sub]; rfl
+        have h2 : H' - cliffordFoldTwirl γ (c :: tail) H' =
+            (H' - cliffordTwirl γ c H') +
+              (cliffordTwirl γ c H' - cliffordFoldTwirl γ (c :: tail) H') := by abel
+        rw [h2, h1]
+        exact Q₂.add_mem (hdiff_twirl c) (htwirl_Q₂ c _ ih)
+  have ht := htelescope L
+  rwa [hfold, sub_zero] at ht
+
+private theorem fullJWFoldTwirl_pauli_eq_zero {n : ℕ}
+    (P : Fin (n + 2) → Option (Fin 3)) (hP : P ≠ pauliIdentityLabel (n + 2)) :
+    cliffordFoldTwirl (fullJWMajorana n) (List.finRange (2 * (n + 2))) (finitePauliMatrix P) = 0 := by
+  let S_occ := Finset.univ.filter fun s : Fin (n + 2) => P s ≠ none
+  have hS_ne : S_occ.Nonempty := by
+    by_contra hemp
+    rw [Finset.not_nonempty_iff_eq_empty] at hemp
+    apply hP; funext s; by_contra hs
+    exact Finset.notMem_empty s (hemp ▸ Finset.mem_filter.mpr ⟨Finset.mem_univ s, hs⟩)
+  let s₀ : Fin (n + 2) := S_occ.min' hS_ne
+  have hs₀_mem : s₀ ∈ S_occ := Finset.min'_mem S_occ hS_ne
+  have hs₀_min : ∀ s : Fin (n + 2), s < s₀ → P s = none := fun s hlt => by
+    by_contra hs
+    exact not_le_of_gt hlt (Finset.min'_le S_occ s (Finset.mem_filter.mpr ⟨Finset.mem_univ s, hs⟩))
+  obtain ⟨q₀, hPq₀⟩ := Option.ne_none_iff_exists'.mp (Finset.mem_filter.mp hs₀_mem).2
+  let c₀ : Fin (2 * (n + 2)) := ⟨2 * s₀.val + (if q₀ = 0 then 1 else 0), by split_ifs <;> omega⟩
+  have hc₀_anti : fullJWMajorana n c₀ * finitePauliMatrix P * fullJWMajorana n c₀ =
+      -finitePauliMatrix P := by
+    have hdiv : c₀.val / 2 = s₀.val := by dsimp [c₀]; split_ifs <;> omega
+    have hmod : (c₀.val % 2 = 0) ↔ q₀ ≠ 0 := by dsimp [c₀]; split_ifs with h0 <;> simp [h0]
+    have hanti_mul : fullJWMajorana n c₀ * finitePauliMatrix P =
+        -(finitePauliMatrix P * fullJWMajorana n c₀) := by
+      unfold fullJWMajorana
+      rw [finitePauliMatrix_mul, finitePauliMatrix_mul]
+      have hlbl : (fun s => optMul (fullJWMajoranaWord n c₀ s) (P s)) =
+          fun s => optMul (P s) (fullJWMajoranaWord n c₀ s) :=
+        funext fun _ => optMul_comm _ _
+      have hout1 : ∀ s ∈ ({s₀} : Finset (Fin (n + 2)))ᶜ,
+          optPhase (fullJWMajoranaWord n c₀ s) (P s) = 1 := by
+        intro s hs
+        have hne : s.val ≠ s₀.val := fun h => (Finset.mem_compl.mp hs) (Finset.mem_singleton.mpr (Fin.ext h))
+        rcases lt_or_gt_of_ne hne with hlt | hgt
+        · rw [hs₀_min s hlt, optPhase_none_right]
+        · have hn : ¬ s.val < s₀.val := by omega
+          simp [fullJWMajoranaWord, hdiv, hn, hne, optPhase]
+      have hout2 : ∀ s ∈ ({s₀} : Finset (Fin (n + 2)))ᶜ,
+          optPhase (P s) (fullJWMajoranaWord n c₀ s) = 1 := by
+        intro s hs
+        have hne : s.val ≠ s₀.val := fun h => (Finset.mem_compl.mp hs) (Finset.mem_singleton.mpr (Fin.ext h))
+        rcases lt_or_gt_of_ne hne with hlt | hgt
+        · rw [hs₀_min s hlt]; rfl
+        · have hn : ¬ s.val < s₀.val := by omega
+          simp [fullJWMajoranaWord, hdiv, hn, hne, optPhase_none_right]
+      rw [hlbl, ← Finset.prod_mul_prod_compl ({s₀} : Finset (Fin (n + 2))),
+        ← Finset.prod_mul_prod_compl ({s₀} : Finset (Fin (n + 2))),
+        Finset.prod_singleton, Finset.prod_singleton,
+        Finset.prod_eq_one hout1, Finset.prod_eq_one hout2, mul_one, mul_one, hPq₀]
+      simp only [fullJWMajoranaWord, hdiv, lt_irrefl, ↓reduceIte]
+      fin_cases q₀ <;> simp [hmod, optPhase]
+    rw [hanti_mul, neg_mul, mul_assoc, fullJWMajorana_sq, mul_one]
+  have hdich (d : Fin (2 * (n + 2))) :
+      cliffordTwirl (fullJWMajorana n) d (finitePauliMatrix P) = finitePauliMatrix P ∨
+      cliffordTwirl (fullJWMajorana n) d (finitePauliMatrix P) = 0 := by
+    have hconj_sign : fullJWMajorana n d * finitePauliMatrix P * fullJWMajorana n d =
+          finitePauliMatrix P ∨
+        fullJWMajorana n d * finitePauliMatrix P * fullJWMajorana n d = -finitePauliMatrix P := by
+      unfold fullJWMajorana
+      have h1 : finitePauliMatrix (fullJWMajoranaWord n d) * finitePauliMatrix P *
+          finitePauliMatrix (fullJWMajoranaWord n d) =
+          (∏ s : Fin (n + 2), (optPhase (fullJWMajoranaWord n d s) (P s) *
+            optPhase (optMul (fullJWMajoranaWord n d s) (P s)) (fullJWMajoranaWord n d s))) •
+            finitePauliMatrix P := by
+        rw [finitePauliMatrix_mul, Matrix.smul_mul, finitePauliMatrix_mul, smul_smul, ← Finset.prod_mul_distrib]
+        congr 2; funext s
+        exact (optMul_conj_self (fullJWMajoranaWord n d s) (P s)).1
+      rw [h1]
+      have hprod_pm : ∀ (S : Finset (Fin (n + 2))) (f : Fin (n + 2) → ℂ),
+          (∀ s ∈ S, f s = 1 ∨ f s = -1) → (∏ s ∈ S, f s) = 1 ∨ (∏ s ∈ S, f s) = -1 := by
+        intro S f hf; induction S using Finset.induction_on with
+        | empty => left; simp
+        | @insert s S hs ih =>
+            rw [Finset.prod_insert hs]
+            rcases hf s (Finset.mem_insert_self s S) with h1 | hm1 <;>
+              rcases ih (fun t ht => hf t (Finset.mem_insert_of_mem ht)) with p1 | pm1
+            · left; rw [h1, p1, mul_one]
+            · right; rw [h1, pm1, one_mul]
+            · right; rw [hm1, p1, mul_one]
+            · left; rw [hm1, pm1]; norm_num
+      rcases hprod_pm Finset.univ _
+        (fun s _ => (optMul_conj_self (fullJWMajoranaWord n d s) (P s)).2) with hp1 | hm1
+      · left; rw [hp1, one_smul]
+      · right; rw [hm1, neg_one_smul]
+    rcases hconj_sign with hp | hm
+    · left
+      change (1 / 2 : ℂ) • (finitePauliMatrix P +
+        fullJWMajorana n d * finitePauliMatrix P * fullJWMajorana n d) = _
+      rw [hp, ← two_smul ℂ, smul_smul]; norm_num
+    · right
+      change (1 / 2 : ℂ) • (finitePauliMatrix P +
+        fullJWMajorana n d * finitePauliMatrix P * fullJWMajorana n d) = 0
+      rw [hm, add_neg_cancel, smul_zero]
+  have hkill_c₀ : cliffordTwirl (fullJWMajorana n) c₀ (finitePauliMatrix P) = 0 := by
+    change (1 / 2 : ℂ) • (finitePauliMatrix P +
+      fullJWMajorana n c₀ * finitePauliMatrix P * fullJWMajorana n c₀) = 0
+    rw [hc₀_anti, add_neg_cancel, smul_zero]
+  have hfold_kill : ∀ L : List (Fin (2 * (n + 2))), c₀ ∈ L →
+      cliffordFoldTwirl (fullJWMajorana n) L (finitePauliMatrix P) = 0 := by
+    intro L; induction L with
+    | nil => intro h; exact (List.not_mem_nil h).elim
+    | cons d tail ih =>
+        intro hmem
+        change cliffordTwirl (fullJWMajorana n) d
+          (cliffordFoldTwirl (fullJWMajorana n) tail (finitePauliMatrix P)) = 0
+        by_cases hc_tail : c₀ ∈ tail
+        · rw [ih hc_tail, map_zero]
+        · have hdc : d = c₀ := ((List.mem_cons.mp hmem).resolve_right hc_tail).symm
+          subst hdc
+          have hdich_tail : ∀ K : List (Fin (2 * (n + 2))),
+              cliffordFoldTwirl (fullJWMajorana n) K (finitePauliMatrix P) = finitePauliMatrix P ∨
+              cliffordFoldTwirl (fullJWMajorana n) K (finitePauliMatrix P) = 0 := by
+            intro K; induction K with
+            | nil => exact Or.inl rfl
+            | cons e' K' ihK =>
+                change cliffordTwirl (fullJWMajorana n) e'
+                  (cliffordFoldTwirl (fullJWMajorana n) K' (finitePauliMatrix P)) =
+                  finitePauliMatrix P ∨
+                  cliffordTwirl (fullJWMajorana n) e'
+                    (cliffordFoldTwirl (fullJWMajorana n) K' (finitePauliMatrix P)) = 0
+                rcases ihK with heq | hz
+                · rw [heq]; exact hdich e'
+                · rw [hz, map_zero]; exact Or.inr rfl
+          rcases hdich_tail tail with heq | hz
+          · rw [heq, hkill_c₀]
+          · rw [hz, map_zero]
+  exact hfold_kill (List.finRange (2 * (n + 2))) (List.mem_finRange c₀)
+
+private theorem mem_fullJWQuadraticSpan_of_comm_mem_majoranaSpan {n : ℕ} (u_S : PathShell n)
+    (hcomm : ∀ a : Fin (2 * (n + 2)),
+      pathHamiltonian u_S * fullJWMajorana n a - fullJWMajorana n a * pathHamiltonian u_S ∈
+        Submodule.span ℂ (Set.range (fullJWMajorana n))) :
+    pathHamiltonian u_S ∈ cliffordQuadraticSpan (fullJWMajorana n) := by
+  refine mem_cliffordQuadraticSpan_of_comm_mem_span_and_fold_zero
+    (fullJWMajorana_sq n) (fun _ _ h => fullJWMajorana_anticommute n h) hcomm
+    (L := List.finRange (2 * (n + 2))) ?_
+  rw [pathHamiltonian_eq_sum, map_sum]
+  exact Finset.sum_eq_zero fun l _ => by
+    rw [map_smul, fullJWFoldTwirl_pauli_eq_zero (pathWord l) (pathWord_ne_identity l), smul_zero]
 
 /-- Short-time dynamical leakage out of **every** locally rotated `2N`-Majorana subspace
 `span_ℂ {W Γ_b W*}` whenever `(bondMatrix u e).det ≠ 0`: on every window `(0, τ)` (`τ > 0`) and
@@ -2850,57 +3311,20 @@ theorem exists_time_majoranaSubspace_leakage_of_bondDet_ne_zero {n : ℕ}
   intro W M₁_rot
   by_contra hall_stay
   push Not at hall_stay
-  let N := n + 2
   -- Conjugate into the unrotated frame via `star W = prodLocalMatrix (fun s => star (R s))`.
-  let S_loc : Fin N → Matrix Bool Bool ℂ := fun s => star (R s)
-  have hS_u (s : Fin N) : star (S_loc s) * S_loc s = 1 ∧ S_loc s * star (S_loc s) = 1 := by
+  let S_loc : Fin (n + 2) → Matrix Bool Bool ℂ := fun s => star (R s)
+  have hS_u (s : Fin (n + 2)) : star (S_loc s) * S_loc s = 1 ∧ S_loc s * star (S_loc s) = 1 := by
     dsimp [S_loc]; rw [star_star]; exact ⟨(hR s).2, (hR s).1⟩
   have hstW_eq : star W = prodLocalMatrix S_loc := prodLocalMatrix_star R
-  have hW_u : W ∈ unitary (Register N) := prodLocalMatrix_mem_unitary R hR
-  -- Each single-qubit conjugation `S_loc s * σ_b * star (S_loc s)` is an invertible `3 × 3` real rotation.
-  have htwo_pauli (U₀ : Matrix Bool Bool ℂ) (hU₀ : star U₀ * U₀ = 1 ∧ U₀ * star U₀ = 1)
-      (b : Fin 3) :
-      let M := U₀ * finiteQubitPauli b * star U₀
-      let c_col : Fin 3 → ℝ := fun a => (Matrix.trace (finiteQubitPauli a * M)).re / 2
-      M = ∑ a : Fin 3, ((c_col a : ℝ) : ℂ) • finiteQubitPauli a := by
-    intro M c_col
-    have hP_sa (a : Fin 3) : star (finiteQubitPauli a) = finiteQubitPauli a := by
-      rw [Matrix.star_eq_conjTranspose, (finiteQubitPauli_isHermitian a).eq]
-    have htr0 : Matrix.trace M = 0 := by
-      dsimp only [M]; rw [Matrix.trace_mul_comm, ← mul_assoc, hU₀.1, one_mul]
-      fin_cases b <;> simp [Matrix.trace, finiteQubitPauli]
-    have hM_sa : star M = M := by
-      dsimp only [M]; rw [star_mul, star_mul, star_star, hP_sa b, mul_assoc]
-    have hreal_tr (a : Fin 3) :
-        Matrix.trace (finiteQubitPauli a * M) / 2 = ((c_col a : ℝ) : ℂ) := by
-      have htr_st (X : Matrix Bool Bool ℂ) : star (Matrix.trace X) = Matrix.trace (star X) := by
-        simp [Matrix.trace]
-      have hst : star (Matrix.trace (finiteQubitPauli a * M)) =
-          Matrix.trace (finiteQubitPauli a * M) := by
-        rw [htr_st, star_mul, hM_sa, hP_sa a, Matrix.trace_mul_comm]
-      have him0 : (Matrix.trace (finiteQubitPauli a * M)).im = 0 := by
-        have h := congrArg Complex.im hst
-        simp only [Complex.star_def, Complex.conj_im] at h; linarith only [h]
-      dsimp only [c_col]; apply Complex.ext <;> simp [him0]
-    have hdec : M = (Matrix.trace M / 2) • (1 : Matrix Bool Bool ℂ) +
-        ∑ a : Fin 3, (Matrix.trace (finiteQubitPauli a * M) / 2) • finiteQubitPauli a := by
-      ext x y; fin_cases x <;> fin_cases y
-      all_goals simp [finiteQubitPauli, Matrix.trace, Matrix.mul_apply,
-        Fin.sum_univ_three, Matrix.smul_apply, smul_eq_mul]
-      · ring
-      · linear_combination (M false true / 2 - M true false / 2) * Complex.I_sq
-      · linear_combination (M true false / 2 - M false true / 2) * Complex.I_sq
-      · ring
-    rw [htr0, zero_div, zero_smul, zero_add] at hdec
-    rw [hdec]; exact Finset.sum_congr rfl fun a _ => by rw [hreal_tr a]
-  let O_S (s : Fin N) : Matrix (Fin 3) (Fin 3) ℝ :=
+  have hW_u : W ∈ unitary (Register (n + 2)) := prodLocalMatrix_mem_unitary R hR
+  let O_S (s : Fin (n + 2)) : Matrix (Fin 3) (Fin 3) ℝ :=
     fun a b => (Matrix.trace (finiteQubitPauli a * (S_loc s * finiteQubitPauli b * star (S_loc s)))).re / 2
-  let O_R (s : Fin N) : Matrix (Fin 3) (Fin 3) ℝ :=
+  let O_R (s : Fin (n + 2)) : Matrix (Fin 3) (Fin 3) ℝ :=
     fun a b => (Matrix.trace (finiteQubitPauli a * (R s * finiteQubitPauli b * star (R s)))).re / 2
-  have hOS_det_ne (s : Fin N) : (O_S s).det ≠ 0 := by
+  have hOS_det_ne (s : Fin (n + 2)) : (O_S s).det ≠ 0 := by
     have hprod1 : O_R s * O_S s = 1 := by
       ext c b
-      have hS_exp := htwo_pauli (S_loc s) (hS_u s) b
+      have hS_exp := finiteQubitPauli_U2_conj_decomp (S_loc s) (hS_u s) b
       have hid : R s * (S_loc s * finiteQubitPauli b * star (S_loc s)) * star (R s) =
           finiteQubitPauli b := by
         dsimp only [S_loc]; rw [star_star]
@@ -2914,20 +3338,16 @@ theorem exists_time_majoranaSubspace_leakage_of_bondDet_ne_zero {n : ℕ}
         trans (∑ a : Fin 3, ∑ d : Fin 3,
           ((O_R s d a * O_S s a b : ℝ) : ℂ) • finiteQubitPauli d)
         · refine Finset.sum_congr rfl fun a _ => ?_
-          rw [Matrix.mul_smul, Matrix.smul_mul, htwo_pauli (R s) (hR s) a, Finset.smul_sum]
+          rw [Matrix.mul_smul, Matrix.smul_mul, finiteQubitPauli_U2_conj_decomp (R s) (hR s) a, Finset.smul_sum]
           exact Finset.sum_congr rfl fun d _ => by rw [smul_smul, Complex.ofReal_mul, mul_comm]
         · rw [Finset.sum_comm]
           exact Finset.sum_congr rfl fun d _ => by rw [← Finset.sum_smul, ← Complex.ofReal_sum]
       rw [hid] at hlhs
       have htr := congrArg (fun Z => (Matrix.trace (finiteQubitPauli c * Z)).re / 2) hlhs
-      have hpauli_tr (p q : Fin 3) :
-          Matrix.trace (finiteQubitPauli p * finiteQubitPauli q) = if p = q then 2 else 0 := by
-        fin_cases p <;> fin_cases q <;>
-          simp [finiteQubitPauli, Matrix.trace, Matrix.mul_apply] <;> norm_num
       rw [Matrix.mul_sum, Matrix.trace_sum] at htr
-      simp_rw [Matrix.mul_smul, Matrix.trace_smul, hpauli_tr c] at htr
+      simp_rw [Matrix.mul_smul, Matrix.trace_smul, trace_finiteQubitPauli_mul c] at htr
       rw [Finset.sum_eq_single c (fun d _ hdc => by simp [hdc.symm]) (by simp),
-        if_pos rfl, hpauli_tr c b] at htr
+        if_pos rfl] at htr
       by_cases hcb : c = b
       · subst hcb
         simp only [↓reduceIte, smul_eq_mul] at htr
@@ -2951,97 +3371,14 @@ theorem exists_time_majoranaSubspace_leakage_of_bondDet_ne_zero {n : ℕ}
         ∑ b₁ : Fin 3, ∑ b₂ : Fin 3, O_S e'.castSucc a₁ b₁ * O_S e'.succ a₂ b₂ * u (.inr (e', (b₁, b₂)))
   have hH_rot_eq : star W * pathHamiltonian u * W = pathHamiltonian u_S := by
     rw [hstW_eq, show W = star (prodLocalMatrix S_loc) by rw [← hstW_eq, star_star]]
-    have honsite (v : Fin N) (b : Fin 3) :
-        prodLocalMatrix S_loc * finitePauliMatrix (onsiteWord v b) * star (prodLocalMatrix S_loc) =
-          ∑ a : Fin 3, ((O_S v a b : ℝ) : ℂ) • finitePauliMatrix (onsiteWord v a) := by
-      rw [prodLocalMatrix_conj_pauli]; ext x y; rw [Matrix.sum_apply]; simp only [prodLocalMatrix]
-      rw [← Finset.prod_mul_prod_compl ({v} : Finset (Fin N)), Finset.prod_singleton]
-      have hrest : (∏ s ∈ ({v} : Finset (Fin N))ᶜ,
-          (S_loc s * boolPauliOption (onsiteWord v b s) * star (S_loc s)) (x s) (y s)) =
-          ∏ s ∈ ({v} : Finset (Fin N))ᶜ, boolPauliOptionEntry none (x s, y s) :=
-        Finset.prod_congr rfl fun s hs => by
-          simp [onsiteWord, show s ≠ v by simpa using hs, boolPauliOption, boolPauliOptionEntry,
-            (hS_u s).2, Matrix.one_apply]
-      rw [show boolPauliOption (onsiteWord v b v) = finiteQubitPauli b by simp [onsiteWord, boolPauliOption],
-        htwo_pauli (S_loc v) (hS_u v) b, hrest, Matrix.sum_apply, Finset.sum_mul]
-      refine Finset.sum_congr rfl fun a _ => ?_
-      rw [Matrix.smul_apply, Matrix.smul_apply, smul_eq_mul, smul_eq_mul, mul_assoc]; congr 1
-      unfold finitePauliMatrix
-      rw [← Finset.prod_mul_prod_compl ({v} : Finset (Fin N)), Finset.prod_singleton]
-      congr 1
-      · simp [onsiteWord, boolPauliOptionEntry, boolPauliOption]
-      · exact Finset.prod_congr rfl fun s hs => by simp [onsiteWord, show s ≠ v by simpa using hs]
-    have hcoupling (e' : Fin (n + 1)) (b₁ b₂ : Fin 3) :
-        prodLocalMatrix S_loc * finitePauliMatrix (couplingWord e' (b₁, b₂)) * star (prodLocalMatrix S_loc) =
-          ∑ a₁ : Fin 3, ∑ a₂ : Fin 3,
-            ((O_S e'.castSucc a₁ b₁ * O_S e'.succ a₂ b₂ : ℝ) : ℂ) •
-              finitePauliMatrix (couplingWord e' (a₁, a₂)) := by
-      rw [prodLocalMatrix_conj_pauli]; ext x y
-      simp only [prodLocalMatrix, Matrix.sum_apply, Matrix.smul_apply, smul_eq_mul]
-      let pairSet : Finset (Fin N) := {e'.castSucc, e'.succ}
-      have hne_cs : e'.castSucc ≠ e'.succ := e'.castSucc_lt_succ.ne
-      rw [← Finset.prod_mul_prod_compl pairSet, Finset.prod_pair hne_cs]
-      have hrest : (∏ s ∈ pairSetᶜ,
-          (S_loc s * boolPauliOption (couplingWord e' (b₁, b₂) s) * star (S_loc s)) (x s) (y s)) =
-          ∏ s ∈ pairSetᶜ, boolPauliOptionEntry none (x s, y s) :=
-        Finset.prod_congr rfl fun s hs => by
-          simp only [pairSet, Finset.mem_compl, Finset.mem_insert, Finset.mem_singleton, not_or] at hs
-          simp [couplingWord, hs.1, hs.2, boolPauliOption, boolPauliOptionEntry, (hS_u s).2, Matrix.one_apply]
-      rw [show boolPauliOption (couplingWord e' (b₁, b₂) e'.castSucc) = finiteQubitPauli b₁ by
-          simp [couplingWord, boolPauliOption],
-        show boolPauliOption (couplingWord e' (b₁, b₂) e'.succ) = finiteQubitPauli b₂ by
-          simp [couplingWord, hne_cs.symm, boolPauliOption],
-        htwo_pauli (S_loc e'.castSucc) (hS_u _) b₁,
-        htwo_pauli (S_loc e'.succ) (hS_u _) b₂,
-        hrest, Matrix.sum_apply, Matrix.sum_apply, Finset.sum_mul, Finset.sum_mul]
-      refine Finset.sum_congr rfl fun a₁ _ => ?_
-      rw [Finset.mul_sum, Finset.sum_mul]
-      refine Finset.sum_congr rfl fun a₂ _ => ?_
-      simp only [Matrix.smul_apply, smul_eq_mul, Complex.ofReal_mul]
-      have hfp : finitePauliMatrix (couplingWord e' (a₁, a₂)) x y =
-          finiteQubitPauli a₁ (x e'.castSucc) (y e'.castSucc) *
-            finiteQubitPauli a₂ (x e'.succ) (y e'.succ) *
-            ∏ s ∈ pairSetᶜ, boolPauliOptionEntry none (x s, y s) := by
-        unfold finitePauliMatrix
-        rw [← Finset.prod_mul_prod_compl pairSet, Finset.prod_pair hne_cs]
-        congr 1; congr 1
-        · simp [couplingWord, boolPauliOptionEntry, boolPauliOption]
-        · simp [couplingWord, hne_cs.symm, boolPauliOptionEntry, boolPauliOption]
-        · exact Finset.prod_congr rfl fun s hs => by
-            simp only [pairSet, Finset.mem_compl, Finset.mem_insert, Finset.mem_singleton, not_or] at hs
-            simp [couplingWord, hs.1, hs.2]
-      rw [hfp]; ring
-    rw [pathHamiltonian_eq_sum, pathHamiltonian_eq_sum, Matrix.mul_sum, Matrix.sum_mul]
-    simp only [Fintype.sum_sum_type, Fintype.sum_prod_type]
-    refine congrArg₂ (· + ·) ?_ ?_
-    · refine Finset.sum_congr rfl fun v _ => ?_
-      trans (∑ b : Fin 3, ∑ a : Fin 3,
-        (((O_S v a b * u (.inl (v, b)) : ℝ) : ℂ) • finitePauliMatrix (onsiteWord v a)))
-      · refine Finset.sum_congr rfl fun b _ => ?_
-        rw [Matrix.mul_smul, Matrix.smul_mul, show pathWord (.inl (v, b)) = onsiteWord v b from rfl,
-          honsite v b, Finset.smul_sum]
-        exact Finset.sum_congr rfl fun a _ => by rw [smul_smul, Complex.ofReal_mul, mul_comm]
-      · rw [Finset.sum_comm]
-        exact Finset.sum_congr rfl fun a _ => by rw [← Finset.sum_smul, ← Complex.ofReal_sum]; rfl
-    · refine Finset.sum_congr rfl fun e' _ => ?_
-      trans (∑ b₁ : Fin 3, ∑ b₂ : Fin 3, ∑ a₁ : Fin 3, ∑ a₂ : Fin 3,
-        (((O_S e'.castSucc a₁ b₁ * O_S e'.succ a₂ b₂ * u (.inr (e', (b₁, b₂))) : ℝ) : ℂ) •
-          finitePauliMatrix (couplingWord e' (a₁, a₂))))
-      · refine Finset.sum_congr rfl fun b₁ _ => Finset.sum_congr rfl fun b₂ _ => ?_
-        rw [Matrix.mul_smul, Matrix.smul_mul,
-          show pathWord (.inr (e', (b₁, b₂))) = couplingWord e' (b₁, b₂) from rfl,
-          hcoupling e' b₁ b₂, Finset.smul_sum]
-        refine Finset.sum_congr rfl fun a₁ _ => ?_
-        rw [Finset.smul_sum]
-        exact Finset.sum_congr rfl fun a₂ _ => by rw [smul_smul]; congr 1; push_cast; ring
-      · rw [sum4_comm']
-        exact Finset.sum_congr rfl fun a₁ _ => Finset.sum_congr rfl fun a₂ _ => by
-          simp_rw [← Finset.sum_smul, ← Complex.ofReal_sum]; rfl
+    exact prodLocalMatrix_conj_pathHamiltonian S_loc O_S (fun s => (hS_u s).2)
+      (fun s b => finiteQubitPauli_U2_conj_decomp (S_loc s) (hS_u s) b)
+      u u_S (fun _ _ => rfl) (fun _ _ _ => rfl)
   have hdet_S : (bondMatrix u_S e).det ≠ 0 := by
     have hB : bondMatrix u_S e = O_S e.castSucc * bondMatrix u e * (O_S e.succ)ᵀ := by
       ext a₁ a₂
-      simp only [bondMatrix, u_S, WithLp.ofLp_toLp, Matrix.mul_apply, Matrix.transpose_apply,
-        Finset.sum_mul]
+      simp only [bondMatrix, u_S, Matrix.mul_apply, Matrix.transpose_apply, Finset.sum_mul]
+      conv_rhs => rw [Finset.sum_comm]
       exact Finset.sum_congr rfl fun b₁ _ => Finset.sum_congr rfl fun b₂ _ => by ring
     rw [hB, Matrix.det_mul, Matrix.det_mul, Matrix.det_transpose]
     exact mul_ne_zero (mul_ne_zero (hOS_det_ne _) hdet) (hOS_det_ne _)
@@ -3049,11 +3386,11 @@ theorem exists_time_majoranaSubspace_leakage_of_bondDet_ne_zero {n : ℕ}
   let H' := pathHamiltonian u_S
   have hH'_sa : IsSelfAdjoint H' := isSelfAdjoint_pathHamiltonian u_S
   let M₁ := Submodule.span ℂ (Set.range (fullJWMajorana n))
-  have hstay_unrot : ∀ t ∈ Ioo (0 : ℝ) τ, ∀ a : Fin (2 * N),
+  have hstay_unrot : ∀ t ∈ Ioo (0 : ℝ) τ, ∀ a : Fin (2 * (n + 2)),
       unitaryEvolution H' t * fullJWMajorana n a * star (unitaryEvolution H' t) ∈ M₁ := by
     intro t ht a
     have hmem_rot := hall_stay t ht a
-    let stW_ug : Matrix.unitaryGroup (Config N) ℂ := ⟨star W, Unitary.star_mem hW_u⟩
+    let stW_ug : Matrix.unitaryGroup (Config (n + 2)) ℂ := ⟨star W, Unitary.star_mem hW_u⟩
     have hev_st := unitaryEvolution_conj (star W) (pathHamiltonian u)
       (Unitary.isUnit_coe (U := stW_ug)) t
     rw [inv_eq_star_of_mem_unitary (Unitary.star_mem hW_u), star_star, hH_rot_eq] at hev_st
@@ -3063,11 +3400,7 @@ theorem exists_time_majoranaSubspace_leakage_of_bondDet_ne_zero {n : ℕ}
           (W * fullJWMajorana n a * star W) * star (unitaryEvolution (pathHamiltonian u) t)) * W := by
       dsimp only [H']
       rw [hev_st, star_mul, star_mul, star_star]
-      calc (star W * unitaryEvolution (pathHamiltonian u) t * W) * fullJWMajorana n a *
-            (star W * star (unitaryEvolution (pathHamiltonian u) t) * W)
-          = star W * (unitaryEvolution (pathHamiltonian u) t *
-              (W * fullJWMajorana n a * star W) * star (unitaryEvolution (pathHamiltonian u) t)) * W := by
-              simp only [mul_assoc]
+      simp only [mul_assoc]
     rw [hconj_eq]
     refine Submodule.span_induction ?_ (by simp)
       (fun x y _ _ hx hy => by rw [Matrix.mul_add, Matrix.add_mul]; exact Submodule.add_mem _ hx hy)
@@ -3081,23 +3414,23 @@ theorem exists_time_majoranaSubspace_leakage_of_bondDet_ne_zero {n : ℕ}
     rw [hc]
     exact Submodule.subset_span ⟨b, rfl⟩
   -- Differentiate along `t_k = τ / (k + 2) → 0⁺` via first-order Heisenberg remainder.
-  have hclosed_M₁ : IsClosed (M₁ : Set (Register N)) := by
+  have hclosed_M₁ : IsClosed (M₁ : Set (Register (n + 2))) := by
     haveI : FiniteDimensional ℂ M₁ := FiniteDimensional.span_of_finite ℂ (Set.finite_range _)
     exact M₁.closed_of_finiteDimensional
-  have hcomm_mem_M₁ (a : Fin (2 * N)) : H' * fullJWMajorana n a - fullJWMajorana n a * H' ∈ M₁ := by
+  have hcomm_mem_M₁ (a : Fin (2 * (n + 2))) : H' * fullJWMajorana n a - fullJWMajorana n a * H' ∈ M₁ := by
     let t_seq : ℕ → ℝ := fun k => τ / ((k : ℝ) + 2)
     have ht_pos (k : ℕ) : 0 < t_seq k := div_pos hτ (by positivity)
     have ht_mem (k : ℕ) : t_seq k ∈ Ioo (0 : ℝ) τ := by
       refine ⟨ht_pos k, ?_⟩
       dsimp [t_seq]
-      exact div_lt_self hτ (by positivity)
-    let dq : ℕ → Register N := fun k =>
+      exact div_lt_self hτ (by have hk0 : (0 : ℝ) ≤ k := Nat.cast_nonneg k; linarith only [hk0])
+    let dq : ℕ → Register (n + 2) := fun k =>
       (((t_seq k)⁻¹ : ℝ) : ℂ) •
         (unitaryEvolution H' (t_seq k) * fullJWMajorana n a * star (unitaryEvolution H' (t_seq k)) -
           fullJWMajorana n a)
     have hdq_mem (k : ℕ) : dq k ∈ M₁ :=
       M₁.smul_mem _ (M₁.sub_mem (hstay_unrot (t_seq k) (ht_mem k) a) (Submodule.subset_span ⟨a, rfl⟩))
-    let lim_val : Register N := (-Complex.I) • (H' * fullJWMajorana n a - fullJWMajorana n a * H')
+    let lim_val : Register (n + 2) := (-Complex.I) • (H' * fullJWMajorana n a - fullJWMajorana n a * H')
     have htend_dq : Tendsto dq atTop (𝓝 lim_val) := by
       rw [tendsto_iff_norm_sub_tendsto_zero]
       let C_bd : ℝ := 2 * ‖H'‖ ^ 2 * ‖fullJWMajorana n a‖
@@ -3124,8 +3457,9 @@ theorem exists_time_majoranaSubspace_leakage_of_bondDet_ne_zero {n : ℕ}
               star (unitaryEvolution H' (t_seq k))) -
               (fullJWMajorana n a + ((t_seq k : ℝ) : ℂ) • lim_val)) := by
           dsimp only [dq]
-          rw [smul_sub, sub_add_eq_sub_sub, smul_sub, smul_smul, ← Complex.ofReal_mul,
-            inv_mul_cancel₀ (ht_pos k).ne', Complex.ofReal_one, one_smul]
+          conv_rhs =>
+            rw [sub_add_eq_sub_sub, smul_sub, smul_smul, ← Complex.ofReal_mul,
+              inv_mul_cancel₀ (ht_pos k).ne', Complex.ofReal_one, one_smul]
         rw [hdq_diff, norm_smul, Complex.norm_real, Real.norm_of_nonneg (inv_nonneg.mpr (ht_pos k).le)]
         calc (t_seq k)⁻¹ * ‖unitaryEvolution H' (t_seq k) * fullJWMajorana n a *
               star (unitaryEvolution H' (t_seq k)) -
@@ -3141,203 +3475,20 @@ theorem exists_time_majoranaSubspace_leakage_of_bondDet_ne_zero {n : ℕ}
                 _ = 2 * ‖H'‖ ^ 2 * ‖fullJWMajorana n a‖ * t_seq k := by
                       rw [inv_mul_cancel₀ ht_ne, one_mul]
       have htend_t0 : Tendsto (fun k : ℕ => C_bd * t_seq k) atTop (𝓝 0) := by
-        simpa only [mul_zero] using
-          (tendsto_const_div_atTop_nhds_zero_nat τ |> fun h =>
-            by
-              have h1 : Tendsto (fun k : ℕ => τ / ((k : ℝ) + 2)) atTop (𝓝 0) := by
-                simpa [Nat.cast_add] using h.comp (tendsto_add_atTop_nat 2)
-              exact h1.const_mul C_bd)
+        have h1 : Tendsto t_seq atTop (𝓝 0) := by
+          have hc := (tendsto_const_div_atTop_nhds_zero_nat τ).comp (tendsto_add_atTop_nat 2)
+          refine hc.congr fun k => ?_
+          dsimp [Function.comp, t_seq]; push_cast; rfl
+        simpa only [mul_zero] using h1.const_mul C_bd
       exact squeeze_zero (fun _ => norm_nonneg _) hbd htend_t0
     have hlim_mem := hclosed_M₁.mem_of_tendsto htend_dq (Eventually.of_forall hdq_mem)
     have hsm := M₁.smul_mem Complex.I hlim_mem
     dsimp only [lim_val] at hsm
     rwa [smul_smul, show Complex.I * -Complex.I = (1 : ℂ) by linear_combination -Complex.I_sq,
       one_smul] at hsm
-  -- Clifford twirl telescope forces `H' ∈ cliffordQuadraticSpan (fullJWMajorana n)`.
-  let Γ := fullJWMajorana n
-  let Q₂ := cliffordQuadraticSpan Γ
-  let twirl (c : Fin (2 * N)) : Register N →ₗ[ℂ] Register N :=
-    { toFun := fun X => (1 / 2 : ℂ) • (X + Γ c * X * Γ c)
-      map_add' := fun X Y => by rw [← smul_add]; congr 1; rw [mul_add, add_mul]; abel
-      map_smul' := fun r X => by
-        simp only [RingHom.id_apply, mul_smul_comm, smul_mul_assoc, ← smul_add, smul_smul,
-          mul_comm (1 / 2 : ℂ) r] }
-  let foldTwirl : List (Fin (2 * N)) → Register N →ₗ[ℂ] Register N := fun L =>
-    L.foldr (fun c acc => (twirl c).comp acc) LinearMap.id
-  have htwirl_Q₂ (c : Fin (2 * N)) : ∀ Y ∈ Q₂, twirl c Y ∈ Q₂ := by
-    intro Y hY
-    refine Submodule.span_induction ?_ (by simp)
-      (fun u v _ _ hu hv => by rw [map_add]; exact Q₂.add_mem hu hv)
-      (fun r u _ hu => by rw [map_smul]; exact Q₂.smul_mem r hu) hY
-    rintro _ (rfl | ⟨a, b, hab, rfl⟩)
-    · dsimp [twirl]; rw [mul_one, fullJWMajorana_sq, ← two_smul ℂ, smul_smul]
-      norm_num; exact Submodule.subset_span (Or.inl rfl)
-    · dsimp [twirl]
-      by_cases hca : c = a
-      · subst hca
-        have h1 : Γ c * (Γ c * Γ b) * Γ c = -(Γ c * Γ b) := by
-          rw [← mul_assoc (Γ c) (Γ c), fullJWMajorana_sq, one_mul, fullJWMajorana_anticommute n hab.symm]
-        rw [h1, add_neg_cancel, smul_zero]; exact Q₂.zero_mem
-      · by_cases hcb : c = b
-        · subst hcb
-          have h1 : Γ c * (Γ a * Γ c) * Γ c = -(Γ a * Γ c) := by
-            rw [mul_assoc (Γ c * Γ a), fullJWMajorana_sq, mul_one, fullJWMajorana_anticommute n hca]
-          rw [h1, add_neg_cancel, smul_zero]; exact Q₂.zero_mem
-        · have h1 : Γ c * (Γ a * Γ b) * Γ c = Γ a * Γ b := by
-            calc Γ c * (Γ a * Γ b) * Γ c
-                = (Γ c * Γ a) * (Γ b * Γ c) := by simp only [mul_assoc]
-              _ = (-(Γ a * Γ c)) * (-(Γ c * Γ b)) := by
-                  rw [fullJWMajorana_anticommute n hca, fullJWMajorana_anticommute n (Ne.symm hcb)]
-              _ = Γ a * (Γ c * Γ c) * Γ b := by rw [neg_mul, mul_neg, neg_neg]; simp only [mul_assoc]
-              _ = Γ a * Γ b := by rw [fullJWMajorana_sq, mul_one]
-          rw [h1, ← two_smul ℂ, smul_smul]; norm_num
-          exact Submodule.subset_span (Or.inr ⟨a, b, hab, rfl⟩)
-  have hdiff_twirl (c : Fin (2 * N)) : H' - twirl c H' ∈ Q₂ := by
-    have hid : H' - twirl c H' = (1 / 2 : ℂ) • ((H' * Γ c - Γ c * H') * Γ c) := by
-      dsimp only [twirl]
-      rw [sub_mul, mul_assoc, fullJWMajorana_sq, mul_one]
-      ext x y; simp only [Matrix.sub_apply, Matrix.smul_apply, Matrix.add_apply, smul_eq_mul]; ring
-    rw [hid]
-    refine Q₂.smul_mem _ ?_
-    refine Submodule.span_induction ?_ (by simp)
-      (fun u v _ _ hu hv => by rw [add_mul]; exact Q₂.add_mem hu hv)
-      (fun r u _ hu => by rw [smul_mul_assoc]; exact Q₂.smul_mem r hu) (hcomm_mem_M₁ c)
-    rintro _ ⟨b, rfl⟩
-    by_cases hbc : b = c
-    · subst hbc; rw [fullJWMajorana_sq]; exact Submodule.subset_span (Or.inl rfl)
-    · exact Submodule.subset_span (Or.inr ⟨b, c, hbc, rfl⟩)
-  have htelescope : ∀ L : List (Fin (2 * N)), H' - foldTwirl L H' ∈ Q₂ := by
-    intro L; induction L with
-    | nil => rw [show foldTwirl [] H' = H' from rfl, sub_self]; exact Q₂.zero_mem
-    | cons c tail ih =>
-        have h1 : twirl c H' - foldTwirl (c :: tail) H' = twirl c (H' - foldTwirl tail H') := by
-          rw [map_sub]; rfl
-        have h2 : H' - foldTwirl (c :: tail) H' =
-            (H' - twirl c H') + (twirl c H' - foldTwirl (c :: tail) H') := by abel
-        rw [h2, h1]
-        exact Q₂.add_mem (hdiff_twirl c) (htwirl_Q₂ c _ ih)
-  -- Every non-identity Pauli string is annihilated by `foldTwirl (List.finRange (2 * N))`.
-  have hpauli_kill (P : Fin N → Option (Fin 3)) (hP : P ≠ pauliIdentityLabel N) :
-      foldTwirl (List.finRange (2 * N)) (finitePauliMatrix P) = 0 := by
-    let S_occ := Finset.univ.filter fun s : Fin N => P s ≠ none
-    have hS_ne : S_occ.Nonempty := by
-      by_contra hemp
-      rw [Finset.not_nonempty_iff_eq_empty] at hemp
-      apply hP; funext s; by_contra hs
-      exact Finset.notMem_empty s (hemp ▸ Finset.mem_filter.mpr ⟨Finset.mem_univ s, hs⟩)
-    let s₀ : Fin N := S_occ.min' hS_ne
-    have hs₀_mem : s₀ ∈ S_occ := Finset.min'_mem S_occ hS_ne
-    have hs₀_min : ∀ s : Fin N, s < s₀ → P s = none := fun s hlt => by
-      by_contra hs
-      exact not_le_of_gt hlt (Finset.min'_le S_occ s (Finset.mem_filter.mpr ⟨Finset.mem_univ s, hs⟩))
-    obtain ⟨q₀, hPq₀⟩ := Option.ne_none_iff_exists'.mp (Finset.mem_filter.mp hs₀_mem).2
-    let c₀ : Fin (2 * N) := ⟨2 * s₀.val + (if q₀ = 0 then 1 else 0), by dsimp [N] at s₀ ⊢; omega⟩
-    have hc₀_anti : Γ c₀ * finitePauliMatrix P * Γ c₀ = -finitePauliMatrix P := by
-      have hdiv : c₀.val / 2 = s₀.val := by dsimp [c₀]; split_ifs <;> omega
-      have hmod : (c₀.val % 2 = 0) ↔ q₀ ≠ 0 := by dsimp [c₀]; split_ifs with h0 <;> simp [h0] <;> omega
-      have hanti_mul : Γ c₀ * finitePauliMatrix P = -(finitePauliMatrix P * Γ c₀) := by
-        dsimp only [Γ, fullJWMajorana]
-        rw [finitePauliMatrix_mul, finitePauliMatrix_mul]
-        have hlbl : (fun s => optMul (fullJWMajoranaWord n c₀ s) (P s)) =
-            fun s => optMul (P s) (fullJWMajoranaWord n c₀ s) :=
-          funext fun _ => optMul_comm _ _
-        have hout1 : ∀ s ∈ ({s₀} : Finset (Fin N))ᶜ,
-            optPhase (fullJWMajoranaWord n c₀ s) (P s) = 1 := by
-          intro s hs
-          have hne : s.val ≠ s₀.val := fun h => (Finset.mem_compl.mp hs) (Finset.mem_singleton.mpr (Fin.ext h))
-          rcases lt_or_gt_of_ne hne with hlt | hgt
-          · rw [hs₀_min s hlt, optPhase_none_right]
-          · have hn : ¬ s.val < s₀.val := by omega
-            simp [fullJWMajoranaWord, hdiv, hn, hne, optPhase]
-        have hout2 : ∀ s ∈ ({s₀} : Finset (Fin N))ᶜ,
-            optPhase (P s) (fullJWMajoranaWord n c₀ s) = 1 := by
-          intro s hs
-          have hne : s.val ≠ s₀.val := fun h => (Finset.mem_compl.mp hs) (Finset.mem_singleton.mpr (Fin.ext h))
-          rcases lt_or_gt_of_ne hne with hlt | hgt
-          · rw [hs₀_min s hlt]; rfl
-          · have hn : ¬ s.val < s₀.val := by omega
-            simp [fullJWMajoranaWord, hdiv, hn, hne, optPhase_none_right]
-        rw [hlbl, ← Finset.prod_mul_prod_compl ({s₀} : Finset (Fin N)),
-          ← Finset.prod_mul_prod_compl ({s₀} : Finset (Fin N)),
-          Finset.prod_singleton, Finset.prod_singleton,
-          Finset.prod_eq_one hout1, Finset.prod_eq_one hout2, mul_one, mul_one, hPq₀]
-        simp only [fullJWMajoranaWord, hdiv, lt_irrefl, ↓reduceIte]
-        fin_cases q₀ <;> simp [hmod, optPhase]
-      rw [hanti_mul, neg_mul, mul_assoc, fullJWMajorana_sq, mul_one]
-    have hdich (d : Fin (2 * N)) :
-        twirl d (finitePauliMatrix P) = finitePauliMatrix P ∨
-        twirl d (finitePauliMatrix P) = 0 := by
-      have hconj_sign : Γ d * finitePauliMatrix P * Γ d = finitePauliMatrix P ∨
-          Γ d * finitePauliMatrix P * Γ d = -finitePauliMatrix P := by
-        dsimp only [Γ, fullJWMajorana]
-        have h1 : finitePauliMatrix (fullJWMajoranaWord n d) * finitePauliMatrix P *
-            finitePauliMatrix (fullJWMajoranaWord n d) =
-            (∏ s : Fin N, (optPhase (fullJWMajoranaWord n d s) (P s) *
-              optPhase (optMul (fullJWMajoranaWord n d s) (P s)) (fullJWMajoranaWord n d s))) •
-              finitePauliMatrix P := by
-          rw [finitePauliMatrix_mul, Matrix.smul_mul, finitePauliMatrix_mul, smul_smul, ← Finset.prod_mul_distrib]
-          congr 2; funext s
-          exact (optMul_conj_self (fullJWMajoranaWord n d s) (P s)).1
-        rw [h1]
-        have h2 : ∀ s : Fin N,
-            optPhase (fullJWMajoranaWord n d s) (P s) *
-              optPhase (optMul (fullJWMajoranaWord n d s) (P s)) (fullJWMajoranaWord n d s) = 1 ∨
-            optPhase (fullJWMajoranaWord n d s) (P s) *
-              optPhase (optMul (fullJWMajoranaWord n d s) (P s)) (fullJWMajoranaWord n d s) = -1 :=
-          fun s => (optMul_conj_self (fullJWMajoranaWord n d s) (P s)).2
-        have hprod_pm : ∀ (S : Finset (Fin N)) (f : Fin N → ℂ),
-            (∀ s ∈ S, f s = 1 ∨ f s = -1) → (∏ s ∈ S, f s) = 1 ∨ (∏ s ∈ S, f s) = -1 := by
-          intro S f hf; induction S using Finset.induction_on with
-          | empty => left; simp
-          | @insert s S hs ih =>
-              rw [Finset.prod_insert hs]
-              rcases hf s (Finset.mem_insert_self s S) with h1 | hm1 <;>
-                rcases ih (fun t ht => hf t (Finset.mem_insert_of_mem ht)) with p1 | pm1
-              · left; rw [h1, p1, mul_one]
-              · right; rw [h1, pm1, one_mul]
-              · right; rw [hm1, p1, mul_one]
-              · left; rw [hm1, pm1]; norm_num
-        rcases hprod_pm Finset.univ _ (fun s _ => h2 s) with hp1 | hm1
-        · left; rw [hp1, one_smul]
-        · right; rw [hm1, neg_one_smul]
-      rcases hconj_sign with hp | hm
-      · left; dsimp [twirl]; rw [hp, ← two_smul ℂ, smul_smul]; norm_num
-      · right; dsimp [twirl]; rw [hm, add_neg_cancel, smul_zero]
-    have hkill_c₀ : twirl c₀ (finitePauliMatrix P) = 0 := by
-      dsimp [twirl]; rw [hc₀_anti, add_neg_cancel, smul_zero]
-    have hfold_kill : ∀ L : List (Fin (2 * N)), c₀ ∈ L → foldTwirl L (finitePauliMatrix P) = 0 := by
-      intro L; induction L with
-      | nil => intro h; exact (List.not_mem_nil h).elim
-      | cons d tail ih =>
-          intro hmem
-          change twirl d (foldTwirl tail (finitePauliMatrix P)) = 0
-          by_cases hc_tail : c₀ ∈ tail
-          · rw [ih hc_tail, map_zero]
-          · have hdc : d = c₀ := ((List.mem_cons.mp hmem).resolve_right hc_tail).symm
-            subst hdc
-            have hdich_tail : ∀ K : List (Fin (2 * N)),
-                foldTwirl K (finitePauliMatrix P) = finitePauliMatrix P ∨
-                foldTwirl K (finitePauliMatrix P) = 0 := by
-              intro K; induction K with
-              | nil => exact Or.inl rfl
-              | cons e' K' ihK =>
-                  change twirl e' (foldTwirl K' (finitePauliMatrix P)) = _ ∨ _
-                  rcases ihK with heq | hz
-                  · rw [heq]; exact hdich e'
-                  · rw [hz, map_zero]; exact Or.inr rfl
-            rcases hdich_tail tail with heq | hz
-            · rw [heq, hkill_c₀]
-            · rw [hz, map_zero]
-    exact hfold_kill (List.finRange (2 * N)) (List.mem_finRange c₀)
-  have hfold_H'_zero : foldTwirl (List.finRange (2 * N)) H' = 0 := by
-    dsimp only [H']
-    rw [pathHamiltonian_eq_sum, map_sum]
-    exact Finset.sum_eq_zero fun l _ => by
-      rw [map_smul, hpauli_kill (pathWord l) (pathWord_ne_identity l), smul_zero]
-  have hH'_in_Q₂ : H' ∈ Q₂ := by
-    have ht := htelescope (List.finRange (2 * N))
-    rwa [hfold_H'_zero, sub_zero] at ht
-  exact not_mem_pauliMajoranaQuadraticSpan_of_bondDet_ne_zero Γ
+  have hH'_in_Q₂ : H' ∈ cliffordQuadraticSpan (fullJWMajorana n) :=
+    mem_fullJWQuadraticSpan_of_comm_mem_majoranaSpan u_S hcomm_mem_M₁
+  exact not_mem_pauliMajoranaQuadraticSpan_of_bondDet_ne_zero (fullJWMajorana n)
     (fullJWMajorana_sq n) (fun _ _ h => fullJWMajorana_anticommute n h)
     (fun a => ⟨1, fullJWMajoranaWord n a, one_ne_zero, (one_smul _ _).symm⟩)
     u_S e hdet_S hH'_in_Q₂
@@ -3422,7 +3573,7 @@ theorem no_subexponential_exactSpan_replicaGram_above_half {N s r M : ℕ}
     exact_mod_cast hdim_nat
   -- Linear Bernoulli bound `(199 / 200)^(2r) ≤ 100 / r`.
   have hbern_fid : (199 / 200 : ℝ) ^ (2 * r) ≤ 100 / (r : ℝ) := by
-    have hbern := one_add_mul_le_pow (by norm_num : (-1 : ℝ) ≤ 1 / 199) (2 * r)
+    have hbern := one_add_mul_le_pow (by norm_num : (-2 : ℝ) ≤ 1 / 199) (2 * r)
     have h200 : (1 + 1 / 199 : ℝ) = 200 / 199 := by norm_num
     rw [h200, Nat.cast_mul, Nat.cast_ofNat] at hbern
     have hge : (r : ℝ) / 100 ≤ (200 / 199 : ℝ) ^ (2 * r) := by
@@ -3441,8 +3592,9 @@ theorem no_subexponential_exactSpan_replicaGram_above_half {N s r M : ℕ}
         calc 100 / (r : ℝ) * (6 * (r : ℝ) * (‖H.val‖ * T + 1))
             = (100 / (r : ℝ) * (r : ℝ)) * (6 * (‖H.val‖ * T + 1)) := by ring
           _ = 600 * (‖H.val‖ * T + 1) := by rw [div_mul_cancel₀ _ hr_pos.ne']; ring
+      have h4_nn : (0 : ℝ) ≤ (4 : ℝ) ^ N := by positivity
       rw [hcanc]
-      linarith only [hHT]
+      linarith only [hHT, h4_nn]
     have h2 : (4 : ℝ) ^ N * (1 / 4) ≤
         (4 : ℝ) ^ N * ((6 * (r : ℝ) * (‖H.val‖ * T + 1)) * empiricalReplicaBessel H r t) :=
       mul_le_mul_of_nonneg_left hquarter2 (by positivity)

@@ -12,34 +12,38 @@ local instance : CStarAlgebra (Mat I) where
 
 private def atom (j : I) : Mat I := diagonal fun a => if a=j then 1 else 0
 
+omit [Nonempty I] in
 private theorem compress_atom (i : I) (A : Mat I) : atom i*A*atom i=A i i • atom i := by
   ext a b
   by_cases ha : a=i <;> by_cases hb : b=i <;>
     simp_all [atom,Matrix.mul_diagonal,Matrix.diagonal_mul,Matrix.diagonal_apply,Matrix.smul_apply]
+  exact fun h => (hb h.symm).elim
 
 private theorem atom_square (i : I) : atom i*atom i=atom i := by
   have h := compress_atom i (1:Mat I)
   simpa only [mul_one,Matrix.one_apply_eq,one_smul] using h
 
+omit [Fintype I] [Nonempty I] in
 private theorem atom_star (i : I) : star (atom i)=atom i := by
   ext a b
   by_cases hab : a=b
   · subst b
-    by_cases ha : a=i <;> simp [atom,Matrix.star_eq_conjTranspose,ha]
-  · simp [atom,Matrix.star_eq_conjTranspose,Matrix.diagonal_apply,hab,Ne.symm hab]
+    by_cases ha : a=i <;> simp [atom,ha]
+  · simp [atom,hab,Ne.symm hab]
 
+omit [Nonempty I] in
 private theorem atom_diagonal (V : Mat I) (i j : I) :
     (V*atom j*star V) i i=(‖V i j‖^2:ℝ) := by
   rw [Matrix.mul_apply]
-  simp [atom,Matrix.mul_diagonal,Matrix.star_eq_conjTranspose,mul_ite,ite_mul,
-    Complex.star_def,Complex.mul_conj',Complex.ofReal_pow]
+  simp [atom,Matrix.mul_diagonal,mul_ite,ite_mul,Complex.mul_conj',Complex.ofReal_pow]
 
+omit [Fintype I] [Nonempty I] in
 private theorem flip_eq (i : I) : diagonal (markSign {i})=1-(2:ℝ) • atom i := by
   ext a b
   by_cases hab : a=b
   · subst b
-    by_cases ha : a=i <;> simp [atom,markSign,ha]
-  · simp [atom,Matrix.diagonal_apply,hab,Matrix.one_apply]
+    by_cases ha : a=i <;> norm_num [atom,markSign,ha]
+  · simp [atom,hab]
 
 /-- Flipping one energy coordinate approximates the ray reflection with
 squared error at most four times the infidelity of that coordinate. -/
@@ -60,7 +64,8 @@ theorem ray_flip_bound (V : unitaryGroup I ℂ) (i j : I) :
     rw [show Q*P*Q=P i i • Q from compress_atom i P,show P i i=(p:ℂ) from atom_diagonal _ _ _,Complex.coe_smul]
   have hj : (star V.val*Q*V.val) j j=(p:ℂ) := by
     have h := atom_diagonal (star V.val) j i
-    simpa only [Q,p,star_star,Matrix.star_eq_conjTranspose,Matrix.conjTranspose_apply,norm_star] using h
+    rw [star_star] at h
+    simpa only [Q,p,Matrix.star_eq_conjTranspose,Matrix.conjTranspose_apply,norm_star] using h
   have hPQ : P*Q*P=p • P := by
     calc _ = V.val*(atom j*(star V.val*Q*V.val)*atom j)*star V.val := by simp only [P,mul_assoc]
          _ = _ := by rw [compress_atom,hj,Complex.coe_smul,Matrix.mul_smul,Matrix.smul_mul]

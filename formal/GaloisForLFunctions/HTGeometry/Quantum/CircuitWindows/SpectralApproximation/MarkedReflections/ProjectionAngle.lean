@@ -8,7 +8,7 @@ noncomputable section
 variable {A : Type*} [CStarAlgebra A]
 
 private theorem selfadjoint_square (T : A) (h : star T=T) : ‖T*T‖=‖T‖^2 := by
-  simpa only [h,pow_two] using CStarRing.norm_star_mul_self T
+  simpa only [h,pow_two] using (show ‖star T*T‖=‖T‖*‖T‖ from CStarRing.norm_star_mul_self)
 
 /-- If each projection compresses the other to p times itself, their
 difference satisfies a cubic. Its squared norm is at most 1 − p. -/

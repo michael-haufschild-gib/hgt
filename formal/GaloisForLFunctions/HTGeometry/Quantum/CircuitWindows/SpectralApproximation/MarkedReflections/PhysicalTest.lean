@@ -9,6 +9,7 @@ noncomputable section
 variable {I : Type*} [Fintype I] [DecidableEq I] [Nonempty I]
 private abbrev Mat (I : Type*) := Matrix I I ℂ
 
+omit [Nonempty I] in
 private theorem reflection_mul (B V : unitaryGroup I ℂ) (M : Finset I) :
     reflection (B*V) M = B.val * reflection V M * star B.val := by
   change (B.val*V.val)*diagonal _*star (B.val*V.val)=B.val*(V.val*diagonal _*star V.val)*star B.val

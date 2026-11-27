@@ -3118,7 +3118,7 @@ private theorem dual_qzero_W_ball_single_omega
   have hU_pos : 0 < U := zero_lt_one.trans hU1
   have hd_pos : 0 < d_outer := by linarith only [hd_lo]
   have ht_pos : 0 < D_dual.t := D_dual.t_pos
-  have hX_col_pos : 0 < X_col := by rw [hX_col_eq]; exact Real.rpow_pos_of_pos hU_pos _
+  have hX_col_pos : 0 < X_col := hX_col_eq.symm ▸ Real.rpow_pos_of_pos hU_pos _
   have hZ_slot_ge1 : ∀ j : Fin D.N, 1 ≤ Z_slot j :=
     fun j => Real.one_le_rpow hU1.le (div_nonneg (D.slots_bounds j).1.le hd_pos.le)
   have hw0_u : 0 ≤ u_act := by
@@ -3545,7 +3545,7 @@ private lemma qzero_single_slice_abstract_bound
   intro c_min B_E_max C_hit C_z0_part C_nz_part
   have hU_pos : 0 < U_val := zero_lt_one.trans hU1
   have hw_pos : 0 < wt_z := zero_lt_one.trans_le hw_one
-  have hX_col_pos : 0 < X_col := by rw [hX_col_eq]; exact Real.rpow_pos_of_pos hU_pos _
+  have hX_col_pos : 0 < X_col := hX_col_eq.symm ▸ Real.rpow_pos_of_pos hU_pos _
   have hY_cell_pos : 0 < Y_cell := by rw [hY_cell_eq]; exact Real.rpow_pos_of_pos hU_pos _
   have hpref_pos : 0 < pref_U := by rw [hpref_eq]; exact Real.rpow_pos_of_pos hU_pos _
   have hChit_pos : 0 < C_hit := pow_pos (pow_pos (by exact_mod_cast Nat.succ_pos _) 2) D.N
@@ -3874,17 +3874,22 @@ private lemma qzero_live_cell_scales
     (om_outer : 𝓢(ℝ, ℂ)) (hb_out : ∀ x, om_outer x ≠ 0 → x ≤ b_out)
     (labels : Finset (Ideal O)) (hlabels : ∀ I ∈ labels, I ≠ 0)
     (β : Ideal O → (ι →₀ ℕ) → ℂ) (Ψ : O →* ℂ) (m : O) (mark : (ι →₀ ℕ) → Finset ι → ℂ)
-    (k : (SourceIndex × ℕ) × ℤ)
-    (hk : k ∈ originalLiveKeys p hg (Finset.univ : Finset ι) ({0} : Finset (ι →₀ ℕ)) labels
-      (firstPhysicalHeight U M_new r_new 0 V₀ η τ) β
-      (fun v => if ‖ringComplex (primeProduct p v.support v)‖ ^ 2 ≤ U ^ (0 + η) then 1 else 0)
-      Ψ m mark (normTwistedSource (om_outer : ℝ → ℂ) ξ_out) rowMajorant (U ^ M_new))
+    (k : JointKey)
+    (hk :
+      let Y_src := U ^ (2 * Lcap + 15 * η + τ)
+      let cutoff := fun (q : CubeCoordinates ι) C (_I : Ideal O) D_set =>
+        firstDyadicRadius p q C D_set U M_new r_new 0 V₀ η τ
+      let W_src := fun y => normTwistedSource (om_outer : ℝ → ℂ) ξ_out (y / U ^ r_new)
+      let source := firstGlobalRetainedSource p (firstOriginalOuter Finset.univ {0})
+        (fun _ => labels) (fun x => x.1) Y_src
+      k ∈ liveJointKeys p source Finset.univ
+        (sourceSummand p hp hg β cutoff Ψ m mark W_src rowMajorant (U ^ M_new)))
     (hcell_ne : (labelParentCell p Finset.univ {0} (fun _ _ => 1) k.1 k.2.1 k.2.2).Nonempty)
     (negative : Bool) :
     let B_c : ℝ := dyadicExponent U (k.1 2)
     let δ_c : ℝ := dyadicExponent U (k.1 3)
     let t_q : ℝ := dyadicExponent U k.2.1
-    let idx_b : Fin 2 := if negative then 0 else 1
+    let idx_b : Fin 9 := if negative then 7 else 8
     let idx_a : Fin 6 := if negative then 0 else 1
     let X_col : ℝ := (physicalScales (U ^ r_new) k.1 k.2.1) idx_b
     let Y_cell : ℝ := firstCellRadius U M_new r_new 0 V₀ η τ k.1 k.2.2
@@ -3911,10 +3916,10 @@ private lemma qzero_live_cell_scales
   obtain ⟨_, _, _, _, hk0_z, hk1_z, hk4_z, hkj_z, _, _, _⟩ := hcell_data x₀ hx₀
   have hidx_a_z : dyadicExponent U (k.1 idx_a) = 0 := by
     dsimp only [idx_a]; cases negative <;> [exact hk1_z; exact hk0_z]
-  let Y_src := firstPhysicalHeight U M_new r_new 0 V₀ η τ
-  let cutoff : (ι →₀ ℕ) → ℝ :=
-    fun v => if ‖ringComplex (primeProduct p v.support v)‖ ^ 2 ≤ U ^ (0 + η) then 1 else 0
-  let W_src : ℝ → ℂ := normTwistedSource (om_outer : ℝ → ℂ) ξ_out
+  let Y_src := U ^ (2 * Lcap + 15 * η + τ)
+  let cutoff := fun (q : CubeCoordinates ι) C (_I : Ideal O) D_set =>
+    firstDyadicRadius p q C D_set U M_new r_new 0 V₀ η τ
+  let W_src : ℝ → ℂ := fun y => normTwistedSource (om_outer : ℝ → ℂ) ξ_out (y / U ^ r_new)
   have hlive_caps := InverseMoment.original_live_exponent_caps p hp hcop hg Finset.univ {0} labels
     β cutoff Ψ m mark (om_outer : ℝ → ℂ) rowMajorant (U ^ M_new) U r_new 0 Lcap η τ ξ_out b_out
     hU1 h2_η (by linarith only [hLcap]) hrn_hi (by linarith only [hLcap]) hη_pos.le hτ_pos.le hb_out_η
@@ -4175,7 +4180,7 @@ theorem dual_qzero_cell_energy
       hX_col_eq, hY_cell_eq, hY_exp_nn, hpref_eq⟩ :=
     qzero_live_cell_scales p hp hcop hg hU1 h2_η hb_out_η hLcap hrn_hi hη_pos hτ_pos
       om_outer hb_out labels hlabels β Ψ m mark k hk hcell_ne negative
-  have hX_col_pos : 0 < X_col := by rw [hX_col_eq]; exact Real.rpow_pos_of_pos hU_pos _
+  have hX_col_pos : 0 < X_col := (Real.rpow_pos_of_pos hU_pos _).trans_eq hX_col_eq.symm
   have hlists_v_b : ∀ j ∈ S_rem, ∀ q ∈ lists_v j,
       Z_slot j ≤ ‖ringComplex (p q)‖ ^ 2 ∧ ‖ringComplex (p q)‖ ^ 2 ≤ 2 * Z_slot j ∧ ‖a j q‖ ≤ 1 := by
     intro j hj q hqv
@@ -4219,7 +4224,7 @@ theorem dual_qzero_cell_energy
   have houter := globalPriorityOriginalEnergy_qzero_outer_sum p hp hg hinj D.N cell k.2.1 negative
     extra_b Ψ m S_rem ((Finset.card_le_univ S_rem).trans_eq (Fintype.card_fin D.N))
     lists_v a omega_b X_col t_ht Y_cell pref_U B_slice
-    (by rw [hpref_eq]; exact Real.rpow_nonneg hU_pos.le _) hB_slice_nn
+    ((Real.rpow_nonneg hU_pos.le _).trans_eq hpref_eq.symm) hB_slice_nn
     (fun ray core J hJp => by
       have hJ_sub : J ⊆ S_rem := Finset.mem_powerset.mp hJp
       let Ψ₀ := firstCoreTwist negative (if negative then ray.1 else ray.2) Ψ core
@@ -4971,7 +4976,7 @@ private theorem tiny_cube_bin_single_vJ_energy
   have hrn_lo : (-η) ≤ r_new := by
     have h2Fp : 1 - 21 * η ≤ 2 * F_p := by dsimp only [F_p]; linarith only [hM₀, hM₀_2F]
     have hV₀_sm : V₀ ≤ 3 / 500 := by linarith only [hell0, htiny, hη_pos]
-    dsimp only [r_new, F_p_in] at h2Fp ⊢
+    dsimp only [r_new, F_p_in, ell_in] at h2Fp ⊢
     rw [hη_def] at h2Fp hell_in_le ⊢
     linarith only [h2Fp, hV₀_sm, hell_in_le, hu_free_max, ht_sm, ht_pos]
   have hrn_hi : r_new ≤ Lcap_cell := by
@@ -5117,18 +5122,25 @@ private theorem tiny_cube_bin_single_vJ_energy
         have h3 : eps_dyad * (2 * Lcap_cell + 20) = D_dual.t / 20 := by
           dsimp only [eps_dyad]; field_simp
         linarith only [h2, h3, ht_pos]
-      dsimp only [M_new, F_p_in, τ] at hFp_stage1 ⊢
-      rw [hη_def] at hFp_stage1 ⊢
-      linarith only [hFp_stage1, hr_eps, hpad_hi, ht_pos]
+      let er : ℝ := eps_dyad * (5 * 0 + 2 * r_new + 7 * η)
+      change (r_new + V₀) + (M_new - 0 + 3 * η + er) ≤ r_new + V₀ + F_p + 11 * D_dual.t
+      have hr_eps' : er ≤ D_dual.t / 10 := hr_eps
+      dsimp only [M_new, F_p_in, τ]
+      rw [hη_def]
+      linarith only [hFp_stage1, hr_eps', hpad_hi, ht_pos]
     have hexp_t2 : (r_new + V₀) + (F_p_in + 45 * η + 3 * τ + pad_0 + 8 * D_dual.t) +
         ((2 * Lcap_cell + 15 * η + τ) * eps_dyad + eps_dyad) ≤
         r_new + V₀ + F_p + 11 * D_dual.t := by
-      have heps_part : (2 * Lcap_cell + 15 * η + τ) * eps_dyad + eps_dyad ≤ D_dual.t / 10 := by
+      let ee : ℝ := (2 * Lcap_cell + 15 * η + τ) * eps_dyad + eps_dyad
+      have heps_part : ee ≤ D_dual.t / 10 := by
+        dsimp only [ee]
         have h1 : (2 * Lcap_cell + 15 * η + τ) + 1 ≤ 2 * Lcap_cell + 20 := by linarith only [hη1]
         have h2 := mul_le_mul_of_nonneg_right h1 heps_dyad.le
         have h3 : (2 * Lcap_cell + 20) * eps_dyad = D_dual.t / 20 := by
           dsimp only [eps_dyad]; field_simp
         linarith only [h2, h3, ht_pos]
+      change (r_new + V₀) + (F_p_in + 45 * η + 3 * τ + pad_0 + 8 * D_dual.t) + ee ≤
+        r_new + V₀ + F_p + 11 * D_dual.t
       dsimp only [F_p_in, τ]
       rw [hη_def]
       linarith only [heps_part, hpad_hi, ht_pos]
@@ -5367,7 +5379,8 @@ private lemma tiny_cube_bin_xi_energy
       apply Finset.prod_le_prod (fun _ _ => sq_nonneg _)
       intro q hq
       rw [map_pow, norm_pow, ← pow_mul, Nat.mul_comm _ 2, pow_mul]
-      exact pow_le_pow_right₀ (SchwartzPlanePoisson.one_le_eisenstein_norm_sq (p q) (hp q))
+      simpa only [pow_one] using pow_le_pow_right₀
+        (SchwartzPlanePoisson.one_le_eisenstein_norm_sq (p q) (hp q))
         (Nat.one_le_iff_ne_zero.mpr (Finsupp.mem_support_iff.mp hq))
     exact hle_prod.trans (hQ_norm_eta v₀ hv₀)
   have hpm_hit : ∀ v₀ ∈ Q_bin, ∀ J₀ ∈ S₀.powerset,
@@ -6062,7 +6075,12 @@ theorem nontiny_cube_bin_q0_stripped
     _ ≤ C_nt * U ^ (N₀ + V₀ + t_dual) * (1 + ‖θ_tw‖) ^ (2 * deg_nt) := by
         have hC_nt_le : (C_bin * C_coef ^ 2 * Real.exp (2 * epsF_nt)) * (1 + A_child) ≤ C_nt := by
           dsimp only [C_nt]
-          nlinarith only [sq_nonneg C_coef, (Real.exp_pos (2 * epsF_nt)).le, hA_child_nn]
+          exact mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_right
+              (mul_le_mul_of_nonneg_right (by linarith only [] : C_bin ≤ C_bin + 1)
+                (sq_nonneg C_coef))
+              (Real.exp_pos (2 * epsF_nt)).le)
+            (by linarith only [hA_child_nn] : 0 ≤ 1 + A_child)
         apply mul_le_mul_of_nonneg_right _ (pow_nonneg (add_nonneg zero_le_one (norm_nonneg θ_tw)) _)
         exact mul_le_mul hC_nt_le (Real.rpow_le_rpow_of_exponent_le hU1.le hexp_nt)
           (Real.rpow_nonneg hU_pos.le _) hCnt_pos.le
