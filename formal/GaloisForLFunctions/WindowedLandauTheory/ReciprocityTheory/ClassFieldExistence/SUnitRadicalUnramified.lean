@@ -16,7 +16,9 @@ universe u
 
 variable {K Ω : Type u} [Field K] [NumberField K] [Field Ω] [Algebra K Ω] [IsAlgClosed Ω]
 
-private theorem inertia_eq_bot_of_radical {L : Type u} [Field L] [NumberField L]
+/-- A monogenic radical extension has trivial inertia where the
+ramification criterion for its defining power applies. -/
+theorem inertia_eq_bot_of_radical {L : Type u} [Field L] [NumberField L]
     [Algebra K L] [IsAbelianGalois K L] {n : ℕ} (a : Kˣ) {β : L}
     (hβ : β ^ n = algebraMap K L (a : K)) (hgen : K⟮β⟯ = ⊤)
     (v : HeightOneSpectrum (𝓞 K)) (hnv : (n : 𝓞 K) ∉ v.asIdeal)

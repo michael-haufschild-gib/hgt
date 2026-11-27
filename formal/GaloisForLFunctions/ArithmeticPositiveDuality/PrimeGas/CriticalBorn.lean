@@ -6,5 +6,9 @@ import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.CriticalBorn.Therm
 import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.CriticalBorn.ClockIsometry
 import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.CriticalBorn.Edges
 import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.CriticalBorn.FullState
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.CriticalBorn.LogEnergy
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.CriticalBorn.FidelityLimit
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.CriticalBorn.CommonProfile
+import GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.CriticalBorn.Crossover.Transition
 
 /-! # Born sampling of the elementary energies of the prime gas -/

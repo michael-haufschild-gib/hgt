@@ -1,0 +1,212 @@
+import GaloisForLFunctions.WindowedLandauTheory.ReciprocityTheory.ClassFieldExistence.SUnitRadicalReciprocity
+import GaloisForLFunctions.WindowedLandauTheory.ReciprocityTheory.ClassFieldExistence.FinitePlaceSplitEmbedding
+import GaloisForLFunctions.WindowedLandauTheory.ReciprocityTheory.ClassFieldExistence.ArtinOfSplitSupport
+import GaloisForLFunctions.HTGeometry.FirstOrderWimanTerminalStateEmbedding
+
+/-! An S-unit that is an n-th power at the places of S and at infinity
+is a global n-th power when S represents all ideal classes and contains
+the primes dividing n. -/
+
+noncomputable section
+
+open NumberField IsDedekindDomain IntermediateField Polynomial GaloisForLFunctions
+open scoped IsMulCommutative
+
+namespace GlobalTheory.Kummer
+
+open GlobalTheory.Reciprocity GlobalTheory.Reciprocity.IdeleGroup
+
+private theorem nonempty_simpleAlgHom_of_local_power
+    {K M F : Type*} [Field K] [Field M] [Algebra K M] [Field F] [Algebra K F]
+    {n : ℕ} [NeZero n] [HasEnoughRootsOfUnity K n] {a : K} {α : M}
+    (hα : α ^ n = algebraMap K M a) {b : F} (hb : b ^ n = algebraMap K F a) :
+    Nonempty (K⟮α⟯ →ₐ[K] F) := by
+  have hr : aeval α (X ^ n - C a) = 0 := by simp [hα]
+  have hi : IsIntegral K α := ⟨X ^ n - C a, monic_X_pow_sub_C _ (NeZero.ne n), hr⟩
+  have hsplit : ((X ^ n - C a).map (algebraMap K F)).Splits := by
+    rw [Polynomial.map_sub, Polynomial.map_pow, Polynomial.map_X, Polynomial.map_C]
+    obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot K n
+    exact X_pow_sub_C_splits_of_isPrimitiveRoot (hζ.map_of_injective (algebraMap K F).injective) hb
+  have hdvd := Polynomial.map_dvd (algebraMap K F) (minpoly.dvd K α hr)
+  have hne : ((X ^ n - C a).map (algebraMap K F)) ≠ 0 := by
+    rw [ne_eq, Polynomial.map_eq_zero_iff (algebraMap K F).injective]
+    exact X_pow_sub_C_ne_zero (NeZero.pos n) a
+  obtain ⟨x, hx⟩ := (hsplit.of_dvd hne hdvd).exists_eval_eq_zero (by
+    rw [Polynomial.degree_map_eq_of_injective (algebraMap K F).injective]
+    exact (minpoly.degree_pos hi).ne')
+  obtain ⟨f, -⟩ := HTGeometry.exists_adjoinSimple_algHom_of_minpoly_root α hi x
+    (by rwa [Polynomial.eval_map] at hx)
+  exact ⟨f⟩
+
+variable {K L : Type} [Field K] [NumberField K] [Field L] [NumberField L] [Algebra K L]
+  (G : Type) [CommGroup G] [Fintype G] [MulSemiringAction G L] [IsGaloisGroup G K L]
+
+private theorem isUnramifiedPrime_of_ramificationIdxIn_eq_one
+    (v : HeightOneSpectrum (𝓞 K)) (he : v.asIdeal.ramificationIdxIn (𝓞 L) = 1) :
+    IsUnramifiedPrime K L G v := by
+  haveI : v.asIdeal.IsPrime := v.isPrime
+  intro P hP hPv
+  letI := hP
+  letI := hPv
+  apply Subgroup.card_eq_one.mp
+  exact (Ideal.card_inertia_eq_ramificationIdxIn (G := G) v.asIdeal P).trans he
+
+private theorem isUnramifiedPrime_and_frobenius_eq_one_of_completion_embedding
+    (v : HeightOneSpectrum (𝓞 K)) (j : L →ₐ[K] v.adicCompletion K) :
+    IsUnramifiedPrime K L G v ∧ frobeniusElement K L G v = 1 := by
+  haveI : v.asIdeal.IsPrime := v.isPrime
+  obtain ⟨P, hP, hPv, he, hF⟩ :=
+    exists_primeOver_with_one_frobenius_of_completion_embedding v j G
+  letI := hP
+  letI := hPv
+  have hr : v.asIdeal.ramificationIdxIn (𝓞 L) = 1 := by
+    rw [Ideal.ramificationIdxIn_eq_ramificationIdx v.asIdeal P G,
+      ← Ideal.ramificationIdx'_eq_ramificationIdx v.asIdeal P v.ne_bot]
+    exact he
+  have hu := isUnramifiedPrime_of_ramificationIdxIn_eq_one G v hr
+  refine ⟨hu, ?_⟩
+  have hi := (IsArithFrobAt.arithFrobAt (𝓞 K) G P).mul_inv_mem_inertia hF
+  rw [inv_one, mul_one, hu P hP hPv, Subgroup.mem_bot,
+    arithFrobAt_eq_frobeniusElement hu P] at hi
+  exact hi
+
+private theorem subsingleton_of_split_support
+    (S : Set (HeightOneSpectrum (𝓞 K)))
+    (hS : (diagonal K).range ⊔ supportedIdeles (K := K) S = ⊤)
+    (hs : ∀ v ∈ S, IsUnramifiedPrime K L G v ∧ frobeniusElement K L G v = 1)
+    (hu : ∀ v ∉ S, IsUnramifiedPrime K L G v)
+    (hr : ∀ w : {v : InfinitePlace K // v.IsReal},
+      ∃ v : {v : InfinitePlace L // v.IsReal}, v.val.comap (algebraMap K L) = w.val) :
+    Subsingleton G :=
+  subsingleton_of_split_class_generators G S hS
+    (fun v => (Classical.em (v ∈ S)).elim (fun h => (hs v h).1) (hu v))
+    (fun v h => (hs v h).2) hr
+
+variable {n : ℕ} [NeZero n] [HasEnoughRootsOfUnity K n]
+
+omit [NumberField K] [NeZero n] [HasEnoughRootsOfUnity K n] in
+private theorem exists_pow_eq_of_subsingleton_aut {E : Type} [Field E] [Algebra K E]
+    [FiniteDimensional K E] [IsGalois K E] [Subsingleton Gal(E/K)]
+    {a : Kˣ} {e : E} (he : e ^ n = algebraMap K E (a : K)) : ∃ z : K, z ^ n = a := by
+  obtain ⟨z, hz⟩ := (IsGalois.mem_range_algebraMap_iff_fixed (F := K) e).mpr fun g =>
+    congrArg (fun σ : Gal(E/K) => σ e) (Subsingleton.elim g 1)
+  refine ⟨z, (algebraMap K E).injective ?_⟩
+  rw [map_pow, hz, he]
+
+section RadicalSplitting
+
+variable {E : Type} [Field E] [NumberField E] [Algebra K E] [FiniteDimensional K E]
+  [IsAbelianGalois K E]
+
+local instance : Fintype Gal(E/K) := Fintype.ofFinite _
+local instance : CommGroup Gal(E/K) :=
+  { (inferInstance : Group Gal(E/K)) with mul_comm := IsMulCommutative.is_comm.comm }
+
+omit [FiniteDimensional K E] [NeZero n] [HasEnoughRootsOfUnity K n] in
+private theorem radical_unramified_of_dvd_valuation (a : Kˣ) (e : E)
+    (he : e ^ n = algebraMap K E (a : K)) (hgen : K⟮e⟯ = ⊤)
+    (v : HeightOneSpectrum (𝓞 K)) (hnv : (n : 𝓞 K) ∉ v.asIdeal)
+    (hv : (n : ℤ) ∣ WithZero.log (v.valuation K (a : K))) :
+    IsUnramifiedPrime K E Gal(E/K) v := by
+  intro P hP hPv
+  letI := hP
+  letI := hPv
+  exact inertia_eq_bot_of_radical (K := K) (L := E) a he hgen v hnv hv P
+
+omit [NeZero n] [HasEnoughRootsOfUnity K n] in
+private theorem subsingleton_aut_of_split_radical
+    (S : Set (HeightOneSpectrum (𝓞 K)))
+    (hnS : ∀ v : HeightOneSpectrum (𝓞 K), (n : 𝓞 K) ∈ v.asIdeal → v ∈ S)
+    (hS : (diagonal K).range ⊔ supportedIdeles (K := K) S = ⊤)
+    (a : Kˣ) (e : E) (he : e ^ n = algebraMap K E (a : K)) (hgen : K⟮e⟯ = ⊤)
+    (hval : ∀ v ∉ S, (n : ℤ) ∣ WithZero.log (v.valuation K (a : K)))
+    (hfin : ∀ v ∈ S, Nonempty (E →ₐ[K] v.adicCompletion K))
+    (hreal : ∀ w : {v : InfinitePlace K // v.IsReal},
+      ∃ v : {v : InfinitePlace E // v.IsReal}, v.val.comap (algebraMap K E) = w.val) :
+    Subsingleton Gal(E/K) := by
+  have hs (v : HeightOneSpectrum (𝓞 K)) (hv : v ∈ S) :
+      IsUnramifiedPrime K E Gal(E/K) v ∧ frobeniusElement K E Gal(E/K) v = 1 := by
+    obtain ⟨j⟩ := hfin v hv
+    exact isUnramifiedPrime_and_frobenius_eq_one_of_completion_embedding (K := K) (L := E) Gal(E/K) v j
+  have hu (v : HeightOneSpectrum (𝓞 K)) (hv : v ∉ S) :
+      IsUnramifiedPrime K E Gal(E/K) v := by
+    exact radical_unramified_of_dvd_valuation (n := n) a e he hgen v (fun h => hv (hnS v h)) (hval v hv)
+  exact subsingleton_of_split_support (K := K) (L := E) Gal(E/K) S hS hs hu hreal
+
+end RadicalSplitting
+
+private theorem exists_pow_eq_of_radical_local_splitting
+    {M : Type} [Field M] [Algebra K M] [FiniteDimensional K M] [IsAbelianGalois K M]
+    (S : Set (HeightOneSpectrum (𝓞 K)))
+    (hnS : ∀ v : HeightOneSpectrum (𝓞 K), (n : 𝓞 K) ∈ v.asIdeal → v ∈ S)
+    (hS : (diagonal K).range ⊔ supportedIdeles (K := K) S = ⊤)
+    {a : Kˣ} {α : M} (hα : α ^ n = algebraMap K M (a : K))
+    (hval : ∀ v ∉ S, (n : ℤ) ∣ WithZero.log (v.valuation K (a : K)))
+    (hfin : ∀ v ∈ S, ∃ b : v.adicCompletion K, b ^ n = algebraMap K _ (a : K))
+    (hinf : ∀ w : InfinitePlace K, ∃ b : w.Completion, b ^ n = algebraMap K _ (a : K)) :
+    ∃ z : K, z ^ n = a := by
+  let E := K⟮α⟯
+  let e := AdjoinSimple.gen K α
+  have he : e ^ n = algebraMap K E (a : K) := Subtype.ext hα
+  have hgen : K⟮e⟯ = ⊤ := by
+    apply lift_injective
+    rw [lift_adjoin_simple, lift_top]
+    rfl
+  letI : IsAbelianGalois K E := IsAbelianGalois.of_algHom E.val
+  letI : NumberField E := NumberField.of_module_finite K E
+  have hf (v : HeightOneSpectrum (𝓞 K)) (hv : v ∈ S) :
+      Nonempty (E →ₐ[K] v.adicCompletion K) := by
+    obtain ⟨b, hb⟩ := hfin v hv
+    exact nonempty_simpleAlgHom_of_local_power hα hb
+  have hr (w : {v : InfinitePlace K // v.IsReal}) :
+      ∃ v : {v : InfinitePlace E // v.IsReal}, v.val.comap (algebraMap K E) = w.val := by
+    obtain ⟨b, hb⟩ := hinf w.val
+    obtain ⟨j⟩ := nonempty_simpleAlgHom_of_local_power hα hb
+    exact exists_real_place_of_completion_embedding w.2 j
+  letI : Subsingleton Gal(E/K) :=
+    subsingleton_aut_of_split_radical (K := K) (E := E) S hnS hS a e he hgen hval hf hr
+  exact exists_pow_eq_of_subsingleton_aut (K := K) (E := E) he
+
+private theorem exists_finite_abelian_extension_with_sUnit_root
+    (S : Finset (HeightOneSpectrum (𝓞 K))) {a : Kˣ}
+    (ha : Additive.ofMul a ∈ sUnits K Gal(K/K) (sUnitPrimeSet K S)) :
+    ∃ M : IntermediateField K (AlgebraicClosure K),
+      FiniteDimensional K M ∧ IsAbelianGalois K M ∧
+        ∃ α : M, α ^ n = algebraMap K M (a : K) := by
+  let M := sUnitRadicalExtension K S n
+  obtain ⟨r, hr⟩ := IsAlgClosed.exists_pow_nat_eq (algebraMap K (AlgebraicClosure K) (a : K))
+    (NeZero.pos n)
+  have hclass : (a : PowerClasses K n) ∈ sUnitRadicalClasses K Gal(K/K) (sUnitPrimeSet K S) n :=
+    ⟨Multiplicative.ofAdd ⟨Additive.ofMul a, ha⟩, rfl⟩
+  let α : M := ⟨r, mem_radicalField hclass hr⟩
+  have hα : α ^ n = algebraMap K M (a : K) := Subtype.ext hr
+  exact ⟨M, inferInstance, inferInstance, α, hα⟩
+
+omit [NeZero n] [HasEnoughRootsOfUnity K n] in
+private theorem dvd_valuation_log_of_sUnit
+    (S : Finset (HeightOneSpectrum (𝓞 K))) {a : Kˣ}
+    (ha : Additive.ofMul a ∈ sUnits K Gal(K/K) (sUnitPrimeSet K S))
+    (v : HeightOneSpectrum (𝓞 K)) (hv : v ∉ S) :
+    (n : ℤ) ∣ WithZero.log (v.valuation K (a : K)) := by
+  have hz : ordAt K v (Additive.ofMul a) = 0 := ha v hv
+  rw [valuation_eq_exp_neg_ordAt K v a, hz, neg_zero, WithZero.log_exp]
+  exact dvd_zero (n : ℤ)
+
+/-- Local n-th power conditions on a set generating the ideal class group
+and at infinity force an S-unit to be an n-th power in the base field. -/
+theorem exists_pow_eq_of_local_sUnit
+    (S : Finset (HeightOneSpectrum (𝓞 K)))
+    (hnS : ∀ v : HeightOneSpectrum (𝓞 K), (n : 𝓞 K) ∈ v.asIdeal → v ∈ S)
+    (hS : (diagonal K).range ⊔ supportedIdeles (K := K) (S : Set _) = ⊤)
+    {a : Kˣ} (ha : Additive.ofMul a ∈ sUnits K Gal(K/K) (sUnitPrimeSet K S))
+    (hfin : ∀ v ∈ S, ∃ b : v.adicCompletion K, b ^ n = algebraMap K _ (a : K))
+    (hinf : ∀ w : InfinitePlace K, ∃ b : w.Completion, b ^ n = algebraMap K _ (a : K)) :
+    ∃ z : K, z ^ n = a := by
+  obtain ⟨M, hM, hA, α, hα⟩ := exists_finite_abelian_extension_with_sUnit_root (n := n) S ha
+  letI := hM
+  letI := hA
+  let T : Set (HeightOneSpectrum (𝓞 K)) := S
+  exact exists_pow_eq_of_radical_local_splitting (K := K) (M := M) T hnS hS hα
+    (dvd_valuation_log_of_sUnit (n := n) S ha) hfin hinf
+
+end GlobalTheory.Kummer

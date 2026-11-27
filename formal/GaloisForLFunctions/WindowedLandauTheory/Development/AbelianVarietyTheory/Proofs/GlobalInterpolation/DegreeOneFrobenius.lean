@@ -1,5 +1,4 @@
-import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.DegreeOnePrimeInRayClass
-import GaloisForLFunctions.RHTower.Artin.TheArtinMapOfACyclicExtensionIsTrivialOnARay
+import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.FiniteDegreeOneFrobenius
 import GaloisForLFunctions.WindowedLandauTheory.ReciprocityTheory.GaloisValuations.Global
 
 /-! To prescribe a Frobenius element, pass to the fixed field of its cyclic
@@ -14,40 +13,6 @@ open GaloisForLFunctions GaloisForLFunctions.HeckeLFunctions
 open WindowedLandauTheory.ConjugateSelfDual ReciprocityTheory.Gal
 
 namespace GlobalTheory.DegreeOneFrobenius
-
-private theorem exists_cyclic_prime (Z L C : Type) [Field Z] [NumberField Z]
-    [Field L] [NumberField L] [Algebra Z L] [CommGroup C] [Fintype C]
-    [MulSemiringAction C L] [IsGaloisGroup C Z L]
-    (g : C) (hgen : ∀ u : C, u ∈ Subgroup.zpowers g)
-    (T : Set (HeightOneSpectrum (𝓞 Z))) (hT : T.Finite) :
-    ∃ w : HeightOneSpectrum (𝓞 Z), w ∉ T ∧ (Ideal.absNorm w.asIdeal).Prime ∧
-      IsUnramifiedPrime Z L C w ∧ frobeniusElement Z L C w = g := by
-  obtain ⟨c, hc, hram, hrec⟩ := exists_rayPrincipal_le_ker_artinMap_of_forall_mem_zpowers Z L C hgen
-  letI : NeZero c := hc
-  let m := normModulus Z c
-  have hur (w : HeightOneSpectrum (𝓞 Z)) (hw : ¬ w.asIdeal ∣ m.fin) := hram w
-    (fun h => hw ((dvd_normModulus_fin_iff Z c w).mpr h))
-  let e : RayClassGroup m →* C := QuotientGroup.lift _
-    ((artinMap Z L C).comp (idealGroup m).subtype)
-    (fun I hI => MonoidHom.mem_ker.mpr (MonoidHom.mem_ker.mp (hrec (Subgroup.mem_subgroupOf.mp hI))))
-  obtain ⟨I, hI, hg⟩ := exists_mem_idealGroup_artinMap_eq Z L C m hur g
-  obtain ⟨w, hw, hnorm, hwc, he⟩ := exists_degree_one_prime_in_ray_class m (rayClass m ⟨I, hI⟩) T hT
-  have hd : ¬ w.asIdeal ∣ m.fin := by
-    intro h
-    have hcount := hwc w h
-    rw [coe_idealUnit, count_self] at hcount
-    exact one_ne_zero hcount
-  have hfrob := congrArg e he
-  change artinMap Z L C (idealUnit w.ne_bot) = artinMap Z L C I at hfrob
-  rw [artinMap_idealUnit_prime, frobeniusOrOne, if_pos (hur w hd), hg] at hfrob
-  exact ⟨w, hw, hnorm, hur w hd, hfrob⟩
-
-private theorem isArithFrobAt_frobeniusElement (Z L C : Type)
-    [Field Z] [NumberField Z] [Field L] [NumberField L] [Algebra Z L]
-    [CommGroup C] [Fintype C] [MulSemiringAction C L] [IsGaloisGroup C Z L]
-    (w : HeightOneSpectrum (𝓞 Z)) :
-    IsArithFrobAt (𝓞 Z) (frobeniusElement Z L C w) (primeAbove Z L w) :=
-  IsArithFrobAt.arithFrobAt (𝓞 Z) C (primeAbove Z L w)
 
 private theorem isPlaceOver_under {F Z Ω : Type} [Field F] [Field Z] [Field Ω]
     [NumberField F] [NumberField Z] [Algebra F Z] [Algebra Z Ω] [Algebra F Ω] [IsScalarTower F Z Ω]
@@ -73,19 +38,6 @@ private theorem isFrob_under_of_prime_norm {F Z Ω : Type} [Field F] [Field Z] [
   have e : normV v = normV w := h
   rw [e]
   exact ⟨hσ.1, hσ.2⟩
-
-private theorem finite_under_preimage {F Z : Type} [Field F] [Field Z]
-    [NumberField F] [NumberField Z] [Algebra F Z]
-    {T : Set (HeightOneSpectrum (𝓞 F))} (hT : T.Finite) :
-    ((fun w : HeightOneSpectrum (𝓞 Z) => w.under (𝓞 F)) ⁻¹' T).Finite := by
-  refine hT.preimage' fun v _ => ?_
-  letI := v.isMaximal
-  refine ((IsDedekindDomain.primesOver_finite v.asIdeal (𝓞 Z)).preimage
-    (f := fun w : HeightOneSpectrum (𝓞 Z) => w.asIdeal)
-    (fun a _ b _ h => HeightOneSpectrum.ext h)).subset ?_
-  rintro w hw
-  have he : w.under (𝓞 F) = v := hw
-  exact ⟨w.isPrime, ⟨(congrArg HeightOneSpectrum.asIdeal he).symm⟩⟩
 
 private theorem isAlgClosure_of_tower {F Z Ω : Type} [Field F] [Field Z] [Field Ω]
     [Algebra F Z] [Algebra Z Ω] [Algebra F Ω] [IsScalarTower F Z Ω] [IsAlgClosure F Ω] :

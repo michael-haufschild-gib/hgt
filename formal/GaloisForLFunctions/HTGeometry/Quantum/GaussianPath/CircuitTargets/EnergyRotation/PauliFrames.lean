@@ -26,15 +26,19 @@ theorem pauli_lag {n : ℕ} (H : selfAdjoint (Reg n)) (P : Fin n → Option (Fin
   change U (t-s)*U s=U t at h
   have hex : (U (t-s)-v • B)*U s=
       (U t-w • (B*A))+(v • B)*(z • A-U s) := by
-    rw [sub_mul,h,mul_sub,Matrix.smul_mul,Matrix.mul_smul,smul_smul,hphase]
+    have hA : (v • B)*(z • A)=w • (B*A) := by
+      rw [Matrix.smul_mul,Matrix.mul_smul,smul_smul,hphase]
+    rw [sub_mul,h,mul_sub,hA]
     abel
   have hb : ‖v • B‖=1 := by rw [norm_smul,hv,norm_finitePauliMatrix,one_mul]
   refine ⟨v,hv,?_⟩
-  rw [←CStarRing.norm_mul_mem_unitary (U (t-s)-v • B) hu,hex]
-  apply (norm_add_le ..).trans
-  rw [add_comm ‖U s-z • A‖]
-  apply add_le_add_left
-  exact (norm_mul_le ..).trans_eq (by rw [hb,one_mul,norm_sub_rev])
+  calc
+    _ = ‖(U (t-s)-v • B)*U s‖ := (CStarRing.norm_mul_mem_unitary _ hu).symm
+    _ ≤ ‖U t-w • (B*A)‖+‖(v • B)*(z • A-U s)‖ := by rw [hex]; exact norm_add_le .. 
+    _ ≤ ‖U t-w • (B*A)‖+‖U s-z • A‖ := by
+      apply add_le_add_right
+      exact (norm_mul_le _ _).trans_eq (by rw [hb,one_mul,norm_sub_rev])
+    _ = _ := add_comm _ _
 
 /-- On one typical chain, two visited left Pauli corrections of an
 arbitrary common unitary can differ on only a vanishing fraction of sites.
@@ -70,7 +74,8 @@ theorem gaussian_pauli_frame_diameter :
   have hr := hn R (t-s) v hv (hvfit.trans (by linarith only [hp,hfit]))
   have hs : labelSupport R=univ.filter fun i => P i ≠ Q i := by
     ext i
-    simp only [mem_labelSupport,R,optMulLabel,ne_eq,optMul_eq_none_iff,mem_filter,mem_univ,true_and,eq_comm]
+    simp only [mem_labelSupport,R,optMulLabel,ne_eq,optMul_eq_none_iff,mem_filter,mem_univ,true_and]
+    exact not_congr eq_comm
   rwa [hs] at hr
 
 #print axioms gaussian_pauli_frame_diameter

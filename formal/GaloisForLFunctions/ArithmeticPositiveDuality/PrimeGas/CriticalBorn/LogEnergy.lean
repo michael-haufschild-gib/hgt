@@ -61,17 +61,24 @@ private theorem harmonic_prime_sum {x : ℝ} (hx : 2≤x) :
   simp only [powerMass,zero_sub,rpow_neg_one,primeset,sum_filter,_root_.RHTower.primeRecipSum,
     _root_.RHTower.primeRecipWeight]
 
+/-- The harmonic elementary mass retains Mertens' additive constant. -/
+theorem harmonic_mass_residual :
+    Tendsto (fun x => powerMass 0 x - log (log x)) atTop (𝓝 _root_.RHTower.mertensSecondConstant) := by
+  apply _root_.RHTower.tendsto_primeRecipSum_floor_sub_logLog.congr'
+  filter_upwards [eventually_ge_atTop (2:ℝ)] with x hx
+  rw [harmonic_prime_sum hx]
+
 private theorem harmonic_slope {u : ℝ} (hu : 0<u) :
     Tendsto (fun B => powerMass 0 (logEnergyCutoff u B) / B) atTop (𝓝 u) := by
-  have err := _root_.RHTower.tendsto_primeRecipSum_floor_sub_logLog.comp (cutoff_growth hu)
+  have err := harmonic_mass_residual.comp (cutoff_growth hu)
   have normed := err.div_atTop (tendsto_id : Tendsto (fun B : ℝ => B) atTop atTop)
   have lim := normed.add_const u
   rw [zero_add] at lim
   apply lim.congr'
-  filter_upwards [(cutoff_growth hu).eventually_ge_atTop 2,eventually_gt_atTop (0:ℝ)] with B hx hB
-  rw [harmonic_prime_sum hx]
+  filter_upwards [eventually_gt_atTop (0:ℝ)] with B hB
   simp only [Function.comp_apply,id_eq,logEnergyCutoff,log_exp]
-  field_simp [hB.ne'] <;> ring
+  field_simp [hB.ne']
+  ring
 
 /-- The probability of an interior logarithmic energy threshold tends
 respectively to zero, to its fractional position, or to one. -/
@@ -137,6 +144,7 @@ theorem reflected_midpoint_gap (σ : ℝ) :
     simpa only [if_neg hi.ne',if_neg hi.not_gt,if_pos r,sub_zero,abs_one] using gap
 
 #print axioms prime_logEnergy_event
+#print axioms harmonic_mass_residual
 #print axioms logEnergy_limit
 #print axioms midpoint_iff_split
 #print axioms rh_iff_midpoint

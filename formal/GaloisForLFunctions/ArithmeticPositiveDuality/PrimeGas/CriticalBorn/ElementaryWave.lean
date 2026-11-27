@@ -26,10 +26,11 @@ theorem rawWave_sq (s : ℂ) (x : ℝ) : ‖rawWave s x‖^2 = powerMass (1-2*s.
       (p.val:ℝ)^((1-2*s.re)-1) := by
     let q : Nat.Primes := ⟨p.val,(Nat.mem_primesBelow.mp p.property).2⟩
     have eq := bornWeight_eq_heat s q
-    rw [label_one_quantum] at eq
+    rw [show label (Finsupp.single q 1) = shell p from PNat.coe_injective (label_one_quantum q)] at eq
     change ‖heat s (shell p)‖^2 = _
     simpa only [bornWeight,show 1-2*s.re-1 = -(2*s.re) by ring] using eq.symm
-  simp only [term,univ_eq_attach,Finset.sum_attach,powerMass]
+  simp only [term,univ_eq_attach,powerMass]
+  exact (primes (cutoff x)).sum_attach (fun p : ℕ => (p:ℝ)^(1-2*s.re-1))
 
 private theorem raw_ne (s : ℂ) (x : ℝ) : ‖rawWave s x‖≠0 := by
   intro e
@@ -50,7 +51,9 @@ private theorem raw_overlap (s : ℂ) (x : ℝ) :
       simp [heat,←Complex.exp_conj]
     rw [c,←heat_add,sub_add_cancel,heat_eq_cpow,Complex.cpow_neg,Complex.cpow_one]
     simp only [shell,Complex.ofReal_inv,Complex.ofReal_natCast]
-  simp only [term,univ_eq_attach,Finset.sum_attach,powerMass,zero_sub,rpow_neg_one,Complex.ofReal_sum]
+    rfl
+  simp only [term,univ_eq_attach,powerMass,zero_sub,rpow_neg_one,Complex.ofReal_sum]
+  exact (primes (cutoff x)).sum_attach (fun p : ℕ => (((p:ℝ)⁻¹:ℝ):ℂ))
 
 /-- Transition probability between the elementary heat state and its reflection. -/
 def reflectedFidelity (s : ℂ) (x : ℝ) :=
