@@ -75,7 +75,7 @@ theorem gaussian_replica_capture_windows :
     (show S ⊆ Icc (-T) T from iUnion_subset fun j t ht => ⟨ht.1.1.le,ht.1.2⟩)
   have hgauss := threshold_pow_mul_gaussianAdaptiveCoherenceShortcut_measureReal_le
     (weight:=w) (energy:=E) (twist:=v) (fun i => (hp i).le) (sum_microcanonicalWeight_eq_one (Level k))
-    hv q hq T hT (effectiveGap_pos k q) hτ (multiplicity_gap (hk q))
+    hv q hq hT (effectiveGap_pos k q) hτ (multiplicity_gap (hk q))
   rw [hf,Fintype.card_fin] at hgauss
   have hsub : (T * ·) ⁻¹' S ⊆ A := by
     intro x hx

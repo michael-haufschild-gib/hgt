@@ -4,7 +4,7 @@ import GaloisForLFunctions.HTGeometry.FiniteEntropyPlateauFutureLaw
 
 /-! # A fixed physical circuit target gives a single twisted trace test -/
 open Matrix Complex Finset
-open scoped Matrix.Norms.L2Operator
+open scoped Matrix.Norms.L2Operator ComplexConjugate
 namespace GaloisForLFunctions.HTGeometry.SpectralFilling.ReplicaOrders
 open SharpOccupation
 noncomputable section

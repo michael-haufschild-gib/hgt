@@ -2233,7 +2233,7 @@ abstract index type `ι`, avoiding unfolding concrete prime pools during `Finset
 `Finset.filter` reasoning. -/
 private lemma cell_J_z0_and_gcd_fiber_bound
     {ι : Type*} [DecidableEq ι]
-    (p : ι → O) (hp : ∀ i, p i ≠ 0)
+    (p : ι → O) (hp : ∀ i, p i ≠ 0) [∀ i, (Ideal.span {p i}).IsMaximal]
     (hcop : Pairwise (Function.onFun IsCoprime (fun i => Ideal.span {p i})))
     (cell_J : Finset (Source ι 0))
     (hinj_J : Set.InjOn (fun x : Source ι 0 =>
@@ -2287,8 +2287,10 @@ private lemma cell_J_z0_and_gcd_fiber_bound
   have hprod_p_inj : Function.Injective (fun F : Finset ι => ∏ i ∈ F, p i) := by
     intro F₁ F₂ heq
     apply span_finset_prod_injective p hp hcop
+    dsimp only
     rw [← SchwartzPlanePoisson.span_finset_prime_product,
-      ← SchwartzPlanePoisson.span_finset_prime_product, heq]
+      ← SchwartzPlanePoisson.span_finset_prime_product]
+    exact congrArg (fun x => Ideal.span {x}) heq
   have hcard_D_set : (D_set.card : ℝ) ≤ 49 * U ^ (t_q + η) := by
     rw [← Finset.card_image_of_injOn (fun _ _ _ _ h => hprod_p_inj h)]
     exact card_finset_norm_sq_le_49_mul (D_set.image (fun F => ∏ i ∈ F, p i))
@@ -2336,7 +2338,7 @@ private lemma cell_J_z0_and_gcd_fiber_bound
         have hc1 : cd₁.1 = cd₀.1 := (Finset.mem_filter.mp h₁).2
         have hc2 : cd₂.1 = cd₀.1 := (Finset.mem_filter.mp h₂).2
         exact Prod.ext (hc1.trans hc2.symm) (span_finset_prod_injective p hp hcop hφ)
-      have hc_le : (((CD_set.filter (fun cd => cd.1 = C₀)).card : ℕ) : ℝ) ≤
+      have hc_le : (((CD_set.filter (fun cd => cd.1 = cd₀.1)).card : ℕ) : ℝ) ≤
           ((idealDivisors I_C).card : ℝ) := by
         exact_mod_cast Finset.card_le_card_of_injOn φ_D hmaps hinj_D
       have hd_bound := hdiv_le I_C hIC_ne
@@ -2347,7 +2349,8 @@ private lemma cell_J_z0_and_gcd_fiber_bound
           unfold primeProductNorm; rw [map_prod, norm_prod, ← Finset.prod_pow]
         rw [h1]
         exact (hCD_norms cd₀ hcd₀).1.trans
-          ((Real.rpow_le_rpow_of_exponent_le hU1.le (by linarith only [hBc_hi])).trans
+          ((Real.rpow_le_rpow_of_exponent_le hU1.le
+            (show B_c + η ≤ 3 * Lcap + 16 * η + τ by linarith only [hBc_hi, hη_pos])).trans
             (by linarith [Real.rpow_pos_of_pos hU_pos (3 * Lcap + 16 * η + τ)]))
       have hrp_IC : (I_C.absNorm : ℝ) ^ ε_div ≤ (2 : ℝ) ^ ε_div * U ^ (t_dual / 4) := by
         calc (I_C.absNorm : ℝ) ^ ε_div
@@ -2366,7 +2369,7 @@ private lemma cell_J_z0_and_gcd_fiber_bound
                 rw [hε_div_eq]; field_simp
               linarith only [hmul, heq, ht_pos]
       exact hc_le.trans (hd_bound.trans
-        ((mul_le_mul_of_nonneg_left hrp_IC hC_div.le).trans_eq (by ring)))
+        ((mul_le_mul_of_nonneg_left hrp_IC hC_div.le).trans_eq (mul_assoc _ _ _).symm))
     have hcard_sum : (CD_set.card : ℝ) = ∑ _cd ∈ CD_set, (1 : ℝ) := by simp
     rw [hcard_sum, ← Finset.sum_fiberwise_of_maps_to (g := Prod.fst)
       (fun cd hcd => Finset.mem_image_of_mem Prod.fst hcd)]
@@ -2380,10 +2383,9 @@ private lemma cell_J_z0_and_gcd_fiber_bound
           mul_le_mul_of_nonneg_right hcard_C
             (mul_nonneg (mul_nonneg hC_div.le (Real.rpow_nonneg zero_le_two _))
               (Real.rpow_nonneg hU_pos.le _))
+      _ = 49 * C_div * (2 : ℝ) ^ ε_div * (U ^ (B_c + η) * U ^ (t_dual / 4)) := by ring
       _ = 49 * C_div * (2 : ℝ) ^ ε_div * U ^ (B_c + η + t_dual / 4) := by
-          rw [mul_left_comm 49, ← mul_assoc, ← mul_assoc, mul_assoc _ (U ^ (B_c + η)),
-            ← Real.rpow_add hU_pos]
-          ring_nf
+          rw [← Real.rpow_add hU_pos]
   have hcard_cellJ : (cell_J.card : ℝ) ≤
       49 * 49 * C_div * (2 : ℝ) ^ ε_div * U ^ (B_c + t_q + 2 * η + t_dual / 4) := by
     have hmaps_prod : ∀ x ∈ cell_J,
@@ -2398,7 +2400,9 @@ private lemma cell_J_z0_and_gcd_fiber_bound
         ≤ (49 * C_div * (2 : ℝ) ^ ε_div * U ^ (B_c + η + t_dual / 4)) *
             (49 * U ^ (t_q + η)) :=
           hc_prod.trans (mul_le_mul hcard_CD_set hcard_D_set
-            (Nat.cast_nonneg _) (mul_nonneg (by norm_num) (Real.rpow_nonneg hU_pos.le _)))
+            (Nat.cast_nonneg _)
+            (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) hC_div.le)
+              (Real.rpow_nonneg zero_le_two _)) (Real.rpow_nonneg hU_pos.le _)))
       _ = 49 * 49 * C_div * (2 : ℝ) ^ ε_div *
             (U ^ (B_c + η + t_dual / 4) * U ^ (t_q + η)) := by ring
       _ = _ := by
@@ -2456,7 +2460,7 @@ private lemma cell_J_z0_and_gcd_fiber_bound
     rw [map_mul, norm_mul, mul_pow]
     calc ‖ringComplex (gcdElement p cd.1 cd.2)‖ ^ 2 * ‖ringComplex z‖ ^ 2
         ≤ U ^ (2 * B_c - δ_c + 2 * η) * (2 * Y_cell) :=
-          mul_le_mul hgcd_le hz_norm (sq_nonneg _) (by linarith only [hY_cell_pos])
+          mul_le_mul hgcd_le hz_norm (sq_nonneg _) (Real.rpow_nonneg hU_pos.le _)
       _ = 2 * (U ^ (2 * B_c - δ_c + 2 * η) * Y_cell) := by ring
       _ = 2 * U ^ W_exp := by rw [hY_W_eq]
   have hgcd_fib_le : ∀ w ∈ W_ball,
@@ -2476,7 +2480,7 @@ private lemma cell_J_z0_and_gcd_fiber_bound
     have hrp : (‖ringComplex w‖ ^ 2) ^ ε_div ≤ (2 : ℝ) ^ ε_div * U ^ ε_div := by
       calc (‖ringComplex w‖ ^ 2) ^ ε_div
           ≤ (2 * U) ^ ε_div := Real.rpow_le_rpow (sq_nonneg _) hw_2U hε_div.le
-        _ = (2 : ℝ) ^ ε_div * U ^ ε_div := Real.mul_rpow zero_le_two hU_pos.le _
+        _ = (2 : ℝ) ^ ε_div * U ^ ε_div := Real.mul_rpow zero_le_two hU_pos.le
     have hd_sq : ((idealDivisors (Ideal.span {w})).card : ℝ) ^ 2 ≤
         (C_div * ((2 : ℝ) ^ ε_div * U ^ ε_div)) ^ 2 :=
       pow_le_pow_left₀ (Nat.cast_nonneg _)
@@ -2562,6 +2566,897 @@ private lemma cell_J_z0_and_gcd_fiber_bound
             hChit_pos.le
       _ = _ := by ring
   exact ⟨hz0_part, hnz_part⟩
+
+/-- Unpunctured subslot energy bound for a single Schwartz window `omega_b` and orientation
+`negative`, combining `exists_bad12_base_transfer_on_pool`,
+`principalWindow_markedRadial_fourier_l2_le_factored`,
+`dual_sixth_free_factored_energy_lists_sdiff_padded`, and
+`dual_factored_coarse_bound_lists_sdiff`. -/
+private theorem dual_qzero_unpunc_single_omega
+    (hβ51 : (51 / 100 : ℝ) ≤ HeckeZeroSupremum.beta)
+    (D D_dual : Parameters.HighData subDelta)
+    (h2000_eps : 2000 * D_dual.ε ≤ D_dual.t)
+    (h2000_e : 2000 * D_dual.e ≤ D_dual.t)
+    (hfine_dual : ∀ k, D_dual.ell k ≤ detectorMesh subDelta D_dual.t / 200)
+    (emb : Fin D.N ↪ Fin D_dual.N)
+    (hemb : ∀ j, D_dual.ell (emb j) = (2 / 3 : ℝ) * D.ell j)
+    (F_dual : ProbeFinalAssembly.SourceData D_dual)
+    (omega_b : 𝓢(ℝ, ℂ)) {lo_o hi_o : ℝ} (hlo_o : 0 < lo_o) (hlh_o : lo_o ≤ hi_o)
+    (hs_ob : Function.support (omega_b : ℝ → ℂ) ⊆ Set.Icc lo_o hi_o)
+    (negative : Bool) (M_drop : ℕ) (Lcap η τ : ℝ) (hLcap : 1 ≤ Lcap)
+    (hη_pos : 0 < η) (hτ_pos : 0 < τ) :
+    ∃ (τ_d B_p : ℝ) (deg_w : ℕ),
+      0 < τ_d ∧ 2 * τ_d ≤ D_dual.t ∧ 2 ≤ B_p ∧
+      ∀ data : RowData, ∃ C_unp U_unp : ℝ, 0 < C_unp ∧ 2 ≤ U_unp ∧
+      ∀ U : ℝ, U_unp ≤ U →
+      ∀ Dpool : ℕ, B_p * U ^ (Lcap + 2) ≤ (Dpool : ℝ) →
+      let q_per := InverseInitialExcludedPeriod.deletedPeriod (basePeriod data)
+      let F_pool := CanonicalRowCompletion.outsideSquarefreeIdeals (reflectionExcludedPrimes q_per) Dpool
+      let hFa := CanonicalRowCompletion.outsideSquarefree_admissible (reflectionExcludedPrimes q_per) Dpool
+        (reflectionExcludedPrimes_bad q_per)
+      letI : ∀ j : primePool F_pool, (Ideal.span {poolPrimary F_pool j}).IsMaximal :=
+        fun j => by rw [poolPrimary_span F_pool hFa j]; infer_instance
+      let p := poolPrimary F_pool
+      let hp := poolPrimary_ne_zero F_pool hFa
+      let hcop := poolPrimary_coprime F_pool hFa
+      let hg := poolPrimary_good F_pool hFa
+      let hinj : Function.Injective (fun j : primePool F_pool => Ideal.span {p j}) :=
+        fun j₁ j₂ h => Subtype.ext (by dsimp only [p] at h; simpa only [poolPrimary_span F_pool hFa] using h)
+      let base := InverseInitialRayAttachment.elementCharacter
+        (InverseInitialConjugateEnergy.conjugateIdealCharacter
+          (idealCoeff (deletedBase data)).toMonoidHom)
+      ∀ {d_outer r_param θ_s ell_in z_Jv V₀ F_p pad_T B_c t_q x6 X_col : ℝ},
+        1 / 2 ≤ d_outer → d_outer ≤ 5 / 6 →
+        17 / 25 ≤ r_param → r_param ≤ 19 / 26 →
+        0 ≤ θ_s → θ_s ≤ 1 →
+        0 ≤ ell_in → ell_in ≤ 3 / 500 →
+        0 ≤ z_Jv → z_Jv ≤ ell_in →
+        0 ≤ V₀ → 0 ≤ pad_T → 0 ≤ B_c → 0 ≤ t_q → 0 ≤ x6 →
+      let u_act := θ_s * stage1Width r_param
+      let z_rem_th := (1 - θ_s) * ((1 - r_param) / 2) + θ_s * stage1RemWidth r_param
+      let r_new := F_p - V₀ - 3 * ell_in - u_act
+      let H_free := (1 - 6 * u_act) - 6 * ell_in - 6 * x6
+      r_new ≤ Lcap → 0 < H_free → X_col = U ^ (r_new - B_c - t_q) →
+      ∀ (S_rem J : Finset (Fin D.N)), J ⊆ S_rem →
+        (∑ i ∈ J, D.ell i / d_outer) ≤ B_c + t_q + 2 * η →
+        (∑ i ∈ S_rem, D.ell i / d_outer) ≤ z_rem_th - z_Jv + pad_T →
+        F_p - ((∑ i ∈ S_rem, D.ell i / d_outer) + u_act + z_Jv) + 2 * η ≤ r_param →
+      let Z_slot : Fin D.N → ℝ := fun j => U ^ (D.ell j / d_outer)
+      let Z_dual : ℝ := U ^ (3 / (2 * d_outer))
+      (∀ j ∈ S_rem, ((deletedBase data).modulus.absNorm : ℝ) < Z_slot j) →
+      ∀ (lists_full lists_v : Fin D.N → Finset (primePool F_pool)),
+        (∀ j ∈ S_rem, lists_full j = InverseInitialCommonLists.poolList F_pool
+          (InverseInitialPhysicalSlots.livePrimes F_dual.modulus ⊤ F_dual.W 2 (Z_slot j))) →
+        (∀ j ∈ S_rem, lists_v j ⊆ lists_full j) →
+        (∀ j ∈ S_rem, ((lists_full j \ lists_v j).card : ℝ) ≤ (M_drop : ℝ)) →
+        (S_rem : Set (Fin D.N)).PairwiseDisjoint lists_v →
+      ∀ (ζ_base : ℂ), ζ_base.re = 17 / 50 → |ζ_base.im| ≤ (3 / 4 : ℝ) * Z_dual ^ τ_d →
+      ∀ (a : Fin D.N → primePool F_pool → ℂ),
+        (∀ j ∈ S_rem, ∀ q ∈ lists_full j,
+          a j q = primeProfile F_dual.W (Z_slot j) ζ_base q.val /
+            star (idealCoeff (deletedBase data) q.val)) →
+      (∀ j ∈ S_rem, ∀ q ∈ lists_v j,
+        Z_slot j ≤ ‖ringComplex (p q)‖ ^ 2 ∧ ‖ringComplex (p q)‖ ^ 2 ≤ 2 * Z_slot j ∧ ‖a j q‖ ≤ 1) →
+      ∀ (Ψ₀ : O →* ℂ), CanonicalCoefficientClass.IsBaseRayTwist base Ψ₀ → (∀ u, ‖Ψ₀ u‖ ≤ 1) →
+      ∀ (U0_set : Finset FreeRow), (∀ u₀ ∈ U0_set, rowNorm u₀ ≤ 2 * U ^ (H_free - 17 * η - τ)) →
+      ∀ (t_ht : ℝ) (S'' : Finset (Fin D.N)), S'' ⊆ S_rem \ J →
+      ∀ (X₁ : ℝ), 0 < X₁ → X₁ * (∏ i ∈ (S_rem \ J) \ S'', Z_slot i) ≤ X_col →
+        (∑ u₀ ∈ U0_set, X₁⁻¹ *
+          ‖inputConjugateRow p (fun j => complexSexticChar (Ideal.span {p j}) (hg j))
+            Finset.univ Ψ₀ 1 1 1
+            (fun U_set => primeMark S'' lists_v a U_set *
+              principalWindow omega_b lo_o hi_o hlo_o hs_ob negative t_ht
+                (primeProductNorm p U_set / X₁)) u₀.val‖ ^ 2) ≤
+        C_unp * U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t) *
+          (1 + ‖t_ht‖) ^ (2 * deg_w) := by
+  obtain ⟨wFresh, af, bf, B_w, haf, habf, hBw0, hs_w, hBw, hfour⟩ :=
+    principalWindow_markedRadial_fourier_l2_le_factored omega_b hlo_o hlh_o hs_ob D.N
+  obtain ⟨τ_d, J_sf, hτ_p, hτ_le, hsf_all⟩ :=
+    dual_sixth_free_factored_energy_lists_sdiff_padded hβ51 D D_dual h2000_eps h2000_e
+      hfine_dual emb hemb F_dual wFresh haf habf hBw0 hs_w hBw M_drop
+  let N_tail : ℕ := ⌈((D.N : ℝ) + 20 + 6 * Lcap) / τ_d⌉₊ + 1
+  obtain ⟨C_four, hC_f, hfour⟩ := hfour J_sf N_tail
+  let deg_w : ℕ := J_sf + N_tail + (volume : Measure ℝ).integrablePower
+  let B_p : ℝ := max 2 bf + 2
+  have hBp2 : 2 ≤ B_p := by dsimp only [B_p]; linarith [le_max_left 2 bf]
+  have hbf_pos : 0 < bf := haf.trans_le habf
+  refine ⟨τ_d, B_p, deg_w, hτ_p, hτ_le, hBp2, ?_⟩
+  intro data
+  obtain ⟨C_sf, U_sf, hC_sf, hU_sf, hsf⟩ := hsf_all data
+  have hev_norm : ∀ᶠ U : ℝ in atTop, (373248 : ℝ) ≤ U ^ (17 * η) :=
+    (tendsto_rpow_atTop (by positivity : 0 < 17 * η)).eventually (eventually_ge_atTop 373248)
+  have hev_pi : ∀ᶠ U : ℝ in atTop, 32 * Real.pi ≤ U ^ (τ_d / 2) :=
+    (tendsto_rpow_atTop (by positivity : 0 < τ_d / 2)).eventually (eventually_ge_atTop (32 * Real.pi))
+  obtain ⟨U_n0, hU_n0⟩ := eventually_atTop.mp (hev_norm.and hev_pi)
+  let U_unp : ℝ := max 2 (max U_sf U_n0)
+  have hU_unp2 : 2 ≤ U_unp := le_max_left _ _
+  let C_cr : ℝ := (4 : ℝ) ^ D.N * ((max 1 (M_drop : ℝ)) ^ 2) ^ D.N *
+    (49 * bf * (B_w * 49 * (1 + bf) ^ 2) ^ 2 * (9604 : ℝ) ^ D.N + 1)
+  have hCcr_nn : 0 ≤ C_cr :=
+    mul_nonneg (mul_nonneg (pow_nonneg (by norm_num) _) (pow_nonneg (sq_nonneg _) _))
+      (add_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) hbf_pos.le) (sq_nonneg _))
+        (pow_nonneg (by norm_num) _)) zero_le_one)
+  let C_unp : ℝ := 4 * C_four * (C_sf + C_cr + 1)
+  have hC_unp_pos : 0 < C_unp :=
+    mul_pos (mul_pos (by norm_num) hC_f)
+      (add_pos_of_nonneg_of_pos (add_nonneg hC_sf.le hCcr_nn) zero_lt_one)
+  refine ⟨C_unp, U_unp, hC_unp_pos, hU_unp2, ?_⟩
+  intro U hU Dpool hDpool q_per F_pool hFa p hp hcop hg hinj base
+    d_outer r_param θ_s ell_in z_Jv V₀ F_p pad_T B_c t_q x6 X_col
+    hd_lo hd_hi hr0 hr1 hθ0 hθ1 hell0 hell1 hJv0 hJv hV0 hpad0 hBc_0 htq_0 hx6_0
+    u_act z_rem_th r_new H_free hrn_hi hHf_pos hX_col_eq
+    S_rem J hJ_sub hzJ_act_le hz_Srem hFp_r Z_slot Z_dual hlarge_Z
+    lists_full lists_v hlists_full hlists_v hcard_diff hdisj_v
+    ζ_base hζ_re hζ_im a ha_eq hlists_v_b Ψ₀ hΨ₀_base hΨ₀_norm
+    U0_set hU0_norm t_ht S'' hS'' X₁ hX₁ hX₁_le
+  letI : ∀ i : primePool F_pool, (Ideal.span {p i}).IsMaximal :=
+    fun i => by dsimp only [p]; rw [poolPrimary_span F_pool hFa i]; infer_instance
+  have hU2 : 2 ≤ U := hU_unp2.trans hU
+  have hU1 : 1 < U := by linarith only [hU2]
+  have hU_pos : 0 < U := zero_lt_one.trans hU1
+  have hd_pos : 0 < d_outer := by linarith only [hd_lo]
+  have ht_pos : 0 < D_dual.t := D_dual.t_pos
+  obtain ⟨h373, h32pi⟩ := hU_n0 U (((le_max_right _ _).trans (le_max_right _ _)).trans hU)
+  have hZ_slot_ge1 : ∀ j : Fin D.N, 1 ≤ Z_slot j :=
+    fun j => Real.one_le_rpow hU1.le (div_nonneg (D.slots_bounds j).1.le hd_pos.le)
+  have hZ_slot_pos : ∀ j : Fin D.N, 0 < Z_slot j := fun j => zero_lt_one.trans_le (hZ_slot_ge1 j)
+  have hZ_slot_hi : ∀ j : Fin D.N, Z_slot j ≤ U := by
+    intro j; dsimp only [Z_slot]
+    have hle1 : D.ell j / d_outer ≤ 1 := by
+      have h200 : D.ell j ≤ (1 / 200 : ℝ) * D.t := (D.slots_bounds j).2.2
+      have hts : D.t ≤ 1 / 100000000 := D.t_small
+      rw [div_le_one hd_pos]; linarith only [h200, hts, hd_lo]
+    exact (Real.rpow_le_rpow_of_exponent_le hU1.le hle1).trans_eq (Real.rpow_one U)
+  have hS''_rem : S'' ⊆ S_rem := hS''.trans Finset.sdiff_subset
+  have hS''_card : S''.card ≤ D.N :=
+    (Finset.card_le_univ S'').trans_eq (Fintype.card_fin D.N)
+  have hHf_lo : -D_dual.t ≤ H_free := by linarith only [hHf_pos, ht_pos]
+  have hmax_Hf : max 0 H_free = H_free := max_eq_right hHf_pos.le
+  obtain ⟨idx_bad, hbad_tr⟩ := exists_bad12_base_transfer_on_pool (σ := Fin D.N) q_per Dpool base Ψ₀ hΨ₀_base
+  let S_free : Finset FreeRow := U0_set.image (fun u₀ => (bad12FreeSplit idx_bad u₀).1)
+  have hS_free_norm : ∀ u ∈ S_free, rowNorm u ≤ U ^ max 0 H_free := by
+    intro u hu
+    obtain ⟨u₀, hu₀, rfl⟩ := Finset.mem_image.mp hu
+    have hhi := (bad12_freeRow_transfer idx_bad u₀).2.2.1
+    have hu₀_b := hU0_norm u₀ hu₀
+    rw [hmax_Hf]
+    calc rowNorm (bad12FreeSplit idx_bad u₀).1
+        ≤ 186624 * (2 * U ^ (H_free - 17 * η - τ)) :=
+          hhi.trans (mul_le_mul_of_nonneg_left hu₀_b (by norm_num))
+      _ = 373248 * U ^ (H_free - 17 * η - τ) := by ring
+      _ ≤ U ^ (17 * η) * U ^ (H_free - 17 * η - τ) :=
+          mul_le_mul_of_nonneg_right h373 (Real.rpow_nonneg hU_pos.le _)
+      _ = U ^ (H_free - τ) := by
+          rw [← Real.rpow_add hU_pos]; exact congrArg (fun x : ℝ => U ^ x) (by ring)
+      _ ≤ U ^ H_free := Real.rpow_le_rpow_of_exponent_le hU1.le (by linarith only [hτ_pos])
+  have hw0_u : 0 ≤ u_act := by
+    dsimp only [u_act]; apply mul_nonneg hθ0
+    unfold stage1Width stage1Line; linarith only [hr0, hr1]
+  have hS_free_norm2 : ∀ u ∈ S_free, rowNorm u ≤ U ^ (2 : ℝ) := by
+    intro u hu
+    have h1 := hS_free_norm u hu; rw [hmax_Hf] at h1
+    have hHf2 : H_free ≤ 2 := by dsimp only [H_free]; linarith only [hw0_u, hell0, hx6_0]
+    exact h1.trans (Real.rpow_le_rpow_of_exponent_le hU1.le hHf2)
+  let z_J_act : ℝ := ∑ i ∈ J, D.ell i / d_outer
+  have hzJ_act0 : 0 ≤ z_J_act :=
+    Finset.sum_nonneg (fun i _ => div_nonneg (D.slots_bounds i).1.le hd_pos.le)
+  let X₀_in : ℝ := X₁ / ∏ i ∈ S'', Z_slot i
+  let Δ_BC : ℝ := B_c + t_q + 2 * η - z_J_act
+  have hΔ_BC0 : 0 ≤ Δ_BC := sub_nonneg.mpr hzJ_act_le
+  let V₀_eff : ℝ := V₀ + Δ_BC
+  have hV₀_eff0 : 0 ≤ V₀_eff := add_nonneg hV0 hΔ_BC0
+  have hX₀_le_unm : X₀_in ≤ U ^ (r_param - V₀_eff - 3 * ell_in + z_Jv - 0) := by
+    have hprod_SremJ : (∏ i ∈ S'', Z_slot i) * (∏ i ∈ (S_rem \ J) \ S'', Z_slot i) =
+        ∏ i ∈ S_rem \ J, Z_slot i :=
+      Finset.prod_union Finset.disjoint_sdiff |>.symm.trans
+        (congrArg (fun F => ∏ i ∈ F, Z_slot i) (Finset.union_sdiff_of_subset hS''))
+    have hX₀_mul : X₀_in * (∏ i ∈ S_rem \ J, Z_slot i) ≤ X_col := by
+      dsimp only [X₀_in]
+      rw [← hprod_SremJ, ← mul_assoc,
+        div_mul_cancel₀ _ (Finset.prod_pos (fun i _ => hZ_slot_pos i)).ne']
+      exact hX₁_le
+    have hZ_remJ_eq : (∏ i ∈ S_rem \ J, Z_slot i) =
+        U ^ ((∑ i ∈ S_rem, D.ell i / d_outer) - z_J_act) := by
+      dsimp only [Z_slot, z_J_act]; rw [← Real.rpow_sum_of_pos hU_pos]
+      apply congrArg (fun x : ℝ => U ^ x)
+      rw [eq_sub_iff_add_eq]
+      exact Finset.sum_sdiff hJ_sub
+    rw [hZ_remJ_eq, hX_col_eq] at hX₀_mul
+    have hdiv_le := (le_div_iff₀ (Real.rpow_pos_of_pos hU_pos _)).mpr hX₀_mul
+    rw [← Real.rpow_sub hU_pos] at hdiv_le
+    refine hdiv_le.trans (Real.rpow_le_rpow_of_exponent_le hU1.le ?_)
+    dsimp only [r_new, V₀_eff, Δ_BC]; linarith only [hFp_r]
+  have hz_rem_Jv_pos : 0 ≤ z_rem_th - z_Jv := by
+    have hz_rem_lo : (7 / 52 : ℝ) - 121 / 12500 ≤ z_rem_th := by
+      dsimp only [z_rem_th]; unfold stage1RemWidth stage1Width stage1Line
+      nlinarith only [hr0, hr1, hθ0, hθ1]
+    linarith only [hz_rem_lo, hJv, hell1]
+  let z_J_in : ℝ := min z_J_act (z_rem_th - z_Jv)
+  have hzJ_in0 : 0 ≤ z_J_in := le_min hzJ_act0 hz_rem_Jv_pos
+  have hzT_cap0 : 0 ≤ z_rem_th - z_Jv - z_J_in - 0 := by
+    have hle : z_J_in ≤ z_rem_th - z_Jv := min_le_right _ _
+    linarith only [hle]
+  have hzT'_sum_le : ∀ T' : Finset (Fin D.N), T' ⊆ S'' →
+      (∑ j ∈ T', D.ell j / d_outer) ≤ (z_rem_th - z_Jv - z_J_in - 0) + pad_T := by
+    intro T' hT'
+    have hT'_sub : T' ⊆ S_rem \ J := hT'.trans hS''
+    have hdisj_TJ : Disjoint T' J :=
+      Finset.disjoint_left.mpr (fun i hiT hiJ => (Finset.mem_sdiff.mp (hT'_sub hiT)).2 hiJ)
+    have hun_sub : T' ∪ J ⊆ S_rem :=
+      Finset.union_subset (hT'_sub.trans Finset.sdiff_subset) hJ_sub
+    have hsum_TJ : (∑ j ∈ T', D.ell j / d_outer) + z_J_act ≤ ∑ i ∈ S_rem, D.ell i / d_outer := by
+      dsimp only [z_J_act]; rw [← Finset.sum_union hdisj_TJ]
+      exact Finset.sum_le_sum_of_subset_of_nonneg hun_sub
+        (fun i _ _ => div_nonneg (D.slots_bounds i).1.le hd_pos.le)
+    dsimp only [z_J_in]
+    rcases le_total z_J_act (z_rem_th - z_Jv) with hle_zJ | hge_zJ
+    · rw [min_eq_left hle_zJ]; linarith only [hsum_TJ, hz_Srem]
+    · rw [min_eq_right hge_zJ]; linarith only [hsum_TJ, hz_Srem, hge_zJ]
+  let χ_p := fun j => complexSexticChar (Ideal.span {p j}) (hg j)
+  have hbad_sum_le : ∀ (s : ℝ) (T' : Finset (Fin D.N)) (X' : ℝ),
+      0 < X' →
+      let a_tw : Fin D.N → primePool F_pool → ℂ := fun j q =>
+        a j q * kernelLogPhase s (Real.log (‖ringComplex (p q)‖ ^ 2 / Z_slot j))
+      (∑ u₀ ∈ U0_set, (X' * ∏ j ∈ T', Z_slot j)⁻¹ *
+        ‖inputConjugateRow p χ_p Finset.univ Ψ₀ 1 1 1
+            (fun U_set => childLogTest wFresh s (primeProductNorm p U_set / X')) u₀.val *
+          ∏ j ∈ T', slotCharSum p hg lists_v a_tw Ψ₀ j u₀.val‖ ^ 2) ≤
+      4 * ∑ u ∈ S_free, (X' * ∏ j ∈ T', Z_slot j)⁻¹ *
+        ‖inputConjugateRow p χ_p Finset.univ base 1 1 1
+            (fun U_set => childLogTest wFresh s (primeProductNorm p U_set / X')) u.val *
+          ∏ j ∈ T', slotCharSum p hg lists_v a_tw base j u.val‖ ^ 2 := by
+    intro s T' X' hX' a_tw
+    let term_u : FreeRow → ℝ := fun u =>
+      (X' * ∏ j ∈ T', Z_slot j)⁻¹ *
+        ‖inputConjugateRow p χ_p Finset.univ base 1 1 1
+            (fun U_set => childLogTest wFresh s (primeProductNorm p U_set / X')) u.val *
+          ∏ j ∈ T', slotCharSum p hg lists_v a_tw base j u.val‖ ^ 2
+    have hterm_nn : ∀ u, 0 ≤ term_u u := fun u =>
+      mul_nonneg (inv_nonneg.mpr (mul_nonneg hX'.le
+        (Finset.prod_nonneg (fun j _ => (hZ_slot_pos j).le)))) (sq_nonneg _)
+    have heq_u0 : ∀ u₀ ∈ U0_set,
+        (X' * ∏ j ∈ T', Z_slot j)⁻¹ *
+          ‖inputConjugateRow p χ_p Finset.univ Ψ₀ 1 1 1
+              (fun U_set => childLogTest wFresh s (primeProductNorm p U_set / X')) u₀.val *
+            ∏ j ∈ T', slotCharSum p hg lists_v a_tw Ψ₀ j u₀.val‖ ^ 2 =
+        term_u (bad12FreeSplit idx_bad u₀).1 := by
+      intro u₀ _; dsimp only [term_u]
+      rw [(hbad_tr u₀).1 Finset.univ _,
+        Finset.prod_congr rfl (fun j _ => (hbad_tr u₀).2 lists_v a_tw j)]
+    rw [Finset.sum_congr rfl heq_u0,
+      ← Finset.sum_fiberwise_of_maps_to (g := fun u₀ => (bad12FreeSplit idx_bad u₀).1)
+        (fun u₀ hu₀ => Finset.mem_image_of_mem (fun u₀ => (bad12FreeSplit idx_bad u₀).1) hu₀),
+      Finset.mul_sum]
+    apply Finset.sum_le_sum; intro u _
+    have hconst : ∀ u₀ ∈ U0_set.filter (fun u₀ => (bad12FreeSplit idx_bad u₀).1 = u),
+        term_u (bad12FreeSplit idx_bad u₀).1 = term_u u :=
+      fun _ hu₀ => congrArg term_u (mem_filter_of hu₀).2
+    rw [Finset.sum_congr rfl hconst, Finset.sum_const, nsmul_eq_mul]
+    exact mul_le_mul_of_nonneg_right (bad12FreeSplit_fiber_card_le idx_bad U0_set u) (hterm_nn u)
+  have hX₀_Lcap : X₀_in ≤ U ^ Lcap := by
+    have h1 : X₀_in ≤ X₁ :=
+      div_le_self hX₁.le (Finset.one_le_prod (fun i _ => hZ_slot_ge1 i))
+    have h2 : X₁ ≤ X_col :=
+      (le_mul_of_one_le_right hX₁.le (Finset.one_le_prod (fun i _ => hZ_slot_ge1 i))).trans hX₁_le
+    have h3 : X_col ≤ U ^ Lcap := by
+      rw [hX_col_eq]
+      exact Real.rpow_le_rpow_of_exponent_le hU1.le (by linarith only [hrn_hi, hBc_0, htq_0])
+    exact h1.trans (h2.trans h3)
+  have hX₀_U2 : X₀_in ≤ U ^ (2 : ℝ) :=
+    hX₀_le_unm.trans (Real.rpow_le_rpow_of_exponent_le hU1.le
+      (by linarith only [hr1, hV₀_eff0, hJv, hell0]))
+  have hDpool_Z : ∀ j ∈ S'', 2 * Z_slot j ≤ (Dpool : ℝ) := by
+    intro j _
+    calc 2 * Z_slot j ≤ 2 * U := mul_le_mul_of_nonneg_left (hZ_slot_hi j) zero_le_two
+      _ ≤ B_p * U ^ (Lcap + 2) :=
+          mul_le_mul hBp2 ((Real.rpow_one U).symm.trans_le
+            (Real.rpow_le_rpow_of_exponent_le hU1.le (by linarith only [hLcap])))
+            hU_pos.le (by linarith only [hBp2])
+      _ ≤ (Dpool : ℝ) := hDpool
+  let S_cut : ℝ := (1 / (32 * Real.pi)) * Z_dual ^ τ_d
+  have hS_cut0 : 0 ≤ S_cut := mul_nonneg (by positivity) (Real.rpow_nonneg (Real.rpow_nonneg hU_pos.le _) _)
+  have hZd_ge_U : U ≤ Z_dual := by
+    dsimp only [Z_dual]
+    exact (Real.rpow_one U).symm.trans_le (Real.rpow_le_rpow_of_exponent_le hU1.le
+      ((one_le_div (by positivity)).mpr (by linarith only [hd_hi])))
+  have hScut_lower : U ^ (τ_d / 2) ≤ 1 + S_cut := by
+    have hZd_τ : U ^ τ_d ≤ Z_dual ^ τ_d := Real.rpow_le_rpow hU_pos.le hZd_ge_U hτ_p.le
+    have hsplit_τ : U ^ τ_d = U ^ (τ_d / 2) * U ^ (τ_d / 2) := by
+      rw [← Real.rpow_add hU_pos]; exact congrArg (fun x : ℝ => U ^ x) (by ring)
+    have h32_le : 32 * Real.pi * U ^ (τ_d / 2) ≤ Z_dual ^ τ_d :=
+      (mul_le_mul_of_nonneg_right h32pi (Real.rpow_nonneg hU_pos.le _)).trans
+        (hsplit_τ.symm.le.trans hZd_τ)
+    have hdiv_32 : U ^ (τ_d / 2) ≤ S_cut := by
+      dsimp only [S_cut]; rw [one_div_mul_eq_div, le_div_iff₀ (by positivity), mul_comm]; exact h32_le
+    linarith only [hdiv_32]
+  have htail_U_le : U ^ ((D.N : ℝ) + 10) / (1 + S_cut) ^ (2 * N_tail) ≤
+      U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t) := by
+    have hden_ge : U ^ ((D.N : ℝ) + 20 + 6 * Lcap) ≤ (1 + S_cut) ^ (2 * N_tail) := by
+      calc U ^ ((D.N : ℝ) + 20 + 6 * Lcap)
+          ≤ U ^ ((τ_d / 2) * (2 * (N_tail : ℝ))) := by
+            apply Real.rpow_le_rpow_of_exponent_le hU1.le
+            have hceil : ((D.N : ℝ) + 20 + 6 * Lcap) / τ_d ≤ (N_tail : ℝ) := by
+              dsimp only [N_tail]; push_cast
+              have hc := Nat.le_ceil (((D.N : ℝ) + 20 + 6 * Lcap) / τ_d)
+              linarith only [hc]
+            have hm := (div_le_iff₀ hτ_p).mp hceil
+            have heq_nt : (τ_d / 2) * (2 * (N_tail : ℝ)) = (N_tail : ℝ) * τ_d := by ring
+            linarith only [hm, heq_nt]
+        _ = (U ^ (τ_d / 2)) ^ (2 * N_tail) := by
+            rw [← Real.rpow_natCast (U ^ (τ_d / 2)), ← Real.rpow_mul hU_pos.le]; push_cast; rfl
+        _ ≤ (1 + S_cut) ^ (2 * N_tail) := pow_le_pow_left₀ (Real.rpow_nonneg hU_pos.le _) hScut_lower _
+    have hdiv_le : U ^ ((D.N : ℝ) + 10) / (1 + S_cut) ^ (2 * N_tail) ≤
+        U ^ ((D.N : ℝ) + 10 - ((D.N : ℝ) + 20 + 6 * Lcap)) := by
+      rw [Real.rpow_sub hU_pos]
+      exact div_le_div_of_nonneg_left (Real.rpow_nonneg hU_pos.le _)
+        (Real.rpow_pos_of_pos hU_pos _) hden_ge
+    refine hdiv_le.trans (Real.rpow_le_rpow_of_exponent_le hU1.le ?_)
+    have hx6_le1 : x6 ≤ 1 := by dsimp only [H_free] at hHf_pos; linarith only [hHf_pos, hell0, hw0_u]
+    have hw1 : u_act ≤ 121 / 12500 := by
+      dsimp only [u_act]
+      have hsw : stage1Width r_param ≤ 121 / 12500 := by
+        unfold stage1Width stage1Line; linarith only [hr0, hr1]
+      nlinarith only [hθ0, hθ1, hsw]
+    linarith only [hLcap, hell1, hw1, hx6_le1, hpad0, ht_pos]
+  have hm_rem : markedRadial p S'' lists_v a ∅
+      (principalWindow omega_b lo_o hi_o hlo_o hs_ob negative t_ht) X₁ =
+      fun U_set => primeMark S'' lists_v a U_set *
+        principalWindow omega_b lo_o hi_o hlo_o hs_ob negative t_ht
+          (primeProductNorm p U_set / X₁) := by
+    funext U_set; unfold markedRadial; simp only [Finset.empty_union]
+  simp_rw [← hm_rem]
+  have hf_app := hfour negative t_ht p hp hcop hg
+    (fun j₁ j₂ h => hinj (congrArg (fun x => Ideal.span {x}) h)) Finset.univ Ψ₀ hΨ₀_norm
+    S'' hS''_card lists_v (fun _ _ => Finset.subset_univ _)
+    (fun i hi j hj hij => hdisj_v (hS''_rem hi) (hS''_rem hj) hij)
+    a (fun i hi q hq => (hlists_v_b i (hS''_rem hi) q hq).2.2)
+    Z_slot (fun i _ => hZ_slot_ge1 i)
+    (fun i hi q hq => (hlists_v_b i (hS''_rem hi) q hq).1)
+    (fun i hi q hq => (hlists_v_b i (hS''_rem hi) q hq).2.1)
+    (U0_set.image Subtype.val) hX₁ hS_cut0
+    (mul_nonneg (by norm_num) (mul_nonneg hC_sf.le (Real.rpow_nonneg hU_pos.le _)))
+    (mul_nonneg (by norm_num) (mul_nonneg hCcr_nn (Real.rpow_nonneg hU_pos.le _)))
+    (fun s hs_cut T' hT' X' hX' hX'_le => by
+      rw [Finset.sum_image (fun _ _ _ _ h => Subtype.ext h)]
+      have hX'_X₀ : X' ≤ X₀_in :=
+        hX'_le.trans (div_le_self (div_nonneg hX₁.le
+          (Finset.prod_nonneg (fun i _ => (hZ_slot_pos i).le)))
+          (Finset.one_le_prod (fun i _ => hZ_slot_ge1 i)))
+      have hDp_X' : bf * X' ≤ (Dpool : ℝ) := by
+        have hbf_Bp : bf ≤ B_p := by dsimp only [B_p]; have hm := le_max_right (2 : ℝ) bf; linarith only [hm]
+        have hUL : U ^ Lcap ≤ U ^ (Lcap + 2) := Real.rpow_le_rpow_of_exponent_le hU1.le (by linarith only [])
+        exact (mul_le_mul hbf_Bp ((hX'_X₀.trans hX₀_Lcap).trans hUL)
+          hX'.le (by linarith only [hBp2])).trans hDpool
+      have hζ_tw_im : |(ζ_base + ((2 * Real.pi * s : ℝ) : ℂ) * Complex.I).im| ≤ Z_dual ^ τ_d := by
+        have h2pi_s : |2 * Real.pi * s| ≤ (1 / 16 : ℝ) * Z_dual ^ τ_d := by
+          rw [abs_mul, abs_of_pos (by positivity : 0 < 2 * Real.pi)]
+          calc 2 * Real.pi * |s| ≤ 2 * Real.pi * S_cut :=
+                mul_le_mul_of_nonneg_left hs_cut (by positivity)
+            _ = (1 / 16 : ℝ) * Z_dual ^ τ_d := by
+                dsimp only [S_cut]; field_simp [Real.pi_ne_zero]; ring
+        have him_eq : (ζ_base + ((2 * Real.pi * s : ℝ) : ℂ) * Complex.I).im =
+            ζ_base.im + 2 * Real.pi * s := by simp
+        rw [him_eq]
+        have htri := (abs_add_le ζ_base.im (2 * Real.pi * s)).trans (add_le_add hζ_im h2pi_s)
+        have hZd_pos : 0 < Z_dual ^ τ_d :=
+          Real.rpow_pos_of_pos (hU_pos.trans_le hZd_ge_U) τ_d
+        linarith only [htri, hZd_pos]
+      have hsf_app := hsf U (((le_max_left _ _).trans (le_max_right _ _)).trans hU) Dpool
+        hd_lo hd_hi hr0 hr1 hθ0 hθ1 hell0 hell1 hJv0 hJv hx6_0 hV₀_eff0 hzJ_in0 le_rfl hpad0
+        hzT_cap0 hHf_lo hX' (hX'_X₀.trans hX₀_le_unm) hDp_X'
+        T' (hzT'_sum_le T' hT')
+        (fun j hj => hDpool_Z j (hT' hj))
+        (fun j hj => hlarge_Z j (hS''_rem (hT' hj)))
+        lists_full lists_v a
+        (fun j hj => hlists_full j (hS''_rem (hT' hj)))
+        (fun j hj => hlists_v j (hS''_rem (hT' hj)))
+        (fun j hj => hcard_diff j (hS''_rem (hT' hj)))
+        ζ_base hζ_re (fun j hj => ha_eq j (hS''_rem (hT' hj)))
+        S_free hS_free_norm s hζ_tw_im
+      exact ((hbad_sum_le s T' X' hX').trans
+        (mul_le_mul_of_nonneg_left hsf_app (by norm_num))).trans_eq (by ring))
+    (fun s T' hT' X' hX' hX'_le => by
+      rw [Finset.sum_image (fun _ _ _ _ h => Subtype.ext h)]
+      have hX'_X₀ : X' ≤ X₀_in :=
+        hX'_le.trans (div_le_self (div_nonneg hX₁.le
+          (Finset.prod_nonneg (fun i _ => (hZ_slot_pos i).le)))
+          (Finset.one_le_prod (fun i _ => hZ_slot_ge1 i)))
+      have hDp_X' : bf * X' ≤ (Dpool : ℝ) := by
+        have hbf_Bp : bf ≤ B_p := by dsimp only [B_p]; have hm := le_max_right (2 : ℝ) bf; linarith only [hm]
+        have hUL : U ^ Lcap ≤ U ^ (Lcap + 2) := Real.rpow_le_rpow_of_exponent_le hU1.le (by linarith only [])
+        exact (mul_le_mul hbf_Bp ((hX'_X₀.trans hX₀_Lcap).trans hUL)
+          hX'.le (by linarith only [hBp2])).trans hDpool
+      have hcr := dual_factored_coarse_bound_lists_sdiff F_dual wFresh hbf_pos hBw0
+        (fun y hy => (hs_w hy).2) hBw M_drop data Dpool
+        hU1.le hX' (hX'_X₀.trans hX₀_U2) hDp_X' T' Z_slot
+        (fun j _ => hZ_slot_ge1 j) (fun j _ => hZ_slot_hi j)
+        (fun j hj => hDpool_Z j (hT' hj))
+        (fun j hj => hlarge_Z j (hS''_rem (hT' hj)))
+        ζ_base (by rw [hζ_re]; norm_num) lists_full lists_v a
+        (fun j hj => hlists_full j (hS''_rem (hT' hj)))
+        (fun j hj => hlists_v j (hS''_rem (hT' hj)))
+        (fun j hj => hcard_diff j (hS''_rem (hT' hj)))
+        (fun j hj => ha_eq j (hS''_rem (hT' hj)))
+        S_free hS_free_norm2 s
+      exact ((hbad_sum_le s T' X' hX').trans
+        (mul_le_mul_of_nonneg_left hcr (by norm_num))).trans_eq (by ring))
+  rw [Finset.sum_image (fun _ _ _ _ h => Subtype.ext h)] at hf_app
+  calc _ ≤ C_four * (1 + ‖t_ht‖) ^ (2 * deg_w) *
+            (4 * C_sf * U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t) +
+              (4 * C_cr * U ^ ((D.N : ℝ) + 10)) / (1 + S_cut) ^ (2 * N_tail)) := hf_app
+    _ ≤ C_four * (1 + ‖t_ht‖) ^ (2 * deg_w) *
+          (4 * C_sf * U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t) +
+            4 * C_cr * U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t)) := by
+        apply mul_le_mul_of_nonneg_left _
+          (mul_nonneg hC_f.le (pow_nonneg (add_nonneg zero_le_one (norm_nonneg t_ht)) _))
+        apply add_le_add_left
+        rw [mul_div_assoc]
+        exact mul_le_mul_of_nonneg_left htail_U_le (mul_nonneg (by norm_num) hCcr_nn)
+    _ ≤ C_unp * U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t) *
+          (1 + ‖t_ht‖) ^ (2 * deg_w) := by
+        dsimp only [C_unp]
+        have hnn : 0 ≤ 4 * C_four * U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t) *
+            (1 + ‖t_ht‖) ^ (2 * deg_w) :=
+          mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) hC_f.le)
+            (Real.rpow_nonneg hU_pos.le _)) (pow_nonneg (add_nonneg zero_le_one (norm_nonneg t_ht)) _)
+        linarith only [hnn]
+
+/-- Nonzero frequency ball `W_ball` energy bound for a single Schwartz window `omega_b` and
+orientation `negative`, factoring `w ∈ W_ball` into `(u₀, A)` via `exists_rowMap_eq`, grouping by
+dyadic shell `k_A` and ideal `A`, unpuncturing via
+`inputConjugateRow_markedRadial_unpuncture_total_scale`, and invoking
+`dual_qzero_unpunc_single_omega`. -/
+private theorem dual_qzero_W_ball_single_omega
+    (hβ51 : (51 / 100 : ℝ) ≤ HeckeZeroSupremum.beta)
+    (D D_dual : Parameters.HighData subDelta)
+    (h2000_eps : 2000 * D_dual.ε ≤ D_dual.t)
+    (h2000_e : 2000 * D_dual.e ≤ D_dual.t)
+    (hfine_dual : ∀ k, D_dual.ell k ≤ detectorMesh subDelta D_dual.t / 200)
+    (emb : Fin D.N ↪ Fin D_dual.N)
+    (hemb : ∀ j, D_dual.ell (emb j) = (2 / 3 : ℝ) * D.ell j)
+    (F_dual : ProbeFinalAssembly.SourceData D_dual)
+    (omega_b : 𝓢(ℝ, ℂ)) {lo_o hi_o : ℝ} (hlo_o : 0 < lo_o) (hlh_o : lo_o ≤ hi_o)
+    (hs_ob : Function.support (omega_b : ℝ → ℂ) ⊆ Set.Icc lo_o hi_o)
+    (negative : Bool) (M_drop : ℕ) (Lcap η τ : ℝ) (hLcap : 1 ≤ Lcap)
+    (hη_pos : 0 < η) (hη1 : η ≤ 1) (hτ_pos : 0 < τ) (hτ1 : τ ≤ 1) :
+    ∃ (τ_d B_p : ℝ) (deg_w : ℕ),
+      0 < τ_d ∧ 2 * τ_d ≤ D_dual.t ∧ 2 ≤ B_p ∧
+      ∀ data : RowData, ∃ C_W U_W : ℝ, 0 < C_W ∧ 2 ≤ U_W ∧
+      ∀ U : ℝ, U_W ≤ U → 2 ≤ U ^ η →
+      ∀ Dpool : ℕ, B_p * U ^ (Lcap + 2) ≤ (Dpool : ℝ) →
+      let q_per := InverseInitialExcludedPeriod.deletedPeriod (basePeriod data)
+      let F_pool := CanonicalRowCompletion.outsideSquarefreeIdeals (reflectionExcludedPrimes q_per) Dpool
+      let hFa := CanonicalRowCompletion.outsideSquarefree_admissible (reflectionExcludedPrimes q_per) Dpool
+        (reflectionExcludedPrimes_bad q_per)
+      letI : ∀ j : primePool F_pool, (Ideal.span {poolPrimary F_pool j}).IsMaximal :=
+        fun j => by rw [poolPrimary_span F_pool hFa j]; infer_instance
+      let p := poolPrimary F_pool
+      let hp := poolPrimary_ne_zero F_pool hFa
+      let hcop := poolPrimary_coprime F_pool hFa
+      let hg := poolPrimary_good F_pool hFa
+      let base := InverseInitialRayAttachment.elementCharacter
+        (InverseInitialConjugateEnergy.conjugateIdealCharacter
+          (idealCoeff (deletedBase data)).toMonoidHom)
+      ∀ {d_outer r_param θ_s ell_in z_Jv V₀ F_p pad_T B_c t_q X_col : ℝ},
+        1 / 2 ≤ d_outer → d_outer ≤ 5 / 6 →
+        17 / 25 ≤ r_param → r_param ≤ 19 / 26 →
+        0 ≤ θ_s → θ_s ≤ 1 →
+        0 ≤ ell_in → ell_in ≤ 3 / 500 →
+        0 ≤ z_Jv → z_Jv ≤ ell_in →
+        0 ≤ V₀ → 0 ≤ pad_T → 0 ≤ B_c → 0 ≤ t_q → t_q ≤ 3 * Lcap + 15 * η + τ →
+      let u_act := θ_s * stage1Width r_param
+      let z_rem_th := (1 - θ_s) * ((1 - r_param) / 2) + θ_s * stage1RemWidth r_param
+      let r_new := F_p - V₀ - 3 * ell_in - u_act
+      let W_exp := (1 - 6 * u_act) - 6 * ell_in - 17 * η - τ
+      r_new ≤ Lcap → X_col = U ^ (r_new - B_c - t_q) →
+      ∀ (S_rem J : Finset (Fin D.N)), J ⊆ S_rem →
+        (∑ i ∈ J, D.ell i / d_outer) ≤ B_c + t_q + 2 * η →
+        (∑ i ∈ S_rem, D.ell i / d_outer) ≤ z_rem_th - z_Jv + pad_T →
+        F_p - ((∑ i ∈ S_rem, D.ell i / d_outer) + u_act + z_Jv) + 2 * η ≤ r_param →
+      let Z_slot : Fin D.N → ℝ := fun j => U ^ (D.ell j / d_outer)
+      let Z_dual : ℝ := U ^ (3 / (2 * d_outer))
+      (∀ j ∈ S_rem, ((deletedBase data).modulus.absNorm : ℝ) < Z_slot j) →
+      ∀ (lists_full lists_v : Fin D.N → Finset (primePool F_pool)),
+        (∀ j ∈ S_rem, lists_full j = InverseInitialCommonLists.poolList F_pool
+          (InverseInitialPhysicalSlots.livePrimes F_dual.modulus ⊤ F_dual.W 2 (Z_slot j))) →
+        (∀ j ∈ S_rem, lists_v j ⊆ lists_full j) →
+        (∀ j ∈ S_rem, ((lists_full j \ lists_v j).card : ℝ) ≤ (M_drop : ℝ)) →
+        (S_rem : Set (Fin D.N)).PairwiseDisjoint lists_v →
+      ∀ (ζ_base : ℂ), ζ_base.re = 17 / 50 → |ζ_base.im| ≤ (3 / 4 : ℝ) * Z_dual ^ τ_d →
+      ∀ (a : Fin D.N → primePool F_pool → ℂ),
+        (∀ j ∈ S_rem, ∀ q ∈ lists_full j,
+          a j q = primeProfile F_dual.W (Z_slot j) ζ_base q.val /
+            star (idealCoeff (deletedBase data) q.val)) →
+      (∀ j ∈ S_rem, ∀ q ∈ lists_v j,
+        Z_slot j ≤ ‖ringComplex (p q)‖ ^ 2 ∧ ‖ringComplex (p q)‖ ^ 2 ≤ 2 * Z_slot j ∧ ‖a j q‖ ≤ 1) →
+      ∀ (Ψ₀ : O →* ℂ), CanonicalCoefficientClass.IsBaseRayTwist base Ψ₀ → (∀ u, ‖Ψ₀ u‖ ≤ 1) →
+      ∀ (m : O), m ≠ 0 → ‖ringComplex m‖ ^ 2 ≤ U ^ (2 * Lcap) →
+      ∀ (t_ht : ℝ) (D_q : Finset (primePool F_pool)), primeProductNorm p D_q ≤ U ^ (t_q + η) →
+        (∑ w ∈ (firstFrequencyDisk (2 * U ^ W_exp)).erase 0,
+          ‖inputConjugateRow p (fun j => complexSexticChar (Ideal.span {p j}) (hg j))
+            Finset.univ Ψ₀ (m * ∏ i ∈ D_q, p i) 1 1
+            (markedRadial p (S_rem \ J) lists_v a ∅
+              (principalWindow omega_b lo_o hi_o hlo_o hs_ob negative t_ht) X_col) w‖ ^ 2) ≤
+        C_W * X_col * U ^ (1 - 3 * ell_in - 5 * u_act + pad_T + (15 / 2 : ℝ) * D_dual.t) *
+          (1 + ‖t_ht‖) ^ (2 * deg_w) := by
+  obtain ⟨τ_d, B_p, deg_w, hτ_p, hτ_le, hBp2, hunp_all⟩ :=
+    dual_qzero_unpunc_single_omega hβ51 D D_dual h2000_eps h2000_e hfine_dual emb hemb
+      F_dual omega_b hlo_o hlh_o hs_ob negative M_drop Lcap η τ hLcap hη_pos hτ_pos
+  let ε_div : ℝ := D_dual.t / (80 * (6 * Lcap + 30))
+  have hε_div : 0 < ε_div := by dsimp only [ε_div]; have := D_dual.t_pos; positivity
+  obtain ⟨C_div, hC_div, hdiv_le⟩ := ideal_divisor_small_power ε_div hε_div
+  obtain ⟨C_log, hC_log, hlog_le⟩ := log_fourth_small_power 1 (D_dual.t / 4) (by have := D_dual.t_pos; positivity)
+  have hCdiv10_pos : 0 < C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div) :=
+    mul_pos (pow_pos hC_div 10) (Real.rpow_pos_of_pos zero_lt_two _)
+  refine ⟨τ_d, B_p, deg_w, hτ_p, hτ_le, hBp2, ?_⟩
+  intro data
+  obtain ⟨C_unp, U_unp, hC_unp, hU_unp2, hunp⟩ := hunp_all data
+  let C_W : ℝ := C_log * 512 * (C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div)) * C_unp
+  have hCW_pos : 0 < C_W := mul_pos (mul_pos (mul_pos hC_log (by norm_num)) hCdiv10_pos) hC_unp
+  refine ⟨C_W, U_unp, hCW_pos, hU_unp2, ?_⟩
+  intro U hU h2_η Dpool hDpool q_per F_pool hFa p hp hcop hg base
+    d_outer r_param θ_s ell_in z_Jv V₀ F_p pad_T B_c t_q X_col
+    hd_lo hd_hi hr0 hr1 hθ0 hθ1 hell0 hell1 hJv0 hJv hV0 hpad0 hBc_0 htq_0 htq_hi
+    u_act z_rem_th r_new W_exp hrn_hi hX_col_eq
+    S_rem J hJ_sub hzJ_act_le hz_Srem hFp_r Z_slot Z_dual hlarge_Z
+    lists_full lists_v hlists_full hlists_v hcard_diff hdisj_v
+    ζ_base hζ_re hζ_im a ha_eq hlists_v_b Ψ₀ hΨ₀_base hΨ₀_norm m hm_ne hm_norm t_ht D_q hDq_norm
+  letI : ∀ i : primePool F_pool, (Ideal.span {p i}).IsMaximal :=
+    fun i => by dsimp only [p]; rw [poolPrimary_span F_pool hFa i]; infer_instance
+  have hU2 : 2 ≤ U := hU_unp2.trans hU
+  have hU1 : 1 < U := by linarith only [hU2]
+  have hU_pos : 0 < U := zero_lt_one.trans hU1
+  have hd_pos : 0 < d_outer := by linarith only [hd_lo]
+  have ht_pos : 0 < D_dual.t := D_dual.t_pos
+  have hX_col_pos : 0 < X_col := by rw [hX_col_eq]; exact Real.rpow_pos_of_pos hU_pos _
+  have hZ_slot_ge1 : ∀ j : Fin D.N, 1 ≤ Z_slot j :=
+    fun j => Real.one_le_rpow hU1.le (div_nonneg (D.slots_bounds j).1.le hd_pos.le)
+  have hw0_u : 0 ≤ u_act := by
+    dsimp only [u_act]; apply mul_nonneg hθ0
+    unfold stage1Width stage1Line; linarith only [hr0, hr1]
+  have hW_exp_le1 : W_exp ≤ 1 := by dsimp only [W_exp]; linarith only [hw0_u, hell0, hη_pos, hτ_pos]
+  let W_ball : Finset O := (firstFrequencyDisk (2 * U ^ W_exp)).erase 0
+  let V_win : 𝓢(ℝ, ℂ) := principalWindow omega_b lo_o hi_o hlo_o hs_ob negative t_ht
+  let χ_p := fun j => complexSexticChar (Ideal.span {p j}) (hg j)
+  let wt_t : ℝ := (1 + ‖t_ht‖) ^ (2 * deg_w)
+  have hwt_pos : 0 < wt_t := pow_pos (add_pos_of_pos_of_nonneg zero_lt_one (norm_nonneg t_ht)) _
+  by_cases hW_ne : W_ball.Nonempty
+  swap
+  · change (∑ w ∈ W_ball, _) ≤ _
+    rw [Finset.not_nonempty_iff_eq_empty.mp hW_ne, Finset.sum_empty]
+    exact mul_nonneg (mul_nonneg (mul_nonneg hCW_pos.le hX_col_pos.le)
+      (Real.rpow_nonneg hU_pos.le _)) hwt_pos.le
+  let split_w : W_ball → FreeRow × NonzeroIdeal := fun w =>
+    Classical.choose (exists_rowMap_eq (Finset.mem_erase.mp w.property).1)
+  have hsplit_eq : ∀ w : W_ball, rowMap (split_w w) = w.val := fun w =>
+    Classical.choose_spec (exists_rowMap_eq (Finset.mem_erase.mp w.property).1)
+  have hsplit_inj : Function.Injective split_w := by
+    intro w₁ w₂ heq; apply Subtype.ext; rw [← hsplit_eq w₁, ← hsplit_eq w₂, heq]
+  have hsplit_norm : ∀ w : W_ball,
+      rowNorm (split_w w).1 * ((split_w w).2.val.absNorm : ℝ) ^ 6 = ‖ringComplex w.val‖ ^ 2 := by
+    intro w
+    have hsp : Ideal.span {w.val} = Ideal.span {(split_w w).1.val} * (split_w w).2.val ^ 6 := by
+      rw [← hsplit_eq w, ← rowMap_span]
+    have hn := congrArg (fun I : Ideal O => (I.absNorm : ℝ)) hsp
+    simpa only [map_mul, map_pow, Nat.cast_mul, Nat.cast_pow,
+      ← ringComplex_norm_sq_eq_absNorm_span, rowNorm] using hn.symm
+  let k_A : W_ball → ℕ := fun w =>
+    InverseSecondSourceBlocks.dyadIndex ((split_w w).2.val.absNorm : ℝ)
+  let K_A_set : Finset ℕ := Finset.univ.image k_A
+  have hKA_card : (K_A_set.card : ℝ) ≤ C_log * U ^ (D_dual.t / 4) := by
+    have hkA_le : ∀ k_idx ∈ K_A_set, (k_idx : ℝ) ≤ Real.log U / Real.log 2 := by
+      intro k_idx hk_idx
+      obtain ⟨w, _, rfl⟩ := Finset.mem_image.mp hk_idx
+      have hA_ge1 : 1 ≤ ((split_w w).2.val.absNorm : ℝ) := by
+        exact_mod_cast Nat.one_le_iff_ne_zero.mpr
+          (Ideal.absNorm_eq_zero_iff.not.mpr (split_w w).2.property)
+      have hds := (InverseSecondSourceBlocks.dyadIndex_bounds _ hA_ge1).1
+      have hds_eq : InverseSecondSourceBlocks.dyadScale (k_A w) = (2 : ℝ) ^ (k_A w) := rfl
+      have hu_ge1 : 1 ≤ rowNorm (split_w w).1 := by
+        unfold rowNorm
+        exact_mod_cast Nat.one_le_iff_ne_zero.mpr
+          (Ideal.absNorm_eq_zero_iff.not.mpr
+            (Ideal.span_singleton_eq_bot.not.mpr (split_w w).1.property.1))
+      have hw_le_U6 : ‖ringComplex w.val‖ ^ 2 ≤ U ^ (6 : ℝ) := by
+        have hw_n : ‖ringComplex w.val‖ ^ 2 ≤ 2 * U ^ W_exp :=
+          (mem_firstFrequencyDisk _ _).mp (Finset.mem_erase.mp w.property).2
+        have h2U : 2 * U ^ W_exp ≤ U * U := by
+          calc 2 * U ^ W_exp ≤ U * U ^ (1 : ℝ) :=
+                mul_le_mul hU2 (Real.rpow_le_rpow_of_exponent_le hU1.le hW_exp_le1)
+                  (Real.rpow_nonneg hU_pos.le _) hU_pos.le
+            _ = U * U := by rw [Real.rpow_one]
+        have hUU : U * U = U ^ (2 : ℝ) := by
+          calc U * U = U ^ (1 : ℝ) * U ^ (1 : ℝ) := by rw [Real.rpow_one]
+            _ = U ^ (2 : ℝ) := by rw [← Real.rpow_add hU_pos]; norm_num
+        exact (hw_n.trans h2U).trans (hUU.le.trans (Real.rpow_le_rpow_of_exponent_le hU1.le (by norm_num)))
+      have h2k_le : ((2 : ℝ) ^ (k_A w)) ^ 6 ≤ U ^ (6 : ℝ) := by
+        calc ((2 : ℝ) ^ (k_A w)) ^ 6
+            ≤ ((split_w w).2.val.absNorm : ℝ) ^ 6 :=
+              pow_le_pow_left₀ (pow_nonneg zero_le_two _) (hds_eq ▸ hds) 6
+          _ ≤ rowNorm (split_w w).1 * ((split_w w).2.val.absNorm : ℝ) ^ 6 :=
+              le_mul_of_one_le_left (pow_nonneg (Nat.cast_nonneg _) _) hu_ge1
+          _ = ‖ringComplex w.val‖ ^ 2 := hsplit_norm w
+          _ ≤ U ^ (6 : ℝ) := hw_le_U6
+      have h2k_U : (2 : ℝ) ^ (k_A w) ≤ U := by
+        have h6 : ((2 : ℝ) ^ (k_A w)) ^ (6 : ℝ) ≤ U ^ (6 : ℝ) := by
+          rw [← Real.rpow_natCast ((2 : ℝ) ^ (k_A w)) 6]; exact h2k_le
+        exact (Real.rpow_le_rpow_iff (pow_nonneg zero_le_two _) hU_pos.le (by norm_num : (0 : ℝ) < 6)).mp h6
+      have hlog2 := Real.log_le_log (pow_pos zero_lt_two _) h2k_U
+      rw [Real.log_pow] at hlog2
+      exact (le_div_iff₀ (Real.log_pos one_lt_two)).mpr hlog2
+    let N_max : ℕ := ⌊Real.log U / Real.log 2⌋₊
+    have hsub_range : K_A_set ⊆ Finset.range (N_max + 1) := fun k_idx hk =>
+      Finset.mem_range.mpr (Nat.lt_succ_iff.mpr (Nat.le_floor (hkA_le k_idx hk)))
+    have hcard_nat : (K_A_set.card : ℝ) ≤ (N_max : ℝ) + 1 := by
+      exact_mod_cast (Finset.card_le_card hsub_range).trans_eq (Finset.card_range (N_max + 1))
+    have hNmax_le : (N_max : ℝ) + 1 ≤ 1 + 2 * Real.log U := by
+      have hf : (N_max : ℝ) ≤ Real.log U / Real.log 2 :=
+        Nat.floor_le (div_nonneg (Real.log_nonneg hU1.le) (Real.log_pos one_lt_two).le)
+      have hlog2_gt : (1 / 2 : ℝ) ≤ Real.log 2 := by have hl2 := Real.log_two_gt_d9; linarith only [hl2]
+      have hdiv2 : Real.log U / Real.log 2 ≤ 2 * Real.log U := by
+        rw [div_le_iff₀ (Real.log_pos one_lt_two)]
+        have hl0 : 0 ≤ Real.log U := Real.log_nonneg hU1.le
+        nlinarith only [hl0, hlog2_gt]
+      linarith only [hf, hdiv2]
+    have h1log4 : 1 + 2 * Real.log U ≤ (1 + 1 * Real.log U) ^ 4 := by
+      have hx : 0 ≤ Real.log U := Real.log_nonneg hU1.le
+      have hdiff : (1 + 1 * Real.log U) ^ 4 - (1 + 2 * Real.log U) =
+          2 * Real.log U + 6 * (Real.log U) ^ 2 + 4 * (Real.log U) ^ 3 + (Real.log U) ^ 4 := by ring
+      have hnn : 0 ≤ 2 * Real.log U + 6 * (Real.log U) ^ 2 + 4 * (Real.log U) ^ 3 + (Real.log U) ^ 4 :=
+        add_nonneg (add_nonneg (add_nonneg (mul_nonneg zero_le_two hx)
+          (mul_nonneg (by norm_num) (pow_nonneg hx 2)))
+          (mul_nonneg (by norm_num) (pow_nonneg hx 3))) (pow_nonneg hx 4)
+      linarith only [hdiff, hnn]
+    exact (hcard_nat.trans hNmax_le).trans (h1log4.trans (hlog_le U hU2))
+  let d_D : O := ∏ i ∈ D_q, p i
+  have hd_D_ne : d_D ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
+  let B_shell : ℝ := 512 * (C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div)) * C_unp *
+    X_col * U ^ (1 - 3 * ell_in - 5 * u_act + pad_T + (29 / 4 : ℝ) * D_dual.t) * wt_t
+  have hshell_bound : ∀ k_idx ∈ K_A_set,
+      (∑ w ∈ Finset.univ.filter (fun w : W_ball => k_A w = k_idx),
+        ‖inputConjugateRow p χ_p Finset.univ Ψ₀ (m * d_D) 1 1
+          (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) w.val‖ ^ 2) ≤ B_shell := by
+    intro k_idx hk_idx
+    obtain ⟨w_rep, _, hk_rep⟩ := Finset.mem_image.mp hk_idx
+    let x6 : ℝ := dyadicExponent U k_idx
+    have hA_rep_ge1 : 1 ≤ ((split_w w_rep).2.val.absNorm : ℝ) := by
+      exact_mod_cast Nat.one_le_iff_ne_zero.mpr
+        (Ideal.absNorm_eq_zero_iff.not.mpr (split_w w_rep).2.property)
+    have hx6_0 : 0 ≤ x6 := by
+      have hb := first_dyadic_bounds U η ((split_w w_rep).2.val.absNorm : ℝ) hU1 h2_η hA_rep_ge1
+      dsimp only [x6]; rw [← hk_rep]; exact hb.1
+    let H_free : ℝ := (1 - 6 * u_act) - 6 * ell_in - 6 * x6
+    let W_k := Finset.univ.filter (fun w : W_ball => k_A w = k_idx)
+    have hWk_bounds : ∀ w ∈ W_k,
+        U ^ x6 ≤ ((split_w w).2.val.absNorm : ℝ) ∧
+        ((split_w w).2.val.absNorm : ℝ) ≤ 2 * U ^ x6 ∧
+        rowNorm (split_w w).1 ≤ 2 * U ^ (H_free - 17 * η - τ) := by
+      intro w hw
+      have hkeq : k_A w = k_idx := (mem_filter_of hw).2
+      have hA1 : 1 ≤ ((split_w w).2.val.absNorm : ℝ) := by
+        exact_mod_cast Nat.one_le_iff_ne_zero.mpr
+          (Ideal.absNorm_eq_zero_iff.not.mpr (split_w w).2.property)
+      have hdb : InverseSecondSourceBlocks.dyadScale (k_A w) ≤ ((split_w w).2.val.absNorm : ℝ) ∧
+          ((split_w w).2.val.absNorm : ℝ) < 2 * InverseSecondSourceBlocks.dyadScale (k_A w) :=
+        InverseSecondSourceBlocks.dyadIndex_bounds _ hA1
+      rw [hkeq, ← rpow_dyadicExponent U hU1 k_idx] at hdb
+      have hw_norm : ‖ringComplex w.val‖ ^ 2 ≤ 2 * U ^ W_exp :=
+        (mem_firstFrequencyDisk _ _).mp (Finset.mem_erase.mp w.property).2
+      have hu_le : rowNorm (split_w w).1 * (U ^ x6) ^ 6 ≤ 2 * U ^ W_exp := by
+        calc rowNorm (split_w w).1 * (U ^ x6) ^ 6
+            ≤ rowNorm (split_w w).1 * ((split_w w).2.val.absNorm : ℝ) ^ 6 :=
+              mul_le_mul_of_nonneg_left (pow_le_pow_left₀ (Real.rpow_nonneg hU_pos.le _) hdb.1 6)
+                (Nat.cast_nonneg _)
+          _ = ‖ringComplex w.val‖ ^ 2 := hsplit_norm w
+          _ ≤ 2 * U ^ W_exp := hw_norm
+      have h6x6 : (U ^ x6) ^ 6 = U ^ (6 * x6) := by
+        rw [← Real.rpow_natCast, ← Real.rpow_mul hU_pos.le]
+        exact congrArg (fun x : ℝ => U ^ x) (by ring)
+      rw [h6x6] at hu_le
+      have hu_div : rowNorm (split_w w).1 ≤ (2 * U ^ W_exp) / U ^ (6 * x6) :=
+        (le_div_iff₀ (Real.rpow_pos_of_pos hU_pos _)).mpr hu_le
+      refine ⟨hdb.1, hdb.2.le, hu_div.trans_eq ?_⟩
+      rw [mul_div_assoc, ← Real.rpow_sub hU_pos]
+      exact congrArg (fun x : ℝ => 2 * U ^ x) (by dsimp only [W_exp, H_free]; ring)
+    have hw_rep_mem : w_rep ∈ W_k := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hk_rep⟩
+    have hHf_pos : 0 < H_free := by
+      have hu1 : 1 ≤ rowNorm (split_w w_rep).1 := by
+        unfold rowNorm
+        exact_mod_cast Nat.one_le_iff_ne_zero.mpr
+          (Ideal.absNorm_eq_zero_iff.not.mpr
+            (Ideal.span_singleton_eq_bot.not.mpr (split_w w_rep).1.property.1))
+      have h2rp : 1 ≤ U ^ η * U ^ (H_free - 17 * η - τ) :=
+        hu1.trans ((hWk_bounds w_rep hw_rep_mem).2.2.trans
+          (mul_le_mul_of_nonneg_right h2_η (Real.rpow_nonneg hU_pos.le _)))
+      rw [← Real.rpow_add hU_pos, ← Real.rpow_zero U, Real.rpow_le_rpow_left_iff hU1] at h2rp
+      linarith only [h2rp, hη_pos, hτ_pos]
+    let A_set : Finset (Ideal O) := W_k.image (fun w => (split_w w).2.val)
+    have hA_card : (A_set.card : ℝ) ≤ 512 * U ^ x6 := by
+      have hc := EisensteinLatticeCount.finite_ideal_count_real A_set (2 * U ^ x6)
+        (by have h1 := Real.one_le_rpow hU1.le hx6_0; linarith only [h1])
+        (fun I hI => by obtain ⟨w, _, rfl⟩ := Finset.mem_image.mp hI; exact (split_w w).2.property)
+        (fun I hI => by obtain ⟨w, hw, rfl⟩ := Finset.mem_image.mp hI; exact (hWk_bounds w hw).2.1)
+      linarith only [hc, Real.rpow_pos_of_pos hU_pos x6]
+    let B_Afib : ℝ := (C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div)) * C_unp *
+      X_col * U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + (29 / 4 : ℝ) * D_dual.t) * wt_t
+    have hAfib_bound : ∀ A_id ∈ A_set,
+        (∑ w ∈ W_k.filter (fun w => (split_w w).2.val = A_id),
+          ‖inputConjugateRow p χ_p Finset.univ Ψ₀ (m * d_D) 1 1
+            (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) w.val‖ ^ 2) ≤ B_Afib := by
+      intro A_id hAid
+      obtain ⟨w_a, hw_a, hAid_eq⟩ := Finset.mem_image.mp hAid
+      have hAid_ne : A_id ≠ 0 := hAid_eq ▸ (split_w w_a).2.property
+      have hAid_norm : (A_id.absNorm : ℝ) ≤ 2 * U ^ x6 := hAid_eq ▸ (hWk_bounds w_a hw_a).2.1
+      let g_A : O := cubicIdealGenerator A_id
+      have hgA_ne : g_A ≠ 0 := cubicIdealGenerator_ne_zero A_id hAid_ne
+      let m' : O := (m * d_D) * g_A
+      have hm'_ne : m' ≠ 0 := mul_ne_zero (mul_ne_zero hm_ne hd_D_ne) hgA_ne
+      let P_punc : Finset (primePool F_pool) := Finset.univ.filter (fun q => p q ∣ m')
+      have hpunc_1024 : (1024 : ℝ) ^ P_punc.card ≤
+          C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div) * U ^ (D_dual.t / 4) := by
+        have hp10 := puncture_card_pow_1024_le_divisors p hp hcop Finset.univ hm'_ne
+        have hd_m := hdiv_le (Ideal.span {m'}) (Ideal.span_singleton_eq_bot.not.mpr hm'_ne)
+        have hm'_norm : ((Ideal.span {m'}).absNorm : ℝ) ≤ 2 * U ^ (6 * Lcap + 30) := by
+          rw [← ringComplex_norm_sq_eq_absNorm_span]
+          dsimp only [m']; rw [map_mul, map_mul, norm_mul, norm_mul, mul_pow, mul_pow]
+          have hdD_n : ‖ringComplex d_D‖ ^ 2 ≤ U ^ (t_q + η) := by
+            have h1 : ‖ringComplex d_D‖ ^ 2 = primeProductNorm p D_q := by
+              dsimp only [d_D]; unfold primeProductNorm; rw [map_prod, norm_prod, ← Finset.prod_pow]
+            rw [h1]; exact hDq_norm
+          have hgA_n : ‖ringComplex g_A‖ ^ 2 = (A_id.absNorm : ℝ) := by
+            dsimp only [g_A]; rw [ringComplex_norm_sq_eq_absNorm_span, span_cubicIdealGenerator]
+          have hx6_le1 : x6 ≤ 1 := by dsimp only [H_free] at hHf_pos; linarith only [hHf_pos, hell0, hw0_u]
+          calc ‖ringComplex m‖ ^ 2 * ‖ringComplex d_D‖ ^ 2 * ‖ringComplex g_A‖ ^ 2
+              ≤ U ^ (2 * Lcap) * U ^ (t_q + η) * (2 * U ^ x6) := by
+                rw [hgA_n]
+                exact mul_le_mul (mul_le_mul hm_norm hdD_n (sq_nonneg _) (Real.rpow_nonneg hU_pos.le _))
+                  hAid_norm (Nat.cast_nonneg _) (mul_nonneg (Real.rpow_nonneg hU_pos.le _) (Real.rpow_nonneg hU_pos.le _))
+            _ = 2 * U ^ (2 * Lcap + (t_q + η) + x6) := by
+                rw [← Real.rpow_add hU_pos, mul_left_comm _ 2, ← Real.rpow_add hU_pos]
+            _ ≤ 2 * U ^ (6 * Lcap + 30) :=
+                mul_le_mul_of_nonneg_left (Real.rpow_le_rpow_of_exponent_le hU1.le
+                  (by linarith only [htq_hi, hLcap, hη1, hτ1, hx6_le1])) zero_le_two
+        have hrp_m : ((Ideal.span {m'}).absNorm : ℝ) ^ ε_div ≤
+            (2 : ℝ) ^ ε_div * U ^ ((6 * Lcap + 30) * ε_div) :=
+          (Real.rpow_le_rpow (Nat.cast_nonneg _) hm'_norm hε_div.le).trans_eq
+            (by rw [Real.mul_rpow zero_le_two (Real.rpow_nonneg hU_pos.le _), ← Real.rpow_mul hU_pos.le])
+        have hd10 : ((idealDivisors (Ideal.span {m'})).card : ℝ) ^ 10 ≤
+            (C_div * ((2 : ℝ) ^ ε_div * U ^ ((6 * Lcap + 30) * ε_div))) ^ 10 :=
+          pow_le_pow_left₀ (Nat.cast_nonneg _) (hd_m.trans (mul_le_mul_of_nonneg_left hrp_m hC_div.le)) 10
+        calc (1024 : ℝ) ^ P_punc.card
+            ≤ (C_div * ((2 : ℝ) ^ ε_div * U ^ ((6 * Lcap + 30) * ε_div))) ^ 10 := hp10.trans hd10
+          _ = C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div) * U ^ (10 * ((6 * Lcap + 30) * ε_div)) := by
+              rw [mul_pow, mul_pow, ← Real.rpow_natCast ((2 : ℝ) ^ ε_div),
+                ← Real.rpow_mul zero_le_two, ← Real.rpow_natCast (U ^ _),
+                ← Real.rpow_mul hU_pos.le]
+              norm_num; ring_nf
+          _ ≤ C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div) * U ^ (D_dual.t / 4) := by
+              apply mul_le_mul_of_nonneg_left _ hCdiv10_pos.le
+              apply Real.rpow_le_rpow_of_exponent_le hU1.le
+              have heq : 10 * ((6 * Lcap + 30) * ε_div) = D_dual.t / 8 := by
+                dsimp only [ε_div]; field_simp; ring
+              linarith only [heq, ht_pos]
+      let W_kA := W_k.filter (fun w => (split_w w).2.val = A_id)
+      let U0_set : Finset FreeRow := W_kA.image (fun w => (split_w w).1)
+      have hU0_inj : Set.InjOn (fun w : W_ball => (split_w w).1) W_kA := by
+        intro w₁ h₁ w₂ h₂ he1
+        exact hsplit_inj (Prod.ext he1 (Subtype.ext ((mem_filter_of h₁).2.trans (mem_filter_of h₂).2.symm)))
+      have hU0_norm : ∀ u₀ ∈ U0_set, rowNorm u₀ ≤ 2 * U ^ (H_free - 17 * η - τ) := by
+        intro u₀ hu₀; obtain ⟨w, hwA, rfl⟩ := Finset.mem_image.mp hu₀
+        exact (hWk_bounds w (mem_filter_of hwA).1).2.2
+      have hw_punc_eq : ∀ w ∈ W_kA,
+          inputConjugateRow p χ_p Finset.univ Ψ₀ (m * d_D) 1 1
+            (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) w.val =
+          inputConjugateRow p χ_p (Finset.univ \ P_punc) Ψ₀ 1 1 1
+            (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) (split_w w).1.val := by
+        intro w hwA
+        have hw_eq : w.val = (split_w w).1.val * g_A ^ 6 := by
+          have hrm := (hsplit_eq w).symm; unfold rowMap at hrm
+          rwa [(mem_filter_of hwA).2] at hrm
+        rw [hw_eq, inputConjugateRow_mul_sixth_pow p hg Finset.univ Ψ₀ (m * d_D) 1 1 _
+          (split_w w).1.val g_A]
+        exact (inputConjugateRow_puncture_eq_sdiff_and_card_le p hg hp hcop Finset.univ Ψ₀
+          hm'_ne _ (split_w w).1.val).1
+      have hsum_to_U0 :
+          (∑ w ∈ W_kA,
+            ‖inputConjugateRow p χ_p Finset.univ Ψ₀ (m * d_D) 1 1
+              (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) w.val‖ ^ 2) =
+          X_col * ∑ u₀ ∈ U0_set, X_col⁻¹ *
+            ‖inputConjugateRow p χ_p (Finset.univ \ P_punc) Ψ₀ 1 1 1
+              (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) u₀.val‖ ^ 2 := by
+        rw [Finset.mul_sum, Finset.sum_image hU0_inj]
+        apply Finset.sum_congr rfl; intro w hwA
+        rw [hw_punc_eq w hwA, ← mul_assoc, mul_inv_cancel₀ hX_col_pos.ne', one_mul]
+      let B_sup : ℝ := C_unp * U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t) * wt_t
+      have hB_sup0 : 0 ≤ B_sup :=
+        mul_nonneg (mul_nonneg hC_unp.le (Real.rpow_nonneg hU_pos.le _)) hwt_pos.le
+      have hV_win_hi : ∀ y, V_win y ≠ 0 → y ≤ hi_o := by
+        intro y hy
+        have hsV : Function.support (V_win : ℝ → ℂ) ⊆ Set.Icc lo_o hi_o := by
+          dsimp only [V_win]; rw [principalWindow_support]; exact hs_ob
+        exact (hsV hy).2
+      have hm_top : markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col =
+          fun U_set => primeMark (S_rem \ J) lists_v a U_set *
+            V_win (primeProductNorm p U_set / X_col) := by
+        funext U_set; unfold markedRadial; simp only [Finset.empty_union]
+      have hunp_tot := inputConjugateRow_markedRadial_unpuncture_total_scale p hp hg
+        Finset.univ P_punc Ψ₀ hΨ₀_norm (S_rem \ J) lists_v
+        (fun i hi j hj hij => hdisj_v (Finset.sdiff_subset hi) (Finset.sdiff_subset hj) hij)
+        a (fun i hi q hq => (hlists_v_b i (Finset.sdiff_subset hi) q hq).2.2)
+        Z_slot (fun i _ => hZ_slot_ge1 i)
+        (fun i hi q hq => (hlists_v_b i (Finset.sdiff_subset hi) q hq).1)
+        V_win hV_win_hi (U0_set.image Subtype.val) hB_sup0 hX_col_pos
+        (fun S'' hS'' X₁ hX₁ hX₁_le => by
+          rw [Finset.sum_image (fun _ _ _ _ h => Subtype.ext h)]
+          exact hunp U hU Dpool hDpool hd_lo hd_hi hr0 hr1 hθ0 hθ1 hell0 hell1 hJv0 hJv hV0
+            hpad0 hBc_0 htq_0 hx6_0 hrn_hi hHf_pos hX_col_eq S_rem J hJ_sub hzJ_act_le hz_Srem
+            hFp_r hlarge_Z lists_full lists_v hlists_full hlists_v hcard_diff hdisj_v
+            ζ_base hζ_re hζ_im a ha_eq hlists_v_b Ψ₀ hΨ₀_base hΨ₀_norm U0_set hU0_norm
+            t_ht S'' hS'' X₁ hX₁ hX₁_le)
+      rw [Finset.sum_image (fun _ _ _ _ h => Subtype.ext h), ← hm_top] at hunp_tot
+      rw [hsum_to_U0]
+      calc X_col * ∑ u₀ ∈ U0_set, X_col⁻¹ *
+              ‖inputConjugateRow p χ_p (Finset.univ \ P_punc) Ψ₀ 1 1 1
+                (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) u₀.val‖ ^ 2
+          ≤ X_col * ((1024 : ℝ) ^ P_punc.card * B_sup) :=
+            mul_le_mul_of_nonneg_left hunp_tot hX_col_pos.le
+        _ ≤ X_col * ((C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div) * U ^ (D_dual.t / 4)) * B_sup) :=
+            mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right hpunc_1024 hB_sup0) hX_col_pos.le
+        _ = B_Afib := by
+            dsimp only [B_Afib, B_sup]
+            have hrp_eq : U ^ (D_dual.t / 4) *
+                U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t) =
+                U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + (29 / 4 : ℝ) * D_dual.t) := by
+              rw [← Real.rpow_add hU_pos]; exact congrArg (fun x : ℝ => U ^ x) (by ring)
+            calc _ = (C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div)) * C_unp *
+                      X_col * (U ^ (D_dual.t / 4) *
+                        U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t)) * wt_t := by ring
+              _ = _ := by rw [hrp_eq]
+    rw [← Finset.sum_fiberwise_of_maps_to (g := fun w : W_ball => (split_w w).2.val)
+      (fun w hw => Finset.mem_image_of_mem (fun w : W_ball => (split_w w).2.val) hw)]
+    calc _ ≤ ∑ _A ∈ A_set, B_Afib := Finset.sum_le_sum hAfib_bound
+      _ = (A_set.card : ℝ) * B_Afib := by rw [Finset.sum_const, nsmul_eq_mul]
+      _ ≤ (512 * U ^ x6) * B_Afib :=
+          mul_le_mul_of_nonneg_right hA_card
+            (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg hCdiv10_pos.le hC_unp.le) hX_col_pos.le)
+              (Real.rpow_nonneg hU_pos.le _)) hwt_pos.le)
+      _ = B_shell := by
+          dsimp only [B_Afib, B_shell]
+          have hrp_x6 : U ^ x6 *
+              U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + (29 / 4 : ℝ) * D_dual.t) =
+              U ^ (1 - 3 * ell_in - 5 * u_act + pad_T + (29 / 4 : ℝ) * D_dual.t) := by
+            rw [← Real.rpow_add hU_pos]; exact congrArg (fun x : ℝ => U ^ x) (by ring)
+          calc _ = 512 * (C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div)) * C_unp *
+                    X_col * (U ^ x6 *
+                      U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + (29 / 4 : ℝ) * D_dual.t)) * wt_t := by ring
+            _ = _ := by rw [hrp_x6]
+  have hW_attach :
+      (∑ w ∈ W_ball,
+        ‖inputConjugateRow p χ_p Finset.univ Ψ₀ (m * d_D) 1 1
+          (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) w‖ ^ 2) =
+      ∑ w : W_ball,
+        ‖inputConjugateRow p χ_p Finset.univ Ψ₀ (m * d_D) 1 1
+          (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) w.val‖ ^ 2 :=
+    (Finset.sum_coe_sort W_ball _).symm
+  change (∑ w ∈ W_ball, _) ≤ _
+  rw [hW_attach, ← Finset.sum_fiberwise_of_maps_to (g := k_A)
+    (fun w _ => Finset.mem_image_of_mem k_A (Finset.mem_univ w))]
+  calc _ ≤ ∑ _k ∈ K_A_set, B_shell := Finset.sum_le_sum hshell_bound
+    _ = (K_A_set.card : ℝ) * B_shell := by rw [Finset.sum_const, nsmul_eq_mul]
+    _ ≤ (C_log * U ^ (D_dual.t / 4)) * B_shell :=
+        mul_le_mul_of_nonneg_right hKA_card
+          (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) hCdiv10_pos.le)
+            hC_unp.le) hX_col_pos.le) (Real.rpow_nonneg hU_pos.le _)) hwt_pos.le)
+    _ = _ := by
+        dsimp only [B_shell, C_W]
+        have hrp_k : U ^ (D_dual.t / 4) *
+            U ^ (1 - 3 * ell_in - 5 * u_act + pad_T + (29 / 4 : ℝ) * D_dual.t) =
+            U ^ (1 - 3 * ell_in - 5 * u_act + pad_T + (15 / 2 : ℝ) * D_dual.t) := by
+          rw [← Real.rpow_add hU_pos]; exact congrArg (fun x : ℝ => U ^ x) (by ring)
+        calc _ = (C_log * 512 * (C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div)) * C_unp) *
+                  X_col * (U ^ (D_dual.t / 4) *
+                    U ^ (1 - 3 * ell_in - 5 * u_act + pad_T + (29 / 4 : ℝ) * D_dual.t)) * wt_t := by ring
+          _ = _ := by rw [hrp_k]
 
 /-- **Cell-summed `globalPriorityOriginalEnergy` at `Q = {0}` (`dual_qzero_cell_energy`):**
 Bounds the weighted `globalPriorityOriginalEnergy` over `labelParentCell p Finset.univ {0}` for
@@ -2660,40 +3555,28 @@ theorem dual_qzero_cell_energy
           (labelParentCell p Finset.univ {0} (fun _ _ => 1) k.1 k.2.1 k.2.2)
           (fun x => (‖commonSelector p (fun _ => 1) k.2.1 x.quotientSupport‖ : ℂ))
           negative Ψ m S_rem lists_v a omega_b
-          (physicalScales (U ^ r_new) k.1 k.2.1 idx_b)
+          ((physicalScales (U ^ r_new) k.1 k.2.1) idx_b)
           (profileHeight firstLeftSlope firstRightSlope firstKernelSlope z_ht.1 z_ht.2 idx_b)
           (firstCellRadius U M_new r_new 0 V₀ η τ k.1 k.2.2) ≤
-        (C_cell * U ^ (F_p + 45 * η + 3 * τ + pad_T + 8 * D_dual.t)) *
+        C_cell * U ^ (F_p + 45 * η + 3 * τ + pad_T + 8 * D_dual.t) *
           (tripleHeight (firstDegree deg_cell) z_ht.1 *
             coordinateHeight (firstDegree deg_cell) z_ht.2) := by
-  -- Step 1: Extract `wFresh₁` for `omega₁` and `wFresh₂` for `omega₂`.
-  obtain ⟨wFresh₁, af₁, bf₁, B_w₁, haf₁, habf₁, hBw₁0, hs_w₁, hBw₁, hfour₁⟩ :=
-    principalWindow_markedRadial_fourier_l2_le_factored omega₁ hlo_o hlh_o hs_o1 D.N
-  obtain ⟨wFresh₂, af₂, bf₂, B_w₂, haf₂, habf₂, hBw₂0, hs_w₂, hBw₂, hfour₂⟩ :=
-    principalWindow_markedRadial_fourier_l2_le_factored omega₂ hlo_o hlh_o hs_o2 D.N
-  obtain ⟨τ_d1, J_sf1, hτ_p1, hτ_le1, hsf_all1⟩ :=
-    dual_sixth_free_factored_energy_lists_sdiff_padded hβ51 D D_dual h2000_eps h2000_e
-      hfine_dual emb hemb F_dual wFresh₁ haf₁ habf₁ hBw₁0 hs_w₁ hBw₁ M_drop
-  obtain ⟨τ_d2, J_sf2, hτ_p2, hτ_le2, hsf_all2⟩ :=
-    dual_sixth_free_factored_energy_lists_sdiff_padded hβ51 D D_dual h2000_eps h2000_e
-      hfine_dual emb hemb F_dual wFresh₂ haf₂ habf₂ hBw₂0 hs_w₂ hBw₂ M_drop
+  obtain ⟨τ_d1, B_p1, deg_w1, hτ_p1, hτ_le1, hBp1_2, hW_all1⟩ :=
+    dual_qzero_W_ball_single_omega hβ51 D D_dual h2000_eps h2000_e hfine_dual emb hemb
+      F_dual omega₁ hlo_o hlh_o hs_o1 true M_drop Lcap η τ hLcap hη_pos hη1 hτ_pos hτ1
+  obtain ⟨τ_d2, B_p2, deg_w2, hτ_p2, hτ_le2, _hBp2_2, hW_all2⟩ :=
+    dual_qzero_W_ball_single_omega hβ51 D D_dual h2000_eps h2000_e hfine_dual emb hemb
+      F_dual omega₂ hlo_o hlh_o hs_o2 false M_drop Lcap η τ hLcap hη_pos hη1 hτ_pos hτ1
   let τ_dual : ℝ := min τ_d1 τ_d2
   have hτ_dual_pos : 0 < τ_dual := lt_min hτ_p1 hτ_p2
   have hτ_dual_le : 2 * τ_dual ≤ D_dual.t := by
-    have hle : τ_dual ≤ τ_d1 := min_le_left _ _
-    linarith only [hle, hτ_le1]
-  let J_sf : ℕ := max J_sf1 J_sf2
-  let N_tail : ℕ := ⌈((D.N : ℝ) + 20 + 6 * Lcap) / (2 * τ_dual)⌉₊ + 1
-  obtain ⟨C_four₁, hC_f1, hfour₁⟩ := hfour₁ J_sf N_tail
-  obtain ⟨C_four₂, hC_f2, hfour₂⟩ := hfour₂ J_sf N_tail
-  let deg_cell : ℕ := J_sf + N_tail + (volume : Measure ℝ).integrablePower
-  let B_pool : ℝ := max 2 (max bf₁ bf₂) + 2
-  have hBp1 : 1 ≤ B_pool := by dsimp only [B_pool]; linarith [le_max_left 2 (max bf₁ bf₂)]
-  -- Divisor small-power constant so `|idealDivisors|^10 ≤ C_div10 * I.absNorm ^ (10 * ε_div) ≤ C_div10 * U ^ (D_dual.t / 4)`.
+    have hle : τ_dual ≤ τ_d1 := min_le_left _ _; linarith only [hle, hτ_le1]
+  let B_pool : ℝ := max B_p1 B_p2
+  have hBp1 : 1 ≤ B_pool := by have hm := le_max_left B_p1 B_p2; linarith only [hBp1_2, hm]
+  let deg_cell : ℕ := max deg_w1 deg_w2
   let ε_div : ℝ := D_dual.t / (80 * (6 * Lcap + 30))
   have hε_div : 0 < ε_div := by dsimp only [ε_div]; have := D_dual.t_pos; positivity
   obtain ⟨C_div, hC_div, hdiv_le⟩ := ideal_divisor_small_power ε_div hε_div
-  -- Boundedness of `omega₁` and `omega₂` for `z = 0`.
   let B_om1 : ℝ := SchwartzMap.seminorm ℝ 0 0 omega₁
   have hB_om1 : ∀ x : ℝ, ‖omega₁ x‖ ≤ B_om1 := fun x => by
     simpa only [pow_zero, one_mul, norm_iteratedFDeriv_zero] using
@@ -2706,18 +3589,12 @@ theorem dual_qzero_cell_energy
   have hB_om0 : 0 < B_om := lt_of_lt_of_le zero_lt_one (le_max_left _ _)
   refine ⟨τ_dual, B_pool, deg_cell, hτ_dual_pos, hτ_dual_le, hBp1, ?_⟩
   intro data
-  obtain ⟨C_sf1, U_sf1, hC_sf1, hU_sf1, hsf1⟩ := hsf_all1 data
-  obtain ⟨C_sf2, U_sf2, hC_sf2, hU_sf2, hsf2⟩ := hsf_all2 data
-  -- Large `U` threshold so `373248 ≤ U ^ (17 * η)` and `32 * π ≤ U ^ (τ_dual / 2)` and `1 + log U ≤ C_log * U ^ (D_dual.t / 4)`.
-  have hev_norm : ∀ᶠ U : ℝ in atTop, (373248 : ℝ) ≤ U ^ (17 * η) :=
-    (tendsto_rpow_atTop (by positivity : 0 < 17 * η)).eventually (eventually_ge_atTop 373248)
-  have hev_pi : ∀ᶠ U : ℝ in atTop, 32 * Real.pi ≤ U ^ (τ_dual / 2) :=
-    (tendsto_rpow_atTop (by positivity : 0 < τ_dual / 2)).eventually (eventually_ge_atTop (32 * Real.pi))
-  obtain ⟨C_log, hC_log, hlog_le⟩ := log_fourth_small_power 1 (D_dual.t / 4) (by have := D_dual.t_pos; positivity)
-  obtain ⟨U_n0, hU_n0⟩ := eventually_atTop.mp (hev_norm.and hev_pi)
-  let U_cell : ℝ := max 2 (max (max U_sf1 U_sf2) U_n0)
-  have hU_cell2 : 2 ≤ U_cell := le_max_left _ _
-  -- Explicit combined constant `C_cell`.
+  obtain ⟨C_W1, U_W1, hC_W1, hU_W1, hW1⟩ := hW_all1 data
+  obtain ⟨C_W2, U_W2, hC_W2, _hU_W2, hW2⟩ := hW_all2 data
+  let U_cell : ℝ := max U_W1 U_W2
+  have hU_cell2 : 2 ≤ U_cell := hU_W1.trans (le_max_left _ _)
+  let C_W_max : ℝ := max C_W1 C_W2
+  have hCW_max_pos : 0 < C_W_max := hC_W1.trans_le (le_max_left _ _)
   let c_min : ℝ := (21 / 20 : ℝ) * D.rmin
   let B_E_max : ℝ := 6 * Lcap + 35
   let C_hit : ℝ := (((⌈B_E_max / c_min⌉₊ + 1 : ℕ) : ℝ) ^ 2) ^ D.N
@@ -2730,48 +3607,16 @@ theorem dual_qzero_cell_energy
     coefficientBound * C_hit
   have hCouter_nn : 0 ≤ C_outer :=
     mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg
-      (by linarith [firstCoreMassBound_nonneg]) (pow_nonneg zero_le_two _)) hNrc_nn)
+      (add_nonneg firstCoreMassBound_nonneg zero_le_one) (pow_nonneg zero_le_two _)) hNrc_nn)
       coefficientBound_pos.le) hChit_pos.le
   let C_z0_part : ℝ := 49 * 49 * C_div * (2 : ℝ) ^ ε_div * B_om ^ 2
   have hCz0_pos : 0 < C_z0_part :=
     mul_pos (mul_pos (mul_pos (by norm_num) hC_div) (Real.rpow_pos_of_pos zero_lt_two _))
       (pow_pos hB_om0 2)
-  have hbf₁_pos : 0 < bf₁ := haf₁.trans_le habf₁
-  have hbf₂_pos : 0 < bf₂ := haf₂.trans_le habf₂
-  let C_cr₁ : ℝ := (4 : ℝ) ^ D.N * ((max 1 (M_drop : ℝ)) ^ 2) ^ D.N *
-    (49 * bf₁ * (B_w₁ * 49 * (1 + bf₁) ^ 2) ^ 2 * (9604 : ℝ) ^ D.N + 1)
-  have hCcr1_nn : 0 ≤ C_cr₁ :=
-    mul_nonneg (mul_nonneg (pow_nonneg (by norm_num) _)
-      (pow_nonneg (sq_nonneg _) _))
-      (add_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) hbf₁_pos.le) (sq_nonneg _))
-        (pow_nonneg (by norm_num) _)) zero_le_one)
-  let C_cr₂ : ℝ := (4 : ℝ) ^ D.N * ((max 1 (M_drop : ℝ)) ^ 2) ^ D.N *
-    (49 * bf₂ * (B_w₂ * 49 * (1 + bf₂) ^ 2) ^ 2 * (9604 : ℝ) ^ D.N + 1)
-  have hCcr2_nn : 0 ≤ C_cr₂ :=
-    mul_nonneg (mul_nonneg (pow_nonneg (by norm_num) _)
-      (pow_nonneg (sq_nonneg _) _))
-      (add_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num) hbf₂_pos.le) (sq_nonneg _))
-        (pow_nonneg (by norm_num) _)) zero_le_one)
-  let C_coarse_max : ℝ := C_cr₁ + C_cr₂
-  have hCcr_nn : 0 ≤ C_coarse_max := add_nonneg hCcr1_nn hCcr2_nn
-  have hCf_max_pos : 0 < max C_four₁ C_four₂ := lt_of_lt_of_le hC_f1 (le_max_left _ _)
-  have hCsf_sum_pos : 0 < max C_sf1 C_sf2 + C_coarse_max + 1 :=
-    add_pos_of_nonneg_of_pos
-      (add_nonneg (le_trans hC_sf1.le (le_max_left _ _)) hCcr_nn) zero_lt_one
-  have hCdiv10_pos : 0 < C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div) :=
-    mul_pos (pow_pos hC_div 10) (Real.rpow_pos_of_pos zero_lt_two _)
   have hCdiv2_pos : 0 < C_div ^ 2 * (2 : ℝ) ^ (2 * ε_div) :=
     mul_pos (pow_pos hC_div 2) (Real.rpow_pos_of_pos zero_lt_two _)
-  let C_nz_part : ℝ := 49 * C_div ^ 2 * (2 : ℝ) ^ (2 * ε_div) * C_log * 512 *
-    (C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div)) * 4 * (max C_four₁ C_four₂) *
-    (max C_sf1 C_sf2 + C_coarse_max + 1)
-  have hCnz_pos : 0 < C_nz_part := by
-    have heq : C_nz_part = 49 * (C_div ^ 2 * (2 : ℝ) ^ (2 * ε_div)) * C_log * 512 *
-        (C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div)) * 4 * (max C_four₁ C_four₂) *
-        (max C_sf1 C_sf2 + C_coarse_max + 1) := by dsimp only [C_nz_part]; ring
-    rw [heq]
-    exact mul_pos (mul_pos (mul_pos (mul_pos (mul_pos (mul_pos (mul_pos (by norm_num) hCdiv2_pos)
-      hC_log) (by norm_num)) hCdiv10_pos) (by norm_num)) hCf_max_pos) hCsf_sum_pos
+  let C_nz_part : ℝ := 49 * (C_div ^ 2 * (2 : ℝ) ^ (2 * ε_div)) * C_W_max
+  have hCnz_pos : 0 < C_nz_part := mul_pos (mul_pos (by norm_num) hCdiv2_pos) hCW_max_pos
   let C_cell : ℝ := C_outer * (C_z0_part + C_nz_part) + 1
   have hCcell_pos : 0 < C_cell :=
     add_pos_of_nonneg_of_pos (mul_nonneg hCouter_nn (add_pos hCz0_pos hCnz_pos).le) zero_lt_one
@@ -2792,7 +3637,6 @@ theorem dual_qzero_cell_energy
   have hU_pos : 0 < U := zero_lt_one.trans hU1
   have hd_pos : 0 < d_outer := by linarith only [hd_lo]
   have ht_pos : 0 < D_dual.t := D_dual.t_pos
-  obtain ⟨h373, h32pi⟩ := hU_n0 U (((le_max_right _ _).trans (le_max_right _ _)).trans hU)
   let cell := labelParentCell p Finset.univ {0} (fun _ _ => 1) k.1 k.2.1 k.2.2
   have hw_one : 1 ≤ tripleHeight (firstDegree deg_cell) z_ht.1 *
       coordinateHeight (firstDegree deg_cell) z_ht.2 :=
@@ -2800,42 +3644,35 @@ theorem dual_qzero_cell_energy
   have hw_pos : 0 < tripleHeight (firstDegree deg_cell) z_ht.1 *
       coordinateHeight (firstDegree deg_cell) z_ht.2 :=
     zero_lt_one.trans_le hw_one
-  -- Empty cell short-circuit!
   by_cases hcell_ne : cell.Nonempty
   swap
   · have hce : labelParentCell p Finset.univ {0} (fun _ _ => 1) k.1 k.2.1 k.2.2 = ∅ :=
       Finset.not_nonempty_iff_eq_empty.mp hcell_ne
-    rw [hce]
-    unfold globalPriorityOriginalEnergy
+    rw [hce]; unfold globalPriorityOriginalEnergy
     simp only [Finset.sum_empty, Complex.zero_re, Finset.sum_const_zero, mul_zero]
     exact mul_nonneg (mul_nonneg hCcell_pos.le (Real.rpow_nonneg hU_pos.le _)) hw_pos.le
-  -- Nonempty cell: extract dyadic zero exponents and live caps!
   obtain ⟨x₀, hx₀⟩ := hcell_ne
   obtain ⟨hcell_data, hcell_inj⟩ := qzero_labelParentCell_data p hp Finset.univ k hU1 h2_η
   obtain ⟨_, _, _, _, hk0_z, hk1_z, hk4_z, hkj_z, _, _, _⟩ := hcell_data x₀ hx₀
   have hidx_a_z : dyadicExponent U (k.1 idx_a) = 0 := by
-    dsimp only [idx_a]; cases negative <;> simp [hk0_z, hk1_z]
+    dsimp only [idx_a]; cases negative <;> [exact hk1_z; exact hk0_z]
+  have hlive_caps := InverseMoment.original_live_exponent_caps p hp hcop hg Finset.univ {0} labels
+    β cutoff Ψ m mark (om_outer : ℝ → ℂ) rowMajorant (U ^ M_new) U r_new 0 Lcap η τ ξ_out b_out
+    hU1 h2_η (by linarith only [hLcap]) hrn_hi (by linarith only [hLcap]) hη_pos.le hτ_pos.le hb_out_η
+    (fun v hv => by
+      rw [Finset.mem_singleton.mp hv]
+      simp only [Finsupp.support_zero, primeProduct, Finset.prod_empty, map_one, norm_one, one_pow]
+      exact Real.one_le_rpow hU1.le (by linarith only [hη_pos]))
+    hlabels hb_out k hk
   let B_c : ℝ := dyadicExponent U (k.1 2)
   let δ_c : ℝ := dyadicExponent U (k.1 3)
   let t_q : ℝ := dyadicExponent U k.2.1
-  -- Live exponent caps from `original_live_exponent_caps` (`0 ≤ B_c, δ_c, t_q ≤ 3 * Lcap + 15 * η + τ`).
-  have hQ0_norm : ∀ v ∈ ({0} : Finset (primePool F_pool →₀ ℕ)),
-      ‖ringComplex (primeProduct p v.support v)‖ ^ 2 ≤ U ^ ((0 : ℝ) + η) := by
-    intro v hv; rw [Finset.mem_singleton.mp hv]
-    simp only [Finsupp.support_zero, primeProduct, Finset.prod_empty, map_one, norm_one, one_pow, zero_add]
-    exact Real.one_le_rpow hU1.le hη_pos.le
-  have hlive_caps := original_live_exponent_caps p hp hcop hg Finset.univ {0} labels β cutoff
-    Ψ m mark om_outer rowMajorant (U ^ M_new) U r_new 0 Lcap η τ ξ_out b_out
-    hU1 h2_η (by linarith only [hLcap]) hrn_hi (by linarith only [hLcap]) hη_pos.le hτ_pos.le
-    hb_out_η hQ0_norm hlabels hb_out k hk
   have hBc_0 : 0 ≤ B_c := (hlive_caps.1 2).1
   have hBc_hi : B_c ≤ 3 * Lcap + 15 * η + τ := (hlive_caps.1 2).2
   have hδc_0 : 0 ≤ δ_c := (hlive_caps.1 3).1
-  have hδc_hi : δ_c ≤ 3 * Lcap + 15 * η + τ := (hlive_caps.1 3).2
   have htq_0 : 0 ≤ t_q := hlive_caps.2.1.1
   have htq_hi : t_q ≤ 3 * Lcap + 15 * η + τ := hlive_caps.2.1.2
-  -- Column scale `X_col` and cell radius `Y_cell` formulas + live lower bounds!
-  let X_col : ℝ := physicalScales (U ^ r_new) k.1 k.2.1 idx_b
+  let X_col : ℝ := (physicalScales (U ^ r_new) k.1 k.2.1) idx_b
   have hX_col_eq : X_col = U ^ (r_new - B_c - t_q) := by
     dsimp only [X_col, idx_b]
     cases negative
@@ -2868,12 +3705,10 @@ theorem dual_qzero_cell_energy
       rwa [← Real.rpow_zero U, Real.rpow_le_rpow_left_iff hU1] at hrp
     linarith only [h3]
   let Y_cell : ℝ := firstCellRadius U M_new r_new 0 V₀ η τ k.1 k.2.2
-  let H_th : ℝ := (1 - θ_s) * 1 + θ_s * stage1DualScale r_param
-  have hH_th_eq : H_th = 1 - 6 * u_act := by
-    dsimp only [H_th, u_act]; unfold stage1DualScale; ring
+  let H_th : ℝ := 1 - 6 * u_act
   let Y_exp : ℝ := 2 * r_new - 2 * B_c - M_new + 2 * V₀ + δ_c + 12 * η + τ
   have hY_exp_eq : Y_exp = H_th - 6 * ell_in - 2 * B_c + δ_c - 19 * η - τ := by
-    dsimp only [Y_exp, r_new, M_new]; rw [hH_th_eq]; ring
+    dsimp only [Y_exp, r_new, M_new, H_th]; ring
   have hY_cell_eq : Y_cell = U ^ Y_exp := by
     dsimp only [Y_cell]; unfold firstCellRadius firstPhysicalHeight
     rw [hkj_z]
@@ -2883,9 +3718,7 @@ theorem dual_qzero_cell_energy
     have h1 := first_live_cell_radius_one p hp hcop hg Finset.univ {0} labels
       Y_src U M_new r_new 0 V₀ η τ β Ψ m mark W_src rowMajorant (U ^ M_new) hlabels k hk
     change 1 ≤ Y_cell at h1
-    rw [hY_cell_eq, ← Real.rpow_zero U, Real.rpow_le_rpow_left_iff hU1] at h1
-    exact h1
-  -- Scalar prefactor exponent `kappa_tot := firstKappa + (9/2) * η`.
+    rwa [hY_cell_eq, ← Real.rpow_zero U, Real.rpow_le_rpow_left_iff hU1] at h1
   let kappa_val : ℝ := firstKappa M_new r_new 0 V₀ δ_c (dyadicExponent U (k.1 idx_a)) B_c
     (dyadicExponent U (k.1 4))
   have hkappa_eq : kappa_val = M_new - 2 * r_new - V₀ - δ_c + B_c := by
@@ -2896,17 +3729,8 @@ theorem dual_qzero_cell_energy
     rw [Real.rpow_add hU_pos, Real.rpow_def_of_pos hU_pos ((9 / 2 : ℝ) * η)]
     exact congrArg (fun x : ℝ => U ^ kappa_val * Real.exp x) (by ring)
   have hpref_pos : 0 < pref_U := by rw [hpref_eq]; exact Real.rpow_pos_of_pos hU_pos _
-  -- Live-prime norm bounds on `lists_full j` (and hence `lists_v j`) for `j ∈ S_rem`.
-  have hZ_slot_ge1 : ∀ j : Fin D.N, 1 ≤ Z_slot j :=
-    fun j => Real.one_le_rpow hU1.le (div_nonneg (D.slots_bounds j).1.le hd_pos.le)
-  have hZ_slot_pos : ∀ j : Fin D.N, 0 < Z_slot j := fun j => zero_lt_one.trans_le (hZ_slot_ge1 j)
-  have hZ_slot_hi : ∀ j : Fin D.N, Z_slot j ≤ U := by
-    intro j; dsimp only [Z_slot]
-    have hle1 : D.ell j / d_outer ≤ 1 := by
-      have h200 : D.ell j ≤ (1 / 200 : ℝ) * D.t := (D.slots_bounds j).2.2
-      have hts : D.t ≤ 1 / 100000000 := D.t_small
-      rw [div_le_one hd_pos]; linarith only [h200, hts, hd_lo]
-    exact (Real.rpow_le_rpow_of_exponent_le hU1.le hle1).trans_eq (Real.rpow_one U)
+  have hZ_slot_pos : ∀ j : Fin D.N, 0 < Z_slot j :=
+    fun j => Real.rpow_pos_of_pos hU_pos _
   have hlists_bounds : ∀ j ∈ S_rem, ∀ q ∈ lists_full j,
       Z_slot j ≤ ‖ringComplex (p q)‖ ^ 2 ∧ ‖ringComplex (p q)‖ ^ 2 ≤ 2 * Z_slot j ∧
         ‖a j q‖ ≤ 1 := by
@@ -2923,29 +3747,24 @@ theorem dual_qzero_cell_energy
       rw [ha_eq j hj q hq, norm_div, norm_star, ← norm_star (primeProfile _ _ _ _), ← norm_div]
       exact hd_live.2.2.2.2
     exact ⟨hspan_q ▸ (one_mul (Z_slot j) ▸ hlpd.2.2.1), hspan_q ▸ hlpd.2.2.2, ha_n⟩
-  have ha_v_norm : ∀ j ∈ S_rem, ∀ q ∈ lists_v j, ‖a j q‖ ≤ 1 :=
-    fun j hj q hq => (hlists_bounds j hj q (hlists_v j hj hq)).2.2
-  have hZ_lo_v : ∀ j ∈ S_rem, ∀ q ∈ lists_v j, Z_slot j ≤ ‖ringComplex (p q)‖ ^ 2 :=
-    fun j hj q hq => (hlists_bounds j hj q (hlists_v j hj hq)).1
-  have hZ_hi_v : ∀ j ∈ S_rem, ∀ q ∈ lists_v j, ‖ringComplex (p q)‖ ^ 2 ≤ 2 * Z_slot j :=
-    fun j hj q hq => (hlists_bounds j hj q (hlists_v j hj hq)).2.1
+  have hlists_v_b : ∀ j ∈ S_rem, ∀ q ∈ lists_v j,
+      Z_slot j ≤ ‖ringComplex (p q)‖ ^ 2 ∧ ‖ringComplex (p q)‖ ^ 2 ≤ 2 * Z_slot j ∧ ‖a j q‖ ≤ 1 :=
+    fun j hj q hq => hlists_bounds j hj q (hlists_v j hj hq)
   have hSrem_card : S_rem.card ≤ D.N :=
     (Finset.card_le_univ S_rem).trans_eq (Fintype.card_fin D.N)
-  -- Bound each `(ray, core, J)` slice of `globalPriorityOriginalEnergy`!
   let t_ht : ℝ := profileHeight firstLeftSlope firstRightSlope firstKernelSlope z_ht.1 z_ht.2 idx_b
-  have ht_ht_eq : t_ht = firstHeight negative z_ht := rfl
   have hht_deg : (1 + ‖t_ht‖) ^ (2 * deg_cell) ≤
       tripleHeight (firstDegree deg_cell) z_ht.1 * coordinateHeight (firstDegree deg_cell) z_ht.2 := by
     have h1 : (1 + ‖firstHeight negative z_ht‖) ^ (2 * deg_cell) ≤
         (1 + ‖firstHeight negative z_ht‖) ^ (firstDegree deg_cell) := by
-      apply pow_le_pow_right₀ (by linarith [norm_nonneg (firstHeight negative z_ht)])
+      apply pow_le_pow_right₀ (add_nonneg zero_le_one (norm_nonneg (firstHeight negative z_ht)))
       unfold firstDegree InverseClippingProfiles.momentOrder; omega
-    rw [ht_ht_eq]; exact h1.trans (first_height_cost deg_cell negative z_ht)
-  -- Bound each `(ray, core, J ∈ S_rem.powerset)` inner `.re` sum!
+    exact h1.trans (first_height_cost deg_cell negative z_ht)
+  have hZd_ge1 : 1 ≤ Z_dual :=
+    Real.one_le_rpow hU1.le (div_nonneg (by norm_num) (by positivity))
   let E_target : ℝ := U ^ (F_p + 45 * η + 3 * τ + pad_T + 8 * D_dual.t) *
     (tripleHeight (firstDegree deg_cell) z_ht.1 * coordinateHeight (firstDegree deg_cell) z_ht.2)
-  have hE_target_pos : 0 < E_target := mul_pos (Real.rpow_pos_of_pos hU_pos _)
-    (zero_lt_one.trans_le hw_one)
+  have hE_target_pos : 0 < E_target := mul_pos (Real.rpow_pos_of_pos hU_pos _) hw_pos
   have hslice_bound : ∀ (ray : RayCharacter × RayCharacter) (core : FirstCoreIndex),
       ∀ J ∈ S_rem.powerset,
         pref_U * (∑ x ∈ cell,
@@ -2989,7 +3808,6 @@ theorem dual_qzero_cell_energy
       rw [← sum_filter_norm_sq_mul cell
         (fun x => primeMark J lists_v a (x.firstCommon ∪ x.quotientSupport))]
       exact hre_le0
-    -- Short-circuit if `cell_J` is empty!
     by_cases hcellJ_ne : cell_J.Nonempty
     swap
     · have hcb_pos := coefficientBound_pos
@@ -2999,7 +3817,6 @@ theorem dual_qzero_cell_energy
         _ = 0 := mul_zero _
         _ ≤ _ := mul_nonneg (mul_nonneg (mul_nonneg hcb_pos.le hChit_pos.le)
             (add_nonneg hCz0_pos.le hCnz_pos.le)) hE_target_pos.le
-    -- `cell_J` is nonempty (`⟨x₁, hx₁⟩`): extract `z_J_act ≤ B_c + t_q + 2 * η` and `‖primeMark J‖^2 ≤ C_hit`!
     obtain ⟨x₁, hx₁⟩ := hcellJ_ne
     have hdisj_J : (J : Set (Fin D.N)).PairwiseDisjoint lists_v :=
       fun i hi j hj hij => hdisj_v (hJ_sub hi) (hJ_sub hj) hij
@@ -3031,25 +3848,22 @@ theorem dual_qzero_cell_energy
     have hBE_le_max : B_c + t_q + 2 * η ≤ B_E_max := by
       dsimp only [B_E_max]; linarith only [hBc_hi, htq_hi, hη1, hτ1]
     have hhit_x₁ := qzero_primeMark_hit_bound D p hp J lists_v hdisj_J a
-      (fun i hi => ha_v_norm i (hJ_sub hi))
+      (fun i hi q hq => (hlists_v_b i (hJ_sub hi) q hq).2.2)
       (U := U) (d_outer := d_outer) (B_E := B_c + t_q + 2 * η) hU1 hd_lo hd_hi
       (by linarith only [hBc_0, htq_0, hη_pos])
-      (fun i hi => hZ_lo_v i (hJ_sub hi))
+      (fun i hi q hq => (hlists_v_b i (hJ_sub hi) q hq).1)
       (x₁.firstCommon ∪ x₁.quotientSupport)
       (hpN_union_le x₁ (mem_filter_of hx₁).1)
       (mem_filter_of hx₁).2
-    let z_J_act : ℝ := ∑ i ∈ J, D.ell i / d_outer
-    have hzJ_act0 : 0 ≤ z_J_act :=
-      Finset.sum_nonneg (fun i _ => div_nonneg (D.slots_bounds i).1.le hd_pos.le)
-    have hzJ_act_le : z_J_act ≤ B_c + t_q + 2 * η := hhit_x₁.1
+    have hzJ_act_le : (∑ i ∈ J, D.ell i / d_outer) ≤ B_c + t_q + 2 * η := hhit_x₁.1
     have hpm_sq_le : ∀ x ∈ cell_J,
         ‖primeMark J lists_v a (x.firstCommon ∪ x.quotientSupport)‖ ^ 2 ≤ C_hit := by
       intro x hxJ
       have hh := qzero_primeMark_hit_bound D p hp J lists_v hdisj_J a
-        (fun i hi => ha_v_norm i (hJ_sub hi))
+        (fun i hi q hq => (hlists_v_b i (hJ_sub hi) q hq).2.2)
         (U := U) (d_outer := d_outer) (B_E := B_E_max) hU1 hd_lo hd_hi
         (by dsimp only [B_E_max]; linarith only [hLcap])
-        (fun i hi => hZ_lo_v i (hJ_sub hi))
+        (fun i hi q hq => (hlists_v_b i (hJ_sub hi) q hq).1)
         (x.firstCommon ∪ x.quotientSupport)
         ((hpN_union_le x (mem_filter_of hxJ).1).trans
           (Real.rpow_le_rpow_of_exponent_le hU1.le hBE_le_max))
@@ -3057,148 +3871,25 @@ theorem dual_qzero_cell_energy
       have hcard_J : J.card ≤ D.N := (Finset.card_le_card hJ_sub).trans hSrem_card
       have hbase_ge1 : 1 ≤ ((⌈B_E_max / c_min⌉₊ + 1 : ℕ) : ℝ) := by exact_mod_cast Nat.succ_pos _
       have hpow_le : (((⌈B_E_max / c_min⌉₊ + 1 : ℕ) : ℝ) ^ J.card) ^ 2 ≤ C_hit := by
-        dsimp only [C_hit]
-        rw [← pow_mul, Nat.mul_comm, pow_mul]
+        dsimp only [C_hit]; rw [← pow_mul, Nat.mul_comm, pow_mul]
         exact pow_le_pow_right₀ (one_le_pow₀ hbase_ge1) hcard_J
       exact (pow_le_pow_left₀ (norm_nonneg _) hh.2 2).trans hpow_le
-    -- Decompose `cell_J` into `(CD_set, D_set)` via `hcell_inj`!
-    let CD_set : Finset (Finset (primePool F_pool) × Finset (primePool F_pool)) :=
-      cell_J.image (fun x => (x.firstCommon, x.firstDivisor))
-    let D_set : Finset (Finset (primePool F_pool)) :=
-      cell_J.image (fun x => x.quotientSupport)
-    have hCD_DC : ∀ cd ∈ CD_set, cd.2 ⊆ cd.1 := by
-      intro cd hcd; obtain ⟨x, hxJ, rfl⟩ := mem_image_of hcd
-      exact (hcell_data x (mem_filter_of hxJ).1).2.1
-    have hCD_norms : ∀ cd ∈ CD_set,
-        primeProductNorm p cd.1 ≤ U ^ (B_c + η) ∧ U ^ δ_c ≤ primeProductNorm p cd.2 := by
-      intro cd hcd; obtain ⟨x, hxJ, rfl⟩ := mem_image_of hcd
-      have hd := hcell_data x (mem_filter_of hxJ).1
-      exact ⟨hd.2.2.2.2.2.2.2.2.1.2, hd.2.2.2.2.2.2.2.2.2.1.1⟩
-    have hD_norms : ∀ D_q ∈ D_set, primeProductNorm p D_q ≤ U ^ (t_q + η) := by
-      intro D_q hDq; obtain ⟨x, hxJ, rfl⟩ := mem_image_of hDq
-      exact (hcell_data x (mem_filter_of hxJ).1).2.2.2.2.2.2.2.2.2.2.2
-    -- Cardinality bounds on `D_set` (`≤ 49 * U ^ (t_q + η)`) and `CD_set` (`≤ 49 * C_div * (2 : ℝ) ^ ε_div * U ^ (B_c + η + D_dual.t / 4)`).
-    have hprod_p_inj : Function.Injective (fun F : Finset (primePool F_pool) => ∏ i ∈ F, p i) := by
-      intro F₁ F₂ heq
-      apply span_finset_prod_injective p hp hcop
-      rw [← SchwartzPlanePoisson.span_finset_prime_product,
-        ← SchwartzPlanePoisson.span_finset_prime_product, heq]
-    have hcard_D_set : (D_set.card : ℝ) ≤ 49 * U ^ (t_q + η) := by
-      rw [← Finset.card_image_of_injOn (fun _ _ _ _ h => hprod_p_inj h)]
-      exact card_finset_norm_sq_le_49_mul (D_set.image (fun F => ∏ i ∈ F, p i))
-        (Real.one_le_rpow hU1.le (by linarith only [htq_0, hη_pos]))
-        (fun y hy => by
-          obtain ⟨D_q, hDq, rfl⟩ := mem_image_of hy
-          have h1 : ‖ringComplex (∏ i ∈ D_q, p i)‖ ^ 2 = primeProductNorm p D_q := by
-            unfold primeProductNorm; rw [map_prod, norm_prod, ← Finset.prod_pow]
-          rw [h1]; exact hD_norms D_q hDq)
-    have hcard_CD_set : (CD_set.card : ℝ) ≤
-        49 * C_div * (2 : ℝ) ^ ε_div * U ^ (B_c + η + D_dual.t / 4) := by
-      let C_only : Finset (Finset (primePool F_pool)) := CD_set.image Prod.fst
-      have hcard_C : (C_only.card : ℝ) ≤ 49 * U ^ (B_c + η) := by
-        rw [← Finset.card_image_of_injOn (fun _ _ _ _ h => hprod_p_inj h)]
-        exact card_finset_norm_sq_le_49_mul (C_only.image (fun F => ∏ i ∈ F, p i))
-          (Real.one_le_rpow hU1.le (by linarith only [hBc_0, hη_pos]))
-          (fun y hy => by
-            obtain ⟨C₀, hC₀, rfl⟩ := mem_image_of hy
-            obtain ⟨cd, hcd, rfl⟩ := mem_image_of hC₀
-            have h1 : ‖ringComplex (∏ i ∈ cd.1, p i)‖ ^ 2 = primeProductNorm p cd.1 := by
-              unfold primeProductNorm; rw [map_prod, norm_prod, ← Finset.prod_pow]
-            rw [h1]; exact (hCD_norms cd hcd).1)
-      have hfib_C : ∀ C₀ ∈ C_only,
-          (((CD_set.filter (fun cd => cd.1 = C₀)).card : ℕ) : ℝ) ≤
-            C_div * (2 : ℝ) ^ ε_div * U ^ (D_dual.t / 4) := by
-        intro C₀ hC₀
-        obtain ⟨cd₀, hcd₀, rfl⟩ := mem_image_of hC₀
-        let I_C : Ideal O := Ideal.span {∏ i ∈ cd₀.1, p i}
-        have hIC_ne : I_C ≠ 0 := Ideal.span_singleton_eq_bot.not.mpr
-          (Finset.prod_ne_zero_iff.mpr (fun i _ => hp i))
-        let φ_D : Finset (primePool F_pool) × Finset (primePool F_pool) → Ideal O :=
-          fun cd => ∏ i ∈ cd.2, Ideal.span {p i}
-        have hmaps : ∀ cd ∈ CD_set.filter (fun cd => cd.1 = cd₀.1), φ_D cd ∈ idealDivisors I_C := by
-          intro cd hcd
-          have hcd_mem := (mem_filter_of hcd).1
-          have hc_eq : cd.1 = cd₀.1 := (mem_filter_of hcd).2
-          have hsub : cd.2 ⊆ cd₀.1 := hc_eq ▸ hCD_DC cd hcd_mem
-          rw [mem_idealDivisors hIC_ne]
-          dsimp only [φ_D, I_C]
-          rw [← SchwartzPlanePoisson.span_finset_prime_product,
-            Ideal.span_singleton_dvd_span_singleton_iff_dvd]
-          exact Finset.prod_dvd_prod_of_subset cd.2 cd₀.1 p hsub
-        have hinj_D : Set.InjOn φ_D (CD_set.filter (fun cd => cd.1 = cd₀.1)) := by
-          intro cd₁ h₁ cd₂ h₂ hφ
-          have hc1 : cd₁.1 = cd₀.1 := (mem_filter_of h₁).2
-          have hc2 : cd₂.1 = cd₀.1 := (mem_filter_of h₂).2
-          exact Prod.ext (hc1.trans hc2.symm) (span_finset_prod_injective p hp hcop hφ)
-        have hc_le : (((CD_set.filter (fun cd => cd.1 = cd₀.1)).card : ℕ) : ℝ) ≤
-            ((idealDivisors I_C).card : ℝ) := by
-          exact_mod_cast Finset.card_le_card_of_injOn φ_D hmaps hinj_D
-        have hd_bound := hdiv_le I_C hIC_ne
-        have hIC_norm : (I_C.absNorm : ℝ) ≤ 2 * U ^ (3 * Lcap + 16 * η + τ) := by
-          dsimp only [I_C]
-          rw [← ringComplex_norm_sq_eq_absNorm_span]
-          have h1 : ‖ringComplex (∏ i ∈ cd₀.1, p i)‖ ^ 2 = primeProductNorm p cd₀.1 := by
-            unfold primeProductNorm; rw [map_prod, norm_prod, ← Finset.prod_pow]
-          rw [h1]
-          exact (hCD_norms cd₀ hcd₀).1.trans
-            ((Real.rpow_le_rpow_of_exponent_le hU1.le (by linarith only [hBc_hi])).trans
-              (by linarith [Real.rpow_pos_of_pos hU_pos (3 * Lcap + 16 * η + τ)]))
-        have hrp_IC : (I_C.absNorm : ℝ) ^ ε_div ≤ (2 : ℝ) ^ ε_div * U ^ (D_dual.t / 4) := by
-          calc (I_C.absNorm : ℝ) ^ ε_div
-              ≤ (2 * U ^ (3 * Lcap + 16 * η + τ)) ^ ε_div :=
-                Real.rpow_le_rpow (Nat.cast_nonneg _) hIC_norm hε_div.le
-            _ = (2 : ℝ) ^ ε_div * U ^ ((3 * Lcap + 16 * η + τ) * ε_div) := by
-                rw [Real.mul_rpow zero_le_two (Real.rpow_nonneg hU_pos.le _),
-                  ← Real.rpow_mul hU_pos.le]
-            _ ≤ (2 : ℝ) ^ ε_div * U ^ (D_dual.t / 4) := by
-                apply mul_le_mul_of_nonneg_left _ (by positivity)
-                apply Real.rpow_le_rpow_of_exponent_le hU1.le
-                have hden : 3 * Lcap + 16 * η + τ ≤ 6 * Lcap + 30 := by
-                  linarith only [hLcap, hη1, hτ1]
-                have hmul := mul_le_mul_of_nonneg_right hden hε_div.le
-                have heq : (6 * Lcap + 30) * ε_div = D_dual.t / 80 := by
-                  dsimp only [ε_div]; field_simp
-                linarith only [hmul, heq, ht_pos]
-        exact hc_le.trans (hd_bound.trans
-          ((mul_le_mul_of_nonneg_left hrp_IC hC_div.le).trans_eq (by ring)))
-      rw [← Finset.sum_fiberwise_of_maps_to (g := Prod.fst)
-        (fun cd hcd => Finset.mem_image_of_mem Prod.fst hcd) (fun _ => (1 : ℝ)) |> fun h => by
-          have hc : (CD_set.card : ℝ) = ∑ _cd ∈ CD_set, (1 : ℝ) := by simp
-          exact hc]
-      rw [← Finset.sum_fiberwise_of_maps_to (g := Prod.fst)
-        (fun cd hcd => Finset.mem_image_of_mem Prod.fst hcd)]
-      calc (∑ C₀ ∈ C_only, ∑ _cd ∈ CD_set.filter (fun cd => cd.1 = C₀), (1 : ℝ))
-          ≤ ∑ _C₀ ∈ C_only, (C_div * (2 : ℝ) ^ ε_div * U ^ (D_dual.t / 4)) := by
-            apply Finset.sum_le_sum; intro C₀ hC₀
-            simpa using hfib_C C₀ hC₀
-        _ = (C_only.card : ℝ) * (C_div * (2 : ℝ) ^ ε_div * U ^ (D_dual.t / 4)) := by
-            rw [Finset.sum_const, nsmul_eq_mul]
-        _ ≤ (49 * U ^ (B_c + η)) * (C_div * (2 : ℝ) ^ ε_div * U ^ (D_dual.t / 4)) :=
-            mul_le_mul_of_nonneg_right hcard_C (by positivity)
-        _ = 49 * C_div * (2 : ℝ) ^ ε_div * U ^ (B_c + η + D_dual.t / 4) := by
-            rw [mul_left_comm 49, ← mul_assoc, ← mul_assoc, mul_assoc _ (U ^ (B_c + η)),
-              ← Real.rpow_add hU_pos]
-            ring_nf
-    -- Bound `z = 0` contribution!
     have hz0_term_le : ∀ x ∈ cell_J,
         ‖inputConjugateRow p χ_p Finset.univ Ψ₀
           (m * ∏ i ∈ x.quotientSupport, p i) 1 1
           (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) 0‖ ^ 2 ≤ B_om ^ 2 := by
       intro x _
       rw [inputConjugateRow_at_zero p hg Finset.univ Ψ₀ _ 1 1 _]
-      unfold markedRadial
-      simp only [Finset.empty_union]
+      unfold markedRadial; simp only [Finset.empty_union]
       have hpm_le1 : ‖primeMark (S_rem \ J) lists_v a ∅‖ ≤ 1 := by
         by_cases hne_rem : (S_rem \ J).Nonempty
         · obtain ⟨i₀, hi₀⟩ := hne_rem
           have h0 : primeMark (S_rem \ J) lists_v a ∅ = 0 := by
             unfold primeMark; apply Finset.prod_eq_zero hi₀; simp [primeSlot]
           rw [h0, norm_zero]; exact zero_le_one
-        · rw [Finset.not_nonempty_iff_eq_empty.mp hne_rem]
-          simp [primeMark]
+        · rw [Finset.not_nonempty_iff_eq_empty.mp hne_rem]; simp [primeMark]
       have hV_le : ‖V_win (primeProductNorm p ∅ / X_col)‖ ≤ B_om := by
-        dsimp only [V_win, omega_b]
-        rw [principalWindow_norm]
+        dsimp only [V_win, omega_b]; rw [principalWindow_norm]
         cases negative
         · simp only [Bool.false_eq_true, ite_false]
           exact (hB_om2 _).trans ((le_max_right _ _).trans (le_max_right _ _))
@@ -3207,1069 +3898,77 @@ theorem dual_qzero_cell_energy
       rw [norm_mul, mul_pow]
       exact (mul_le_mul (pow_le_one₀ (norm_nonneg _) hpm_le1)
         (pow_le_pow_left₀ (norm_nonneg _) hV_le 2) (sq_nonneg _) zero_le_one).trans_eq (one_mul _)
-    have hcard_cellJ : (cell_J.card : ℝ) ≤
-        49 * 49 * C_div * (2 : ℝ) ^ ε_div * U ^ (B_c + t_q + 2 * η + D_dual.t / 4) := by
-      have hmaps_prod : ∀ x ∈ cell_J,
-          ((x.firstCommon, x.firstDivisor), x.quotientSupport) ∈ CD_set ×ˢ D_set :=
-        fun x hxJ => Finset.mem_product.mpr
-          ⟨Finset.mem_image_of_mem _ hxJ, Finset.mem_image_of_mem _ hxJ⟩
-      have hinj_J : Set.InjOn (fun x : Source (primePool F_pool) 0 =>
-          ((x.firstCommon, x.firstDivisor), x.quotientSupport)) cell_J :=
-        fun x₁ h₁ x₂ h₂ heq => hcell_inj (mem_filter_of h₁).1 (mem_filter_of h₂).1 heq
-      have hc_prod : (cell_J.card : ℝ) ≤ (CD_set.card : ℝ) * (D_set.card : ℝ) := by
-        have hnat := (Finset.card_le_card_of_injOn _ hmaps_prod hinj_J).trans_eq
-          (Finset.card_product CD_set D_set)
-        exact_mod_cast hnat
-      calc (cell_J.card : ℝ)
-          ≤ (49 * C_div * (2 : ℝ) ^ ε_div * U ^ (B_c + η + D_dual.t / 4)) *
-              (49 * U ^ (t_q + η)) :=
-            hc_prod.trans (mul_le_mul hcard_CD_set hcard_D_set
-              (Nat.cast_nonneg _) (by positivity))
-        _ = 49 * 49 * C_div * (2 : ℝ) ^ ε_div *
-              (U ^ (B_c + η + D_dual.t / 4) * U ^ (t_q + η)) := by ring
-        _ = _ := by
-            rw [← Real.rpow_add hU_pos]
-            exact congrArg (fun x : ℝ => 49 * 49 * C_div * (2 : ℝ) ^ ε_div * U ^ x) (by ring)
-    have hz0_sum_le :
-        pref_U * (∑ x ∈ cell_J,
-          ‖primeMark J lists_v a (x.firstCommon ∪ x.quotientSupport)‖ ^ 2 *
-            ‖inputConjugateRow p χ_p Finset.univ Ψ₀
-              (m * ∏ i ∈ x.quotientSupport, p i) 1 1
-              (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) 0‖ ^ 2) ≤
-        C_hit * C_z0_part * E_target := by
-      have hexp_z0 : (kappa_val + (9 / 2 : ℝ) * η) + (B_c + t_q + 2 * η + D_dual.t / 4) ≤
-          F_p + 45 * η + 3 * τ + pad_T + 8 * D_dual.t := by
-        rw [hkappa_eq]
-        dsimp only [Y_exp, r_new] at hY_exp_nn hcol_live ⊢
-        have hw_pos : 0 ≤ u_act := by
-          dsimp only [u_act]; apply mul_nonneg hθ0
-          unfold stage1Width stage1Line; linarith only [hr0, hr1]
-        linarith only [hY_exp_nn, hcol_live, hBc_0, hell0, hw_pos, hη_pos, hτ_pos, hpad0, ht_pos]
-      calc pref_U * (∑ x ∈ cell_J,
-              ‖primeMark J lists_v a (x.firstCommon ∪ x.quotientSupport)‖ ^ 2 *
-                ‖inputConjugateRow p χ_p Finset.univ Ψ₀
-                  (m * ∏ i ∈ x.quotientSupport, p i) 1 1
-                  (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) 0‖ ^ 2)
-          ≤ pref_U * ∑ _x ∈ cell_J, (C_hit * B_om ^ 2) := by
-            apply mul_le_mul_of_nonneg_left _ hpref_pos.le
-            exact Finset.sum_le_sum (fun x hxJ =>
-              mul_le_mul (hpm_sq_le x hxJ) (hz0_term_le x hxJ) (sq_nonneg _) hChit_pos.le)
-        _ = pref_U * ((cell_J.card : ℝ) * (C_hit * B_om ^ 2)) := by
-            rw [Finset.sum_const, nsmul_eq_mul]
-        _ ≤ U ^ (kappa_val + (9 / 2 : ℝ) * η) *
-              ((49 * 49 * C_div * (2 : ℝ) ^ ε_div * U ^ (B_c + t_q + 2 * η + D_dual.t / 4)) *
-                (C_hit * B_om ^ 2)) := by
-            rw [← hpref_eq]
-            exact mul_le_mul_of_nonneg_left
-              (mul_le_mul_of_nonneg_right hcard_cellJ (by positivity)) hpref_pos.le
-        _ = C_hit * C_z0_part *
-              U ^ ((kappa_val + (9 / 2 : ℝ) * η) + (B_c + t_q + 2 * η + D_dual.t / 4)) := by
-            dsimp only [C_z0_part]
-            rw [Real.rpow_add hU_pos]
-            ring
-        _ ≤ C_hit * C_z0_part * U ^ (F_p + 45 * η + 3 * τ + pad_T + 8 * D_dual.t) :=
-            mul_le_mul_of_nonneg_left
-              (Real.rpow_le_rpow_of_exponent_le hU1.le hexp_z0)
-              (by positivity)
-        _ ≤ C_hit * C_z0_part * E_target := by
-            dsimp only [E_target]
-            rw [← mul_assoc]
-            exact le_mul_of_one_le_right (by positivity) hw_one
-    -- Now bound `z ∈ B_nz := (rowMajorantBall Y_cell).erase 0`!
     let B_nz : Finset O := (rowMajorantBall Y_cell).erase 0
     let W_exp : ℝ := H_th - 6 * ell_in - 17 * η - τ
     let W_ball : Finset O := (firstFrequencyDisk (2 * U ^ W_exp)).erase 0
-    have hgcd_maps : ∀ cd ∈ CD_set, ∀ z ∈ B_nz,
-        gcdElement p cd.1 cd.2 * z ∈ W_ball := by
-      intro cd hcd z hz
-      have hz_ne : z ≠ 0 := (Finset.mem_erase.mp hz).1
-      have hz_ball : z ∈ rowMajorantBall Y_cell := (Finset.mem_erase.mp hz).2
-      have hz_norm : ‖ringComplex z‖ ^ 2 ≤ 2 * Y_cell := by
-        change z ∈ (finite_norm_sublevel (Real.sqrt (2 * Y_cell))).toFinset at hz_ball
-        rw [Set.Finite.mem_toFinset] at hz_ball
-        have hle : ‖ringComplex z‖ ≤ Real.sqrt (2 * Y_cell) := hz_ball
-        calc ‖ringComplex z‖ ^ 2 ≤ (Real.sqrt (2 * Y_cell)) ^ 2 :=
-              pow_le_pow_left₀ (norm_nonneg _) hle 2
-          _ = 2 * Y_cell := Real.sq_sqrt (by positivity)
-      have hw_ne : gcdElement p cd.1 cd.2 * z ≠ 0 :=
-        mul_ne_zero (gcdElement_ne_zero p hp cd.1 cd.2) hz_ne
-      have hgcd_id := gcdElement_norm_sq p (hCD_DC cd hcd)
-      obtain ⟨hC_hi, hD0_lo⟩ := hCD_norms cd hcd
-      have hpD0_pos : 0 < primeProductNorm p cd.2 :=
-        (Real.rpow_pos_of_pos hU_pos δ_c).trans_le hD0_lo
-      have hgcd_le : ‖ringComplex (gcdElement p cd.1 cd.2)‖ ^ 2 ≤ U ^ (2 * B_c - δ_c + 2 * η) := by
-        rw [le_div_iff₀ hpD0_pos |>.symm |> fun _ => Iff.rfl]
-        have hmul_le : ‖ringComplex (gcdElement p cd.1 cd.2)‖ ^ 2 * U ^ δ_c ≤
-            U ^ (2 * (B_c + η)) := by
-          calc ‖ringComplex (gcdElement p cd.1 cd.2)‖ ^ 2 * U ^ δ_c
-              ≤ ‖ringComplex (gcdElement p cd.1 cd.2)‖ ^ 2 * primeProductNorm p cd.2 :=
-                mul_le_mul_of_nonneg_left hD0_lo (sq_nonneg _)
-            _ = (primeProductNorm p cd.1) ^ 2 := hgcd_id
-            _ ≤ (U ^ (B_c + η)) ^ 2 :=
-                pow_le_pow_left₀ (sq_nonneg _) hC_hi 2
-            _ = U ^ (2 * (B_c + η)) := by
-                rw [← Real.rpow_natCast, ← Real.rpow_mul hU_pos.le]
-                exact congrArg (fun x : ℝ => U ^ x) (by ring)
-        have hdiv : ‖ringComplex (gcdElement p cd.1 cd.2)‖ ^ 2 ≤ U ^ (2 * (B_c + η)) / U ^ δ_c :=
-          (le_div_iff₀ (Real.rpow_pos_of_pos hU_pos _)).mpr hmul_le
-        refine hdiv.trans_eq ?_
-        rw [← Real.rpow_sub hU_pos]
-        exact congrArg (fun x : ℝ => U ^ x) (by ring)
-      refine Finset.mem_erase.mpr ⟨hw_ne, (mem_firstFrequencyDisk _ _).mpr ?_⟩
-      rw [map_mul, norm_mul, mul_pow]
-      calc ‖ringComplex (gcdElement p cd.1 cd.2)‖ ^ 2 * ‖ringComplex z‖ ^ 2
-          ≤ U ^ (2 * B_c - δ_c + 2 * η) * (2 * Y_cell) :=
-            mul_le_mul hgcd_le hz_norm (sq_nonneg _) (by positivity)
-        _ = 2 * (U ^ (2 * B_c - δ_c + 2 * η) * U ^ Y_exp) := by rw [hY_cell_eq]; ring
-        _ = 2 * U ^ W_exp := by
-            rw [← Real.rpow_add hU_pos]
-            exact congrArg (fun x : ℝ => 2 * U ^ x) (by dsimp only [W_exp]; rw [hY_exp_eq]; ring)
-    -- Bound fiber of `(cd, z) ∈ CD_set ×ˢ B_nz` over `w ∈ W_ball`!
     have hW_exp_le1 : W_exp ≤ 1 := by
-      dsimp only [W_exp]; rw [hH_th_eq]
-      have hw_pos : 0 ≤ u_act := by
+      dsimp only [W_exp, H_th]
+      have hw0 : 0 ≤ u_act := by
         dsimp only [u_act]; apply mul_nonneg hθ0
         unfold stage1Width stage1Line; linarith only [hr0, hr1]
-      linarith only [hw_pos, hell0, hη_pos, hτ_pos]
-    have hgcd_fib_le : ∀ w ∈ W_ball,
-        ((((CD_set ×ˢ B_nz).filter (fun t => gcdElement p t.1.1 t.1.2 * t.2 = w)).card : ℕ) : ℝ) ≤
-          C_div ^ 2 * (2 : ℝ) ^ (2 * ε_div) * U ^ (D_dual.t / 4) := by
-      intro w hw
-      have hw_ne : w ≠ 0 := (Finset.mem_erase.mp hw).1
-      have hw_norm : ‖ringComplex w‖ ^ 2 ≤ 2 * U ^ W_exp :=
-        (mem_firstFrequencyDisk _ _).mp (Finset.mem_erase.mp hw).2
-      have hfib := gcdElement_fiber_card_le p hp hcop CD_set hCD_DC B_nz hw_ne
-      have hd_w := hdiv_le (Ideal.span {w}) (Ideal.span_singleton_eq_bot.not.mpr hw_ne)
-      rw [← ringComplex_norm_sq_eq_absNorm_span] at hd_w
-      have hw_2U : ‖ringComplex w‖ ^ 2 ≤ 2 * U :=
-        hw_norm.trans (mul_le_mul_of_nonneg_left
-          ((Real.rpow_le_rpow_of_exponent_le hU1.le hW_exp_le1).trans_eq (Real.rpow_one U))
-          zero_le_two)
-      have hrp : (‖ringComplex w‖ ^ 2) ^ ε_div ≤ (2 : ℝ) ^ ε_div * U ^ ε_div := by
-        calc (‖ringComplex w‖ ^ 2) ^ ε_div
-            ≤ (2 * U) ^ ε_div := Real.rpow_le_rpow (sq_nonneg _) hw_2U hε_div.le
-          _ = (2 : ℝ) ^ ε_div * U ^ ε_div := Real.mul_rpow zero_le_two hU_pos.le _
-      have hd_sq : ((idealDivisors (Ideal.span {w})).card : ℝ) ^ 2 ≤
-          (C_div * ((2 : ℝ) ^ ε_div * U ^ ε_div)) ^ 2 :=
-        pow_le_pow_left₀ (Nat.cast_nonneg _)
-          (hd_w.trans (mul_le_mul_of_nonneg_left hrp hC_div.le)) 2
-      have h2ε_le : 2 * ε_div ≤ D_dual.t / 4 := by
-        dsimp only [ε_div]
-        have hden : (80 * (6 * Lcap + 30) : ℝ) ≥ 8 := by linarith only [hLcap]
-        have : 2 * (D_dual.t / (80 * (6 * Lcap + 30))) ≤ 2 * (D_dual.t / 8) :=
-          mul_le_mul_of_nonneg_left (div_le_div_of_nonneg_left ht_pos.le (by norm_num) hden) zero_le_two
-        linarith only [this]
-      calc _ ≤ (C_div * ((2 : ℝ) ^ ε_div * U ^ ε_div)) ^ 2 := hfib.trans hd_sq
-        _ = C_div ^ 2 * (2 : ℝ) ^ (2 * ε_div) * U ^ (2 * ε_div) := by
-            rw [mul_pow, mul_pow, ← Real.rpow_natCast ((2 : ℝ) ^ ε_div),
-              ← Real.rpow_mul zero_le_two, ← Real.rpow_natCast (U ^ ε_div),
-              ← Real.rpow_mul hU_pos.le]
-            norm_num; ring_nf
-        _ ≤ C_div ^ 2 * (2 : ℝ) ^ (2 * ε_div) * U ^ (D_dual.t / 4) :=
-            mul_le_mul_of_nonneg_left
-              (Real.rpow_le_rpow_of_exponent_le hU1.le h2ε_le) (by positivity)
-    -- Bound `∑ w ∈ W_ball, ‖inputConjugateRow p χ_p Finset.univ Ψ₀ (m * d_D) 1 1 H₀ w‖^2` for each `D_q ∈ D_set`!
-    have hD_sum_W : ∀ D_q ∈ D_set,
+      linarith only [hw0, hell0, hη_pos, hτ_pos]
+    have hY_W_eq : U ^ (2 * B_c - δ_c + 2 * η) * Y_cell = U ^ W_exp := by
+      rw [hY_cell_eq, ← Real.rpow_add hU_pos]
+      exact congrArg (fun x : ℝ => U ^ x) (by dsimp only [W_exp]; rw [hY_exp_eq]; ring)
+    let K_W_val : ℝ := C_W_max * X_col *
+      U ^ (1 - 3 * ell_in - 5 * u_act + pad_T + (15 / 2 : ℝ) * D_dual.t) *
+      (tripleHeight (firstDegree deg_cell) z_ht.1 * coordinateHeight (firstDegree deg_cell) z_ht.2)
+    have hKW_val_nn : 0 ≤ K_W_val :=
+      mul_nonneg (mul_nonneg (mul_nonneg hCW_max_pos.le hX_col_pos.le)
+        (Real.rpow_nonneg hU_pos.le _)) hw_pos.le
+    have hD_sum_W : ∀ D_q : Finset (primePool F_pool),
+        primeProductNorm p D_q ≤ U ^ (t_q + η) →
         (∑ w ∈ W_ball,
           ‖inputConjugateRow p χ_p Finset.univ Ψ₀
             (m * ∏ i ∈ D_q, p i) 1 1
-            (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) w‖ ^ 2) ≤
-        (C_log * 512 * (C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div)) * 4 *
-          (max C_four₁ C_four₂) * (max C_sf1 C_sf2 + C_coarse_max + 1)) *
-        X_col * U ^ (1 - 3 * ell_in - 5 * u_act + pad_T + (15 / 2 : ℝ) * D_dual.t) *
-        (tripleHeight (firstDegree deg_cell) z_ht.1 * coordinateHeight (firstDegree deg_cell) z_ht.2) := by
-      intro D_q hDq
-      by_cases hW_ne : W_ball.Nonempty
-      swap
-      · rw [Finset.not_nonempty_iff_eq_empty.mp hW_ne, Finset.sum_empty]
-        have hpos_const : 0 ≤ C_log * 512 * (C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div)) * 4 *
-            (max C_four₁ C_four₂) * (max C_sf1 C_sf2 + C_coarse_max + 1) :=
-          (mul_pos (mul_pos (mul_pos (mul_pos (mul_pos hC_log (by norm_num)) hCdiv10_pos)
-            (by norm_num)) hCf_max_pos) hCsf_sum_pos).le
-        exact mul_nonneg (mul_nonneg (mul_nonneg hpos_const hX_col_pos.le)
-          (Real.rpow_nonneg hU_pos.le _)) hw_pos.le
-      -- Nonempty `W_ball`: factor every `w ∈ W_ball` via `exists_rowMap_eq`!
-      let split_w : W_ball → FreeRow × NonzeroIdeal := fun w =>
-        Classical.choose (exists_rowMap_eq (Finset.mem_erase.mp w.property).1)
-      have hsplit_eq : ∀ w : W_ball, rowMap (split_w w) = w.val := fun w =>
-        Classical.choose_spec (exists_rowMap_eq (Finset.mem_erase.mp w.property).1)
-      have hsplit_inj : Function.Injective split_w := by
-        intro w₁ w₂ heq; apply Subtype.ext
-        rw [← hsplit_eq w₁, ← hsplit_eq w₂, heq]
-      -- Norm identity `rowNorm u₀ * (A.val.absNorm : ℝ) ^ 6 = ‖ringComplex w‖ ^ 2`!
-      have hsplit_norm : ∀ w : W_ball,
-          rowNorm (split_w w).1 * ((split_w w).2.val.absNorm : ℝ) ^ 6 = ‖ringComplex w.val‖ ^ 2 := by
-        intro w
-        have hsp : Ideal.span {w.val} =
-            Ideal.span {(split_w w).1.val} * (split_w w).2.val ^ 6 := by
-          rw [← hsplit_eq w, ← rowMap_span]
-        have hn := congrArg (fun I : Ideal O => (I.absNorm : ℝ)) hsp
-        simpa only [map_mul, map_pow, Nat.cast_mul, Nat.cast_pow,
-          ← ringComplex_norm_sq_eq_absNorm_span, rowNorm] using hn.symm
-      -- Dyadic index `k_A (w) := dyadIndex ((split_w w).2.val.absNorm : ℝ)`.
-      let k_A : W_ball → ℕ := fun w =>
-        InverseSecondSourceBlocks.dyadIndex ((split_w w).2.val.absNorm : ℝ)
-      let K_A_set : Finset ℕ := Finset.univ.image k_A
-      -- Bound `K_A_set.card ≤ C_log * U ^ (D_dual.t / 4)`!
-      have hKA_card : (K_A_set.card : ℝ) ≤ C_log * U ^ (D_dual.t / 4) := by
-        have hkA_le : ∀ k_idx ∈ K_A_set, (k_idx : ℝ) ≤ Real.log U / Real.log 2 := by
-          intro k_idx hk_idx
-          obtain ⟨w, _, rfl⟩ := Finset.mem_image.mp hk_idx
-          have hA_ge1 : 1 ≤ ((split_w w).2.val.absNorm : ℝ) := by
-            exact_mod_cast Nat.one_le_iff_ne_zero.mpr
-              (Ideal.absNorm_eq_zero_iff.not.mpr (split_w w).2.property)
-          have hds := (InverseSecondSourceBlocks.dyadIndex_bounds _ hA_ge1).1
-          have hds_eq : InverseSecondSourceBlocks.dyadScale (k_A w) = (2 : ℝ) ^ (k_A w) := by
-            unfold InverseSecondSourceBlocks.dyadScale; rfl
-          have hu_ge1 : 1 ≤ rowNorm (split_w w).1 := by
-            unfold rowNorm
-            exact_mod_cast Nat.one_le_iff_ne_zero.mpr
-              (Ideal.absNorm_eq_zero_iff.not.mpr
-                (Ideal.span_singleton_eq_bot.not.mpr (split_w w).1.property.1))
-          have hw_le_2U : ‖ringComplex w.val‖ ^ 2 ≤ U ^ (6 : ℝ) := by
-            have hw_n : ‖ringComplex w.val‖ ^ 2 ≤ 2 * U ^ W_exp :=
-              (mem_firstFrequencyDisk _ _).mp (Finset.mem_erase.mp w.property).2
-            have h2U : 2 * U ^ W_exp ≤ U * U := by
-              calc 2 * U ^ W_exp ≤ U * U ^ (1 : ℝ) :=
-                    mul_le_mul hU2 (Real.rpow_le_rpow_of_exponent_le hU1.le hW_exp_le1)
-                      (Real.rpow_nonneg hU_pos.le _) hU_pos.le
-                _ = U * U := by rw [Real.rpow_one]
-            calc ‖ringComplex w.val‖ ^ 2 ≤ U * U := hw_n.trans h2U
-              _ = U ^ (2 : ℝ) := by rw [← sq, ← Real.rpow_natCast]; norm_num
-              _ ≤ U ^ (6 : ℝ) := Real.rpow_le_rpow_of_exponent_le hU1.le (by norm_num)
-          have h2k_le : ((2 : ℝ) ^ (k_A w)) ^ 6 ≤ U ^ (6 : ℝ) := by
-            calc ((2 : ℝ) ^ (k_A w)) ^ 6
-                ≤ ((split_w w).2.val.absNorm : ℝ) ^ 6 :=
-                  pow_le_pow_left₀ (by positivity) (hds_eq ▸ hds) 6
-              _ ≤ rowNorm (split_w w).1 * ((split_w w).2.val.absNorm : ℝ) ^ 6 :=
-                  le_mul_of_one_le_left (by positivity) hu_ge1
-              _ = ‖ringComplex w.val‖ ^ 2 := hsplit_norm w
-              _ ≤ U ^ (6 : ℝ) := hw_le_2U
-          have h2k_U : (2 : ℝ) ^ (k_A w) ≤ U := by
-            have h6 : ((2 : ℝ) ^ (k_A w)) ^ (6 : ℝ) ≤ U ^ (6 : ℝ) := by
-              simpa only [Real.rpow_natCast] using h2k_le
-            exact (Real.rpow_le_rpow_iff (by positivity) hU_pos.le (by norm_num : (0 : ℝ) < 6)).mp h6
-          have hlog2 := Real.log_le_log (by positivity) h2k_U
-          rw [Real.log_pow] at hlog2
-          exact (le_div_iff₀ (Real.log_pos one_lt_two)).mpr hlog2
-        let N_max : ℕ := ⌊Real.log U / Real.log 2⌋₊
-        have hsub_range : K_A_set ⊆ Finset.range (N_max + 1) := by
-          intro k_idx hk
-          rw [Finset.mem_range, Nat.lt_succ_iff]
-          exact Nat.le_floor (hkA_le k_idx hk)
-        have hcard_nat : (K_A_set.card : ℝ) ≤ (N_max : ℝ) + 1 := by
-          have hc := (Finset.card_le_card hsub_range).trans_eq (Finset.card_range (N_max + 1))
-          exact_mod_cast hc
-        have hNmax_le : (N_max : ℝ) + 1 ≤ (1 + 2 * Real.log U) := by
-          have hf : (N_max : ℝ) ≤ Real.log U / Real.log 2 :=
-            Nat.floor_le (div_nonneg (Real.log_nonneg hU1.le) (Real.log_pos one_lt_two).le)
-          have hlog2_gt : (1 / 2 : ℝ) ≤ Real.log 2 := by linarith [Real.log_two_gt_d9]
-          have hdiv2 : Real.log U / Real.log 2 ≤ 2 * Real.log U := by
-            rw [div_le_iff₀ (Real.log_pos one_lt_two)]
-            nlinarith [Real.log_nonneg hU1.le, hlog2_gt]
-          linarith only [hf, hdiv2]
-        have h1log4 : 1 + 2 * Real.log U ≤ (1 + 1 * Real.log U) ^ 4 := by
-          have hl0 : 0 ≤ Real.log U := Real.log_nonneg hU1.le
-          nlinarith [sq_nonneg (Real.log U)]
-        exact (hcard_nat.trans hNmax_le).trans (h1log4.trans (hlog_le U hU2))
-      -- Bound each `k_idx ∈ K_A_set` dyadic `A`-shell!
-      let d_D : O := ∏ i ∈ D_q, p i
-      have hd_D_ne : d_D ≠ 0 := Finset.prod_ne_zero_iff.mpr (fun i _ => hp i)
-      let B_shell : ℝ := 512 * (C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div)) * 4 *
-        (max C_four₁ C_four₂) * (max C_sf1 C_sf2 + C_coarse_max + 1) *
-        X_col * U ^ (1 - 3 * ell_in - 5 * u_act + pad_T + (29 / 4 : ℝ) * D_dual.t) *
-        (tripleHeight (firstDegree deg_cell) z_ht.1 * coordinateHeight (firstDegree deg_cell) z_ht.2)
-      have hshell_bound : ∀ k_idx ∈ K_A_set,
-          (∑ w ∈ Finset.univ.filter (fun w : W_ball => k_A w = k_idx),
-            ‖inputConjugateRow p χ_p Finset.univ Ψ₀ (m * d_D) 1 1
-              (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) w.val‖ ^ 2) ≤ B_shell := by
-        intro k_idx hk_idx
-        obtain ⟨w_rep, _, hk_rep⟩ := Finset.mem_image.mp hk_idx
-        let x6 : ℝ := dyadicExponent U k_idx
-        have hA_rep_ge1 : 1 ≤ ((split_w w_rep).2.val.absNorm : ℝ) := by
-          exact_mod_cast Nat.one_le_iff_ne_zero.mpr
-            (Ideal.absNorm_eq_zero_iff.not.mpr (split_w w_rep).2.property)
-        have hx6_0 : 0 ≤ x6 := by
-          have hb := first_dyadic_bounds U η ((split_w w_rep).2.val.absNorm : ℝ) hU1 h2_η hA_rep_ge1
-          dsimp only [x6]; rw [← hk_rep]; exact hb.1
-        let H_free : ℝ := H_th - 6 * ell_in - 6 * x6
-        -- Every `w` in this shell has `U ^ x6 ≤ A.absNorm ≤ 2 * U ^ x6` and `rowNorm u₀ ≤ 2 * U ^ (H_free - 17 * η - τ)`.
-        let W_k := Finset.univ.filter (fun w : W_ball => k_A w = k_idx)
-        have hWk_bounds : ∀ w ∈ W_k,
-            U ^ x6 ≤ ((split_w w).2.val.absNorm : ℝ) ∧
-            ((split_w w).2.val.absNorm : ℝ) ≤ 2 * U ^ x6 ∧
-            rowNorm (split_w w).1 ≤ 2 * U ^ (H_free - 17 * η - τ) := by
-          intro w hw
-          have hkeq : k_A w = k_idx := (mem_filter_of hw).2
-          have hA1 : 1 ≤ ((split_w w).2.val.absNorm : ℝ) := by
-            exact_mod_cast Nat.one_le_iff_ne_zero.mpr
-              (Ideal.absNorm_eq_zero_iff.not.mpr (split_w w).2.property)
-          have hdb := InverseSecondSourceBlocks.dyadIndex_bounds _ hA1
-          rw [hkeq, ← rpow_dyadicExponent U hU1 k_idx] at hdb
-          have hw_norm : ‖ringComplex w.val‖ ^ 2 ≤ 2 * U ^ W_exp :=
-            (mem_firstFrequencyDisk _ _).mp (Finset.mem_erase.mp w.property).2
-          have hu_le : rowNorm (split_w w).1 * (U ^ x6) ^ 6 ≤ 2 * U ^ W_exp := by
-            calc rowNorm (split_w w).1 * (U ^ x6) ^ 6
-                ≤ rowNorm (split_w w).1 * ((split_w w).2.val.absNorm : ℝ) ^ 6 :=
-                  mul_le_mul_of_nonneg_left
-                    (pow_le_pow_left₀ (Real.rpow_nonneg hU_pos.le _) hdb.1 6)
-                    (by unfold rowNorm; positivity)
-              _ = ‖ringComplex w.val‖ ^ 2 := hsplit_norm w
-              _ ≤ 2 * U ^ W_exp := hw_norm
-          have h6x6 : (U ^ x6) ^ 6 = U ^ (6 * x6) := by
-            rw [← Real.rpow_natCast, ← Real.rpow_mul hU_pos.le]
-            exact congrArg (fun x : ℝ => U ^ x) (by ring)
-          rw [h6x6] at hu_le
-          have hu_div : rowNorm (split_w w).1 ≤ (2 * U ^ W_exp) / U ^ (6 * x6) :=
-            (le_div_iff₀ (Real.rpow_pos_of_pos hU_pos _)).mpr hu_le
-          refine ⟨hdb.1, hdb.2.le, hu_div.trans_eq ?_⟩
-          rw [mul_div_assoc, ← Real.rpow_sub hU_pos]
-          exact congrArg (fun x : ℝ => 2 * U ^ x) (by dsimp only [W_exp, H_free]; ring)
-        -- Hence `0 < H_free` (`16 * η + τ ≤ H_free`) from `w_rep ∈ W_k`!
-        have hw_rep_mem : w_rep ∈ W_k := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hk_rep⟩
-        have hHf_pos : 0 < H_free := by
-          have hu1 : 1 ≤ rowNorm (split_w w_rep).1 := by
-            unfold rowNorm
-            exact_mod_cast Nat.one_le_iff_ne_zero.mpr
-              (Ideal.absNorm_eq_zero_iff.not.mpr
-                (Ideal.span_singleton_eq_bot.not.mpr (split_w w_rep).1.property.1))
-          have h2rp : 1 ≤ U ^ η * U ^ (H_free - 17 * η - τ) :=
-            hu1.trans ((hWk_bounds w_rep hw_rep_mem).2.2.trans
-              (mul_le_mul_of_nonneg_right h2_η (Real.rpow_nonneg hU_pos.le _)))
-          rw [← Real.rpow_add hU_pos, ← Real.rpow_zero U, Real.rpow_le_rpow_left_iff hU1] at h2rp
-          linarith only [h2rp, hη_pos, hτ_pos]
-        have hHf_lo : -D_dual.t ≤ H_free := by linarith only [hHf_pos, ht_pos]
-        have hmax_Hf : max 0 H_free = H_free := max_eq_right hHf_pos.le
-        -- Image `A_set` of `(split_w w).2.val` over `w ∈ W_k` has `#A_set ≤ 512 * U ^ x6`!
-        let A_set : Finset (Ideal O) := W_k.image (fun w => (split_w w).2.val)
-        have hA_card : (A_set.card : ℝ) ≤ 512 * U ^ x6 := by
-          have hc := EisensteinLatticeCount.finite_ideal_count_real A_set (2 * U ^ x6)
-            (by positivity)
-            (fun I hI => by obtain ⟨w, _, rfl⟩ := Finset.mem_image.mp hI; exact (split_w w).2.property)
-            (fun I hI => by obtain ⟨w, hw, rfl⟩ := Finset.mem_image.mp hI; exact (hWk_bounds w hw).2.1)
-          linarith only [hc, Real.rpow_pos_of_pos hU_pos x6]
-        -- Bound each fixed `A_id ∈ A_set` fiber!
-        let B_Afib : ℝ := (C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div)) * 4 *
-          (max C_four₁ C_four₂) * (max C_sf1 C_sf2 + C_coarse_max + 1) *
-          X_col * U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + (29 / 4 : ℝ) * D_dual.t) *
-          (tripleHeight (firstDegree deg_cell) z_ht.1 * coordinateHeight (firstDegree deg_cell) z_ht.2)
-        have hAfib_bound : ∀ A_id ∈ A_set,
-            (∑ w ∈ W_k.filter (fun w => (split_w w).2.val = A_id),
-              ‖inputConjugateRow p χ_p Finset.univ Ψ₀ (m * d_D) 1 1
-                (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) w.val‖ ^ 2) ≤ B_Afib := by
-          intro A_id hAid
-          obtain ⟨w_a, hw_a, hAid_eq⟩ := Finset.mem_image.mp hAid
-          have hAid_ne : A_id ≠ 0 := hAid_eq ▸ (split_w w_a).2.property
-          have hAid_norm : (A_id.absNorm : ℝ) ≤ 2 * U ^ x6 :=
-            hAid_eq ▸ (hWk_bounds w_a hw_a).2.1
-          let g_A : O := cubicIdealGenerator A_id
-          have hgA_ne : g_A ≠ 0 := cubicIdealGenerator_ne_zero A_id hAid_ne
-          let m' : O := (m * d_D) * g_A
-          have hm'_ne : m' ≠ 0 := mul_ne_zero (mul_ne_zero hm_ne hd_D_ne) hgA_ne
-          let P_punc : Finset (primePool F_pool) := Finset.univ.filter (fun q => p q ∣ m')
-          -- Divisor bound `1024 ^ P_punc.card ≤ C_div ^ 10 * 2 ^ (10 * ε_div) * U ^ (D_dual.t / 4)`!
-          have hpunc_1024 : (1024 : ℝ) ^ P_punc.card ≤
-              C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div) * U ^ (D_dual.t / 4) := by
-            have hp10 := puncture_card_pow_1024_le_divisors p hp hcop Finset.univ hm'_ne
-            have hd_m := hdiv_le (Ideal.span {m'}) (Ideal.span_singleton_eq_bot.not.mpr hm'_ne)
-            have hm'_norm : ((Ideal.span {m'}).absNorm : ℝ) ≤ 2 * U ^ (6 * Lcap + 30) := by
-              rw [← ringComplex_norm_sq_eq_absNorm_span]
-              dsimp only [m']
-              rw [map_mul, map_mul, norm_mul, norm_mul, mul_pow, mul_pow]
-              have hdD_n : ‖ringComplex d_D‖ ^ 2 ≤ U ^ (t_q + η) := by
-                have h1 : ‖ringComplex d_D‖ ^ 2 = primeProductNorm p D_q := by
-                  dsimp only [d_D]; unfold primeProductNorm; rw [map_prod, norm_prod, ← Finset.prod_pow]
-                rw [h1]; exact hDq_norm
-              have hgA_n : ‖ringComplex g_A‖ ^ 2 = (A_id.absNorm : ℝ) := by
-                dsimp only [g_A]
-                rw [ringComplex_norm_sq_eq_absNorm_span, span_cubicIdealGenerator]
-              have hx6_le1 : x6 ≤ 1 := by
-                dsimp only [H_free] at hHf_pos
-                rw [hH_th_eq] at hHf_pos
-                have hw0 : 0 ≤ u_act := by
-                  dsimp only [u_act]; apply mul_nonneg hθ0
-                  unfold stage1Width stage1Line; linarith only [hr0, hr1]
-                linarith only [hHf_pos, hell0, hw0]
-              calc ‖ringComplex m‖ ^ 2 * ‖ringComplex d_D‖ ^ 2 * ‖ringComplex g_A‖ ^ 2
-                  ≤ U ^ (2 * Lcap) * U ^ (t_q + η) * (2 * U ^ x6) := by
-                    rw [hgA_n]
-                    exact mul_le_mul (mul_le_mul hm_norm hdD_n (sq_nonneg _) (Real.rpow_nonneg hU_pos.le _))
-                      hAid_norm (Nat.cast_nonneg _) (by positivity)
-                _ = 2 * U ^ (2 * Lcap + (t_q + η) + x6) := by
-                    rw [← Real.rpow_add hU_pos, ← Real.rpow_add hU_pos]; ring
-                _ ≤ 2 * U ^ (6 * Lcap + 30) := by
-                    apply mul_le_mul_of_nonneg_left _ zero_le_two
-                    apply Real.rpow_le_rpow_of_exponent_le hU1.le
-                    linarith only [htq_hi, hLcap, hη1, hτ1, hx6_le1]
-            have hrp_m : ((Ideal.span {m'}).absNorm : ℝ) ^ ε_div ≤
-                (2 : ℝ) ^ ε_div * U ^ ((6 * Lcap + 30) * ε_div) := by
-              calc ((Ideal.span {m'}).absNorm : ℝ) ^ ε_div
-                  ≤ (2 * U ^ (6 * Lcap + 30)) ^ ε_div :=
-                    Real.rpow_le_rpow (Nat.cast_nonneg _) hm'_norm hε_div.le
-                _ = _ := by
-                    rw [Real.mul_rpow zero_le_two (Real.rpow_nonneg hU_pos.le _),
-                      ← Real.rpow_mul hU_pos.le]
-            have hd10 : ((idealDivisors (Ideal.span {m'})).card : ℝ) ^ 10 ≤
-                (C_div * ((2 : ℝ) ^ ε_div * U ^ ((6 * Lcap + 30) * ε_div))) ^ 10 :=
-              pow_le_pow_left₀ (Nat.cast_nonneg _)
-                (hd_m.trans (mul_le_mul_of_nonneg_left hrp_m hC_div.le)) 10
-            calc (1024 : ℝ) ^ P_punc.card
-                ≤ (C_div * ((2 : ℝ) ^ ε_div * U ^ ((6 * Lcap + 30) * ε_div))) ^ 10 :=
-                  hp10.trans hd10
-              _ = C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div) * U ^ (10 * ((6 * Lcap + 30) * ε_div)) := by
-                  rw [mul_pow, mul_pow, ← Real.rpow_natCast ((2 : ℝ) ^ ε_div),
-                    ← Real.rpow_mul zero_le_two, ← Real.rpow_natCast (U ^ _),
-                    ← Real.rpow_mul hU_pos.le]
-                  norm_num; ring_nf
-              _ ≤ C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div) * U ^ (D_dual.t / 4) := by
-                  apply mul_le_mul_of_nonneg_left _ (by positivity)
-                  apply Real.rpow_le_rpow_of_exponent_le hU1.le
-                  have heq : 10 * ((6 * Lcap + 30) * ε_div) = D_dual.t / 8 := by
-                    dsimp only [ε_div]; field_simp; ring
-                  linarith only [heq, ht_pos]
-          -- Map `W_kA := W_k.filter (fun w => (split_w w).2.val = A_id)` injectively to `U0_set : Finset FreeRow`!
-          let W_kA := W_k.filter (fun w => (split_w w).2.val = A_id)
-          let U0_set : Finset FreeRow := W_kA.image (fun w => (split_w w).1)
-          have hU0_inj : Set.InjOn (fun w : W_ball => (split_w w).1) W_kA := by
-            intro w₁ h₁ w₂ h₂ he1
-            have ha1 : (split_w w₁).2.val = A_id := (mem_filter_of h₁).2
-            have ha2 : (split_w w₂).2.val = A_id := (mem_filter_of h₂).2
-            exact hsplit_inj (Prod.ext he1 (Subtype.ext (ha1.trans ha2.symm)))
-          have hU0_norm : ∀ u₀ ∈ U0_set, rowNorm u₀ ≤ 2 * U ^ (H_free - 17 * η - τ) := by
-            intro u₀ hu₀
-            obtain ⟨w, hwA, rfl⟩ := Finset.mem_image.mp hu₀
-            exact (hWk_bounds w (mem_filter_of hwA).1).2.2
-          -- Rewrite each `w ∈ W_kA` via `inputConjugateRow_mul_sixth_pow` + `inputConjugateRow_puncture_eq_sdiff_and_card_le`!
-          have hw_punc_eq : ∀ w ∈ W_kA,
-              inputConjugateRow p χ_p Finset.univ Ψ₀ (m * d_D) 1 1
-                (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) w.val =
-              inputConjugateRow p χ_p (Finset.univ \ P_punc) Ψ₀ 1 1 1
-                (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) (split_w w).1.val := by
-            intro w hwA
-            have hw_eq : w.val = (split_w w).1.val * g_A ^ 6 := by
-              have hrm := (hsplit_eq w).symm
-              unfold rowMap at hrm
-              have ha_eq_w : (split_w w).2.val = A_id := (mem_filter_of hwA).2
-              rwa [ha_eq_w] at hrm
-            rw [hw_eq, inputConjugateRow_mul_sixth_pow p hg Finset.univ Ψ₀ (m * d_D) 1 1 _
-              (split_w w).1.val g_A]
-            exact (inputConjugateRow_puncture_eq_sdiff_and_card_le p hg hp hcop Finset.univ Ψ₀
-              hm'_ne _ (split_w w).1.val).1
-          have hsum_to_U0 :
-              (∑ w ∈ W_kA,
-                ‖inputConjugateRow p χ_p Finset.univ Ψ₀ (m * d_D) 1 1
-                  (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) w.val‖ ^ 2) =
-              X_col * ∑ u₀ ∈ U0_set, X_col⁻¹ *
-                ‖inputConjugateRow p χ_p (Finset.univ \ P_punc) Ψ₀ 1 1 1
-                  (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) u₀.val‖ ^ 2 := by
-            rw [Finset.mul_sum, Finset.sum_image hU0_inj]
-            apply Finset.sum_congr rfl; intro w hwA
-            rw [hw_punc_eq w hwA, ← mul_assoc, mul_inv_cancel₀ hX_col_pos.ne', one_mul]
-          -- Apply `exists_bad12_base_transfer_on_pool` to map `u₀ ∈ U0_set` to `S_free` (`rowNorm ≤ U ^ H_free`)!
-          obtain ⟨idx_bad, hbad_tr⟩ := exists_bad12_base_transfer_on_pool q_per Dpool base Ψ₀ hΨ₀_base
-          let S_free : Finset FreeRow := U0_set.image (fun u₀ => (bad12FreeSplit idx_bad u₀).1)
-          have hS_free_norm : ∀ u ∈ S_free, rowNorm u ≤ U ^ max 0 H_free := by
-            intro u hu
-            obtain ⟨u₀, hu₀, rfl⟩ := Finset.mem_image.mp hu
-            have hhi := (bad12_freeRow_transfer idx_bad u₀).2.2.1
-            have hu₀_b := hU0_norm u₀ hu₀
-            rw [hmax_Hf]
-            calc rowNorm (bad12FreeSplit idx_bad u₀).1
-                ≤ 186624 * (2 * U ^ (H_free - 17 * η - τ)) :=
-                  hhi.trans (mul_le_mul_of_nonneg_left hu₀_b (by norm_num))
-              _ = 373248 * U ^ (H_free - 17 * η - τ) := by ring
-              _ ≤ U ^ (17 * η) * U ^ (H_free - 17 * η - τ) :=
-                  mul_le_mul_of_nonneg_right h373 (Real.rpow_nonneg hU_pos.le _)
-              _ = U ^ (H_free - τ) := by
-                  rw [← Real.rpow_add hU_pos]; exact congrArg (fun x : ℝ => U ^ x) (by ring)
-              _ ≤ U ^ H_free := Real.rpow_le_rpow_of_exponent_le hU1.le (by linarith only [hτ_pos])
-          have hS_free_norm2 : ∀ u ∈ S_free, rowNorm u ≤ U ^ (2 : ℝ) := by
-            intro u hu
-            have h1 := hS_free_norm u hu
-            rw [hmax_Hf] at h1
-            have hHf2 : H_free ≤ 2 := by
-              dsimp only [H_free]; rw [hH_th_eq]
-              have hw0 : 0 ≤ u_act := by
-                dsimp only [u_act]; apply mul_nonneg hθ0
-                unfold stage1Width stage1Line; linarith only [hr0, hr1]
-              linarith only [hw0, hell0, hx6_0]
-            exact h1.trans (Real.rpow_le_rpow_of_exponent_le hU1.le hHf2)
-          -- Unpunctured `B_sup` bound for `inputConjugateRow_markedRadial_unpuncture_total_scale`!
-          let S_cut : ℝ := (1 / (32 * Real.pi)) * Z_dual ^ τ_dual
-          have hS_cut0 : 0 ≤ S_cut := by dsimp only [S_cut]; positivity
-          let B_sup : ℝ := 4 * (max C_four₁ C_four₂) * (max C_sf1 C_sf2 + C_coarse_max + 1) *
-            U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t) *
-            (tripleHeight (firstDegree deg_cell) z_ht.1 * coordinateHeight (firstDegree deg_cell) z_ht.2)
-          have hB_sup0 : 0 ≤ B_sup :=
-            mul_nonneg (mul_nonneg
-              (mul_nonneg (mul_nonneg (by norm_num) hCf_max_pos.le) hCsf_sum_pos.le)
-              (Real.rpow_nonneg hU_pos.le _)) hw_pos.le
-          have hunpunc : ∀ S'' : Finset (Fin D.N), S'' ⊆ S_rem \ J → ∀ X₁ : ℝ, 0 < X₁ →
-              X₁ * (∏ i ∈ (S_rem \ J) \ S'', Z_slot i) ≤ X_col →
-              (∑ u₀ ∈ U0_set, X₁⁻¹ *
-                ‖inputConjugateRow p χ_p Finset.univ Ψ₀ 1 1 1
-                  (fun U_set => primeMark S'' lists_v a U_set *
-                    V_win (primeProductNorm p U_set / X₁)) u₀.val‖ ^ 2) ≤ B_sup := by
-            intro S'' hS'' X₁ hX₁ hX₁_le
-            have hS''_rem : S'' ⊆ S_rem := hS''.trans Finset.sdiff_subset
-            have hS''_card : S''.card ≤ D.N := (Finset.card_le_card hS''_rem).trans hSrem_card
-            let X₀_in : ℝ := X₁ / ∏ i ∈ S'', Z_slot i
-            -- Bound `X₀_in ≤ U ^ (r_param - (V₀ + Δ_BC) - 3 * ell_in + z_Jv)`!
-            let Δ_BC : ℝ := B_c + t_q + 2 * η - z_J_act
-            have hΔ_BC0 : 0 ≤ Δ_BC := sub_nonneg.mpr hzJ_act_le
-            let V₀_eff : ℝ := V₀ + Δ_BC
-            have hV₀_eff0 : 0 ≤ V₀_eff := add_nonneg hV0 hΔ_BC0
-            have hX₀_le_unm : X₀_in ≤ U ^ (r_param - V₀_eff - 3 * ell_in + z_Jv - 0) := by
-              have hprod_SremJ : (∏ i ∈ S'', Z_slot i) * (∏ i ∈ (S_rem \ J) \ S'', Z_slot i) =
-                  ∏ i ∈ S_rem \ J, Z_slot i :=
-                Finset.prod_union Finset.disjoint_sdiff |>.symm.trans
-                  (congrArg (fun F => ∏ i ∈ F, Z_slot i) (Finset.union_sdiff_of_subset hS''))
-              have hX₀_mul : X₀_in * (∏ i ∈ S_rem \ J, Z_slot i) ≤ X_col := by
-                dsimp only [X₀_in]
-                rw [← hprod_SremJ, ← mul_assoc,
-                  div_mul_cancel₀ _ (Finset.prod_pos (fun i _ => hZ_slot_pos i)).ne']
-                exact hX₁_le
-              have hZ_remJ_eq : (∏ i ∈ S_rem \ J, Z_slot i) =
-                  U ^ ((∑ i ∈ S_rem, D.ell i / d_outer) - z_J_act) := by
-                dsimp only [Z_slot, z_J_act]
-                rw [← Real.rpow_sum_of_pos hU_pos]
-                apply congrArg (fun x : ℝ => U ^ x)
-                rw [eq_sub_iff_add_eq, add_comm, Finset.sum_sdiff hJ_sub]
-              rw [hZ_remJ_eq, hX_col_eq] at hX₀_mul
-              have hdiv_le := (le_div_iff₀ (Real.rpow_pos_of_pos hU_pos _)).mpr hX₀_mul
-              rw [← Real.rpow_sub hU_pos] at hdiv_le
-              refine hdiv_le.trans (Real.rpow_le_rpow_of_exponent_le hU1.le ?_)
-              dsimp only [r_new, V₀_eff, Δ_BC]
-              linarith only [hFp_r]
-            -- Set `z_J_in := min z_J_act (z_rem_th - z_Jv)` and `pad_T_eff := pad_T + (z_J_act - z_J_in)`?
-            -- Even simpler: `T' ⊆ S'' ⊆ S_rem \ J` has `∑ j ∈ T', D.ell j / d_outer + z_J_act ≤ ∑ i ∈ S_rem, D.ell i / d_outer ≤ z_rem_th - z_Jv + pad_T`!
-            have hz_rem_Jv_pos : 0 ≤ z_rem_th - z_Jv := by
-              have hz_rem_lo : (7 / 52 : ℝ) - 121 / 12500 ≤ z_rem_th := by
-                dsimp only [z_rem_th]
-                unfold stage1RemWidth stage1Width stage1Line
-                nlinarith only [hr0, hr1, hθ0, hθ1]
-              linarith only [hz_rem_lo, hJv, hell1]
-            let z_J_in : ℝ := min z_J_act (z_rem_th - z_Jv)
-            have hzJ_in0 : 0 ≤ z_J_in := le_min hzJ_act0 hz_rem_Jv_pos
-            have hzT_cap0 : 0 ≤ z_rem_th - z_Jv - z_J_in - 0 := by
-              have hle : z_J_in ≤ z_rem_th - z_Jv := min_le_right _ _
-              linarith only [hle]
-            have hzT'_sum_le : ∀ T' : Finset (Fin D.N), T' ⊆ S'' →
-                (∑ j ∈ T', D.ell j / d_outer) ≤ (z_rem_th - z_Jv - z_J_in - 0) + pad_T := by
-              intro T' hT'
-              have hT'_sub : T' ⊆ S_rem \ J := hT'.trans hS''
-              have hdisj_TJ : Disjoint T' J :=
-                Finset.disjoint_left.mpr (fun i hiT hiJ => (Finset.mem_sdiff.mp (hT'_sub hiT)).2 hiJ)
-              have hun_sub : T' ∪ J ⊆ S_rem :=
-                Finset.union_subset (hT'_sub.trans Finset.sdiff_subset) hJ_sub
-              have hsum_TJ : (∑ j ∈ T', D.ell j / d_outer) + z_J_act ≤
-                  ∑ i ∈ S_rem, D.ell i / d_outer := by
-                dsimp only [z_J_act]
-                rw [← Finset.sum_union hdisj_TJ]
-                exact Finset.sum_le_sum_of_subset_of_nonneg hun_sub
-                  (fun i _ _ => div_nonneg (D.slots_bounds i).1.le hd_pos.le)
-              rcases le_total z_J_act (z_rem_th - z_Jv) with hle_zJ | hge_zJ
-              · have heq_in : z_J_in = z_J_act := min_eq_left hle_zJ
-                rw [heq_in]; linarith only [hsum_TJ, hz_Srem]
-              · have heq_in : z_J_in = z_rem_th - z_Jv := min_eq_right hge_zJ
-                rw [heq_in]; linarith only [hsum_TJ, hz_Srem, hge_zJ]
-            -- Transfer `U0_set → S_free` with factor `4` for any `(wF, s, T', X')`!
-            have hbad_sum_le : ∀ (wF : 𝓢(ℝ, ℂ)) (s : ℝ) (T' : Finset (Fin D.N)) (X' : ℝ),
-                0 < X' →
-                let a_tw : Fin D.N → primePool F_pool → ℂ := fun j q =>
-                  a j q * kernelLogPhase s (Real.log (‖ringComplex (p q)‖ ^ 2 / Z_slot j))
-                (∑ u₀ ∈ U0_set, (X' * ∏ j ∈ T', Z_slot j)⁻¹ *
-                  ‖inputConjugateRow p χ_p Finset.univ Ψ₀ 1 1 1
-                      (fun U_set => childLogTest wF s (primeProductNorm p U_set / X')) u₀.val *
-                    ∏ j ∈ T', slotCharSum p hg lists_v a_tw Ψ₀ j u₀.val‖ ^ 2) ≤
-                4 * ∑ u ∈ S_free, (X' * ∏ j ∈ T', Z_slot j)⁻¹ *
-                  ‖inputConjugateRow p χ_p Finset.univ base 1 1 1
-                      (fun U_set => childLogTest wF s (primeProductNorm p U_set / X')) u.val *
-                    ∏ j ∈ T', slotCharSum p hg lists_v a_tw base j u.val‖ ^ 2 := by
-              intro wF s T' X' hX' a_tw
-              let term_u : FreeRow → ℝ := fun u =>
-                (X' * ∏ j ∈ T', Z_slot j)⁻¹ *
-                  ‖inputConjugateRow p χ_p Finset.univ base 1 1 1
-                      (fun U_set => childLogTest wF s (primeProductNorm p U_set / X')) u.val *
-                    ∏ j ∈ T', slotCharSum p hg lists_v a_tw base j u.val‖ ^ 2
-              have hterm_nn : ∀ u, 0 ≤ term_u u := fun u =>
-                mul_nonneg (inv_nonneg.mpr (mul_nonneg hX'.le
-                  (Finset.prod_nonneg (fun j _ => (hZ_slot_pos j).le)))) (sq_nonneg _)
-              have heq_u0 : ∀ u₀ ∈ U0_set,
-                  (X' * ∏ j ∈ T', Z_slot j)⁻¹ *
-                    ‖inputConjugateRow p χ_p Finset.univ Ψ₀ 1 1 1
-                        (fun U_set => childLogTest wF s (primeProductNorm p U_set / X')) u₀.val *
-                      ∏ j ∈ T', slotCharSum p hg lists_v a_tw Ψ₀ j u₀.val‖ ^ 2 =
-                  term_u (bad12FreeSplit idx_bad u₀).1 := by
-                intro u₀ _
-                dsimp only [term_u]
-                rw [(hbad_tr u₀).1 Finset.univ _,
-                  Finset.prod_congr rfl (fun j _ => (hbad_tr u₀).2 lists_v a_tw j)]
-              rw [Finset.sum_congr rfl heq_u0,
-                ← Finset.sum_fiberwise_of_maps_to (g := fun u₀ => (bad12FreeSplit idx_bad u₀).1)
-                  (fun u₀ hu₀ => Finset.mem_image_of_mem _ hu₀),
-                Finset.mul_sum]
-              apply Finset.sum_le_sum; intro u _
-              have hconst : ∀ u₀ ∈ U0_set.filter (fun u₀ => (bad12FreeSplit idx_bad u₀).1 = u),
-                  term_u (bad12FreeSplit idx_bad u₀).1 = term_u u :=
-                fun _ hu₀ => congrArg term_u (mem_filter_of hu₀).2
-              rw [Finset.sum_congr rfl hconst, Finset.sum_const, nsmul_eq_mul]
-              exact mul_le_mul_of_nonneg_right
-                (bad12FreeSplit_fiber_card_le idx_bad U0_set u) (hterm_nn u)
-            -- Dpool coverage for `X' ≤ X₀_in ≤ X_col ≤ U ^ r_new ≤ U ^ Lcap` and `2 * Z_slot j ≤ 2 * U`!
-            have hX₀_Lcap : X₀_in ≤ U ^ Lcap := by
-              have h1 : X₀_in ≤ X₁ :=
-                div_le_self hX₁.le (Finset.one_le_prod (fun i _ => hZ_slot_ge1 i))
-              have h2 : X₁ ≤ X_col :=
-                (le_mul_of_one_le_right hX₁.le
-                  (Finset.one_le_prod (fun i _ => hZ_slot_ge1 i))).trans hX₁_le
-              have h3 : X_col ≤ U ^ Lcap := by
-                rw [hX_col_eq]
-                exact Real.rpow_le_rpow_of_exponent_le hU1.le
-                  (by linarith only [hrn_hi, hBc_0, htq_0])
-              exact h1.trans (h2.trans h3)
-            have hX₀_U2 : X₀_in ≤ U ^ (2 : ℝ) := by
-              have h1 := hX₀_le_unm
-              have hexp2 : r_param - V₀_eff - 3 * ell_in + z_Jv - 0 ≤ 2 := by
-                linarith only [hr1, hV₀_eff0, hJv, hell0]
-              exact h1.trans (Real.rpow_le_rpow_of_exponent_le hU1.le hexp2)
-            have hDpool_Z : ∀ j ∈ S'', 2 * Z_slot j ≤ (Dpool : ℝ) := by
-              intro j _
-              calc 2 * Z_slot j ≤ 2 * U :=
-                    mul_le_mul_of_nonneg_left (hZ_slot_hi j) zero_le_two
-                _ ≤ B_pool * U ^ (Lcap + 2) := by
-                    have hBp2 : 2 ≤ B_pool := by
-                      dsimp only [B_pool]; linarith [le_max_left 2 (max bf₁ bf₂)]
-                    have hU_L2 : U ≤ U ^ (Lcap + 2) :=
-                      (Real.rpow_one U).symm.trans_le
-                        (Real.rpow_le_rpow_of_exponent_le hU1.le (by linarith only [hLcap]))
-                    exact mul_le_mul hBp2 hU_L2 hU_pos.le (by linarith only [hBp2])
-                _ ≤ (Dpool : ℝ) := hDpool
-            -- Tail bound `(C_coarse / (1 + S_cut)^(2 * N_tail)) ≤ U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t)`!
-            have hZd_ge_U : U ≤ Z_dual := by
-              dsimp only [Z_dual]
-              have hexp1 : 1 ≤ 3 / (2 * d_outer) :=
-                (one_le_div (by positivity)).mpr (by linarith only [hd_hi])
-              exact (Real.rpow_one U).symm.trans_le
-                (Real.rpow_le_rpow_of_exponent_le hU1.le hexp1)
-            have hScut_lower : U ^ (τ_dual / 2) ≤ 1 + S_cut := by
-              have hZd_τ : U ^ τ_dual ≤ Z_dual ^ τ_dual :=
-                Real.rpow_le_rpow hU_pos.le hZd_ge_U hτ_dual_pos.le
-              have hsplit_τ : U ^ τ_dual = U ^ (τ_dual / 2) * U ^ (τ_dual / 2) := by
-                rw [← Real.rpow_add hU_pos]; exact congrArg (fun x : ℝ => U ^ x) (by ring)
-              have h32_le : 32 * Real.pi * U ^ (τ_dual / 2) ≤ Z_dual ^ τ_dual := by
-                calc 32 * Real.pi * U ^ (τ_dual / 2)
-                    ≤ U ^ (τ_dual / 2) * U ^ (τ_dual / 2) :=
-                      mul_le_mul_of_nonneg_right h32pi (Real.rpow_nonneg hU_pos.le _)
-                  _ = U ^ τ_dual := hsplit_τ.symm
-                  _ ≤ Z_dual ^ τ_dual := hZd_τ
-              have hdiv_32 : U ^ (τ_dual / 2) ≤ S_cut := by
-                dsimp only [S_cut]
-                rw [one_div_mul_eq_div, le_div_iff₀ (by positivity), mul_comm]
-                exact h32_le
-              linarith only [hdiv_32]
-            have htail_U_le : U ^ ((D.N : ℝ) + 10) / (1 + S_cut) ^ (2 * N_tail) ≤
-                U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t) := by
-              have hden_ge : U ^ ((D.N : ℝ) + 20 + 6 * Lcap) ≤ (1 + S_cut) ^ (2 * N_tail) := by
-                calc U ^ ((D.N : ℝ) + 20 + 6 * Lcap)
-                    ≤ U ^ ((τ_dual / 2) * (2 * (N_tail : ℝ))) := by
-                      apply Real.rpow_le_rpow_of_exponent_le hU1.le
-                      have hceil : ((D.N : ℝ) + 20 + 6 * Lcap) / (2 * τ_dual) ≤ (N_tail : ℝ) := by
-                        dsimp only [N_tail]; push_cast
-                        linarith [Nat.le_ceil (((D.N : ℝ) + 20 + 6 * Lcap) / (2 * τ_dual))]
-                      have hm := (div_le_iff₀ (by positivity : 0 < 2 * τ_dual)).mp hceil
-                      nlinarith only [hm, hτ_dual_pos]
-                  _ = (U ^ (τ_dual / 2)) ^ (2 * N_tail) := by
-                      rw [← Real.rpow_natCast (U ^ (τ_dual / 2)), ← Real.rpow_mul hU_pos.le]
-                      push_cast; rfl
-                  _ ≤ (1 + S_cut) ^ (2 * N_tail) :=
-                      pow_le_pow_left₀ (Real.rpow_nonneg hU_pos.le _) hScut_lower _
-              have hdiv_le : U ^ ((D.N : ℝ) + 10) / (1 + S_cut) ^ (2 * N_tail) ≤
-                  U ^ ((D.N : ℝ) + 10 - ((D.N : ℝ) + 20 + 6 * Lcap)) := by
-                rw [Real.rpow_sub hU_pos]
-                exact div_le_div_of_nonneg_left (Real.rpow_nonneg hU_pos.le _)
-                  (Real.rpow_pos_of_pos hU_pos _) hden_ge
-              refine hdiv_le.trans (Real.rpow_le_rpow_of_exponent_le hU1.le ?_)
-              have hx6_le1 : x6 ≤ 1 := by
-                dsimp only [H_free] at hHf_pos; rw [hH_th_eq] at hHf_pos
-                have hw0 : 0 ≤ u_act := by
-                  dsimp only [u_act]; apply mul_nonneg hθ0
-                  unfold stage1Width stage1Line; linarith only [hr0, hr1]
-                linarith only [hHf_pos, hell0, hw0]
-              have hw1 : u_act ≤ 121 / 12500 := by
-                dsimp only [u_act]
-                have hsw : stage1Width r_param ≤ 121 / 12500 := by
-                  unfold stage1Width stage1Line; linarith only [hr0, hr1]
-                nlinarith only [hθ0, hθ1, hsw]
-              linarith only [hLcap, hell1, hw1, hx6_le1, hpad0, ht_pos]
-            -- Split `cases negative` (`omega₂` vs `omega₁`) and invoke `hfour₂` / `hfour₁`!
-            have hm_rem : markedRadial p S'' lists_v a ∅ V_win X₁ =
-                fun U_set => primeMark S'' lists_v a U_set * V_win (primeProductNorm p U_set / X₁) := by
-              funext U_set; unfold markedRadial; simp only [Finset.empty_union]
-            simp_rw [← hm_rem]
-            dsimp only [V_win, omega_b]
-            cases negative
-            · -- `negative = false` (`omega₂`, `wFresh₂`)
-              simp only [Bool.false_eq_true, ite_false]
-              have hf2 := hfour₂ false t_ht p hp hcop hg
-                (fun j₁ j₂ h => hinj (by rw [h])) Finset.univ Ψ₀ hΨ₀_norm
-                S'' hS''_card lists_v (fun _ _ => Finset.subset_univ _)
-                (fun i hi j hj hij => hdisj_v (hS''_rem hi) (hS''_rem hj) hij)
-                (fun i hi q hq => ha_v_norm i (hS''_rem hi) q hq)
-                Z_slot (fun i _ => hZ_slot_ge1 i)
-                (fun i hi => hZ_lo_v i (hS''_rem hi))
-                (fun i hi => hZ_hi_v i (hS''_rem hi))
-                U0_set hX₁ hS_cut0
-                (mul_nonneg (by norm_num) (mul_nonneg hC_sf2.le (Real.rpow_nonneg hU_pos.le _)))
-                (mul_nonneg (by norm_num) (mul_nonneg hCcr_nn (Real.rpow_nonneg hU_pos.le _)))
-                ?_ ?_
-              · calc _ ≤ C_four₂ * (1 + ‖t_ht‖) ^ (2 * deg_cell) *
-                        (4 * C_sf2 * U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t) +
-                          (4 * C_coarse_max * U ^ ((D.N : ℝ) + 10)) / (1 + S_cut) ^ (2 * N_tail)) := hf2
-                  _ ≤ (max C_four₁ C_four₂) *
-                        (tripleHeight (firstDegree deg_cell) z_ht.1 * coordinateHeight (firstDegree deg_cell) z_ht.2) *
-                        (4 * (max C_sf1 C_sf2) * U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t) +
-                          4 * C_coarse_max * U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t)) := by
-                      apply mul_le_mul
-                      · exact mul_le_mul (le_max_right _ _) hht_deg (by positivity)
-                          (le_trans hC_f2.le (le_max_right _ _))
-                      · apply add_le_add
-                        · exact mul_le_mul_of_nonneg_right
-                            (mul_le_mul_of_nonneg_left (le_max_right _ _) (by norm_num))
-                            (Real.rpow_nonneg hU_pos.le _)
-                        · rw [mul_div_assoc]
-                          exact mul_le_mul_of_nonneg_left htail_U_le (by positivity)
-                      · positivity
-                      · exact mul_nonneg (le_trans hC_f2.le (le_max_right _ _)) hw_pos.le
-                  _ ≤ B_sup := by
-                      dsimp only [B_sup]
-                      have hnn : 0 ≤ 4 * (max C_four₁ C_four₂) *
-                          U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t) *
-                          (tripleHeight (firstDegree deg_cell) z_ht.1 *
-                            coordinateHeight (firstDegree deg_cell) z_ht.2) :=
-                        mul_nonneg (mul_nonneg (by positivity) (Real.rpow_nonneg hU_pos.le _)) hw_pos.le
-                      linarith only [hnn]
-              · intro s hs_cut T' hT' X' hX' hX'_le
-                have hX'_X₀ : X' ≤ X₀_in :=
-                  hX'_le.trans (div_le_self (div_nonneg hX₁.le
-                    (Finset.prod_nonneg (fun i _ => (hZ_slot_pos i).le)))
-                    (Finset.one_le_prod (fun i _ => hZ_slot_ge1 i)))
-                have hDp_X' : bf₂ * X' ≤ (Dpool : ℝ) := by
-                  have hbf_Bp : bf₂ ≤ B_pool := by
-                    dsimp only [B_pool]
-                    linarith [(le_max_right bf₁ bf₂).trans (le_max_right 2 (max bf₁ bf₂))]
-                  have hUL : U ^ Lcap ≤ U ^ (Lcap + 2) :=
-                    Real.rpow_le_rpow_of_exponent_le hU1.le (by linarith)
-                  exact (mul_le_mul hbf_Bp ((hX'_X₀.trans hX₀_Lcap).trans hUL)
-                    hX'.le (by linarith only [hBp1])).trans hDpool
-                have hζ_tw_im : |(ζ_base + ((2 * Real.pi * s : ℝ) : ℂ) * Complex.I).im| ≤ Z_dual ^ τ_d2 := by
-                  have h2pi_s : |2 * Real.pi * s| ≤ (1 / 16 : ℝ) * Z_dual ^ τ_dual := by
-                    rw [abs_mul, abs_of_pos (by positivity : 0 < 2 * Real.pi)]
-                    calc 2 * Real.pi * |s| ≤ 2 * Real.pi * S_cut :=
-                          mul_le_mul_of_nonneg_left hs_cut (by positivity)
-                      _ = (1 / 16 : ℝ) * Z_dual ^ τ_dual := by
-                          dsimp only [S_cut]; field_simp [Real.pi_ne_zero]; ring
-                  have him_eq : (ζ_base + ((2 * Real.pi * s : ℝ) : ℂ) * Complex.I).im =
-                      ζ_base.im + 2 * Real.pi * s := by simp
-                  rw [him_eq]
-                  have htri := (abs_add_le ζ_base.im (2 * Real.pi * s)).trans (add_le_add hζ_im h2pi_s)
-                  have hZd1 : 1 ≤ Z_dual := hU1.le.trans hZd_ge_U
-                  have hτ_le_d2 : Z_dual ^ τ_dual ≤ Z_dual ^ τ_d2 :=
-                    Real.rpow_le_rpow_of_exponent_le hZd1 (min_le_right _ _)
-                  linarith only [htri, hτ_le_d2, Real.rpow_pos_of_pos (zero_lt_one.trans_le hZd1) τ_dual]
-                have hsf_app := hsf2 U (((le_max_right _ _).trans
-                  ((le_max_left _ _).trans (le_max_right _ _))).trans hU) Dpool
-                  hd_lo hd_hi hr0 hr1 hθ0 hθ1 hell0 hell1 hJv0 hJv hx6_0 hV₀_eff0 hzJ_in0 le_rfl hpad0
-                  hzT_cap0 hHf_lo hX' (hX'_X₀.trans hX₀_le_unm) hDp_X'
-                  T' (hzT'_sum_le T' hT')
-                  (fun j hj => hDpool_Z j (hT' hj))
-                  (fun j hj => hlarge_Z j (hS''_rem (hT' hj)))
-                  lists_full lists_v a
-                  (fun j hj => hlists_full j (hS''_rem (hT' hj)))
-                  (fun j hj => hlists_v j (hS''_rem (hT' hj)))
-                  (fun j hj => hcard_diff j (hS''_rem (hT' hj)))
-                  ζ_base hζ_re (fun j hj => ha_eq j (hS''_rem (hT' hj)))
-                  S_free hS_free_norm s hζ_tw_im
-                have h1s_le : (1 + |s|) ^ (2 * J_sf2) ≤ (1 + |s|) ^ (2 * J_sf) :=
-                  pow_le_pow_right₀ (by linarith [abs_nonneg s]) (by dsimp only [J_sf]; omega)
-                calc _ ≤ 4 * (C_sf2 * U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t) *
-                          (1 + |s|) ^ (2 * J_sf2)) :=
-                      (hbad_sum_le wFresh₂ s T' X' hX').trans
-                        (mul_le_mul_of_nonneg_left hsf_app (by norm_num))
-                  _ ≤ _ := by
-                      rw [← mul_assoc]
-                      exact mul_le_mul_of_nonneg_left h1s_le (by positivity)
-              · intro s T' hT' X' hX' hX'_le
-                have hX'_X₀ : X' ≤ X₀_in :=
-                  hX'_le.trans (div_le_self (div_nonneg hX₁.le
-                    (Finset.prod_nonneg (fun i _ => (hZ_slot_pos i).le)))
-                    (Finset.one_le_prod (fun i _ => hZ_slot_ge1 i)))
-                have hDp_X' : bf₂ * X' ≤ (Dpool : ℝ) := by
-                  have hbf_Bp : bf₂ ≤ B_pool := by
-                    dsimp only [B_pool]
-                    linarith [(le_max_right bf₁ bf₂).trans (le_max_right 2 (max bf₁ bf₂))]
-                  have hUL : U ^ Lcap ≤ U ^ (Lcap + 2) :=
-                    Real.rpow_le_rpow_of_exponent_le hU1.le (by linarith)
-                  exact (mul_le_mul hbf_Bp ((hX'_X₀.trans hX₀_Lcap).trans hUL)
-                    hX'.le (by linarith only [hBp1])).trans hDpool
-                have hcr := dual_factored_coarse_bound_lists_sdiff F_dual wFresh₂ hbf₂_pos hBw₂0
-                  (fun y hy => (hs_w₂ hy).2) hBw₂ M_drop data Dpool
-                  hU1.le hX' (hX'_X₀.trans hX₀_U2) hDp_X' T' Z_slot
-                  (fun j _ => hZ_slot_ge1 j) (fun j _ => hZ_slot_hi j)
-                  (fun j hj => hDpool_Z j (hT' hj))
-                  (fun j hj => hlarge_Z j (hS''_rem (hT' hj)))
-                  ζ_base (by rw [hζ_re]; norm_num) lists_full lists_v a
-                  (fun j hj => hlists_full j (hS''_rem (hT' hj)))
-                  (fun j hj => hlists_v j (hS''_rem (hT' hj)))
-                  (fun j hj => hcard_diff j (hS''_rem (hT' hj)))
-                  (fun j hj => ha_eq j (hS''_rem (hT' hj)))
-                  S_free hS_free_norm2 s
-                calc _ ≤ 4 * (C_cr₂ * U ^ ((D.N : ℝ) + 10)) :=
-                      (hbad_sum_le wFresh₂ s T' X' hX').trans
-                        (mul_le_mul_of_nonneg_left hcr (by norm_num))
-                  _ ≤ 4 * C_coarse_max * U ^ ((D.N : ℝ) + 10) := by
-                      dsimp only [C_coarse_max]
-                      rw [← mul_assoc]
-                      exact mul_le_mul_of_nonneg_right
-                        (mul_le_mul_of_nonneg_left (by linarith only [hCcr1_nn]) (by norm_num))
-                        (Real.rpow_nonneg hU_pos.le _)
-            · -- `negative = true` (`omega₁`, `wFresh₁`)
-              simp only [ite_true]
-              have hf1 := hfour₁ true t_ht p hp hcop hg
-                (fun j₁ j₂ h => hinj (by rw [h])) Finset.univ Ψ₀ hΨ₀_norm
-                S'' hS''_card lists_v (fun _ _ => Finset.subset_univ _)
-                (fun i hi j hj hij => hdisj_v (hS''_rem hi) (hS''_rem hj) hij)
-                (fun i hi q hq => ha_v_norm i (hS''_rem hi) q hq)
-                Z_slot (fun i _ => hZ_slot_ge1 i)
-                (fun i hi => hZ_lo_v i (hS''_rem hi))
-                (fun i hi => hZ_hi_v i (hS''_rem hi))
-                U0_set hX₁ hS_cut0
-                (mul_nonneg (by norm_num) (mul_nonneg hC_sf1.le (Real.rpow_nonneg hU_pos.le _)))
-                (mul_nonneg (by norm_num) (mul_nonneg hCcr_nn (Real.rpow_nonneg hU_pos.le _)))
-                ?_ ?_
-              · calc _ ≤ C_four₁ * (1 + ‖t_ht‖) ^ (2 * deg_cell) *
-                        (4 * C_sf1 * U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t) +
-                          (4 * C_coarse_max * U ^ ((D.N : ℝ) + 10)) / (1 + S_cut) ^ (2 * N_tail)) := hf1
-                  _ ≤ (max C_four₁ C_four₂) *
-                        (tripleHeight (firstDegree deg_cell) z_ht.1 * coordinateHeight (firstDegree deg_cell) z_ht.2) *
-                        (4 * (max C_sf1 C_sf2) * U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t) +
-                          4 * C_coarse_max * U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t)) := by
-                      apply mul_le_mul
-                      · exact mul_le_mul (le_max_left _ _) hht_deg (by positivity)
-                          (le_trans hC_f1.le (le_max_left _ _))
-                      · apply add_le_add
-                        · exact mul_le_mul_of_nonneg_right
-                            (mul_le_mul_of_nonneg_left (le_max_left _ _) (by norm_num))
-                            (Real.rpow_nonneg hU_pos.le _)
-                        · rw [mul_div_assoc]
-                          exact mul_le_mul_of_nonneg_left htail_U_le (by positivity)
-                      · positivity
-                      · exact mul_nonneg (le_trans hC_f1.le (le_max_left _ _)) hw_pos.le
-                  _ ≤ B_sup := by
-                      dsimp only [B_sup]
-                      have hnn : 0 ≤ 4 * (max C_four₁ C_four₂) *
-                          U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t) *
-                          (tripleHeight (firstDegree deg_cell) z_ht.1 *
-                            coordinateHeight (firstDegree deg_cell) z_ht.2) :=
-                        mul_nonneg (mul_nonneg (by positivity) (Real.rpow_nonneg hU_pos.le _)) hw_pos.le
-                      linarith only [hnn]
-              · intro s hs_cut T' hT' X' hX' hX'_le
-                have hX'_X₀ : X' ≤ X₀_in :=
-                  hX'_le.trans (div_le_self (div_nonneg hX₁.le
-                    (Finset.prod_nonneg (fun i _ => (hZ_slot_pos i).le)))
-                    (Finset.one_le_prod (fun i _ => hZ_slot_ge1 i)))
-                have hDp_X' : bf₁ * X' ≤ (Dpool : ℝ) := by
-                  have hbf_Bp : bf₁ ≤ B_pool := by
-                    dsimp only [B_pool]
-                    linarith [(le_max_left bf₁ bf₂).trans (le_max_right 2 (max bf₁ bf₂))]
-                  have hUL : U ^ Lcap ≤ U ^ (Lcap + 2) :=
-                    Real.rpow_le_rpow_of_exponent_le hU1.le (by linarith)
-                  exact (mul_le_mul hbf_Bp ((hX'_X₀.trans hX₀_Lcap).trans hUL)
-                    hX'.le (by linarith only [hBp1])).trans hDpool
-                have hζ_tw_im : |(ζ_base + ((2 * Real.pi * s : ℝ) : ℂ) * Complex.I).im| ≤ Z_dual ^ τ_d1 := by
-                  have h2pi_s : |2 * Real.pi * s| ≤ (1 / 16 : ℝ) * Z_dual ^ τ_dual := by
-                    rw [abs_mul, abs_of_pos (by positivity : 0 < 2 * Real.pi)]
-                    calc 2 * Real.pi * |s| ≤ 2 * Real.pi * S_cut :=
-                          mul_le_mul_of_nonneg_left hs_cut (by positivity)
-                      _ = (1 / 16 : ℝ) * Z_dual ^ τ_dual := by
-                          dsimp only [S_cut]; field_simp [Real.pi_ne_zero]; ring
-                  have him_eq : (ζ_base + ((2 * Real.pi * s : ℝ) : ℂ) * Complex.I).im =
-                      ζ_base.im + 2 * Real.pi * s := by simp
-                  rw [him_eq]
-                  have htri := (abs_add_le ζ_base.im (2 * Real.pi * s)).trans (add_le_add hζ_im h2pi_s)
-                  have hZd1 : 1 ≤ Z_dual := hU1.le.trans hZd_ge_U
-                  have hτ_le_d1 : Z_dual ^ τ_dual ≤ Z_dual ^ τ_d1 :=
-                    Real.rpow_le_rpow_of_exponent_le hZd1 (min_le_left _ _)
-                  linarith only [htri, hτ_le_d1, Real.rpow_pos_of_pos (zero_lt_one.trans_le hZd1) τ_dual]
-                have hsf_app := hsf1 U (((le_max_left _ _).trans
-                  ((le_max_left _ _).trans (le_max_right _ _))).trans hU) Dpool
-                  hd_lo hd_hi hr0 hr1 hθ0 hθ1 hell0 hell1 hJv0 hJv hx6_0 hV₀_eff0 hzJ_in0 le_rfl hpad0
-                  hzT_cap0 hHf_lo hX' (hX'_X₀.trans hX₀_le_unm) hDp_X'
-                  T' (hzT'_sum_le T' hT')
-                  (fun j hj => hDpool_Z j (hT' hj))
-                  (fun j hj => hlarge_Z j (hS''_rem (hT' hj)))
-                  lists_full lists_v a
-                  (fun j hj => hlists_full j (hS''_rem (hT' hj)))
-                  (fun j hj => hlists_v j (hS''_rem (hT' hj)))
-                  (fun j hj => hcard_diff j (hS''_rem (hT' hj)))
-                  ζ_base hζ_re (fun j hj => ha_eq j (hS''_rem (hT' hj)))
-                  S_free hS_free_norm s hζ_tw_im
-                have h1s_le : (1 + |s|) ^ (2 * J_sf1) ≤ (1 + |s|) ^ (2 * J_sf) :=
-                  pow_le_pow_right₀ (by linarith [abs_nonneg s]) (by dsimp only [J_sf]; omega)
-                calc _ ≤ 4 * (C_sf1 * U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t) *
-                          (1 + |s|) ^ (2 * J_sf1)) :=
-                      (hbad_sum_le wFresh₁ s T' X' hX').trans
-                        (mul_le_mul_of_nonneg_left hsf_app (by norm_num))
-                  _ ≤ _ := by
-                      rw [← mul_assoc]
-                      exact mul_le_mul_of_nonneg_left h1s_le (by positivity)
-              · intro s T' hT' X' hX' hX'_le
-                have hX'_X₀ : X' ≤ X₀_in :=
-                  hX'_le.trans (div_le_self (div_nonneg hX₁.le
-                    (Finset.prod_nonneg (fun i _ => (hZ_slot_pos i).le)))
-                    (Finset.one_le_prod (fun i _ => hZ_slot_ge1 i)))
-                have hDp_X' : bf₁ * X' ≤ (Dpool : ℝ) := by
-                  have hbf_Bp : bf₁ ≤ B_pool := by
-                    dsimp only [B_pool]
-                    linarith [(le_max_left bf₁ bf₂).trans (le_max_right 2 (max bf₁ bf₂))]
-                  have hUL : U ^ Lcap ≤ U ^ (Lcap + 2) :=
-                    Real.rpow_le_rpow_of_exponent_le hU1.le (by linarith)
-                  exact (mul_le_mul hbf_Bp ((hX'_X₀.trans hX₀_Lcap).trans hUL)
-                    hX'.le (by linarith only [hBp1])).trans hDpool
-                have hcr := dual_factored_coarse_bound_lists_sdiff F_dual wFresh₁ hbf₁_pos hBw₁0
-                  (fun y hy => (hs_w₁ hy).2) hBw₁ M_drop data Dpool
-                  hU1.le hX' (hX'_X₀.trans hX₀_U2) hDp_X' T' Z_slot
-                  (fun j _ => hZ_slot_ge1 j) (fun j _ => hZ_slot_hi j)
-                  (fun j hj => hDpool_Z j (hT' hj))
-                  (fun j hj => hlarge_Z j (hS''_rem (hT' hj)))
-                  ζ_base (by rw [hζ_re]; norm_num) lists_full lists_v a
-                  (fun j hj => hlists_full j (hS''_rem (hT' hj)))
-                  (fun j hj => hlists_v j (hS''_rem (hT' hj)))
-                  (fun j hj => hcard_diff j (hS''_rem (hT' hj)))
-                  (fun j hj => ha_eq j (hS''_rem (hT' hj)))
-                  S_free hS_free_norm2 s
-                calc _ ≤ 4 * (C_cr₁ * U ^ ((D.N : ℝ) + 10)) :=
-                      (hbad_sum_le wFresh₁ s T' X' hX').trans
-                        (mul_le_mul_of_nonneg_left hcr (by norm_num))
-                  _ ≤ 4 * C_coarse_max * U ^ ((D.N : ℝ) + 10) := by
-                      dsimp only [C_coarse_max]
-                      rw [← mul_assoc]
-                      exact mul_le_mul_of_nonneg_right
-                        (mul_le_mul_of_nonneg_left (by linarith only [hCcr2_nn]) (by norm_num))
-                        (Real.rpow_nonneg hU_pos.le _)
-          -- Apply `inputConjugateRow_markedRadial_unpuncture_total_scale` on `U0_set`!
-          have hV_win_hi : ∀ y, V_win y ≠ 0 → y ≤ hi_o := by
-            intro y hy
-            have hsV : Function.support (V_win : ℝ → ℂ) ⊆ Set.Icc lo_o hi_o := by
-              dsimp only [V_win]; rw [principalWindow_support]; exact hs_ob
-            exact (hsV hy).2
-          have hm_top : markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col =
-              fun U_set => primeMark (S_rem \ J) lists_v a U_set *
-                V_win (primeProductNorm p U_set / X_col) := by
-            funext U_set; unfold markedRadial; simp only [Finset.empty_union]
-          have hunp_tot := inputConjugateRow_markedRadial_unpuncture_total_scale p hp hg
-            Finset.univ P_punc Ψ₀ hΨ₀_norm (S_rem \ J) lists_v
-            (fun i hi j hj hij => hdisj_v (Finset.sdiff_subset hi) (Finset.sdiff_subset hj) hij)
-            a (fun i hi => ha_v_norm i (Finset.sdiff_subset hi))
-            Z_slot (fun i _ => hZ_slot_ge1 i)
-            (fun i hi => hZ_lo_v i (Finset.sdiff_subset hi))
-            V_win hV_win_hi (U0_set.image Subtype.val) hB_sup0 hX_col_pos
-            (fun S'' hS'' X₁ hX₁ hX₁_le => by
-              rw [Finset.sum_image (fun _ _ _ _ h => Subtype.ext h)]
-              exact hunpunc S'' hS'' X₁ hX₁ hX₁_le)
-          rw [Finset.sum_image (fun _ _ _ _ h => Subtype.ext h), ← hm_top] at hunp_tot
-          rw [hsum_to_U0]
-          calc X_col * ∑ u₀ ∈ U0_set, X_col⁻¹ *
-                  ‖inputConjugateRow p χ_p (Finset.univ \ P_punc) Ψ₀ 1 1 1
-                    (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) u₀.val‖ ^ 2
-              ≤ X_col * ((1024 : ℝ) ^ P_punc.card * B_sup) :=
-                mul_le_mul_of_nonneg_left hunp_tot hX_col_pos.le
-            _ ≤ X_col * ((C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div) * U ^ (D_dual.t / 4)) * B_sup) :=
-                mul_le_mul_of_nonneg_left
-                  (mul_le_mul_of_nonneg_right hpunc_1024 hB_sup0) hX_col_pos.le
-            _ = B_Afib := by
-                dsimp only [B_Afib, B_sup]
-                have hrp_eq : U ^ (D_dual.t / 4) *
-                    U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t) =
-                    U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + (29 / 4 : ℝ) * D_dual.t) := by
-                  rw [← Real.rpow_add hU_pos]; exact congrArg (fun x : ℝ => U ^ x) (by ring)
-                calc _ = (C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div)) * 4 *
-                          (max C_four₁ C_four₂) * (max C_sf1 C_sf2 + C_coarse_max + 1) *
-                          X_col * (U ^ (D_dual.t / 4) *
-                            U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + 7 * D_dual.t)) *
-                          (tripleHeight (firstDegree deg_cell) z_ht.1 *
-                            coordinateHeight (firstDegree deg_cell) z_ht.2) := by ring
-                  _ = _ := by rw [hrp_eq]
-        -- Sum `B_Afib` over `A_id ∈ A_set` (`#A_set ≤ 512 * U ^ x6`, cancelling `- x6`!)
-        rw [← Finset.sum_fiberwise_of_maps_to (g := fun w : W_ball => (split_w w).2.val)
-          (fun w hw => Finset.mem_image_of_mem _ hw)]
-        calc _ ≤ ∑ _A ∈ A_set, B_Afib := Finset.sum_le_sum hAfib_bound
-          _ = (A_set.card : ℝ) * B_Afib := by rw [Finset.sum_const, nsmul_eq_mul]
-          _ ≤ (512 * U ^ x6) * B_Afib :=
-              mul_le_mul_of_nonneg_right hA_card
-                (mul_nonneg (mul_nonneg
-                  (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg hCdiv10_pos.le (by norm_num))
-                    hCf_max_pos.le) hCsf_sum_pos.le) hX_col_pos.le)
-                  (Real.rpow_nonneg hU_pos.le _)) hw_pos.le)
-          _ = B_shell := by
-              dsimp only [B_Afib, B_shell]
-              have hrp_x6 : U ^ x6 *
-                  U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + (29 / 4 : ℝ) * D_dual.t) =
-                  U ^ (1 - 3 * ell_in - 5 * u_act + pad_T + (29 / 4 : ℝ) * D_dual.t) := by
-                rw [← Real.rpow_add hU_pos]; exact congrArg (fun x : ℝ => U ^ x) (by ring)
-              calc _ = 512 * (C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div)) * 4 *
-                        (max C_four₁ C_four₂) * (max C_sf1 C_sf2 + C_coarse_max + 1) *
-                        X_col * (U ^ x6 *
-                          U ^ (1 - 3 * ell_in - 5 * u_act - x6 + pad_T + (29 / 4 : ℝ) * D_dual.t)) *
-                        (tripleHeight (firstDegree deg_cell) z_ht.1 *
-                          coordinateHeight (firstDegree deg_cell) z_ht.2) := by ring
-                _ = _ := by rw [hrp_x6]
-      -- Sum `B_shell` over `k_idx ∈ K_A_set` (`#K_A_set ≤ C_log * U ^ (D_dual.t / 4)`)!
-      have hW_attach :
-          (∑ w ∈ W_ball,
-            ‖inputConjugateRow p χ_p Finset.univ Ψ₀ (m * d_D) 1 1
-              (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) w‖ ^ 2) =
-          ∑ w : W_ball,
-            ‖inputConjugateRow p χ_p Finset.univ Ψ₀ (m * d_D) 1 1
-              (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) w.val‖ ^ 2 :=
-        (Finset.sum_coe_sort W_ball _).symm
-      rw [hW_attach, ← Finset.sum_fiberwise_of_maps_to (g := k_A)
-        (fun w _ => Finset.mem_image_of_mem k_A (Finset.mem_univ w))]
-      calc _ ≤ ∑ _k ∈ K_A_set, B_shell := Finset.sum_le_sum hshell_bound
-        _ = (K_A_set.card : ℝ) * B_shell := by rw [Finset.sum_const, nsmul_eq_mul]
-        _ ≤ (C_log * U ^ (D_dual.t / 4)) * B_shell :=
-            mul_le_mul_of_nonneg_right hKA_card
-              (mul_nonneg (mul_nonneg
-                (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (by norm_num)
-                  hCdiv10_pos.le) (by norm_num)) hCf_max_pos.le) hCsf_sum_pos.le) hX_col_pos.le)
-                (Real.rpow_nonneg hU_pos.le _)) hw_pos.le)
-        _ = _ := by
-            dsimp only [B_shell]
-            have hrp_k : U ^ (D_dual.t / 4) *
-                U ^ (1 - 3 * ell_in - 5 * u_act + pad_T + (29 / 4 : ℝ) * D_dual.t) =
-                U ^ (1 - 3 * ell_in - 5 * u_act + pad_T + (15 / 2 : ℝ) * D_dual.t) := by
-              rw [← Real.rpow_add hU_pos]; exact congrArg (fun x : ℝ => U ^ x) (by ring)
-            calc _ = (C_log * 512 * (C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div)) * 4 *
-                      (max C_four₁ C_four₂) * (max C_sf1 C_sf2 + C_coarse_max + 1)) *
-                      X_col * (U ^ (D_dual.t / 4) *
-                        U ^ (1 - 3 * ell_in - 5 * u_act + pad_T + (29 / 4 : ℝ) * D_dual.t)) *
-                      (tripleHeight (firstDegree deg_cell) z_ht.1 *
-                        coordinateHeight (firstDegree deg_cell) z_ht.2) := by ring
-              _ = _ := by rw [hrp_k]
-    -- Assemble `hz0_sum_le` and `hnz_sum_le` via `cell_J_z0_and_gcd_fiber_bound`!
-    let K_W_val : ℝ :=
-      (C_log * 512 * (C_div ^ 10 * (2 : ℝ) ^ (10 * ε_div)) * 4 *
-        (max C_four₁ C_four₂) * (max C_sf1 C_sf2 + C_coarse_max + 1)) *
-      X_col * U ^ (1 - 3 * ell_in - 5 * u_act + pad_T + (15 / 2 : ℝ) * D_dual.t) *
-      (tripleHeight (firstDegree deg_cell) z_ht.1 * coordinateHeight (firstDegree deg_cell) z_ht.2)
-    have hKW_val_nn : 0 ≤ K_W_val :=
-      mul_nonneg
-        (mul_nonneg
-          (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg
-            (mul_nonneg hC_log.le (by norm_num)) hCdiv10_pos.le) (by norm_num))
-            hCf_max_pos.le) hCsf_sum_pos.le) hX_col_pos.le)
-          (Real.rpow_nonneg hU_pos.le _))
-        hw_pos.le
+            (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col) w‖ ^ 2) ≤ K_W_val := by
+      intro D_q hDq_norm
+      dsimp only [V_win, omega_b, W_ball]
+      cases negative
+      · simp only [Bool.false_eq_true, ite_false]
+        have hDp2 : B_p2 * U ^ (Lcap + 2) ≤ (Dpool : ℝ) :=
+          (mul_le_mul_of_nonneg_right (le_max_right B_p1 B_p2) (Real.rpow_nonneg hU_pos.le _)).trans hDpool
+        have hζ2 : |ζ_base.im| ≤ (3 / 4 : ℝ) * Z_dual ^ τ_d2 :=
+          hζ_im.trans (mul_le_mul_of_nonneg_left
+            (Real.rpow_le_rpow_of_exponent_le hZd_ge1 (min_le_right _ _)) (by norm_num))
+        have hb2 := hW2 U ((le_max_right _ _).trans hU) h2_η Dpool hDp2
+          hd_lo hd_hi hr0 hr1 hθ0 hθ1 hell0 hell1 hJv0 hJv hV0 hpad0 hBc_0 htq_0 htq_hi
+          hrn_hi hX_col_eq S_rem J hJ_sub hzJ_act_le hz_Srem hFp_r hlarge_Z
+          lists_full lists_v hlists_full hlists_v hcard_diff hdisj_v
+          ζ_base hζ_re hζ2 a ha_eq hlists_v_b Ψ₀ hΨ₀_base hΨ₀_norm m hm_ne hm_norm t_ht D_q hDq_norm
+        have hdeg2 : (1 + ‖t_ht‖) ^ (2 * deg_w2) ≤
+            tripleHeight (firstDegree deg_cell) z_ht.1 * coordinateHeight (firstDegree deg_cell) z_ht.2 :=
+          (pow_le_pow_right₀ (add_nonneg zero_le_one (norm_nonneg t_ht))
+            (Nat.mul_le_mul_left 2 (le_max_right deg_w1 deg_w2))).trans hht_deg
+        refine hb2.trans ?_; dsimp only [K_W_val]
+        exact mul_le_mul
+          (mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_right (le_max_right C_W1 C_W2) hX_col_pos.le)
+            (Real.rpow_nonneg hU_pos.le _))
+          hdeg2 (pow_nonneg (add_nonneg zero_le_one (norm_nonneg t_ht)) _)
+          (mul_nonneg (mul_nonneg hCW_max_pos.le hX_col_pos.le) (Real.rpow_nonneg hU_pos.le _))
+      · simp only [ite_true]
+        have hDp1 : B_p1 * U ^ (Lcap + 2) ≤ (Dpool : ℝ) :=
+          (mul_le_mul_of_nonneg_right (le_max_left B_p1 B_p2) (Real.rpow_nonneg hU_pos.le _)).trans hDpool
+        have hζ1 : |ζ_base.im| ≤ (3 / 4 : ℝ) * Z_dual ^ τ_d1 :=
+          hζ_im.trans (mul_le_mul_of_nonneg_left
+            (Real.rpow_le_rpow_of_exponent_le hZd_ge1 (min_le_left _ _)) (by norm_num))
+        have hb1 := hW1 U ((le_max_left _ _).trans hU) h2_η Dpool hDp1
+          hd_lo hd_hi hr0 hr1 hθ0 hθ1 hell0 hell1 hJv0 hJv hV0 hpad0 hBc_0 htq_0 htq_hi
+          hrn_hi hX_col_eq S_rem J hJ_sub hzJ_act_le hz_Srem hFp_r hlarge_Z
+          lists_full lists_v hlists_full hlists_v hcard_diff hdisj_v
+          ζ_base hζ_re hζ1 a ha_eq hlists_v_b Ψ₀ hΨ₀_base hΨ₀_norm m hm_ne hm_norm t_ht D_q hDq_norm
+        have hdeg1 : (1 + ‖t_ht‖) ^ (2 * deg_w1) ≤
+            tripleHeight (firstDegree deg_cell) z_ht.1 * coordinateHeight (firstDegree deg_cell) z_ht.2 :=
+          (pow_le_pow_right₀ (add_nonneg zero_le_one (norm_nonneg t_ht))
+            (Nat.mul_le_mul_left 2 (le_max_left deg_w1 deg_w2))).trans hht_deg
+        refine hb1.trans ?_; dsimp only [K_W_val]
+        exact mul_le_mul
+          (mul_le_mul_of_nonneg_right
+            (mul_le_mul_of_nonneg_right (le_max_left C_W1 C_W2) hX_col_pos.le)
+            (Real.rpow_nonneg hU_pos.le _))
+          hdeg1 (pow_nonneg (add_nonneg zero_le_one (norm_nonneg t_ht)) _)
+          (mul_nonneg (mul_nonneg hCW_max_pos.le hX_col_pos.le) (Real.rpow_nonneg hU_pos.le _))
     have hcell_data_J : ∀ x ∈ cell_J,
         x.firstDivisor ⊆ x.firstCommon ∧
         primeProductNorm p x.firstCommon ≤ U ^ (B_c + η) ∧
@@ -4360,7 +4059,6 @@ theorem dual_qzero_cell_energy
                   (Real.rpow_le_rpow_of_exponent_le hU1.le hexp_nz)
                   (mul_nonneg hChit_pos.le hCnz_pos.le))
                 hw_pos.le
-    -- Sum `hz0_sum_le` and `hnz_sum_le`!
     have hcb_pos := coefficientBound_pos
     calc pref_U * _
         ≤ pref_U * (coefficientBound * ∑ x ∈ cell_J,
@@ -4386,12 +4084,10 @@ theorem dual_qzero_cell_energy
                   (m * ∏ i ∈ x.quotientSupport, p i) 1 1
                   (markedRadial p (S_rem \ J) lists_v a ∅ V_win X_col)
                   (gcdElement p x.firstCommon x.firstDivisor * z)‖ ^ 2) := by
-          simp_rw [mul_add, Finset.sum_add_distrib, mul_add]
-          ring
+          simp_rw [mul_add, Finset.sum_add_distrib, mul_add]; ring
       _ ≤ coefficientBound * (C_hit * C_z0_part * E_target + C_hit * C_nz_part * E_target) :=
           mul_le_mul_of_nonneg_left (add_le_add hz0_sum_le hnz_sum_le) hcb_pos.le
       _ = coefficientBound * C_hit * (C_z0_part + C_nz_part) * E_target := by ring
-  -- Sum `hslice_bound` over `ray`, `core`, and `J ∈ S_rem.powerset` inside `globalPriorityOriginalEnergy`!
   have hcb_pos := coefficientBound_pos
   let B_slice : ℝ := coefficientBound * C_hit * (C_z0_part + C_nz_part) * E_target
   have hB_slice_nn : 0 ≤ B_slice :=
@@ -4408,19 +4104,15 @@ theorem dual_qzero_cell_energy
   change pref_U * (firstCoreMassBound * (2 : ℝ) ^ S_rem.card * S_inner) ≤ _
   have h2S_le : (2 : ℝ) ^ S_rem.card ≤ (2 : ℝ) ^ D.N := pow_le_pow_right₀ one_le_two hSrem_card
   have hpow_card : (S_rem.powerset.card : ℝ) ≤ (2 : ℝ) ^ D.N := by
-    rw [Finset.card_powerset, Nat.cast_pow, Nat.cast_ofNat]
-    exact h2S_le
+    rw [Finset.card_powerset, Nat.cast_pow, Nat.cast_ofNat]; exact h2S_le
   have hmc_le : firstCoreMassBound ≤ firstCoreMassBound + 1 := by linarith only []
   have hsum_rcJ : pref_U * S_inner ≤ N_ray_core * B_slice := by
-    dsimp only [S_inner]
-    rw [Finset.mul_sum]
+    dsimp only [S_inner]; rw [Finset.mul_sum]
     calc _ ≤ ∑ _ray : RayCharacter × RayCharacter,
               ((Fintype.card FirstCoreIndex : ℝ) * (2 : ℝ) ^ D.N * B_slice) := by
-            apply Finset.sum_le_sum; intro ray _
-            rw [Finset.mul_sum]
+            apply Finset.sum_le_sum; intro ray _; rw [Finset.mul_sum]
             calc _ ≤ ∑ _core : FirstCoreIndex, ((2 : ℝ) ^ D.N * B_slice) := by
-                    apply Finset.sum_le_sum; intro core _
-                    rw [Finset.mul_sum]
+                    apply Finset.sum_le_sum; intro core _; rw [Finset.mul_sum]
                     calc _ ≤ ∑ _J ∈ S_rem.powerset, B_slice :=
                             Finset.sum_le_sum (hslice_bound ray core)
                       _ = (S_rem.powerset.card : ℝ) * B_slice := by
@@ -4428,30 +4120,25 @@ theorem dual_qzero_cell_energy
                       _ ≤ _ := mul_le_mul_of_nonneg_right hpow_card hB_slice_nn
               _ = _ := by rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_assoc]
       _ = _ := by
-          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-          dsimp only [N_ray_core]; ring
+          rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]; dsimp only [N_ray_core]; ring
   calc pref_U * (firstCoreMassBound * (2 : ℝ) ^ S_rem.card * S_inner)
       = firstCoreMassBound * (2 : ℝ) ^ S_rem.card * (pref_U * S_inner) := by ring
     _ ≤ (firstCoreMassBound + 1) * (2 : ℝ) ^ D.N * (N_ray_core * B_slice) := by
         have h1 : firstCoreMassBound * (2 : ℝ) ^ S_rem.card ≤
             (firstCoreMassBound + 1) * (2 : ℝ) ^ D.N :=
-          mul_le_mul hmc_le h2S_le (by positivity)
-            (by linarith [firstCoreMassBound_nonneg])
+          mul_le_mul hmc_le h2S_le (pow_nonneg zero_le_two _)
+            (add_nonneg firstCoreMassBound_nonneg zero_le_one)
         by_cases hneg_s : pref_U * S_inner ≤ 0
-        · have hnonpos : firstCoreMassBound * (2 : ℝ) ^ S_rem.card * (pref_U * S_inner) ≤ 0 :=
-            mul_nonpos_of_nonneg_of_nonpos
-              (mul_nonneg firstCoreMassBound_nonneg (by positivity)) hneg_s
-          exact hnonpos.trans (mul_nonneg
-            (mul_nonneg (by linarith [firstCoreMassBound_nonneg]) (by positivity))
-            (mul_nonneg hNrc_nn hB_slice_nn))
+        · exact (mul_nonpos_of_nonneg_of_nonpos
+            (mul_nonneg firstCoreMassBound_nonneg (pow_nonneg zero_le_two _)) hneg_s).trans
+            (mul_nonneg (mul_nonneg (add_nonneg firstCoreMassBound_nonneg zero_le_one) (pow_nonneg zero_le_two _))
+              (mul_nonneg hNrc_nn hB_slice_nn))
         · exact mul_le_mul h1 hsum_rcJ (le_of_not_ge hneg_s)
-            (mul_nonneg (by linarith [firstCoreMassBound_nonneg]) (by positivity))
-    _ = C_outer * (C_z0_part + C_nz_part) * E_target := by
-        dsimp only [C_outer, B_slice]; ring
+            (mul_nonneg (add_nonneg firstCoreMassBound_nonneg zero_le_one) (pow_nonneg zero_le_two _))
+    _ = C_outer * (C_z0_part + C_nz_part) * E_target := by dsimp only [C_outer, B_slice]; ring
     _ ≤ C_cell * U ^ (F_p + 45 * η + 3 * τ + pad_T + 8 * D_dual.t) *
           (tripleHeight (firstDegree deg_cell) z_ht.1 * coordinateHeight (firstDegree deg_cell) z_ht.2) := by
-        dsimp only [C_cell, E_target]
-        rw [← mul_assoc]
+        dsimp only [C_cell, E_target]; rw [← mul_assoc]
         exact mul_le_mul_of_nonneg_right
           (mul_le_mul_of_nonneg_right (by linarith only []) (Real.rpow_nonneg hU_pos.le _))
           hw_pos.le
@@ -4461,6 +4148,3 @@ end DualQZeroCellEnergy
 end Stage1CoreColumnEnergy
 
 end GaloisForLFunctions.MetaplecticMobiusDescent.CubicEisenstein
-
-
-

@@ -18,7 +18,6 @@ private theorem inverse_height (k h : ℕ) :
     rw [one_div_pow,pow_add]
     norm_num only [Nat.reducePow,one_div]
     field_simp
-    ring
   change (prefixModeAmplitude k*((((2^(k+2)*(h+1)*(1+P):ℕ):ℝ))⁻¹)^L)⁻¹=
     (prefixModeAmplitude k*(prefixStripRatio k count)^L)⁻¹*(4*((h:ℝ)+1))^L
   rw [he]

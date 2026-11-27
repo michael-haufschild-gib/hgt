@@ -15,21 +15,10 @@ theorem windowLength_bound : ∃ c : ℕ, ∀ k : ℕ, windowLength k ≤ (2:ℝ
   have hh : PolynomialInDimension h := PolynomialInDimension.dim.mono (fun k =>
     Nat.pow_le_pow_right (by decide) (by omega : k+1 ≤ k+3))
   have hq : PolynomialInDimension q := (PolynomialInDimension.const 2).mul hh
-  have ha := (LogPolynomialInDimension.const 4).mul (LogPolynomialInDimension.natCast hh)
   have hb := inverse_height_log_polynomial q (LogPolynomialInDimension.natCast hq)
   apply LogPolynomialInDimension.bound
-  apply (ha.mul hb).mono
-  · intro k
-    exact div_nonneg (mul_nonneg (by norm_num) (Real.sqrt_nonneg _)) (effectiveGap_pos k (q k)).le
-  · intro k
-    change 4*Real.sqrt (h k:ℝ)/effectiveGap k (q k) ≤ (4*(h k:ℝ))*(heightMargin k (q k))⁻¹
-    have h₁ : 1 ≤ (h k:ℝ) := by exact_mod_cast (Nat.one_le_two_pow : 1 ≤ 2^(k+1))
-    have hs := (Real.sqrt_le_iff).mpr ⟨(Nat.cast_nonneg (h k)),
-      by nlinarith only [h₁,mul_nonneg (sub_nonneg.mpr h₁) (Nat.cast_nonneg (h k))]⟩
-    rw [div_eq_mul_inv]
-    exact mul_le_mul (mul_le_mul_of_nonneg_left hs (by norm_num))
-      (inv_anti₀ (heightMargin_pos k (q k)) (le_max_right ..))
-      (inv_nonneg.mpr (effectiveGap_pos k (q k)).le) (by positivity)
+  exact hb.mono (fun k => (inv_pos.mpr (effectiveGap_pos k (q k))).le)
+    (fun k => inv_anti₀ (heightMargin_pos k (q k)) (le_max_right ..))
 
 /-- On one frozen Gaussian chain, each sufficiently large prefix has an
 absolute record length valid for every origin and every error through 39/80. -/
@@ -47,7 +36,7 @@ theorem gaussian_absolute_nearHilbert_window :
   filter_upwards [h] with ω hw
   filter_upwards [hw] with k hk
   intro K D u H ε hε o T hT
-  exact hk ε hε o T ((hc k).trans hT)
+  exact hk ε hε o T ((sampleLength_le k _).trans ((hc k).trans hT))
 
 #print axioms gaussian_absolute_nearHilbert_window
 end

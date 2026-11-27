@@ -14,6 +14,11 @@ namespace WindowedLandauTheory.MainNotions.N
 variable {R : Ranks} {H : Host R} {what₂ : Rows.Data R}
 variable (N : NData R H what₂) (A : NAut N)
 
+theorem length_range_coe_real (d : ℕ) :
+    ((List.range d : List ℕ) : List ℝ).length = d := by
+  change ((List.range d).flatMap (pure ∘ fun k : ℕ => (k : ℝ))).length = d
+  rw [List.flatMap_pure_eq_map, List.length_map, List.length_range]
+
 theorem lpDim_spehLoc (p : Part A.CG) (w : PlE H) :
     A.lpDim (spehLoc N A p w) = p.a * p.d := by
   have h (L : List ℝ) :
@@ -25,10 +30,7 @@ theorem lpDim_spehLoc (p : Part A.CG) (w : PlE H) :
     | cons k L ih =>
       rw [List.foldr_cons, A.lpDim_sum, A.lpDim_tw, A.locG_dim, ih, List.length_cons,
         Nat.mul_succ, Nat.add_comm]
-  have hlen : ((List.range p.d : List ℕ) : List ℝ).length = p.d := by
-    change ((List.range p.d).flatMap (pure ∘ fun k : ℕ => (k : ℝ))).length = p.d
-    rw [List.flatMap_pure_eq_map, List.length_map, List.length_range]
-  rw [spehLoc, h, hlen]
+  rw [spehLoc, h, length_range_coe_real]
 
 theorem lpDim_isoLoc (P : List (Part A.CG)) (w : PlE H) :
     A.lpDim (isoLoc N A P w) = rankIso N A P := by
@@ -60,6 +62,14 @@ private theorem isSplitPl_of_not_isConjPl {R : Ranks} {H : Host R}
   have hy' : y = c x := RingOfIntegers.ext hy
   rw [hy', ← Ideal.mem_comap, ← he]
 
+/-- At a designated place an isobaric realization gives the row's inertia label. -/
+theorem items₂_isoLoc_eq_lab_of_hasParamW (D : D7) (i : D.nd.Loc) (σ : D.what₂.FT)
+    (P : List (Part D.naut.CG)) (hP : HasParamW D.nd D.naut i σ P)
+    (k : Fin 2) (v : D.nd.PlG k) :
+    D.naut.items₂ k (D.naut.plGw k v) (isoLoc D.nd D.naut P (D.naut.plGw k v)) =
+      D.nd.lab k σ v := by
+  rw [hP.2.2 _ (isSplitPl_of_not_isConjPl _ (D.naut.plGw_nconj k v v)), ← D.naut.lab_loc i]
+
 /-- The local type matches at all designated places of a regular isobaric
 parameter, so its polynomials have the degree and monicity of the row labels. -/
 theorem exists_parC_of_hasParamW (D : D7) (i : D.nd.Loc) (σ : D.what₂.FT)
@@ -69,10 +79,7 @@ theorem exists_parC_of_hasParamW (D : D7) (i : D.nd.Loc) (σ : D.what₂.FT)
     ∃ Q : ParC D, Q.val = P ∧ ∀ k v,
       D.naut.items₂ k (D.naut.plGw k v) (isoLoc D.nd D.naut Q.val (D.naut.plGw k v)) =
         D.nd.lab k σ v := by
-  have h (k : Fin 2) (v : D.nd.PlG k) :
-      D.naut.items₂ k (D.naut.plGw k v) (isoLoc D.nd D.naut P (D.naut.plGw k v)) =
-        D.nd.lab k σ v := by
-    rw [hP.2.2 _ (isSplitPl_of_not_isConjPl _ (D.naut.plGw_nconj k v v)), ← D.naut.lab_loc i]
+  have h := items₂_isoLoc_eq_lab_of_hasParamW D i σ P hP
   refine ⟨⟨P, ?_⟩, rfl, h⟩
   refine ⟨fun p hp => ⟨(hP.1 p hp).1, (hP.1 p hp).2, hcsd p hp⟩, hnd, hP.2.1, fun k v => ?_⟩
   exact (h k v).symm ▸ D.nd.lab_monic k σ v
