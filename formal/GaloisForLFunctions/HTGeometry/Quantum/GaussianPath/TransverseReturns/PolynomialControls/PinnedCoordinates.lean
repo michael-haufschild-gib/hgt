@@ -9,13 +9,13 @@ noncomputable section
 the coordinates in S leaves only D−2−|S| residual coordinates to resolve
 at the fine precision. -/
 theorem pinned_coordinates {I : Type*} [Fintype I] [DecidableEq I]
-    (S : Finset I) (a b : I) (hab : a≠b) (ha : a∉S) (hb : b∉S)
+    (S : Finset I) (a b : I) (hab : a ≠ b) (ha : a ∉ S) (hb : b ∉ S)
     (X : I → ℝ) (xa xb : ℤ) (hxa : X a=xa) (hxb : X b=xb)
     (G : S → I → ℝ) (hga : ∀ j, G j a=0) (hgb : ∀ j, G j b=0)
     (hg : ∀ j i : S, G j i=if j=i then 1 else 0)
-    {m n : ℕ} (hm : 0<m) (hn : 0<n) :
-    ∃ q : ℕ, 0<q ∧ q≤m^S.card*n^(Fintype.card I-2-S.card) ∧
-      ∃ d : S → ℝ, (∀ j, |d j|<1/(m:ℝ)) ∧
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    ∃ q : ℕ, 0 < q ∧ q ≤ m^S.card*n^(Fintype.card I-2-S.card) ∧
+      ∃ d : S → ℝ, (∀ j, |d j| < 1/(m:ℝ)) ∧
         ∀ i, latticeClose ((q:ℝ)*X i-∑ j:S, G j i*d j) (1/(n:ℝ)) := by
   classical
   let A := (univ.erase a).erase b
@@ -32,7 +32,7 @@ theorem pinned_coordinates {I : Type*} [Fintype I] [DecidableEq I]
     (fun i j => G j i) hm hn
   refine ⟨q,hq,by simpa only [Fintype.card_coe S,hdim] using hbound,d,fun j => (hd j).1,?_⟩
   intro i
-  have hpos : 0<1/(n:ℝ) := one_div_pos.mpr (Nat.cast_pos.mpr hn)
+  have hpos : 0 < 1/(n:ℝ) := one_div_pos.mpr (Nat.cast_pos.mpr hn)
   have anchor (z : ℤ) (hx : X i=z) (hzero : ∀ j, G j i=0) :
       latticeClose ((q:ℝ)*X i-∑ j:S, G j i*d j) (1/(n:ℝ)) := by
     refine ⟨(q:ℤ)*z,?_⟩
@@ -42,7 +42,7 @@ theorem pinned_coordinates {I : Type*} [Fintype I] [DecidableEq I]
   · subst i; exact anchor xa hxa hga
   by_cases hib : i=b
   · subst i; exact anchor xb hxb hgb
-  by_cases hi : i∈S
+  by_cases hi : i ∈ S
   · let k : S := ⟨i,hi⟩
     obtain ⟨z,hz⟩ := (hd k).2
     have hsum : (∑ j:S, G j i*d j)=d k := by

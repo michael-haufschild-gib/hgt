@@ -1,5 +1,5 @@
 import GaloisForLFunctions.MetaplecticMobiusDescent.Detector.SubFarkasSelectedInverseMoments
-import GaloisForLFunctions.MetaplecticMobiusDescent.Detector.SubFarkasLowProbe
+import GaloisForLFunctions.MetaplecticMobiusDescent.Detector.SubFarkasLowProbeAligned
 import GaloisForLFunctions.MetaplecticMobiusDescent.Detector.SubFarkasPrincipalComparison
 
 /-!
@@ -41,7 +41,6 @@ open PrincipalMellinResidues PrincipalSignalComparison ProbePrincipalResidueActu
 open HeckeDetectorPhysicalSelection HeckeDetectorAmplitudeFirst HeckeDetectorFiberPartition
 open HeckeDetectorAdaptiveCutoff
 open SubSevenEighthsHighTransport Stage1DualSixthFreeEnergy SubFarkasSelectedInverseMoments
-open SubFarkasSignalComparison
 open GaloisForLFunctions.FamilyContinuationTheory
 
 local notation "O" => Eisenstein.O
@@ -796,9 +795,9 @@ lemma subFarkas_nonfloor_low_dyad_exponent_bound (D : HighData subDelta)
     dsimp [δ, d_Z]; unfold Budget.rowExponent; ring
   have hcert : Budget.rowExponent (17 / 48) (2299 / 4800) (801 / 4800)
       (16799 / 19200) (17 / 50) δ q R₀ d_Z ≤ -(1 / 25) := by
-    dsimp [R₀]; split_ifs with hδ56
+    dsimp only [R₀]; split_ifs with hδ56
     · have h78 := Budget.rowExponent_balanced_subSevenEighths hδ0 hδ56 hx0 hx le_rfl
-        (le_rfl : (1219 / 1500 : ℝ) ≤ 1219 / 1500 + 0)
+        (add_zero (1219 / 1500 : ℝ)).symm.le
       have hsl := Budget.rowCount_slope_bounds hδ0 hδ56 hx0 hx
       rw [← hxd]
       have hdiff : Budget.rowExponent (17 / 48) (2299 / 4800) (801 / 4800)
@@ -806,15 +805,15 @@ lemma subFarkas_nonfloor_low_dyad_exponent_bound (D : HighData subDelta)
           Budget.rowExponent (17 / 48) (479 / 1000) (1001 / 6000)
             (20999 / 24000) (17 / 50) δ (x * δ) (Budget.rowCount δ x) (1219 / 1500) =
           (d_Z - 1219 / 1500) * (Budget.rowCount δ x + δ / 2 - 17 / 50) +
-          (1 / 19200 + (1 / 4800) * δ + (1 / 36000) * (x * δ)) := by
+          (127 / 7200000 + (1 / 48000) * δ + (1 / 24000) * (x * δ)) := by
         unfold Budget.rowExponent; ring
       have hdrop : (d_Z - 1219 / 1500) * (Budget.rowCount δ x + δ / 2 - 17 / 50) ≤ -(1 / 20) := by
-        nlinarith [hd_Z_hi, hsl.1, hsl.2]
-      have hxd_le : x * δ ≤ 1 / 2 := by nlinarith [hx, hδ1, hx0, hδ0]
-      linarith
-    · have hhi := Budget.rowExponent_high_delta_sub16799 (le_of_not_ge hδ56) hδ1 hq zero_le_one
-        (by linarith [hd_Z_hi] : d_Z ≤ 3901 / 4800 + 0)
-      linarith
+        nlinarith only [hd_Z_hi, hsl.1, hsl.2]
+      have hxd_le : x * δ ≤ 1 / 2 := by nlinarith only [hx, hδ1, hx0, hδ0]
+      linarith only [h78, hdiff, hdrop, hδ0, hδ1, hx0, hxd_le]
+    · have hhi := Budget.rowExponent_high_delta_sub16799 (le_of_not_ge hδ56) hδ1 hq
+        (le_rfl : (0 : ℝ) ≤ 0) (by linarith only [hd_Z_hi] : d_Z ≤ 3901 / 4800 + 0)
+      linarith only [hhi]
   have hv_err : v' * (12 * D.e + D.eps * ((D.N : ℝ) + 8)) ≤
       (1 : ℝ) * (12 * D.e + ((D.N : ℝ) + 8) * D.eps) := by
     have hv1 : v' ≤ 1 := by linarith
@@ -867,16 +866,19 @@ lemma subFarkas_nonfloor_high_dyad_exponent_bound (D : HighData subDelta)
     · have := subDelta_pos; linarith [D.epsilon_pos, D.t_pos]
   have hd_adapt : d' * adaptiveRowExponentSub16799 δ q subDelta D.ε (15 * D.t) D.t D.t ≤
       v' * R₁ + 2 * D.t * 4 + (5 / 6) * (subDelta / 4 + 159 * D.ε + 23 * D.t) := by
-    have h1 := mul_le_mul_of_nonneg_left hadapt (by linarith [hd'0])
+    have h1 := mul_le_mul_of_nonneg_left hadapt ((by norm_num : (0 : ℝ) ≤ 1 / 2).trans hd'0)
     have h2 : d' * R₁ ≤ v' * R₁ + 2 * D.t * 4 := by
       rcases le_total d' v' with hle | hle
-      · have : d' * R₁ ≤ v' * R₁ := mul_le_mul_of_nonneg_right hle hR₁_bounds.1
-        linarith [D.t_pos]
-      · nlinarith [hR₁_bounds.1, hR₁_bounds.2, hdv]
+      · have hle_m : d' * R₁ ≤ v' * R₁ := mul_le_mul_of_nonneg_right hle hR₁_bounds.1
+        have ht0 := D.t_pos
+        linarith only [hle_m, ht0]
+      · nlinarith only [hle, hR₁_bounds.1, hR₁_bounds.2, hdv]
     have h3 : d' * (subDelta / 4 + 159 * D.ε + 23 * D.t) ≤
         (5 / 6) * (subDelta / 4 + 159 * D.ε + 23 * D.t) :=
-      mul_le_mul_of_nonneg_right hd'hi (by have := subDelta_pos; linarith [D.epsilon_pos, D.t_pos])
-    linarith
+      mul_le_mul_of_nonneg_right hd'hi (by
+        have hsd := subDelta_pos; have he0 := D.epsilon_pos; have ht0 := D.t_pos
+        linarith only [hsd, he0, ht0])
+    linarith only [h1, h2, h3]
   have hmain_id : ((4 / 25 : ℝ) * (17 / 48) + (a - 33 / 50) - (2299 / 4800 : ℝ) * a) +
       (801 / 800 : ℝ) * (v' * R₁ + v' * (a - 1 / 2 - 17 / 50) - 2 / 75 + q / 6) =
       10799 / 57600 + Budget.rowExponent (17 / 48) (2299 / 4800) (801 / 4800)
@@ -1028,7 +1030,11 @@ theorem subFarkas_nonfloor_rows_saving (D : HighData subDelta)
       (slotMass T (residueWeights (fun _ => F.w) Yp)) : ℂ)
   let CellBound : ℝ := (Cp * cardCost * Cc * Cn) * C0 * (η.modulus.absNorm : ℝ) ^ (2 * D.eps) *
     Z ^ (10799 / 57600 - 1 / 100000 - D.t / 8 : ℝ)
-  have hCellBound : 0 ≤ CellBound := by dsimp [CellBound]; positivity
+  have hCellBound : 0 ≤ CellBound := by
+    dsimp only [CellBound]
+    exact mul_nonneg
+      (mul_nonneg (mul_nonneg (by positivity) hC0) (Real.rpow_nonneg (Nat.cast_nonneg _) _))
+      (Real.rpow_nonneg hZp.le _)
   let FC : Finset FreeRow → (FreeRow → ℝ) → (FreeRow → ℝ) → ℂ := fun R a H =>
     finiteCentralCubeRows F.S F.exclusions F.maximal η R T hT WC Yp F.W F.W
       (Z ^ (17 / 48 : ℝ)) (Z ^ (2299 / 4800 : ℝ)) Z D.e a H
@@ -1050,21 +1056,22 @@ theorem subFarkas_nonfloor_rows_saving (D : HighData subDelta)
       let a : ℝ := 51 / 100 + D.e * j
       have ha : 51 / 100 < a := by
         have hjp : (0 : ℝ) < j := by exact_mod_cast Nat.pos_of_ne_zero hju
-        dsimp [a]; nlinarith [D.e_pos]
-      have ha' : a ≤ 1 := by dsimp [a]; simpa only [hu0j] using (hlabels u0 (hsub hu0)).2.2.2
+        have he0 := D.e_pos
+        dsimp only [a]; nlinarith only [hjp, he0]
+      have ha' : a ≤ 1 := by dsimp only [a]; simpa only [hu0j] using (hlabels u0 (hsub hu0)).2.2.2
       have hi_le : i ≤ n := Nat.le_of_lt_succ (Finset.mem_range.mp hi)
       have hnext' : ∀ u ∈ Rij, detectorMaximum
           (sourceDetectorFamily F.S F.exclusions.prime η u (rayCubeFamily F.modulus ⊤ le_top u))
           (3 * (i + 1 : ℕ) * Z' ^ τ) < a + 2 * D.e := fun u hu => by
         have hh := hnext u (hsub hu)
         have hm' := (mem_cubeBinRows Rk idx grid i j u).mp hu
-        dsimp [a]; rwa [hm'.2.1, hm'.2.2] at hh
+        dsimp only [a]; rwa [hm'.2.1, hm'.2.2] at hh
       have hcurrent' : ∀ u ∈ Rij, a ≤ detectorMaximum
           (sourceDetectorFamily F.S F.exclusions.prime η u (rayCubeFamily F.modulus ⊤ le_top u))
           ((3 * i : ℕ) * Z' ^ τ) := fun u hu => by
         have hh := hcurrent u (hsub hu)
         have hm' := (mem_cubeBinRows Rk idx grid i j u).mp hu
-        dsimp [a]; rwa [hm'.2.1, hm'.2.2] at hh
+        dsimp only [a]; rwa [hm'.2.1, hm'.2.2] at hh
       let d' : ℝ := sourceDyadConductor Z' D.t k
       let v' : ℝ := sourceDyadExponent Z' k
       have hrows_Rij : ∀ u ∈ Rij, u.val ≠ 1 ∧ Z' ^ (1 / 100 : ℝ) ≤ rowNorm u ∧
@@ -1076,33 +1083,57 @@ theorem subFarkas_nonfloor_rows_saving (D : HighData subDelta)
         fun u hu => hg.2.2.2.2.1 u (hsubk hu)
       have hh_le : (3 * i + 1 : ℕ) * Z' ^ τ ≤ Z' ^ (2 * τ) := by
         have hi_real : (i : ℝ) ≤ n := by exact_mod_cast hi_le
-        calc _ ≤ (3 * (n : ℝ) + 1) * Z' ^ τ := by push_cast; gcongr
-          _ ≤ Z' ^ τ * Z' ^ τ := mul_le_mul_of_nonneg_right hnheight (by positivity)
+        calc _ ≤ (3 * (n : ℝ) + 1) * Z' ^ τ := by
+                push_cast
+                exact mul_le_mul_of_nonneg_right (by linarith only [hi_real]) (Real.rpow_nonneg hZ'p.le _)
+          _ ≤ Z' ^ τ * Z' ^ τ := mul_le_mul_of_nonneg_right hnheight (Real.rpow_nonneg hZ'p.le _)
           _ = Z' ^ (2 * τ) := by rw [← Real.rpow_add hZ'p]; congr 1; ring
       let scale_a : ℝ := (Z ^ (17 / 48 : ℝ)) ^ (4 / 25 : ℝ) *
         Z ^ (a + 16 * D.e - 33 / 50) * (Z ^ (2299 / 4800 : ℝ)) ^ (-a - 6 * D.e)
-      have hscale_pos : 0 < scale_a := by dsimp [scale_a]; positivity
+      have hscale_pos : 0 < scale_a := by
+        dsimp only [scale_a]
+        exact mul_pos (mul_pos (Real.rpow_pos_of_pos (Real.rpow_pos_of_pos hZp _) _)
+          (Real.rpow_pos_of_pos hZp _)) (Real.rpow_pos_of_pos (Real.rpow_pos_of_pos hZp _) _)
       let A_arith : ℝ := cardCost * Cc * C0 * (η.modulus.absNorm : ℝ) ^ (2 * D.eps) *
         Z ^ (10799 / 57600 - 1 / 100000 - D.t / 8 - D.t / 8 : ℝ) / scale_a
-      have hA_arith : 0 ≤ A_arith := by dsimp [A_arith]; positivity
+      have hA_arith : 0 ≤ A_arith := by
+        dsimp only [A_arith]
+        exact div_nonneg
+          (mul_nonneg (mul_nonneg (mul_nonneg (mul_nonneg hcardCost.le hCc.le) hC0)
+            (Real.rpow_nonneg (Nat.cast_nonneg _) _)) (Real.rpow_nonneg hZp.le _))
+          hscale_pos.le
       have harith_Rij : ∀ t : HeightSpace,
           ((|t.1.1| ≤ (3 * i + 1 : ℕ) * Z' ^ τ ∧ |t.2| ≤ (3 * i + 1 : ℕ) * Z' ^ τ) ∧
             |t.1.2| ≤ (3 * i + 1 : ℕ) * Z' ^ τ) →
           ‖cubeArithmeticSum F.S F.exclusions F.maximal η Rij T hT WC Yp a D.e t‖ ≤ A_arith := by
         intro t ht
         let z : ℂ := (17 / 50 : ℂ) + t.1.2 * Complex.I
+        have hz_re : z.re = 17 / 50 := by
+          dsimp only [z]
+          norm_num [Complex.add_re, Complex.mul_re]
+        have hz_im : |z.im| ≤ Z' ^ (2 * τ) := by
+          have him : z.im = t.1.2 := by
+            dsimp only [z]
+            norm_num [Complex.add_im, Complex.mul_im]
+          rw [him]
+          exact ht.2.trans hh_le
         let Q := physical F.modulus ⊤ (fun u : FreeRow => u.val) WC (fun _ => 2)
           (fun s => D.ell s / d') (fun _ => z) (Z' ^ d')
         let B_single : ℝ := Cc * C0 * (η.modulus.absNorm : ℝ) ^ (2 * D.eps) *
           Z ^ (10799 / 57600 - 1 / 100000 - D.t / 8 - D.t / 8 : ℝ) / scale_a
-        have hB_single : 0 ≤ B_single := by dsimp [B_single]; positivity
+        have hB_single : 0 ≤ B_single := by
+          dsimp only [B_single]
+          exact div_nonneg
+            (mul_nonneg (mul_nonneg (mul_nonneg hCc.le hC0)
+              (Real.rpow_nonneg (Nat.cast_nonneg _) _)) (Real.rpow_nonneg hZp.le _))
+            hscale_pos.le
         have hpart_c := cubeArithmeticSum_class_uniform F.S F.exclusions F.maximal η Rij T hT
           WC Yp a D.e t (Finset.univ : Finset (Fin D.N)) (Z' ^ d') ((2 * a - 1) / 2) D.t
-          D.t_pos (by linarith) (fun s => D.ell s / d') Q B_single hB_single (by
+          D.t_pos (by linarith only [ha']) (fun s => D.ell s / d') Q B_single hB_single (by
             intro bin hbin_ne
             rcases lt_or_ge d' (1 / 2) with hd'_lt | hd'_ge
             · have hmom_t := hmom₀ Rij d' a hg.2.2.1 (hg.2.2.2.1.trans (by norm_num))
-                ha ha' hrows_Rij i z (by simp [z]) (by simpa [z] using ht.2.trans hh_le)
+                ha ha' hrows_Rij i z hz_re hz_im
               have hp_cl := hcl₀ d' hg.2.2.1 (hg.2.2.2.1.trans (by norm_num)) v' a C0
                 hg.1 ha ha' hC0 Rij hrows_Rij hnorm_Rij i hi_le hnext' hcurrent' t ht hmom_t bin hbin_ne
               have hp_bound := hp_cl.2.2; dsimp only at hp_bound
@@ -1115,26 +1146,27 @@ theorem subFarkas_nonfloor_rows_saving (D : HighData subDelta)
                 v' * (a - 1 / 2 + 12 * D.e + D.eps * ((D.N : ℝ) + 8) - 17 / 50) +
                 D.t - 2 / 75 + q / 6 + D.t / 6
               have hexp_q := subFarkas_nonfloor_low_dyad_exponent_bound D hε_t he_t heps_t hτ2
-                (by linarith [hg.2.2.1]) hd'_lt hg.1
-                (by dsimp [d', v', sourceDyadConductor]; linarith [D.t_pos])
+                (by have h1 := hg.2.2.1; linarith only [h1]) hd'_lt hg.1
+                (by have ht0 := D.t_pos; dsimp only [d', v', sourceDyadConductor]; linarith only [ht0])
                 (add_sub_cancel_left (sourceDyadExponent Z' k) (2 * D.t)).le
                 ha ha' hp_cl.1 hp_cl.2.1
               have hscale_Z : scale_a * Z' ^ E_q ≤
                   Z ^ (10799 / 57600 - 1 / 100000 - D.t / 8 - D.t / 8 : ℝ) := by
-                dsimp [scale_a, Z']
+                dsimp only [scale_a, Z']
                 rw [← Real.rpow_mul hZp.le, ← Real.rpow_mul hZp.le, ← Real.rpow_mul hZp.le,
                   ← Real.rpow_add hZp, ← Real.rpow_add hZp, ← Real.rpow_add hZp]
-                exact Real.rpow_le_rpow_of_exponent_le hZ (by dsimp [E_q]; linarith)
+                exact Real.rpow_le_rpow_of_exponent_le hZ (by dsimp only [E_q]; linarith only [hexp_q])
               have hdiv : Z' ^ E_q ≤
                   Z ^ (10799 / 57600 - 1 / 100000 - D.t / 8 - D.t / 8 : ℝ) / scale_a :=
                 (le_div_iff₀ hscale_pos).mpr (by rwa [mul_comm])
-              apply hp_bound.trans; dsimp [B_single]; rw [mul_div_assoc]
+              apply hp_bound.trans; dsimp only [B_single]; rw [mul_div_assoc]
               exact mul_le_mul
                 (mul_le_mul_of_nonneg_right
-                  (mul_le_mul_of_nonneg_right (le_max_left Cc₀ Cc₁) hC0) (by positivity))
-                hdiv (Real.rpow_nonneg hZ'p.le _) (by positivity)
-            · have hmom_t := hmom₁ Rij d' a hd'_ge hg.2.2.2.1 ha ha' hrows_Rij i z
-                (by simp [z]) (by simpa [z] using ht.2.trans hh_le)
+                  (mul_le_mul_of_nonneg_right (le_max_left Cc₀ Cc₁) hC0)
+                  (Real.rpow_nonneg (Nat.cast_nonneg _) _))
+                hdiv (Real.rpow_nonneg hZ'p.le _)
+                (mul_nonneg (mul_nonneg hCc.le hC0) (Real.rpow_nonneg (Nat.cast_nonneg _) _))
+            · have hmom_t := hmom₁ Rij d' a hd'_ge hg.2.2.2.1 ha ha' hrows_Rij i z hz_re hz_im
               have hp_cl := hcl₁ d' hd'_ge hg.2.2.2.1 v' a C0
                 hg.1 ha ha' hC0 Rij hrows_Rij hnorm_Rij i hi_le hnext' hcurrent' t ht hmom_t bin hbin_ne
               have hp_bound := hp_cl.2.2; dsimp only at hp_bound
@@ -1152,24 +1184,26 @@ theorem subFarkas_nonfloor_rows_saving (D : HighData subDelta)
                 ha ha' hp_cl.1 hp_cl.2.1
               have hscale_Z : scale_a * Z' ^ E_q ≤
                   Z ^ (10799 / 57600 - 1 / 100000 - D.t / 8 - D.t / 8 : ℝ) := by
-                dsimp [scale_a, Z']
+                dsimp only [scale_a, Z']
                 rw [← Real.rpow_mul hZp.le, ← Real.rpow_mul hZp.le, ← Real.rpow_mul hZp.le,
                   ← Real.rpow_add hZp, ← Real.rpow_add hZp, ← Real.rpow_add hZp]
-                exact Real.rpow_le_rpow_of_exponent_le hZ (by dsimp [E_q]; linarith)
+                exact Real.rpow_le_rpow_of_exponent_le hZ (by dsimp only [E_q]; linarith only [hexp_q])
               have hdiv : Z' ^ E_q ≤
                   Z ^ (10799 / 57600 - 1 / 100000 - D.t / 8 - D.t / 8 : ℝ) / scale_a :=
                 (le_div_iff₀ hscale_pos).mpr (by rwa [mul_comm])
-              apply hp_bound.trans; dsimp [B_single]; rw [mul_div_assoc]
+              apply hp_bound.trans; dsimp only [B_single]; rw [mul_div_assoc]
               exact mul_le_mul
                 (mul_le_mul_of_nonneg_right
-                  (mul_le_mul_of_nonneg_right (le_max_right Cc₀ Cc₁) hC0) (by positivity))
-                hdiv (Real.rpow_nonneg hZ'p.le _) (by positivity))
+                  (mul_le_mul_of_nonneg_right (le_max_right Cc₀ Cc₁) hC0)
+                  (Real.rpow_nonneg (Nat.cast_nonneg _) _))
+                hdiv (Real.rpow_nonneg hZ'p.le _)
+                (mul_nonneg (mul_nonneg hCc.le hC0) (Real.rpow_nonneg (Nat.cast_nonneg _) _)))
         simp only [Finset.card_univ, Fintype.card_fin] at hpart_c
-        apply hpart_c.trans; dsimp [B_single, A_arith, cardCost]
+        apply hpart_c.trans; dsimp only [B_single, A_arith, cardCost]
         calc _ ≤ ((HeckeDetectorClassBudget.alphabetBound D.t : ℝ) ^ D.N + 1) *
                 (Cc * C0 * (η.modulus.absNorm : ℝ) ^ (2 * D.eps) *
                   Z ^ (10799 / 57600 - 1 / 100000 - D.t / 8 - D.t / 8 : ℝ) / scale_a) :=
-              mul_le_mul_of_nonneg_right (by linarith) hB_single
+              mul_le_mul_of_nonneg_right (le_add_of_nonneg_right zero_le_one) hB_single
           _ = _ := by ring
       have hheight : (3 * i + 1 : ℕ) * Z' ^ τ ≤ (3 * i + 2 : ℕ) * Z' ^ τ :=
         mul_le_mul_of_nonneg_right (by exact_mod_cast (show 3 * i + 1 ≤ 3 * i + 2 by omega))
@@ -1181,19 +1215,28 @@ theorem subFarkas_nonfloor_rows_saving (D : HighData subDelta)
         (Real.rpow_pos_of_pos hZp _) (Real.rpow_pos_of_pos hZp _) hZp A_arith hA_arith harith_Rij
       dsimp only [FC]
       rw [div_eq_mul_inv, norm_mul]
-      have hm_int := mul_le_mul hp_int hn.2 (norm_nonneg _) (by positivity)
-      apply hm_int.trans_eq
-      change Cp * scale_a * A_arith * (Cn * Z ^ (D.t / 8)) = CellBound
-      dsimp [A_arith, CellBound]
-      have hsc_cancel : Cp * scale_a * (cardCost * Cc * C0 * (η.modulus.absNorm : ℝ) ^ (2 * D.eps) *
-          Z ^ (10799 / 57600 - 1 / 100000 - D.t / 8 - D.t / 8 : ℝ) / scale_a) =
-          Cp * cardCost * Cc * C0 * (η.modulus.absNorm : ℝ) ^ (2 * D.eps) *
-            Z ^ (10799 / 57600 - 1 / 100000 - D.t / 8 - D.t / 8 : ℝ) := by
-        field_simp [hscale_pos.ne']
-      rw [hsc_cancel]
-      calc _ = (Cp * cardCost * Cc * Cn) * C0 * (η.modulus.absNorm : ℝ) ^ (2 * D.eps) *
-              (Z ^ (10799 / 57600 - 1 / 100000 - D.t / 8 - D.t / 8 : ℝ) * Z ^ (D.t / 8)) := by ring
-        _ = _ := by rw [← Real.rpow_add hZp]; congr 2; ring
+      have hm_int := mul_le_mul hp_int hn.2 (norm_nonneg _)
+        (mul_nonneg (mul_nonneg hCp.le hscale_pos.le) hA_arith)
+      have hprod_eq : Cp * scale_a * A_arith * (Cn * Z ^ (D.t / 8)) = CellBound := by
+        dsimp only [A_arith, CellBound]
+        have h1 : scale_a * (cardCost * Cc * C0 * (η.modulus.absNorm : ℝ) ^ (2 * D.eps) *
+            Z ^ (10799 / 57600 - 1 / 100000 - D.t / 8 - D.t / 8 : ℝ) / scale_a) =
+          cardCost * Cc * C0 * (η.modulus.absNorm : ℝ) ^ (2 * D.eps) *
+            Z ^ (10799 / 57600 - 1 / 100000 - D.t / 8 - D.t / 8 : ℝ) :=
+          mul_div_cancel₀ _ hscale_pos.ne'
+        calc Cp * scale_a * (cardCost * Cc * C0 * (η.modulus.absNorm : ℝ) ^ (2 * D.eps) *
+                Z ^ (10799 / 57600 - 1 / 100000 - D.t / 8 - D.t / 8 : ℝ) / scale_a) *
+                (Cn * Z ^ (D.t / 8))
+            = Cp * (scale_a * (cardCost * Cc * C0 * (η.modulus.absNorm : ℝ) ^ (2 * D.eps) *
+                Z ^ (10799 / 57600 - 1 / 100000 - D.t / 8 - D.t / 8 : ℝ) / scale_a)) *
+                (Cn * Z ^ (D.t / 8)) := by ring
+          _ = (Cp * cardCost * Cc * Cn) * C0 * (η.modulus.absNorm : ℝ) ^ (2 * D.eps) *
+                (Z ^ (10799 / 57600 - 1 / 100000 - D.t / 8 - D.t / 8 : ℝ) * Z ^ (D.t / 8)) := by
+              rw [h1]; ring
+          _ = (Cp * cardCost * Cc * Cn) * C0 * (η.modulus.absNorm : ℝ) ^ (2 * D.eps) *
+                Z ^ (10799 / 57600 - 1 / 100000 - D.t / 8 : ℝ) := by
+              rw [← Real.rpow_add hZp]; congr 2; ring
+      exact hm_int.trans_eq hprod_eq
     · have he_empty : Rij = ∅ := Finset.not_nonempty_iff_eq_empty.mp hne'
       simpa only [FC, show cubeBinRows (rows ∩ dyadicRows 1 k) idx grid i j = ∅ from he_empty,
         finiteCentralCubeRows, Finset.sum_empty, zero_div, norm_zero] using hCellBound
@@ -1209,8 +1252,9 @@ theorem subFarkas_nonfloor_rows_saving (D : HighData subDelta)
   rw [hpartition, Finset.sum_div]
   have hdyad_card : ((smallDyadicIndices (Z' ^ ((3901 / 4806 : ℝ) + D.t))).card : ℝ) ≤
       Cd * Z ^ (D.t / 8) := by
-    dsimp [Z']; rw [subFarkas_scale_high_cutoff hZp.le]
-    exact hdyad Z ((3901 / 4800 : ℝ) + (801 / 800 : ℝ) * D.t) hZ (by linarith [D.t_small])
+    have htsm := D.t_small
+    dsimp only [Z']; rw [subFarkas_scale_high_cutoff hZp.le]
+    exact hdyad Z ((3901 / 4800 : ℝ) + (801 / 800 : ℝ) * D.t) hZ (by linarith only [htsm])
   calc _ ≤ ∑ _k ∈ smallDyadicIndices (Z' ^ ((3901 / 4806 : ℝ) + D.t)),
           (n + 1 : ℕ) * (m + 1 : ℕ) * CellBound := by
         apply (norm_sum_le _ _).trans (Finset.sum_le_sum fun k hk => ?_)
@@ -1224,13 +1268,16 @@ theorem subFarkas_nonfloor_rows_saving (D : HighData subDelta)
         calc _ ≤ ∑ _i ∈ Finset.range (n + 1), ∑ _j ∈ Finset.range (m + 1), CellBound := by
               apply Finset.sum_le_sum; intro i hi; rw [Finset.sum_div]
               exact (norm_sum_le _ _).trans (Finset.sum_le_sum fun j hj => hcell k hk i hi j hj)
-          _ = _ := by simp; ring
+          _ = _ := by
+              simp only [Finset.sum_const, Finset.card_range, nsmul_eq_mul]; ring
     _ = ((smallDyadicIndices (Z' ^ ((3901 / 4806 : ℝ) + D.t))).card : ℝ) *
-          ((n + 1 : ℕ) * (m + 1 : ℕ) * CellBound) := by simp
+          ((n + 1 : ℕ) * (m + 1 : ℕ) * CellBound) := by
+        simp only [Finset.sum_const, nsmul_eq_mul]
     _ ≤ (Cd * Z ^ (D.t / 8)) * ((n + 1 : ℕ) * (m + 1 : ℕ) * CellBound) :=
-        mul_le_mul_of_nonneg_right hdyad_card (by positivity)
+        mul_le_mul_of_nonneg_right hdyad_card
+          (mul_nonneg (mul_nonneg (Nat.cast_nonneg _) (Nat.cast_nonneg _)) hCellBound)
     _ = _ := by
-        dsimp [CellBound]
+        dsimp only [CellBound]
         calc _ = Cd * (n + 1 : ℕ) * (m + 1 : ℕ) * (Cp * cardCost * Cc * Cn) * C0 *
                 (η.modulus.absNorm : ℝ) ^ (2 * D.eps) *
                 (Z ^ (D.t / 8) * Z ^ (10799 / 57600 - 1 / 100000 - D.t / 8 : ℝ)) := by ring
@@ -1564,7 +1611,7 @@ theorem exists_subFarkas_common_probe (hβ : (16799 / 19200 : ℝ) < HeckeZeroSu
             (Cf * Qη ^ (2 * D.eps) * E_target + Cnf * Cm * Qη ^ (2 * D.eps) * E_target) :=
             add_le_add (add_le_add hrem_norm hpr_bound) (add_le_add hfl_bound hnf_bound)
         _ = _ := by ring
-    exact hsum4.trans (mul_le_mul_of_nonneg_right (by dsimp [Ctot]; linarith) hE_target)
+    exact hsum4.trans (mul_le_mul_of_nonneg_right (le_add_of_nonneg_right zero_le_one) hE_target)
 
 end SubFarkasHighTransport
 

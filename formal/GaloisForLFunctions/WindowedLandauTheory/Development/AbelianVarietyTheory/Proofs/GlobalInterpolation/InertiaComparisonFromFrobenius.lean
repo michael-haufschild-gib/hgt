@@ -1,3 +1,4 @@
+import GaloisForLFunctions.WindowedLandauTheory.SharpRestriction.LevelLetterCocycles.TwGood
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.GlobalInterpolation.ContinuityOfCoefficientEmbedding
 import Mathlib.LinearAlgebra.Matrix.Charpoly.Univ
 import Mathlib.Topology.Algebra.MvPolynomial
@@ -46,6 +47,30 @@ variable {D : D7} (i : D.nd.Loc)
 local notation "Γ" => (D.nd.Om ≃ₐ[D.host.E] D.nd.Om)
 local notation "ℓ" => D.nd.l i
 
+/-- Agreement on cofinite split Frobenius elements determines the integral
+model's characteristic polynomial on the whole Galois group. -/
+theorem charpoly_eq_of_cofinite_split_frobenius
+    (ρ : Γ →* GL (Fin D.R.r) (D.nd.O i)) (hρ : Continuous fun g => (ρ g).val)
+    (r : Γ →* GL (Fin D.R.r) (PadicAlgCl ℓ)) (hr : Continuous fun g => (r g).val)
+    (hF : SplitFrobeniusDense D)
+    (h : ∀ᶠ v in Filter.cofinite, IsSplitPl D.host v →
+      ∀ (B : ValuationSubring D.nd.Om) (g : Γ), IsPlaceOver (F := D.host.E) B v →
+        IsFrob (F := D.host.E) B (normV v) g →
+        (ρ g).val.charpoly.map (iotaO D.nd D.naut i) =
+          (r g).val.charpoly.map (D.naut.iotaQC i).toRingHom)
+    (s : Γ) :
+    ((ρ s).val.map (iotaOQ D.nd D.naut i)).charpoly = (r s).val.charpoly := by
+  let j := iotaOQ D.nd D.naut i
+  let e := (D.naut.iotaQC i).toRingHom
+  have hmap : e.comp j = iotaO D.nd D.naut i := rfl
+  have hd := hF _ (Filter.eventually_cofinite.mp h)
+  have hc : Continuous fun u => (ρ u).val.map j := hρ.matrix_map (continuous_iotaOQ D i)
+  refine charpoly_eq_of_dense hd hc hr (fun u hu => ?_) s
+  obtain ⟨v, hv, hsplit, B, hB, hφ⟩ := hu
+  apply Polynomial.map_injective e e.injective
+  rw [Matrix.charpoly_map, Polynomial.map_map, hmap]
+  exact (not_not.mp hv) hsplit B u hB hφ
+
 /-- Frobenius matching compares the integral and p-adic representations on
 the entire absolute Galois group before the inertia comparison is read. -/
 theorem inertia_charpoly_of_frobenius {P : List (Part D.naut.CG)}
@@ -63,23 +88,19 @@ theorem inertia_charpoly_of_frobenius {P : List (Part D.naut.CG)}
   let j := iotaOQ D.nd D.naut i
   let e := (D.naut.iotaQC i).toRingHom
   have hmap : e.comp j = iotaO D.nd D.naut i := rfl
-  have hfinite := placesOver_finite_av D.host.E ℓ (D.nd.lPrime i).out.ne_zero
-  have hcof := (hfinite.eventually_cofinite_notMem.and hU).and hρ.2.2
-  have hd := hF _ (Filter.eventually_cofinite.mp hcof)
-  have hcont : Continuous fun u => (ρ u).val.map j := hρ.1.matrix_map (continuous_iotaOQ D i)
-  have hchar : ((ρ s).val.map j).charpoly = (r s).val.charpoly := by
-    refine charpoly_eq_of_dense hd hcont hr (fun u hu => ?_) s
-    obtain ⟨v, hv, -, B, hB, hφ⟩ := hu
-    have hv' : v ∉ placesOver D.host.E ℓ ∧ D.naut.unr (isoLoc D.nd D.naut P v) := by
-      exact (not_not.mp hv).1
-    apply Polynomial.map_injective e e.injective
-    have hwd := hW v hv'.1 hv'.2
-    have hu : D.naut.unr (D.naut.wdOf i r v) := by
+  have hfinite := MainNotions.placesOver_finite_av D.host.E ℓ (D.nd.lPrime i).out.ne_zero
+  have hcmp : ∀ᶠ v in Filter.cofinite, IsSplitPl D.host v →
+      ∀ (B : ValuationSubring D.nd.Om) (g : Γ), IsPlaceOver (F := D.host.E) B v →
+        IsFrob (F := D.host.E) B (normV v) g →
+        (ρ g).val.charpoly.map (iotaO D.nd D.naut i) = (r g).val.charpoly.map e := by
+    filter_upwards [hfinite.eventually_cofinite_notMem, hU, hρ.2.2] with v hv hu hρv _ B g hB hφ
+    have hwd := hW v hv hu
+    have hUnr : D.naut.unr (D.naut.wdOf i r v) := by
       rw [hwd, D.naut.unr_tw]
-      exact hv'.2
-    rw [Matrix.charpoly_map, Polynomial.map_map, hmap, (not_not.mp hv).2 B u hB hφ,
-      D.naut.wdOf_frob i r v hv'.1 hr hu B u hB hφ, hwd]
+      exact hu
+    rw [hρv B g hB hφ, D.naut.wdOf_frob i r v hv hr hUnr B g hB hφ, hwd]
     rfl
+  have hchar := charpoly_eq_of_cofinite_split_frobenius i ρ hρ.1 r hr hF hcmp s
   rw [← hmap, ← Polynomial.map_map, ← Matrix.charpoly_map, hchar, D.naut.wdOf_ine i r w hw hr s hs,
     hI, D.naut.inePol_tw _ _ _ hs]
 

@@ -8,11 +8,11 @@ noncomputable section
 /-- A direction constant on the synchronized pair pays only a coarse
 bin on the third energy level. All remaining levels use fine bins. -/
 theorem two_scale_pencil {I : Type*} [Fintype I] [DecidableEq I] (E F : I → ℝ)
-    (a b c : I) (hab : a≠b) (hca : c≠a) (hcb : c≠b) {τ : ℝ} (z : ℤ)
-    (hturn : τ*(E b-E a)/(2*π)=z) (hpin : F b=F a) (hmove : F c≠F a)
-    {m n : ℕ} (hm : 0<m) (hn : 0<n) :
-    ∃ q : ℕ, 0<q ∧ q≤m*n^(Fintype.card I-3) ∧
-      ∃ β : ℝ, |β|≤(2*π/|F c-F a|)/(m:ℝ) ∧
+    (a b c : I) (hab : a ≠ b) (hca : c ≠ a) (hcb : c ≠ b) {τ : ℝ} (z : ℤ)
+    (hturn : τ*(E b-E a)/(2*π)=z) (hpin : F b=F a) (hmove : F c ≠ F a)
+    {m n : ℕ} (hm : 0 < m) (hn : 0 < n) :
+    ∃ q : ℕ, 0 < q ∧ q ≤ m*n^(Fintype.card I-3) ∧
+      ∃ β : ℝ, |β| ≤ (2*π/|F c-F a|)/(m:ℝ) ∧
         ∀ j, latticeClose (((q:ℝ)*τ*(E j-E a)-β*(F j-F a))/(2*π)) (1/(n:ℝ)) := by
   classical
   let S : Finset I := {c}

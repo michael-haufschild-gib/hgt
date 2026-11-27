@@ -12,7 +12,7 @@ open Filter Finset MeasureTheory
 open GaloisForLFunctions.HTGeometry
 open scoped Topology
 
-private theorem cutoff_atTop : Tendsto cutoff atTop atTop := by
+theorem cutoff_atTop : Tendsto cutoff atTop atTop := by
   rw [tendsto_atTop]
   intro n
   filter_upwards [eventually_ge_atTop (((n+2 : ℕ) : ℝ))] with x hx
@@ -93,6 +93,7 @@ theorem rh_iff_unit_clock :
     fun h s hz => (elementary_haar_iff_split s.val one_ne_zero).mp
       (h s ((adjacentTrace_zero_iff s).mp hz))⟩
 
+#print axioms cutoff_atTop
 #print axioms rh_iff_unit_clock
 #print axioms bornWeight_eq_heat
 #print axioms elementary_haar_iff_split

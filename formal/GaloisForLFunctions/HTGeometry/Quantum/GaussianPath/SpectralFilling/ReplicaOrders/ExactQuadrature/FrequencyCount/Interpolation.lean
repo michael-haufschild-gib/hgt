@@ -15,7 +15,9 @@ private theorem jet_derivative (p h : J → ℝ) (k : ℕ) (x : ℝ) :
   apply HasDerivAt.fun_sum
   intro j _
   have hd := (((hasDerivAt_id x).mul_const (h j)).add_const ((k:ℝ)*(π/2))).cos.const_mul (p j*h j^k)
-  convert hd using 1
+  apply hd.congr_deriv
+  change p j*h j^k*(-sin (x*h j+(k:ℝ)*(π/2))*(1*h j)) =
+    (p j*h j^(k+1))*cos (x*h j+((k+1:ℕ):ℝ)*(π/2))
   simp only [Nat.cast_add,Nat.cast_one,add_mul,one_mul,←add_assoc,cos_add_pi_div_two,pow_succ]
   ring
 
@@ -35,7 +37,7 @@ The centered real Fourier transform is one at zero; interpolate it at
 its n zeros and bound its n-th derivative by the n-th power of the half-span. -/
 theorem cancellation_factorial {n : ℕ} (v : Fin n → ℝ) (hi : Function.Injective v)
     (p t : J → ℝ) (hp : ∀ j, 0≤p j) (hm : ∑ j, p j=1) {a b W : ℝ}
-    (hab : a≤b) (hr : ∀ j, t j∈Set.Icc a b) (hW : 0≤W) (hv : ∀ i, |v i|≤W)
+    (hab : a≤b) (hr : ∀ j, t j∈Set.Icc a b) (hv : ∀ i, |v i|≤W)
     (hz : ∀ i, ∑ j, (p j:ℂ)*wave (v i) (t j)=0) :
     (n.factorial:ℝ)≤((b-a)*W/2)^n := by
   let c := (a+b)/2
@@ -48,7 +50,10 @@ theorem cancellation_factorial {n : ℕ} (v : Fin n → ℝ) (hi : Function.Inje
     apply abs_le.mpr
     dsimp only [h,c,R]
     constructor <;> linarith only [hlo,hhi]
-  have hs : ContDiff ℝ n f := by dsimp only [f,cosineJet]; fun_prop
+  have hsJet (k : ℕ) : ContDiff ℝ n (fun y => cosineJet p h k y) := by
+    unfold cosineJet
+    fun_prop
+  have hs : ContDiff ℝ n f := hsJet 0
   have hd (k : ℕ) : iteratedDeriv k f=cosineJet p h k := by
     induction k with
     | zero => rfl
@@ -89,7 +94,7 @@ theorem cancellation_count {n : ℕ} (v : Fin n → ℝ) (hi : Function.Injectiv
     (n:ℝ)*log 2≤(b-a)*W := by
   let x := (b-a)*W
   have hx : 0≤x := mul_nonneg (sub_nonneg.mpr hab) hW
-  have hh := cancellation_factorial v hi p t hp hm hab hr hW hv hz
+  have hh := cancellation_factorial v hi p t hp hm hab hr hv hz
   change (n.factorial:ℝ)≤(x/2)^n at hh
   have hN : 0<(n.factorial:ℝ) := by exact_mod_cast n.factorial_pos
   have hb : (2:ℝ)^n≤x^n/n.factorial := by
@@ -97,7 +102,7 @@ theorem cancellation_count {n : ℕ} (v : Fin n → ℝ) (hi : Function.Injectiv
     exact (mul_le_mul_of_nonneg_left hh (by positivity : (0:ℝ)≤2^n)).trans_eq
       (by rw [←mul_pow]; congr 1; ring)
   have hl := Real.log_le_log (pow_pos (by norm_num : (0:ℝ)<2) n)
-    (hb.trans (Real.pow_div_factorial_le_exp hx n))
+    (hb.trans (Real.pow_div_factorial_le_exp x hx n))
   simpa only [Real.log_pow,Real.log_exp] using hl
 
 #print axioms cancellation_count

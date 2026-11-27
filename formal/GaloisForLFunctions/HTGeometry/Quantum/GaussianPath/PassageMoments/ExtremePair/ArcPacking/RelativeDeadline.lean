@@ -82,7 +82,7 @@ theorem packed_at_hard_origin {n : ℕ} (H : selfAdjoint (Register n)) {a δ : �
     apply (div_le_iff₀ hw).mpr
     have h := mul_le_mul_of_nonneg_left hscale (div_pos pi_pos hδ).le
     calc
-      _ = (π/δ)*(2*δ) := by field_simp [hδ.ne'] <;> ring
+      _ = (π/δ)*(2*δ) := by field_simp [hδ.ne']
       _ ≤ _ := h
       _ = _ := by ring
   exact (packed_first_visit H ha' hw s hε).trans (by linarith only [hp])
@@ -107,7 +107,8 @@ theorem gaussian_packed_first_visit :
   have hc := (hk 0).1.1
   change 0≤σ ∧ 9/80≤orbitCircuitDistance H P σ at hc
   have hbound := packed_at_hard_origin H hc.1 (by norm_num : (0:ℝ)<9/80) P s hc.2 hε
-  convert hbound using 1 <;> ring
+  convert hbound using 1
+  ring
 
 #print axioms gaussian_packed_first_visit
 end

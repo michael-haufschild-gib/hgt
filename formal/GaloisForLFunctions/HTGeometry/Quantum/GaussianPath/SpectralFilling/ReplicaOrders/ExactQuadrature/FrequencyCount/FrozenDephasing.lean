@@ -24,7 +24,8 @@ theorem dephasing_count {I J : Type*} [Fintype I] [DecidableEq I] [Fintype J]
     ⟨(e i).val,(mem_offDiag.mp (e i).property).2.2⟩
   have hi : Function.Injective P := by
     intro i j h
-    exact e.injective (Subtype.ext (congrArg Subtype.val h))
+    have he := congrArg (fun x : {p : I×I // p.1≠p.2} => x.val) h
+    exact e.injective (Subtype.ext he)
   let d (v : {p : I×I // p.1≠p.2}) := E v.val.1-E v.val.2
   have hd : Function.Injective d := maximallyProjectiveEnergy_orientedGap_injective E hmax
   have h := cancellation_count (d ∘ P) (hd.comp hi) p t hp hm hab hr hW

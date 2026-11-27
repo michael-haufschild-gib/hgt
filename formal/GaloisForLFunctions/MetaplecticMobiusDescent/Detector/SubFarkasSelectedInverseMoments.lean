@@ -1775,6 +1775,24 @@ private theorem deleted_residual_tuple_sub16799
     rw [norm_neg]
   exact hsum_eq.le.trans (hf_b.trans_eq hrhs_neg)
 
+private lemma fintype_sum_congr_inst {α : Type*} (inst₁ inst₂ : Fintype α) (f : α → ℂ) :
+    @Finset.sum α ℂ _ (@Finset.univ α inst₁) f = @Finset.sum α ℂ _ (@Finset.univ α inst₂) f := by
+  have h : inst₁ = inst₂ := Subsingleton.elim inst₁ inst₂
+  subst h
+  rfl
+
+private lemma deletedSelectedSource_tuple_dec {ι : Type*} [Fintype ι] [DecidableEq ι]
+    (data : RowData) (M : Ideal O) [NeZero M] (H : Subgroup (O ⧸ M)ˣ)
+    (W : ℝ → ℂ) (V : ι → ℝ → ℂ) (U r bW : ℝ) (b ell : ι → ℝ) (ζ : ι → ℂ) (u : O) :
+    deletedSelectedSource data M H W V U r 0 0 bW b ell ζ u =
+      ∑ x : Tuple (fun i => livePrimes M H (V i) (b i) (U ^ (ell i))),
+        (∏ i, star (primeProfile (V i) (U ^ (ell i)) (ζ i) (x i).val) /
+          idealCoeff (deletedBase data) (x i).val) *
+        originalTotalPolynomial (originalSource U r bW) (∏ i, (x i).val)
+          (idealCoeff (deletedBase data)).toMonoidHom (fun _ => 1) W U r (∑ i, ell i) u := by
+  rw [deletedSelectedSource_tuple]
+  exact fintype_sum_congr_inst _ _ _
+
 /-- Stage-1 counterpart of `DetectorDictionaryInverseMarkedReference.deleted_source_energy` across
 `1 / 2 ≤ d_outer ≤ 5 / 6` and `69 / 100 ≤ r_orig_in ≤ 19 / 26` with `∑ j ∈ selected, D.ell j / d_outer ≤ stage1Line r_orig_in`. -/
 private theorem deleted_source_energy_sub16799
@@ -1868,7 +1886,8 @@ private theorem deleted_source_energy_sub16799
       InverseInitialExcludedPool.outside (reflectionExcludedPrimes (deletedPeriod (basePeriod data))) P :=
     fun s P hP => by rw [hqset]; exact (hg_live s P hP).2.1
   let E_rem : ℝ := C_f * U ^ (1 + 14 * D.t) * ((1 + ‖θ‖) ^ deg_f) ^ 2
-  have hE_rem0 : 0 ≤ E_rem := by dsimp only [E_rem]; positivity
+  have hE_rem0 : 0 ≤ E_rem :=
+    mul_nonneg (mul_nonneg hC_f.le (Real.rpow_nonneg hU_pos.le _)) (sq_nonneg _)
   have hadm_assigned : ∀ (J : Finset ↥selected) (x_asgn : Assigned L_sel J),
       CanonicalQuadraticSieve.Admissible (assignedIdeal L_sel J x_asgn) := by
     intro J x_asgn
@@ -1893,7 +1912,7 @@ private theorem deleted_source_energy_sub16799
       (assignedIdeal L_sel J x_asgn)
       hP_adm (fun _ _ => dvd_mul_right _ _) hPE_rem
     have hDp13 : B_tree * U ^ (13 : ℝ) ≤ (Dpool : ℝ) := by
-      simpa only [show ((12 : ℝ) + 1 : ℝ) = (13 : ℝ) by ring] using hfloor_12
+      rwa [show ((12 : ℝ) + 1 : ℝ) = (13 : ℝ) by norm_num] at hfloor_12
     exact hres_data U hUf' h2N_η₀ Dpool hDp13 hd_lo hd_hi hr0 hr1 hjshift.1 hjshift.2.1
       selected hz_sel_hi hdis_live hlarge_Z ζ_base hζ_re hζ_im J x_asgn (hadm_assigned J x_asgn)
       hcover rows hrows θ
@@ -1920,7 +1939,16 @@ private theorem deleted_source_energy_sub16799
               (mul_pos hA_asgn hC_f).le)
             (sq_nonneg _)
   have hb_tot := hb_all.trans hb_rhs
-  simpa only [deletedSelectedSource_tuple, one_mul, L_sel, coeff_del, χ_del, rr] using hb_tot
+  have hgoal_eq :
+      (∑ u ∈ rows, ‖deletedSelectedSource data F_dual.modulus ⊤ (childLogTest W θ)
+        (fun _ => F_dual.W) U (shiftedExponent data U r_orig_in j_div) 0 0 bo
+        (fun _ => 2) ell_sel (fun _ => ζ_base) u‖ ^ 2) =
+      ∑ u ∈ rows, (fun _ => (1 : ℝ)) u * ‖∑ q : Tuple L_sel, (∏ i, coeff_del i (q i).val) *
+        originalTotalPolynomial (originalSource U rr bo) (∏ i, (q i).val) χ_del (fun _ => 1)
+          (childLogTest W θ) U rr (∑ s : ↥selected, ell_sel s) u‖ ^ 2 := by
+    refine Finset.sum_congr rfl fun u _ => ?_
+    rw [one_mul, deletedSelectedSource_tuple_dec]
+  exact hgoal_eq.le.trans hb_tot
 
 private lemma livePrimes_congr_modulus {M₁ M₂ : Ideal O} (hM : M₁ = M₂)
     (W : ℝ → ℂ) (b Z : ℝ) :
@@ -2147,7 +2175,7 @@ theorem source_batch_selected_inverse_marked_sub16799
     exact hsum_bad.trans hcard_sq
   have hh := hfourier F selected hU_pos (Csum * U ^ (1 + 15 * D.t))
     (mul_nonneg hCsum_pos.le (Real.rpow_nonneg hU_pos.le _)) href n hn s hs height t hheight ht
-  convert hh using 1 <;> ring
+  convert hh using 1; ring
 
 /-- Combined Stage-0 (`d' < 1 / 2` via `counts_0`) and Stage-1 (`1 / 2 ≤ d' ≤ 5 / 6` via `counts_1`
 at `εm = 15 * D.t`) unconditional source-moment supply with a **single** height exponent `τ`
