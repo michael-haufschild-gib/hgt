@@ -13,7 +13,10 @@ def sizeRoot (K : ℕ) := Nat.nthRoot 64 K
 
 theorem root_bounds {K : ℕ} (hK : 0<K) :
     1≤sizeRoot K ∧ sizeRoot K^64≤K ∧ K≤(2*sizeRoot K)^64 := by
-  have hp : 1≤sizeRoot K := (Nat.le_nthRoot_iff (by decide : 64≠0)).mpr (by simpa using hK)
+  have hp : 1≤sizeRoot K := by
+    apply (Nat.le_nthRoot_iff (a:=1) (b:=K) (by decide : 64≠0)).mpr
+    rw [one_pow]
+    omega
   have hh := Nat.lt_pow_nthRoot_add_one (by decide : 64≠0) K
   exact ⟨hp,Nat.pow_nthRoot_le_iff.mpr (Or.inl (by decide)),hh.le.trans
     (Nat.pow_le_pow_left (by change sizeRoot K+1≤2*sizeRoot K; omega) _)⟩
@@ -42,14 +45,15 @@ theorem log_root_eventually {a : ℝ} (ha : 0<a) (b c : ℝ) :
   have ht := (tendsto_natCast_atTop_atTop (R:=ℝ)).comp sizeRoot_tendsto
   filter_upwards [eventually_gt_atTop 0,ht.eventually (eventually_ge_atTop (d/a))] with K hK hq
   let q : ℝ := sizeRoot K
-  have hq₁ : 1≤q := by exact_mod_cast (root_bounds hK).1
-  have hl := log_nonneg (show 1≤(K:ℝ) by exact_mod_cast hK)
+  have hq₁ : 1≤q := by dsimp only [q]; exact_mod_cast (root_bounds hK).1
+  have hl := log_nonneg (show 1≤(K:ℝ) by exact_mod_cast (Nat.succ_le_of_lt hK))
   have h₁ := mul_le_mul (le_abs_self b) (log_size_le hK) hl (abs_nonneg b)
   have h₂ := (le_abs_self c).trans (le_mul_of_one_le_right (abs_nonneg c) hq₁)
   have h₃ := mul_le_mul_of_nonneg_right ((div_le_iff₀ ha).mp hq) (zero_le_one.trans hq₁)
   change d*q≤q*a*q at h₃
   dsimp only [d] at h₃
-  change b*log (K:ℝ)≤|b|*(128*q) at h₁
+  change b*log (K:ℝ) ≤ |b| * (128*q) at h₁
+  change b*log (K:ℝ)+c≤a*q^2
   nlinarith only [h₁,h₂,h₃]
 
 /-- A buffer contains q⁶² candidate bonds; the number of buffers is
@@ -62,11 +66,13 @@ theorem packet_quotient {K : ℕ} (hK : 0<K) :
   obtain ⟨hpos,hlo,hhi⟩ := root_bounds hK
   have hq : 0<q := Nat.cast_pos.mpr hpos
   have hL : 0<L := by dsimp only [L]; positivity
-  have h₁ : q^64≤(K:ℝ) := by exact_mod_cast hlo
-  have h₂ : (K:ℝ)≤(2*q)^64 := by exact_mod_cast hhi
+  have h₁ : q^64≤(K:ℝ) := by dsimp only [q]; exact_mod_cast hlo
+  have h₂ : (K:ℝ)≤(2*q)^64 := by dsimp only [q]; exact_mod_cast hhi
   constructor
   · apply (le_div_iff₀ hL).mpr
-    convert h₁ using 1 <;> dsimp only [L] <;> ring
+    calc
+      q^2/3*L = q^64 := by dsimp only [L]; ring
+      _ ≤ _ := h₁
   · apply (div_le_iff₀ hL).mpr
     apply h₂.trans_eq
     dsimp only [L]; ring

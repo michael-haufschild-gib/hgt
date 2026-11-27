@@ -19,24 +19,26 @@ theorem exists_primeComplement (G : Type) [Group G] [Finite G] [Group.IsNilpoten
     { toFun := fun x q P => x q.1 P
       map_one' := rfl
       map_mul' := fun _ _ => rfl }
-  let include : W →* U :=
+  let insertFactors : W →* U :=
     { toFun := fun x q P => if hq : (q : ℕ) ≠ p then x ⟨q, hq⟩ P else 1
       map_one' := by
         funext q P
-        change (if hq : (q : ℕ) ≠ p then (1 : W) ⟨q, hq⟩ P else 1) = 1
+        change (if hq : (q : ℕ) ≠ p then (1 : W) ⟨q, hq⟩ P else (1 : P)) = 1
         split_ifs <;> rfl
       map_mul' := fun x y => by
         funext q P
-        change (if hq : (q : ℕ) ≠ p then (x * y) ⟨q, hq⟩ P else 1) =
-          (if hq : (q : ℕ) ≠ p then x ⟨q, hq⟩ P else 1) *
-            (if hq : (q : ℕ) ≠ p then y ⟨q, hq⟩ P else 1)
-        split_ifs <;> simp }
-  have hleft : Function.LeftInverse project include := by
+        change (if hq : (q : ℕ) ≠ p then (x * y) ⟨q, hq⟩ P else (1 : P)) =
+          (if hq : (q : ℕ) ≠ p then x ⟨q, hq⟩ P else (1 : P)) *
+            (if hq : (q : ℕ) ≠ p then y ⟨q, hq⟩ P else (1 : P))
+        split_ifs
+        · rfl
+        · exact (one_mul (1 : P)).symm }
+  have hleft : Function.LeftInverse project insertFactors := by
     intro x
     funext q P
     change (if hq : (q.1 : ℕ) ≠ p then x ⟨q.1, hq⟩ P else 1) = x q P
     rw [dif_pos q.2]
-  let embed := e.toMonoidHom.comp include
+  let embed := e.toMonoidHom.comp insertFactors
   let H := embed.range
   letI : Finite W := Finite.of_injective embed (e.injective.comp hleft.injective)
   have hcard : Nat.card W = Nat.card H := by
@@ -46,7 +48,8 @@ theorem exists_primeComplement (G : Type) [Group G] [Finite G] [Group.IsNilpoten
   have hW : ¬ p ∣ Nat.card W := by
     intro hd
     obtain ⟨x, hx⟩ := exists_prime_orderOf_dvd_card' p hd
-    have he : x ^ p = 1 := hx ▸ pow_orderOf_eq_one x
+    have he : x ^ p = 1 :=
+      (congrArg (fun a : ℕ => x ^ a) hx).symm.trans (pow_orderOf_eq_one x)
     have hx₁ : x = 1 := by
       funext q P
       haveI : Fact (Nat.Prime (q.1 : ℕ)) := ⟨Nat.prime_of_mem_primeFactors q.1.2⟩
@@ -63,13 +66,13 @@ theorem exists_primeComplement (G : Type) [Group G] [Finite G] [Group.IsNilpoten
   intro g
   let x := e.symm g
   let s : U := fun q P => if (q : ℕ) ≠ p then 1 else x q P
-  have hsplit : include (project x) * s = x := by
+  have hsplit : insertFactors (project x) * s = x := by
     funext q P
     change (if hq : (q : ℕ) ≠ p then x q P else 1) *
       (if (q : ℕ) ≠ p then 1 else x q P) = x q P
     split_ifs <;> simp
-  have hcomm : Commute (include (project x)) s := by
-    change include (project x) * s = s * include (project x)
+  have hcomm : Commute (insertFactors (project x)) s := by
+    change insertFactors (project x) * s = s * insertFactors (project x)
     funext q P
     change (if hq : (q : ℕ) ≠ p then x q P else 1) * (if (q : ℕ) ≠ p then 1 else x q P) =
       (if (q : ℕ) ≠ p then 1 else x q P) * (if hq : (q : ℕ) ≠ p then x q P else 1)
@@ -83,10 +86,11 @@ theorem exists_primeComplement (G : Type) [Group G] [Finite G] [Group.IsNilpoten
     · have hq' : (q : ℕ) = p := not_ne_iff.mp hq
       haveI : Fact (Nat.Prime (q : ℕ)) := ⟨Nat.prime_of_mem_primeFactors q.2⟩
       have hc : Nat.card P = p ^ m := by rw [P.card_eq_multiplicity, hq']
-      exact hc ▸ pow_card_eq_one' (x q P)
+      have hpow : (x q P) ^ Nat.card P = 1 := pow_card_eq_one'
+      rwa [hc] at hpow
   refine ⟨e s, m, ?_, hcomm.map e.toMonoidHom, ?_⟩
-  · change g = e (include (project x)) * e s
+  · change g = e (insertFactors (project x)) * e s
     rw [← e.map_mul, hsplit, e.apply_symm_apply]
-  · rw [← e.map_pow, hs, e.map_one]
+  · exact (map_pow e s (p ^ m)).symm.trans ((congrArg e hs).trans (map_one e))
 
 end GlobalTheory.CuspGL

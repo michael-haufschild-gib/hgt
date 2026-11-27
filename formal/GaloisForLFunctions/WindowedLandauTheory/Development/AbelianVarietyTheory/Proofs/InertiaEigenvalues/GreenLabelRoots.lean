@@ -19,8 +19,7 @@ theorem thetaOf_gen_pow (L : LabelDatum g) {d : ℕ} (hd : 0 < d) (w : Fbar g)
   have hgd := Nat.one_lt_pow hd.ne' hg.out.one_lt
   have hfo : IsOfFinOrder (L.gen d) := orderOf_pos_iff.mp (by rw [L.gen_order d hd]; omega)
   rw [hfo.pow_eq_pow_iff_modEq, L.gen_order d hd] at hs
-  rw [← pow_mod_eq hw n, ← pow_mod_eq hw hex.choose]
-  exact congrArg _ hs.symm
+  exact pow_eq_pow_of_modEq hs.symm hw
 
 end GlobalTheory.GLq
 

@@ -8,7 +8,7 @@ open Polynomial
 namespace GlobalTheory.CuspGL
 
 /-- The unnormalized Hermitian pairing over invertible endomorphisms. -/
-def ipGL {F V : Type} [Field F] [AddCommGroup V] [Module F V]
+noncomputable def ipGL {F V : Type} [Field F] [AddCommGroup V] [Module F V]
     (φ ψ : Module.End F V → ℂ) : ℂ :=
   ∑ᶠ g ∈ {g : Module.End F V | IsUnit g}, φ g * star (ψ g)
 

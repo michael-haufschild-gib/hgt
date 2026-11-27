@@ -11,7 +11,7 @@ variable {n N : ℕ}
 abbrev fullBuffers (n N : ℕ) := Fin ((n+1)/(3*N))
 abbrev packetIndices (n N : ℕ) := Fin ((n+1)/(3*N)+1)
 
-private def offsets (hN : 0<N) (p : fullBuffers n N→Fin N) (b : fullBuffers n N) : Fin (3*N) :=
+private def offsets (p : fullBuffers n N→Fin N) (b : fullBuffers n N) : Fin (3*N) :=
   ⟨3*(p b).val,Nat.mul_lt_mul_of_pos_left (p b).isLt (by decide)⟩
 
 private def edgeAt (hN : 0<N) (b : fullBuffers n N) (j : Fin N) : Fin (n+1) :=
@@ -23,13 +23,13 @@ def bondLabels (hN : 0<N) (b : fullBuffers n N) (j : Fin N) (k : Fin 9) : PathLa
 
 /-- The block index has the same type for every choice of seams. -/
 def bufferedOwner (hN : 0<N) (p : fullBuffers n N→Fin N) (v : Fin (n+2)) : packetIndices n N :=
-  Fin.cast (congrArg (·+1) (bufferedCuts_card (by omega : 0<3*N) (offsets hN p)))
-    (intervalOf (bufferedCuts (by omega) (offsets hN p)) v)
+  Fin.cast (congrArg (·+1) (bufferedCuts_card (by omega : 0<3*N) (offsets p)))
+    (intervalOf (bufferedCuts (by omega) (offsets p)) v)
 
 theorem bufferedOwner_size (hN : 0<N) (p : fullBuffers n N→Fin N) (i : packetIndices n N) :
     (sites (bufferedOwner hN p) i).card≤2*(3*N) := by
-  let C := bufferedCuts (by omega : 0<3*N) (offsets hN p)
-  have hC := congrArg (·+1) (bufferedCuts_card (by omega : 0<3*N) (offsets hN p))
+  let C := bufferedCuts (by omega : 0<3*N) (offsets p)
+  have hC := congrArg (·+1) (bufferedCuts_card (by omega : 0<3*N) (offsets p))
   let j := Fin.cast hC.symm i
   have he : sites (bufferedOwner hN p) i=sites (intervalOf C) j := by
     ext v
@@ -42,7 +42,7 @@ theorem bufferedOwner_cut (hN : 0<N) (p : fullBuffers n N→Fin N) :
     cutLabels (bufferedOwner hN p)=univ.image (fun j : fullBuffers n N × Fin 9 =>
       bondLabels hN j.1 (p j.1) j.2) := by
   classical
-  let C := bufferedCuts (by omega : 0<3*N) (offsets hN p)
+  let C := bufferedCuts (by omega : 0<3*N) (offsets p)
   have hc (e : Fin (n+1)) :
       bufferedOwner hN p e.castSucc≠bufferedOwner hN p e.succ ↔ e∈C := by
     simpa only [bufferedOwner,ne_eq,Fin.ext_iff,Fin.val_cast,C] using interval_crosses C e
@@ -53,8 +53,7 @@ theorem bufferedOwner_cut (hN : 0<N) (p : fullBuffers n N→Fin N) :
     · intro h
       obtain ⟨j,_,hj⟩ := mem_image.mp h
       cases hj
-  · change _ ↔ _
-    rw [cutLabels,mem_filter, and_iff_right (mem_univ _)]
+  · rw [cutLabels,mem_filter, and_iff_right (mem_univ _)]
     change (bufferedOwner hN p e.castSucc≠bufferedOwner hN p e.succ) ↔ _
     rw [hc]
     constructor
@@ -72,7 +71,7 @@ theorem cutLabel_count (hN : 0<N) (p : fullBuffers n N→Fin N) :
     (cutLabels (bufferedOwner hN p)).card≤9*((n+1)/(3*N)) := by
   rw [bufferedOwner_cut]
   apply card_image_le.trans
-  simp only [card_univ,Fintype.card_prod,Fintype.card_fin,Nat.mul_comm]
+  simp only [card_univ,Fintype.card_prod,Fintype.card_fin,Nat.mul_comm,le_refl]
 
 /-- If just one candidate lies in a δ-box, every coefficient on the
 chosen bond is at most 3δ, irrespective of ties and of the other buffers. -/
@@ -84,7 +83,9 @@ theorem minimum_bond_coordinate {I : Type*} [Fintype I] [LinearOrder I] {ι : Ty
   have h₂ := sum_le_sum (s:=univ) (fun (l : Fin 9) _ => pow_le_pow_left₀ (abs_nonneg _) (hsmall l) 2)
   simp only [sum_const,card_univ,Fintype.card_fin,nsmul_eq_mul,sq_abs,Nat.cast_ofNat] at h₂
   have h₃ := (h₁.trans (hmin.1 j)).trans h₂
-  nlinarith only [h₃,sq_abs (z (L i k)),abs_nonneg (z (L i k)),hδ]
+  apply le_of_sq_le_sq _ (mul_nonneg (by norm_num) hδ)
+  rw [sq_abs,mul_pow]
+  simpa only [show (3:ℝ)^2=9 by norm_num] using h₃
 
 #print axioms bufferedOwner_cut
 #print axioms cutLabel_count

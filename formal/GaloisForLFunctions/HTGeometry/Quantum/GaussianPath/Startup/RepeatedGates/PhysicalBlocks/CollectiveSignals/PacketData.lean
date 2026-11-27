@@ -5,6 +5,10 @@ import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.RepeatedGates
 open Matrix Finset Real
 open scoped Matrix.Norms.L2Operator
 namespace GaloisForLFunctions.HTGeometry.RepeatedGates.PhysicalBlocks.CollectiveSignals
+open private mix_square from GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.RepeatedGates.PhysicalBlocks.TripleRotation
+open private probe_odd from GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.RepeatedGates.PhysicalBlocks.TripleSignals.PauliPacket
+open private probe_supported from GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.RepeatedGates.PhysicalBlocks.TripleSignals.RequiredPairs
+open private triple_supported from GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.RepeatedGates.PhysicalBlocks.TripleSignals.LocalReplacement
 noncomputable section
 variable {n : ℕ}
 
@@ -18,15 +22,15 @@ def packetImage (e f : Fin (n+1)) (i : Fin (n+2)) :=
 
 theorem generator_square {e f : Fin (n+1)} (hm : e.succ=f.castSucc) :
     tripleGenerator e f*tripleGenerator e f=1 := by
-  apply mix_mul_self _ _ (finitePauliMatrix_mul_self _) (finitePauliMatrix_mul_self _)
+  apply mix_square _ _ (finitePauliMatrix_mul_self _) (finitePauliMatrix_mul_self _)
   exact finitePauliMatrix_anticommute_of_not_commute _ _ (fun h =>
     (show (0:Fin 3)≠2 by omega) ((commute_consecutive_coupling_iff e f hm _ _).mp h))
 
 theorem packetImage_hermitian (e f : Fin (n+1)) (i : Fin (n+2)) :
     (packetImage e f i).IsHermitian := by
   change IsSelfAdjoint (tripleGenerator e f*packetProbe e i*tripleGenerator e f)
-  rw [IsSelfAdjoint,star_mul,star_mul,(tripleGenerator_selfAdjoint e f).star_eq,
-    (finitePauliMatrix_isHermitian _).isSelfAdjoint.star_eq,mul_assoc]
+  have hp : star (packetProbe e i)=packetProbe e i := (finitePauliMatrix_isHermitian _).isSelfAdjoint.star_eq
+  rw [IsSelfAdjoint,star_mul,star_mul,(tripleGenerator_selfAdjoint e f).star_eq,hp,mul_assoc]
 
 theorem packetImage_unitary {e f : Fin (n+1)} (hm : e.succ=f.castSucc) (i : Fin (n+2)) :
     packetImage e f i∈unitary _ := by
@@ -37,9 +41,9 @@ theorem packetImage_unitary {e f : Fin (n+1)} (hm : e.succ=f.castSucc) (i : Fin 
 
 theorem packetImage_supported {e f : Fin (n+1)} (hm : e.succ=f.castSucc) {i : Fin (n+2)}
     (hi : i∈tripleSites e f) : IsSiteSupported (tripleSites e f) (packetImage e f i) := by
-  have hp := IsSiteSupported.mono (singleton_subset_iff.mpr hi) (onsite_probe_supported i (tripleAxis e i))
-  exact IsSiteSupported.matrix_mul (IsSiteSupported.matrix_mul (tripleGenerator_supported hm) hp)
-    (tripleGenerator_supported hm)
+  have hp := IsSiteSupported.mono (singleton_subset_iff.mpr hi) (probe_supported i (tripleAxis e i))
+  exact IsSiteSupported.matrix_mul (IsSiteSupported.matrix_mul (triple_supported hm) hp)
+    (triple_supported hm)
 
 /-- The missing-input probe reverses the transferred reporter for every
 choice of two distinct packet sites, including adjacent sites. -/
@@ -50,7 +54,7 @@ theorem packetImage_flip {e f : Fin (n+1)} (hm : e.succ=f.castSucc) {i j : Fin (
     (couplingWord e (2,0)) (couplingWord f (2,2)) (fun h =>
       (show (0:Fin 3)≠2 by omega) ((commute_consecutive_coupling_iff e f hm _ _).mp h))
   have he := mix_exchange _ _ _ _ (finitePauliMatrix_mul_self _) (finitePauliMatrix_mul_self _)
-    hab (triple_probe_odd hm hi) (triple_probe_odd hm hj) ((commute_onsitePauli_iff ..).mpr (Or.inl hne))
+    hab (probe_odd hm hi) (probe_odd hm hj) ((commute_onsitePauli_iff ..).mpr (Or.inl hne))
   exact neg_eq_iff_eq_neg.mp he.symm
 
 theorem packet_transfer {e f : Fin (n+1)} (hm : e.succ=f.castSucc) {i j : Fin (n+2)}

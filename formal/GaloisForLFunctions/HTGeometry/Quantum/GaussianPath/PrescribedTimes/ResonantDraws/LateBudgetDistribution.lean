@@ -35,20 +35,16 @@ private theorem translated_fraction {N : ℕ} (H : selfAdjoint (Register N)) (s 
   exact congrArg (fun a : ℝ≥0∞ => a.toReal/T)
     ((measurePreserving_add_right volume o).measure_preimage (hm.inter measurableSet_Icc).nullMeasurableSet).symm
 
-private theorem late_from_origin (k s : ℕ) (ε : ℝ)
-    (o : (PrefixIndex (k+1) → ℝ) → ℝ) (ho : Measurable o)
-    (hcov : ∀ a > (0:ℝ), ∀ x, a*o (a • x)=o x) :
-    let μ := Measure.pi fun _ : PrefixIndex (k+1) => gaussianReal 0 1
-    Tendsto (fun t => μ.real {x | pathGateDistance (k+1) s x (o x+t) ≤ ε}) atTop
-      (𝓝 (∫ ω, affordablePhaseMass k s ε ω ∂pathPauliDisorderLaw)) := by
-  intro μ
-  letI : IsProbabilityMeasure pathPauliDisorderLaw := by unfold pathPauliDisorderLaw; infer_instance
-  let X := fun ω i => pathPauliDisorderShell ω (k+1) (pathCoeffEquiv (k+1) i)
-  let E (t : ℝ) := {x | pathGateDistance (k+1) s x (o x+t) ≤ ε}
-  have hm (t : ℝ) : MeasurableSet (E t) := measurable_origin_event (k+1) s ε t o ho
-  refine snapshot_of_random_ray_limit X (gaussian_pauli_prefix_coordinates_law (k+1)) E hm
-    (affordablePhaseMass k s ε) ?_
-  intro b hb
+/-- Dilation samples the physical orbit over a growing interval after any
+positively homogeneous clock of degree minus one. -/
+theorem budget_ray_limit (k s : ℕ) (ε : ℝ)
+    (o : (PrefixIndex (k+1) → ℝ) → ℝ)
+    (hcov : ∀ a > (0:ℝ), ∀ x, a*o (a • x)=o x) {b : ℝ} (hb : 1<b) :
+    let X := fun (ω : PathPauliDisorder) i => pathPauliDisorderShell ω (k+1) (pathCoeffEquiv (k+1) i)
+    let E := fun t => {x | pathGateDistance (k+1) s x (o x+t) ≤ ε}
+    ∀ᵐ ω ∂pathPauliDisorderLaw, Tendsto (fun t => rayMass b (E t) (X ω)) atTop
+      (𝓝 ((b-1)*affordablePhaseMass k s ε ω)) := by
+  intro X E
   filter_upwards [PhaseBoundary.gaussian_uniform_affordable_fraction] with ω hw
   let u := pathPauliDisorderShell ω (k+1)
   let H : selfAdjoint (Register (k+3)) := ⟨pathHamiltonian u,isSelfAdjoint_pathHamiltonian u⟩
@@ -67,6 +63,21 @@ private theorem late_from_origin (k s : ℕ) (ε : ℝ)
   intro t
   exact (congrArg (fun S : Set ℝ => (volume.restrict (Icc 1 b)).real ((fun a => a*t) ⁻¹' S)) hphys).trans
     (rayMass_of_covariant_origin (k+1) s o hcov x b t ε).symm
+
+private theorem late_from_origin (k s : ℕ) (ε : ℝ)
+    (o : (PrefixIndex (k+1) → ℝ) → ℝ) (ho : Measurable o)
+    (hcov : ∀ a > (0:ℝ), ∀ x, a*o (a • x)=o x) :
+    let μ := Measure.pi fun _ : PrefixIndex (k+1) => gaussianReal 0 1
+    Tendsto (fun t => μ.real {x | pathGateDistance (k+1) s x (o x+t) ≤ ε}) atTop
+      (𝓝 (∫ ω, affordablePhaseMass k s ε ω ∂pathPauliDisorderLaw)) := by
+  intro μ
+  letI : IsProbabilityMeasure pathPauliDisorderLaw := by unfold pathPauliDisorderLaw; infer_instance
+  let X := fun ω i => pathPauliDisorderShell ω (k+1) (pathCoeffEquiv (k+1) i)
+  let E (t : ℝ) := {x | pathGateDistance (k+1) s x (o x+t) ≤ ε}
+  have hm (t : ℝ) : MeasurableSet (E t) := measurable_origin_event (k+1) s ε t o ho
+  refine snapshot_of_random_ray_limit X (gaussian_pauli_prefix_coordinates_law (k+1)) E hm
+    (affordablePhaseMass k s ε) ?_
+  exact fun _ hb => budget_ray_limit k s ε o hcov hb
 
 /-- At every tolerance and budget, the late prescribed-delay probability
 converges to the mean affordable phase fraction of the same Gaussian

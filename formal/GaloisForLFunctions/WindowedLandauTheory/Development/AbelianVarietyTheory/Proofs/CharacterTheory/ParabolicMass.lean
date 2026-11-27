@@ -1,6 +1,7 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CharacterTheory.PolynomialConvolution
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CharacterTheory.ParabolicBlockSum
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CharacterTheory.SubspaceCounts
+import Mathlib.Algebra.BigOperators.Field
 import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Card
 
 /-! Factorization of characteristic-polynomial mass by invariant subspaces. -/
@@ -57,7 +58,10 @@ open Classical in
 theorem mass_eq {F : Type} [Field F] {V : Type} [AddCommGroup V] [Module F V] [FiniteDimensional F V]
     (φ : Module.End F V → ℂ) (P : F[X]) :
     mass φ P = ∑ᶠ g, if LinearMap.charpoly g = P then φ g else 0 := by
-  simp only [mass, finsum_mem_def, Set.indicator_apply, Set.mem_setOf_eq]
+  refine (finsum_mem_def {g : Module.End F V | LinearMap.charpoly g = P} φ).trans ?_
+  apply congrArg finsum
+  funext g
+  simp only [Set.indicator_apply, Set.mem_setOf_eq]
 
 theorem finite_end (F : Type) [Field F] [Finite F] (V : Type) [AddCommGroup V] [Module F V]
     [FiniteDimensional F V] : Finite (Module.End F V) :=

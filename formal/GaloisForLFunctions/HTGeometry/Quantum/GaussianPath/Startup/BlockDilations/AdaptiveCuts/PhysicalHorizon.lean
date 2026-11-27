@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.BlockDilations.AdaptiveCuts.ContinuousWindow
+import GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.RepeatedGates.PhysicalBlocks.TripleSignals.FirstExcess
 
 /-! # A K^(65/64) horizon for physical circuit costs and pairs of visits -/
 
@@ -12,8 +13,10 @@ private theorem root_horizon (K : ℕ) (hK : 0<K) :
   have hq : 0≤2*(sizeRoot K:ℝ) := by positivity
   have hhi : (K:ℝ)≤(2*(sizeRoot K:ℝ))^64 := by exact_mod_cast (root_bounds hK).2.2
   apply (rpow_le_rpow (Nat.cast_nonneg K) hhi (by norm_num : (0:ℝ)≤65/64)).trans_eq
-  rw [←rpow_natCast,←rpow_mul hq]
-  norm_num
+  calc
+    _ = ((2*(sizeRoot K:ℝ))^((64:ℕ):ℝ))^(65/64:ℝ) := by rw [rpow_natCast]
+    _ = (2*(sizeRoot K:ℝ))^(((64:ℕ):ℝ)*(65/64)) := (rpow_mul hq ..).symm
+    _ = _ := by norm_num
 
 /-- Almost surely on one nested chain, a positive density of gates is
 necessary at every physical date from inverse size through K^(65/64). -/
@@ -78,7 +81,32 @@ theorem gaussian_superlinear_visit_spacing :
   exact (hn (w-t) (by rwa [mul_comm]) hlag.2 (r+s)
     ⟨z,hz,C,hC,he.trans hef⟩).not_ge hk
 
+/-- On both sides of the actual first low visit after the near-Hilbert
+crossing, an inverse-size lag already forces an extensive combined
+cost. This persists throughout the superlinear window. -/
+theorem gaussian_superlinear_first_dip :
+    ∃ κ>0, ∃ A>0, ∃ δ>0, ∀ᵐ ω ∂pathPauliDisorderLaw, ∀ᶠ n : ℕ in atTop,
+      let K : ℝ := (n+2:ℕ)
+      let H : selfAdjoint (Matrix (Fin (n+2)→Bool) (Fin (n+2)→Bool) ℂ) :=
+        ⟨pathHamiltonian (pathPauliDisorderShell ω n),isSelfAdjoint_pathHamiltonian _⟩
+      ∀ (s r : ℕ) (h : ℝ), A/K≤|h| → |h|≤δ*K^(65/64:ℝ) →
+        let v := RepeatedGates.PhysicalBlocks.firstLowAfterCrossing ω n s
+        HasProjectiveCircuitApproximation (n+2) (3/20) r (unitaryEvolution H.val (v+h)) →
+        κ*K<((s+r:ℕ):ℝ) := by
+  obtain ⟨κ,hκ,A,hA,δ,hδ,hg⟩ := gaussian_superlinear_visit_spacing
+  refine ⟨κ,hκ,A,hA,δ,hδ,?_⟩
+  filter_upwards [hg] with ω hω
+  filter_upwards [hω] with n hn
+  intro K H s r h hstart hend v hf
+  have hv : HasProjectiveCircuitApproximation (n+2) (1/10) s (unitaryEvolution H.val v) :=
+    (PrecisionReturns.firstVisit_isLeast H _ s (by norm_num : (0:ℝ)<1/10)).1.2
+  by_contra! hk
+  have hl := hn v (v+h) s r (1/10) (3/20) (by norm_num) hk hv hf
+  rw [add_sub_cancel_left] at hl
+  exact hl.elim hstart.not_gt hend.not_gt
+
 #print axioms gaussian_superlinear_from_startup
 #print axioms gaussian_superlinear_visit_spacing
+#print axioms gaussian_superlinear_first_dip
 end
 end GaloisForLFunctions.HTGeometry.BlockDilations.AdaptiveCuts

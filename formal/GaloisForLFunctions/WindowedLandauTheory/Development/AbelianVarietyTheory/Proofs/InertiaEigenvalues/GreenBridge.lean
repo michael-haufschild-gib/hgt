@@ -44,14 +44,14 @@ theorem exists_emb_eq {d : ℕ} (hd : 0 < d) {w : Fbar g} (hw : w ^ g ^ d = w) :
     have hk : k ^ g ^ d = k := by
       rw [← card_KK hd]
       exact FiniteField.pow_card k
-    simp [P, IsRoot, sub_eq_zero, ← map_pow, hk]
+    simp [P, IsRoot, ← map_pow, hk]
   have hcard : P.roots.toFinset.card ≤ (Finset.univ.image (emb g d)).card := by
     rw [Finset.card_image_of_injective _ (emb_injective d), Finset.card_univ, card_KK hd, ← hPdeg]
     exact (Multiset.toFinset_card_le _).trans (card_roots' P)
   have heq := Finset.eq_of_subset_of_card_le hsub hcard
   have hroot : w ∈ P.roots.toFinset := by
     rw [Multiset.mem_toFinset, mem_roots hP0]
-    simp [P, IsRoot, sub_eq_zero, hw]
+    simp [P, IsRoot, hw]
   rw [← heq] at hroot
   obtain ⟨k, -, hk⟩ := Finset.mem_image.mp hroot
   exact ⟨k, hk⟩
@@ -111,6 +111,10 @@ theorem teich_ne (L : LabelDatum g) {d : ℕ} (hd : 0 < d) {x : Fbar g} (hx : x 
   rw [hx, map_one] at h2
   exact one_ne_zero h2
 
+private theorem teich_pow_eq_one (L : LabelDatum g) {m : ℕ} {x : Fbar g}
+    (hx : x ^ m = 1) : L.teich x ^ m = 1 := by
+  rw [← map_pow, hx, map_one]
+
 def tu (L : LabelDatum g) {d : ℕ} (hd : 0 < d) {x : Fbar g} (hx : x ^ (g ^ d - 1) = 1) : ℂˣ :=
   Units.mk0 (L.teich x) (teich_ne L hd hx)
 
@@ -132,7 +136,7 @@ theorem theta_apply (L : LabelDatum g) {d : ℕ} (hd : 0 < d) {x : Fbar g} (hx :
     (k : (KK g d)ˣ) : ((theta L hd hx k : ℂˣ) : ℂ) = thetaOf L d x (emb g d k) := by
   obtain ⟨n, rfl⟩ := uu_pow L hd k
   rw [map_pow, theta_uu, Units.val_pow_eq_pow_val, Units.val_pow_eq_pow_val, map_pow, emb_uu,
-    thetaOf_gen_pow L hd hx n, tu, Units.val_mk0]
+    thetaOf_gen_pow L hd x (teich_pow_eq_one L hx) n, tu, Units.val_mk0]
 
 def th (L : LabelDatum g) {d : ℕ} (hd : 0 < d) (x : Fbar g) : (KK g d)ˣ →* ℂˣ :=
   if hx : x ^ (g ^ d - 1) = 1 then theta L hd hx else 1
@@ -219,7 +223,8 @@ theorem thetaOf_pow (L : LabelDatum g) {d : ℕ} (hd : 0 < d) {x w : Fbar g} (hx
     (hw : w ^ (g ^ d - 1) = 1) (m : ℕ) : thetaOf L d (x ^ m) w = thetaOf L d x (w ^ m) := by
   haveI : NeZero (g ^ d - 1) := ⟨(N_pos' hd).ne'⟩
   obtain ⟨n, -, rfl⟩ := (gen_prim L hd).eq_pow_of_pow_eq_one hw
-  rw [thetaOf_gen_pow L hd (unit_pow hx m) n, ← pow_mul, thetaOf_gen_pow L hd hx (n * m), map_pow,
+  rw [thetaOf_gen_pow L hd (x ^ m) (teich_pow_eq_one L (unit_pow hx m)) n, ← pow_mul,
+    thetaOf_gen_pow L hd x (teich_pow_eq_one L hx) (n * m), map_pow,
     ← pow_mul, mul_comm m n]
 
 theorem green_of_regular (hG : GlobalTheory.Published.GreenRegularCharacters) : GlobalTheory.GLq.Green := by

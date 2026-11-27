@@ -7,12 +7,13 @@ open Matrix Finset Real
 open scoped Matrix.Norms.L2Operator
 namespace GaloisForLFunctions.HTGeometry.RepeatedGates.PhysicalBlocks.CollectiveSignals
 open Temporal Feedback
+open private box_controls from GaloisForLFunctions.HTGeometry.Quantum.GaussianPath.Startup.RepeatedGates.PhysicalBlocks.TripleSignals.DisjointBoxes
 noncomputable section
 
 /-- On every chain, the number of calibrated packets times sin(t)⁸ is
 bounded by the number of nonmerging calls in any fitting circuit. -/
 theorem boxes_force_repeated_calls {n : ℕ} (ω : PathPauliDisorder) (C : TwoQubitCircuit (n+2))
-    {t δ : ℝ} (hδ : 0≤δ) (hs : 0 < (sin t)^2) (herr : 252*|t|*δ≤(sin t)^2/4)
+    {t δ : ℝ} (hδ : 0≤δ) (hs : 0 < (sin t)^2) (herr : 252* |t| * δ≤(sin t)^2/4)
     (z : ℂ) (hz : ‖z‖=1)
     (he : ‖unitaryEvolution (pathHamiltonian (pathPauliDisorderShell ω n)) t-z • C.eval.val‖≤1/4) :
     ((goodBoxes (1/sqrt 2) δ ω ((n+1)/4)).card:ℝ)*(sin t)^8 ≤
@@ -43,7 +44,7 @@ theorem boxes_force_repeated_calls {n : ℕ} (ω : PathPauliDisorder) (C : TwoQu
   let j (a : Fin T.card) : F := (v a).val
   have hj (a) : j a∈T := (v a).property
   have hinj : Function.Injective j := Subtype.val_injective.comp v.injective
-  have hbox (k : F) := goodBox_controls_incident (e:=e k) (f:=f k) (k:=k.val) rfl rfl
+  have hbox (k : F) := box_controls (e:=e k) (f:=f k) (k:=k.val) rfl rfl
     (show goodBox (1/sqrt 2) δ ω k.val from (mem_filter.mp k.property).2)
     (show |1/sqrt 2-1/sqrt 2|≤δ by simpa only [sub_self,abs_zero] using hδ)
   have hbound := compatible_count (e ∘ j) (f ∘ j) (x ∘ j) (y ∘ j) (fun a => hadj (j a))
@@ -59,7 +60,7 @@ theorem boxes_force_repeated_calls {n : ℕ} (ω : PathPauliDisorder) (C : TwoQu
   have hs₁ : s≤1 := by
     have hh := pow_le_one₀ (n:=4) (abs_nonneg (sin t)) (abs_le.mpr ⟨neg_one_le_sin _,sin_le_one _⟩)
     rwa [←abs_pow,abs_of_nonneg (by positivity : 0≤(sin t)^4)] at hh
-  have hm₀ : 0≤m := Nat.cast_nonneg _
+  have hm₀ : 0 ≤ m := Nat.cast_nonneg _
   have hr₀ : 0≤R := Nat.cast_nonneg _
   have hms₀ := mul_nonneg hm₀ hs₀
   have hquad : m*(m+1)*s^2≤272 := by

@@ -82,14 +82,15 @@ theorem gaussian_superlinear_window :
   have htop : T n≤K^2 := by
     have hpoly : q^65≤K^2 := by
       rw [show (65:ℕ)=64+1 by decide,pow_succ,pow_two]
-      exact mul_le_mul (by exact_mod_cast hqlo) (by exact_mod_cast hqn) (Nat.cast_nonneg _) hK'.le
+      exact mul_le_mul (by dsimp only [K,q]; exact_mod_cast hqlo)
+        (by dsimp only [K,q]; exact_mod_cast hqn) (Nat.cast_nonneg _) hK'.le
     exact (mul_le_of_le_one_left (pow_nonneg (Nat.cast_nonneg _) _) hδ.2).trans hpoly
   let j := ⌊t*K^2⌋₊
   have ht' : 0≤t := (by linarith only [ha] : 0≤a+1).trans ht.1
   have hfl : (j:ℝ)≤t*K^2 := Nat.floor_le (mul_nonneg ht' hK₂.le)
   have hj : j<(n+2)^4+1 := by
     apply Nat.lt_succ_of_le
-    apply Nat.cast_le.mp (α:=ℝ)
+    apply (Nat.cast_le (α:=ℝ)).mp
     rw [Nat.cast_pow]
     exact hfl.trans ((mul_le_mul_of_nonneg_right (ht.2.trans htop) hK₂.le).trans_eq (by ring))
   let y := gridDate n j

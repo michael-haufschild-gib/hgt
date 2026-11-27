@@ -35,12 +35,15 @@ private theorem failed_mass :
       (fun l => ω (candidateIndex (3*q^62*i.val) (j,l)))∉weakBond (((q:ℝ)^6)⁻¹)})≤_
     rw [hk]
     exact all_buffer_miss_bound b k
-  have hlarge : 4*log K≤c*(q:ℝ)^8 := (by simpa only [add_zero] using hn : 4*log K≤c*(q:ℝ)^2).trans
+  have hlarge : 4*log K ≤ c*(q:ℝ)^8 := (by simpa only [add_zero] using hn : 4*log K ≤ c*(q:ℝ)^2).trans
     (mul_le_mul_of_nonneg_left (pow_le_pow_right₀ hq' (by decide : 2≤8)) hc.le)
   have htail : exp (-c*(q:ℝ)^8)≤1/K^4 := by
     apply (exp_le_exp.mpr (show -c*(q:ℝ)^8≤ -(4*log K) by linarith only [hlarge])).trans_eq
     rw [exp_neg,show (4:ℝ)*log K=(4:ℕ)*log K by norm_num,exp_nat_mul,exp_log hK,one_div]
-  have hb : (b:ℝ)≤K := by exact_mod_cast ((Nat.div_le_self (n+1) (3*N)).trans (by omega : n+1≤n+2))
+  have hb : (b:ℝ)≤K := by
+    dsimp only [b,K]
+    exact_mod_cast ((Nat.div_le_self (n+1) (3*N)).trans (by omega : n+1≤n+2))
+  change pathPauliDisorderLaw.real (failedBuffers n)≤1/K^3
   apply (hprice.trans (mul_le_mul hb htail (exp_pos _).le hK.le)).trans_eq
   field_simp
 
@@ -77,8 +80,9 @@ theorem gaussian_all_weak_buffers :
     simp only [Finset.sum_singleton,Finset.card_singleton,Nat.cast_one,one_pow,mul_one,div_one] at hh
     have hK : 0<((n+2:ℕ):ℝ) := by positivity
     rw [log_mul hB.ne' hK.ne'] at hh
-    have hq : (0:ℝ)≤q := Nat.cast_nonneg _
-    nlinarith only [hh,hl,abs_nonneg (pathPauliDisorderShell ω n l),hq]
+    apply le_of_sq_le_sq _ (Nat.cast_nonneg q)
+    change 4*log ((n+2:ℕ):ℝ)+4*log B≤1*(q:ℝ)^2 at hl
+    linarith only [hh,hl]
 
 #print axioms gaussian_all_weak_buffers
 end

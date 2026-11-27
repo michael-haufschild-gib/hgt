@@ -37,15 +37,27 @@ private theorem sectionMul_restrict {X : Scheme.{0}} {M N : LB X} {V W : X.Opens
     sectionMul ((toMod M).presheaf.map (homOfLE h).op s) ((toMod N).presheaf.map (homOfLE h).op t) =
       (toMod (twist M N 1)).presheaf.map (homOfLE h).op (sectionMul s t) := by
   apply sec_ext
-  intro p
-  simp only [coord_sectionMul, coord_map, map_mul, resG_resG]
+  rintro ⟨i, j⟩
+  let A := (twist M N 1).U (i, j)
+  have e := (resG X (inf_le_inf_right A h)).map_mul
+    (resG X (inf_le_inf_left V inf_le_left : V ⊓ A ≤ V ⊓ M.U i) (coord s i))
+    (resG X (inf_le_inf_left V inf_le_right : V ⊓ A ≤ V ⊓ N.U j) (coord t j))
+  simp only [coord_sectionMul, coord_map, resG_resG]
+  simp only [A, resG_resG] at e
+  exact e.symm
 
 private theorem chartEquiv_sectionMul {X : Scheme.{0}} {M N : LB X} {V : X.Opens}
     (hM : M.IsLB) (hN : N.IsLB) (i : M.ι) (j : N.ι) (hi : V ≤ M.U i) (hj : V ≤ N.U j)
     (s : Γ(toMod M, V)) (t : Γ(toMod N, V)) :
     chartEquiv (twist_isLB hM hN 1) (i, j) (le_inf hi hj) (sectionMul s t) =
       chartEquiv hM i hi s * chartEquiv hN j hj t := by
-  simp only [chartEquiv_apply, coord_sectionMul, map_mul, resG_resG]
+  let A := (twist M N 1).U (i, j)
+  have e := (resG X (le_inf le_rfl (le_inf hi hj) : V ≤ V ⊓ A)).map_mul
+    (resG X (inf_le_inf_left V inf_le_left : V ⊓ A ≤ V ⊓ M.U i) (coord s i))
+    (resG X (inf_le_inf_left V inf_le_right : V ⊓ A ≤ V ⊓ N.U j) (coord t j))
+  simp only [chartEquiv_apply, coord_sectionMul]
+  simp only [A, resG_resG] at e
+  exact e
 
 variable {K : Type} [Field K] {X Y Z : Scheme.{0}}
   {f : X ⟶ Spec (.of K)} {g : Y ⟶ Spec (.of K)} {p : Z ⟶ X} {q : Z ⟶ Y}
@@ -71,7 +83,10 @@ def externalProductMap (h : p ≫ f = q ≫ g)
   refine TensorProduct.lift (LinearMap.mk₂ K (fun x y => sectionMul (a x) (b y)) ?_ ?_ ?_ ?_)
   · intro x x' y
     rw [map_add]
-    exact sec_ext fun i => by simp only [coord_sectionMul, coord_add, map_add, add_mul]
+    exact sec_ext fun i => by
+      simp only [coord_sectionMul, coord_add, map_add]
+      exact (fun (R : CommRingCat.{0}) (a b c : R) => add_mul a b c)
+        Γ(Z, W ⊓ (Ext).U i) _ _ _
   · intro r x y
     change sectionMul (a (algebraMap K Γ(X, U) r • x)) (b y) =
       algebraMap K Γ(Z, W) r • sectionMul (a x) (b y)
@@ -80,10 +95,14 @@ def externalProductMap (h : p ≫ f = q ≫ g)
     rw [show a (algebraMap K Γ(X, U) r • x) =
       p.appLE U W hU (algebraMap K Γ(X, U) r) • a x from pullSection_smul _ _ _ _, e]
     exact sec_ext fun i => by
-      simp only [coord_sectionMul, coord_smul, map_mul, resG_resG, mul_assoc]
+      simp only [coord_sectionMul, coord_smul, map_mul, resG_resG]
+      exact mul_assoc _ _ _
   · intro x y y'
     rw [map_add]
-    exact sec_ext fun i => by simp only [coord_sectionMul, coord_add, map_add, mul_add]
+    exact sec_ext fun i => by
+      simp only [coord_sectionMul, coord_add, map_add]
+      exact (fun (R : CommRingCat.{0}) (a b c : R) => mul_add a b c)
+        Γ(Z, W ⊓ (Ext).U i) _ _ _
   · intro r x y
     change sectionMul (a x) (b (algebraMap K Γ(Y, V) r • y)) =
       algebraMap K Γ(Z, W) r • sectionMul (a x) (b y)
@@ -93,7 +112,7 @@ def externalProductMap (h : p ≫ f = q ≫ g)
       q.appLE V W hV (algebraMap K Γ(Y, V) r) • b y from pullSection_smul _ _ _ _, e]
     exact sec_ext fun i => by
       simp only [coord_sectionMul, coord_smul, map_mul, resG_resG]
-      ring
+      exact mul_left_comm _ _ _
 
 theorem externalProductMap_restrict (h : p ≫ f = q ≫ g)
     {U U' : X.Opens} {V V' : Y.Opens} {W W' : Z.Opens}
@@ -145,11 +164,21 @@ theorem externalProductMap_bijective (H : IsPullback p q f g) (hM : M.IsLB) (hN 
     change chartEquiv (twist_isLB (hM.pull p) (hN.pull q) 1) (i', j') (le_inf hi' hj')
       (sectionMul (pullSection (ChartPull.pull M p) inf_le_left s)
         (pullSection (ChartPull.pull N q) inf_le_right t)) = eZ (e (s ⊗ₜ t))
-    rw [chartEquiv_sectionMul, chartEquiv_pullSection _ hM (hM.pull p) _ hi hi',
+    rw [chartEquiv_sectionMul (hM.pull p) (hN.pull q) i' j' hi' hj',
+      chartEquiv_pullSection _ hM (hM.pull p) _ hi hi',
       chartEquiv_pullSection _ hN (hN.pull q) _ hj hj']
     change _ = eZ (eZ.symm (productSectionsEquiv H U V hU hV (eX s ⊗ₜ eY t)))
-    rw [eZ.apply_symm_apply, productSectionsEquiv_tmul] <;> rfl
+    rw [eZ.apply_symm_apply, productSectionsEquiv_tmul]
+    rfl
   rw [he]
   exact e.bijective
+
+theorem externalProductMap_bijective_of_eq (H : IsPullback p q f g) (hM : M.IsLB) (hN : N.IsLB)
+    {U : X.Opens} {V : Y.Opens} {W : Z.Opens} (hU : IsAffineOpen U) (hV : IsAffineOpen V)
+    (e : W = p ⁻¹ᵁ U ⊓ q ⁻¹ᵁ V) (i : M.ι) (j : N.ι)
+    (hi : U ≤ M.U i) (hj : V ≤ N.U j) :
+    Function.Bijective (externalProductMap M N H.w (e.le.trans inf_le_left) (e.le.trans inf_le_right)) := by
+  subst W
+  exact externalProductMap_bijective M N H hM hN hU hV i j hi hj
 
 end GlobalTheory.LineBundleSections

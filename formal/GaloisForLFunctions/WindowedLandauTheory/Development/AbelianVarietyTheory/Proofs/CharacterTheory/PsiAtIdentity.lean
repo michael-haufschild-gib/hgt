@@ -8,7 +8,7 @@ open Polynomial
 
 namespace GlobalTheory.CuspGL
 
-private def dimensionWeight (q a : ℕ) : ℂ :=
+private noncomputable def dimensionWeight (q a : ℕ) : ℂ :=
   if a = 0 then 0 else ∏ i ∈ Finset.Ico 1 a, (1 - (q : ℂ) ^ i)
 
 private theorem sum_dimensionWeight (F : Type) [Field F] [Finite F]

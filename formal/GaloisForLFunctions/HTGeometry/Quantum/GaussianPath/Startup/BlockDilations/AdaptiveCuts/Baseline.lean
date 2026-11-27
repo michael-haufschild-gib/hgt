@@ -15,7 +15,7 @@ theorem expand_disjoint {ι : Type*} [DecidableEq ι] (C S : Finset ι) (h : Dis
   by_cases hs : i∈S
   · have hc : i∉C := fun hi => disjoint_left.mp h hs hi
     simp [expand,hs,hc]
-  · simp only [expand,mem_union,hs,or_false,if_false]
+  · simp [expand,Finset.mem_union,hs]
 
 /-- Bounds on the physical draw include a uniform cap on the chosen
 seams and a second cap on all coefficients incident on them. -/

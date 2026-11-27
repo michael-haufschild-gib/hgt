@@ -22,7 +22,10 @@ private def nonemptyCoordinates {T : Type} [LinearOrder T]
     simp⟩
   left_inv x := Subtype.ext (funext fun I => by
     rcases I.eq_empty_or_nonempty with rfl | hI
-    · exact (dif_neg (by simp)).trans (show x.1 ∅ = 0 from x.2).symm
+    · change (if hs : (∅ : Finset T).Nonempty then
+          (fun s : {s : Finset T // s.Nonempty} => x.1 s.1) ⟨∅, hs⟩ else 0) = x.1 ∅
+      rw [dif_neg Finset.not_nonempty_empty]
+      exact x.2.symm
     · exact dif_pos hI)
   right_inv x := funext fun I => dif_pos I.2
   map_add' _ _ := rfl
@@ -39,27 +42,32 @@ private def mixedCoordinates :
     D.regular (K := K) ≃ₗ[K]
       (∀ s : {s : Finset ι // s.Nonempty}, ∀ t : {t : Finset κ // t.Nonempty}, D.obj (uni s.1 t.1)) := by
   classical
-  let extend (y : ∀ s : {s : Finset ι // s.Nonempty}, ∀ t : {t : Finset κ // t.Nonempty},
-      D.obj (uni s.1 t.1)) (s : Finset ι) (t : Finset κ) : D.obj (uni s t) :=
-    if hs : s.Nonempty then if ht : t.Nonempty then y ⟨s, hs⟩ ⟨t, ht⟩ else 0 else 0
-  have assemble (y) (s : Finset ι) (t : Finset κ) :
-      ((D.cochainSlices K).symm (extend y)) (uni s t) = extend y s t :=
-    congrFun (congrFun ((D.cochainSlices K).apply_symm_apply (extend y)) s) t
-  refine
+  let Y := ∀ s : {s : Finset ι // s.Nonempty}, ∀ t : {t : Finset κ // t.Nonempty}, D.obj (uni s.1 t.1)
+  let π : D.regular (K := K) →ₗ[K] Y :=
     { toFun := fun x s t => x.1 (uni s.1 t.1)
-      invFun := fun y => ⟨(D.cochainSlices K).symm (extend y), ?_⟩
-      left_inv := fun x => Subtype.ext (funext fun u => ?_)
-      right_inv := fun y => funext fun s => funext fun t => ?_
       map_add' := fun _ _ => rfl
       map_smul' := fun _ _ => rfl }
-  · change ((D.cochainSlices K).symm (extend y)) ∅ = 0
-    simpa only [uni_empty_empty] using (hzero ∅ ∅ (by simp)).elim
-      (((D.cochainSlices K).symm (extend y)) (uni ∅ ∅)) 0
-  · obtain ⟨s, t, rfl⟩ : ∃ s t, u = uni s t := ⟨lft u, rgt u, (uni_lft_rgt u).symm⟩
-    by_cases h : s.Nonempty ∧ t.Nonempty
-    · exact (assemble _ s t).trans (by simp only [extend, dif_pos h.1, dif_pos h.2])
-    · exact (hzero s t h).elim _ _
-  · exact (assemble y s.1 t.1).trans (by simp only [extend, dif_pos s.2, dif_pos t.2])
+  refine LinearEquiv.ofBijective π ⟨?_, ?_⟩
+  · intro x y h
+    apply Subtype.ext
+    funext u
+    rw [← uni_lft_rgt u]
+    by_cases e : (lft u).Nonempty ∧ (rgt u).Nonempty
+    · exact congrFun (congrFun h ⟨lft u, e.1⟩) ⟨rgt u, e.2⟩
+    · exact (hzero _ _ e).elim _ _
+  · intro y
+    let a (s : Finset ι) (t : Finset κ) : D.obj (uni s t) :=
+      if hs : s.Nonempty then if ht : t.Nonempty then y ⟨s, hs⟩ ⟨t, ht⟩ else 0 else 0
+    let x := (D.cochainSlices K).symm a
+    have hx (s : Finset ι) (t : Finset κ) : x (uni s t) = a s t :=
+      congrFun (congrFun ((D.cochainSlices K).apply_symm_apply a) s) t
+    have h₀ : Subsingleton (D.obj (∅ : Finset (ι ⊕ₗ κ))) :=
+      (uni_empty_empty (ι := ι) (κ := κ)) ▸ hzero ∅ ∅ (fun e => Finset.not_nonempty_empty e.1)
+    refine ⟨⟨x, h₀.elim _ _⟩, ?_⟩
+    funext s t
+    change x (uni s.1 t.1) = y s t
+    rw [hx]
+    simp only [a, dif_pos s.2, dif_pos t.2]
 
 variable [Fintype ι] [Fintype κ]
   (e : ∀ (s : Finset ι) (t : Finset κ), s.Nonempty → t.Nonempty →

@@ -110,14 +110,17 @@ theorem primeLab_to_regularChar : ∀ (g : ℕ) [Fact g.Prime] (d : ℕ), 0 < d 
   refine ⟨c, fun P hP => ?_, fun P P' hP hP' ⟨i, hi, h⟩ => ?_⟩
   · obtain ⟨u, hu, hcu⟩ := hc P hP
     intro i j hi hj h
-    rw [hcu, ← map_pow, ← map_pow] at h
-    have h' := congrArg Units.val (e.injective h)
+    rw [hcu] at h
+    have he : u ^ g ^ i = u ^ g ^ j :=
+      e.injective ((map_pow e u (g ^ i)).trans (h.trans (map_pow e u (g ^ j)).symm))
+    have h' := congrArg Units.val he
     simp only [Units.val_pow_eq_pow_val] at h'
     exact orbit_regular hP hu i j hi hj h'
   · obtain ⟨u, hu, hcu⟩ := hc P hP
     obtain ⟨u', hu', hcu'⟩ := hc P' hP'
-    rw [hcu, hcu', ← map_pow] at h
-    have h' := congrArg Units.val (e.injective h)
+    rw [hcu, hcu'] at h
+    have he : u' = u ^ g ^ i := e.injective (h.trans (map_pow e u (g ^ i)).symm)
+    have h' := congrArg Units.val he
     simp only [Units.val_pow_eq_pow_val] at h'
     have hr : aeval (u' : K) P = 0 := by rw [h', aeval_pow_frob, hu, zero_pow (pow_ne_zero _ (Fact.out : g.Prime).ne_zero)]
     rw [minpoly.eq_of_irreducible_of_monic hP.2.1 hr hP.1, minpoly.eq_of_irreducible_of_monic hP'.2.1 hu' hP'.1]

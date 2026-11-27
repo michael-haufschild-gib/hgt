@@ -46,10 +46,17 @@ private theorem summation_over_simple {χ : G → ℂ} (hχ : χ ∈ virtualChar
     characterPairing G χ η =
         characterPairing G (fun x => ∑ α ∈ S, characterPairing G χ α * α x) η :=
       congrArg (fun φ => characterPairing G φ η) (funext hχsum).symm
+    _ = characterPairing G (fun x => ∑ α : S, characterPairing G χ α.val * α.val x) η := by
+      congr 1
+      funext x
+      rw [Finset.univ_eq_attach]
+      exact (Finset.sum_attach S (fun α : G → ℂ => characterPairing G χ α * α x)).symm
+    _ = ∑ α : S, characterPairing G χ α.val * characterPairing G α.val η :=
+      characterPairing_sum_mul_left (G := G) (fun α : S => characterPairing G χ α.val)
+        (fun α : S => α.val) η
     _ = _ := by
-      simpa only [Finset.univ_eq_attach, Finset.sum_attach] using
-        characterPairing_sum_mul_left G (fun α : ↥S => characterPairing G χ α.val)
-          (fun α : ↥S => α.val) η
+      rw [Finset.univ_eq_attach]
+      exact Finset.sum_attach S (fun α : G → ℂ => characterPairing G χ α * characterPairing G α η)
 
 /-- Nonzero pairing with an integral virtual character detects a simple character
 that pairs nontrivially with both functions. -/
@@ -98,7 +105,8 @@ theorem pairing_ne_zero_of_common_simple (χ η : GenuineCharacter G) {α : G �
   have hle :
       (characterPairing G χ.val α * characterPairing G α η.val).re ≤
         ∑ β ∈ S, (characterPairing G χ.val β * characterPairing G β η.val).re := by
-    refine Finset.single_le_sum (fun β hb => ?_) ha
+    refine Finset.single_le_sum (f := fun β : G → ℂ =>
+      (characterPairing G χ.val β * characterPairing G β η.val).re) (fun β hb => ?_) ha
     obtain ⟨a, b, ea, eb⟩ := natTerms β (hS hb)
     rw [ea, eb, ← Nat.cast_mul, Complex.natCast_re]
     exact Nat.cast_nonneg _

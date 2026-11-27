@@ -23,6 +23,7 @@ private def termCongr (n : ℕ) : G.term n ≃ₗ[K] H.term n where
   map_add' x y := Subtype.ext (e.map_add x.1 y.1)
   map_smul' r x := Subtype.ext (e.map_smul r x.1)
 
+include hπ in
 /-- A graded cochain isomorphism induces an isomorphism in each degree. -/
 theorem nonempty_homology_equiv_of_graded (hd : ∀ x, e (G.d x) = H.d (e x)) (n : ℕ) :
     Nonempty ((G.degreeShort n).homology ≃ₗ[K] (H.degreeShort n).homology) := by

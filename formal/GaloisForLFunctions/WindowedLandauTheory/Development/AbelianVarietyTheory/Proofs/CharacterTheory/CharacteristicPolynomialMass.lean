@@ -4,6 +4,8 @@ import Mathlib.LinearAlgebra.Isomorphisms
 
 /-! The distribution of a class function by characteristic polynomial. -/
 
+noncomputable section
+
 open Polynomial
 
 namespace GlobalTheory.CuspGL

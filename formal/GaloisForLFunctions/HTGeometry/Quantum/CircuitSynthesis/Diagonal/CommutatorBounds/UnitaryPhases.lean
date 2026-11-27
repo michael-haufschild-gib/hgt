@@ -23,14 +23,14 @@ theorem exists_diagonal_unitary (U : Matrix I I ℂ) (hU : U∈unitary (Matrix I
   let Φ := Matrix.toEuclideanCLM (𝕜:=ℂ) (n:=I)
   have hb (i : I) : ‖z i-w i‖≤‖U-D‖ := by
     let v : EuclideanSpace ℂ I := EuclideanSpace.single i 1
-    have hv : ‖v‖=1 := by simp only [v,PiLp.norm_single,Complex.norm_one]
+    have hv : ‖v‖=1 := by simp only [v,PiLp.norm_single,norm_one]
     have hd : Φ D v=z i • v := by
       ext j
       change (D *ᵥ v.ofLp) j=z i*v j
       rw [Matrix.mulVec_diagonal]
       by_cases h : j=i
       · subst j; rfl
-      · simp [v,EuclideanSpace.single,h,Ne.symm h]
+      · simp [v,EuclideanSpace.single,h]
     have hu : ‖Φ U v‖=1 := (norm_apply_of_mem_unitary (Unitary.map_mem Φ hU) v).trans hv
     have hu' : ‖Φ D v‖=‖z i‖ := by rw [hd,norm_smul,hv,mul_one]
     have hrad : ‖z i-w i‖=|‖z i‖-1| := by
@@ -38,10 +38,10 @@ theorem exists_diagonal_unitary (U : Matrix I I ℂ) (hU : U∈unitary (Matrix I
       rw [←he,norm_mul,hw,mul_one,←Complex.ofReal_one,←Complex.ofReal_sub,Complex.norm_real,Real.norm_eq_abs]
     rw [hrad,←hu',←hu]
     apply (abs_norm_sub_norm_le (Φ D v) (Φ U v)).trans
-    rw [←ContinuousLinearMap.sub_apply,←map_sub]
+    rw [←_root_.sub_apply,←map_sub]
     exact ((Φ (D-U)).le_opNorm v).trans_eq (by rw [hv,mul_one,Matrix.l2_opNorm_toEuclideanCLM,norm_sub_rev])
   have hdiag : ‖D-diagonal w‖≤‖U-D‖ := by
-    rw [show D-diagonal w=diagonal (z-w) from (diagonal_sub ..).symm,Matrix.l2_opNorm_diagonal]
+    rw [show D-diagonal w=diagonal (z-w) from diagonal_sub z w,Matrix.l2_opNorm_diagonal]
     exact (pi_norm_le_iff_of_nonneg (norm_nonneg _)).mpr hb
   refine ⟨w,hw,fun i j h => congrArg (fun a : ℂ => Complex.exp ((a.arg:ℂ)*Complex.I)) h,
     (norm_sub_le_norm_sub_add_norm_sub U D (diagonal w)).trans ?_⟩
@@ -63,7 +63,7 @@ theorem commuting_diagonal_approximation (H U : Matrix I I ℂ) (hU : U∈unitar
   have hcomm : ‖Z*U-U*Z‖≤2*‖H-Z‖ := by
     rw [he]
     apply (norm_sub_le ..).trans
-    rw [CStarRing.norm_mul_mem_unitary _ hU,CStarRing.norm_mem_unitary_mul _ hU,norm_sub_rev]; ring_nf
+    rw [CStarRing.norm_mul_mem_unitary _ hU,CStarRing.norm_mem_unitary_mul _ hU,norm_sub_rev,two_mul]
   have h := (offDiagonal_le_commutator d hg hsep U).trans
     (mul_le_mul_of_nonneg_left hcomm (div_nonneg (sqrt_nonneg _) hg.le))
   exact ⟨w,hw,hf,hdiag.trans ((mul_le_mul_of_nonneg_left h zero_le_two).trans_eq (by ring))⟩

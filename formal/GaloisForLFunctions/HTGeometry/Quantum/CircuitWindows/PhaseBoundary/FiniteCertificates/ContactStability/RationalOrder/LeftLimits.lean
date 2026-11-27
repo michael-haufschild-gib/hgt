@@ -14,13 +14,13 @@ theorem left_sign {f : ℝ → ℝ} (hf : Continuous f) (h : IsAlgebraic coeffic
   let S := {t | f t=0}
   let F := Icc (v-1) v ∩ frontier S
   have hfin : F.Finite := finite_zero_frontier hf h _ _
-  have hF : (F \ {v})ᶜ∈𝓝 v := (hfin.diff (t:={v})).isClosed.isOpen_compl.mem_nhds (fun ht => ht.2 rfl)
+  have hF : (F \ {v})ᶜ∈𝓝 v := (hfin.sdiff (t:={v})).isClosed.isOpen_compl.mem_nhds (fun ht => ht.2 rfl)
   have hfree : ∀ᶠ t in 𝓝[<] v, t∉frontier S := by
     filter_upwards [nhdsWithin_le_nhds hF,nhdsWithin_le_nhds (lt_mem_nhds (sub_one_lt v)),
       self_mem_nhdsWithin] with t ht hlo hhi
     exact fun hb => ht ⟨⟨⟨hlo.le,hhi.le⟩,hb⟩,hhi.ne⟩
   obtain ⟨a,ha,hI⟩ := mem_nhdsLT_iff_exists_Ioo_subset.mp hfree
-  have hwin : Ioo a v∈𝓝[<] v := mem_nhdsLT_iff_exists_Ioo_subset.mpr ⟨a,ha,Subset.rfl⟩
+  have hwin : ∀ᶠ t in 𝓝[<] v, t∈Ioo a v := mem_nhdsLT_iff_exists_Ioo_subset.mpr ⟨a,ha,Subset.rfl⟩
   have hS : IsClosed S := isClosed_eq hf continuous_const
   have cover : Ioo a v⊆interior S∪Sᶜ := by
     intro t ht
@@ -29,12 +29,12 @@ theorem left_sign {f : ℝ → ℝ} (hf : Continuous f) (h : IsAlgebraic coeffic
     · exact Or.inr hz
   rcases IsPreconnected.subset_or_subset isOpen_interior hS.isOpen_compl
     (disjoint_left.mpr fun _ ht hn => hn (interior_subset ht)) cover isPreconnected_Ioo with hz|hne
-  · exact Or.inl (hwin.mono fun _ ht => interior_subset (hz ht))
+  · exact Or.inl (hwin.mono fun t ht => (show t∈S from interior_subset (hz ht)))
   right
   have hsgn : Ioo a v ⊆ {t | 0<f t} ∪ {t | f t<0} := fun t ht =>
     (lt_or_gt_of_ne (Ne.symm (hne ht : f t≠0)))
   rcases IsPreconnected.subset_or_subset (isOpen_lt continuous_const hf) (isOpen_lt hf continuous_const)
-    (disjoint_left.mpr fun _ hp hn => hp.not_ge hn.le) hsgn isPreconnected_Ioo with hp|hn
+    (disjoint_left.mpr fun t hp hn => (show 0<f t from hp).not_ge (show f t<0 from hn).le) hsgn isPreconnected_Ioo with hp|hn
   · exact Or.inl (hwin.mono fun _ ht => hp ht)
   · exact Or.inr (hwin.mono fun _ ht => hn ht)
 

@@ -116,12 +116,14 @@ theorem exists_cusp_of_regular : ∀ (g : ℕ) [Fact g.Prime] (d : ℕ), 0 < d �
     rw [map_zpow, map_zpow, MonoidHom.pow_apply, hk]
   let kOf : (Kˣ →* ℂˣ) → ℕ := fun θ => (hpow θ).choose
   have hkOf : ∀ θ, θ = lam ^ kOf θ := fun θ => (hpow θ).choose_spec
+  have hpow_mul (a b : ℕ) : lam ^ (a * b) = (lam ^ a) ^ b :=
+    MonoidHom.ext fun u => by simp only [MonoidHom.pow_apply, pow_mul]
   have hreg : ∀ θ, IsRegularChar g d θ → ∀ i : ℕ, 0 < i → i < d →
       ¬ kOf θ * Nat.card (ZMod g) ^ i ≡ kOf θ [MOD Nat.card (ZMod g) ^ d - 1] := by
     intro θ hθ i hi hid hc
     rw [hcF] at hc
     have e : θ ^ g ^ i = θ ^ g ^ 0 := by
-      rw [hkOf θ, ← pow_mul, ← pow_mul, pow_zero, mul_one]
+      rw [hkOf θ, ← hpow_mul, ← hpow_mul, pow_zero, mul_one]
       exact (hpow_eq _ _).2 hc
     exact absurd (hθ i 0 hid hd e) hi.ne'
   refine ⟨fun θ => greenRootCharacter θ₀ d (kOf θ), fun θ hθ => ?_, fun θ θ' hθ hθ' => ?_⟩
@@ -130,15 +132,17 @@ theorem exists_cusp_of_regular : ∀ (g : ℕ) [Fact g.Prime] (d : ℕ), 0 < d �
     have hVeq : V.character = greenRootCharacter θ₀ d (kOf θ) := funext hχ
     refine ⟨⟨hd, ⟨V, hV, hχ⟩, ?_⟩, ?_, ?_⟩
     · intro a ha had
-      have hz := hU a ha had
-      rw [finsum_mem_def, finsum_eq_sum_of_fintype] at hz
+      let S : Set (Gn g d) := {u | ∀ i j : Fin d,
+        (u : Mt g d) i j = (if i = j then 1 else 0) ∨ (i.val < a ∧ a ≤ j.val)}
+      have hz : (∑ᶠ u ∈ S, V.character u) = 0 := hU a ha had
+      rw [finsum_mem_def S V.character, finsum_eq_sum_of_fintype] at hz
       unfold res
       refine mul_eq_zero_of_right _ ((Finset.sum_congr rfl fun u _ => ?_).trans hz)
-      by_cases hu : ∀ i j : Fin d, (u : Mt g d) i j = (if i = j then 1 else 0) ∨
-          (i.val < a ∧ a ≤ j.val)
+      by_cases hu : u ∈ S
       · rw [if_pos ((radical_entries_iff had u).mp hu), Set.indicator_of_mem hu, hVeq]
       · rw [if_neg (mt ((radical_entries_iff had u).mpr) hu), Set.indicator_of_notMem hu]
-    · rw [← hVeq, hdeg, Nat.cast_prod]
+    · change greenRootCharacter θ₀ d (kOf θ) 1 = _
+      rw [← hVeq, hdeg, Nat.cast_prod]
       refine Finset.prod_congr rfl fun i _ => ?_
       have hq : 1 ≤ Nat.card (ZMod g) := Nat.card_pos
       rw [Nat.cast_sub (Nat.one_le_pow _ _ hq), Nat.cast_pow, Nat.cast_one, hcF]
@@ -146,7 +150,8 @@ theorem exists_cusp_of_regular : ∀ (g : ℕ) [Fact g.Prime] (d : ℕ), 0 < d �
       have hadd := (rootSum_isAdditive_and_pow_X_sub_one θ₀ (kOf θ)).1
       have he := psi_of_irreducible_charpoly _ hadd (Fin d → ZMod g) (Matrix.toLin' (y : Mt g d))
         (by rwa [Matrix.charpoly_toLin'])
-      unfold greenRootCharacter
+      change (-1 : ℂ) ^ (d - 1) * psi (rootSum θ₀ (kOf θ)) (Fin d → ZMod g)
+        (Matrix.toLin' (y : Mt g d)) = _
       rw [he, Matrix.charpoly_toLin']
       congr 1
       have hz' : aeval (ι (z : K)) (y : Mt g d).charpoly = 0 := by
@@ -166,11 +171,11 @@ theorem exists_cusp_of_regular : ∀ (g : ℕ) [Fact g.Prime] (d : ℕ), 0 < d �
     constructor
     · rintro ⟨i, hi, h⟩
       refine ⟨i, hi, ?_⟩
-      rw [hkOf θ', hkOf θ, ← pow_mul]
+      rw [hkOf θ', hkOf θ, ← hpow_mul]
       exact ((hpow_eq _ _).mpr h).symm
     · rintro ⟨i, hi, h⟩
       refine ⟨i, hi, (hpow_eq _ _).mp ?_⟩
-      rw [pow_mul, ← hkOf θ, ← hkOf θ']
+      rw [hpow_mul, ← hkOf θ, ← hkOf θ']
       exact h.symm
 
 

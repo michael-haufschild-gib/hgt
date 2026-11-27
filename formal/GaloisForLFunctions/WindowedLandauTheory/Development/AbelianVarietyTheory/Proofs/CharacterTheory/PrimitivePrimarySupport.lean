@@ -1,5 +1,5 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CharacterTheory.InvariantCharpolyBlocks
-import Mathlib.LinearAlgebra.Charpoly.BaseChange
+import Mathlib.LinearAlgebra.Eigenspace.Charpoly
 import Mathlib.LinearAlgebra.Eigenspace.Minpoly
 import Mathlib.RingTheory.AdjoinRoot
 import Mathlib.RingTheory.UniqueFactorizationDomain.Multiplicity
@@ -53,7 +53,7 @@ private theorem nilRad_eq_zero_of_commute {F : Type} [Field F] {V : Type} [AddCo
   rw [hx, map_add, hu.2 _ (h2 _), intertwine_aeval_apply u g g hug, h1 _ (hu.1 _)]
   simp
 
-private -- On the off-diagonal block, the commutator is invertible by coprimality.
+/-- On the off-diagonal block, the commutator is invertible by coprimality. -/
 private theorem exists_conj_eq_add_of_isCoprime : ∀ (F : Type) [Field F] [Finite F] (V : Type) [AddCommGroup V] [Module F V]
     [FiniteDimensional F V] (A : Submodule F V) (g : Module.End F V) (hg : ∀ x ∈ A, g x ∈ A),
     IsCoprime (LinearMap.charpoly (g.restrict hg)) (LinearMap.charpoly (A.mapQ A g (fun x hx => hg x hx))) →
@@ -85,7 +85,7 @@ private theorem exists_conj_eq_add_of_isCoprime : ∀ (F : Type) [Field F] [Fini
   have hu' : D u.1 = h := congrArg Subtype.val hu
   obtain ⟨u, huA, hu0⟩ := u
   have huu : ∀ x, u (u x) = 0 := fun x => hu0 _ (huA x)
-  refine ⟨LinearEquiv.ofLinearMap (1 + u) (1 - u) ?_ ?_, ?_⟩
+  refine ⟨LinearEquiv.ofLinear (1 + u) (1 - u) ?_ ?_, ?_⟩
   · ext x; simp [huu]
   · ext x; simp [huu]
   · ext x

@@ -22,7 +22,7 @@ coefficients. The packet tests on this baseline constrain every other
 successful pattern, even though the partition was selected from the draw. -/
 theorem weak_partition_count (owner : Fin (n+2)→I) (L r s g : ℕ)
     (hL : ∀ i, (sites owner i).card≤L) {t a w R : ℝ} (ht : 0≤t) (ha : 0≤a)
-    (hw : 0≤w) (hR : 0≤R) (e F E : ℝ) {m C : ℝ} (hm : 0≤m) (hC : 0<C) :
+    (hw : 0≤w) (hR : 0≤R) (e F E : ℝ) {m C : ℝ} (hm : 0 ≤ m) (hC : 0<C) :
     open Classical in
     let A := selectedLabels (sites owner)
     let T := cutLabels owner
@@ -42,7 +42,9 @@ theorem weak_partition_count (owner : Fin (n+2)→I) (L r s g : ℕ)
     have hex (j : I→Bool) : expand (T∪A j) (1+a) z=expand (A j) (1+a) v :=
       expand_disjoint T _ (internal_disjoint_cut owner j) _ _
     obtain ⟨j,hj⟩ := hQ
-    have hbnd := (mem_filter.mp hj).2.2
+    have hj' : expand (T∪A j) (1+a) z∈Z := by
+      simpa only [Q,mem_filter,mem_univ,true_and] using hj
+    have hbnd : expand (T∪A j) (1+a) z∈cutBounds T F E w R := hj'.2
     rw [hex j] at hbnd
     have hb := cutBounds_precursor _ _ (le_add_of_nonneg_right ha) F E w R v hbnd
     let d := univ.sup' univ_nonempty (fun j => t^2*a*boundaryMass u (A j))
@@ -69,7 +71,9 @@ theorem weak_partition_count (owner : Fin (n+2)→I) (L r s g : ℕ)
       (unitaryEvolution (pathHamiltonian (dilateShell (A y) a u)) t)
     have hsub : Q⊆P := by
       intro y hy
-      have h := (mem_filter.mp hy).2.1
+      have hy' : expand (T∪A y) (1+a) z∈Z := by
+        simpa only [Q,mem_filter,mem_univ,true_and] using hy
+      have h : expand (T∪A y) (1+a) z∈affordableDraw n s e t := hy'.1
       rw [hex y] at h
       change HasProjectiveCircuitApproximation (n+2) e s
         (unitaryEvolution (pathHamiltonian (WithLp.toLp 2 (expand (A y) (1+a) v))) t) at h

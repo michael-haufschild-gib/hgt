@@ -11,6 +11,7 @@ variable {A : Type*} [NormedRing A] [NormedAlgebra ℝ A] [CompleteSpace A]
 
 private def bracket (W X : A) := W*X-X*W
 
+omit [NormedAlgebra ℝ A] [CompleteSpace A] in
 private theorem bracket_norm (W X : A) : ‖bracket W X‖≤2*‖W‖*‖X‖ :=
   (norm_sub_le ..).trans ((add_le_add (norm_mul_le W X) (norm_mul_le X W)).trans_eq (by ring))
 
@@ -24,6 +25,7 @@ theorem odd_commutator_inverse (Z W V : A) (hZ : Z*Z=1) (hn : ‖Z‖≤1)
   have hh := (norm_nonneg W).trans_lt hg
   let c := (2*h)⁻¹
   let q : ℝ≥0 := ⟨‖W‖/h,div_nonneg (norm_nonneg _) hh.le⟩
+  have hqr : (q:ℝ)=‖W‖/h := rfl
   have hc : 0<c := inv_pos.mpr (mul_pos two_pos hh)
   have hq : (q:ℝ)<1 := (div_lt_one hh).mpr hg
   let O := {X : A | Z*X=-(X*Z)}
@@ -58,7 +60,9 @@ theorem odd_commutator_inverse (Z W V : A) (hZ : Z*Z=1) (hn : ‖Z‖≤1)
     rw [←smul_sub,←mul_sub,he,norm_smul,Real.norm_eq_abs,abs_of_pos hc]
     apply (mul_le_mul_of_nonneg_left ((hleft _).trans (bracket_norm ..)) hc.le).trans_eq
     rw [norm_sub_rev Y.val X.val]
-    dsimp only [c,q]; field_simp; ring
+    rw [hqr]
+    dsimp only [c]
+    field_simp [hh.ne']
   let x := hcontr.fixedPoint F
   let X := x.val
   have hx : c • (Z*(V-bracket W X))=X := congrArg Subtype.val hcontr.fixedPoint_isFixedPt
@@ -83,7 +87,9 @@ theorem odd_commutator_inverse (Z W V : A) (hZ : Z*Z=1) (hn : ‖Z‖≤1)
     simp only [zero_sub,norm_neg,bracket,mul_zero,zero_mul,sub_zero,norm_smul,Real.norm_eq_abs,abs_of_pos hc] at hd
     refine hd.trans ((div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left (hleft V) hc.le)
       (sub_nonneg.mpr hq.le)).trans_eq ?_)
-    dsimp only [c,q]; field_simp [(sub_pos.mpr hg).ne',hh.ne']; ring
+    rw [hqr,show 1-‖W‖/h=(h-‖W‖)/h by field_simp [hh.ne']]
+    dsimp only [c]
+    field_simp [(sub_pos.mpr hg).ne',hh.ne']
 
 #print axioms odd_commutator_inverse
 end

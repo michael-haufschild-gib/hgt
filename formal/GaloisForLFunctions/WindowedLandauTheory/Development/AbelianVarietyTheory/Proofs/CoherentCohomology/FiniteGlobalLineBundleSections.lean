@@ -1,7 +1,7 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.DegreeZeroCechSections
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.ProjectiveLineBundleCechModel
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.LineBundleCechBaseChange
-import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.AbelianSchemeLaws.GlobalLineBundleCoordinates
+import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.AbelianSchemeLaws.GlobalBasisChartCoordinates
 import Mathlib.LinearAlgebra.Dimension.Finite
 
 /-! The scalar-linear degree-zero Čech comparison gives finite global sections on a
@@ -90,23 +90,6 @@ theorem moduleFinite_globalSections [IsNoetherianRing R] (hf : IsProjOver f)
 section Field
 
 variable {K : Type} [Field K] {Y : Scheme.{0}} (g : Y ⟶ Spec (CommRingCat.of K)) {L : LB Y}
-
-private def globalChartLinearMap (i : L.ι) :
-    letI := sectionBaseModule g (toMod L) ⊤
-    letI := sectionAlgebra g (L.U i)
-    Γ(toMod L, ⊤) →ₗ[K] Γ(Y, L.U i) := by
-  letI := sectionBaseModule g (toMod L) ⊤
-  letI := sectionAlgebra g (L.U i)
-  refine
-    { toFun := fun x => (globalCoordinates x).f i
-      map_add' := fun x y => by simp only [globalCoordinates_apply, coord_add, map_add] <;> rfl
-      map_smul' := fun r x => ?_ }
-  let j : L.U i ≤ (⊤ : Y.Opens) ⊓ L.U i := le_inf le_top le_rfl
-  letI := sectionAlgebra g (⊤ : Y.Opens)
-  change resG Y j (coord ((algebraMap K Γ(Y, ⊤) r) • x) i) =
-    (algebraMap K Γ(Y, L.U i) r) * resG Y j (coord x i)
-  rw [coord_smul, map_mul, resG_resG]
-  exact congrArg (· * resG Y j (coord x i)) ((sectionRes g (homOfLE le_top)).commutes r)
 
 /-- In any sufficiently long list of global sections there is a nonzero relation that
 holds in every bundle chart. -/

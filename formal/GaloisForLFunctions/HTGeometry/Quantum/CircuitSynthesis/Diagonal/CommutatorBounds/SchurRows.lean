@@ -15,7 +15,7 @@ theorem norm_schur_of_rows (S C : Matrix I I ℂ) {R : ℝ} (hR : 0≤R)
     ‖(Matrix.of fun i j => S i j*C i j : Matrix I I ℂ)‖≤R*‖C‖ := by
   let A : Matrix I I ℂ := Matrix.of fun i j => S i j*C i j
   change ‖A‖≤_
-  rw [Matrix.l2_opNorm_def]
+  rw [←Matrix.l2_opNorm_toEuclideanCLM A]
   apply ContinuousLinearMap.opNorm_le_bound _ (mul_nonneg hR (norm_nonneg _))
   intro v
   have hrow (i : I) :

@@ -15,18 +15,20 @@ variable {R ι κ : Type} [CommRing R] [LinearOrder ι] [LinearOrder κ]
   (hD : ∀ {s t : Finset (ι ⊕ₗ κ)} (h : s ⊆ t) (r : R) (x : D.obj s),
     D.res h (r • x) = r • D.res h x)
 
+include hD in
 theorem leftSlice_linear (J : Finset κ) {s t : Finset ι} (h : s ⊆ t) (r : R)
     (x : (D.leftSlice J).obj s) :
     (D.leftSlice J).res h (r • x) = r • (D.leftSlice J).res h x :=
   hD (uni_mono h (Finset.Subset.refl _)) r x
 
+include hD in
 theorem rightSlice_linear (I : Finset ι) {s t : Finset κ} (h : s ⊆ t) (r : R)
     (x : (D.rightSlice I).obj s) :
     (D.rightSlice I).res h (r • x) = r • (D.rightSlice I).res h x :=
   hD (uni_mono (Finset.Subset.refl _) h) r x
 
 private def leftFaceTerm (n : ℕ) :
-    D.degreeSubmodule (R := R) n →ₗ[R] (D.leftSlice ∅).degreeSubmodule n where
+    D.degreeSubmodule (R := R) n →ₗ[R] (D.leftSlice ∅).degreeSubmodule (R := R) n where
   toFun x := ⟨fun I => x.1 (uni I ∅), fun I hI => x.2 _ (by simpa only [card_uni, Finset.card_empty, add_zero] using hI)⟩
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
@@ -81,7 +83,7 @@ def linearComplexIsoLeftFace
   exact asIso φ
 
 private def rightFaceTerm (n : ℕ) :
-    D.degreeSubmodule (R := R) n →ₗ[R] (D.rightSlice ∅).degreeSubmodule n where
+    D.degreeSubmodule (R := R) n →ₗ[R] (D.rightSlice ∅).degreeSubmodule (R := R) n where
   toFun x := ⟨fun J => x.1 (uni ∅ J), fun J hJ => x.2 _ (by simpa only [card_uni, Finset.card_empty, zero_add] using hJ)⟩
   map_add' _ _ := rfl
   map_smul' _ _ := rfl

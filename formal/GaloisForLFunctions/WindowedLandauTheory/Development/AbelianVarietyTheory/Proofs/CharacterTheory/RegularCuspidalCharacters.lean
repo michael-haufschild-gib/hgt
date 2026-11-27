@@ -76,7 +76,7 @@ theorem greenRootCharacter_pairing (F : Type) [Field F] [Finite F] {d : ℕ}
         star (ψ l (Matrix.toLin' (g : Matrix (Fin d) (Fin d) F)))) * hsign
   unfold characterPairing
   simp_rw [virtualCharacter_inv_eq_conj (greenRootCharacter_mem_virtual F θ hθ d l), hterm]
-  rw [show (∑ g, ψ k (Matrix.toLin' (g : Matrix (Fin d) (Fin d) F)) *
+  rw [show (∑ g : GL (Fin d) F, ψ k (Matrix.toLin' (g : Matrix (Fin d) (Fin d) F)) *
     star (ψ l (Matrix.toLin' (g : Matrix (Fin d) (Fin d) F)))) = _ from hip,
     glCard, ← mul_assoc, inv_mul_cancel₀, one_mul]
   exact_mod_cast (Nat.card_pos (α := GL (Fin d) F)).ne'
@@ -143,7 +143,7 @@ theorem exists_simple_regular_rootSum (F : Type) [Field F] [Finite F] (θ : Alge
   obtain ⟨V, hV, hchar⟩ := exists_simple_of_virtual_norm_one hχv hnorm hpos
   refine ⟨V, hV, fun g => congrFun hchar g, congrFun hchar 1 |>.trans hval, ?_⟩
   intro a ha had
-  have hz := hprim.finsum_unipotentRadical_eq_zero F d _ ha had
+  have hz := hprim.finsum_unipotentRadical_eq_zero F d _ a ha had
   rw [hchar]
   change ∑ᶠ g ∈ _, (-1 : ℂ) ^ (d - 1) * ψ g = 0
   rw [← mul_finsum_mem, show ∑ᶠ g ∈ _, ψ g = 0 from hz, mul_zero]

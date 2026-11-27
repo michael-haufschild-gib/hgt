@@ -43,6 +43,7 @@ theorem gaussian_superlinear_date_tail :
   let M := 3*N
   let L := 2*M
   let z := K/M
+  change max 3 (max U V)≤q at hq
   have hq₃ : 3≤q := (le_max_left ..).trans hq
   have hq₁ : 1≤q := (by norm_num : (1:ℝ)≤3).trans hq₃
   have hq' := zero_lt_one.trans_le hq₁
@@ -68,17 +69,18 @@ theorem gaussian_superlinear_date_tail :
     have h' := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right h
       (show 0≤3*(q^6)⁻¹ by positivity)) hq'.le
     apply h'.trans
-    rw [hL,show δ*q^65*(C*q^2)*(3*(q^6)⁻¹)*q=(δ*C)*(3*q^62) by field_simp; ring]
-    have hdC := (le_div_iff₀ hC).mp (min_le_right 1 (η/C))
+    rw [hL,show δ*q^65*(C*q^2)*(3*(q^6)⁻¹)*q=(δ*C)*(3*q^62) by field_simp]
+    have hdC : δ*C≤η := (le_div_iff₀ hC).mp (min_le_right 1 (η/C))
     nlinarith only [mul_le_mul_of_nonneg_right hdC (pow_nonneg hq'.le 62),mul_nonneg hη.le (pow_nonneg hq'.le 62)]
   have hm := hp n N (candidates_pos n) hUL hVz (by positivity : 0≤3*(q^6)⁻¹) hq'.le htime.1 hbound
   let A := affordableDraw n ⌊τ*K⌋₊ (5/16) t
   have hmeas : MeasurableSet (A ∩ Z n) := (measurable_affordableDraw ..).inter (measurable_adaptiveDraw ..)
   change pathPauliDisorderLaw.real (πn n ⁻¹' (A ∩ Z n))≤_
-  rw [measureReal_def,(prefix_measure n).measure_preimage hmeas.nullMeasurableSet]
+  unfold Measure.real
+  rw [(prefix_measure n).measure_preimage hmeas.nullMeasurableSet]
   apply hm.trans
-  have hs : 6*log K≤c*z := by
-    have hlog : 6*log K+0≤c/3*q^2 := hn
+  have hs : 6*log K ≤ c*z := by
+    have hlog : 6*log K+0 ≤ c/3*q^2 := hn
     linarith only [hlog,mul_le_mul_of_nonneg_left hlo hc.le]
   apply (exp_le_exp.mpr (show -c*z≤ -(6*log K) by linarith only [hs])).trans_eq
   rw [exp_neg,show (6:ℝ)*log K=(6:ℕ)*log K by norm_num,exp_nat_mul,exp_log hK,one_div]

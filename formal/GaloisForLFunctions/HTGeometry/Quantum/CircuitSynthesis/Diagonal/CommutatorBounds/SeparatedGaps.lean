@@ -35,7 +35,7 @@ private theorem inverseGap_row (d : I→ℝ) {g : ℝ} (hg : 0<g)
   have hh := sum_inv_sq_le_of_separated hg P hp (d i) hf
   rw [show P=S.image d from rfl,sum_image (fun _ _ _ _ he => hinj he)] at hh
   rw [←sum_erase_add _ _ (mem_univ i)]
-  simp only [inverseGap,Matrix.of_apply,sub_self,inv_zero,norm_zero,zero_pow (by decide : 2≠0),add_zero]
+  simp only [inverseGap,Matrix.of_apply,sub_self,_root_.inv_zero,norm_zero,zero_pow (by decide : 2≠0),add_zero]
   rw [div_pow,sq_sqrt packConstant_pos.le]
   simpa only [S,norm_inv,inv_pow,one_div] using hh
 

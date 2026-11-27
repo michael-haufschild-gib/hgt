@@ -1,8 +1,11 @@
 import Mathlib.Analysis.Complex.Polynomial.Basic
 import Mathlib.GroupTheory.Perm.Cycle.Basic
+import Mathlib.LinearAlgebra.Charpoly.ToMatrix
+import Mathlib.LinearAlgebra.Eigenspace.Charpoly
 import Mathlib.LinearAlgebra.Eigenspace.Semisimple
+import Mathlib.LinearAlgebra.Eigenspace.Zero
 import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
-import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
+import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.Algebra.BigOperators.Group.Finset.Piecewise
 
 /-! Eigenvalue multiplicities of a finite-order monomial matrix are preserved by lifting. -/
@@ -111,7 +114,7 @@ private theorem finrank_eq_card (E : Submodule K (Fin n → K))
       · have := congrFun h0 ⟨j, hg⟩
         simpa [hf] using this
       · have : ¬ ∀ m : ℕ, (σ ^ m) j = j → orbProd σ a m j = 1 := fun h => hg ⟨hj, h⟩
-        push_neg at this
+        push Not at this
         obtain ⟨r, hr, hne⟩ := this
         have h2 := apply_pow σ a hv r j
         rw [hr] at h2
@@ -196,7 +199,7 @@ private theorem sum_roots_charpoly_eq_finsum_eigenspace (k : Type) [Field k] [Is
   · refine Finset.sum_congr rfl fun μ _ => ?_
     rw [hdim, nsmul_eq_mul]
   · ext μ
-    simp only [Set.mem_inter_iff, Set.mem_ofPred_eq, Function.mem_support, Finset.mem_coe,
+    simp only [Set.mem_inter_iff, Set.mem_setOf_eq, Function.mem_support, Finset.mem_coe,
       Multiset.mem_toFinset]
     constructor
     · rintro ⟨-, h2⟩

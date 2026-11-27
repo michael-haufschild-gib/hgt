@@ -69,12 +69,12 @@ theorem weak_seam_packet_rate {u v : ℝ} (hu : 0<u) (hv : 0<v) :
     have hfactor : 0≤t^2*a := mul_nonneg (sq_nonneg t) ha
     have hcap := mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_right
       (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_left hcuts (by norm_num : (0:ℝ)≤84*9)) hw) hR) hfactor
-    have hiden : t^2*a*(84*9*q*w*R)=(t*q*w*R)*(84*9*A)/(L:ℝ) := by dsimp only [a]; field_simp; ring
+    have hiden : t^2*a*(84*9*q*w*R)=(t*q*w*R)*(84*9*A)/(L:ℝ) := by dsimp only [a]; field_simp
     apply (show price≤t^2*a*(84*9*q*w*R) by
       dsimp only [price]; push_cast; simpa only [mul_assoc] using hcap).trans
     rw [hiden,div_le_iff₀ hL']
     apply (mul_le_mul_of_nonneg_right htcut (by positivity : 0≤84*9*A)).trans_eq
-    dsimp only [η]; field_simp; ring
+    dsimp only [η]; field_simp
   have hg₀ : (g:ℝ)≤γ*q := Nat.floor_le (mul_nonneg hγ.le hqp.le)
   have hg₁ : γ*q/2≤(g:ℝ) := by
     have h := (div_le_iff₀ hγ).mp ((le_max_right ..).trans hq)

@@ -3,6 +3,7 @@ import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CharacterTheory.BrauerRestriction
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CharacterTheory.InvariantSubspaceMobius
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CharacterTheory.NilpotentPrimeComplement
+import GaloisForLFunctions.RHTower.Artin.ArtinBrauerInductionTheorem
 
 /-! The power sums of lifted characteristic roots on a finite general linear group are virtual. -/
 
@@ -22,7 +23,7 @@ private theorem power_sum_mem_virtual_of_nonmodular {k G : Type} [Field k] [IsAl
   have hm : Multiset.map (fun α => θ α ^ r) ((ρ g : Matrix (Fin n) (Fin n) k).charpoly.roots) =
       Multiset.map θ ((ρ (g ^ r) : Matrix (Fin n) (Fin n) k).charpoly.roots) := by
     rw [map_pow, Units.val_pow_eq_pow_val, GlobalTheory.CharpolyPow.roots_charpoly_pow, Multiset.map_map]
-    simp [Function.comp_def, map_pow]
+    simp [map_pow]
   rw [hm, hL (g ^ r), map_pow, Units.val_pow_eq_pow_val, Matrix.trace_eq_sum_roots_charpoly,
     GlobalTheory.CharpolyPow.roots_charpoly_pow]
 

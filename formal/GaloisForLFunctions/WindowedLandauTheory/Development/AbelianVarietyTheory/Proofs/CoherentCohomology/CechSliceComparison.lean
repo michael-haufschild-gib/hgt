@@ -1,8 +1,10 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.CechSupport
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.FlatLineBundleCech
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.JoinedCechExact
+import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.LineBundleSectionScalarChange
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CoherentCohomology.ScalarCechGrading
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Definitions.QuasicoherentCohomology.AffineCoverCechExact
+import Mathlib.Order.Interval.Set.OrdConnected
 
 /-! A slice of the Čech datum of a joined cover is a Čech datum on one open
 intersection. When the intersection and its refinements are affine, the
@@ -26,19 +28,13 @@ private abbrev localDatum := sheafCech ((SheafOfModules.toSheaf X.ringCatSheaf).
 private abbrev localModule (s : Finset κ) : Module K ((localDatum F W V).obj s) :=
   sectionBaseModule f F (coverInter W V s)
 
-include hm hP in
-private theorem preimage_ordConnected : (m ⁻¹' P).OrdConnected := by
-  constructor
-  intro s hs t ht z hz
-  exact hP.out' hs ht ⟨hm hz.1, hm hz.2⟩
-
 /-- Equality of the indexed opens gives an isomorphism of the supported
 section modules, compatible with every restriction. -/
 theorem exists_slice_hom
     (e : ∀ s, coverInter (⊤ : X.Opens) U (m s) = coverInter W V s) :
     letI (s : Finset ι) := sectionDatumModule f F U s
     letI (s : Finset κ) := localModule f F W V s
-    let B := (localDatum F W V).truncate (R := K) (m ⁻¹' P) (preimage_ordConnected m hm P hP)
+    let B := (localDatum F W V).truncate (R := K) (m ⁻¹' P) (hP.preimage_mono hm)
     let T := ((sectionDatum F U).truncate (R := K) P hP).comap m hm
     ∃ φ : B.Hom T, (∀ s, Function.Bijective (φ.app s)) ∧
       ∀ s (r : K) (x : B.obj s), φ.app s (r • x) = r • φ.app s x := by
@@ -49,7 +45,7 @@ theorem exists_slice_hom
   let A := localDatum F W V
   let G := (SheafOfModules.toSheaf X.ringCatSheaf).obj F
   let Q := m ⁻¹' P
-  let hQ := preimage_ordConnected m hm P hP
+  let hQ : Q.OrdConnected := hP.preimage_mono hm
   let B := A.truncate (R := K) Q hQ
   let T := (D.truncate (R := K) P hP).comap m hm
   let φ : B.Hom T :=
@@ -89,11 +85,12 @@ theorem exists_slice_hom
     let i : B₀ ⟶ A₀ := homOfLE (e s).le
     letI := sectionAlgebra f A₀
     letI := sectionAlgebra f B₀
+    let y : Γ(F, A₀) := x.1
     apply Subtype.ext
-    change F.presheaf.map i.op (algebraMap K Γ(X, A₀) r • x.1) =
-      algebraMap K Γ(X, B₀) r • F.presheaf.map i.op x.1
+    change F.presheaf.map i.op (algebraMap K Γ(X, A₀) r • y) =
+      algebraMap K Γ(X, B₀) r • F.presheaf.map i.op y
     rw [F.map_smul]
-    exact congrArg (· • F.presheaf.map i.op x.1) ((sectionRes f i).commutes r)
+    exact congrArg (· • F.presheaf.map i.op y) ((sectionRes f i).commutes r)
 
 variable [HasExt.{0} (TopCat.Sheaf AddCommGrpCat.{0} X)] [Fintype κ] [F.IsQuasicoherent]
 
@@ -110,7 +107,7 @@ theorem exists_primitive_of_affine_slice
   let A := localDatum F W V
   let G := (SheafOfModules.toSheaf X.ringCatSheaf).obj F
   let Q := m ⁻¹' P
-  let hQ := preimage_ordConnected m hm P hP
+  let hQ : Q.OrdConnected := hP.preimage_mono hm
   have hA := A.exists_primitive_of_augmented_exact (K := K) (sheafCech_exactBot G hcov)
     (quasicoherent_cech_exactAt_of_isAffine F hW hcov haff)
   have hB := FinsetCechDatum.exists_primitive_of_bijective_coefficients

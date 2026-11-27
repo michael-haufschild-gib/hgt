@@ -2,6 +2,7 @@ import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory
 import Mathlib.RingTheory.AdjoinRoot
 import Mathlib.LinearAlgebra.Charpoly.ToMatrix
 import Mathlib.LinearAlgebra.GeneralLinearGroup.Basic
+import Mathlib.LinearAlgebra.Matrix.Charpoly.Minpoly
 
 /-! Counts of cyclic vectors and cyclic endomorphisms over a finite field. -/
 

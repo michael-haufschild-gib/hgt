@@ -136,8 +136,7 @@ private def supportProj :
         by_cases hs : s ∈ Q \ P <;> simp only [hs, if_true, if_false, add_zero]) }
   comm {s t} h x := by
     refine Subtype.ext ?_
-    change (if t ∈ Q \ P then D.res h (if s ∈ Q \ P then x.1 else 0) else 0) =
-      if t ∈ Q \ P then (if t ∈ Q then D.res h x.1 else 0) else 0
+    simp only [D.truncate_res_value (R := R), AddMonoidHom.coe_mk, ZeroHom.coe_mk, Subtype.coe_mk]
     by_cases ht : t ∈ Q \ P
     · rw [if_pos ht, if_pos ht, if_pos ht.1]
       by_cases hs : s ∈ Q \ P
@@ -159,23 +158,24 @@ theorem shortExact_truncate
         S.X₃ = (D.truncate (Q \ P) (supportDiff_ordConnected hQ hupper)).linearComplex
           (D.truncate_linear (Q \ P) (supportDiff_ordConnected hQ hupper) hD) := by
   classical
-  let φ := D.supportIncl hP hQ hPQ hupper
-  let ψ := D.supportProj hQ hupper
-  have hφ (s : Finset ι) (r : R) (x : (D.truncate P hP).obj s) :
+  let φ := D.supportIncl (R := R) hP hQ hPQ hupper
+  let ψ := D.supportProj (R := R) hQ hupper
+  have hφ (s : Finset ι) (r : R) (x : (D.truncate (R := R) P hP).obj s) :
       φ.app s (r • x) = r • φ.app s x := rfl
-  have hψ (s : Finset ι) (r : R) (x : (D.truncate Q hQ).obj s) :
+  have hψ (s : Finset ι) (r : R) (x : (D.truncate (R := R) Q hQ).obj s) :
       ψ.app s (r • x) = r • ψ.app s x := by
     refine Subtype.ext ?_
     change (if s ∈ Q \ P then r • x.1 else 0) = r • (if s ∈ Q \ P then x.1 else 0)
     split_ifs <;> simp only [smul_zero]
-  have hc (s : Finset ι) (x : (D.truncate P hP).obj s) : ψ.app s (φ.app s x) = 0 := by
+  have hc (s : Finset ι) (x : (D.truncate (R := R) P hP).obj s) : ψ.app s (φ.app s x) = 0 := by
     refine Subtype.ext ?_
     change (if s ∈ Q \ P then x.1 else 0) = 0
     split_ifs with hs
     · exact x.2 hs.2
     · rfl
-  have hi (s : Finset ι) : Function.Injective (φ.app s) := fun _ _ h =>
-    Subtype.ext (congrArg Subtype.val h)
+  have hi (s : Finset ι) : Function.Injective (φ.app s) := fun x y h =>
+    Subtype.ext (show x.1 = y.1 from
+      congrArg (fun z : (D.truncate (R := R) Q hQ).obj s => z.1) h)
   have he (s : Finset ι) : Function.Exact (φ.app s) (ψ.app s) := by
     intro x
     constructor
@@ -194,8 +194,11 @@ theorem shortExact_truncate
     split_ifs with h
     · rfl
     · exact (x.2 h).symm
-  exact ⟨_, shortExact_linearCochainMap _ _ _ φ hφ ψ hψ hc (fun s _ => hi s)
-    (fun s _ => he s) (fun s _ => hs s), rfl, rfl, rfl⟩
+  have hS := shortExact_linearCochainMap
+    (D.truncate_linear P hP hD) (D.truncate_linear Q hQ hD) φ hφ
+    (D.truncate_linear (Q \ P) (supportDiff_ordConnected hQ hupper) hD) ψ hψ
+    hc (fun s _ => hi s) (fun s _ => he s) (fun s _ => hs s)
+  exact ⟨_, hS, rfl, rfl, rfl⟩
 
 include hPQ in
 /-- If the middle support is acyclic, the connecting isomorphism shifts the

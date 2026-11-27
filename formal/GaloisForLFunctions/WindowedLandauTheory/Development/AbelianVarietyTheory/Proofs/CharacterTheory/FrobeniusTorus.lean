@@ -1,7 +1,7 @@
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CharacterTheory.InvariantSubspaceMobius
 import GaloisForLFunctions.WindowedLandauTheory.Development.AbelianVarietyTheory.Proofs.CharacterTheory.FiniteFieldFrobeniusPeriods
 import Mathlib.FieldTheory.Finite.GaloisField
-import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
+import Mathlib.RingTheory.RootsOfUnity.AlgebraicallyClosed
 import Mathlib.RingTheory.RootsOfUnity.Complex
 import Mathlib.Algebra.Field.GeomSum
 
@@ -110,7 +110,7 @@ theorem finsum_rootsOfUnity_pow_mul_star {K : Type} [Field K] (θ : K →* ℂ) 
 
   have hset : {α : K | α ^ N = 1} = (fun i : ℕ => ζ ^ i) '' (↑(Finset.range N) : Set ℕ) := by
     ext α
-    simp only [Set.mem_ofPred_eq, Set.mem_image, Finset.coe_range, Set.mem_Iio]
+    simp only [Set.mem_setOf_eq, Set.mem_image, Finset.coe_range, Set.mem_Iio]
     constructor
     · intro h
       obtain ⟨i, hi, rfl⟩ := hζ.eq_pow_of_pow_eq_one h
@@ -181,7 +181,7 @@ theorem torus_orthogonality (F : Type) [Field F] [Finite F] (θ : AlgebraicClosu
       rw [show N + 1 = q ^ n by omega, Nat.cast_pow, hqF, zero_pow hn.ne']
     rw [Nat.cast_add, h, zero_add, Nat.cast_one] at h1
     exact one_ne_zero h1
-  have : NeZero (N : F) := ⟨hNF⟩
+  letI : NeZero (N : F) := ⟨hNF⟩
   obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot (AlgebraicClosure F) N
   have hζ0 : ζ ≠ 0 := hζ.ne_zero hN.ne'
 

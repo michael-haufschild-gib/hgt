@@ -1,4 +1,5 @@
 import GaloisForLFunctions.HTGeometry.Quantum.CircuitSynthesis.ProductFormulas.BondMass
+import GaloisForLFunctions.HTGeometry.ProjectiveContinuousCircuitConeLaw
 
 /-! # One physical gate per retained edge with arbitrary onsite assignments -/
 

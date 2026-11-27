@@ -38,13 +38,17 @@ private theorem trace_exterior_eq_minors {n : ℕ} (M : Matrix (Fin n) (Fin n) �
     exteriorPower.basis_apply, exteriorPower.ιMulti_family, exteriorPower.map_apply_ιMulti,
     exteriorPower.ιMultiDual_apply_ιMulti]
   let e := (S.1.orderIsoOfFin S.2).toEquiv
-  rw [← Matrix.det_submatrix_equiv_self _ e, ← Matrix.det_transpose]
-  congr 1
-  ext i j
-  simp only [Matrix.of_apply, Matrix.transpose_apply, Matrix.submatrix_apply, Function.comp_apply,
-    Set.powersetCard.ofFinEmbEquiv_symm_apply]
-  simp [e, b, Basis.coord_apply, Finset.coe_orderIsoOfFin_apply, Matrix.toLin'_apply,
-    Matrix.mulVec_single_one]
+  let A : Matrix S.val S.val ℂ := M.submatrix Subtype.val Subtype.val
+  let T : Matrix (Fin j) (Fin j) ℂ := A.submatrix e e
+  calc
+    _ = T.transpose.det := by
+      apply congrArg (Matrix.det : Matrix (Fin j) (Fin j) ℂ → ℂ)
+      ext i k
+      simp only [T, A, Matrix.of_apply, Matrix.transpose_apply, Matrix.submatrix_apply,
+        Function.comp_apply, Set.powersetCard.ofFinEmbEquiv_symm_apply]
+      simp [e, b, Basis.coord_apply, Finset.coe_orderIsoOfFin_apply, Matrix.toLin'_apply]
+    _ = T.det := Matrix.det_transpose T
+    _ = _ := Matrix.det_submatrix_equiv_self e A
 
 private theorem esymm_roots_eq_minors {n : ℕ} (j : ℕ) (M : Matrix (Fin n) (Fin n) ℂ) :
     M.charpoly.roots.esymm j = ∑ S ∈ Finset.univ.powersetCard j,

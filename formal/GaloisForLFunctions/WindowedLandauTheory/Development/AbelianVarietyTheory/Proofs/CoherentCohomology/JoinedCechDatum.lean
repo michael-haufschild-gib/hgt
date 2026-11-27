@@ -16,13 +16,16 @@ variable {ι κ : Type} [LinearOrder ι] [LinearOrder κ]
 private abbrev li (i : ι) : ι ⊕ₗ κ := toLex (Sum.inl i)
 private abbrev ri (j : κ) : ι ⊕ₗ κ := toLex (Sum.inr j)
 
+omit [LinearOrder ι] [LinearOrder κ] in
 theorem uni_mono {I I' : Finset ι} {J J' : Finset κ} (hI : I ⊆ I') (hJ : J ⊆ J') :
     uni I J ⊆ uni I' J' :=
   Finset.map_subset_map.2 (Finset.disjSum_mono hI hJ)
 
+omit [LinearOrder ι] [LinearOrder κ] in
 theorem lft_monotone : Monotone (@lft ι κ) :=
   fun _ _ h => Finset.toLeft_subset_toLeft (Finset.map_subset_map.2 h)
 
+omit [LinearOrder ι] [LinearOrder κ] in
 theorem rgt_monotone : Monotone (@rgt ι κ) :=
   fun _ _ h => Finset.toRight_subset_toRight (Finset.map_subset_map.2 h)
 
@@ -57,7 +60,7 @@ private theorem sign_uni_right (I : Finset ι) (J : Finset κ) (j : κ) :
 variable (D : FinsetCechDatum.{0} (ι ⊕ₗ κ))
 
 /-- Pull back the restriction diagram along a monotone map of intersection indices. -/
-def comap {T U : Type} (A : FinsetCechDatum.{0} T) (m : Finset U → Finset T)
+abbrev comap {T U : Type} (A : FinsetCechDatum.{0} T) (m : Finset U → Finset T)
     (hm : Monotone m) : FinsetCechDatum.{0} U where
   obj s := A.obj (m s)
   res h := A.res (hm h)
@@ -77,9 +80,20 @@ abbrev rightSlice (I : Finset ι) : FinsetCechDatum.{0} κ :=
   D.comap (uni I) (fun _ _ h => uni_mono (Finset.Subset.refl _) h)
 
 theorem d_uni (x : D.Cochain) (I : Finset ι) (J : Finset κ) :
-    D.d x (uni I J) = (D.leftSlice J).d (fun A => x (uni A J)) I +
-      (-1 : ℤ) ^ I.card • (D.rightSlice I).d (fun B => x (uni I B)) J := by
-  simp only [FinsetCechDatum.d, sum_uni, Finset.smul_sum]
+    D.d x (uni I J) =
+      (show D.obj (uni I J) from (D.leftSlice J).d (fun A => x (uni A J)) I) +
+      (-1 : ℤ) ^ I.card • (show D.obj (uni I J) from (D.rightSlice I).d (fun B => x (uni I B)) J) := by
+  let a (i : ι) : D.obj (uni I J) :=
+    (cechSign I i : ℤ) • D.res (uni_mono (Finset.erase_subset i I) (Finset.Subset.refl J))
+      (x (uni (I.erase i) J))
+  let b (j : κ) : D.obj (uni I J) :=
+    (cechSign J j : ℤ) • D.res (uni_mono (Finset.Subset.refl I) (Finset.erase_subset j J))
+      (x (uni I (J.erase j)))
+  have ha : (show D.obj (uni I J) from (D.leftSlice J).d (fun A => x (uni A J)) I) =
+      ∑ i ∈ I, a i := rfl
+  have hb : (show D.obj (uni I J) from (D.rightSlice I).d (fun B => x (uni I B)) J) =
+      ∑ j ∈ J, b j := rfl
+  rw [ha, hb, FinsetCechDatum.d, sum_uni, Finset.smul_sum]
   refine congrArg₂ (· + ·) (Finset.sum_congr rfl ?_) (Finset.sum_congr rfl ?_)
   · intro i _
     rw [sign_uni_left]
@@ -102,6 +116,7 @@ def cochainSlices (R : Type) [CommRing R] [∀ s, Module R (D.obj s)] :
   (LinearEquiv.piCongrLeft R D.obj (joinedIndex (ι := ι) (κ := κ))).symm.trans
     (LinearEquiv.piCurry R fun I J => D.obj (uni I J))
 
+omit [LinearOrder ι] [LinearOrder κ] in
 theorem cochainSlices_apply (R : Type) [CommRing R] [∀ s, Module R (D.obj s)]
     (x : D.Cochain) (I : Finset ι) (J : Finset κ) :
     D.cochainSlices R x I J = x (uni I J) := rfl

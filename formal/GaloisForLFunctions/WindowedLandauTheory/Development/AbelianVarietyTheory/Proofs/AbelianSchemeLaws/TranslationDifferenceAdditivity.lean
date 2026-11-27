@@ -17,7 +17,8 @@ namespace GlobalTheory.TranslateAdditive
 
 attribute [local instance] Over.cartesianMonoidalCategory
 
-private def pullFormalChart {X Y Z : Scheme.{0}} (L : LB X) {I : Type} [Fintype I]
+/-- Pulling back a product of integral powers composes each of its base maps. -/
+def pullFormalChart {X Y Z : Scheme.{0}} (L : LB X) {I : Type} [Fintype I]
     (f : I → (Y ⟶ X)) (d : I → ℤ) (r : Z ⟶ Y) :
     ChartPull ((LB.LinComb L f d).pull r) (LB.LinComb L (fun k => r ≫ f k) d) (𝟙 Z) where
   idx p := p PUnit.unit
