@@ -17,9 +17,11 @@ private theorem heat_product (a b u v : ℝ) (n : ℕ+) :
   rw [heat,heat,←Complex.exp_conj,←Complex.exp_add,rpow_def_of_pos pp,Complex.ofReal_exp,
     clockPhase,←Complex.exp_add]
   congr 1
-  simp only [indexParameter,energy,map_mul,map_neg,map_add,Complex.conj_ofReal,Complex.conj_I,
-    Complex.ofReal_mul,Complex.ofReal_add,Complex.ofReal_sub,Complex.ofReal_div,Complex.ofReal_one,
-    Complex.ofReal_ofNat]
+  have hc : conj (indexParameter a u)=(((1-a)/2:ℝ):ℂ)-(u:ℂ)*Complex.I := by
+    simp only [indexParameter,map_add,map_mul,Complex.conj_ofReal,Complex.conj_I,mul_neg,sub_eq_add_neg]
+  simp only [map_mul,map_neg,Complex.conj_ofReal,hc]
+  simp only [indexParameter,energy,Complex.ofReal_mul,Complex.ofReal_add,Complex.ofReal_sub,
+    Complex.ofReal_div,Complex.ofReal_one,Complex.ofReal_ofNat]
   ring
 
 /-- The finite clock Gram pairing is a phase expectation in the wave

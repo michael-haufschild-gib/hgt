@@ -4,7 +4,8 @@ import GaloisForLFunctions.WindowedLandauTheory.SatakeDualWeyl.AdelicIwasawaHeck
 import Mathlib.RingTheory.RootsOfUnity.EnoughRootsOfUnity
 
 /-! In a finite number-field completion the power index is the product
-of n² and the norm of the prime-power part of (n). -/
+of the exponent, the number of roots of unity of that exponent, and
+the norm of the prime-power part of the exponent ideal. -/
 
 noncomputable section
 
@@ -16,7 +17,8 @@ namespace GlobalTheory.Reciprocity
 
 universe u
 
-private theorem irreducible_intValuation_eq_exp_neg_one {F : Type u} [Field F] [ValuativeRel F]
+/-- A uniformizer has normalized multiplicative valuation `exp (-1)`. -/
+theorem irreducible_intValuation_eq_exp_neg_one {F : Type u} [Field F] [ValuativeRel F]
     [TopologicalSpace F] [IsNonarchimedeanLocalField F]
     (v : Valuation F ℤᵐ⁰) [v.Compatible] (hv : Function.Surjective v)
     {π : 𝒪[F]} (hπ : Irreducible π) : v (π : F) = WithZero.exp (-1 : ℤ) := by
@@ -54,11 +56,12 @@ private theorem irreducible_intValuation_eq_exp_neg_one {F : Type u} [Field F] [
     rw [← hx, heq, map_mul]
     exact mul_le_of_le_one_right' (he b)
 
-variable {K : Type} [Field K] [NumberField K] {n : ℕ} [NeZero n] [HasEnoughRootsOfUnity K n]
+variable {K : Type} [Field K] [NumberField K] {n : ℕ} [NeZero n]
 
-theorem index_power_adicCompletion (p : HeightOneSpectrum (𝓞 K)) :
+theorem index_power_adicCompletion_eq (p : HeightOneSpectrum (𝓞 K)) :
     (powMonoidHom n : (p.adicCompletion K)ˣ →* (p.adicCompletion K)ˣ).range.index =
-      n ^ 2 * p.asIdeal.absNorm ^ multiplicity p.asIdeal (Ideal.span {(n : 𝓞 K)}) := by
+      n * Nat.card (rootsOfUnity n (p.adicCompletion K)) *
+        p.asIdeal.absNorm ^ multiplicity p.asIdeal (Ideal.span {(n : 𝓞 K)}) := by
   obtain ⟨w, rfl⟩ := (FinitePlace.equivHeightOneSpectrum (K := K)).surjective p
   let p := w.maximalIdeal
   let F := p.adicCompletion K
@@ -105,12 +108,16 @@ theorem index_power_adicCompletion (p : HeightOneSpectrum (𝓞 K)) :
       ((intValuation_eq_exp_neg_multiplicity p (Nat.cast_ne_zero.mpr (NeZero.ne n))).symm.trans
         (hval.symm.trans hnv))
     omega
-  obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot K n
-  have hroots := (hζ.map_of_injective (algebraMap K F).injective).card_rootsOfUnity
   have hidx := index_power_localField v hv (NeZero.ne n) hπ hnd
-  rw [hroots, hq, hd] at hidx
-  change (powMonoidHom n : Fˣ →* Fˣ).range.index =
-    n ^ 2 * p.asIdeal.absNorm ^ multiplicity p.asIdeal (Ideal.span {(n : 𝓞 K)})
-  simpa only [pow_two] using hidx
+  rwa [hq, hd] at hidx
+
+theorem index_power_adicCompletion [HasEnoughRootsOfUnity K n] (p : HeightOneSpectrum (𝓞 K)) :
+    (powMonoidHom n : (p.adicCompletion K)ˣ →* (p.adicCompletion K)ˣ).range.index =
+      n ^ 2 * p.asIdeal.absNorm ^ multiplicity p.asIdeal (Ideal.span {(n : 𝓞 K)}) := by
+  obtain ⟨ζ, hζ⟩ := HasEnoughRootsOfUnity.exists_primitiveRoot K n
+  have hc := (hζ.map_of_injective (algebraMap K (p.adicCompletion K)).injective).card_rootsOfUnity
+  rw [index_power_adicCompletion_eq, hc, pow_two]
 
 end GlobalTheory.Reciprocity
+
+#print axioms GlobalTheory.Reciprocity.index_power_adicCompletion_eq

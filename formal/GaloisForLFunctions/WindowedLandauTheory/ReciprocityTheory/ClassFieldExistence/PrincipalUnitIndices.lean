@@ -109,6 +109,72 @@ theorem relIndex_principalUnitFiltration_succ (hn : 1 ≤ n) :
 
 end Graded
 
+section Equivariance
+
+variable {π : 𝒪[K]} (hπ : Irreducible π)
+
+private def powIntoPrincipalUnits [Finite 𝓀[K]] : 𝒪[K]ˣ →* U 1 :=
+  (powMonoidHom (Nat.card 𝓀[K] - 1)).codRestrict _ fun u => by
+    rw [nonarchimedeanLocalField_principalUnitFiltration_one]
+    apply MonoidHom.mem_ker.mpr
+    change nonarchimedeanLocalFieldReductionUnits K (u ^ (Nat.card 𝓀[K] - 1)) = 1
+    rw [map_pow]
+    apply Units.ext
+    letI : Fintype 𝓀[K] := Fintype.ofFinite _
+    rw [Units.val_pow_eq_pow_val, Units.val_one, Nat.card_eq_fintype_card]
+    exact FiniteField.pow_card_sub_one_eq_one _ (Units.ne_zero _)
+
+/-- Raising a unit to the order of the residue multiplicative group
+puts it into the first principal layer. The residue coefficient of
+that power gives an additive quotient of all integral units. -/
+def firstPrincipalUnitCoefficient [Finite 𝓀[K]] : 𝒪[K]ˣ →* Multiplicative 𝓀[K] :=
+  (gradedUnitMap hπ (n := 1) le_rfl).comp powIntoPrincipalUnits
+
+theorem firstPrincipalUnitCoefficient_surjective [Finite 𝓀[K]] :
+    Function.Surjective (firstPrincipalUnitCoefficient hπ) := by
+  letI : Fintype 𝓀[K] := Fintype.ofFinite _
+  let g := gradedUnitMap hπ (n := 1) le_rfl
+  intro r
+  obtain ⟨u, hu⟩ := gradedUnitMap_surjective hπ le_rfl r⁻¹
+  refine ⟨u.val, ?_⟩
+  change g (u ^ (Nat.card 𝓀[K] - 1)) = r
+  rw [map_pow, hu]
+  apply Multiplicative.toAdd.injective
+  change (Nat.card 𝓀[K] - 1) • (-Multiplicative.toAdd r) = Multiplicative.toAdd r
+  have hq : ((Nat.card 𝓀[K] : ℕ) : 𝓀[K]) = 0 := by
+    rw [Nat.card_eq_fintype_card, FiniteField.cast_card_eq_zero]
+  rw [nsmul_eq_mul, Nat.cast_sub (Nat.card_pos (α := 𝓀[K])), hq, Nat.cast_one,
+    zero_sub, neg_mul_neg, one_mul]
+
+theorem firstPrincipalUnitCoefficient_map [Finite 𝓀[K]]
+    (e : 𝒪[K] ≃+* 𝒪[K]) (he : e π = π) (u : 𝒪[K]ˣ) :
+    firstPrincipalUnitCoefficient hπ (Units.map e.toMonoidHom u) =
+      Multiplicative.ofAdd (ResidueField.mapEquiv e
+        (Multiplicative.toAdd (firstPrincipalUnitCoefficient hπ u))) := by
+  let g := powIntoPrincipalUnits (K := K)
+  let z := g (Units.map e.toMonoidHom u)
+  let y := g u
+  have hz : (((z.val : 𝒪[K]ˣ) : 𝒪[K])) = e (y.val : 𝒪[K]) := by
+    change ((Units.map e.toMonoidHom u : 𝒪[K]ˣ) : 𝒪[K]) ^ (Nat.card 𝓀[K] - 1) =
+      e ((u : 𝒪[K]) ^ (Nat.card 𝓀[K] - 1))
+    rw [Units.coe_map, map_pow]
+    rfl
+  have heq : ((z.val : 𝒪[K]ˣ) : 𝒪[K]) - 1 = π ^ 1 * e (uniformizerCoefficient hπ y) := by
+    rw [hz, ← map_one e, ← map_sub, sub_one_eq_uniformizerCoefficient hπ y,
+      map_mul, map_pow, he]
+  change Multiplicative.ofAdd (residue 𝒪[K] (uniformizerCoefficient hπ z)) = _
+  rw [uniformizerCoefficient_eq hπ heq]
+  rfl
+
+theorem firstPrincipalUnitCoefficient_eq_one_of_mem_level_two [Finite 𝓀[K]]
+    (u : 𝒪[K]ˣ) (hu : u ∈ U 2) : firstPrincipalUnitCoefficient hπ u = 1 := by
+  apply MonoidHom.mem_ker.mp
+  change powIntoPrincipalUnits u ∈ (gradedUnitMap hπ (n := 1) le_rfl).ker
+  rw [ker_gradedUnitMap, Subgroup.mem_subgroupOf]
+  exact (U 2).pow_mem hu _
+
+end Equivariance
+
 theorem index_principalUnitFiltration {n : ℕ} (hn : 1 ≤ n) :
     (U n).index = (Nat.card 𝓀[K] - 1) * Nat.card 𝓀[K] ^ (n - 1) := by
   obtain ⟨π, hπ⟩ := IsDiscreteValuationRing.exists_irreducible 𝒪[K]
@@ -127,3 +193,6 @@ theorem index_principalUnitFiltration {n : ℕ} (hn : 1 ≤ n) :
     ac_rfl
 
 end GlobalTheory.Reciprocity
+
+#print axioms GlobalTheory.Reciprocity.firstPrincipalUnitCoefficient_surjective
+#print axioms GlobalTheory.Reciprocity.firstPrincipalUnitCoefficient_map

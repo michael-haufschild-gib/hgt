@@ -22,8 +22,9 @@ theorem affine_energies {n : ℕ} (a b : ℝ) (x : FieldPair n) (j : Fin (n+2) �
   intro u h
   have hsum (v : Coeff n) : diagonalEnergy h.eigenvectorUnitary (generator v).val j =
       ∑ l, v l*FirstGate.ResponseWeights.localMean u l j := by
-    change (((h.eigenvectorUnitary.val)ᴴ*pathHamiltonian (WithLp.toLp 2 v)*h.eigenvectorUnitary.val) j j).re=_
-    rw [pathHamiltonian_eq_sum,Finset.mul_sum,Finset.sum_mul,Matrix.sum_apply,Complex.re_sum]
+    let U : Matrix (Fin (n+2) → Bool) (Fin (n+2) → Bool) ℂ := h.eigenvectorUnitary.val
+    change ((Uᴴ*pathHamiltonian (WithLp.toLp 2 v)*U) j j).re=_
+    rw [pathHamiltonian_eq_sum (WithLp.toLp 2 v),Finset.mul_sum,Finset.sum_mul,Matrix.sum_apply,Complex.re_sum]
     apply Finset.sum_congr rfl
     intro l _
     simp only [Matrix.mul_smul,Matrix.smul_mul,Matrix.smul_apply,smul_eq_mul,Complex.re_ofReal_mul]
@@ -77,7 +78,8 @@ theorem mean_excess (n : ℕ) {a b : ℝ} (hab : a^2+b^2=1) :
   obtain ⟨ib,eb⟩ := law _ (base_law n)
   refine ⟨(ip.add im).sub (ib.const_mul (2*a)),?_⟩
   change (∫ x, (s (rotated a b x)+s (rotated a (-b) x))-2*a*s (base x) ∂pairLaw n)=_
-  rw [integral_sub (ip.add im) (ib.const_mul (2*a)),integral_add ip im,integral_const_mul,ep,em,eb]
+  have ix : Integrable (fun x => s (rotated a b x)+s (rotated a (-b) x)) (pairLaw n) := ip.add im
+  rw [integral_sub ix (ib.const_mul (2*a)),integral_add ip im,integral_const_mul,ep,em,eb]
   dsimp only [s]
   ring
 
@@ -100,7 +102,8 @@ private theorem excess_nonneg {n : ℕ} {a : ℝ} (ha : 0 ≤ a) (b : ℝ) (x : 
 horizon, even when the observation date depends on the sample. -/
 theorem gaussian_uniform_prediction (n : ℕ) {a b T ρ : ℝ}
     (ha : 0 ≤ a) (hab : a^2+b^2=1) (hT : 0<T) (hρ : 0<ρ) :
-    (pairLaw n).real {x | ∃ t : ℝ, |t| ≤ T ∧ (2:ℝ)^(n+2)*ρ^2 < pairedError a b x t} ≤ 8*T*(1-a)*(2:ℝ)^(n+2)*Real.sqrt (Fintype.card (PathLabel n))/ρ^2 := by
+    (pairLaw n).real {x | ∃ t : ℝ, |t| ≤ T ∧ (2:ℝ)^(n+2)*ρ^2 < pairedError a b x t} ≤
+      8*T*(1-a)*(2:ℝ)^(n+2)*Real.sqrt (Fintype.card (PathLabel n))/ρ^2 := by
   let D := (2:ℝ)^(n+2)
   let κ := D*ρ^2/(2*T)
   have hD : 0<D := by dsimp [D]; positivity
@@ -109,14 +112,14 @@ theorem gaussian_uniform_prediction (n : ℕ) {a b T ρ : ℝ}
   have hpos : 0 ≤ᵐ[pairLaw n] excess a b := ae_of_all _ fun x => excess_nonneg ha b x
   obtain ⟨hi,hm⟩ := mean_excess n hab
   have hmark := mul_meas_ge_le_integral_of_nonneg hpos hi κ
-  have hu := mul_le_mul_of_nonneg_left (gaussian_spread_moment n).2 (mul_nonneg (by norm_num) ha₁)
+  have hu := mul_le_mul_of_nonneg_left (gaussian_spread_moment n).2 (mul_nonneg (by norm_num : (0:ℝ) ≤ 2) ha₁)
   rw [hm] at hmark
   apply (measureReal_mono (μ:=pairLaw n) (s₂:={x | κ ≤ excess a b x}) ?_).trans
   · apply (le_of_mul_le_mul_left · hκ)
     apply (hmark.trans hu).trans_eq
     dsimp only [κ,D]
     field_simp
-    <;> ring
+    ring
   · rintro x ⟨t,ht,herr⟩
     apply (div_le_iff₀ (mul_pos (by norm_num) hT)).mpr
     have h := (time_bound ha b x t).trans (mul_le_mul_of_nonneg_right
@@ -180,7 +183,7 @@ theorem gaussian_date_circuit_comparison (n s : ℕ) {a b T ρ : ℝ} (ha : 0 �
     · exact Or.inr ⟨t,ht,h⟩
     · exact Or.inl ⟨c,hc,C,hsize,circuit_prediction a b x t ε ρ hρ.le (le_of_not_gt h) c C herr⟩
   exact (measureReal_mono hs).trans ((measureReal_union_le ..).trans
-    (add_le_add_left (gaussian_uniform_prediction n ha hab hT hρ) _))
+    (add_le_add le_rfl (gaussian_uniform_prediction n ha hab hT hρ)))
 
 /-- An independent phase shift of size L at time T costs at most
 8 D √m L²/(T ρ²) in physical shortcut probability. -/
@@ -201,11 +204,11 @@ theorem physical_phase_scale (n s : ℕ) {T L ρ : ℝ} (hT : 0<T) (hL : |L| ≤
   have ha₁ : a ≤ 1 := by nlinarith only [hab,sq_nonneg b,sq_nonneg (a-1)]
   have hloss : 1-a ≤ b^2 := by nlinarith only [hab,mul_nonneg ha (sub_nonneg.mpr ha₁)]
   apply (gaussian_date_circuit_comparison n s ha hab hT hρ T ε (abs_of_pos hT).le).trans
-  apply add_le_add_left
+  apply add_le_add le_rfl
   calc
     _ ≤ 8*T*b^2*(2:ℝ)^(n+2)*Real.sqrt (Fintype.card (PathLabel n))/ρ^2 := by
       gcongr
-    _ = _ := by dsimp only [b]; field_simp; ring
+    _ = _ := by dsimp only [b]; field_simp
 
 #print axioms physical_phase_scale
 #print axioms gaussian_date_circuit_comparison

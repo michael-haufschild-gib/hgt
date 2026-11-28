@@ -72,7 +72,8 @@ theorem lpChar_sum (x y z : WD h) : (lpSum x y).lpChar z = lpSum (x.lpChar z) (y
   apply sound
   exact ⟨LinearEquiv.refl _ _, fun _ _ => rfl, fun _ => rfl⟩
 
-private theorem detChar_twist (x : WD h) (χ : Weil h →* ℂˣ) (hχ : IsSmooth χ)
+/-- A scalar twist multiplies the determinant by the twisting character to the rank. -/
+theorem detChar_twist (x : WD h) (χ : Weil h →* ℂˣ) (hχ : IsSmooth χ)
     (σ : Weil h) : ((lpTwist x χ hχ).detChar σ : ℂ) =
       (χ σ : ℂ) ^ x.lpDim * (x.detChar σ : ℂ) := by
   refine WD.ind (fun n a => ?_) x

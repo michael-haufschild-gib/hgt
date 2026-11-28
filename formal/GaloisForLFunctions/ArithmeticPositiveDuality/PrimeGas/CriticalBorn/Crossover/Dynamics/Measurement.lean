@@ -33,7 +33,7 @@ def codeLaw (a : ℝ) (N : ℕ) : ProbabilityMeasure unitInterval :=
   (labelLaw ((1-a)/2) N).map
     (show Measurable (fun p => code (energyFraction N p)) from measurable_of_countable _).aemeasurable
 
-private theorem index_weight (a : ℝ) : bornWeight ((1-a)/2) = fun p => (p:ℝ)^(a-1) := by
+private theorem index_weight (a : ℝ) : bornWeight ((1-a)/2) = fun p : ℕ => (p:ℝ)^(a-1) := by
   funext p
   rw [bornWeight,show -(2*((1-a)/2))=a-1 by ring]
 

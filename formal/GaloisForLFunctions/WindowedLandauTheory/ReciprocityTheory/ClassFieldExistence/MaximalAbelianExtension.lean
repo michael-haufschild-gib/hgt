@@ -1,4 +1,5 @@
 import Mathlib.FieldTheory.Galois.Abelian
+import Mathlib.FieldTheory.Galois.Profinite
 import Mathlib.Topology.Algebra.Group.TopologicalAbelianization
 
 /-! The maximal abelian subextension of a Galois extension is fixed by

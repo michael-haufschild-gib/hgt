@@ -15,9 +15,12 @@ def indexParameter (a t : ℝ) : ℂ := (((1-a)/2 : ℝ):ℂ)+(t:ℂ)*Complex.I
 private theorem index_sum (a b t : ℝ) :
     indexParameter b t + conj (indexParameter a t) =
     indexParameter ((a+b)/2) t + conj (indexParameter ((a+b)/2) t) := by
-  apply Complex.ext <;>
-    simp only [indexParameter,Complex.add_re,Complex.add_im,Complex.conj_re,Complex.conj_im,
-      Complex.ofReal_re,Complex.ofReal_im,Complex.mul_I_re,Complex.mul_I_im] <;> ring
+  apply Complex.ext
+  · simp only [indexParameter,Complex.add_re,Complex.conj_re,Complex.ofReal_re,Complex.mul_I_re,
+      Complex.ofReal_im]
+    ring
+  · simp only [indexParameter,Complex.add_im,Complex.conj_im,Complex.ofReal_im,Complex.mul_I_im,
+      Complex.ofReal_re]
 
 private theorem heat_pair (s v m : ℂ) (h : v+conj s=m+conj m) (n : ℕ+) :
     heat v n*conj (heat s n)=heat m n*conj (heat m n) := by
@@ -36,7 +39,9 @@ theorem equal_time_gram (a b t x : ℝ) :
         ∑ p, rawWave m x p * conj (rawWave m x p)
       exact Finset.sum_congr rfl fun p _ => heat_pair _ _ _ (index_sum a b t)
         ⟨p.val,(Nat.mem_primesBelow.mp p.property).2.pos⟩
-    _ = ((‖rawWave m x‖^2:ℝ):ℂ) := by rw [inner_self_eq_norm_sq_to_K,Complex.ofReal_pow]
+    _ = ((‖rawWave m x‖^2:ℝ):ℂ) := by
+      rw [inner_self_eq_norm_sq_to_K (𝕜 := ℂ),Complex.ofReal_pow]
+      rfl
     _ = _ := by
       rw [rawWave_sq]
       have e : 1-2*m.re = (a+b)/2 := by

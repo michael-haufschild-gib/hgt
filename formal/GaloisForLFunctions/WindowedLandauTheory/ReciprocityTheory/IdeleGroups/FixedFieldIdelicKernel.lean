@@ -38,7 +38,8 @@ local instance (L : IntermediateField K M) [IsAbelianGalois K L] :
   { (inferInstance : Group Gal(L/K)) with mul_comm := IsMulCommutative.is_comm.comm }
 
 omit [NumberField K] [NumberField M] [Fintype Gal(M/K)] in
-private theorem eq_restriction (L : IntermediateField K M) [IsAbelianGalois K L] [Fintype Gal(L/K)]
+/-- The action-theoretic restriction of Galois automorphisms is the restriction to a normal field. -/
+theorem eq_restriction (L : IntermediateField K M) [IsAbelianGalois K L] [Fintype Gal(L/K)]
     [NumberField L] :
     IsGaloisGroup.restrictHom Gal(M/K) Gal(L/K) K L M = AlgEquiv.restrictNormalHom L := by
   apply MonoidHom.ext
@@ -51,16 +52,17 @@ private theorem eq_restriction (L : IntermediateField K M) [IsAbelianGalois K L]
   rw [AlgEquiv.restrictNormalHom_apply]
   exact IsGaloisGroup.algebraMap_restrictHom_smul Gal(M/K) Gal(L/K) K L M σ x
 
-theorem exists_finite_idelic_artin_of_kernel_le
+/-- An idelic quotient below a finite Artin kernel is realized by the fixed field of its image. -/
+theorem finite_idelic_artin_fixedField_of_kernel_le
     (m : Modulus K) (φ : IdeleGroup K →* Gal(M/K))
     (hd : ∀ a : Kˣ, φ (diagonal K a) = 1)
     (hu : ∀ v : HeightOneSpectrum (𝓞 K), ¬ v.asIdeal ∣ m.fin → IsUnramifiedPrime K M Gal(M/K) v)
     (hp : ∀ x : idelesOneMod m, φ x.val = artinMap K M Gal(M/K) (toFractionalIdeal x.val))
     (N : Subgroup (IdeleGroup K)) (hN : φ.ker ≤ N) :
-    ∃ (L : IntermediateField K M) (hL : IsAbelianGalois K L),
-      letI := hL
-      ∃ ψ : IdeleGroup K →* Gal(L/K),
-        Continuous ψ ∧ Function.Surjective ψ ∧ ψ.ker = N ∧ IsFiniteIdelicArtin ψ := by
+    let L := fixedField (N.map φ)
+    letI : IsAbelianGalois K L := IsAbelianGalois.of_algHom L.val
+    ∃ ψ : IdeleGroup K →* Gal(L/K),
+      Continuous ψ ∧ Function.Surjective ψ ∧ ψ.ker = N ∧ IsFiniteIdelicArtin ψ := by
   let H := N.map φ
   let L := fixedField H
   letI : IsAbelianGalois K L := IsAbelianGalois.of_algHom L.val
@@ -72,7 +74,7 @@ theorem exists_finite_idelic_artin_of_kernel_le
     rw [← eq_restriction L]
     exact finite_idelic_artin_restrict K L M Gal(L/K) Gal(M/K) q m ψ φ hqd hd
       (fun v hv => not_not.mp (fun h => hv ((hqu v).mpr h))) hu hqp hp
-  refine ⟨L, inferInstance, ψ, hc, hs, ?_, ⟨q, hqu, hqp⟩⟩
+  refine ⟨ψ, hc, hs, ?_, ⟨q, hqu, hqp⟩⟩
   have hk : (AlgEquiv.restrictNormalHom L).ker = H :=
     L.restrictNormalHom_ker.trans (fixingSubgroup_fixedField H)
   rw [← hr, ← MonoidHom.comap_ker, hk]
@@ -86,4 +88,21 @@ theorem exists_finite_idelic_artin_of_kernel_le
   · intro hx
     exact ⟨x, hx, rfl⟩
 
+theorem exists_finite_idelic_artin_of_kernel_le
+    (m : Modulus K) (φ : IdeleGroup K →* Gal(M/K))
+    (hd : ∀ a : Kˣ, φ (diagonal K a) = 1)
+    (hu : ∀ v : HeightOneSpectrum (𝓞 K), ¬ v.asIdeal ∣ m.fin → IsUnramifiedPrime K M Gal(M/K) v)
+    (hp : ∀ x : idelesOneMod m, φ x.val = artinMap K M Gal(M/K) (toFractionalIdeal x.val))
+    (N : Subgroup (IdeleGroup K)) (hN : φ.ker ≤ N) :
+    ∃ (L : IntermediateField K M) (hL : IsAbelianGalois K L),
+      letI := hL
+      ∃ ψ : IdeleGroup K →* Gal(L/K),
+        Continuous ψ ∧ Function.Surjective ψ ∧ ψ.ker = N ∧ IsFiniteIdelicArtin ψ := by
+  let L := fixedField (N.map φ)
+  letI : IsAbelianGalois K L := IsAbelianGalois.of_algHom L.val
+  obtain ⟨ψ, hc, hs, hk, hψ⟩ := finite_idelic_artin_fixedField_of_kernel_le m φ hd hu hp N hN
+  exact ⟨L, inferInstance, ψ, hc, hs, hk, hψ⟩
+
 end GlobalTheory.Reciprocity
+
+#print axioms GlobalTheory.Reciprocity.finite_idelic_artin_fixedField_of_kernel_le

@@ -9,10 +9,16 @@ namespace GaloisForLFunctions.ArithmeticPositiveDuality.PrimeGas.CriticalBorn.Cr
 open Filter Finset Real
 open scoped Topology ComplexConjugate
 
+private theorem cast_sq_norm {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] (x : H) :
+    ((‖x‖^2:ℝ):ℂ) = inner ℂ x x := by
+  rw [inner_self_eq_norm_sq_to_K (𝕜 := ℂ),Complex.ofReal_pow]
+  rfl
+
 private theorem amplitude_square {ι : Type*} (S : Finset ι) (z : ι → ℂ) :
     ((‖∑ i ∈ S, z i‖^2:ℝ):ℂ) = ∑ i ∈ S, ∑ j ∈ S, conj (z i)*z j := by
   rw [Complex.ofReal_pow,←Complex.conj_mul']
   simp only [map_sum,Finset.sum_mul,Finset.mul_sum]
+  exact Finset.sum_comm
 
 private theorem gram_sum {ι : Type*} (S : Finset ι) (z : ι → ℂ) (c : ι → ℝ) :
     (∑ i ∈ S, ∑ j ∈ S, conj (z i)*z j*((1+exp (c i/2)*exp (c j/2):ℝ):ℂ)) =
@@ -36,8 +42,8 @@ theorem coherent_norm {ι : Type*} (S : Finset ι) (z : ι → ℂ) (c : ι → 
       log (log N):ℝ):ℂ)) atTop (𝓝 ((‖∑ i ∈ S,z i‖^2 + ‖∑ i ∈ S,z i*(exp (c i/2):ℂ)‖^2:ℝ):ℂ)) := by
     apply lim.congr
     intro N
-    rw [Complex.ofReal_div,Complex.ofReal_pow,←inner_self_eq_norm_sq_to_K]
-    simp only [sum_inner,inner_sum,inner_smul_left,inner_smul_right,Finset.sum_div]
+    rw [Complex.ofReal_div,cast_sq_norm,sum_inner]
+    simp only [inner_sum,inner_smul_left,inner_smul_right,Finset.sum_div]
     refine sum_congr rfl fun i _ => sum_congr rfl fun j _ => ?_
     ring
   exact Complex.continuous_re.continuousAt.tendsto.comp hc

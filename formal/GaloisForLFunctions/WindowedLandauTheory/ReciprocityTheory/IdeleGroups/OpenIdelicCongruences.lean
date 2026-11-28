@@ -15,29 +15,27 @@ open IdeleGroup
 
 variable {K : Type*} [Field K] [NumberField K]
 
-theorem exists_finite_congruences_le_open
-    (H : Subgroup (CompactIdeleClassQuotient K)) (hH : IsOpen (H : Set (CompactIdeleClassQuotient K))) :
+theorem exists_finite_congruences_mem_nhds
+    (U : Set (CompactIdeleClassQuotient K)) (hU : U ∈ 𝓝 1) :
     ∃ (S : Finset (HeightOneSpectrum (𝓞 K))) (n : S → ℕ), ∀ x : IdeleGroup K,
       (∀ v, ord v x = 0) → x ∈ positiveAt Set.univ →
       (∀ v : S, finiteProj v.val x ∈ unitsLevel v.val (n v)) →
-        toCompactIdeleClassQuotient K x ∈ H := by
+        toCompactIdeleClassQuotient K x ∈ U := by
   classical
   let q := toCompactIdeleClassQuotient K
   have hq : Continuous q := QuotientGroup.continuous_mk
-  let V : Set (FiniteIntegralUnits K) := (q ∘ finiteIntegralIdele) ⁻¹' (H : Set _)
-  have hVopen : IsOpen V := hH.preimage (hq.comp continuous_finiteIntegralIdele)
-  have hVone : (1 : FiniteIntegralUnits K) ∈ V := by
-    change q (finiteIntegralIdele 1) ∈ H
+  have h1 : q (finiteIntegralIdele (1 : FiniteIntegralUnits K)) = 1 := by
     rw [show (finiteIntegralIdele (1 : FiniteIntegralUnits K)) = 1 by
       change (prodRestrictedEquiv K).symm 1 = 1
-      exact map_one _]
-    exact H.one_mem
-  have hV := hVopen.mem_nhds hVone
+      exact map_one _, map_one]
+  have hU' : U ∈ 𝓝 ((q ∘ finiteIntegralIdele) (1 : FiniteIntegralUnits K)) := by
+    rwa [Function.comp_apply, h1]
+  have hV := (hq.comp continuous_finiteIntegralIdele).continuousAt.preimage_mem_nhds hU'
   rw [nhds_pi, Filter.mem_pi'] at hV
-  obtain ⟨S, U, hU, hsub⟩ := hV
+  obtain ⟨S, V, hVn, hsub⟩ := hV
   have hx (v : S) : ∃ n, ∀ a : (Submonoid.ofClass (v.val.adicCompletionIntegers K)).units,
-      (a : (v.val.adicCompletion K)ˣ) ∈ unitsLevel v.val n → a ∈ U v := by
-    have h := hU (v : HeightOneSpectrum (𝓞 K))
+      (a : (v.val.adicCompletion K)ˣ) ∈ unitsLevel v.val n → a ∈ V v := by
+    have h := hVn (v : HeightOneSpectrum (𝓞 K))
     rw [IsEmbedding.subtypeVal.nhds_eq_comap, Filter.mem_comap] at h
     obtain ⟨T, hT, hTU⟩ := h
     obtain ⟨n, -, hn⟩ := exists_unitsLevel_subset v.val hT
@@ -45,7 +43,7 @@ theorem exists_finite_congruences_le_open
   choose n hn using hx
   refine ⟨S, n, fun x hx hpos hlevel => ?_⟩
   obtain ⟨a, ha⟩ := exists_finiteIntegralUnits_of_ord_zero hx
-  have hqa : q (finiteIntegralIdele a) ∈ H :=
+  have hqa : q (finiteIntegralIdele a) ∈ U :=
     hsub fun v hv => hn ⟨v, hv⟩ (a v) (by
       rw [← finiteProj_finiteIntegralIdele, ← ha v]
       exact hlevel ⟨v, hv⟩)
@@ -58,6 +56,15 @@ theorem exists_finite_congruences_le_open
   have he : q y = 1 := toCompactIdeleClassQuotient_of_archPositive K hy
   change q x * (q (finiteIntegralIdele a))⁻¹ = 1 at he
   rwa [mul_inv_eq_one.mp he]
+
+theorem exists_finite_congruences_le_open
+    (H : Subgroup (CompactIdeleClassQuotient K)) (hH : IsOpen (H : Set (CompactIdeleClassQuotient K))) :
+    ∃ (S : Finset (HeightOneSpectrum (𝓞 K))) (n : S → ℕ), ∀ x : IdeleGroup K,
+      (∀ v, ord v x = 0) → x ∈ positiveAt Set.univ →
+      (∀ v : S, finiteProj v.val x ∈ unitsLevel v.val (n v)) →
+        toCompactIdeleClassQuotient K x ∈ H :=
+  exists_finite_congruences_mem_nhds (K := K) (H : Set (CompactIdeleClassQuotient K))
+    (hH.mem_nhds H.one_mem)
 
 theorem exists_powerCongruence_map_le_open
     (H : Subgroup (CompactIdeleClassQuotient K)) (hH : IsOpen (H : Set (CompactIdeleClassQuotient K)))

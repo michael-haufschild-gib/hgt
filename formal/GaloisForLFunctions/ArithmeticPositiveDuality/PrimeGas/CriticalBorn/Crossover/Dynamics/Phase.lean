@@ -47,7 +47,7 @@ theorem phase_response (c h : ℝ) :
     rw [decode_code]
     simp [clockPhase]
   have hi : probe h (code 1)=clockPhase h 1 := congrArg (clockPhase h) (decode_code 1)
-  simpa only [lo,hi,Complex.real_smul,Complex.ofReal_sub,Complex.ofReal_one,mul_one] using lim
+  simpa only [Function.comp_def,phaseAverage,lo,hi,Complex.real_smul,Complex.ofReal_sub,Complex.ofReal_one,mul_one] using lim
 
 #print axioms phaseAverage_eq
 #print axioms phase_response

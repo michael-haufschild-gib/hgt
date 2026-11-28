@@ -48,6 +48,8 @@ open Set Filter MeasureTheory ProbabilityTheory Real Topology Matrix NormedSpace
 open scoped Matrix.Norms.L2Operator ENNReal NNReal ComplexConjugate BigOperators
 namespace GaloisForLFunctions.HTGeometry.AccuracyScales.TenthPlateau
 open SharpOccupation SharpOccupation.FiniteRecords MaximumIntervals
+open WeakBonds PrescribedTimes SpanningDensity.FixedHorizon
+open OrdinaryTwoLocalGaussianHarmonicChoiGrowthLaw GaloisForLFunctions.RHTower
 noncomputable section
 
 private abbrev Config (N : ℕ) := Fin N → Bool
@@ -116,7 +118,7 @@ private theorem exists_unit_ker_conjTranspose_and_det_eq_zero {r m : ℕ} (hrm :
       simpa [Matrix.mulVec, dotProduct, Matrix.conjTranspose_apply] using hw₀_G j
     have hw0_eq : (fun i => w₀ i) = 0 := mulVec_eq_zero_of_det_ne_zero hdet_ct hmul0
     have hnorm0 : ‖w₀‖ = 0 := by
-      have hw0' : w₀ = 0 := WithLp.ext (funext fun i => congrFun hw0_eq i)
+      have hw0' : w₀ = 0 := by ext i; exact congrFun hw0_eq i
       rw [hw0', norm_zero]
     linarith only [hw₀_norm, hnorm0]
   exact ⟨hdet0, w₀, hw₀_norm, hw₀_G⟩
@@ -151,19 +153,19 @@ private theorem det_le_frob_sub_of_rank_lt {r m : ℕ} (hrm : r < m)
     rw [Matrix.mem_unitaryGroup_iff']
     ext j k
     rw [Matrix.star_eq_conjTranspose, Matrix.mul_apply, Matrix.one_apply]
-    have hin := b.orthonormal.inner_eq_ite j k
+    have hin := (orthonormal_iff_ite.mp b.orthonormal) j k
     rw [EuclideanSpace.inner_eq_star_dotProduct] at hin
     simpa [dotProduct, W, Matrix.conjTranspose_apply, mul_comm] using hin
   have hW_det_norm : ‖W.det‖ = 1 := by
     have h1 := congrArg (fun M : Matrix (Fin m) (Fin m) ℂ => ‖M.det‖)
       (Matrix.mem_unitaryGroup_iff.mp hW_unit)
     rw [Matrix.det_mul, Matrix.star_eq_conjTranspose, Matrix.det_conjTranspose,
-      norm_mul, Complex.norm_conj, Matrix.det_one, norm_one] at h1
+      norm_mul, norm_star, Matrix.det_one, norm_one] at h1
     nlinarith only [h1, norm_nonneg W.det, sq_nonneg (‖W.det‖ - 1)]
   let B_mat : Matrix (Fin m) (Fin m) ℂ := U_matᴴ * W
   have hB_det : ‖B_mat.det‖ = ‖U_mat.det‖ := by
     dsimp only [B_mat]
-    rw [Matrix.det_mul, Matrix.det_conjTranspose, norm_mul, Complex.norm_conj, hW_det_norm, mul_one]
+    rw [Matrix.det_mul, Matrix.det_conjTranspose, norm_mul, norm_star, hW_det_norm, mul_one]
   have hcol_bound (A : Matrix (Fin m) (Fin m) ℂ) (v : EuclideanSpace ℂ (Fin m)) (hv : ‖v‖ = 1) :
       ‖(WithLp.toLp 2 (fun j : Fin m => ∑ i : Fin m, star (A i j) * v i) :
         EuclideanSpace ℂ (Fin m))‖ ^ 2 ≤ ∑ i : Fin m, ∑ j : Fin m, ‖A i j‖ ^ 2 := by
@@ -179,7 +181,7 @@ private theorem det_le_frob_sub_of_rank_lt {r m : ℕ} (hrm : r < m)
           ≤ (‖a_vec‖ * ‖v‖) ^ 2 :=
             pow_le_pow_left₀ (norm_nonneg _) (norm_inner_le_norm a_vec v) 2
         _ = ‖a_vec‖ ^ 2 := by rw [hv, mul_one]
-        _ = ∑ i : Fin m, ‖A i j‖ ^ 2 := by rw [EuclideanSpace.norm_sq_eq]; rfl
+        _ = ∑ i : Fin m, ‖A i j‖ ^ 2 := by rw [EuclideanSpace.norm_sq_eq]
     exact (Finset.sum_le_sum fun j _ => hcs j).trans_eq (Finset.sum_comm)
   have hcol_i₀ :
       ‖(WithLp.toLp 2 (fun j : Fin m => B_mat j i₀) : EuclideanSpace ℂ (Fin m))‖ ≤ ε := by
@@ -314,8 +316,8 @@ private theorem choiSubmatrix_factors_of_hasBipartiteOperatorRank {N r m : ℕ} 
     (t := (Finset.univ : Finset (Fin r)))]
   refine Finset.sum_congr rfl fun k _ => ?_
   simp only [P, Q, Matrix.of_apply]
-  rw [Finset.mul_sum, Finset.sum_mul]
-  exact Finset.sum_congr rfl fun p _ => by rw [Finset.mul_sum]
+  simp_rw [← Finset.mul_sum]
+  rw [← Finset.sum_mul, ← Finset.mul_sum]
 
 private theorem normalizedBipartiteChoi_frob_eq {N : ℕ} (S : Finset (Fin N)) (M : Register N) :
     (∑ p : CutPair S, ∑ q : CutPair (Sᶜ : Finset (Fin N)), ‖normalizedBipartiteChoi S M p q‖ ^ 2) =
@@ -332,9 +334,22 @@ private theorem normalizedBipartiteChoi_frob_eq {N : ℕ} (S : Finset (Fin N)) (
   simp_rw [hterm, ← Finset.mul_sum]
   congr 1
   let pairEqv : (CutPair S × CutPair (Sᶜ : Finset (Fin N))) ≃ (Config N × Config N) :=
-    Equiv.prodProdProdComm.trans (((splitConfigEquiv S).symm).prodCongr ((splitConfigEquiv S).symm))
-  rw [← Fintype.sum_prod_type',
-    ← Fintype.sum_prod_type' (f := fun x y : Config N => ‖M x y‖ ^ 2)]
+    { toFun := fun pq => (mergeSplitConfig S pq.1.1 pq.2.1, mergeSplitConfig S pq.1.2 pq.2.2)
+      invFun := fun xy =>
+        (((splitConfigEquiv S xy.1).1, (splitConfigEquiv S xy.2).1),
+         ((splitConfigEquiv S xy.1).2, (splitConfigEquiv S xy.2).2))
+      left_inv := fun ⟨⟨p1, p2⟩, ⟨q1, q2⟩⟩ => by
+        dsimp only
+        have h1 : splitConfigEquiv S (mergeSplitConfig S p1 q1) = (p1, q1) :=
+          (splitConfigEquiv S).apply_symm_apply (p1, q1)
+        have h2 : splitConfigEquiv S (mergeSplitConfig S p2 q2) = (p2, q2) :=
+          (splitConfigEquiv S).apply_symm_apply (p2, q2)
+        rw [h1, h2]
+      right_inv := fun ⟨x, y⟩ =>
+        Prod.ext ((splitConfigEquiv S).symm_apply_apply x) ((splitConfigEquiv S).symm_apply_apply y) }
+  rw [← Fintype.sum_prod_type (f := fun pq : CutPair S × CutPair (Sᶜ : Finset (Fin N)) =>
+      ‖M (mergeSplitConfig S pq.1.1 pq.2.1) (mergeSplitConfig S pq.1.2 pq.2.2)‖ ^ 2),
+    ← Fintype.sum_prod_type (f := fun xy : Config N × Config N => ‖M xy.1 xy.2‖ ^ 2)]
   exact Equiv.sum_comp pairEqv fun xy => ‖M xy.1 xy.2‖ ^ 2
 
 private theorem register_frob_le_card_mul_opNorm_sq {N : ℕ} (X : Register N) :
@@ -394,16 +409,17 @@ private theorem normalizedChoiSubmatrix_frob_le {N m : ℕ} (S : Finset (Fin N))
     congr 1
     rw [EuclideanSpace.inner_eq_star_dotProduct]
     unfold normalizedChoiSubmatrix
-    rw [← Fintype.sum_prod_type]
+    rw [← Fintype.sum_prod_type (f := fun pq : Dom =>
+      star (V_L i pq.1) * star (V_R j pq.2) * normalizedBipartiteChoi S M pq.1 pq.2)]
     congr 1
     refine Finset.sum_congr rfl fun pq _ => ?_
     dsimp [ψ, Φ]
-    rw [star_mul]; ring
+    rw [map_mul]; ring
   rw [Fintype.sum_prod_type] at hbessel
   simp_rw [hin_eq] at hbessel
   have hΦ_sq : ‖Φ‖ ^ 2 = ∑ p : CutPair S, ∑ q : CutPair (Sᶜ : Finset (Fin N)),
       ‖normalizedBipartiteChoi S M p q‖ ^ 2 := by
-    rw [EuclideanSpace.norm_sq_eq, Fintype.sum_prod_type]; rfl
+    rw [EuclideanSpace.norm_sq_eq, Fintype.sum_prod_type]
   exact hbessel.trans (hΦ_sq.le.trans_eq (normalizedBipartiteChoi_frob_eq S M))
 
 /-- Boolean test whether a two-qubit gate on wires `(a, b)` crosses the cut `(S, Sᶜ)`. -/
@@ -432,6 +448,10 @@ private theorem lift_supported_pair {N : ℕ} (a b : Fin N) (hab : a ≠ b)
     rw [entry, entry, hr x y ho, hr x' y' ho', Matrix.one_apply_eq, Matrix.one_apply_eq,
       hx a (by simp), hx b (by simp), hy a (by simp), hy b (by simp)]
 
+private theorem isSiteSupported_one_finset {N : ℕ} (T : Finset (Fin N)) :
+    IsSiteSupported T (1 : Register N) :=
+  (isSiteSupported_one (B := fun _ : Fin N => Bool)).mono (Finset.empty_subset T)
+
 private theorem hasBipartiteOperatorRank_singleGate_sameSide {N : ℕ} (S : Finset (Fin N))
     (a b : Fin N) (hab : a ≠ b) (B : Matrix (Bool × Bool) (Bool × Bool) ℂ)
     (hsame : gateCrossesCut S a b = false) :
@@ -445,7 +465,7 @@ private theorem hasBipartiteOperatorRank_singleGate_sameSide {N : ℕ} (S : Fins
       · exact Finset.mem_singleton.mp hi' ▸ hb
     refine ⟨fun _ => twoQubitLiftMatrix a b hab B, fun _ => 1,
       fun _ => (lift_supported_pair a b hab B).mono hsub,
-      fun _ => IsSiteSupported.one Sᶜ, ?_⟩
+      fun _ => isSiteSupported_one_finset Sᶜ, ?_⟩
     simp
   · have hb : b ∉ S := by simp [ha] at hsame; exact hsame
     have hsub : ({a, b} : Finset (Fin N)) ⊆ Sᶜ := fun i hi => by
@@ -454,7 +474,7 @@ private theorem hasBipartiteOperatorRank_singleGate_sameSide {N : ℕ} (S : Fins
       · exact ha
       · exact Finset.mem_singleton.mp hi' ▸ hb
     refine ⟨fun _ => 1, fun _ => twoQubitLiftMatrix a b hab B,
-      fun _ => IsSiteSupported.one S,
+      fun _ => isSiteSupported_one_finset S,
       fun _ => (lift_supported_pair a b hab B).mono hsub, ?_⟩
     simp
 
@@ -547,7 +567,8 @@ private theorem hasBipartiteOperatorRank_singleGate_cross {N : ℕ} (S : Finset 
             intro heq; apply hall; intro i hib
             by_cases hia : i = a
             · subst hia; simp
-            · exact congrFun heq ⟨i, hia, hib⟩
+            · rw [Function.update_of_ne hia]
+              exact congrFun heq ⟨i, hia, hib⟩
           rw [Matrix.one_apply_ne hrest_ne, mul_zero]
       · intro y _ hyne
         dsimp only [X_ab, uv₀]
@@ -638,7 +659,8 @@ private theorem hasBipartiteOperatorRank_singleGate_cross {N : ℕ} (S : Finset 
             intro heq; apply hall; intro i hia
             by_cases hib : i = b
             · subst hib; simp
-            · exact congrFun heq ⟨i, hia, hib⟩
+            · rw [Function.update_of_ne hib]
+              exact congrFun heq ⟨i, hia, hib⟩
           rw [Matrix.one_apply_ne hrest_ne, mul_zero]
       · intro y _ hyne
         dsimp only [X_ba, uv₀]
@@ -684,8 +706,8 @@ theorem hasBipartiteOperatorRank_of_crossCutGateCount {N : ℕ} (S : Finset (Fin
     | nil =>
         simp only [List.filter_nil, List.length_nil, pow_zero, List.map_nil, List.prod_nil,
           OneMemClass.coe_one]
-        exact ⟨fun _ => 1, fun _ => 1, fun _ => IsSiteSupported.one S,
-          fun _ => IsSiteSupported.one Sᶜ, by simp⟩
+        exact ⟨fun _ => 1, fun _ => 1, fun _ => isSiteSupported_one_finset S,
+          fun _ => isSiteSupported_one_finset Sᶜ, by simp⟩
     | cons r tail ih =>
         simp only [List.map_cons, List.prod_cons, Submonoid.coe_mul, hg_val r]
         by_cases hcross : p r = true
@@ -695,7 +717,7 @@ theorem hasBipartiteOperatorRank_of_crossCutGateCount {N : ℕ} (S : Finset (Fin
         · have hfalse : p r = false := Bool.eq_false_iff.mpr hcross
           simp only [List.filter_cons_of_neg hcross]
           have hmul := (hasBipartiteOperatorRank_singleGate_sameSide S _ _
-            (C.architecture.distinct r) _ hfalse).mul ih
+            (C.architecture.distinct r) (specialUnitaryAsUnitary (C.gates r)).val hfalse).mul ih
           rwa [one_mul] at hmul
   let L₀ : List (Fin C.gateCount) := (List.ofFn fun r : Fin C.gateCount => r).reverse
   have hprod_eq : ((L₀.map g).prod : Register N) = (C.eval : Register N) := by
@@ -760,6 +782,7 @@ theorem crossCut_choiMinor_le_projectiveCircuitApprox {N k m : ℕ} (S : Finset 
       normalizedChoiSubmatrix S V_L V_R (z • (C.eval : Register N)) =
       normalizedChoiSubmatrix S V_L V_R (U.val - z • (C.eval : Register N)) := by
     ext i j
+    rw [Matrix.sub_apply]
     unfold normalizedChoiSubmatrix normalizedBipartiteChoi
     rw [← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun p _ => ?_
@@ -808,13 +831,9 @@ private def fSwapIntPair : Matrix (Bool × Bool) (Bool × Bool) ℤ :=
 private theorem fSwapIntPair_mul_self : fSwapIntPair * fSwapIntPair = 1 := by
   ext ⟨a₁, b₁⟩ ⟨a₂, b₂⟩
   rw [Matrix.mul_apply, Fintype.sum_prod_type]
+  simp only [Fintype.sum_bool]
   cases a₁ <;> cases b₁ <;> cases a₂ <;> cases b₂ <;>
-    simp [fSwapIntPair, Bool.sum_bool]
-
-private theorem fSwapIntPair_det :
-    (Matrix.reindex fin4EquivBoolPair.symm fin4EquivBoolPair.symm fSwapIntPair).det = 1 := by
-  rw [Matrix.det_fin_four]
-  simp [fSwapIntPair, fin4EquivBoolPair]
+    simp [fSwapIntPair]
 
 private def fSwapMatrix : Matrix (Bool × Bool) (Bool × Bool) ℂ :=
   fun p q => if p.1 = q.2 ∧ p.2 = q.1 then (if p.1 && p.2 then -1 else 1) else 0
@@ -835,10 +854,27 @@ private theorem fSwapMatrix_mem_specialUnitary :
   refine ⟨?_, ?_⟩
   · rw [Matrix.mem_unitaryGroup_iff', hstar]
     exact hmul_self
-  · rw [← Matrix.det_reindex_self fin4EquivBoolPair.symm fSwapMatrix, hfSwap_eq]
-    change ((Matrix.reindex fin4EquivBoolPair.symm fin4EquivBoolPair.symm fSwapIntPair).map
-      (Int.castRingHom ℂ)).det = 1
-    rw [← RingHom.map_det, fSwapIntPair_det, map_one]
+  · let M4 : Matrix (Fin 4) (Fin 4) ℂ :=
+      Matrix.reindex fin4EquivBoolPair.symm fin4EquivBoolPair.symm fSwapMatrix
+    rw [← Matrix.det_reindex_self fin4EquivBoolPair.symm fSwapMatrix]
+    change M4.det = 1
+    rw [Matrix.det_succ_row_zero, Fin.sum_univ_succ, Fin.sum_univ_three]
+    have hm00 : M4 0 0 = 1 := rfl
+    have hm01 : M4 0 ((0 : Fin 3).succ) = 0 := rfl
+    have hm02 : M4 0 ((1 : Fin 3).succ) = 0 := rfl
+    have hm03 : M4 0 ((2 : Fin 3).succ) = 0 := rfl
+    rw [hm00, hm01, hm02, hm03]
+    simp only [Fin.coe_ofNat_eq_mod, Nat.zero_mod, pow_zero, one_mul, mul_zero, zero_mul, add_zero]
+    let N3 : Matrix (Fin 3) (Fin 3) ℂ := M4.submatrix Fin.succ (Fin.succAbove 0)
+    change N3.det = 1
+    have hn00 : N3 0 0 = 0 := rfl
+    have hn01 : N3 0 1 = 1 := rfl
+    have hn02 : N3 0 2 = 0 := rfl
+    have hn10 : N3 1 0 = 1 := rfl
+    have hn12 : N3 1 2 = 0 := rfl
+    have hn22 : N3 2 2 = -1 := rfl
+    rw [Matrix.det_fin_three, hn00, hn01, hn02, hn10, hn12, hn22]
+    ring
 
 private def fSwapSpecialUnitary : Matrix.specialUnitaryGroup (Bool × Bool) ℂ :=
   ⟨fSwapMatrix, fSwapMatrix_mem_specialUnitary⟩
@@ -876,7 +912,7 @@ private theorem prod_disjoint_fSwap_apply {N q : ℕ}
         dsimp only [C]
         rw [TwoQubitCircuit.mul_gateCount]
         have h0 : C₀.gateCount = 1 := rfl
-        rw [h0, hlen_tail]; omega
+        omega
       have heval_C : (C.eval : Register N) = (C₀.eval : Register N) * (C_tail.eval : Register N) := by
         dsimp only [C]
         rw [TwoQubitCircuit.mul_eval, Submonoid.coe_mul]
@@ -943,8 +979,8 @@ private theorem prod_disjoint_fSwap_apply {N q : ℕ}
                 · rw [← hz₁_rest i hia0 hib0]
                   exact h i (fun k => Fin.cases hia0 ha' k) (fun k => Fin.cases hib0 hb' k)
           by_cases hr : ∀ i, (∀ k : Fin (q + 1), i ≠ a k) → (∀ k : Fin (q + 1), i ≠ b k) → x i = y i
-          · rw [if_pos hr, if_pos (hrest_iff.mpr hr), one_mul, mul_one]
-          · rw [if_neg hr, if_neg (mt hrest_iff.mp hr), zero_mul, mul_zero, zero_mul]
+          · rw [if_pos hr, if_pos (hrest_iff.mpr hr)]; ring
+          · rw [if_neg hr, if_neg (mt hrest_iff.mp hr)]; ring
         · have hf_y0 : fSwapMatrix (x (a 0), x (b 0)) (y (a 0), y (b 0)) = 0 := by
             unfold fSwapMatrix; rw [if_neg h0_match]
           have htail_if0 : ¬ (∀ i, (∀ k : Fin q, i ≠ a k.succ) →
@@ -1004,8 +1040,10 @@ theorem exists_allToAll_circuit_choiMinor_ne_zero {N : ℕ} (S : Finset (Fin N))
   let b : Fin q → Fin N := fun k => (embSc k).1
   have ha_inj : Function.Injective a := fun _ _ h => embS.injective (Subtype.ext h)
   have hb_inj : Function.Injective b := fun _ _ h => embSc.injective (Subtype.ext h)
-  have hdisj : ∀ k l, a k ≠ b l := fun k l h =>
-    (Finset.mem_compl.mp (embSc l).2) (h ▸ (embS k).2)
+  have hdisj : ∀ k l, a k ≠ b l := fun k l h => by
+    have hm : a k ∈ S := (embS k).2
+    rw [h] at hm
+    exact (Finset.mem_compl.mp (embSc l).2) hm
   have hab : ∀ k, a k ≠ b k := fun k => hdisj k k
   obtain ⟨C, hgate, heval⟩ := prod_disjoint_fSwap_apply a b hab ha_inj hb_inj hdisj
   have hcard_sub : Fintype.card ((Fin q → Bool) × (Fin q → Bool)) = 4 ^ q := by
@@ -1018,6 +1056,7 @@ theorem exists_allToAll_circuit_choiMinor_ne_zero {N : ℕ} (S : Finset (Fin N))
       (∀ u s, (¬ ∃ k, embS k = s) → padS u s = false) := by
     refine ⟨fun u s => if h : ∃ k : Fin q, embS k = s then u h.choose else false,
       fun u k => ?_, fun u s hs => dif_neg hs⟩
+    dsimp only
     have hex : ∃ l : Fin q, embS l = embS k := ⟨k, rfl⟩
     rw [dif_pos hex, embS.injective hex.choose_spec]
   obtain ⟨padSc, hpadSc_at, hpadSc_off⟩ :
@@ -1026,6 +1065,7 @@ theorem exists_allToAll_circuit_choiMinor_ne_zero {N : ℕ} (S : Finset (Fin N))
       (∀ v s, (¬ ∃ k, embSc k = s) → padSc v s = false) := by
     refine ⟨fun v s => if h : ∃ k : Fin q, embSc k = s then v h.choose else false,
       fun v k => ?_, fun v s hs => dif_neg hs⟩
+    dsimp only
     have hex : ∃ l : Fin q, embSc l = embSc k := ⟨k, rfl⟩
     rw [dif_pos hex, embSc.injective hex.choose_spec]
   have hpadS_inj : Function.Injective padS := fun u₁ u₂ h =>
@@ -1106,15 +1146,20 @@ theorem exists_allToAll_circuit_choiMinor_ne_zero {N : ℕ} (S : Finset (Fin N))
             · have hne_emb : ¬ ∃ k : Fin q, embS k = ⟨w, hwS⟩ := by
                 rintro ⟨k, hk⟩; exact hwa k (congrArg Subtype.val hk).symm
               dsimp only [x, y, mergeSplitConfig]
-              rw [dif_pos hwS, dif_pos hwS, hφL_def, hpadS_off _ _ hne_emb, hpadS_off _ _ hne_emb]
+              rw [dif_pos hwS, dif_pos hwS, hφL_def]
+              dsimp only
+              rw [hpadS_off _ _ hne_emb, hpadS_off _ _ hne_emb]
             · have hwSc : w ∈ (Sᶜ : Finset (Fin N)) := Finset.mem_compl.mpr hwS
               have hne_emb : ¬ ∃ k : Fin q, embSc k = ⟨w, hwSc⟩ := by
                 rintro ⟨k, hk⟩; exact hwb k (congrArg Subtype.val hk).symm
               dsimp only [x, y, mergeSplitConfig]
-              rw [dif_neg hwS, dif_neg hwS, hφR_def, hpadSc_off _ _ hne_emb, hpadSc_off _ _ hne_emb]
+              rw [dif_neg hwS, dif_neg hwS, hφR_def]
+              dsimp only
+              rw [hpadSc_off _ _ hne_emb, hpadSc_off _ _ hne_emb]
           rw [if_pos hrest_xy, one_mul]
           congr 1
           refine Finset.prod_congr rfl fun k _ => ?_
+          dsimp only [x, y] at hxa hxb hya hyb
           rw [hxa k, hxb k, hya k, hyb k]
           simp [fSwapMatrix]
         · rw [Matrix.diagonal_apply_ne _ hij]
@@ -1126,6 +1171,7 @@ theorem exists_allToAll_circuit_choiMinor_ne_zero {N : ℕ} (S : Finset (Fin N))
           obtain ⟨k₀, hk₀⟩ := hex_k
           have hprod0 : (∏ k : Fin q, fSwapMatrix (x (a k), x (b k)) (y (a k), y (b k))) = 0 := by
             refine Finset.prod_eq_zero (Finset.mem_univ k₀) ?_
+            dsimp only [x, y] at hxa hxb hya hyb ⊢
             rw [hxa k₀, hxb k₀, hya k₀, hyb k₀]
             unfold fSwapMatrix
             rw [if_neg]
@@ -1223,11 +1269,13 @@ private theorem exists_step_vandermonde_det_ne_zero {M : ℕ}
       have h1 : |ω j₂ - ω j₁| ≤ |ω j₂| + |ω j₁| := abs_sub _ _
       have h2 : |ω j₂| + |ω j₁| < 2 * S := by
         have hj₁ : |ω j₁| ≤ ∑ j : Fin M, |ω j| :=
-          Finset.single_le_sum (fun _ _ => abs_nonneg _) (Finset.mem_univ j₁)
+          Finset.single_le_sum (f := fun j : Fin M => |ω j|) (fun _ _ => abs_nonneg _)
+            (Finset.mem_univ j₁)
         have hj₂ : |ω j₂| ≤ ∑ j : Fin M, |ω j| :=
-          Finset.single_le_sum (fun _ _ => abs_nonneg _) (Finset.mem_univ j₂)
+          Finset.single_le_sum (f := fun j : Fin M => |ω j|) (fun _ _ => abs_nonneg _)
+            (Finset.mem_univ j₂)
         dsimp [S]; linarith only [hj₁, hj₂]
-      dsimp [δ]; rw [one_div, inv_mul_lt_iff₀ hS_pos]; exact h1.trans_lt h2
+      dsimp [δ]; rw [one_div, inv_mul_lt_iff₀ hS_pos, mul_comm]; exact h1.trans_lt h2
     rcases eq_or_ne m 0 with rfl | hm_ne
     · simp only [Int.cast_zero, zero_mul] at hrel
       exact hdiff_ne (neg_eq_zero.mp (by nlinarith only [hrel, hδ_pos]))
@@ -1236,7 +1284,7 @@ private theorem exists_step_vandermonde_det_ne_zero {M : ℕ}
         exact_mod_cast h1
       have hpi_gt : (3 : ℝ) < Real.pi := Real.pi_gt_three
       have habs_rhs : 6 < |(m : ℝ) * (2 * Real.pi)| := by
-        rw [abs_mul, abs_of_pos (by positivity)]
+        rw [abs_mul, abs_of_pos (mul_pos two_pos Real.pi_pos)]
         nlinarith only [hm_ge, hpi_gt]
       rw [hrel] at habs_lhs
       linarith only [habs_lhs, habs_rhs]
@@ -1260,7 +1308,11 @@ private theorem finrank_maximallyProjective_replicaOrbit_ge_of_spectral {N : ℕ
     rw [Finset.mem_piAntidiag]
     refine ⟨?_, fun _ _ => Finset.mem_univ _⟩
     dsimp [hist]
-    rw [Finset.sum_multiset_count_of_subset _ _ (fun _ _ => Finset.mem_univ _), m.2]
+    have hsum_cnt : ∀ l : Multiset (Config N), (∑ x : Config N, l.count x) = l.card := fun l => by
+      induction l using Multiset.induction_on with
+      | empty => simp
+      | cons a s ih => simp [Multiset.count_cons, Finset.sum_add_distrib, ih, Multiset.card_cons]
+    exact (hsum_cnt ↑m).trans m.2
   have hhist_inj : Function.Injective hist := fun m₁ m₂ h =>
     Subtype.ext (Multiset.ext.mpr fun x => congrFun h x)
   have hex_rep (m : Sym (Config N) r) :
@@ -1289,7 +1341,11 @@ private theorem finrank_maximallyProjective_replicaOrbit_ge_of_spectral {N : ℕ
         Complex.exp (-(Complex.I * ((t * E x : ℝ) : ℂ))) /
           Real.sqrt (Fintype.card (Config N)) := by
     dsimp only [singleConj, matrixNormalizedChoi]
-    simp_rw [div_eq_mul_inv, ← mul_assoc, ← Finset.sum_mul]
+    have hterm (u v : Config N) :
+        star (V.val u x) * (U_orb t u v / Real.sqrt (Fintype.card (Config N))) * V.val v x =
+          (star (V.val u x) * U_orb t u v * V.val v x) / Real.sqrt (Fintype.card (Config N)) := by
+      ring
+    simp_rw [hterm, ← Finset.sum_div]
     congr 1
     have hmat : (star V.val * U_orb t * V.val) x x =
         ∑ u : Config N, ∑ v : Config N, star (V.val u x) * U_orb t u v * V.val v x := by
@@ -1298,14 +1354,15 @@ private theorem finrank_maximallyProjective_replicaOrbit_ge_of_spectral {N : ℕ
         Matrix.conjTranspose_apply, mul_assoc]
       rw [Finset.sum_comm]
     rw [← hmat, hspec t]
-    have hcancel : star V.val * (V.val * Matrix.diagonal
-        (fun a => Complex.exp (-(Complex.I * (t * E a)))) * star V.val) * V.val =
-        Matrix.diagonal (fun a => Complex.exp (-(Complex.I * (t * E a)))) := by
-      calc star V.val * (V.val * Matrix.diagonal _ * star V.val) * V.val
-          = (star V.val * V.val) * Matrix.diagonal _ * (star V.val * V.val) := by
+    let D_t : Register N :=
+      Matrix.diagonal (fun a => Complex.exp (-(Complex.I * (t * E a))))
+    have hcancel : star V.val * (V.val * D_t * star V.val) * V.val = D_t := by
+      calc star V.val * (V.val * D_t * star V.val) * V.val
+          = (star V.val * V.val) * D_t * (star V.val * V.val) := by
               simp only [mul_assoc]
-        _ = Matrix.diagonal _ := by rw [V.2.1, one_mul, mul_one]
-    rw [hcancel, Matrix.diagonal_apply_eq]; push_cast; rfl
+        _ = D_t := by rw [V.2.1, one_mul, mul_one]
+    rw [hcancel]; dsimp only [D_t]; rw [Matrix.diagonal_apply_eq]
+    congr 1; push_cast; rfl
   let c_scale : ℂ := (((Real.sqrt (Fintype.card (Config N)) : ℝ) : ℂ) ^ r)
   let readMap : Orbit →ₗ[ℂ] (Fin M_card → ℂ) :=
     { toFun := fun Φ i => c_scale *
@@ -1331,11 +1388,13 @@ private theorem finrank_maximallyProjective_replicaOrbit_ge_of_spectral {N : ℕ
         ∏ a : Fin r, singleConj (matrixNormalizedChoi (U_orb t)) (rep (eqvS.symm i) a) := by
       simp only [finitePureTensorPowerEuclidean, finitePureTensorPower, WithLp.ofLp_toLp,
         ← Finset.prod_mul_distrib]
-      rw [← Fintype.prod_sum]
+      rw [(Fintype.prod_sum fun (a : Fin r) (uv : Config N × Config N) =>
+        star (V.val uv.1 (rep (eqvS.symm i) a)) * V.val uv.2 (rep (eqvS.symm i) a) *
+          matrixNormalizedChoi (U_orb t) uv).symm]
       refine Finset.prod_congr rfl fun a _ => ?_
       rw [Fintype.sum_prod_type]
       dsimp only [singleConj]
-      refine Finset.sum_congr rfl fun u _ => Finset.sum_congr rfl fun v _ => by ring
+      exact Finset.sum_congr rfl fun u _ => Finset.sum_congr rfl fun v _ => by ring
     rw [hprod_sum]
     simp_rw [hsingle_evol t]
     rw [Finset.prod_div_distrib, Finset.prod_const, Finset.card_univ, Fintype.card_fin]
@@ -1348,7 +1407,7 @@ private theorem finrank_maximallyProjective_replicaOrbit_ge_of_spectral {N : ℕ
     dsimp [ω, collectiveReplicaEnergy]
     push_cast
     rw [Finset.mul_sum, Finset.mul_sum]
-    exact Finset.sum_congr rfl fun a _ => by ring
+    exact Finset.sum_neg_distrib _
   let sampleOrb : Fin M_card → Orbit := fun k =>
     ⟨finitePureTensorPowerEuclidean r (matrixNormalizedChoi (U_orb ((k : ℕ) * δ))),
       Submodule.subset_span (Set.mem_range_self _)⟩
@@ -1364,7 +1423,7 @@ private theorem finrank_maximallyProjective_replicaOrbit_ge_of_spectral {N : ℕ
       rw [Matrix.mulVec, dotProduct, Pi.zero_apply, ← hi]
       refine Finset.sum_congr rfl fun k _ => ?_
       have hk := congrFun (hread_orbit ((k : ℕ) * δ)) i
-      dsimp only [sampleOrb]
+      dsimp only [Function.comp_apply, sampleOrb]
       rw [hk, Matrix.vandermonde_apply, mul_comm (c k)]
       congr 1
       dsimp only [z]
@@ -1378,7 +1437,8 @@ private theorem finrank_maximallyProjective_replicaOrbit_ge_of_spectral {N : ℕ
     have hc : Fintype.card (Config N) = 2 ^ N := by simp [Config]
     rw [hc]
   rw [← hcard_sym]
-  exact hli_sample.fintype_card_le_finrank
+  have hfin := hli_sample.fintype_card_le_finrank
+  rwa [Fintype.card_fin] at hfin
 
 private theorem finrank_maximallyProjective_replicaOrbit_ge {N : ℕ}
     (H : selfAdjoint (Register N))
@@ -1408,15 +1468,11 @@ private theorem norm_pureTensorPower_sub_le {ι : Type*} [Fintype ι] :
       let v_r := finitePureTensorPowerEuclidean r v.ofLp
       have hu_r_norm : ‖u_r‖ = 1 := by
         have hsq := norm_sq_finitePureTensorPowerEuclidean_eq_pow r u.ofLp
-        have hu_sq : (∑ i : ι, ‖u.ofLp i‖ ^ 2) = 1 := by
-          rw [← EuclideanSpace.norm_sq_eq, hu, one_pow]
-        rw [hu_sq, one_pow] at hsq
+        rw [WithLp.toLp_ofLp, hu, one_pow, one_pow] at hsq
         nlinarith only [hsq, norm_nonneg u_r, sq_nonneg (‖u_r‖ - 1)]
       have hv_r_norm : ‖v_r‖ = 1 := by
         have hsq := norm_sq_finitePureTensorPowerEuclidean_eq_pow r v.ofLp
-        have hv_sq : (∑ i : ι, ‖v.ofLp i‖ ^ 2) = 1 := by
-          rw [← EuclideanSpace.norm_sq_eq, hv, one_pow]
-        rw [hv_sq, one_pow] at hsq
+        rw [WithLp.toLp_ofLp, hv, one_pow, one_pow] at hsq
         nlinarith only [hsq, norm_nonneg v_r, sq_nonneg (‖v_r‖ - 1)]
       let mid : EuclideanSpace ℂ (Fin (r + 1) → ι) :=
         WithLp.toLp 2 (fun f => u.ofLp (f 0) * v_r.ofLp (fun k => f k.succ))
@@ -1435,9 +1491,8 @@ private theorem norm_pureTensorPower_sub_le {ι : Type*} [Fintype ι] :
         have hterm (i : ι) (tail : Fin r → ι) :
             ‖(finitePureTensorPowerEuclidean (r + 1) u.ofLp - mid).ofLp (Fin.cons i tail)‖ ^ 2 =
               ‖u.ofLp i‖ ^ 2 * ‖(u_r - v_r).ofLp tail‖ ^ 2 := by
-          simp only [WithLp.ofLp_sub, Pi.sub_apply, finitePureTensorPowerEuclidean,
-            finitePureTensorPower, WithLp.ofLp_toLp, mid, Fin.prod_univ_succ, Fin.cons_zero,
-            Fin.cons_succ]
+          simp only [WithLp.ofLp_sub, Pi.sub_apply, u_r, v_r, finitePureTensorPowerEuclidean,
+            finitePureTensorPower, mid, Fin.prod_univ_succ, Fin.cons_zero, Fin.cons_succ]
           rw [← mul_sub, norm_mul, mul_pow]
         simp_rw [hterm, ← Finset.mul_sum, ← Finset.sum_mul, ← EuclideanSpace.norm_sq_eq,
           hu, one_pow, one_mul]
@@ -1446,9 +1501,8 @@ private theorem norm_pureTensorPower_sub_le {ι : Type*} [Fintype ι] :
         have hterm (i : ι) (tail : Fin r → ι) :
             ‖(mid - finitePureTensorPowerEuclidean (r + 1) v.ofLp).ofLp (Fin.cons i tail)‖ ^ 2 =
               ‖(u - v).ofLp i‖ ^ 2 * ‖v_r.ofLp tail‖ ^ 2 := by
-          simp only [WithLp.ofLp_sub, Pi.sub_apply, finitePureTensorPowerEuclidean,
-            finitePureTensorPower, WithLp.ofLp_toLp, mid, Fin.prod_univ_succ, Fin.cons_zero,
-            Fin.cons_succ]
+          simp only [WithLp.ofLp_sub, Pi.sub_apply, v_r, finitePureTensorPowerEuclidean,
+            finitePureTensorPower, mid, Fin.prod_univ_succ, Fin.cons_zero, Fin.cons_succ]
           rw [← sub_mul, norm_mul, mul_pow]
         simp_rw [hterm, ← Finset.mul_sum, ← Finset.sum_mul, ← EuclideanSpace.norm_sq_eq,
           hv_r_norm, one_pow, mul_one]
@@ -1468,12 +1522,12 @@ private theorem exists_unit_orthogonal_of_not_mem {E : Type*} [NormedAddCommGrou
     [InnerProductSpace ℂ E] (K : Submodule ℂ E) [K.HasOrthogonalProjection]
     {v₀ : E} (hv₀ : v₀ ∉ K) :
     ∃ W : E, ‖W‖ = 1 ∧ (∀ u ∈ K, inner ℂ W u = 0) ∧ inner ℂ W v₀ ≠ 0 := by
-  let w_raw : E := v₀ - (K.starProjection v₀ : E)
+  let w_raw : E := v₀ - K.starProjection v₀
   have hw_raw_orth : w_raw ∈ Kᗮ := Submodule.sub_starProjection_mem_orthogonal v₀
   have hw_raw_ne : w_raw ≠ 0 := by
     intro h0
-    have heq : v₀ = (K.starProjection v₀ : E) := sub_eq_zero.mp h0
-    exact hv₀ (heq ▸ (K.starProjection v₀).2)
+    have heq : v₀ = K.starProjection v₀ := sub_eq_zero.mp h0
+    exact hv₀ (heq ▸ Submodule.starProjection_apply_mem K v₀)
   have hw_raw_pos : 0 < ‖w_raw‖ := norm_pos_iff.mpr hw_raw_ne
   let W : E := (‖w_raw‖⁻¹ : ℂ) • w_raw
   have hW_norm : ‖W‖ = 1 := by
@@ -1481,20 +1535,15 @@ private theorem exists_unit_orthogonal_of_not_mem {E : Type*} [NormedAddCommGrou
     rw [norm_smul, norm_inv, Complex.norm_real, Real.norm_of_nonneg hw_raw_pos.le,
       inv_mul_cancel₀ hw_raw_pos.ne']
   have hW_orth : W ∈ Kᗮ := Kᗮ.smul_mem _ hw_raw_orth
-  have hW_van : ∀ u ∈ K, inner ℂ W u = 0 := fun u hu => (Submodule.mem_orthogonal K W).mp hW_orth u hu
+  have hW_van : ∀ u ∈ K, inner ℂ W u = 0 := fun u hu =>
+    inner_eq_zero_symm.mp ((Submodule.mem_orthogonal K W).mp hW_orth u hu)
   have hW_v₀ : inner ℂ W v₀ ≠ 0 := by
-    have hv₀_split : v₀ = w_raw + (K.starProjection v₀ : E) := by dsimp [w_raw]; abel
-    rw [hv₀_split, inner_add_right, hW_van _ (K.starProjection v₀).2, add_zero]
+    have hv₀_split : v₀ = w_raw + K.starProjection v₀ := by dsimp [w_raw]; abel
+    rw [hv₀_split, inner_add_right, hW_van _ (Submodule.starProjection_apply_mem K v₀), add_zero]
     dsimp only [W]
-    rw [inner_smul_left, inner_self_eq_norm_sq_to_K, Complex.conj_ofReal]
-    intro h0
-    have hre := congrArg Complex.re h0
-    simp only [Complex.mul_re, Complex.inv_re, Complex.ofReal_re, Complex.ofReal_im,
-      Complex.normSq_ofReal, Complex.zero_re] at hre
-    have h1 : (‖w_raw‖⁻¹ : ℂ) * ((‖w_raw‖ : ℂ) ^ 2) ≠ 0 :=
-      mul_ne_zero (inv_ne_zero (Complex.ofReal_ne_zero.mpr hw_raw_pos.ne'))
-        (pow_ne_zero 2 (Complex.ofReal_ne_zero.mpr hw_raw_pos.ne'))
-    exact h1 h0
+    rw [inner_smul_left, inner_self_eq_norm_sq_to_K, map_inv₀, Complex.conj_ofReal]
+    exact mul_ne_zero (inv_ne_zero (Complex.ofReal_ne_zero.mpr hw_raw_pos.ne'))
+      (pow_ne_zero 2 (Complex.ofReal_ne_zero.mpr hw_raw_pos.ne'))
   exact ⟨W, hW_norm, hW_van, hW_v₀⟩
 
 /-- Homogeneous degree-`r` Choi polynomial evaluation `P_W(M) = ⟨W, Φ_M^{⊗ r}⟩`. -/
@@ -1532,6 +1581,7 @@ theorem exists_homogeneous_choiAnnihilator_of_carrier_lt_multiset {N s r : ℕ}
   have hnot_le : ¬ Orbit ≤ S_circ := by
     intro hle
     have hfr := Submodule.finrank_mono hle
+    dsimp only [Orbit, S_circ] at hfr
     omega
   have hex_t : ∃ t₀ : ℝ,
       finitePureTensorPowerEuclidean r (matrixNormalizedChoi (unitaryEvolution H.val t₀)) ∉ S_circ := by
@@ -1590,7 +1640,7 @@ theorem exists_homogeneous_choiAnnihilator_of_carrier_lt_multiset {N s r : ℕ}
         have h2 : ((∑ y : Config N, ‖A x y‖ ^ 2 : ℝ) : ℂ) = 1 := by
           rw [← h1, Complex.ofReal_sum]
           refine Finset.sum_congr rfl fun y _ => ?_
-          rw [Matrix.conjTranspose_apply, Complex.star_def, Complex.conj_mul', mul_comm]
+          rw [Matrix.conjTranspose_apply, Complex.star_def, Complex.mul_conj, Complex.normSq_eq_norm_sq]
         exact_mod_cast h2
       simp_rw [hsum_col, Finset.sum_const, Finset.card_univ, nsmul_eq_mul, mul_one,
         div_self hcard_pos.ne']
@@ -1601,10 +1651,12 @@ theorem exists_homogeneous_choiAnnihilator_of_carrier_lt_multiset {N s r : ℕ}
     refine hunit_norm ?_
     rw [Unitary.mem_iff]
     have hC_u := Unitary.mem_iff.mp C.eval.2
-    have hzz : star z * z = 1 := by
-      rw [Complex.star_def, Complex.conj_mul', ← Complex.ofReal_one]
-      congr 1; nlinarith only [hz]
-    constructor <;> simp [star_smul, smul_smul, hzz, mul_comm z, hC_u.1, hC_u.2]
+    have hzz : (starRingEnd ℂ) z * z = 1 := by
+      rw [Complex.conj_mul', hz, Complex.ofReal_one, one_pow]
+    have hzz' : z * (starRingEnd ℂ) z = 1 := by rw [mul_comm, hzz]
+    constructor
+    · rw [star_smul, smul_mul_smul_comm, Complex.star_def, hzz, hC_u.1, one_smul]
+    · rw [star_smul, smul_mul_smul_comm, Complex.star_def, hzz', hC_u.2, one_smul]
   have hchoi_diff : ‖u_c - v_c‖ ≤ ‖unitaryEvolution H.val t - z • (C.eval : Register N)‖ := by
     have hsq : ‖u_c - v_c‖ ^ 2 ≤ ‖unitaryEvolution H.val t - z • (C.eval : Register N)‖ ^ 2 := by
       rw [EuclideanSpace.norm_sq_eq, Fintype.sum_prod_type]
@@ -1641,7 +1693,7 @@ private theorem choose_totalDegree_le_pow (r s : ℕ) :
   rcases eq_or_ne s 0 with rfl | hs_ne
   · simp
   rcases eq_or_ne r 0 with rfl | hr_ne
-  · simp
+  · simp; exact Nat.one_le_pow _ 16 (by norm_num)
   let m := r * s
   let k := s * 16
   have hm_pos : (0 : ℝ) < m := by
@@ -1691,18 +1743,18 @@ private theorem choose_totalDegree_le_pow (r s : ℕ) :
 private theorem prod_range_add_eq_factorial_mul_choose {D : ℕ} (hD : 1 ≤ D) :
     ∀ k : ℕ, (∏ i ∈ Finset.range k, (D + i)) = k.factorial * (D + k - 1).choose k
   | 0 => by simp
-  | 1 => by simp [Nat.add_sub_cancel]
+  | 1 => by simp
   | m + 2 => by
       rw [Finset.prod_range_succ, prod_range_add_eq_factorial_mul_choose hD (m + 1)]
       have h1 : D + (m + 1) - 1 = D + m := by omega
       have h2 : D + (m + 2) - 1 = D + m + 1 := by omega
       rw [h1, h2, mul_assoc]
-      have hch := Nat.succ_mul_choose_eq (D + m) (m + 1)
+      have hch := Nat.add_one_mul_choose_eq (D + m) (m + 1)
       have hmul : (D + m).choose (m + 1) * (D + (m + 1)) =
           (m + 2) * (D + m + 1).choose (m + 2) := by
         calc (D + m).choose (m + 1) * (D + (m + 1))
             = (D + m + 1) * (D + m).choose (m + 1) := by ring
-          _ = (D + m + 1).choose (m + 2) * (m + 2) := hch.symm
+          _ = (D + m + 1).choose (m + 2) * (m + 2) := hch
           _ = (m + 2) * (D + m + 1).choose (m + 2) := by ring
       rw [hmul, ← mul_assoc, Nat.factorial_succ (m + 1)]
       ring
@@ -1747,8 +1799,9 @@ private theorem three_mul_two_log_add_six_le : ∀ N : ℕ, 64 ≤ N → 3 * (2 
   have hpow_le : 2 ^ L ≤ N := Nat.pow_log_le_self 2 (by omega)
   suffices hpow_bound : 3 * (2 * L + 6) ≤ 2 ^ L by
     exact hpow_bound.trans hpow_le
-  obtain ⟨d, rfl⟩ : ∃ d, L = d + 6 := ⟨L - 6, by omega⟩
-  clear hL6 hpow_le L hN N
+  obtain ⟨d, hd⟩ : ∃ d, L = d + 6 := ⟨L - 6, by omega⟩
+  rw [hd]
+  clear hL6 hpow_le hd L hN N
   induction d with
   | zero => decide
   | succ d ih =>
@@ -1777,22 +1830,23 @@ theorem polynomial_degree_choiAnnihilator_past_matchgate {N : ℕ} (hN : 64 ≤ 
   have hr_pos : 1 ≤ r := by dsimp [r, L]; nlinarith only [hN, hL6]
   refine exists_homogeneous_choiAnnihilator_of_carrier_lt_multiset (by omega) hr_pos H hmax ?_
   have hs_le : s ≤ 2 * N ^ 2 := by
+    obtain ⟨k, rfl⟩ : ∃ k, N = k + 1 := ⟨N - 1, by omega⟩
     dsimp [s]
-    have h1 : N * (2 * N - 1) + 1 ≤ N * (2 * N - 1) + N := by omega
-    have h2 : N * (2 * N - 1) + N = 2 * N ^ 2 := by
-      cases N with
-      | zero => omega
-      | succ k => ring_nf; omega
+    have h2 : (k + 1) * (2 * (k + 1) - 1) + (k + 1) = 2 * (k + 1) ^ 2 := by
+      change (k + 1) * (2 * k + 1) + (k + 1) = 2 * (k + 1) ^ 2
+      ring
     omega
   have hN_lt : N < 2 ^ (L + 1) := Nat.lt_pow_succ_log_self (by decide) N
   have hL_pow : L < 2 ^ (L - 3) := nat_lt_two_pow_sub_three L hL6
   have hr_plus_lt : r + 16 ≤ 2 ^ (2 * L + 6) := by
     have hr_lt : 192 * N * L < 2 ^ (2 * L + 6) := by
       have heq_exp : 2 * L + 6 = 8 + (L + 1) + (L - 3) := by omega
-      rw [heq_exp, pow_add, pow_add, show 2 ^ 8 = 256 by decide, mul_assoc]
-      calc 192 * (N * L) ≤ 256 * (N * L) := Nat.mul_le_mul_right _ (by decide)
+      rw [heq_exp, pow_add, pow_add, show 2 ^ 8 = 256 by norm_num]
+      calc 192 * N * L = 192 * (N * L) := Nat.mul_assoc 192 N L
+        _ ≤ 256 * (N * L) := Nat.mul_le_mul_right (N * L) (by norm_num)
         _ < 256 * (2 ^ (L + 1) * 2 ^ (L - 3)) :=
-            Nat.mul_lt_mul_of_pos_left (Nat.mul_lt_mul'' hN_lt hL_pow) (by decide)
+            Nat.mul_lt_mul_of_pos_left (Nat.mul_lt_mul'' hN_lt hL_pow) (by norm_num)
+        _ = 256 * 2 ^ (L + 1) * 2 ^ (L - 3) := (Nat.mul_assoc _ _ _).symm
     have hmod_le : r < 2 ^ (2 * L + 6) := hr_lt
     have hdvd1 : 64 ∣ r := ⟨3 * N * L, by dsimp [r]; ring⟩
     have hdvd2 : 64 ∣ 2 ^ (2 * L + 6) := by
@@ -1857,24 +1911,28 @@ private theorem half_smul_add_half_smul (a : A) :
   rw [← add_smul]; norm_num
 
 private theorem flow_mem_unitary (x : A) (hx : x ∈ skewAdjoint A) (s : ℝ) :
-    exp (s • x) ∈ unitary A :=
-  exp_mem_unitary_of_mem_skewAdjoint (skewAdjoint.smul_mem s hx)
+    exp (s • x) ∈ unitary A := by
+  letI : NormedAlgebra ℚ A := .restrictScalars ℚ ℂ A
+  exact exp_mem_unitary_of_mem_skewAdjoint (skewAdjoint.smul_mem s hx)
 
 private theorem exp_mul_exp_neg_eq_one (x : A) (s : ℝ) :
     exp (s • x) * exp ((-s) • x) = 1 := by
+  letI : NormedAlgebra ℚ A := .restrictScalars ℚ ℂ A
   rw [← exp_add_of_commute ((Commute.refl x).smul_left s |>.smul_right (-s)),
-    ← add_smul, add_neg_cancel, zero_smul, exp_zero]
+    ← add_smul, add_neg_cancel, zero_smul, NormedSpace.exp_zero]
 
 private theorem exp_neg_mul_exp_eq_one (x : A) (s : ℝ) :
     exp ((-s) • x) * exp (s • x) = 1 := by
+  letI : NormedAlgebra ℚ A := .restrictScalars ℚ ℂ A
   rw [← exp_add_of_commute ((Commute.refl x).smul_left (-s) |>.smul_right s),
-    ← add_smul, neg_add_cancel, zero_smul, exp_zero]
+    ← add_smul, neg_add_cancel, zero_smul, NormedSpace.exp_zero]
 
 private theorem hasDerivAt_exp_smul_linear (x : A) (a b s : ℝ) :
     HasDerivAt (fun r : ℝ => exp ((a + b * r) • x)) (b • (exp ((a + b * s) • x) * x)) s := by
-  have hd : HasDerivAt (fun r : ℝ => a + b * r) b s := by
-    simpa using (hasDerivAt_const s a).add ((hasDerivAt_id s).const_mul b)
-  simpa [Function.comp_def] using (hasDerivAt_exp_smul_const x (a + b * s)).scomp s hd
+  have hd : HasDerivAt (fun r : ℝ => a + b * r) (0 + b * 1) s :=
+    (hasDerivAt_const s a).add ((hasDerivAt_id s).const_mul b)
+  rw [zero_add, mul_one] at hd
+  exact (hasDerivAt_exp_smul_const x (a + b * s)).scomp s hd
 
 private theorem norm_conj_exp_sub_linear_le (z w : A) (hz : z ∈ skewAdjoint A)
     (t : ℝ) (ht : 0 ≤ t) :
@@ -1891,22 +1949,21 @@ private theorem norm_conj_exp_sub_linear_le (z w : A) (hz : z ∈ skewAdjoint A)
     have hd_lin : HasDerivAt (fun r : ℝ => r • cm) cm s := by
       simpa using (hasDerivAt_id s).smul_const cm
     have hd := (hd_conj.sub_const w).sub hd_lin
-    convert hd using 1
-    dsimp [g, cm]
+    refine hd.congr_deriv ?_
     have hcomm_z : exp ((-s) • z) * z = z * exp ((-s) • z) :=
       ((Commute.refl z).smul_left (-s)).exp_left
     have hcomm_pos : z * exp (s • z) = exp (s • z) * z :=
       ((Commute.refl z).smul_right s).exp_right
     have hmul1 : exp (s • z) * exp ((-s) • z) = 1 := exp_mul_exp_neg_eq_one z s
     rw [neg_one_smul, mul_neg, hcomm_z]
-    calc z * exp (s • z) * w * exp ((-s) • z) + -(exp (s • z) * w * (z * exp ((-s) • z))) -
-          (z * w - w * z)
+    calc z * exp (s • z) * w * exp ((-s) • z) + -(exp (s • z) * w * (z * exp ((-s) • z))) - cm
         = z * exp (s • z) * w * exp ((-s) • z) - exp (s • z) * w * z * exp ((-s) • z) -
-            (z * w - w * z) * (exp (s • z) * exp ((-s) • z)) := by
+            cm * (exp (s • z) * exp ((-s) • z)) := by
             rw [hmul1, mul_one]; simp only [mul_assoc, sub_eq_add_neg]
-      _ = (exp (s • z) * (z * w - w * z) - (z * w - w * z) * exp (s • z)) * exp ((-s) • z) := by
+      _ = (exp (s • z) * cm - cm * exp (s • z)) * exp ((-s) • z) := by
+            dsimp only [cm]
             rw [hcomm_pos]
-            simp only [sub_mul, mul_sub, mul_assoc]; abel
+            simp only [sub_mul, mul_sub, mul_assoc]
   have hbound (s : ℝ) (hs : s ∈ Set.Ico 0 t) :
       ‖g s‖ ≤ ‖z * cm - cm * z‖ * t := by
     dsimp only [g]
@@ -1987,8 +2044,17 @@ theorem norm_strang_doubleCommutator_le (x y : A)
     rw [hlhs_assoc, hmid, show E_y * y = y * E_y from hy_comm, show E_x * x = x * E_x from hx_comm]
     simp only [mul_add, add_mul, mul_sub, sub_mul, neg_mul,
       Algebra.mul_smul_comm, Algebra.smul_mul_assoc, mul_assoc]
-    rw [← half_smul_add_half_smul (E_xy * (x * (E_x * (E_y * E_x))))]
-    abel
+    let u₀ := E_xy * (x * (E_x * (E_y * E_x)))
+    have hu₀ : -u₀ + (1 / 2 : ℝ) • u₀ = -((1 / 2 : ℝ) • u₀) := by
+      nth_rw 1 [← half_smul_add_half_smul u₀]; abel
+    have hgoal : (E_xy * (E_x * (y * (E_y * E_x))) - E_xy * (y * (E_x * (E_y * E_x))) +
+        ((1 / 2 : ℝ) • (E_xy * (E_x * (E_y * (x * E_x)))) - (1 / 2 : ℝ) • u₀)) -
+        (((-(u₀ + E_xy * (y * (E_x * (E_y * E_x)))) + (1 / 2 : ℝ) • u₀) +
+          E_xy * (E_x * (y * (E_y * E_x)))) +
+          (1 / 2 : ℝ) • (E_xy * (E_x * (E_y * (x * E_x))))) =
+        -(-u₀ + (1 / 2 : ℝ) • u₀) - (1 / 2 : ℝ) • u₀ := by abel
+    rw [hu₀, neg_neg, sub_self] at hgoal
+    exact sub_eq_zero.mp hgoal
   have hbound (s : ℝ) (hs : s ∈ Set.Ico 0 h) :
       ‖g s‖ ≤ (1 / 2) * (‖x * (x * y - y * x) - (x * y - y * x) * x‖ +
         ‖y * (y * x - x * y) - (y * x - x * y) * y‖) * h ^ 2 := by
@@ -2005,21 +2071,13 @@ theorem norm_strang_doubleCommutator_le (x y : A)
     let A₃ := (s / 2) • (exp ((s / 2) • x) * (y * x - x * y) * exp ((-(s / 2)) • x) - (y * x - x * y))
     have hF_split : F_rem s = A₁ + A₂ + A₃ := by
       dsimp only [F_rem, A₁, A₂, A₃]
-      rw [mul_sub (exp ((s / 2) • x)), sub_mul, Algebra.mul_smul_comm, Algebra.smul_mul_assoc,
-        smul_sub, smul_smul, show (1 / 2 : ℝ) * s = s / 2 by ring, smul_sub]
-      have hcomm_anti : (s / 2) • (x * y - y * x) + (s / 2) • (y * x - x * y) = 0 := by
-        rw [← smul_add, show (x * y - y * x) + (y * x - x * y) = 0 by abel, smul_zero]
-      calc (exp ((s / 2) • x) * y * exp ((-(s / 2)) • x) - y) +
-            (1 / 2 : ℝ) • (exp ((s / 2) • x) * (exp (s • y) * x * exp ((-s) • y) - x) *
-              exp ((-(s / 2)) • x))
-          = (exp ((s / 2) • x) * y * exp ((-(s / 2)) • x) - y) +
-              (1 / 2 : ℝ) • (exp ((s / 2) • x) * (exp (s • y) * x * exp ((-s) • y) - x) *
-                exp ((-(s / 2)) • x)) -
-              ((s / 2) • (x * y - y * x) + (s / 2) • (y * x - x * y)) := by
-            rw [hcomm_anti, sub_zero]
-        _ = _ := by abel
+      rw [show y * x - x * y = -(x * y - y * x) by abel]
+      simp only [mul_add, add_mul, mul_sub, sub_mul, mul_neg, neg_mul, smul_neg, sub_neg_eq_add,
+        Algebra.mul_smul_comm, Algebra.smul_mul_assoc, smul_sub, smul_add, smul_smul,
+        show (1 / 2 : ℝ) * s = s / 2 by ring]
+      abel
     have hA₁ : ‖A₁‖ ≤ (1 / 4) * ‖x * (x * y - y * x) - (x * y - y * x) * x‖ * s ^ 2 := by
-      have h1 := norm_conj_exp_sub_linear_le x y hx (s / 2) (half_nonneg hs0)
+      have h1 := norm_conj_exp_sub_linear_le x y hx (s / 2) (div_nonneg hs0 zero_le_two)
       dsimp only [A₁]
       linarith only [h1]
     have hA₂ : ‖A₂‖ ≤ (1 / 2) * ‖y * (y * x - x * y) - (y * x - x * y) * y‖ * s ^ 2 := by
@@ -2031,13 +2089,14 @@ theorem norm_strang_doubleCommutator_le (x y : A)
       linarith only [h1]
     have hA₃ : ‖A₃‖ ≤ (1 / 4) * ‖x * (x * y - y * x) - (x * y - y * x) * x‖ * s ^ 2 := by
       dsimp only [A₃]
-      rw [norm_smul, Real.norm_of_nonneg (half_nonneg hs0)]
+      rw [norm_smul, Real.norm_of_nonneg (div_nonneg hs0 zero_le_two)]
       have hunit_eq : exp ((s / 2) • x) * (y * x - x * y) * exp ((-(s / 2)) • x) - (y * x - x * y) =
           (exp ((s / 2) • x) * (y * x - x * y) - (y * x - x * y) * exp ((s / 2) • x)) *
             exp ((-(s / 2)) • x) := by
         rw [sub_mul, mul_assoc (y * x - x * y), exp_mul_exp_neg_eq_one x (s / 2), mul_one]
       rw [hunit_eq, CStarRing.norm_mul_mem_unitary _ (flow_mem_unitary x hx (-(s / 2)))]
-      have h1 := norm_exp_mul_sub_mul_exp_le_commutator x (y * x - x * y) hx (s / 2) (half_nonneg hs0)
+      have h1 := norm_exp_mul_sub_mul_exp_le_commutator x (y * x - x * y) hx (s / 2)
+        (div_nonneg hs0 zero_le_two)
       have hnorm_eq : ‖x * (y * x - x * y) - (y * x - x * y) * x‖ =
           ‖x * (x * y - y * x) - (x * y - y * x) * x‖ := by
         rw [← norm_neg]
@@ -2135,10 +2194,10 @@ private theorem onsite_termBond_mem_endpoints {n : ℕ} (v : Fin (n + 2)) (q : F
       if BondCoordinates.termBond l = e then ((u₀ l : ℝ) : ℂ) • finitePauliMatrix (pathWord l) else 0) =
       finitePauliMatrix (pathWord (.inl (v, 0))) := by
     rw [Finset.sum_eq_single (.inl (v, 0))]
-    · have hu1 : u₀ (.inl (v, 0)) = 1 := by simp [u₀, PiLp.single_apply]
+    · have hu1 : u₀ (.inl (v, 0)) = 1 := by simp [u₀]
       rw [if_pos rfl, hu1, Complex.ofReal_one, one_smul]
     · intro l _ hl_ne
-      have hu0 : u₀ l = 0 := by simp [u₀, PiLp.single_apply, hl_ne]
+      have hu0 : u₀ l = 0 := by simp [u₀, hl_ne]
       split_ifs <;> simp [hu0]
     · intro h; exact (h (Finset.mem_univ _)).elim
   rw [hrhs] at hsum_eq
@@ -2156,7 +2215,7 @@ private theorem onsite_termBond_mem_endpoints {n : ℕ} (v : Fin (n + 2)) (q : F
         boolPauliOptionEntry (onsiteWord v 0 i) (x₀ i, y₀ i)) = 1 :=
       Finset.prod_eq_one fun i hi => by
         have hne : i ≠ v := Finset.ne_of_mem_erase hi
-        simp [onsiteWord, hne, x₀, y₀, boolPauliOptionEntry, boolPauliOption]
+        simp [onsiteWord, hne, x₀, y₀, boolPauliOptionEntry, boolPauliOption, Matrix.one_apply]
     rw [hv_val, hrest_val, one_mul]
   rw [hnonzero] at hzero
   exact one_ne_zero hzero
@@ -2218,7 +2277,7 @@ private theorem card_close_bonds_le {m d : ℕ} (c : ℕ) :
     obtain ⟨j, hj, rfl⟩ := Finset.mem_image.mp hk
     have hcond := (Finset.mem_filter.mp hj).2
     exact Finset.mem_Icc.mpr ⟨by omega, hcond.1⟩
-  have hinj : Function.Injective (Fin.val : Fin m → ℕ) := Fin.ext
+  have hinj : Function.Injective (Fin.val : Fin m → ℕ) := fun _ _ h => Fin.ext h
   rw [← Finset.card_image_of_injective _ hinj]
   refine (Finset.card_le_card hsub).trans ?_
   dsimp [S_nat]
@@ -2237,18 +2296,28 @@ private theorem norm_bond_doubleCommutator_le {n : ℕ}
   have htrilinear : X * (X * Y - Y * X) - (X * Y - Y * X) * X =
       ∑ e ∈ A_set, ∑ f ∈ B_set, ∑ e' ∈ A_set,
         (Z e' * (Z e * Z f - Z f * Z e) - (Z e * Z f - Z f * Z e) * Z e') := by
-    dsimp only [X, Y]
-    have hXY : (∑ e ∈ A_set, Z e) * (∑ f ∈ B_set, Z f) - (∑ f ∈ B_set, Z f) * (∑ e ∈ A_set, Z e) =
+    have hXY : X * Y - Y * X =
         ∑ e ∈ A_set, ∑ f ∈ B_set, (Z e * Z f - Z f * Z e) := by
+      dsimp only [X, Y]
       rw [Finset.sum_mul, Finset.mul_sum]
       simp_rw [Finset.mul_sum, Finset.sum_mul]
-      rw [Finset.sum_comm (s := B_set), ← Finset.sum_sub_distrib]
+      rw [← Finset.sum_sub_distrib]
       exact Finset.sum_congr rfl fun e _ => (Finset.sum_sub_distrib _ _).symm
-    rw [hXY, Finset.sum_mul, Finset.mul_sum]
-    simp_rw [Finset.mul_sum, Finset.sum_mul]
-    rw [Finset.sum_comm (t := A_set)]
+    have t1 : X * (X * Y - Y * X) =
+        ∑ e ∈ A_set, ∑ f ∈ B_set, ∑ e' ∈ A_set, Z e' * (Z e * Z f - Z f * Z e) := by
+      rw [hXY]; dsimp only [X]; rw [Finset.mul_sum]
+      refine Finset.sum_congr rfl fun e _ => ?_
+      rw [Finset.mul_sum]
+      exact Finset.sum_congr rfl fun f _ => Finset.sum_mul _ _ _
+    have t2 : (X * Y - Y * X) * X =
+        ∑ e ∈ A_set, ∑ f ∈ B_set, ∑ e' ∈ A_set, (Z e * Z f - Z f * Z e) * Z e' := by
+      rw [hXY]; dsimp only [X]; rw [Finset.sum_mul]
+      refine Finset.sum_congr rfl fun e _ => ?_
+      rw [Finset.sum_mul]
+      exact Finset.sum_congr rfl fun f _ => Finset.mul_sum _ _ _
+    rw [t1, t2, ← Finset.sum_sub_distrib]
     refine Finset.sum_congr rfl fun e _ => ?_
-    rw [Finset.sum_comm (t := B_set), ← Finset.sum_sub_distrib]
+    rw [← Finset.sum_sub_distrib]
     exact Finset.sum_congr rfl fun f _ => (Finset.sum_sub_distrib _ _).symm
   rw [htrilinear]
   have hsingle_term (e f e' : Fin (n + 1)) :
@@ -2401,9 +2470,9 @@ theorem strang_brickwork_pathHamiltonian_approx {n : ℕ} (u : PathShell n)
   have ha_layer := BondProducts.Symmetric.compile_layer B S hS_par (h / 2)
   have hb_layer := BondProducts.Symmetric.compile_layer B Sᶜ hSc_par h
   have hstep_approx := LocalPatches.approx_product
-    (exp_mem_unitary_of_mem_skewAdjoint (skewAdjoint.smul_mem (h / 2) hX_skew))
+    (flow_mem_unitary X hX_skew (h / 2))
     (LocalPatches.approx_product
-      (exp_mem_unitary_of_mem_skewAdjoint (skewAdjoint.smul_mem h hY_skew)) ha_layer hb_layer)
+      (flow_mem_unitary Y hY_skew h) ha_layer hb_layer)
     ha_layer
   obtain ⟨z₁, hz₁, C₁, hC₁_size, hC₁_err⟩ := hstep_approx
   have hstep_exact : exp ((h / 2) • X) * exp (h • Y) * exp ((h / 2) • X) =
@@ -2433,10 +2502,22 @@ theorem strang_brickwork_pathHamiltonian_approx {n : ℕ} (u : PathShell n)
     have hn_le : ((n + 1 : ℕ) : ℝ) ≤ (m : ℝ) := by dsimp [m]; push_cast; linarith
     calc (1 / 2) * (‖X * (X * Y - Y * X) - (X * Y - Y * X) * X‖ +
             ‖Y * (Y * X - X * Y) - (Y * X - X * Y) * Y‖) * t ^ 3 / (m : ℝ) ^ 2
-        ≤ (1 / 2) * (405000 * ((n + 1 : ℕ) : ℝ) * M ^ 3) * t ^ 3 / (m : ℝ) ^ 2 := by
-            gcongr
-      _ ≤ (1 / 2) * (405000 * (m : ℝ) * M ^ 3) * t ^ 3 / (m : ℝ) ^ 2 := by
-            gcongr
+        ≤ (1 / 2) * (405000 * ((n + 1 : ℕ) : ℝ) * M ^ 3) * t ^ 3 / (m : ℝ) ^ 2 :=
+            div_le_div_of_nonneg_right
+              (mul_le_mul_of_nonneg_right
+                (mul_le_mul_of_nonneg_left hsum_comm (by norm_num))
+                (pow_nonneg ht0 3))
+              (sq_nonneg _)
+      _ ≤ (1 / 2) * (405000 * (m : ℝ) * M ^ 3) * t ^ 3 / (m : ℝ) ^ 2 :=
+            div_le_div_of_nonneg_right
+              (mul_le_mul_of_nonneg_right
+                (mul_le_mul_of_nonneg_left
+                  (mul_le_mul_of_nonneg_right
+                    (mul_le_mul_of_nonneg_left hn_le (by norm_num))
+                    (pow_nonneg hM0 3))
+                  (by norm_num))
+                (pow_nonneg ht0 3))
+              (sq_nonneg _)
       _ = 202500 * M ^ 3 * t ^ 3 / ((n + 2 : ℕ) : ℝ) := by
             dsimp [m]; field_simp [hm_pos_r.ne']; ring
 
@@ -2446,15 +2527,17 @@ private theorem gaussianReal_abs_gt_le {R : ℝ} (hR : 0 ≤ R) :
     intro x hx
     rw [Set.mem_setOf_eq, lt_abs] at hx
     rcases hx with hpos | hneg
-    · exact Or.inr hpos.le
-    · exact Or.inl (by linarith only [hneg])
+    · exact Or.inr (Set.mem_Ici.mpr hpos.le)
+    · exact Or.inl (Set.mem_Iic.mpr (by linarith only [hneg]))
   have hsymm : gaussianReal 0 1 (Set.Ici R) = gaussianReal 0 1 (Set.Iic (-R)) := by
     have hmp : MeasurePreserving Neg.neg (gaussianReal 0 1) (gaussianReal 0 1) := by
       refine ⟨measurable_neg, ?_⟩
-      have h1 := gaussianReal_map_neg (0 : ℝ) (1 : ℝ≥0)
+      have h1 := gaussianReal_map_neg (1 : ℝ≥0)
       simpa using h1
     have hpre : Neg.neg ⁻¹' Set.Iic (-R) = Set.Ici R := by
-      ext x; simp [Set.mem_Iic, Set.mem_Ici]; constructor <;> intro h <;> linarith
+      ext x
+      simp only [Set.mem_preimage, Set.mem_Iic, Set.mem_Ici]
+      constructor <;> intro h <;> linarith
     rw [← hpre, hmp.measure_preimage measurableSet_Iic.nullMeasurableSet]
   have htail := gaussianReal_Iic_neg_le hR
   have hmeas_le : gaussianReal 0 1 {x : ℝ | R < |x|} ≤
@@ -2476,10 +2559,10 @@ private theorem pi_gaussian_linf_compl_le {ι : Type*} [Fintype ι] {R : ℝ} (h
       μ.real {x : ι → ℝ | ∀ i : ι, |x i| ≤ R}ᶜ ≤
         2 * (Fintype.card ι : ℝ) * Real.exp (-(R ^ 2 / 2)) := by
   intro μ
-  haveI : IsProbabilityMeasure μ := by dsimp [μ]; infer_instance
+  haveI : IsProbabilityMeasure μ := by dsimp only [μ]; infer_instance
   let Box : Set (ι → ℝ) := {x | ∀ i : ι, |x i| ≤ R}
   have hBox_meas : MeasurableSet Box := by
-    have heq : Box = ⋂ i : ι, {x : ι → ℝ | |x i| ≤ R} := by ext x; simp [Box]
+    have heq : Box = ⋂ i : ι, {x : ι → ℝ | |x i| ≤ R} := by ext x; simp only [Box, Set.mem_setOf_eq, Set.mem_iInter]
     rw [heq]
     exact MeasurableSet.iInter fun i =>
       measurableSet_le (continuous_abs.measurable.comp (measurable_pi_apply i)) measurable_const
@@ -2487,7 +2570,7 @@ private theorem pi_gaussian_linf_compl_le {ι : Type*} [Fintype ι] {R : ℝ} (h
   have hcov : Boxᶜ ⊆ ⋃ i : ι, {x : ι → ℝ | R < |x i|} := by
     intro x hx
     rw [Set.mem_compl_iff] at hx
-    dsimp [Box] at hx; push Not at hx
+    dsimp only [Box] at hx; rw [Set.mem_setOf_eq] at hx; push Not at hx
     obtain ⟨i, hi⟩ := hx
     exact Set.mem_iUnion.mpr ⟨i, hi⟩
   have hcoord (i : ι) :
@@ -2506,91 +2589,28 @@ private theorem pi_gaussian_linf_compl_le {ι : Type*} [Fintype ι] {R : ℝ} (h
   refine hreal_union.trans ?_
   calc (∑ i : ι, μ.real {x : ι → ℝ | R < |x i|})
       ≤ ∑ _i : ι, (2 * Real.exp (-(R ^ 2 / 2))) := Finset.sum_le_sum fun i _ => hcoord i
-    _ = 2 * (Fintype.card ι : ℝ) * Real.exp (-(R ^ 2 / 2)) := by simp; ring
+    _ = 2 * (Fintype.card ι : ℝ) * Real.exp (-(R ^ 2 / 2)) := by
+        rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]; ring
 
 private theorem continuous_abs_det_fin_three :
-    Continuous fun b : Fin 3 → Fin 3 → ℝ => |(Matrix.of b).det| := by
-  simp only [Matrix.det_fin_three, Matrix.of_apply]
+    Continuous fun B : Matrix (Fin 3) (Fin 3) ℝ => |B.det| := by
+  simp only [Matrix.det_fin_three]
   fun_prop
 
 private theorem continuous_onsiteNormSq :
     Continuous (onsiteNormSq : (Fin 3 → ℝ) → ℝ) := by
-  simp only [onsiteNormSq, Fin.sum_univ_three]
+  unfold onsiteNormSq
   fun_prop
 
-/-- High-probability sublinear-time survival past `choose(2N, 2) = (n + 2) * (2 * n + 3)` on the
-full-rank non-matchgate event `Ω_rk3(n, η)`: for every `η ∈ [0, 1]` and `R ≥ 1`, on the explicit
-sub-event `Ω_rk3(n, η) ∩ {x | ∀ i, |x i| ≤ R}` of Gaussian probability
-`≥ 1 - (38 * n + 39) * η^2 - 2 * (12 * n + 15) * exp(-R^2 / 2)`, **every** chain Hamiltonian
-`H(x)` satisfies `orbitCircuitDistance H(x) s t < 1 / 10` across all `s ≥ (n + 2) * (2 * n + 3)`
-and all `t ≥ 0` with `(130 * R)^3 * t^3 ≤ n + 2` (so `T < tenthPlateauOnset H(x) s` whenever `H(x)`
-eventually leaves the `s`-gate `1/10`-neighborhood). -/
-theorem gaussian_rk3_strang_onset_survival (n : ℕ) {η R : ℝ}
-    (hη0 : 0 ≤ η) (hη1 : η ≤ 1) (hR1 : 1 ≤ R) :
-    let μ := Measure.pi fun _ : PrefixIndex n => gaussianReal 0 1
-    let E_surv : Set (PrefixIndex n → ℝ) :=
-      bondRankThreeFieldEvent n η ∩ {x | ∀ i : PrefixIndex n, |x i| ≤ R}
-    1 - ((38 * n + 39 : ℕ) : ℝ) * η ^ 2 -
-        2 * ((12 * n + 15 : ℕ) : ℝ) * Real.exp (-(R ^ 2 / 2)) ≤ μ.real E_surv ∧
-      ∀ x ∈ E_surv,
-        let u : PathShell n := WithLp.toLp 2 (x ∘ (pathCoeffEquiv n).symm)
-        let H : selfAdjoint (Register (n + 2)) :=
-          ⟨pathHamiltonian u, isSelfAdjoint_pathHamiltonian u⟩
-        ∀ s ≥ (n + 2) * (2 * (n + 2) - 1), ∀ T ≥ 0,
-          (130 * R) ^ 3 * T ^ 3 ≤ ((n + 2 : ℕ) : ℝ) →
-            (∀ t ∈ Icc (0 : ℝ) T, orbitCircuitDistance H s t < 1 / 10) ∧
-            ((∃ B ≥ 0, 1 / 10 < orbitCircuitDistance H s B) → T < tenthPlateauOnset H s) := by
-  intro μ E_surv
-  haveI : IsProbabilityMeasure μ := by dsimp [μ]; infer_instance
-  let Box : Set (PrefixIndex n → ℝ) := {x | ∀ i : PrefixIndex n, |x i| ≤ R}
-  obtain ⟨hBox_meas, hBox_compl_raw⟩ :=
-    pi_gaussian_linf_compl_le (ι := PrefixIndex n) (zero_le_one.trans hR1)
-  have hcard_pref : Fintype.card (PrefixIndex n) = 12 * n + 15 := by
-    rw [Fintype.card_congr (pathCoeffEquiv n)]
-    simp only [PathLabel, Fintype.card_sum, Fintype.card_prod, Fintype.card_fin]
-    omega
-  have hBox_compl_le : μ.real Boxᶜ ≤
-      2 * ((12 * n + 15 : ℕ) : ℝ) * Real.exp (-(R ^ 2 / 2)) := by
-    dsimp [μ, Box]
-    rwa [hcard_pref] at hBox_compl_raw
-  have hrk3_compl := (bondRankThreeFieldEvent_compl_prob_le n hη0).2 hη1
-  have hmeas_rk3 : MeasurableSet (bondRankThreeFieldEvent n η) := by
-    have heq : bondRankThreeFieldEvent n η =
-        (⋂ e : Fin (n + 1), {x | η ^ 3 ≤ |(bondMatrixOfPrefix n x e).det|}) ∩
-        (⋂ v : Fin (n + 2), {x | η ^ 2 ≤ onsiteNormSq (onsiteVecOfPrefix n x v)}) := by
-      ext x; simp [bondRankThreeFieldEvent]
-    rw [heq]
-    refine (MeasurableSet.iInter fun e => ?_).inter (MeasurableSet.iInter fun v => ?_)
-    · have hcont_entry : Continuous fun x : PrefixIndex n → ℝ =>
-          fun p q : Fin 3 => x ((pathCoeffEquiv n).symm (.inr (e, (p, q)))) :=
-        continuous_pi fun p => continuous_pi fun q => continuous_apply _
-      have hcont : Continuous fun x : PrefixIndex n → ℝ => |(bondMatrixOfPrefix n x e).det| :=
-        continuous_abs_det_fin_three.comp hcont_entry
-      exact measurableSet_le measurable_const hcont.measurable
-    · have hcont_vec : Continuous (onsiteVecOfPrefix n · v) :=
-        continuous_pi fun q => continuous_apply _
-      have hcont : Continuous fun x : PrefixIndex n → ℝ =>
-          onsiteNormSq (onsiteVecOfPrefix n x v) :=
-        continuous_onsiteNormSq.comp hcont_vec
-      exact measurableSet_le measurable_const hcont.measurable
-  have hprob_ge : 1 - ((38 * n + 39 : ℕ) : ℝ) * η ^ 2 -
-      2 * ((12 * n + 15 : ℕ) : ℝ) * Real.exp (-(R ^ 2 / 2)) ≤ μ.real E_surv := by
-    have hcompl_eq : E_survᶜ = (bondRankThreeFieldEvent n η)ᶜ ∪ Boxᶜ := Set.compl_inter _ _
-    have hmeas_E : MeasurableSet E_surv := hmeas_rk3.inter hBox_meas
-    have hsum1 : μ.real E_surv + μ.real E_survᶜ = 1 := by
-      rw [Measure.real_def, Measure.real_def,
-        ← ENNReal.toReal_add (measure_ne_top _ _) (measure_ne_top _ _),
-        measure_add_measure_compl hmeas_E, measure_univ, ENNReal.toReal_one]
-    have hcompl_ub : μ.real E_survᶜ ≤
-        μ.real (bondRankThreeFieldEvent n η)ᶜ + μ.real Boxᶜ := by
-      rw [hcompl_eq]
-      exact measureReal_union_le _ _
-    linarith only [hsum1, hcompl_ub, hrk3_compl, hBox_compl_le]
-  refine ⟨hprob_ge, fun x hx => ?_⟩
-  intro u H s hs T hT0 hT_cube
-  have hu_le (l : PathLabel n) : |u l| ≤ R := by
-    dsimp [u]
-    exact hx.2 ((pathCoeffEquiv n).symm l)
+private theorem pathHamiltonian_strang_onset_survival {n : ℕ} (u : PathShell n)
+    {R : ℝ} (hR1 : 1 ≤ R) (hu_le : ∀ l : PathLabel n, |u l| ≤ R) :
+    let H : selfAdjoint (Register (n + 2)) :=
+      ⟨pathHamiltonian u, isSelfAdjoint_pathHamiltonian u⟩
+    ∀ s ≥ (n + 2) * (2 * (n + 2) - 1), ∀ T ≥ 0,
+      (130 * R) ^ 3 * T ^ 3 ≤ ((n + 2 : ℕ) : ℝ) →
+        (∀ t ∈ Icc (0 : ℝ) T, orbitCircuitDistance H s t < 1 / 10) ∧
+        ((∃ B ≥ 0, 1 / 10 < orbitCircuitDistance H s B) → T < tenthPlateauOnset H s) := by
+  intro H s hs T hT0 hT_cube
   have h_all_t : ∀ t ∈ Icc (0 : ℝ) T, orbitCircuitDistance H s t < 1 / 10 := by
     intro t ht
     obtain ⟨z, hz, C, hC_lt, herr⟩ :=
@@ -2621,7 +2641,6 @@ theorem gaussian_rk3_strang_onset_survival (n : ℕ) {η R : ℝ}
   · exact (tenthPlateauOnset_spec H hT_pos hB0 h_all_t hB_gt).1
   · have hT_eq0 : T = 0 := le_antisymm (not_lt.mp hT_pos) hT0
     subst hT_eq0
-    -- Use `r = 1 / (20 * (‖H.val‖ + 1))` or continuity of `orbitCircuitDistance H s` at `0`!
     have hcont : Continuous (orbitCircuitDistance H s) := (orbitCircuitDistance_lipschitz H s).continuous
     have h0_lt : orbitCircuitDistance H s 0 < 1 / 10 := h_all_t 0 ⟨le_rfl, le_rfl⟩
     obtain ⟨δ, hδ_pos, hδ_ball⟩ := Metric.continuousAt_iff.mp hcont.continuousAt
@@ -2632,11 +2651,84 @@ theorem gaussian_rk3_strang_onset_survival (n : ℕ) {η R : ℝ}
       intro t ht
       have hdist_t : dist t 0 < δ := by
         rw [Real.dist_eq, sub_zero, abs_of_nonneg ht.1]
-        dsimp [r₀]; linarith only [ht.2, hδ_pos]
+        have hr₀_eq : r₀ = δ / 2 := rfl
+        linarith only [ht.2, hδ_pos, hr₀_eq]
       have h1 := hδ_ball hdist_t
       rw [Real.dist_eq] at h1
       linarith only [(abs_lt.mp h1).2]
     exact hr₀_pos.trans (tenthPlateauOnset_spec H hr₀_pos hB0 hr₀_all hB_gt).1
+
+/-- High-probability sublinear-time survival past `choose(2N, 2) = (n + 2) * (2 * n + 3)` on the
+full-rank non-matchgate event `Ω_rk3(n, η)`: for every `η ∈ [0, 1]` and `R ≥ 1`, on the explicit
+sub-event `Ω_rk3(n, η) ∩ {x | ∀ i, |x i| ≤ R}` of Gaussian probability
+`≥ 1 - (38 * n + 39) * η^2 - 2 * (12 * n + 15) * exp(-R^2 / 2)`, **every** chain Hamiltonian
+`H(x)` satisfies `orbitCircuitDistance H(x) s t < 1 / 10` across all `s ≥ (n + 2) * (2 * n + 3)`
+and all `t ≥ 0` with `(130 * R)^3 * t^3 ≤ n + 2` (so `T < tenthPlateauOnset H(x) s` whenever `H(x)`
+eventually leaves the `s`-gate `1/10`-neighborhood). -/
+theorem gaussian_rk3_strang_onset_survival (n : ℕ) {η R : ℝ}
+    (hη0 : 0 ≤ η) (hη1 : η ≤ 1) (hR1 : 1 ≤ R) :
+    let μ := Measure.pi fun _ : PrefixIndex n => gaussianReal 0 1
+    let E_surv : Set (PrefixIndex n → ℝ) :=
+      bondRankThreeFieldEvent n η ∩ {x | ∀ i : PrefixIndex n, |x i| ≤ R}
+    1 - ((38 * n + 39 : ℕ) : ℝ) * η ^ 2 -
+        2 * ((12 * n + 15 : ℕ) : ℝ) * Real.exp (-(R ^ 2 / 2)) ≤ μ.real E_surv ∧
+      ∀ x ∈ E_surv,
+        let u : PathShell n := WithLp.toLp 2 (x ∘ (pathCoeffEquiv n).symm)
+        let H : selfAdjoint (Register (n + 2)) :=
+          ⟨pathHamiltonian u, isSelfAdjoint_pathHamiltonian u⟩
+        ∀ s ≥ (n + 2) * (2 * (n + 2) - 1), ∀ T ≥ 0,
+          (130 * R) ^ 3 * T ^ 3 ≤ ((n + 2 : ℕ) : ℝ) →
+            (∀ t ∈ Icc (0 : ℝ) T, orbitCircuitDistance H s t < 1 / 10) ∧
+            ((∃ B ≥ 0, 1 / 10 < orbitCircuitDistance H s B) → T < tenthPlateauOnset H s) := by
+  intro μ E_surv
+  haveI : IsProbabilityMeasure μ := by dsimp only [μ]; infer_instance
+  let Box : Set (PrefixIndex n → ℝ) := {x | ∀ i : PrefixIndex n, |x i| ≤ R}
+  obtain ⟨hBox_meas, hBox_compl_raw⟩ :=
+    pi_gaussian_linf_compl_le (ι := PrefixIndex n) (zero_le_one.trans hR1)
+  have hcard_pref : Fintype.card (PrefixIndex n) = 12 * n + 15 := by
+    rw [Fintype.card_congr (pathCoeffEquiv n)]
+    simp only [PathLabel, Fintype.card_sum, Fintype.card_prod, Fintype.card_fin]
+    omega
+  have hBox_compl_le : μ.real Boxᶜ ≤
+      2 * ((12 * n + 15 : ℕ) : ℝ) * Real.exp (-(R ^ 2 / 2)) := by
+    dsimp only [μ, Box]
+    rwa [hcard_pref] at hBox_compl_raw
+  have hrk3_compl := (bondRankThreeFieldEvent_compl_prob_le n hη0).2 hη1
+  have hmeas_rk3 : MeasurableSet (bondRankThreeFieldEvent n η) := by
+    have heq : bondRankThreeFieldEvent n η =
+        (⋂ e : Fin (n + 1), {x | η ^ 3 ≤ |(bondMatrixOfPrefix n x e).det|}) ∩
+        (⋂ v : Fin (n + 2), {x | η ^ 2 ≤ onsiteNormSq (onsiteVecOfPrefix n x v)}) := by
+      ext x
+      simp only [bondRankThreeFieldEvent, Set.mem_setOf_eq, Set.mem_inter_iff, Set.mem_iInter]
+    rw [heq]
+    refine (MeasurableSet.iInter fun e => ?_).inter (MeasurableSet.iInter fun v => ?_)
+    · have hcont_entry : Continuous (bondMatrixOfPrefix n · e) :=
+        continuous_pi fun p => continuous_pi fun q => continuous_apply _
+      have hcont : Continuous fun x : PrefixIndex n → ℝ => |(bondMatrixOfPrefix n x e).det| :=
+        continuous_abs_det_fin_three.comp hcont_entry
+      exact measurableSet_le measurable_const hcont.measurable
+    · have hcont_vec : Continuous (onsiteVecOfPrefix n · v) :=
+        continuous_pi fun q => continuous_apply _
+      have hcont : Continuous fun x : PrefixIndex n → ℝ =>
+          onsiteNormSq (onsiteVecOfPrefix n x v) :=
+        continuous_onsiteNormSq.comp hcont_vec
+      exact measurableSet_le measurable_const hcont.measurable
+  have hprob_ge : 1 - ((38 * n + 39 : ℕ) : ℝ) * η ^ 2 -
+      2 * ((12 * n + 15 : ℕ) : ℝ) * Real.exp (-(R ^ 2 / 2)) ≤ μ.real E_surv := by
+    have hcompl_eq : E_survᶜ = (bondRankThreeFieldEvent n η)ᶜ ∪ Boxᶜ := Set.compl_inter _ _
+    have hmeas_E : MeasurableSet E_surv := hmeas_rk3.inter hBox_meas
+    have hsum1 : μ.real E_surv + μ.real E_survᶜ = 1 := by
+      rw [Measure.real_def, Measure.real_def,
+        ← ENNReal.toReal_add (measure_ne_top _ _) (measure_ne_top _ _),
+        measure_add_measure_compl hmeas_E, measure_univ, ENNReal.toReal_one]
+    have hcompl_ub : μ.real E_survᶜ ≤
+        μ.real (bondRankThreeFieldEvent n η)ᶜ + μ.real Boxᶜ := by
+      rw [hcompl_eq]
+      exact measureReal_union_le _ _
+    linarith only [hsum1, hcompl_ub, hrk3_compl, hBox_compl_le]
+  refine ⟨hprob_ge, fun x hx => ?_⟩
+  exact pathHamiltonian_strang_onset_survival (WithLp.toLp 2 (x ∘ (pathCoeffEquiv n).symm))
+    hR1 (fun l => hx.2 ((pathCoeffEquiv n).symm l))
 
 #print axioms crossCut_choiMinor_eq_zero
 #print axioms crossCut_choiMinor_le_projectiveCircuitApprox

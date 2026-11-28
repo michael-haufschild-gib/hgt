@@ -14,7 +14,8 @@ namespace GlobalTheory.Reciprocity
 
 open IdeleGroup IdeleRay
 
-private theorem exponent_le_of_dvd {K : Type*} [Field K] [NumberField K]
+/-- Divisibility of finite moduli bounds their local exponents. -/
+theorem exponent_le_of_dvd {K : Type*} [Field K] [NumberField K]
     {m n : Modulus K} (hm : m.fin ∣ n.fin) (v : HeightOneSpectrum (𝓞 K)) :
     exponent m v ≤ exponent n v := by
   exact v.multiplicity_le_of_ideal_ge (Ideal.dvd_iff_le.mp hm) n.fin_ne_bot

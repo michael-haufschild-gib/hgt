@@ -8,7 +8,6 @@ noncomputable section
 open scoped Classical NumberField nonZeroDivisors Pointwise
 open NumberField IsDedekindDomain FractionalIdeal
 open GaloisForLFunctions GaloisForLFunctions.HeckeLFunctions
-open WindowedLandauTheory.ConjugateSelfDual
 
 namespace GlobalTheory.DegreeOneFrobenius
 

@@ -7,7 +7,7 @@ subgroups pulled back from the compact idelic class quotient. -/
 
 noncomputable section
 
-open NumberField IsDedekindDomain FractionalIdeal GaloisForLFunctions WithZero
+open Topology NumberField IsDedekindDomain FractionalIdeal GaloisForLFunctions WithZero
 open GaloisForLFunctions.HeckeLFunctions
 open scoped nonZeroDivisors
 
@@ -17,7 +17,8 @@ open IdeleGroup IdeleRay
 
 variable {K : Type*} [Field K] [NumberField K]
 
-private theorem exists_rational_ray_levels
+/-- A rational modulus can realize any prescribed finite list of local congruence depths. -/
+theorem exists_rational_ray_levels
     (S : Finset (HeightOneSpectrum (𝓞 K))) (n : S → ℕ) :
     ∃ (c : ℕ) (hc : NeZero c),
       letI := hc
@@ -37,12 +38,12 @@ private theorem exists_rational_ray_levels
       (UniqueFactorizationMonoid.emultiplicity_eq_count_normalizedFactors v.val.prime.irreducible (normModulus K c).fin_ne_bot)
   exact hf.le_multiplicity_of_pow_dvd (hd.trans hD)
 
-theorem exists_rationalRay_ker_le_open
-    (H : Subgroup (CompactIdeleClassQuotient K)) (hH : IsOpen (H : Set (CompactIdeleClassQuotient K))) :
+theorem exists_rationalRay_ker_mem_nhds
+    (U : Set (CompactIdeleClassQuotient K)) (hU : U ∈ 𝓝 1) :
     ∃ (c : ℕ) (hc : NeZero c),
       letI := hc
-      (toRayClass (normModulus K c)).ker ≤ H.comap (toCompactIdeleClassQuotient K) := by
-  obtain ⟨S, n, hlevel⟩ := exists_finite_congruences_le_open H hH
+      ∀ x ∈ (toRayClass (normModulus K c)).ker, toCompactIdeleClassQuotient K x ∈ U := by
+  obtain ⟨S, n, hlevel⟩ := exists_finite_congruences_mem_nhds U hU
   obtain ⟨c, hc, hm⟩ := exists_rational_ray_levels S n
   letI := hc
   let m := normModulus K c
@@ -72,7 +73,7 @@ theorem exists_rationalRay_ker_le_open
     have hu' : q (diagonal K u) = 1 := toCompactIdeleClassQuotient_diagonal K u
     rw [map_mul, map_mul, map_inv, ha', hu', inv_one]
     exact (congrArg (· * (1 : CompactIdeleClassQuotient K)) (one_mul (q x))).trans (mul_one (q x))
-  change q x ∈ H
+  change q x ∈ U
   rw [← hqz]
   refine hlevel z (fun v => by simpa only [Units.val_one, count_one]
     using (toFractionalIdeal_eq_iff.mp hez v)) (mem_positiveAt.mpr ((mem_idelesOneMod m).mp hz).2)
@@ -84,6 +85,15 @@ theorem exists_rationalRay_ker_le_open
   rw [exp_le_exp]
   have hle : (n v : ℤ) ≤ (exponent m v.val : ℤ) := by exact_mod_cast (Nat.le_succ _).trans (hm v)
   exact neg_le_neg hle
+
+theorem exists_rationalRay_ker_le_open
+    (H : Subgroup (CompactIdeleClassQuotient K)) (hH : IsOpen (H : Set (CompactIdeleClassQuotient K))) :
+    ∃ (c : ℕ) (hc : NeZero c),
+      letI := hc
+      (toRayClass (normModulus K c)).ker ≤ H.comap (toCompactIdeleClassQuotient K) := by
+  obtain ⟨c, hc, h⟩ := exists_rationalRay_ker_mem_nhds (K := K)
+    (H : Set (CompactIdeleClassQuotient K)) (hH.mem_nhds H.one_mem)
+  exact ⟨c, hc, h⟩
 
 private theorem toRayClass_archPositive (m : Modulus K) {x : IdeleGroup K}
     (hx : x ∈ archPositive K) : toRayClass m x = 1 := by
